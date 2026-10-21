@@ -1,4 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { ar } from '@payloadcms/translations/languages/ar'
 import { en } from '@payloadcms/translations/languages/en'
@@ -10,6 +11,7 @@ import { fileURLToPath } from 'url'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
 import { env } from './env'
+import { MAX_MEDIA_FILE_SIZE_BYTES } from './security/uploadValidation'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -66,6 +68,21 @@ export default buildConfig({
       connectionString: env.DATABASE_URL,
     },
   }),
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.SMTP_FROM_ADDRESS ?? 'no-reply@aljazira.co',
+    defaultFromName: process.env.SMTP_FROM_NAME ?? 'Al Jazira for Imdad Smart Co.',
+    skipVerify: true,
+    transportOptions: {
+      host: process.env.SMTP_HOST ?? '127.0.0.1',
+      port: Number(process.env.SMTP_PORT ?? '1025'),
+      secure: false,
+    },
+  }),
+  upload: {
+    limits: {
+      fileSize: MAX_MEDIA_FILE_SIZE_BYTES,
+    },
+  },
   sharp,
   plugins: [],
 })
