@@ -14,7 +14,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "node -e \"console.log('Tests placeholder (configured in P1-T2/P1-T3)')\"",
+    "test": "vitest run",
     "test:e2e": "node -e \"console.log('E2E tests placeholder (configured in P1-T4)')\"",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
