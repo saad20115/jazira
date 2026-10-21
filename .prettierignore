@@ -12,6 +12,7 @@ pnpm-lock.yaml
 # Reference & inbox
 _payload-reference/
 _inbox/
+design/
 
 # CTO-owned & read-only files
 AGENTS.md

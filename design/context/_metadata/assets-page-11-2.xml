@@ -1,0 +1,19 @@
+<canvas id="11:2" name="🧩 Assets" x="0" y="0" width="0" height="0">
+  <frame id="2:2" name="IMG / hero-city" x="0" y="0" width="1376" height="768" />
+  <frame id="3:2" name="IMG / about-team" x="1456" y="0" width="1200" height="896" />
+  <frame id="4:2" name="IMG / svc-mep" x="2736" y="0" width="896" height="1200" />
+  <frame id="5:2" name="IMG / svc-fire" x="3712" y="0" width="896" height="1200" />
+  <frame id="6:2" name="IMG / svc-smart" x="4688" y="0" width="896" height="1200" />
+  <frame id="7:2" name="IMG / proj-tower" x="5664" y="0" width="1200" height="896" />
+  <frame id="8:2" name="IMG / bg-pipes" x="6944" y="0" width="1376" height="768" />
+  <frame id="9:2" name="IMG / header-office" x="8400" y="0" width="1376" height="768" />
+  <rounded-rectangle id="25:199" name="IMG / logo-gold (official)" x="0" y="1300" width="440" height="128" />
+  <rounded-rectangle id="50:200" name="IMG / partner-logos-sprite (from client site, 6×6 cells 300×120)" x="0" y="1600" width="1800" height="720" />
+  <rounded-rectangle id="76:1644" name="image 1" x="4758" y="2638" width="756" height="533" />
+  <rounded-rectangle id="76:1647" name="image 2" x="5664" y="2638" width="752" height="400" />
+  <rounded-rectangle id="76:1650" name="image 3" x="6566" y="2638" width="927" height="760" />
+  <rounded-rectangle id="76:1653" name="image 4" x="7632" y="2609" width="1359" height="789" />
+  <rounded-rectangle id="81:1656" name="image 5" x="7862" y="3592" width="1442" height="503" />
+  <rounded-rectangle id="81:1659" name="image 6" x="4608" y="3533" width="1310" height="727" />
+  <frame id="170:1050" name="IMG / tower-render (Figma AI)" x="0" y="4600" width="1024" height="1024" />
+</canvas>
