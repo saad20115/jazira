@@ -1,0 +1,45 @@
+# Dependencies
+/node_modules
+/.pnp
+.pnp.*
+
+# Next.js / Build
+/.next/
+/out/
+/build/
+/dist/
+next-env.d.ts
+*.tsbuildinfo
+
+# Environment variables (S3)
+.env*
+!.env.example
+
+# Reference & inbox (never committed)
+/_payload-reference/
+/_inbox/
+
+# Local media uploads
+/media/
+/videos/
+/public/media/
+
+# Testing & coverage
+/coverage/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Logs & debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS & editor files
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.pem
+.vercel

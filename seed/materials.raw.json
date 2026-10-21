@@ -1,0 +1,529 @@
+[
+  {
+    "no": 1,
+    "system": "electrical",
+    "description": "EMT CONDUIT",
+    "brandRaw": "AL ROUF",
+    "originRaw": "Saudi arabia"
+  },
+  {
+    "no": 2,
+    "system": "electrical",
+    "description": "Electric Box",
+    "brandRaw": "ALROUF/ALFANAR",
+    "originRaw": "ALROUF: Saudi Arabia | ALFANAR: Saudi Arabia"
+  },
+  {
+    "no": 3,
+    "system": "electrical",
+    "description": "ELECTRICAL STEEL BOX",
+    "brandRaw": "ALFANAR",
+    "originRaw": "ALFANAR: Saudi Arabia"
+  },
+  {
+    "no": 4,
+    "system": "electrical",
+    "description": "PVC ELECTRIC CONDUIT",
+    "brandRaw": "EGA",
+    "originRaw": "EGA: Saudi Arabia"
+  },
+  {
+    "no": 5,
+    "system": "electrical",
+    "description": "CABLE TRAY",
+    "brandRaw": "united technology group",
+    "originRaw": "united technology group: Saudi Arabia"
+  },
+  {
+    "no": 6,
+    "system": "electrical",
+    "description": "Cable trunk",
+    "brandRaw": "united technology group",
+    "originRaw": "united technology group: Saudi Arabia"
+  },
+  {
+    "no": 7,
+    "system": "electrical",
+    "description": "ELECTRIC CABELS",
+    "brandRaw": "JEDDAH cables /BAHRA Cables",
+    "originRaw": "Jeddah Cables : Saudi Arabia | BAHRA Cables: Saudi Arabia"
+  },
+  {
+    "no": 8,
+    "system": "electrical",
+    "description": "WIRES",
+    "brandRaw": "Bahra cables",
+    "originRaw": "Bahra cables: Saudi Arabia"
+  },
+  {
+    "no": 9,
+    "system": "electrical",
+    "description": "FIRE ALARM CABLES",
+    "brandRaw": "MESC",
+    "originRaw": "MESC: Saudi Arabia"
+  },
+  {
+    "no": 10,
+    "system": "electrical",
+    "description": "FLOOR BOX DATA CABLE",
+    "brandRaw": "BELDEN/commscope/MESC",
+    "originRaw": "BELDEN: United States | commscope: United States, MESC :SAUDI ARABIA"
+  },
+  {
+    "no": 11,
+    "system": "electrical",
+    "description": "GROUNDING AND EARTHING",
+    "brandRaw": "Bahra",
+    "originRaw": "Bahra: Saudi Arabia"
+  },
+  {
+    "no": 12,
+    "system": "electrical",
+    "description": "WIRING DEVICES",
+    "brandRaw": "ULTRA LIGHT",
+    "originRaw": "ULTRA LIGHT: Saudi Arabia"
+  },
+  {
+    "no": 13,
+    "system": "electrical",
+    "description": "DISCONNECTED SWITCH",
+    "brandRaw": "LEGRAND",
+    "originRaw": "LEGRAND: France"
+  },
+  {
+    "no": 14,
+    "system": "electrical",
+    "description": "FLOOR BOX",
+    "brandRaw": "ULTRA LIGHT /SIERA",
+    "originRaw": "ULTRA LIGHT: Saudi Arabia | SIERA: Saudi Arabia"
+  },
+  {
+    "no": 15,
+    "system": "electrical",
+    "description": "emergency lighting battery",
+    "brandRaw": "tridonic/Siera",
+    "originRaw": "tridonic: Austria | Siera: Saudi Arabia"
+  },
+  {
+    "no": 16,
+    "system": "electrical",
+    "description": "LIGHTING",
+    "brandRaw": "ULTRA LIGHT/SIERA",
+    "originRaw": "ULTRA LIGHT: Saudi Arabia | SIERA: Saudi Arabia"
+  },
+  {
+    "no": 17,
+    "system": "electrical",
+    "description": "OUTDOOR LIGHTING",
+    "brandRaw": "ULTRA LIGHT",
+    "originRaw": "ULTRA LIGHT: Saudi Arabia"
+  },
+  {
+    "no": 18,
+    "system": "electrical",
+    "description": "LIGHTING",
+    "brandRaw": "ULTRA LIGHT/SIERA",
+    "originRaw": "ULTRA LIGHT: Saudi Arabia | SIERA: Saudi Arabia"
+  },
+  {
+    "no": 19,
+    "system": "electrical",
+    "description": "FIRE ALARM SYSTEM",
+    "brandRaw": "COOPER/AVANGER",
+    "originRaw": "COOPER: United States (brand; now Eaton) | AVANGER: United Kingdom"
+  },
+  {
+    "no": 20,
+    "system": "electrical",
+    "description": "PANEL BOARD",
+    "brandRaw": "EFFECTIVE POWER - ASSTTE",
+    "originRaw": "(EFFECTIVE POWER-ASTTE): Saudi Arabia"
+  },
+  {
+    "no": 21,
+    "system": "mechanical",
+    "description": "FIREPIPES",
+    "brandRaw": "ALJAZIRAH (OMAN-SAUDI)",
+    "originRaw": "ALJAZIRAH (OMAN-SAUDI):"
+  },
+  {
+    "no": 22,
+    "system": "mechanical",
+    "description": "GALVANIZED PIPE",
+    "brandRaw": "ALJAZERA",
+    "originRaw": "ALJAZERA: Saudi Arabia / Oman"
+  },
+  {
+    "no": 23,
+    "system": "mechanical",
+    "description": "GROOVED FITTING",
+    "brandRaw": "Junt / JTPR UL-FM",
+    "originRaw": "Junt: China | JTPR: China"
+  },
+  {
+    "no": 24,
+    "system": "mechanical",
+    "description": "THREADED FITTING",
+    "brandRaw": "JIHANZI -UL/FM",
+    "originRaw": "JIHANZI: China"
+  },
+  {
+    "no": 25,
+    "system": "mechanical",
+    "description": "Lined Split clamp & Clevis Hanger",
+    "brandRaw": "Karishma Steel",
+    "originRaw": "Karishma : India"
+  },
+  {
+    "no": 26,
+    "system": "mechanical",
+    "description": "ZCV FOR FIRE",
+    "brandRaw": "SHANDONG LEDE MACHINERY",
+    "originRaw": "SHANDONG LEDE MACHINERY: China"
+  },
+  {
+    "no": 27,
+    "system": "mechanical",
+    "description": "TEMPER SWITCH",
+    "brandRaw": "JMC",
+    "originRaw": "JMC :China"
+  },
+  {
+    "no": 28,
+    "system": "mechanical",
+    "description": "Test & Drain Valve",
+    "brandRaw": "Giacomini/SEFEECO",
+    "originRaw": "Giacomini: Italy -SEFEECO:Saudi arabia"
+  },
+  {
+    "no": 29,
+    "system": "mechanical",
+    "description": "Flow Switch",
+    "brandRaw": "JMC",
+    "originRaw": "JMC:China"
+  },
+  {
+    "no": 30,
+    "system": "mechanical",
+    "description": "Pressure Gauage",
+    "brandRaw": "Tyco/Ashcroft",
+    "originRaw": "(Tyco-Ashcroft): United States"
+  },
+  {
+    "no": 31,
+    "system": "mechanical",
+    "description": "FIRE PIPES PAINTS",
+    "brandRaw": "JAZEERA (PRIMER) HEMPEL (COATING)",
+    "originRaw": "JAZEERA (PRIMER):Saudi arbia HEMPEL (COATING): Denmark"
+  },
+  {
+    "no": 32,
+    "system": "mechanical",
+    "description": "FIRE PUMP",
+    "brandRaw": "BRISTOL",
+    "originRaw": "BRISTOL: UAE"
+  },
+  {
+    "no": 33,
+    "system": "mechanical",
+    "description": "FIRE HOSE CABINET STEEL",
+    "brandRaw": "SEFECO",
+    "originRaw": "SEFECO: Saudi Arabia"
+  },
+  {
+    "no": 34,
+    "system": "mechanical",
+    "description": "FIRE EXTENGUISHER",
+    "brandRaw": "SEFECO",
+    "originRaw": "SEFECO: Saudi Arabia"
+  },
+  {
+    "no": 35,
+    "system": "mechanical",
+    "description": "NOVEC",
+    "brandRaw": "HI-TECH /look/SRI",
+    "originRaw": "HI-TECH: United States | look :united kingdom | SRI: Malaysia"
+  },
+  {
+    "no": 36,
+    "system": "mechanical",
+    "description": "AEROSOL",
+    "brandRaw": "fire pro",
+    "originRaw": "fire pro: Cyprus"
+  },
+  {
+    "no": 37,
+    "system": "mechanical",
+    "description": "PPR PIPE",
+    "brandRaw": "TAHWEEL",
+    "originRaw": "TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 38,
+    "system": "mechanical",
+    "description": "FITTINGS",
+    "brandRaw": "TAHWEEL",
+    "originRaw": "TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 39,
+    "system": "mechanical",
+    "description": "PLUMBING VALVES",
+    "brandRaw": "tahweeL",
+    "originRaw": "TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 40,
+    "system": "mechanical",
+    "description": "WATER HAMMER ARRESTOR",
+    "brandRaw": "watts",
+    "originRaw": "watts: United States"
+  },
+  {
+    "no": 41,
+    "system": "mechanical",
+    "description": "HOSE BIBs",
+    "brandRaw": "WATTS",
+    "originRaw": "WATTS: United States"
+  },
+  {
+    "no": 42,
+    "system": "mechanical",
+    "description": "PLUMBING INSULATION",
+    "brandRaw": "AEROFOAM/arma flex",
+    "originRaw": "AEROFOAM: UAE"
+  },
+  {
+    "no": 43,
+    "system": "mechanical",
+    "description": "WASTE PIPE",
+    "brandRaw": "TAHWEEL",
+    "originRaw": "TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 44,
+    "system": "mechanical",
+    "description": "AC DRAIN PIPES",
+    "brandRaw": "GULF PIPES/TAHWEEL",
+    "originRaw": "GULF PIPES: Saudi Arabia | TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 45,
+    "system": "mechanical",
+    "description": "drain,waste pipe",
+    "brandRaw": "TAHWEEL",
+    "originRaw": "TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 46,
+    "system": "mechanical",
+    "description": "WASTE PIPES",
+    "brandRaw": "NEPRO PLAST /TAHWEEL",
+    "originRaw": "NEPRO PLAST: UAE | TAHWEEL: Saudi Arabia"
+  },
+  {
+    "no": 47,
+    "system": "mechanical",
+    "description": "FLUSH TANK FOR WC",
+    "brandRaw": "GROHE/GEBRIT",
+    "originRaw": "GROHE: Germany"
+  },
+  {
+    "no": 48,
+    "system": "mechanical",
+    "description": "WATER TANK",
+    "brandRaw": "Al-Muhaidb National",
+    "originRaw": "Al-Muhaidb National: Saudi Arabia"
+  },
+  {
+    "no": 49,
+    "system": "mechanical",
+    "description": "WATER HEATER",
+    "brandRaw": "ARISTON/SAUDI CERMICS",
+    "originRaw": "ARISTON: Italy | SAUDI CERMICS: Saudi Arabia"
+  },
+  {
+    "no": 50,
+    "system": "mechanical",
+    "description": "BOOSTER PUMP",
+    "brandRaw": "Peddrolla /LEO/WATER horse",
+    "originRaw": "Pedrollo :Italy -LEO:China-Water Horse :China"
+  },
+  {
+    "no": 51,
+    "system": "mechanical",
+    "description": "DUCT SHEET",
+    "brandRaw": "Local Fabrication",
+    "originRaw": "Saudi Arabia"
+  },
+  {
+    "no": 52,
+    "system": "mechanical",
+    "description": "DUCT INSULATION",
+    "brandRaw": "AFICO",
+    "originRaw": "AFICO: Saudi Arabia"
+  },
+  {
+    "no": 53,
+    "system": "mechanical",
+    "description": "DX PIPE",
+    "brandRaw": "LUVATA-CAMLEE",
+    "originRaw": "LUVATA :ITALY /CAMLEE: CHINA"
+  },
+  {
+    "no": 54,
+    "system": "mechanical",
+    "description": "OUT LET GRILL",
+    "brandRaw": "AL-NASSERIAH",
+    "originRaw": "AL-NASSERIAH: Saudi Arabia"
+  },
+  {
+    "no": 55,
+    "system": "mechanical",
+    "description": "AC UNITS",
+    "brandRaw": "SKM/zamil",
+    "originRaw": "SKM: UAE-Zamil :saudi arabia"
+  },
+  {
+    "no": 56,
+    "system": "mechanical",
+    "description": "FAN",
+    "brandRaw": "SYSTEM AIR/BLACK HORSE",
+    "originRaw": "SYSTEM AIR: Sweden | BLACK HORSE: SAUDI ARABIA"
+  },
+  {
+    "no": 57,
+    "system": "mechanical",
+    "description": "ELEVATORS",
+    "brandRaw": "ALDURRAH-fuji",
+    "originRaw": "ALDURRAH: Saudi Arabia"
+  },
+  {
+    "no": 58,
+    "system": "structural",
+    "description": "Ready Mix Concrete",
+    "brandRaw": "Saudi Ready Mix",
+    "alternativeRaw": "Nesma Concrete Solutions",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 59,
+    "system": "structural",
+    "description": "Cement",
+    "brandRaw": "Arabian Cement co.",
+    "alternativeRaw": "Yanbu Cement",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 60,
+    "system": "structural",
+    "description": "Reinforcing Steel Bars",
+    "brandRaw": "Al-rajhi Steel",
+    "alternativeRaw": "Al-rajhi Steel",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 61,
+    "system": "structural",
+    "description": "Waterproofing Membranes",
+    "brandRaw": "Bitumat",
+    "alternativeRaw": "Awazel",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 62,
+    "system": "structural",
+    "description": "Roof Thermal Insulation",
+    "brandRaw": "Arnon XPS",
+    "alternativeRaw": "",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 63,
+    "system": "structural",
+    "description": "Concrete masonry units",
+    "brandRaw": "Saudi Ready mix -block",
+    "alternativeRaw": "Jeddah block factory",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 64,
+    "system": "structural",
+    "description": "Wooden Doors & Frames",
+    "brandRaw": "Saudi anfal",
+    "alternativeRaw": "Al-dorais Doors Factory",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 65,
+    "system": "structural",
+    "description": "Aluminium systems",
+    "brandRaw": "ALUPCO",
+    "alternativeRaw": "AL-Tahweel Aluminium",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 66,
+    "system": "architectural",
+    "description": "Glass",
+    "brandRaw": "OBEIKAN GLASS",
+    "alternativeRaw": "",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 67,
+    "system": "architectural",
+    "description": "Gypsum Board",
+    "brandRaw": "Mada Gypsum",
+    "alternativeRaw": "",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 68,
+    "system": "architectural",
+    "description": "Plaster additives",
+    "brandRaw": "Saveto",
+    "alternativeRaw": "",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 69,
+    "system": "architectural",
+    "description": "Porcelain",
+    "brandRaw": "Saudi cermics",
+    "alternativeRaw": "Alfanar Cermics",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 70,
+    "system": "architectural",
+    "description": "Marble",
+    "brandRaw": "Al-mulhem Marble",
+    "alternativeRaw": "Saudi Marble",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 71,
+    "system": "architectural",
+    "description": "Paints",
+    "brandRaw": "Jazeera Paints",
+    "alternativeRaw": "Ritver Paints",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 72,
+    "system": "architectural",
+    "description": "GRC Cladding",
+    "brandRaw": "Local Jeddah GRC Factory",
+    "alternativeRaw": "",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  },
+  {
+    "no": 73,
+    "system": "architectural",
+    "description": "Wrought Iron Balustrade",
+    "brandRaw": "Local Fabrication",
+    "alternativeRaw": "",
+    "needsClientReview": "Origin column contains a supplier name, not a country — confirm with client"
+  }
+]
