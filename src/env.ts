@@ -1,5 +1,22 @@
 import { z } from 'zod'
 
+/**
+ * Startup environment validation (S1, S2).
+ *
+ * Note on S4 (`server-only`): `src/env.ts` is imported by `src/payload.config.ts`, which is
+ * executed directly under Node/tsx by the Payload CLI (`payload migrate`, `payload generate:types`,
+ * `payload generate:importmap`) without `--conditions=react-server`. Therefore `src/env.ts` is the
+ * documented exception to `import 'server-only'` and is instead prohibited in `'use client'` modules
+ * by the in-repo ESLint rule `local/no-server-in-client` and verified by the CI `.next/static` secret grep (R-3).
+ *
+ * Build-time vs runtime handling (R-1): During `next build` (`NEXT_PHASE === 'phase-production-build'`),
+ * production secrets are not present in the Docker build environment. When `NEXT_PHASE` is
+ * `'phase-production-build'`, unset variables fall back to build-only dummy values so `next build`
+ * can compile the standalone bundle without secrets. At server boot (`next dev` and
+ * `node .next/standalone/server.js`), `src/instrumentation.ts` calls `parseEnv(process.env)` and
+ * exits with code 1 if any secret is missing or invalid.
+ */
+
 const PLACEHOLDER_PATTERNS = [
   'CHANGE_ME_GENERATE_WITH_OPENSSL_RAND_BASE64_48_PAYLOAD_SECRET',
   'CHANGE_ME_GENERATE_WITH_OPENSSL_RAND_BASE64_48_IP_HASH_SALT',
@@ -92,4 +109,24 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
   return result.data
 }
 
-export const env: Env = parseEnv(process.env)
+const BUILD_PHASE_FALLBACK_ENV: Record<string, string> = {
+  DATABASE_URL: 'postgresql://build_only:build_only@127.0.0.1:5432/build_only',
+  SERVER_URL: 'http://localhost:3000',
+  PAYLOAD_SECRET: 'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-0001',
+  IP_HASH_SALT: 'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-00002',
+}
+
+function loadEnv(): Env {
+  if (process.env.NEXT_PHASE === 'phase-production-build') {
+    return parseEnv({
+      DATABASE_URL: process.env.DATABASE_URL || BUILD_PHASE_FALLBACK_ENV.DATABASE_URL,
+      SERVER_URL: process.env.SERVER_URL || BUILD_PHASE_FALLBACK_ENV.SERVER_URL,
+      PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_SECRET,
+      IP_HASH_SALT: process.env.IP_HASH_SALT || BUILD_PHASE_FALLBACK_ENV.IP_HASH_SALT,
+    })
+  }
+
+  return parseEnv(process.env)
+}
+
+export const env: Env = loadEnv()

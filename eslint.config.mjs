@@ -2,6 +2,8 @@ import { defineConfig } from 'eslint/config'
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 import tseslint from 'typescript-eslint'
 
+import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
+
 export default defineConfig([
   {
     ignores: [
@@ -29,7 +31,15 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    plugins: {
+      local: {
+        rules: {
+          'no-server-in-client': noServerInClientRule,
+        },
+      },
+    },
     rules: {
+      'local/no-server-in-client': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
