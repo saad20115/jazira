@@ -15,7 +15,7 @@
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:e2e": "node -e \"console.log('E2E tests placeholder (configured in P1-T4)')\"",
+    "test:e2e": "playwright test",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
@@ -51,6 +51,11 @@
     "vitest": "5.0.5"
   },
   "pnpm": {
+    "overrides": {
+      "chokidar@^3.0.0": "4.0.3",
+      "dompurify": "3.4.16",
+      "esbuild@<=0.24.2": "0.28.2"
+    },
     "onlyBuiltDependencies": [
       "sharp",
       "esbuild"

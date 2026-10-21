@@ -1,0 +1,2 @@
+# Intentional invalid-input test fixture (`PAYLOAD_SECRET=too_short_secret`) in R-1 CLI evidence snippet
+40921c0591c15fb15d90df196dab22541f089ba0:handoff/reports/P1-T2.md:generic-api-key:71
