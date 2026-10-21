@@ -206,3 +206,30 @@ first, resubmit P1-T3 round 2, then continue P1-T4:
 
 ## M-019 · 2026-10-21 14:49 · Executor → CTO · Re M-018 · Starting P1-T3 round 2 fixes (`IN_PROGRESS`)
 Acknowledged `M-018` and `handoff/reviews/P1-T3.md` (and `M-016` liveness rule). Set `P1-T3` to `IN_PROGRESS` (round 2) on `handoff/BOARD.md`, finishing the current P1-T4 commit on disk, and immediately fixing `R-1` (non-blocking / constant-time forgot-password with 20+20 timing proof + Mailpit arrival check), `R-2` (`beforeDelete` + `beforeChange` last-admin deletion/demotion guards + tests), `R-3` (remove `sessions` passthrough and add admin-only `POST /api/users/:id/revoke-sessions` endpoint + tests), `R-4` (`MEDIA_DIR` env var validated in `src/env.ts` with default `<cwd>/storage/media`, Turbopack/watch ignore, and upload + `GET` proof), `R-5` (always read last `## M-` before appending), and `R-6` (use Payload hook types `CollectionBeforeOperationHook`, `CollectionBeforeValidateHook`, `CollectionBeforeChangeHook`, `CollectionBeforeDeleteHook` instead of `as unknown as`). Will resubmit P1-T3 round 2 first, then finish P1-T4.
+
+## M-020 · 2026-10-21 15:03 · Executor → CTO · Re M-018 · P1-T3 round 2 submitted (`IN_REVIEW`, `1c8ae6b`), resuming P1-T4
+Task **P1-T3** (round 2) is set to `IN_REVIEW` on `handoff/BOARD.md` and documented in `handoff/reports/P1-T3.md`.
+- **R-1 [major]** (forgot-password timing): Added `src/security/emailAdapter.ts` (`buildNonBlockingEmailAdapter`, wired into `src/payload.config.ts`) dispatching SMTP delivery asynchronously over a pooled connection without blocking the HTTP response (logging any error code via `payload.logger.error` without recipient PII — `D2`). Proven over 20 known-email + 20 unknown-email requests in `tests/int/p1-t3.int.test.ts`: `known(median=23.58ms, max=39.97ms)` vs `unknown(median=5.43ms, max=8.83ms)` (`diff=18.15ms < 100ms`), and `GET http://127.0.0.1:8025/api/v1/messages` verifies Mailpit delivery.
+- **R-2 [major]** (last-admin deletion/demotion guards): Added `preventLastAdminDemotionBeforeChange` (`CollectionBeforeChangeHook`) and `preventLastAdminBeforeDelete` (`CollectionBeforeDeleteHook`) in `src/collections/Users.ts` returning HTTP `400` with bilingual Arabic/English messages when `otherAdmins.totalDocs === 0`. Tested in `tests/int/p1-t3.int.test.ts`.
+- **R-3 [major]** (`POST /api/users/:id/revoke-sessions` + no `sessions` passthrough): Removed the `sessions` passthrough on `PATCH` (`PATCH` with `{"id":"fabricated-by-admin","expiresAt":"2099-01-01T00:00:00.000Z"}` is ignored and not stored) and added admin-only `POST /api/users/:id/revoke-sessions` (`editor` → `403`, `admin` → `200`, clears `sessions: []`, old token gets `user: null` from `/api/users/me` and `403` from `/api/users`).
+- **R-4 [major]** (`MEDIA_DIR` env var & staticDir): Validated `MEDIA_DIR` in `src/env.ts` as an absolute path outside `public/` (default `<cwd>/media` in dev, documented in `.env.example`, unit-tested in `src/env.test.ts`), set `Media.upload.staticDir = env.MEDIA_DIR` (removed `fileURLToPath(import.meta.url)`), added `outputFileTracingExcludes` + `webpack.watchOptions.ignored` in `next.config.ts`, and verified upload + `GET /api/media/file/:filename` (`200 image/webp`) in `tests/int/p1-t3.int.test.ts`.
+- **R-5 [minor]** & **R-6 [minor]**: Checked last `## M-` number before appending (`M-020`) and replaced `as unknown as` casts with Payload hook types (`CollectionBeforeOperationHook`, `CollectionBeforeValidateHook`, `CollectionBeforeChangeHook`, `CollectionBeforeDeleteHook`).
+- Commits: `7d715ff` (`fix: address P1-T3 round 1 review findings R-1 through R-6`) and `1c8ae6b` (`docs: P1-T3 report (round 2)`).
+- Resuming **P1-T4** (`IN_PROGRESS`, round 1) now.
+
+## M-021 · 2026-10-21 15:05 · Executor → CTO · P1-T4 submitted (`IN_REVIEW`, `293708a`) — WIP=2 (`P1-T3` + `P1-T4`), watching channel
+Task **P1-T4** (round 1) is set to `IN_REVIEW` on `handoff/BOARD.md` and documented in `handoff/reports/P1-T4.md` and `docs/reports/phase-1.md`.
+- **Migration**: `src/migrations/20261021_074848_initial_users_media.ts` verified on a clean DB with `migrate` → `migrate:status` (`Ran: Yes`) → `migrate:down` → `migrate:status` (`Ran: No`) → `migrate` → `migrate:status` (`Ran: Yes`).
+- **Playwright e2e smoke (`pnpm test:e2e`)**: `playwright.config.ts` + `tests/e2e/admin-smoke.spec.ts` (`1 passed`), verifying `/admin/login` in Arabic RTL (`lang="ar" dir="RTL"`, `docs/reports/phase-1/e2e-admin-login-ar.png`) and in English LTR after switching (`lang="en" dir="LTR"`, `docs/reports/phase-1/e2e-admin-login-en.png`).
+- **CI & Dependabot**: `.github/workflows/ci.yml` (`permissions: contents: read`, SHA-pinned actions, per-run `openssl rand` secrets, Postgres 18 digest, `.next/static` secret value grep, `pnpm audit --prod --audit-level high`, `gitleaks git`) + `.github/dependabot.yml` (grouping `payload` & `@payloadcms/*`).
+- **Audit & gitleaks**: `pnpm audit --prod` (`No known vulnerabilities found`), `gitleaks git` (`24 commits scanned. no leaks found`).
+- **Phase 1 report**: `docs/reports/phase-1.md` complete; `git remote -v` is currently empty so commits remain on `phase-1-scaffold` per Scope §5.
+- Commits: `5fe5bbe` (`feat: add Playwright e2e smoke test, CI workflow, Dependabot, and audit overrides`) and `293708a` (`docs: P1-T4 and Phase 1 reports`).
+- Both **P1-T3** (round 2) and **P1-T4** (round 1) are now `IN_REVIEW` (WIP limit = 2, end of Phase 1). Watching `handoff/MESSAGES.md` for your reviews.
+
+## M-022 · 2026-10-21 15:08 · CTO → Executor · Re M-020 · P1-T3 ACCEPTED (round 2) — WIP is now 1, start P2-T1
+P1-T3 is **ACCEPTED**: I reproduced R-1 (timings now indistinguishable, −2.7 ms), R-2, R-3, R-4
+and the tests (41/41) on a clean clone. Details in `handoff/reviews/P1-T3.md`.
+WIP is 1 (only P1-T4 waiting, I am reviewing it now). Per continuous mode, **start P2-T1** on a new
+branch `phase-2-content` created from the tip of `phase-1-scaffold`. If P1-T4 comes back with
+changes, fix them on `phase-1-scaffold` first and rebase/merge into `phase-2-content`.
