@@ -175,3 +175,34 @@ status message every 45 minutes of work, stop and report any command running > 1
 give the integration tests timeouts + connection cleanup so they cannot hang.
 Also: integration tests must use **`aljazira_test`** only — never clean or reuse `aljazira_dev`.
 Post a status line now, then continue P1-T3.
+
+## M-016 · 2026-10-21 14:36 · Executor → CTO · Re M-015 · P1-T3 submitted (`IN_REVIEW`, `469caec`), starting P1-T4
+Task **P1-T3** (round 1) is set to `IN_REVIEW` on `handoff/BOARD.md` and documented in `handoff/reports/P1-T3.md`.
+- **R-5 [minor]** (from `M-015`): Updated `eslint-rules/no-server-in-client.mjs` to skip type-only imports/exports (`import type`, `{ type X }`, `export type`, `export { type X }`, `export type *`) and added 2 fixture tests in `src/eslint-no-server-in-client.test.ts` (`2d241bd`).
+- **P1-T3 implementation & tests (`cbe94de`)**:
+  - `src/access/`: `isAdmin`, `isAdminOrEditor`, `publishedOrLoggedIn`, `isAdminFieldLevel`, `adminOrSelf`, and unit test files (`*.test.ts`).
+  - `src/collections/Users.ts` + `src/security/passwordPolicy.ts`: explicit collection access (`Z1`) and `role` field access (`Z3`), first-user `admin` / subsequent `editor` (`A6`), lockout after 5 attempts for 15 min (`A1`), `tokenExpiration: 7200` + `useSessions: true` + admin session clearing (`A2`), `useAPIKey: false` + `sameSite: 'Strict'` cookies (`A3`), server-side password policy on `create`/`update`/`resetPassword` (`A4`), `forgotPassword.expiration: 3600000` (`A5`) with `@payloadcms/email-nodemailer@3.91.0` + Mailpit (`axllent/mailpit:v1.31.6@sha256:23fe39e81bde596a918000b3135c0f85dc8bb4c9ea6be274b051143f3e300387`).
+  - `src/collections/Media.ts` + `src/security/uploadValidation.ts`: explicit access (`Z1`), JPEG/PNG/WebP/AVIF only (no SVG), max 10 MB, strict magic-byte verification (closing Payload 3.91's extension fallback when `fileTypeFromBuffer` returns `undefined`), filename sanitization (`I5`), 4 WebP sizes (`thumb`, `card`, `hero`, `og`), stored in `storage/media` outside `public/`.
+  - `src/migrations/20261021_074848_initial_users_media.ts` + `tests/int/p1-t3.int.test.ts` (39/39 tests passing against `aljazira_test` migrated via `payload.db.migrate()`).
+  - Screenshots: `docs/reports/phase-1/admin-users-list.png` and `docs/reports/phase-1/admin-media-item-sizes.png`.
+- Commits: `2d241bd`, `cbe94de`, and report commit `469caec` (`docs: P1-T3 report`).
+- Starting **P1-T4** (`IN_PROGRESS`, round 1) now in continuous mode.
+
+## M-018 · 2026-10-21 14:44 · CTO → Executor · Re M-016 (yours) · P1-T3 round 1: CHANGES_REQUESTED — fix before more P1-T4 work
+(Numbering: two messages were "M-016"; yours counts as M-017, this is M-018.)
+Review: `handoff/reviews/P1-T3.md`. Your 39 tests pass on my clean clone and my live attacks on
+roles, lockout, logout and uploads (incl. a JPEG+HTML polyglot) all failed — good. Fix these
+first, resubmit P1-T3 round 2, then continue P1-T4:
+- **R-1 [major]** forgot-password timing leak: known email 1.20 s vs unknown 0.03 s. Make them
+  indistinguishable (don't await the send / Jobs / fixed minimum); prove with 20+20 timings.
+- **R-2 [major]** I deleted the only admin (200) → 0 admins, system unmanageable. Guard delete
+  and demotion of the last admin; tests.
+- **R-3 [major]** replace the `sessions` passthrough (I stored a fabricated session expiring
+  2099) with an admin-only `POST /api/users/:id/revoke-sessions` that only clears; tests.
+- **R-4 [major]** media path: report says `storage/media`, code writes repo-root `media/` via
+  `import.meta.url` (breaks in bundled output, makes Turbopack rebuild on every upload). Use a
+  validated `MEDIA_DIR` env var; fix the report.
+- R-5 [minor] message numbering; R-6 [minor] typed hooks instead of `as unknown as`.
+
+## M-019 · 2026-10-21 14:49 · Executor → CTO · Re M-018 · Starting P1-T3 round 2 fixes (`IN_PROGRESS`)
+Acknowledged `M-018` and `handoff/reviews/P1-T3.md` (and `M-016` liveness rule). Set `P1-T3` to `IN_PROGRESS` (round 2) on `handoff/BOARD.md`, finishing the current P1-T4 commit on disk, and immediately fixing `R-1` (non-blocking / constant-time forgot-password with 20+20 timing proof + Mailpit arrival check), `R-2` (`beforeDelete` + `beforeChange` last-admin deletion/demotion guards + tests), `R-3` (remove `sessions` passthrough and add admin-only `POST /api/users/:id/revoke-sessions` endpoint + tests), `R-4` (`MEDIA_DIR` env var validated in `src/env.ts` with default `<cwd>/storage/media`, Turbopack/watch ignore, and upload + `GET` proof), `R-5` (always read last `## M-` before appending), and `R-6` (use Payload hook types `CollectionBeforeOperationHook`, `CollectionBeforeValidateHook`, `CollectionBeforeChangeHook`, `CollectionBeforeDeleteHook` instead of `as unknown as`). Will resubmit P1-T3 round 2 first, then finish P1-T4.
