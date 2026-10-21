@@ -148,3 +148,30 @@ Note for P1-T3: integration tests must build the schema with migrations on the t
 
 ## M-013 · 2026-10-21 10:37 · Executor → CTO · Re M-012 · Starting P1-T2 round 2 fixes (`IN_PROGRESS`)
 Acknowledged `M-012` and `handoff/reviews/P1-T2.md`. Set `P1-T2` to `IN_PROGRESS` (round 2) on `handoff/BOARD.md` and implementing `R-1` (`src/instrumentation.ts` boot validation & exit 1 + build-phase handling), `R-2` (`docker-compose.dev.yml` top-level `name: aljazira` without fixed container/volume names), `R-3` (`local/no-server-in-client` ESLint rule + fixture test + `src/env.ts` S4 comment), and `R-4` (`src/proxy.ts` setting `payload-lng=ar` when absent + Playwright verification). Will resubmit P1-T2 round 2 first, then resume P1-T3 (with migrations on `aljazira_test`).
+
+## M-014 · 2026-10-21 10:57 · Executor → CTO · Re M-012 · P1-T2 round 2 submitted (`IN_REVIEW`, `40921c0`), resuming P1-T3
+Task **P1-T2** (round 2) is set to `IN_REVIEW` on `handoff/BOARD.md` and documented in `handoff/reports/P1-T2.md`.
+- **R-1 [major]**: Added `src/instrumentation.ts` (`register()` on Node runtime calls `parseEnv(process.env)` and exits `1` after printing the error message without secret values) and build-phase (`NEXT_PHASE === 'phase-production-build'`) handling in `src/env.ts`. Verified both `next dev` and `node .next/standalone/server.js` exit with code `1` before serving when `PAYLOAD_SECRET` is empty or < 48 chars (Evidence §2).
+- **R-2 [minor]**: Removed fixed `container_name` and volume `name` from `docker-compose.dev.yml` and added top-level `name: aljazira` (`aljazira-db-1`, `aljazira_aljazira_pgdata` — Evidence §1).
+- **R-3 (Q1)**: Added top-of-file S4 comment in `src/env.ts`, implemented `local/no-server-in-client` in `eslint-rules/no-server-in-client.mjs` (enabled in `eslint.config.mjs`), and added fixture tests in `src/eslint-no-server-in-client.test.ts` (Evidence §6).
+- **R-4 (Q2)**: Added `src/proxy.ts` (`matcher: ['/admin', '/admin/:path*']`) setting `payload-lng=ar` (`path: '/'`, `maxAge: 31536000`, `httpOnly: false`) only when absent. Proven in Playwright (`docs/reports/phase-1/admin-accept-lang-en-US.png` and `docs/reports/phase-1/admin-account-switched-en.png`, Evidence §7) that a fresh `Accept-Language: en-US` browser opens `/admin` in Arabic RTL (`lang="ar" dir="RTL"`), and switching to English in `/admin/account` persists (`lang="en" dir="LTR"`) across reload and in a new tab.
+- Commits: `7ee8e56` (`fix: enforce boot-time env exit, compose project name, no-server-in-client lint rule, and admin ar cookie proxy`) and `40921c0` (`docs: P1-T2 report (round 2)`).
+- Resuming **P1-T3** (`IN_PROGRESS`, round 1) now.
+
+## M-015 · 2026-10-21 11:03 · CTO → Executor · Re M-014 · P1-T2 ACCEPTED (round 2) + one small fix inside P1-T3
+P1-T2 is **ACCEPTED** — I reproduced R-1 (dev and standalone both exit 1; build works with no
+env), R-2, R-3 and R-4 (cookie set only when absent). Details: `handoff/reviews/P1-T2.md`.
+- **R-5 [minor]** the `local/no-server-in-client` rule also blocks `import type … from 'payload'`
+  in client files. Skip type-only imports/exports and add fixtures. Do it as a commit on the
+  current branch while you work on P1-T3 and list it in the P1-T3 report — no P1-T2 resubmission.
+- R-6 (no action now): sharp/libvips is not traced into `.next/standalone` on Windows; added to
+  the P6-T1 card for the Linux image.
+Carry on with P1-T3.
+
+## M-016 · 2026-10-21 14:31 · CTO → Executor · Liveness rule — you were silent for 3 hours
+From 11:08 to 14:30 nothing changed on disk and no message arrived; your log shows the test run
+waiting and `503 UNAVAILABLE` API errors. New rule in `handoff/README.md` → "Liveness": a short
+status message every 45 minutes of work, stop and report any command running > 10 minutes, and
+give the integration tests timeouts + connection cleanup so they cannot hang.
+Also: integration tests must use **`aljazira_test`** only — never clean or reuse `aljazira_dev`.
+Post a status line now, then continue P1-T3.

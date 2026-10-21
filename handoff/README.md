@@ -129,3 +129,12 @@ Then appends a round to `handoff/reviews/<ID>.md`:
 ```
 `blocker`/`major` must be fixed before acceptance. `minor` may be deferred only if the CTO
 says so in the review.
+
+### Liveness (added 2026-10-21 after a 3-hour silent stall)
+- Post a one-line `Executor → CTO` status message at least every **45 minutes** of work
+  ("P1-T3: integration tests 14/20 passing, fixing lockout test").
+- Any command that runs longer than **10 minutes**, hangs, or any tool/API error you cannot
+  recover from (e.g. `503 UNAVAILABLE`) → stop it, post what happened, then continue with what
+  you can. Never wait silently on a stuck command.
+- Integration tests must have timeouts (Vitest `testTimeout`/`hookTimeout`) and close every DB
+  connection in `afterAll`, so a test run can never hang.
