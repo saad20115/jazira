@@ -146,3 +146,93 @@ Each: `hero` (`title` (L), `subtitle` (L), `image`) + page-specific intro text (
   report for client confirmation.
 - No invented projects, people, stats or testimonials. Where real content is missing, seed
   clearly-marked placeholders (`[placeholder]`) left in **draft** status so nothing fake is published.
+
+## Addendum — 2026-10-21 (CTO) — aligned with the Figma copy
+The Figma file contains more editable content than the original model. This addendum is binding
+and **overrides** the sections above where they differ. Goal: every text, number, image and list
+visible in the design is editable in the dashboard (except icons, logo files and the 3D model).
+Source of truth for the copy: `design/copy/` (and `design/screenshots/sections/`).
+
+### Reusable groups (define once in `src/fields/groups/`)
+- `cta` — `title` (L), `text` (L), `button` (`label` (L) + `link`). Used by home, services,
+  projects, project detail (from `projects-page`).
+- `pageHeader` — `title` (L), `subtitle` (L), `image` (upload). Breadcrumb ("Home") is i18n, not CMS.
+- `sectionIntro` — `eyebrow` (L), `title` (L), `intro` (L).
+- `pillar` — `title` (L), `text` (L).
+
+### New collection `stats` — group: Company
+**The single source of company numbers** (45+ years, 100+ projects, 85% self-performed,
+21+ disciplines, 3 countries…). A number is never typed twice: pages pick stats through
+relationship fields (written below as "stat" / "stats").
+- `value` (text, required, e.g. "45+", "85%"), `label` (L, required), `order`.
+- Access: read public; create/update/delete admin + editor. `useAsTitle`: label.
+
+### `site-settings` — additions
+- `tagline` (L) — intro splash and footer.
+- `office` — `title` (L), `address` (L), `mapImage` (upload), `mapUrl` (URL).
+- `workingHours` (L), `phone`, `email`, `whatsapp`, `whatsappLabel` (L, "Chat with an engineer").
+- `contactCards` order is fixed in code (call, WhatsApp, email, head office, hours).
+- Remove `home-page.stats` from the original model (replaced by the `stats` collection).
+
+### `services` — additions
+- `number` is derived from `order` (rendered "01"…); no field.
+- `highlights` (array, max 6, `text` (L)) — the bullet list on the Services page.
+- `icon` options = the 10 Figma icons: `contracting`, `mep`, `fire`, `smart`, `hvac`, `plumbing`,
+  `electrical`, `supply`, `testing`, `maintenance`.
+- `tier`: `main` (General Contracting, MEP Works, Firefighting Systems, Smart Systems) and
+  `additional` (the 6 Specialist Services tiles). `featured` (checkbox) = Service Tile "Featured"
+  state.
+
+### `projects` — changes
+- `category` options replaced by the design's filter tabs: `mep` (MEP Works), `fire-fighting`
+  (Firefighting), `low-current` (Low Current), `data-center` (Data Center), `civil-mep`
+  (Civil & MEP). `scope` (hasMany) keeps the 8 discipline options from the original model.
+- Additions: `categoryLabel` is i18n (no field); `deliveredBy` (L, "Our own staff");
+  `scopeSummary` (L, "Full MEP"); `deliverables` (array, max 10, `text` (L)) — "Key deliverables";
+  `details` (array, max 8, `pillar`) — the accordion in "Information & about".
+- Gallery captions come from `media.caption` (lightbox "1 / 3 · caption").
+
+### `team` — clarification
+- Leadership roles in the design: Chairman, Chief Executive Officer, Commercial Director,
+  Engineering Manager, Project Manager — `position` is free text (L), not a select.
+
+### Globals — fields per section (each section group has `enabled`, default true)
+`home-page` (publishable):
+- `hero`: `eyebrow`, `title`, `subtitle` (L); `background` (image upload) **or** `backgroundVideo`
+  (upload → videos); `primaryCta`, `secondaryCta` (`button`); `scrollHint` is i18n.
+- `whoWeAre`: `badgeStat` (relationship → stats), `title`, `text` (L,
+  2 paragraphs as rich text limited to paragraphs), `button`, `image`.
+- `coreServices`: `sectionIntro`; items = `services` tier `main` ordered.
+- `interactiveSystems`: `sectionIntro`; `systems` (array max 8 of `pillar`) — accordion next to the
+  3D model; `fallbackImage` (upload); `liveModelLabel` (L).
+- `statsSection` (the "Trusted by Industry Leaders" block): `title`, `text` (L); `stats` =
+  relationship → stats, hasMany, max 4.
+- `featuredProjects`: `sectionIntro`, `button`; items = `projects` where `featured`.
+- `partners`: `sectionIntro`; items = `brands` where `showInMarquee`.
+- `cta`.
+
+`services-page` (publishable): `pageHeader`; `servicesIntro` (`sectionIntro`);
+`specialist` (`sectionIntro`); `materials` (`sectionIntro`); `process` — `sectionIntro` +
+`steps` (array max 8 of `pillar`, number from order); `cta`; `meta`.
+
+`about-page` (publishable): `pageHeader`; `story` — `badgeStat` (relationship → stats), `title`, `text`
+(L rich text, paragraphs only), `quote` (L), `quoteAuthor` (L), `image`; `strengths` —
+`sectionIntro` + `items` (array max 6 of `pillar`); `missionVision` — `sectionIntro`,
+`mission` (`text` (L) + `pillars` array max 8 of `pillar`), `vision` (same shape), `image`;
+`team` — `sectionIntro` (leadership) + `staffTitle`, `staffText` (L); `meta`.
+
+`projects-page` (publishable): `pageHeader`; `impact` — `title`, `text` (L), `stats` (relationship → stats,
+hasMany, max 4); `portfolio` — `eyebrow`, `title`, `text` (L rich text, paragraphs), `quote`,
+`quoteAuthor` (L), `badgeStat` (relationship → stats), `image`; `cta` (also used on project detail);
+`detailLabels` are i18n; `meta`.
+
+`contact-page` (publishable): `pageHeader`; `getInTouch` (`sectionIntro`);
+`findOffice` (`sectionIntro`); `meta`. Contact details come from `site-settings`.
+
+`privacy-page` (publishable): `pageHeader`, `body` (L rich text), `meta` — content from the
+client (D4); placeholder stays in draft.
+
+### Not CMS (i18n dictionaries)
+Breadcrumb labels, "Scroll to explore", filter "All …" labels, table headers, form labels and
+errors, "Message sent" dialog text, "Back to Projects", status labels, project detail labels
+(Client, Location, Scope, Delivered by, Status).

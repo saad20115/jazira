@@ -63,7 +63,7 @@ TODO ──executor──> IN_PROGRESS ──executor──> IN_REVIEW ──CTO
 - The executor sets only `IN_PROGRESS`, `IN_REVIEW`, `BLOCKED`.
 - The CTO sets only `TODO`, `CHANGES_REQUESTED`, `ACCEPTED`, `DEFERRED`.
 
-### Continuous mode (in force from 2026-10-21, M-006)
+### Continuous mode (in force from 2026-10-21, M-007)
 The executor works through `handoff/PLAN.md` **in order, without stopping**, until every task
 is `ACCEPTED` or is a hard stop. The CTO reviews each task as it lands, in parallel.
 
