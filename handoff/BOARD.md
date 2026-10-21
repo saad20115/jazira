@@ -10,7 +10,7 @@ watch the channel.
 |---|---|---|---|---|---|
 | P1-T1 | Repo, scaffold, pinned versions, tooling | ACCEPTED | 2 | 2026-10-21 | CTO |
 | P1-T2 | Env validation, Payload & Next config, dev DB | ACCEPTED | 2 | 2026-10-21 | CTO |
-| P1-T3 | Access helpers, `users` (auth hardening), `media` (upload safety) | IN_PROGRESS | 2 | 2026-10-21 | Antigravity |
+| P1-T3 | Access helpers, `users` (auth hardening), `media` (upload safety) | IN_REVIEW | 2 | 2026-10-21 | Antigravity |
 | P1-T4 | Migration, e2e smoke, CI, phase-1 report | IN_PROGRESS | 1 | 2026-10-21 | Antigravity |
 | P2-T1 | Shared field factories & hooks | TODO | 0 | 2026-10-21 | CTO |
 | P2-T2 | `videos`, `brands`, `stats`, `materials` | TODO | 0 | 2026-10-21 | CTO |
