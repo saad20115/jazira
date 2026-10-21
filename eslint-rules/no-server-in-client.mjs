@@ -1,9 +1,10 @@
 /**
- * Custom ESLint rule `local/no-server-in-client` (S4, R-3).
+ * Custom ESLint rule `local/no-server-in-client` (S4, R-3, R-5).
  *
  * In any module whose first statement is the `'use client'` directive,
- * importing server-only modules (`@/env`, `@payload-config`, `@/payload.config`,
- * `payload`, `@/lib/odoo/**`, `@/lib/ipHash`, or any `*.server.ts(x)`) is an error.
+ * importing runtime values from server-only modules (`@/env`, `@payload-config`,
+ * `@/payload.config`, `payload`, `@/lib/odoo/**`, `@/lib/ipHash`, or any `*.server.ts(x)`)
+ * is an error. Type-only imports/exports are erased at compile time and are allowed (R-5).
  */
 
 const FORBIDDEN_EXACT = new Set([
@@ -72,6 +73,48 @@ function hasUseClientDirective(programNode) {
   return expr.type === 'Literal' && typeof expr.value === 'string' && expr.value === 'use client'
 }
 
+/**
+ * @param {import('eslint').Rule.Node} node
+ * @returns {boolean}
+ */
+function isTypeOnlyImportDeclaration(node) {
+  if ('importKind' in node && node.importKind === 'type') {
+    return true
+  }
+  if (
+    'specifiers' in node &&
+    Array.isArray(node.specifiers) &&
+    node.specifiers.length > 0 &&
+    node.specifiers.every(
+      (s) => s.type === 'ImportSpecifier' && 'importKind' in s && s.importKind === 'type',
+    )
+  ) {
+    return true
+  }
+  return false
+}
+
+/**
+ * @param {import('eslint').Rule.Node} node
+ * @returns {boolean}
+ */
+function isTypeOnlyExportNamedDeclaration(node) {
+  if ('exportKind' in node && node.exportKind === 'type') {
+    return true
+  }
+  if (
+    'specifiers' in node &&
+    Array.isArray(node.specifiers) &&
+    node.specifiers.length > 0 &&
+    node.specifiers.every(
+      (s) => s.type === 'ExportSpecifier' && 'exportKind' in s && s.exportKind === 'type',
+    )
+  ) {
+    return true
+  }
+  return false
+}
+
 /** @type {import('eslint').Rule.RuleModule} */
 export const noServerInClientRule = {
   meta: {
@@ -111,14 +154,20 @@ export const noServerInClientRule = {
         isClientFile = hasUseClientDirective(node)
       },
       ImportDeclaration(node) {
+        if (isTypeOnlyImportDeclaration(node)) {
+          return
+        }
         checkImportSource(node, node.source.value)
       },
       ExportNamedDeclaration(node) {
-        if (node.source) {
+        if (node.source && !isTypeOnlyExportNamedDeclaration(node)) {
           checkImportSource(node, node.source.value)
         }
       },
       ExportAllDeclaration(node) {
+        if ('exportKind' in node && node.exportKind === 'type') {
+          return
+        }
         if (node.source) {
           checkImportSource(node, node.source.value)
         }

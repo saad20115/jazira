@@ -32,7 +32,7 @@ function lintSnippet(code: string): Linter.LintMessage[] {
   )
 }
 
-describe('local/no-server-in-client ESLint rule (S4, R-3)', () => {
+describe('local/no-server-in-client ESLint rule (S4, R-3, R-5)', () => {
   it('flags forbidden server imports inside a "use client" module', () => {
     const clientCode = [
       "'use client'",
@@ -59,6 +59,37 @@ describe('local/no-server-in-client ESLint rule (S4, R-3)', () => {
       'Server-only module "@/lib/odoo/client" must not be imported in a "use client" component (S4).',
       'Server-only module "@/lib/ipHash" must not be imported in a "use client" component (S4).',
       'Server-only module "./helper.server.ts" must not be imported in a "use client" component (S4).',
+    ])
+  })
+
+  it('allows type-only imports and exports inside a "use client" module (R-5)', () => {
+    const typeOnlyClientCode = [
+      "'use client'",
+      "import type { CollectionConfig } from 'payload'",
+      "import { type Env } from '@/env'",
+      "export type { Payload } from 'payload'",
+      "export { type Env as ClientEnvType } from '@/env'",
+      "export type * from 'payload'",
+      'export type MyConfig = CollectionConfig | Env',
+    ].join('\n')
+
+    expect(lintSnippet(typeOnlyClientCode)).toEqual([])
+  })
+
+  it('flags mixed value + type specifiers inside a "use client" module (R-5)', () => {
+    const mixedClientCode = [
+      "'use client'",
+      "import { type CollectionConfig, getPayload } from 'payload'",
+      "export { type Env, env } from '@/env'",
+      'export type MyConfig = CollectionConfig',
+      'export const p = getPayload',
+    ].join('\n')
+
+    const messages = lintSnippet(mixedClientCode)
+    expect(messages).toHaveLength(2)
+    expect(messages.map((m) => m.message)).toEqual([
+      'Server-only module "payload" must not be imported in a "use client" component (S4).',
+      'Server-only module "@/env" must not be imported in a "use client" component (S4).',
     ])
   })
 
