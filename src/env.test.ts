@@ -1,3 +1,4 @@
+import path from 'path'
 import { describe, expect, it } from 'vitest'
 import { env, parseEnv } from './env'
 
@@ -16,9 +17,36 @@ function createValidRawEnv(): Record<string, string> {
 describe('parseEnv (S1, S2)', () => {
   it('validates startup env singleton and accepts a valid environment configuration', () => {
     expect(env.SERVER_URL).toBe('http://localhost:3000')
+    expect(env.MEDIA_DIR).toBe(path.resolve(process.cwd(), 'media'))
     const raw = createValidRawEnv()
     const parsed = parseEnv(raw)
-    expect(parsed).toEqual(raw)
+    expect(parsed).toEqual({
+      ...raw,
+      MEDIA_DIR: path.resolve(process.cwd(), 'media'),
+    })
+  })
+
+  it('validates MEDIA_DIR as an absolute path outside public/ (R-4)', () => {
+    const customAbsDir = path.resolve(process.cwd(), 'custom-media-storage')
+    const parsed = parseEnv({
+      ...createValidRawEnv(),
+      MEDIA_DIR: customAbsDir,
+    })
+    expect(parsed.MEDIA_DIR).toBe(customAbsDir)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        MEDIA_DIR: 'relative/media',
+      }),
+    ).toThrow(/MEDIA_DIR.*absolute/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        MEDIA_DIR: path.resolve(process.cwd(), 'public/uploads'),
+      }),
+    ).toThrow(/MEDIA_DIR.*public/i)
   })
 
   it('rejects missing PAYLOAD_SECRET and names the variable + openssl command without leaking values', () => {

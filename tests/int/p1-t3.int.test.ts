@@ -6,6 +6,9 @@ import { getPayload, type Payload } from 'payload'
 import sharp from 'sharp'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
+import { env } from '../../src/env'
+import { waitForPendingEmails } from '../../src/security/emailAdapter'
+
 const BASE_URL = 'http://localhost:3000'
 
 const getHandler = REST_GET(configPromise)
@@ -122,14 +125,17 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
   })
 
   afterAll(async () => {
+    await waitForPendingEmails()
     // Clean up test media files written during the test run
-    const mediaDir = path.resolve(import.meta.dirname, '../../media')
     for (const fname of createdMediaFilenames) {
       try {
-        await fs.unlink(path.join(mediaDir, fname))
+        await fs.unlink(path.join(env.MEDIA_DIR, fname))
       } catch {
         // ignore missing files
       }
+    }
+    if (typeof payload.db.destroy === 'function') {
+      await payload.db.destroy()
     }
   })
 
@@ -475,7 +481,7 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     })
     expect(afterLogoutMe.json.user).toBeNull()
 
-    // 2. Admin-forced session removal -> old token rejected
+    // 2. Admin-forced session removal via POST /api/users/:id/revoke-sessions (R-3)
     const login2 = await callJsonApi('POST', '/api/users/login', {
       body: {
         email: 'session@aljazira.co',
@@ -490,13 +496,48 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     })
     expect(beforeRevoke.status).toBe(200)
 
-    // Admin clears user's server-side sessions array
-    const adminRevoke = await callJsonApi('PATCH', `/api/users/${String(sessionUser.id)}`, {
+    // Verify arbitrary sessions array in PATCH is ignored and never stored (R-3)
+    const fabricatedPatch = await callJsonApi('PATCH', `/api/users/${String(sessionUser.id)}`, {
       token: adminToken,
       body: {
-        sessions: [],
+        sessions: [
+          {
+            id: 'fabricated-by-admin',
+            expiresAt: '2099-01-01T00:00:00.000Z',
+          },
+        ],
       },
     })
+    expect(fabricatedPatch.status).toBe(200)
+
+    const userAfterFabricatedPatch = (await payload.db.findOne({
+      collection: 'users',
+      where: {
+        id: { equals: sessionUser.id },
+      },
+    })) as { sessions?: Array<{ id: string }> } | null
+    const sessionIdsAfterPatch = (userAfterFabricatedPatch?.sessions ?? []).map((s) => s.id)
+    expect(sessionIdsAfterPatch).not.toContain('fabricated-by-admin')
+    expect(sessionIdsAfterPatch.length).toBe(1)
+
+    // Editor cannot call POST /api/users/:id/revoke-sessions -> 403
+    const editorRevokeAttempt = await callJsonApi(
+      'POST',
+      `/api/users/${String(sessionUser.id)}/revoke-sessions`,
+      {
+        token: editorToken,
+      },
+    )
+    expect(editorRevokeAttempt.status).toBe(403)
+
+    // Admin calls POST /api/users/:id/revoke-sessions -> 200 and clears sessions
+    const adminRevoke = await callJsonApi(
+      'POST',
+      `/api/users/${String(sessionUser.id)}/revoke-sessions`,
+      {
+        token: adminToken,
+      },
+    )
     expect(adminRevoke.status).toBe(200)
 
     const afterAdminRevokeProtected = await callJsonApi('GET', '/api/users', {
@@ -515,22 +556,127 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     expect(afterAdminRevokeMe.json.user).toBeNull()
   })
 
-  it('returns identical forgot-password responses for known and unknown emails with <= 1h token expiry (A5)', async () => {
-    const knownRes = await callJsonApi('POST', '/api/users/forgot-password', {
+  it('refuses deleting or demoting the last admin user, while allowing deleting a second admin (R-2)', async () => {
+    // 1. Refuse demoting the last admin via REST API
+    const demoteRes = await callJsonApi('PATCH', `/api/users/${String(adminId)}`, {
+      token: adminToken,
       body: {
-        email: 'editor@aljazira.co',
+        role: 'editor',
       },
     })
+    expect(demoteRes.status).toBe(400)
+    expect(JSON.stringify(demoteRes.json)).toContain('Cannot demote the last admin user')
 
-    const unknownRes = await callJsonApi('POST', '/api/users/forgot-password', {
+    // 2. Refuse deleting the last admin via REST API
+    const deleteRes = await callJsonApi('DELETE', `/api/users/${String(adminId)}`, {
+      token: adminToken,
+    })
+    expect(deleteRes.status).toBe(400)
+    expect(JSON.stringify(deleteRes.json)).toContain('Cannot delete the last admin user')
+
+    // Verify the admin still exists with role === 'admin'
+    const adminStillExists = await payload.findByID({
+      collection: 'users',
+      id: adminId,
+    })
+    expect(adminStillExists.role).toBe('admin')
+
+    // 3. Create a second admin, verify demoting and deleting the second admin succeeds while 1 admin remains
+    const secondAdminRes = await callJsonApi('POST', '/api/users', {
+      token: adminToken,
       body: {
-        email: 'unknown-nobody@aljazira.co',
+        name: 'Second Admin',
+        email: 'second-admin@aljazira.co',
+        password: 'Strong!SecondAdmin#2026',
+        role: 'admin',
       },
     })
+    expect(secondAdminRes.status).toBe(201)
+    const secondAdminId = (secondAdminRes.json.doc as { id: number | string }).id
 
-    expect(knownRes.status).toBe(200)
-    expect(unknownRes.status).toBe(200)
-    expect(knownRes.json).toEqual(unknownRes.json)
+    const deleteSecondAdminRes = await callJsonApi(
+      'DELETE',
+      `/api/users/${String(secondAdminId)}`,
+      {
+        token: adminToken,
+      },
+    )
+    expect(deleteSecondAdminRes.status).toBe(200)
+  })
+
+  it('returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)', async () => {
+    const mailpitBase = `http://${process.env.SMTP_HOST ?? '127.0.0.1'}:${process.env.MAILPIT_UI_PORT ?? '8025'}`
+    try {
+      await fetch(`${mailpitBase}/api/v1/messages`, { method: 'DELETE' })
+    } catch {
+      // ignore if Mailpit is unreachable
+    }
+
+    const knownTimingsMs: number[] = []
+    const unknownTimingsMs: number[] = []
+
+    let lastKnownRes: { status: number; json: Record<string, unknown> } | undefined
+    let lastUnknownRes: { status: number; json: Record<string, unknown> } | undefined
+
+    for (let i = 0; i < 20; i++) {
+      // Clear resetPasswordRequestedAt before each known-email request so all 20 iterations
+      // execute the full DB update + email dispatch path rather than hitting the 15s cooldown early return
+      await payload.db.updateOne({
+        collection: 'users',
+        where: {
+          email: { equals: 'editor@aljazira.co' },
+        },
+        data: {
+          resetPasswordRequestedAt: null,
+        },
+      })
+
+      const t0Known = performance.now()
+      const knownRes = await callJsonApi('POST', '/api/users/forgot-password', {
+        body: {
+          email: 'editor@aljazira.co',
+        },
+      })
+      knownTimingsMs.push(performance.now() - t0Known)
+      lastKnownRes = knownRes
+
+      const t0Unknown = performance.now()
+      const unknownRes = await callJsonApi('POST', '/api/users/forgot-password', {
+        body: {
+          email: `unknown-nobody-${String(i)}@aljazira.co`,
+        },
+      })
+      unknownTimingsMs.push(performance.now() - t0Unknown)
+      lastUnknownRes = unknownRes
+    }
+
+    expect(lastKnownRes?.status).toBe(200)
+    expect(lastUnknownRes?.status).toBe(200)
+    expect(lastKnownRes?.json).toEqual(lastUnknownRes?.json)
+
+    const computeStats = (samples: number[]) => {
+      const sorted = [...samples].sort((a, b) => a - b)
+      const mid = Math.floor(sorted.length / 2)
+      const median =
+        sorted.length % 2 === 0
+          ? ((sorted[mid - 1] ?? 0) + (sorted[mid] ?? 0)) / 2
+          : (sorted[mid] ?? 0)
+      const max = sorted[sorted.length - 1] ?? 0
+      return {
+        median: Number(median.toFixed(2)),
+        max: Number(max.toFixed(2)),
+      }
+    }
+
+    const knownStats = computeStats(knownTimingsMs)
+    const unknownStats = computeStats(unknownTimingsMs)
+    const medianDiffMs = Number(Math.abs(knownStats.median - unknownStats.median).toFixed(2))
+
+    console.info(
+      `[A5/R-1 Timing 20+20] known(median=${String(knownStats.median)}ms, max=${String(knownStats.max)}ms) vs unknown(median=${String(unknownStats.median)}ms, max=${String(unknownStats.max)}ms) | diff=${String(medianDiffMs)}ms`,
+    )
+
+    expect(medianDiffMs).toBeLessThan(100)
 
     const updatedEditor = await payload.db.findOne({
       collection: 'users',
@@ -544,6 +690,20 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     const ttlMs = new Date(expiryIso ?? '').getTime() - Date.now()
     expect(ttlMs).toBeGreaterThan(55 * 60 * 1000)
     expect(ttlMs).toBeLessThanOrEqual(60 * 60 * 1000 + 5000)
+
+    // Wait for background SMTP tasks and verify Mailpit received the reset email
+    await waitForPendingEmails()
+    const mailpitRes = await fetch(`${mailpitBase}/api/v1/messages`)
+    expect(mailpitRes.status).toBe(200)
+    const mailpitData = (await mailpitRes.json()) as {
+      total?: number
+      messages?: Array<{ To?: Array<{ Address?: string }> }>
+    }
+    expect(mailpitData.total ?? 0).toBeGreaterThanOrEqual(1)
+    const recipients = (mailpitData.messages ?? []).flatMap((m) =>
+      (m.To ?? []).map((t) => t.Address),
+    )
+    expect(recipients).toContain('editor@aljazira.co')
   })
 
   it('rejects anonymous uploads, rejects .svg and disguised HTML renamed .jpg by magic bytes, and accepts a real JPEG generating all 4 webp sizes (I5, Z1)', async () => {
@@ -649,5 +809,24 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     expect(doc.sizes.hero.width).toBe(1920)
     expect(doc.sizes.og.width).toBe(1200)
     expect(doc.sizes.og.height).toBe(630)
+
+    // 5. Verify file is written to env.MEDIA_DIR on disk and served via GET /api/media/file/:filename (R-4)
+    const diskStat = await fs.stat(path.join(env.MEDIA_DIR, doc.filename))
+    expect(diskStat.size).toBeGreaterThan(0)
+
+    const fileGetReq = new Request(
+      `${BASE_URL}/api/media/file/${encodeURIComponent(doc.filename)}`,
+      {
+        method: 'GET',
+      },
+    )
+    const fileGetRes = await getHandler(
+      fileGetReq,
+      makeRouteContext(`/api/media/file/${doc.filename}`),
+    )
+    expect(fileGetRes.status).toBe(200)
+    expect(fileGetRes.headers.get('content-type')).toContain('image/webp')
+    const servedBytes = await fileGetRes.arrayBuffer()
+    expect(servedBytes.byteLength).toBe(diskStat.size)
   })
 })

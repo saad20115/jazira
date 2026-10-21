@@ -1,15 +1,24 @@
-import path from 'path'
-import type { CollectionConfig } from 'payload'
-import { fileURLToPath } from 'url'
+import type { CollectionBeforeOperationHook, CollectionConfig } from 'payload'
 
 import { isAdminOrEditor } from '../access/index'
+import { env } from '../env'
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   validateAndSanitizeMediaFile,
 } from '../security/uploadValidation'
 
-const filename = fileURLToPath(import.meta.url)
-const dirname = path.dirname(filename)
+type ActiveBeforeOperationArg = Exclude<
+  Parameters<CollectionBeforeOperationHook>[0],
+  { operation: 'read' | 'readDistinct' }
+>
+
+const validateUploadBeforeOperation: CollectionBeforeOperationHook = async (rawArg) => {
+  const { args, operation, req } = rawArg as ActiveBeforeOperationArg
+  if ((operation === 'create' || operation === 'update') && req.file) {
+    await validateAndSanitizeMediaFile(req.file)
+  }
+  return args
+}
 
 export const Media: CollectionConfig = {
   slug: 'media',
@@ -39,22 +48,11 @@ export const Media: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
-    beforeOperation: [
-      async (hookArg) => {
-        const { operation, req } = hookArg as unknown as {
-          operation: string
-          req: typeof hookArg.req
-        }
-        if ((operation === 'create' || operation === 'update') && req.file) {
-          await validateAndSanitizeMediaFile(req.file)
-        }
-        return hookArg.args
-      },
-    ],
+    beforeOperation: [validateUploadBeforeOperation],
   },
   upload: {
-    // Stored outside public/ so files are served through Payload's access-controlled handler
-    staticDir: path.resolve(dirname, '../../media'),
+    // Stored outside public/ at the validated absolute MEDIA_DIR path (default <cwd>/media in dev)
+    staticDir: env.MEDIA_DIR,
     mimeTypes: [...ALLOWED_IMAGE_MIME_TYPES],
     focalPoint: true,
     formatOptions: {

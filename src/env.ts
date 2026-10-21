@@ -1,3 +1,4 @@
+import path from 'path'
 import { z } from 'zod'
 
 /**
@@ -76,6 +77,21 @@ const envSchema = z
       }, 'SERVER_URL must be an absolute http(s) URL (e.g. http://localhost:3000).'),
     PAYLOAD_SECRET: secretFieldSchema('PAYLOAD_SECRET'),
     IP_HASH_SALT: secretFieldSchema('IP_HASH_SALT'),
+    MEDIA_DIR: z
+      .string()
+      .trim()
+      .min(1, 'MEDIA_DIR must not be empty.')
+      .refine(
+        (val) => path.isAbsolute(val),
+        'MEDIA_DIR must be an absolute filesystem path (e.g. /var/lib/aljazira/media or D:\\jazira\\media).',
+      )
+      .refine((val) => {
+        const resolvedMedia = path.resolve(val)
+        const publicDir = path.resolve(process.cwd(), 'public')
+        const rel = path.relative(publicDir, resolvedMedia)
+        return rel !== '' && (rel.startsWith('..') || path.isAbsolute(rel))
+      }, 'MEDIA_DIR must not be inside public/ (uploads must be served through Payload access control).')
+      .transform((val) => path.resolve(val)),
   })
   .refine((data) => data.PAYLOAD_SECRET !== data.IP_HASH_SALT, {
     path: ['IP_HASH_SALT'],
@@ -86,11 +102,13 @@ const envSchema = z
 export type Env = z.infer<typeof envSchema>
 
 export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
+  const rawMediaDir = rawEnv.MEDIA_DIR?.trim()
   const result = envSchema.safeParse({
     DATABASE_URL: rawEnv.DATABASE_URL,
     SERVER_URL: rawEnv.SERVER_URL,
     PAYLOAD_SECRET: rawEnv.PAYLOAD_SECRET,
     IP_HASH_SALT: rawEnv.IP_HASH_SALT,
+    MEDIA_DIR: rawMediaDir ? rawMediaDir : path.resolve(process.cwd(), 'media'),
   })
 
   if (!result.success) {
@@ -123,6 +141,7 @@ function loadEnv(): Env {
       SERVER_URL: process.env.SERVER_URL || BUILD_PHASE_FALLBACK_ENV.SERVER_URL,
       PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_SECRET,
       IP_HASH_SALT: process.env.IP_HASH_SALT || BUILD_PHASE_FALLBACK_ENV.IP_HASH_SALT,
+      MEDIA_DIR: process.env.MEDIA_DIR || path.resolve(process.cwd(), 'media'),
     })
   }
 

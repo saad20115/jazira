@@ -10,6 +10,9 @@ interface WebpackConfigWithResolve {
   resolve: {
     extensionAlias?: Record<string, string[]>
   }
+  watchOptions?: {
+    ignored?: string[] | RegExp
+  }
 }
 
 const baseSecurityHeaders = [
@@ -38,6 +41,9 @@ const baseSecurityHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  outputFileTracingExcludes: {
+    '*': ['./media/**', './videos/**', './storage/**'],
+  },
   images: {
     remotePatterns: [],
     localPatterns: [
@@ -77,6 +83,10 @@ const nextConfig: NextConfig = {
       '.cjs': ['.cts', '.cjs'],
       '.js': ['.ts', '.tsx', '.js', '.jsx'],
       '.mjs': ['.mts', '.mjs'],
+    }
+    webpackConfig.watchOptions = {
+      ...webpackConfig.watchOptions,
+      ignored: ['**/node_modules/**', '**/media/**', '**/videos/**', '**/storage/**'],
     }
 
     return webpackConfig
