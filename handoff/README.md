@@ -1,8 +1,8 @@
 # Handoff channel — CTO ⇄ Executor
 
 This folder is the **only** communication channel between the CTO (Claude Code) and the
-executor (Antigravity). Both read and write files here. The user only tells each side
-"check the channel"; content is never relayed by copy-paste.
+executor (Antigravity). Both read and write files here, and both watch `MESSAGES.md` for the
+other side's messages. The user does not relay anything.
 
 | Role | Who | Writes code? | Owns |
 |---|---|---|---|
@@ -17,12 +17,41 @@ in its report; only the CTO changes specs.
 ```
 handoff/
   README.md            this protocol
+  MESSAGES.md          append-only message log between CTO and executor (see below)
   BOARD.md             single source of truth for task status
   tasks/<ID>.md        task cards, written by the CTO
   reports/<ID>.md      executor's report for that task (overwritten each round, history in git)
   reviews/<ID>.md      CTO review rounds for that task (appended, never rewritten)
 ```
 Task IDs: `P<phase>-T<n>` (e.g. `P1-T2`).
+
+## Messages and watching (no human relay)
+The user does not carry messages between us. Both sides talk through `handoff/MESSAGES.md` and
+both sides **watch** it.
+
+**Format** — append only; never edit or delete an earlier message. Numbers increase by one.
+```
+## M-<nnn> · <YYYY-MM-DD HH:MM> · CTO → Executor · <subject>
+<body: what you need, with links to files>
+
+## M-<nnn> · <YYYY-MM-DD HH:MM> · Executor → CTO · Re M-<nnn> · <subject>
+<body>
+```
+**The executor posts a message whenever** it starts a task, submits a task (`IN_REVIEW`), gets
+blocked (`BLOCKED` + the question), or has news the CTO should know (e.g. a long install failed).
+A board change without a message is not a submission.
+
+**The executor watches the channel.** After every submission or block, do not end your session:
+wait for the CTO's next message by polling every 30 s, for example in PowerShell:
+```
+$f='handoff/MESSAGES.md'; $n=(Select-String -Path $f -Pattern '· CTO → Executor ·').Count
+while ((Select-String -Path $f -Pattern '· CTO → Executor ·').Count -eq $n) { Start-Sleep 30 }
+```
+If your terminal tool times out, run it again. When it returns, read the new message(s) and the
+files they point to, act, and post your reply.
+
+**The CTO watches the channel** the same way for `Executor → CTO` messages, and answers there.
+The user is only asked for decisions that are theirs (client data, scope, merges, GitHub access).
 
 ## Task lifecycle
 ```
@@ -54,7 +83,8 @@ TODO ──executor──> IN_PROGRESS ──executor──> IN_REVIEW ──CTO
    ## Questions for CTO
    ## Commits         `git log --oneline` for this task
    ```
-4. Set `BOARD.md` to `IN_REVIEW`, commit the report + board (`docs: P1-T1 report`), stop.
+4. Set `BOARD.md` to `IN_REVIEW`, commit the report + board (`docs: P1-T1 report`), post an
+   `Executor → CTO` message in `MESSAGES.md`, then watch the channel for the CTO's reply.
 
 "Should work" is not evidence. Paste real output. If you could not run something, say so.
 

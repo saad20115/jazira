@@ -7,7 +7,7 @@ Current phase: **Phase 1 — Scaffold & foundations** (branch `phase-1-scaffold`
 
 | ID | Task | Status | Round | Updated | By |
 |---|---|---|---|---|---|
-| P1-T1 | Repo, scaffold, pinned versions, tooling | TODO | 0 | 2026-10-21 | CTO |
+| P1-T1 | Repo, scaffold, pinned versions, tooling | IN_REVIEW | 1 | 2026-10-21 | Antigravity |
 | P1-T2 | Env validation, Payload & Next config, dev DB | TODO | 0 | 2026-10-21 | CTO |
 | P1-T3 | Access helpers, `users` (auth hardening), `media` (upload safety) | TODO | 0 | 2026-10-21 | CTO |
 | P1-T4 | Migration, e2e smoke, CI, phase report & PR | TODO | 0 | 2026-10-21 | CTO |
