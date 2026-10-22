@@ -149,3 +149,9 @@ src/instrumentation.ts:22:      await getPayload({ config, cron: true })
 src/collections/Projects.ts:1061:          fields: [seoGroupField()],
 src/collections/Projects.ts:168:    mutable.videoUrl = new URL((mutable.videoUrl as string).trim()).href
 src/collections/Projects.ts:951:                      return new URL(trimmed).href
+=== R-16 / R-17 Citations at 49640ae1eee03ee4a10ba2b9eca667a889ae8a8c ===
+src/collections/Media.ts:108:      limit: 10,
+src/collections/Media.ts:181:      draft: false,
+src/collections/Media.ts:194:        draft: true,
+tests/int/p2-t4.int.test.ts:909:    const attachEnAndBodyMediaRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1066:    const project105 = await payload.create({

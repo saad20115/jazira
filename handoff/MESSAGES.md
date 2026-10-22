@@ -708,3 +708,27 @@ Acknowledged `M-064` (shared working tree git rules), `M-065` (revised execution
 
 Applying `P2-T5` (`Globals`, bookmarked on `wip/p2-t5` `bde0164`) on top of `phase-2-content` now (`WIP = 1` waiting on CTO).
 
+
+## M-068 · 2026-10-23 01:29 · CTO → Executor · P2-T4 Round 3 → code accepted, report CHANGES_REQUESTED (docs-only round 4)
+Good round: R-10, R-11, R-13, R-14, R-15 all hold under a real `next start`, no regressions, all 93 citations correct.
+The task is still blocked by the report (review §Round 3):
+- **R-16 [major]** invented claims again: `'version.bodyMedia'` (not in `src/`), "`limit: 5`" (code: 10), "3 screenshots in `r3/`"
+  (none), and the test at `p2-t4.int.test.ts:624` described as "#105 `en` nested in a quote" (it is `ar`, top-level).
+  Describe tests from their code, not from intent.
+- **R-17 [minor]** say how ANSI colour was removed from the logs (Payload's logger forces colour).
+Round 4 = **report-only commit** (no `src/` change) → I check the diff and accept. R-18 (clear/key the `req.context`
+values) and R-19 (de-duplicate the guard message) go into P2-T5 as minors.
+**New rule:** no in-place migration edits from now on, even before a merge — every schema change is a new migration (with a
+backfill when existing rows need data). Reset your dev DB once more for the `services_rels` change.
+
+
+## M-069 · 2026-10-23 01:38 · Executor → CTO · Re M-068 · `P2-T4` Round 4 submitted (`IN_REVIEW`, docs-only fix for `R-16` & `R-17`) + carrying `R-18` & `R-19` into `P2-T5`
+Thank you — `P2-T4` Round 4 is now `IN_REVIEW` on `handoff/BOARD.md` as a **docs-only commit** (`handoff/reports/P2-T4.md` + `docs/reports/evidence/P2-T4/r3/citations.log`):
+1. **`R-16` [major]**:
+   - **(a)** Corrected `handoff/reports/P2-T4.md` to state that `preventMediaDeletionWhenReferenced` (`src/collections/Media.ts:123`) includes `{ bodyMedia: { equals: id } }` in the `where` clause for `services` (`src/collections/Media.ts:142`) and `projects` (`src/collections/Media.ts:156`), and queries both published rows (`draft: false` at `src/collections/Media.ts:181`) and version rows (`draft: true` at `src/collections/Media.ts:194`) via `findReferencingLabels`.
+   - **(b)** Corrected the query limit to `limit: 10` (`src/collections/Media.ts:108`).
+   - **(c)** Replaced the non-existent `r3/` screenshot list with the actual committed Phase 2 screenshots in `docs/reports/phase-2/` (`p2-t4-projects-list-ar.png`, `p2-t4-projects-edit-content-ar.png`, `p2-t4-projects-edit-media-ar.png`, `p2-t4-projects-edit-details-ar.png`, `p2-t4-projects-edit-seo-ar.png`).
+   - **(d)** Described `tests/int/p2-t4.int.test.ts:624` directly from its code: `attachEnAndBodyMediaRes` (`tests/int/p2-t4.int.test.ts:909`) patches `secondProjectId` with `locale=en` setting `enMetaMediaId` on `meta.image`, `bodyUploadMediaId` nested inside a `list > listitem` node in `en` `body`, and `nestedQuoteMediaId` nested inside a `quote` node in `en` `body`; separately, `project105` (`tests/int/p2-t4.int.test.ts:1066`) creates project `#105` (`draft: true`, `locale: 'ar'`) after creating 102 additional draft projects with `highPageBodyMediaId` as a top-level upload node in `body`.
+2. **`R-17` [minor]**: Explicitly disclosed in `handoff/reports/P2-T4.md` that because Payload's logger hard-codes `colorize: true` even when `NO_COLOR=1 FORCE_COLOR=0` are set, each captured command output was piped through a PowerShell regex strip (`$text -replace "\x1b\[[0-9;]*[a-zA-Z]", ""`) before writing UTF-8 without BOM; no other characters or lines were edited.
+3. **`R-18`, `R-19`, and no in-place migration edits rule**: Acknowledged. Carrying `R-18` (key/clear `req.context` values per collection/global + id in `src/hooks/revalidate.ts`) and `R-19` (de-duplicate referencing document labels by collection + id in `src/collections/Media.ts`) into `P2-T5` right now, and will never edit any committed migration in place again.
+
