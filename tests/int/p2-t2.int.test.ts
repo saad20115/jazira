@@ -1,6 +1,7 @@
 import fs from 'fs/promises'
 import path from 'path'
 import { getPayload, type Payload } from 'payload'
+import sharp from 'sharp'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 process.env.DATABASE_URL =
@@ -609,5 +610,36 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
 
     const leftoverAfter100MiB = await fs.readdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => [] as string[])
     expect(leftoverAfter100MiB).toEqual([])
+
+    // R-15: Exact 10 MiB (10,485,760 bytes) image on /api/media is accepted with 201; 10 MiB + 1 (10,485,761 bytes) is rejected (413/400)
+    const smallJpeg = await sharp({
+      create: { width: 8, height: 8, channels: 3, background: { r: 20, g: 40, b: 80 } },
+    })
+      .jpeg()
+      .toBuffer()
+    const exact10MiBJpeg = Buffer.alloc(10 * 1024 * 1024, 0)
+    smallJpeg.copy(exact10MiBJpeg, 0)
+
+    const exact10MiBRes = await callUploadApi({
+      collectionSlug: 'media',
+      cookie: `payload-token=${editorToken}`,
+      filename: 'exact-10mib.jpg',
+      mimeType: 'image/jpeg',
+      fileBuffer: exact10MiBJpeg,
+      payloadFields: { alt: 'صورة 10 ميجابايت بالضبط' },
+    })
+    expect(exact10MiBRes.status).toBe(201)
+
+    const tenMiBPlusOneJpeg = Buffer.alloc(10 * 1024 * 1024 + 1, 0)
+    smallJpeg.copy(tenMiBPlusOneJpeg, 0)
+    const over10MiBByOneRes = await callUploadApi({
+      collectionSlug: 'media',
+      cookie: `payload-token=${editorToken}`,
+      filename: 'over-10mib-by-1byte.jpg',
+      mimeType: 'image/jpeg',
+      fileBuffer: tenMiBPlusOneJpeg,
+      payloadFields: { alt: 'صورة زائدة بايت واحد' },
+    })
+    expect(over10MiBByOneRes.status).toBe(413)
   }, 120_000)
 })

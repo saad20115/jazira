@@ -226,7 +226,13 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
 
 export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
-   ALTER TABLE "services_highlights" DISABLE ROW LEVEL SECURITY;
+   ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_services_fk";
+  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT IF EXISTS "payload_locked_documents_rels_team_fk";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_services_id_idx";
+  DROP INDEX IF EXISTS "payload_locked_documents_rels_team_id_idx";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "services_id";
+  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN IF EXISTS "team_id";
+  ALTER TABLE "services_highlights" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "services_highlights_locales" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "services" DISABLE ROW LEVEL SECURITY;
   ALTER TABLE "services_locales" DISABLE ROW LEVEL SECURITY;
@@ -250,14 +256,6 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
   DROP TABLE "team_locales" CASCADE;
   DROP TABLE "payload_jobs_log" CASCADE;
   DROP TABLE "payload_jobs" CASCADE;
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_services_fk";
-  
-  ALTER TABLE "payload_locked_documents_rels" DROP CONSTRAINT "payload_locked_documents_rels_team_fk";
-  
-  DROP INDEX "payload_locked_documents_rels_services_id_idx";
-  DROP INDEX "payload_locked_documents_rels_team_id_idx";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "services_id";
-  ALTER TABLE "payload_locked_documents_rels" DROP COLUMN "team_id";
   DROP TYPE "public"."enum_services_tier";
   DROP TYPE "public"."enum_services_icon";
   DROP TYPE "public"."enum_services_status";

@@ -1,3 +1,4 @@
+import os from 'os'
 import path from 'path'
 import { z } from 'zod'
 
@@ -50,14 +51,16 @@ function secretFieldSchema(varName: 'PAYLOAD_SECRET' | 'IP_HASH_SALT') {
     )
 }
 
-function storageDirSchema(varName: 'MEDIA_DIR' | 'VIDEOS_DIR') {
+function storageDirSchema(varName: 'MEDIA_DIR' | 'VIDEOS_DIR' | 'UPLOAD_TMP_DIR') {
+  const exampleSubdir =
+    varName === 'MEDIA_DIR' ? 'media' : varName === 'VIDEOS_DIR' ? 'videos' : 'tmp'
   return z
     .string()
     .trim()
     .min(1, `${varName} must not be empty.`)
     .refine(
       (val) => path.isAbsolute(val),
-      `${varName} must be an absolute filesystem path (e.g. /var/lib/aljazira/${varName === 'MEDIA_DIR' ? 'media' : 'videos'} or D:\\jazira\\${varName === 'MEDIA_DIR' ? 'media' : 'videos'}).`,
+      `${varName} must be an absolute filesystem path (e.g. /var/lib/aljazira/${exampleSubdir} or D:\\jazira\\${exampleSubdir}).`,
     )
     .refine((val) => {
       const resolvedDir = path.resolve(val)
@@ -102,6 +105,7 @@ const envSchema = z
     IP_HASH_SALT: secretFieldSchema('IP_HASH_SALT'),
     MEDIA_DIR: storageDirSchema('MEDIA_DIR'),
     VIDEOS_DIR: storageDirSchema('VIDEOS_DIR'),
+    UPLOAD_TMP_DIR: storageDirSchema('UPLOAD_TMP_DIR'),
   })
   .refine((data) => data.PAYLOAD_SECRET !== data.IP_HASH_SALT, {
     path: ['IP_HASH_SALT'],
@@ -118,12 +122,25 @@ const envSchema = z
         'VIDEOS_DIR and MEDIA_DIR must be separate sibling directories (neither may be equal to or nested inside the other).',
     },
   )
+  .refine(
+    (data) =>
+      !isSameOrSubdirectory(data.MEDIA_DIR, data.UPLOAD_TMP_DIR) &&
+      !isSameOrSubdirectory(data.UPLOAD_TMP_DIR, data.MEDIA_DIR) &&
+      !isSameOrSubdirectory(data.VIDEOS_DIR, data.UPLOAD_TMP_DIR) &&
+      !isSameOrSubdirectory(data.UPLOAD_TMP_DIR, data.VIDEOS_DIR),
+    {
+      path: ['UPLOAD_TMP_DIR'],
+      message:
+        'UPLOAD_TMP_DIR must be outside MEDIA_DIR and VIDEOS_DIR (neither equal to nor nested inside either served directory).',
+    },
+  )
 
 export type Env = z.infer<typeof envSchema>
 
 export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
   const rawMediaDir = rawEnv.MEDIA_DIR?.trim()
   const rawVideosDir = rawEnv.VIDEOS_DIR?.trim()
+  const rawUploadTmpDir = rawEnv.UPLOAD_TMP_DIR?.trim()
   const result = envSchema.safeParse({
     DATABASE_URL: rawEnv.DATABASE_URL,
     SERVER_URL: rawEnv.SERVER_URL,
@@ -131,6 +148,9 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
     IP_HASH_SALT: rawEnv.IP_HASH_SALT,
     MEDIA_DIR: rawMediaDir ? rawMediaDir : path.resolve(process.cwd(), 'media'),
     VIDEOS_DIR: rawVideosDir ? rawVideosDir : path.resolve(process.cwd(), 'videos'),
+    UPLOAD_TMP_DIR: rawUploadTmpDir
+      ? rawUploadTmpDir
+      : path.resolve(os.tmpdir(), 'aljazira-uploads'),
   })
 
   if (!result.success) {
@@ -165,6 +185,7 @@ function loadEnv(): Env {
       IP_HASH_SALT: process.env.IP_HASH_SALT || BUILD_PHASE_FALLBACK_ENV.IP_HASH_SALT,
       MEDIA_DIR: process.env.MEDIA_DIR || path.resolve(process.cwd(), 'media'),
       VIDEOS_DIR: process.env.VIDEOS_DIR || path.resolve(process.cwd(), 'videos'),
+      UPLOAD_TMP_DIR: process.env.UPLOAD_TMP_DIR || path.resolve(os.tmpdir(), 'aljazira-uploads'),
     })
   }
 

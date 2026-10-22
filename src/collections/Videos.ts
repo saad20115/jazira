@@ -1,6 +1,5 @@
 import crypto from 'crypto'
 import fs from 'fs/promises'
-import os from 'os'
 import path from 'path'
 import {
   type CollectionBeforeOperationHook,
@@ -26,7 +25,10 @@ import {
   validateAndSanitizeVideoFile,
 } from '../security/uploadValidation'
 
-export const VIDEO_UPLOAD_TEMP_DIR = path.join(os.tmpdir(), 'aljazira-video-uploads')
+export const VIDEO_UPLOAD_TEMP_DIR = path.join(
+  env.UPLOAD_TMP_DIR,
+  `instance-${String(process.pid)}`,
+)
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
