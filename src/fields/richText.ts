@@ -250,8 +250,10 @@ export function createLimitedLexicalEditor() {
       OrderedListFeature(),
       BlockquoteFeature(),
       LinkFeature({
-        fields: ({ defaultFields }) =>
-          defaultFields.map((field) => {
+        enabledCollections: [...ALLOWED_INTERNAL_LINK_COLLECTIONS],
+        fields: ({ config, defaultFields }) => {
+          const registeredSlugs = new Set((config.collections ?? []).map((c) => c.slug))
+          return defaultFields.map((field) => {
             if ('name' in field && field.name === 'url' && field.type === 'text') {
               const updatedField: FieldAffectingData = {
                 ...field,
@@ -265,8 +267,23 @@ export function createLimitedLexicalEditor() {
               }
               return updatedField
             }
+            if (
+              'name' in field &&
+              field.name === 'doc' &&
+              field.type === 'relationship' &&
+              Array.isArray(field.relationTo)
+            ) {
+              const filteredRelations = field.relationTo.filter((rel) =>
+                registeredSlugs.has(String(rel)),
+              )
+              return {
+                ...field,
+                relationTo: filteredRelations,
+              }
+            }
             return field
-          }),
+          })
+        },
       }),
       UploadFeature({
         enabledCollections: ['media'],

@@ -610,6 +610,8 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
 
     const leftoverAfter100MiB = await fs.readdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => [] as string[])
     expect(leftoverAfter100MiB).toEqual([])
+    // R-20: Verify the per-process instance temp directory itself is removed once all requests finish
+    await expect(fs.stat(VIDEO_UPLOAD_TEMP_DIR)).rejects.toThrow()
 
     // R-15: Exact 10 MiB (10,485,760 bytes) image on /api/media is accepted with 201; 10 MiB + 1 (10,485,761 bytes) is rejected (413/400)
     const smallJpeg = await sharp({

@@ -1,4 +1,5 @@
 import crypto from 'crypto'
+import fsSync from 'fs'
 import fs from 'fs/promises'
 import path from 'path'
 import {
@@ -25,10 +26,20 @@ import {
   validateAndSanitizeVideoFile,
 } from '../security/uploadValidation'
 
+export const VIDEO_UPLOAD_INSTANCE_ID = crypto.randomBytes(6).toString('hex')
+
 export const VIDEO_UPLOAD_TEMP_DIR = path.join(
   env.UPLOAD_TMP_DIR,
-  `instance-${String(process.pid)}`,
+  `instance-${VIDEO_UPLOAD_INSTANCE_ID}`,
 )
+
+process.once('exit', () => {
+  try {
+    fsSync.rmSync(VIDEO_UPLOAD_TEMP_DIR, { recursive: true, force: true })
+  } catch {
+    // Best-effort cleanup on shutdown
+  }
+})
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
@@ -122,6 +133,7 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
 
     if (!defaultEndpoint) {
       await fs.rm(requestTempDir, { recursive: true, force: true }).catch(() => undefined)
+      await fs.rmdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => undefined)
       return Response.json({ message: 'Endpoint not found' }, { status: 404 })
     }
 
@@ -131,6 +143,7 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
       const tempPaths = collectRequestTempFilePaths(req)
       await Promise.all(tempPaths.map((p) => fs.unlink(p).catch(() => undefined)))
       await fs.rm(requestTempDir, { recursive: true, force: true }).catch(() => undefined)
+      await fs.rmdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => undefined)
     }
   }
 

@@ -1,4 +1,10 @@
-import type { Access, CollectionConfig, UploadFieldSingleValidation } from 'payload'
+import { sql } from '@payloadcms/db-postgres'
+import type {
+  Access,
+  CollectionAfterChangeHook,
+  CollectionConfig,
+  UploadFieldSingleValidation,
+} from 'payload'
 
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { validateExternalUrl } from '../fields/link'
@@ -19,23 +25,52 @@ export const activeOrLoggedIn: Access = ({ req }) => {
   }
 }
 
+const LINKEDIN_PATH_REGEX =
+  /^\/(in|company|pub|school)\/[A-Za-z0-9\u0600-\u06FF._%-]+(?:\/[A-Za-z0-9\u0600-\u06FF._%-]+)*\/?$/i
+
 export function validateLinkedInUrl(value: unknown): true | string {
   if (value === null || value === undefined || value === '') {
     return true
   }
   const baseCheck = validateExternalUrl(value, {
-    allowedProtocols: ['https:', 'http:'],
+    allowedProtocols: ['https:'],
     required: false,
   })
   if (baseCheck !== true) {
-    return baseCheck
+    return 'يجب أن يبدأ رابط لينكدإن ببروتوكول https:// صالح. / LinkedIn URL must be a valid https:// URL.'
   }
   const parsed = new URL((value as string).trim())
   const host = parsed.hostname.toLowerCase()
   if (host !== 'linkedin.com' && !host.endsWith('.linkedin.com')) {
     return 'يجب أن يكون رابط لينكدإن تابعاً للنطاق linkedin.com. / LinkedIn URL must belong to linkedin.com.'
   }
+  if (parsed.pathname.includes('..') || !LINKEDIN_PATH_REGEX.test(parsed.pathname)) {
+    return 'يجب أن يتضمن رابط لينكدإن مسار ملف شخصي أو شركة صالحاً (مثل https://www.linkedin.com/in/username). / LinkedIn URL must include a valid profile or company path (e.g. https://www.linkedin.com/in/username).'
+  }
   return true
+}
+
+const clearStaffBioAllLocalesAfterChange: CollectionAfterChangeHook = async ({ doc, req }) => {
+  const docRecord = doc as { bio?: unknown; id?: number | string; tier?: unknown }
+  if (docRecord.tier === 'staff' && docRecord.id !== undefined) {
+    docRecord.bio = null
+    const dbObj = req.payload.db as unknown as {
+      drizzle?: { execute?: (query: unknown) => Promise<unknown> }
+      sessions?: Record<string, { db?: { execute?: (query: unknown) => Promise<unknown> } }>
+    }
+    const txId = req.transactionID !== undefined ? String(req.transactionID) : undefined
+    const executor = (txId ? dbObj.sessions?.[txId]?.db : undefined) ?? dbObj.drizzle
+    if (typeof executor?.execute === 'function') {
+      try {
+        await executor.execute(
+          sql`UPDATE "team_locales" SET "bio" = NULL WHERE "_parent_id" = ${Number(docRecord.id)}`,
+        )
+      } catch {
+        // Ignore if table/row is mid-teardown
+      }
+    }
+  }
+  return doc
 }
 
 export const Team: CollectionConfig = {
@@ -73,6 +108,7 @@ export const Team: CollectionConfig = {
   },
   hooks: {
     afterChange: [
+      clearStaffBioAllLocalesAfterChange,
       createRevalidateAfterChangeHook({
         collection: 'team',
         paths: ['/ar/about', '/en/about', '/ar', '/en'],
@@ -208,6 +244,17 @@ export const Team: CollectionConfig = {
             const origRecord = originalDoc as Record<string, unknown> | undefined
             const effectiveTier =
               siblingRecord?.tier ?? dataRecord?.tier ?? origRecord?.tier ?? 'leadership'
+            if (effectiveTier !== 'leadership') {
+              return null
+            }
+            return value as string | null | undefined
+          },
+        ],
+        afterRead: [
+          ({ data, siblingData, value }) => {
+            const siblingRecord = siblingData as Record<string, unknown> | undefined
+            const dataRecord = data as Record<string, unknown> | undefined
+            const effectiveTier = siblingRecord?.tier ?? dataRecord?.tier ?? 'leadership'
             if (effectiveTier !== 'leadership') {
               return null
             }

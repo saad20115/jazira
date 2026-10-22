@@ -681,4 +681,137 @@ describe('P2-T3 integration suite (services & team)', () => {
     expect(editorTeamList.status).toBe(200)
     expect(editorTeamList.data.totalDocs).toBe(3)
   })
+
+  it('verifies P2-T3 R-1..R-6 fixes: staff bio cleared across all locales (R-1), LinkedIn https + path (R-2), LinkFeature enabledCollections (R-3), no silent icon/tier defaults on services (R-4), Arabic SEO field labels (R-5), and media beforeDelete guard (R-6)', async () => {
+    // R-1: Add an English bio to the leadership member, then switch tier to staff in Arabic -> both ar and en bios are cleared
+    const leaderId = (
+      (await callJsonApi('GET', '/api/team?locale=ar', { cookie: editorCookie })).data
+        .docs as Array<{ id: number | string; tier: string }>
+    ).find((d) => d.tier === 'leadership')?.id
+    expect(leaderId).toBeDefined()
+
+    const addEnBioRes = await callJsonApi('PATCH', `/api/team/${String(leaderId)}?locale=en`, {
+      cookie: editorCookie,
+      body: {
+        name: 'Eng. Abdullah Al-Shammari',
+        position: 'Chief Executive Officer',
+        bio: 'Over 25 years of executive experience leading major MEP engineering projects.',
+      },
+    })
+    expect(addEnBioRes.status).toBe(200)
+    expect((addEnBioRes.data.doc as { bio?: string | null }).bio).toContain('Over 25 years')
+
+    const demoteToStaffArRes = await callJsonApi(
+      'PATCH',
+      `/api/team/${String(leaderId)}?locale=ar`,
+      {
+        cookie: editorCookie,
+        body: {
+          tier: 'staff',
+        },
+      },
+    )
+    expect(demoteToStaffArRes.status).toBe(200)
+    expect((demoteToStaffArRes.data.doc as { bio?: string | null }).bio).toBeNull()
+
+    const anonReadEnAfterDemote = await callJsonApi(
+      'GET',
+      `/api/team/${String(leaderId)}?locale=en`,
+    )
+    expect(anonReadEnAfterDemote.status).toBe(200)
+    expect(anonReadEnAfterDemote.data.bio).toBeNull()
+
+    // Restore leadership tier so R-6 can verify media deletion guard against a leadership photo
+    const restoreLeadershipRes = await callJsonApi(
+      'PATCH',
+      `/api/team/${String(leaderId)}?locale=ar`,
+      {
+        cookie: editorCookie,
+        body: {
+          tier: 'leadership',
+          photo: uploadedMediaId,
+          bio: 'خبرة تمتد لأكثر من 25 عاماً في إدارة المشاريع الكهروميكانيكية الكبرى.',
+        },
+      },
+    )
+    expect(restoreLeadershipRes.status).toBe(200)
+
+    // R-2: LinkedIn rejects http:// and bare https://linkedin.com without /in/ or /company/ path
+    const httpLinkedinRes = await callJsonApi('POST', '/api/team?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        name: 'م. سامي القحطاني',
+        position: 'مهندس ميكانيكا',
+        tier: 'staff',
+        linkedin: 'http://www.linkedin.com/in/sami-alqahtani',
+        active: true,
+      },
+    })
+    expect(httpLinkedinRes.status).toBe(400)
+
+    const bareLinkedinRes = await callJsonApi('POST', '/api/team?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        name: 'م. سامي القحطاني',
+        position: 'مهندس ميكانيكا',
+        tier: 'staff',
+        linkedin: 'https://linkedin.com/',
+        active: true,
+      },
+    })
+    expect(bareLinkedinRes.status).toBe(400)
+
+    // R-3 & R-5: Verify LinkFeature enabledCollections and Arabic SEO field labels
+    const { ALLOWED_INTERNAL_LINK_COLLECTIONS } = await import('../../src/fields/richText')
+    expect(ALLOWED_INTERNAL_LINK_COLLECTIONS).toEqual(['services', 'projects'])
+
+    const { seoGroupField } = await import('../../src/fields/seo')
+    const seoGroup = seoGroupField()
+    expect(seoGroup.label).toEqual({
+      ar: 'تحسين محركات البحث (SEO)',
+      en: 'SEO',
+    })
+    const seoSubfieldNames = seoGroup.fields
+      .filter((f): f is { name: string; label?: { ar?: string; en?: string } } => 'name' in f)
+      .map((f) => ({ name: f.name, ar: f.label?.ar }))
+    expect(seoSubfieldNames).toEqual(
+      expect.arrayContaining([
+        { name: 'title', ar: 'عنوان الصفحة في محركات البحث (Meta Title)' },
+        { name: 'description', ar: 'وصف الصفحة في محركات البحث (Meta Description)' },
+        { name: 'image', ar: 'صورة المشاركة الاجتماعية (Meta Image)' },
+      ]),
+    )
+
+    // R-4: Omitting icon or tier on a published service is rejected with 400 (no silent defaults)
+    const missingIconServiceRes = await callJsonApi('POST', '/api/services?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        title: 'خدمة بدون أيقونة',
+        tier: 'main',
+        _status: 'published',
+      },
+    })
+    expect(missingIconServiceRes.status).toBe(400)
+
+    const missingTierServiceRes = await callJsonApi('POST', '/api/services?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        title: 'خدمة بدون فئة',
+        icon: 'mep',
+        _status: 'published',
+      },
+    })
+    expect(missingTierServiceRes.status).toBe(400)
+
+    // R-6: Deleting a media item referenced by a team member photo or service image is rejected with 400
+    const deleteReferencedMediaRes = await callJsonApi(
+      'DELETE',
+      `/api/media/${String(uploadedMediaId)}`,
+      {
+        cookie: editorCookie,
+      },
+    )
+    expect(deleteReferencedMediaRes.status).toBe(400)
+    expect(JSON.stringify(deleteReferencedMediaRes.data)).toContain('team(')
+  })
 })

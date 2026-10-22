@@ -85,7 +85,7 @@ export default buildConfig({
   sharp,
   plugins: [
     seoPlugin({
-      collections: ['services'],
+      collections: [],
       uploadsCollection: 'media',
       generateTitle: ({ doc, locale }) => {
         const title =
@@ -101,6 +101,10 @@ export default buildConfig({
           const shortDesc = (doc as { shortDescription?: unknown }).shortDescription
           if (typeof shortDesc === 'string') {
             return shortDesc
+          }
+          const summary = (doc as { summary?: unknown }).summary
+          if (typeof summary === 'string') {
+            return summary
           }
         }
         return ''

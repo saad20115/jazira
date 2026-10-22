@@ -5,6 +5,7 @@ import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { SERVICE_ICON_OPTIONS } from '../components/icons/ServiceIcon'
 import { orderField } from '../fields/order'
 import { limitedRichTextField } from '../fields/richText'
+import { seoGroupField } from '../fields/seo'
 import { slugFields } from '../fields/slug'
 import {
   createRevalidateAfterChangeHook,
@@ -85,7 +86,6 @@ export const Services: CollectionConfig = {
       },
       required: true,
       index: true,
-      defaultValue: 'main',
       options: [
         {
           value: 'main',
@@ -133,7 +133,6 @@ export const Services: CollectionConfig = {
         en: 'Service Icon',
       },
       required: true,
-      defaultValue: 'mep',
       options: SERVICE_ICON_OPTIONS.map((opt) => ({
         value: opt.value,
         label: opt.label,
@@ -235,5 +234,6 @@ export const Services: CollectionConfig = {
       },
     },
     orderField(),
+    seoGroupField(),
   ],
 }

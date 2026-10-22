@@ -17,10 +17,22 @@ function createValidRawEnv(): Record<string, string> {
 
 describe('parseEnv (S1, S2)', () => {
   it('validates startup env singleton and accepts a valid environment configuration', () => {
-    expect(env.SERVER_URL).toBe('http://localhost:3000')
-    expect(env.MEDIA_DIR).toBe(path.resolve(process.cwd(), 'media'))
-    expect(env.VIDEOS_DIR).toBe(path.resolve(process.cwd(), 'videos'))
-    expect(env.UPLOAD_TMP_DIR).toBe(path.resolve(os.tmpdir(), 'aljazira-uploads'))
+    expect(env).toEqual(parseEnv(process.env))
+    expect(path.isAbsolute(env.MEDIA_DIR)).toBe(true)
+    expect(path.isAbsolute(env.VIDEOS_DIR)).toBe(true)
+    expect(path.isAbsolute(env.UPLOAD_TMP_DIR)).toBe(true)
+
+    const envWithoutDirs: NodeJS.ProcessEnv = { ...process.env }
+    delete envWithoutDirs.MEDIA_DIR
+    delete envWithoutDirs.VIDEOS_DIR
+    delete envWithoutDirs.UPLOAD_TMP_DIR
+    const parsedFromProcessDefaults = parseEnv(envWithoutDirs)
+    expect(parsedFromProcessDefaults.MEDIA_DIR).toBe(path.resolve(process.cwd(), 'media'))
+    expect(parsedFromProcessDefaults.VIDEOS_DIR).toBe(path.resolve(process.cwd(), 'videos'))
+    expect(parsedFromProcessDefaults.UPLOAD_TMP_DIR).toBe(
+      path.resolve(os.tmpdir(), 'aljazira-uploads'),
+    )
+
     const raw = createValidRawEnv()
     const parsed = parseEnv(raw)
     expect(parsed).toEqual({
