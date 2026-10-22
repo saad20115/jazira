@@ -138,6 +138,10 @@ export function parseVideoUrl(input: unknown): ParsedVideoUrl | null {
     return null
   }
 
+  if (parsed.port !== '') {
+    return null
+  }
+
   const hostname = parsed.hostname.toLowerCase()
   const isAllowedHost = (ALLOWED_VIDEO_HOSTS as readonly string[]).includes(hostname)
   if (!isAllowedHost) {
@@ -284,11 +288,15 @@ export function validateVideoUrl(
 }
 
 export const normalizeVideoUrlBeforeValidate: VideoUrlFieldHook = ({ value }) => {
-  if (typeof value !== 'string' || value.trim().length === 0) {
+  if (typeof value !== 'string') {
     return value
   }
-  const parsed = parseVideoUrl(value)
-  return parsed ? parsed.normalizedUrl : value.trim()
+  const trimmed = value.trim()
+  if (trimmed.length === 0) {
+    return null
+  }
+  const parsed = parseVideoUrl(trimmed)
+  return parsed ? parsed.normalizedUrl : trimmed
 }
 
 export function buildVideoUrlValidator(required = false): TextFieldSingleValidation {

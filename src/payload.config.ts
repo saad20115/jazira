@@ -18,6 +18,7 @@ import { Users } from './collections/Users'
 import { Videos } from './collections/Videos'
 import { env } from './env'
 import { createLimitedLexicalEditor } from './fields/richText'
+import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
 import { buildNonBlockingEmailAdapter } from './security/emailAdapter'
 import { MAX_MEDIA_FILE_SIZE_BYTES } from './security/uploadValidation'
 
@@ -77,6 +78,16 @@ export default buildConfig({
     },
   }),
   email: buildNonBlockingEmailAdapter(),
+  jobs: {
+    autoRun: [
+      {
+        cron: '* * * * *',
+        limit: 10,
+        queue: 'default',
+      },
+    ],
+    shouldAutoRun: () => shouldAutoRunJobs(),
+  },
   upload: {
     limits: {
       files: 1,

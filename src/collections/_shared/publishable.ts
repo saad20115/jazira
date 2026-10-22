@@ -1,5 +1,7 @@
 import type { CollectionConfig, GlobalConfig } from 'payload'
 
+import { captureMainPublishedDocBeforeChange } from '../../hooks/revalidate'
+
 export const publishableVersions = {
   drafts: {
     autosave: {
@@ -28,5 +30,9 @@ export function withPublishable<T extends CollectionConfig>(config: T): T {
   return {
     ...config,
     versions: publishableVersions,
+    hooks: {
+      ...config.hooks,
+      beforeChange: [captureMainPublishedDocBeforeChange, ...(config.hooks?.beforeChange ?? [])],
+    },
   }
 }

@@ -111,6 +111,7 @@ export function validateExternalUrl(
 export const ALLOWED_VIDEO_EMBED_HOSTS = [
   'youtube.com',
   'www.youtube.com',
+  'm.youtube.com',
   'youtu.be',
   'youtube-nocookie.com',
   'www.youtube-nocookie.com',
@@ -136,6 +137,9 @@ export function validateVideoEmbedUrl(
     return baseVerdict
   }
   const parsed = new URL((value as string).trim())
+  if (parsed.port !== '') {
+    return 'لا يُسمح بتحديد منفذ (Port) غير افتراضي في رابط الفيديو. / Non-default ports are not allowed in video URLs.'
+  }
   const host = parsed.hostname.toLowerCase()
   const path = parsed.pathname
   const hasVideoIdInQuery = parsed.searchParams.has('v') && parsed.searchParams.get('v')?.trim()
@@ -393,6 +397,7 @@ export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
     {
       name: 'type',
       type: 'select',
+      enumName: 'enum_link_type',
       required,
       defaultValue: 'internal',
       label: {
@@ -407,6 +412,7 @@ export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
     {
       name: 'internalRoute',
       type: 'select',
+      enumName: 'enum_link_internal_route',
       defaultValue: '/',
       label: {
         en: 'Internal Page',

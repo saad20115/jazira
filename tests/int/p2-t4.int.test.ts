@@ -441,6 +441,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع مستودعات الإمداد المجدول للنشر',
         category: 'fire-fighting',
         location: 'جدة',
+        status: 'completed',
         coverImage: uploadedMediaId,
         _status: 'draft',
       },
@@ -484,7 +485,7 @@ describe('P2-T4 integration suite (projects)', () => {
     expect(anonAfterTime.data.title).toBe('مشروع مستودعات الإمداد المجدول للنشر')
   })
 
-  it('enforces mutual exclusion between video and videoUrl (video xor videoUrl) and validates YouTube/Vimeo https:// hosts on both draft and published saves', async () => {
+  it('enforces mutual exclusion between video and videoUrl (video xor videoUrl), trims videoUrl whitespace, and rejects non-default ports and non-allowlisted hosts on draft and published saves (R-8)', async () => {
     // 1. Setting both video and videoUrl on create is rejected with 400
     const bothOnCreateRes = await callJsonApi('POST', '/api/projects?locale=ar', {
       cookie: editorCookie,
@@ -492,6 +493,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع بفيديو مزدوج مرفوض',
         category: 'mep',
         location: 'الدمام',
+        status: 'completed',
         coverImage: uploadedMediaId,
         video: uploadedVideoId,
         videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
@@ -508,6 +510,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مسودة بفيديو مزدوج مرفوضة',
         category: 'mep',
         location: 'الدمام',
+        status: 'completed',
         coverImage: uploadedMediaId,
         video: uploadedVideoId,
         videoUrl: 'https://vimeo.com/123456789',
@@ -523,6 +526,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع بفيديو مرفوع فقط',
         category: 'mep',
         location: 'الدمام',
+        status: 'completed',
         coverImage: uploadedMediaId,
         video: uploadedVideoId,
         _status: 'published',
@@ -544,7 +548,7 @@ describe('P2-T4 integration suite (projects)', () => {
     )
     expect(patchVideoUrlWithoutClearingVideoRes.status).toBe(400)
 
-    // 5. Clearing `video: null` while setting a valid YouTube or Vimeo HTTPS URL succeeds (200)
+    // 5. Clearing `video: null` while setting a valid YouTube URL with surrounding whitespace trims and stores cleanly (R-8)
     const switchToYoutubeRes = await callJsonApi(
       'PATCH',
       `/api/projects/${String(videoProjectId)}?locale=ar`,
@@ -552,11 +556,14 @@ describe('P2-T4 integration suite (projects)', () => {
         cookie: editorCookie,
         body: {
           video: null,
-          videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+          videoUrl: '   https://youtu.be/dQw4w9WgXcQ   ',
         },
       },
     )
     expect(switchToYoutubeRes.status).toBe(200)
+    expect((switchToYoutubeRes.data.doc as { videoUrl?: string }).videoUrl).toBe(
+      'https://youtu.be/dQw4w9WgXcQ',
+    )
 
     const switchToVimeoRes = await callJsonApi(
       'PATCH',
@@ -570,10 +577,12 @@ describe('P2-T4 integration suite (projects)', () => {
     )
     expect(switchToVimeoRes.status).toBe(200)
 
-    // 6. Non-allowed videoUrl hosts, http:// scheme, or bare domain are rejected with 400 (even on draft save)
+    // 6. Non-allowed videoUrl hosts, non-default ports (:8443), http:// scheme, or bare domain are rejected with 400 (even on draft save) (R-8)
     const invalidVideoUrls = [
       'https://evil.com/watch?v=dQw4w9WgXcQ',
       'https://youtube.com.evil.com/watch?v=dQw4w9WgXcQ',
+      'https://youtube.com:8443/watch?v=dQw4w9WgXcQ',
+      'https://vimeo.com:8443/123456789',
       'http://www.youtube.com/watch?v=dQw4w9WgXcQ',
       'https://www.youtube.com/',
       'https://vimeo.com/',
@@ -596,7 +605,21 @@ describe('P2-T4 integration suite (projects)', () => {
     }
   })
 
-  it('enforces slug uniqueness, field constraints (year, summary, details max 8, deliverables max 10, gallery max 30), foreign-key checks, and media deletion guard', async () => {
+  it('enforces slug uniqueness, required status with no default (R-9), field constraints, draft relationship/enum validation returning 400 (R-6), and media deletion guard across locales and richText upload nodes (R-7)', async () => {
+    // 0. Publishing without `status` fails with 400 (no silent 'completed' default) (R-9)
+    const missingStatusRes = await callJsonApi('POST', '/api/projects?locale=en', {
+      cookie: editorCookie,
+      body: {
+        title: 'Project Without Execution Status',
+        category: 'data-center',
+        location: 'Riyadh',
+        coverImage: uploadedMediaId,
+        _status: 'published',
+      },
+    })
+    expect(missingStatusRes.status).toBe(400)
+    expect(JSON.stringify(missingStatusRes.data)).toContain('status')
+
     // 1. Explicit locked duplicate slug is rejected with 400
     const duplicateSlugRes = await callJsonApi('POST', '/api/projects?locale=en', {
       cookie: editorCookie,
@@ -606,6 +629,7 @@ describe('P2-T4 integration suite (projects)', () => {
         slugLocked: true,
         category: 'data-center',
         location: 'Riyadh',
+        status: 'completed',
         coverImage: uploadedMediaId,
         _status: 'published',
       },
@@ -619,11 +643,13 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'Riyadh Regional Data Center',
         category: 'data-center',
         location: 'Riyadh',
+        status: 'completed',
         coverImage: uploadedMediaId,
         _status: 'published',
       },
     })
     expect(autoDedupeRes.status).toBe(201)
+    const secondProjectId = (autoDedupeRes.data.doc as { id: number | string }).id
     expect((autoDedupeRes.data.doc as { slug: string }).slug).toBe('riyadh-regional-data-center-2')
 
     // 3. Invalid year (< 1990, > currentYear + 2, or non-integer) is rejected with 400
@@ -634,6 +660,7 @@ describe('P2-T4 integration suite (projects)', () => {
           title: 'مشروع بسنة غير صالحة',
           category: 'mep',
           location: 'الرياض',
+          status: 'completed',
           year: badYear,
           coverImage: uploadedMediaId,
           _status: 'published',
@@ -649,6 +676,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع بملخص طويل',
         category: 'mep',
         location: 'الرياض',
+        status: 'completed',
         summary: 'أ'.repeat(281),
         coverImage: uploadedMediaId,
         _status: 'published',
@@ -663,6 +691,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع بتفاصيل زائدة',
         category: 'mep',
         location: 'الرياض',
+        status: 'completed',
         coverImage: uploadedMediaId,
         details: Array.from({ length: 9 }, (_, idx) => ({
           title: `تفصيل ${String(idx + 1)}`,
@@ -680,6 +709,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع بمخرجات زائدة',
         category: 'mep',
         location: 'الرياض',
+        status: 'completed',
         coverImage: uploadedMediaId,
         deliverables: Array.from({ length: 11 }, (_, idx) => ({
           text: `مخرج رقم ${String(idx + 1)}`,
@@ -696,6 +726,7 @@ describe('P2-T4 integration suite (projects)', () => {
         title: 'مشروع بمعرض صور زائد',
         category: 'mep',
         location: 'الرياض',
+        status: 'completed',
         coverImage: uploadedMediaId,
         gallery: Array.from({ length: 31 }, () => uploadedMediaId),
         _status: 'published',
@@ -703,33 +734,63 @@ describe('P2-T4 integration suite (projects)', () => {
     })
     expect(tooManyGalleryRes.status).toBe(400)
 
-    // 8. Non-existent coverImage or video ID is rejected with 400 ValidationError (not 500 FK error)
-    const badCoverRes = await callJsonApi('POST', '/api/projects?locale=ar', {
-      cookie: editorCookie,
-      body: {
-        title: 'مشروع بصورة غلاف غير موجودة',
-        category: 'mep',
-        location: 'الرياض',
-        coverImage: 999999,
-        _status: 'published',
+    // 8. Bad relationship IDs and enum values on BOTH draft and published saves return 400 with field error (not 500) (R-6)
+    const badDraftPayloads: Array<{ body: Record<string, unknown>; expectedPath: string }> = [
+      {
+        body: { title: 'Draft bad cover', coverImage: 999999, _status: 'draft' },
+        expectedPath: 'coverImage',
       },
-    })
-    expect(badCoverRes.status).toBe(400)
+      {
+        body: { title: 'Draft bad gallery', gallery: [999999], _status: 'draft' },
+        expectedPath: 'gallery',
+      },
+      {
+        body: { title: 'Draft bad meta.image', meta: { image: 999999 }, _status: 'draft' },
+        expectedPath: 'meta.image',
+      },
+      {
+        body: { title: 'Draft bad video', video: 999999, _status: 'draft' },
+        expectedPath: 'video',
+      },
+      {
+        body: { title: 'Draft bad category', category: 'invalid-category', _status: 'draft' },
+        expectedPath: 'category',
+      },
+      {
+        body: { title: 'Draft bad status', status: 'invalid-status', _status: 'draft' },
+        expectedPath: 'status',
+      },
+      {
+        body: { title: 'Draft bad scope', scope: ['invalid-scope'], _status: 'draft' },
+        expectedPath: 'scope',
+      },
+    ]
 
-    const badVideoIdRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+    for (const item of badDraftPayloads) {
+      const draftRes = await callJsonApi('POST', '/api/projects?locale=ar&draft=true', {
+        cookie: editorCookie,
+        body: item.body,
+      })
+      expect(draftRes.status, `Expected 400 for draft ${item.expectedPath}`).toBe(400)
+      expect(JSON.stringify(draftRes.data)).toContain(item.expectedPath)
+    }
+
+    const badPublishGalleryRes = await callJsonApi('POST', '/api/projects?locale=ar', {
       cookie: editorCookie,
       body: {
-        title: 'مشروع بفيديو غير موجود',
+        title: 'مشروع بمعرض صور غير موجود',
         category: 'mep',
         location: 'الرياض',
+        status: 'completed',
         coverImage: uploadedMediaId,
-        video: 999999,
+        gallery: [999999],
         _status: 'published',
       },
     })
-    expect(badVideoIdRes.status).toBe(400)
+    expect(badPublishGalleryRes.status).toBe(400)
+    expect(JSON.stringify(badPublishGalleryRes.data)).toContain('gallery')
 
-    // 9. Deleting a media item referenced as a project's coverImage is blocked with 400 and mentions projects(...)
+    // 9. Deleting a media item referenced as coverImage, en-only meta.image, or richText body upload node is blocked with 400 (R-7)
     const deleteCoverMediaRes = await callJsonApi(
       'DELETE',
       `/api/media/${String(uploadedMediaId)}`,
@@ -739,9 +800,84 @@ describe('P2-T4 integration suite (projects)', () => {
     )
     expect(deleteCoverMediaRes.status).toBe(400)
     expect(JSON.stringify(deleteCoverMediaRes.data)).toContain('projects(')
+
+    // Create 3 more media items to test en-only meta.image, richText upload node, and unreferenced deletion (R-7)
+    const pngBuf = await sharp({
+      create: { width: 40, height: 40, channels: 3, background: { r: 20, g: 120, b: 80 } },
+    })
+      .png()
+      .toBuffer()
+
+    const uploadExtraMedia = async (altText: string): Promise<number | string> => {
+      const fd = new FormData()
+      fd.set('_payload', JSON.stringify({ alt: altText }))
+      fd.set('file', new File([new Uint8Array(pngBuf)], `${altText}.png`, { type: 'image/png' }))
+      const res = await callMultipartApi('POST', '/api/media', fd, { cookie: editorCookie })
+      expect(res.status).toBe(201)
+      return (res.data.doc as { id: number | string }).id
+    }
+
+    const enMetaMediaId = await uploadExtraMedia('en-only-meta-image')
+    const bodyUploadMediaId = await uploadExtraMedia('richtext-body-upload-image')
+    const unusedMediaId = await uploadExtraMedia('unused-media-image')
+
+    // Attach enMetaMediaId ONLY to `en` locale `meta.image`, and bodyUploadMediaId ONLY as a Lexical upload node in `body`
+    const attachEnAndBodyMediaRes = await callJsonApi(
+      'PATCH',
+      `/api/projects/${String(secondProjectId)}?locale=en`,
+      {
+        cookie: editorCookie,
+        body: {
+          meta: {
+            image: enMetaMediaId,
+          },
+          body: {
+            root: {
+              type: 'root',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'ltr',
+              children: [
+                {
+                  type: 'upload',
+                  version: 3,
+                  format: '',
+                  relationTo: 'media',
+                  value: bodyUploadMediaId,
+                },
+              ],
+            },
+          },
+        },
+      },
+    )
+    expect(attachEnAndBodyMediaRes.status).toBe(200)
+
+    const deleteEnMetaRes = await callJsonApi('DELETE', `/api/media/${String(enMetaMediaId)}`, {
+      cookie: editorCookie,
+    })
+    expect(deleteEnMetaRes.status).toBe(400)
+    expect(JSON.stringify(deleteEnMetaRes.data)).toContain('projects(')
+
+    const deleteBodyUploadRes = await callJsonApi(
+      'DELETE',
+      `/api/media/${String(bodyUploadMediaId)}`,
+      {
+        cookie: editorCookie,
+      },
+    )
+    expect(deleteBodyUploadRes.status).toBe(400)
+    expect(JSON.stringify(deleteBodyUploadRes.data)).toContain('projects(')
+
+    // Unreferenced media item deletes cleanly (no false positives)
+    const deleteUnusedRes = await callJsonApi('DELETE', `/api/media/${String(unusedMediaId)}`, {
+      cookie: editorCookie,
+    })
+    expect(deleteUnusedRes.status).toBe(200)
   })
 
-  it('wires revalidation hooks for project page, projects list, related projects by category, and home when featured is true', async () => {
+  it('wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4)', async () => {
     const tagSpy = vi.mocked(nextCache.revalidateTag).mockImplementation(() => undefined)
     const pathSpy = vi.mocked(nextCache.revalidatePath).mockImplementation(() => undefined)
     tagSpy.mockClear()
@@ -756,6 +892,7 @@ describe('P2-T4 integration suite (projects)', () => {
           category: 'low-current',
           scope: ['low-current', 'data-center'],
           location: 'Jeddah',
+          status: 'completed',
           featured: false,
           coverImage: uploadedMediaId,
           _status: 'published',
@@ -790,8 +927,27 @@ describe('P2-T4 integration suite (projects)', () => {
       tagSpy.mockClear()
       pathSpy.mockClear()
 
-      // 2. Marking the project featured: true ALSO revalidates Home (/ar, /en) and projects:featured
       const nonFeaturedId = (nonFeaturedRes.data.doc as { id: number | string }).id
+
+      // 2. Saving a draft or autosaving (?draft=true&autosave=true) on the published project — even setting featured: true in the draft — invalidates NOTHING (R-4)
+      const autosaveOnPublishedRes = await callJsonApi(
+        'PATCH',
+        `/api/projects/${String(nonFeaturedId)}?locale=en&draft=true&autosave=true`,
+        {
+          cookie: editorCookie,
+          body: {
+            title: 'Jeddah Low Current Hospital Network (Autosave Draft)',
+            featured: true,
+            category: 'fire-fighting',
+            _status: 'draft',
+          },
+        },
+      )
+      expect(autosaveOnPublishedRes.status).toBe(200)
+      expect(tagSpy).not.toHaveBeenCalled()
+      expect(pathSpy).not.toHaveBeenCalled()
+
+      // 3. Publishing the project with featured: true ALSO revalidates Home (/ar, /en) and projects:featured
       const promoteFeaturedRes = await callJsonApi(
         'PATCH',
         `/api/projects/${String(nonFeaturedId)}?locale=en`,
@@ -799,6 +955,8 @@ describe('P2-T4 integration suite (projects)', () => {
           cookie: editorCookie,
           body: {
             featured: true,
+            category: 'low-current',
+            _status: 'published',
           },
         },
       )
@@ -811,6 +969,40 @@ describe('P2-T4 integration suite (projects)', () => {
         expect.arrayContaining(['projects:featured', 'projects:category:low-current']),
       )
       expect(revalidatedPathsFeatured).toEqual(expect.arrayContaining(['/ar', '/en']))
+
+      tagSpy.mockClear()
+      pathSpy.mockClear()
+
+      // 4. Unpublishing the published project (_status: 'draft' without ?draft=true) revalidates all tags and paths (R-4)
+      const unpublishRes = await callJsonApi(
+        'PATCH',
+        `/api/projects/${String(nonFeaturedId)}?locale=en`,
+        {
+          cookie: editorCookie,
+          body: {
+            _status: 'draft',
+          },
+        },
+      )
+      expect(unpublishRes.status).toBe(200)
+      expect(tagSpy.mock.calls.map((c) => c[0])).toEqual(
+        expect.arrayContaining([
+          'collection:projects',
+          'doc:projects:jeddah-low-current-hospital-network',
+          'projects:featured',
+          'projects:category:low-current',
+        ]),
+      )
+      expect(pathSpy.mock.calls.map((c) => c[0])).toEqual(
+        expect.arrayContaining([
+          '/ar',
+          '/en',
+          '/ar/projects',
+          '/en/projects',
+          '/ar/projects/jeddah-low-current-hospital-network',
+          '/en/projects/jeddah-low-current-hospital-network',
+        ]),
+      )
     } finally {
       tagSpy.mockRestore()
       pathSpy.mockRestore()

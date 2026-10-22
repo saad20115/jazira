@@ -511,6 +511,9 @@ export interface Project {
    * Concise summary displayed on project cards and the project detail header (up to 280 characters).
    */
   summary?: string | null;
+  /**
+   * Detailed case study covering engineering challenges and executed solutions (h2–h4, lists, blockquotes, safe links, and media uploads).
+   */
   body?: {
     root: {
       type: string;

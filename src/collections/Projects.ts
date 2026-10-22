@@ -15,11 +15,13 @@ import { limitedRichTextField } from '../fields/richText'
 import { seoGroupField } from '../fields/seo'
 import { slugFields } from '../fields/slug'
 import {
+  captureMainPublishedDocBeforeChange,
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
   REVALIDATE_LOCALES,
   safeRevalidatePath,
   safeRevalidateTag,
+  shouldRevalidateCollectionAfterChange,
 } from '../hooks/revalidate'
 import { publishableVersions } from './_shared/publishable'
 
@@ -50,29 +52,67 @@ export const PROJECT_STATUS_VALUES = ['completed', 'in-progress'] as const
 
 export type ProjectStatus = (typeof PROJECT_STATUS_VALUES)[number]
 
-const extractRelationshipId = (raw: unknown): number | string | null => {
-  if (typeof raw === 'number' && Number.isFinite(raw)) {
+const extractPositiveIntId = (raw: unknown): number | null => {
+  if (typeof raw === 'number' && Number.isInteger(raw) && raw > 0) {
     return raw
   }
-  if (typeof raw === 'string' && raw.trim().length > 0) {
-    return raw.trim()
+  if (typeof raw === 'string' && /^\d+$/.test(raw.trim())) {
+    const parsed = Number.parseInt(raw.trim(), 10)
+    return parsed > 0 ? parsed : null
   }
   if (typeof raw === 'object' && raw !== null && 'id' in raw) {
-    const nested = (raw as { id?: unknown }).id
-    if (typeof nested === 'number' && Number.isFinite(nested)) {
-      return nested
-    }
-    if (typeof nested === 'string' && nested.trim().length > 0) {
-      return nested.trim()
-    }
+    return extractPositiveIntId((raw as { id?: unknown }).id)
   }
   return null
 }
 
-const hasNonEmptyVideoRef = (val: unknown): boolean => extractRelationshipId(val) !== null
+const isNonEmptyInput = (raw: unknown): boolean => raw !== null && raw !== undefined && raw !== ''
+
+const hasNonEmptyVideoRef = (val: unknown): boolean => isNonEmptyInput(val)
 
 const hasNonEmptyVideoUrl = (val: unknown): boolean =>
   typeof val === 'string' && val.trim().length > 0
+
+const verifySingleMediaId = async (
+  raw: unknown,
+  fieldPath: string,
+  req: Parameters<CollectionBeforeValidateHook>[0]['req'],
+): Promise<void> => {
+  const id = extractPositiveIntId(raw)
+  if (id === null) {
+    throw new ValidationError({
+      collection: 'projects',
+      errors: [
+        {
+          path: fieldPath,
+          message: 'معرّف ملف الوسائط غير صالح. / Invalid media reference ID.',
+        },
+      ],
+      req,
+    })
+  }
+  try {
+    await req.payload.findByID({
+      collection: 'media',
+      id,
+      depth: 0,
+      overrideAccess: true,
+      req,
+    })
+  } catch {
+    throw new ValidationError({
+      collection: 'projects',
+      errors: [
+        {
+          path: fieldPath,
+          message:
+            'ملف الوسائط المحدد غير موجود في مكتبة الوسائط. / The selected media item does not exist in the media library.',
+        },
+      ],
+      req,
+    })
+  }
+}
 
 const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
   data,
@@ -86,13 +126,14 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
   const mutable = data as Record<string, unknown>
   const orig = (originalDoc ?? {}) as Record<string, unknown>
 
+  // Trim surrounding whitespace on videoUrl and normalize empty string to null (R-8)
+  if (typeof mutable.videoUrl === 'string') {
+    const trimmedVideoUrl = mutable.videoUrl.trim()
+    mutable.videoUrl = trimmedVideoUrl.length === 0 ? null : trimmedVideoUrl
+  }
+
   const effectiveVideo = 'video' in mutable ? mutable.video : orig.video
   const effectiveVideoUrl = 'videoUrl' in mutable ? mutable.videoUrl : orig.videoUrl
-
-  // Normalize empty string videoUrl to null
-  if (typeof mutable.videoUrl === 'string' && mutable.videoUrl.trim().length === 0) {
-    mutable.videoUrl = null
-  }
 
   // Enforce mutual exclusion: video xor videoUrl (both on draft and published saves)
   if (hasNonEmptyVideoRef(effectiveVideo) && hasNonEmptyVideoUrl(effectiveVideoUrl)) {
@@ -109,7 +150,7 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
     })
   }
 
-  // Always validate videoUrl host (YouTube / Vimeo https:// only) even on draft saves
+  // Always validate videoUrl host and port (YouTube / Vimeo https:// only) even on draft saves (R-8)
   if (hasNonEmptyVideoUrl(mutable.videoUrl)) {
     const verdict = validateVideoEmbedUrl(mutable.videoUrl, { required: false })
     if (verdict !== true) {
@@ -126,25 +167,18 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
     }
   }
 
-  // Verify referenced coverImage exists when provided so invalid IDs fail with 400 instead of 500 FK error
-  const coverId = extractRelationshipId(mutable.coverImage)
-  if (coverId !== null) {
-    try {
-      await req.payload.findByID({
-        collection: 'media',
-        id: coverId,
-        depth: 0,
-        overrideAccess: true,
-        req,
-      })
-    } catch {
+  // Validate enum values on draft and published saves so invalid enums return 400 instead of 500 (R-6)
+  if ('category' in mutable && isNonEmptyInput(mutable.category)) {
+    if (
+      typeof mutable.category !== 'string' ||
+      !(PROJECT_CATEGORY_VALUES as readonly string[]).includes(mutable.category)
+    ) {
       throw new ValidationError({
         collection: 'projects',
         errors: [
           {
-            path: 'coverImage',
-            message:
-              'صورة الغلاف المحددة غير موجودة في مكتبة الوسائط. / The selected cover image does not exist in the media library.',
+            path: 'category',
+            message: 'قيمة التصنيف الرئيسي غير صالحة. / Invalid project category value.',
           },
         ],
         req,
@@ -152,9 +186,133 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
     }
   }
 
-  // Verify referenced video exists when provided
-  const videoId = extractRelationshipId(mutable.video)
-  if (videoId !== null) {
+  if ('status' in mutable && isNonEmptyInput(mutable.status)) {
+    if (
+      typeof mutable.status !== 'string' ||
+      !(PROJECT_STATUS_VALUES as readonly string[]).includes(mutable.status)
+    ) {
+      throw new ValidationError({
+        collection: 'projects',
+        errors: [
+          {
+            path: 'status',
+            message: 'قيمة حالة تنفيذ المشروع غير صالحة. / Invalid project execution status value.',
+          },
+        ],
+        req,
+      })
+    }
+  }
+
+  if ('scope' in mutable && mutable.scope !== null && mutable.scope !== undefined) {
+    if (
+      !Array.isArray(mutable.scope) ||
+      !mutable.scope.every(
+        (item) =>
+          typeof item === 'string' && (PROJECT_SCOPE_VALUES as readonly string[]).includes(item),
+      )
+    ) {
+      throw new ValidationError({
+        collection: 'projects',
+        errors: [
+          {
+            path: 'scope',
+            message: 'قيمة نطاق الأعمال الهندسية غير صالحة. / Invalid engineering scope value.',
+          },
+        ],
+        req,
+      })
+    }
+  }
+
+  // Verify referenced coverImage exists when provided so invalid IDs fail with 400 instead of 500 FK error (R-6)
+  if ('coverImage' in mutable && isNonEmptyInput(mutable.coverImage)) {
+    await verifySingleMediaId(mutable.coverImage, 'coverImage', req)
+  }
+
+  // Verify referenced gallery media IDs exist when provided (R-6)
+  if ('gallery' in mutable && mutable.gallery !== null && mutable.gallery !== undefined) {
+    if (!Array.isArray(mutable.gallery)) {
+      throw new ValidationError({
+        collection: 'projects',
+        errors: [
+          {
+            path: 'gallery',
+            message:
+              'يجب أن يكون معرض الصور مصفوفة من معرفات الوسائط. / Gallery must be an array of media IDs.',
+          },
+        ],
+        req,
+      })
+    }
+
+    const galleryIds: number[] = []
+    for (const item of mutable.gallery) {
+      const id = extractPositiveIntId(item)
+      if (id === null) {
+        throw new ValidationError({
+          collection: 'projects',
+          errors: [
+            {
+              path: 'gallery',
+              message: 'معرّف صورة في معرض الصور غير صالح. / Invalid media ID in gallery.',
+            },
+          ],
+          req,
+        })
+      }
+      galleryIds.push(id)
+    }
+
+    const uniqueGalleryIds = [...new Set(galleryIds)]
+    if (uniqueGalleryIds.length > 0) {
+      const foundMedia = await req.payload.find({
+        collection: 'media',
+        where: { id: { in: uniqueGalleryIds } },
+        limit: uniqueGalleryIds.length,
+        depth: 0,
+        overrideAccess: true,
+        req,
+      })
+      if (foundMedia.docs.length !== uniqueGalleryIds.length) {
+        throw new ValidationError({
+          collection: 'projects',
+          errors: [
+            {
+              path: 'gallery',
+              message:
+                'إحدى الصور المحددة في معرض الصور غير موجودة في مكتبة الوسائط. / One or more selected gallery images do not exist in the media library.',
+            },
+          ],
+          req,
+        })
+      }
+    }
+  }
+
+  // Verify referenced meta.image exists when provided (R-6)
+  if ('meta' in mutable && typeof mutable.meta === 'object' && mutable.meta !== null) {
+    const metaRecord = mutable.meta as Record<string, unknown>
+    if ('image' in metaRecord && isNonEmptyInput(metaRecord.image)) {
+      await verifySingleMediaId(metaRecord.image, 'meta.image', req)
+    }
+  }
+
+  // Verify referenced video exists when provided (R-6)
+  if ('video' in mutable && isNonEmptyInput(mutable.video)) {
+    const videoId = extractPositiveIntId(mutable.video)
+    if (videoId === null) {
+      throw new ValidationError({
+        collection: 'projects',
+        errors: [
+          {
+            path: 'video',
+            message: 'معرّف ملف الفيديو غير صالح. / Invalid video reference ID.',
+          },
+        ],
+        req,
+      })
+    }
     try {
       await req.payload.findByID({
         collection: 'videos',
@@ -181,7 +339,8 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
   return mutable
 }
 
-const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = ({
+const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = async ({
+  collection,
   context,
   doc,
   previousDoc,
@@ -193,21 +352,43 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = ({
       return safeDoc
     }
 
-    const currentStatus = (doc as { _status?: unknown } | undefined)?._status
-    const previousStatus = (previousDoc as { _status?: unknown } | undefined)?._status
-    if (currentStatus !== 'published' && previousStatus !== 'published') {
+    const shouldRevalidate = await shouldRevalidateCollectionAfterChange({
+      collection,
+      context,
+      doc,
+      previousDoc,
+      req,
+    })
+    if (!shouldRevalidate) {
       return safeDoc
+    }
+
+    const currentStatus = (doc as { _status?: unknown } | undefined)?._status
+    const mainDocBefore = (
+      context as { __mainDocBeforeChange?: Record<string, unknown> } | undefined
+    )?.__mainDocBeforeChange
+    const publishedPrevDoc =
+      mainDocBefore && mainDocBefore._status === 'published'
+        ? mainDocBefore
+        : (previousDoc as Record<string, unknown> | undefined)?._status === 'published'
+          ? (previousDoc as Record<string, unknown>)
+          : undefined
+
+    const docsToInspect: Array<Record<string, unknown>> = []
+    if (currentStatus === 'published') {
+      docsToInspect.push(safeDoc)
+    }
+    if (publishedPrevDoc) {
+      docsToInspect.push(publishedPrevDoc)
     }
 
     const logger = req.payload.logger
     const categories = new Set<string>()
-    const currentCategory = (doc as { category?: unknown } | undefined)?.category
-    const prevCategory = (previousDoc as { category?: unknown } | undefined)?.category
-    if (typeof currentCategory === 'string' && currentCategory.trim().length > 0) {
-      categories.add(currentCategory.trim())
-    }
-    if (typeof prevCategory === 'string' && prevCategory.trim().length > 0) {
-      categories.add(prevCategory.trim())
+    for (const candidate of docsToInspect) {
+      const cat = candidate.category
+      if (typeof cat === 'string' && cat.trim().length > 0) {
+        categories.add(cat.trim())
+      }
     }
 
     for (const cat of categories) {
@@ -218,19 +399,13 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = ({
     }
 
     const scopes = new Set<string>()
-    const currentScope = (doc as { scope?: unknown } | undefined)?.scope
-    const prevScope = (previousDoc as { scope?: unknown } | undefined)?.scope
-    if (Array.isArray(currentScope)) {
-      for (const item of currentScope) {
-        if (typeof item === 'string' && item.trim().length > 0) {
-          scopes.add(item.trim())
-        }
-      }
-    }
-    if (Array.isArray(prevScope)) {
-      for (const item of prevScope) {
-        if (typeof item === 'string' && item.trim().length > 0) {
-          scopes.add(item.trim())
+    for (const candidate of docsToInspect) {
+      const scopeVal = candidate.scope
+      if (Array.isArray(scopeVal)) {
+        for (const item of scopeVal) {
+          if (typeof item === 'string' && item.trim().length > 0) {
+            scopes.add(item.trim())
+          }
         }
       }
     }
@@ -241,9 +416,8 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = ({
       }
     }
 
-    const isFeaturedNow = (doc as { featured?: unknown } | undefined)?.featured === true
-    const wasFeaturedBefore = (previousDoc as { featured?: unknown } | undefined)?.featured === true
-    if (isFeaturedNow || wasFeaturedBefore) {
+    const affectsFeatured = docsToInspect.some((candidate) => candidate.featured === true)
+    if (affectsFeatured) {
       safeRevalidateTag('projects:featured', logger)
       for (const locale of REVALIDATE_LOCALES) {
         safeRevalidateTag(`projects:featured:${locale}`, logger)
@@ -265,6 +439,10 @@ const revalidateProjectRelatedAndHomeAfterDelete: CollectionAfterDeleteHook = ({
   const safeDoc = doc as Record<string, unknown>
   try {
     if ((context as { disableRevalidate?: boolean } | undefined)?.disableRevalidate === true) {
+      return safeDoc
+    }
+
+    if ((doc as { _status?: unknown } | undefined)?._status === 'draft') {
       return safeDoc
     }
 
@@ -342,6 +520,7 @@ export const Projects: CollectionConfig = {
   },
   hooks: {
     beforeValidate: [validateProjectBeforeValidate],
+    beforeChange: [captureMainPublishedDocBeforeChange],
     afterChange: [
       createRevalidateAfterChangeHook({
         collection: 'projects',
@@ -745,6 +924,17 @@ export const Projects: CollectionConfig = {
                   en: 'External HTTPS video URL from YouTube or Vimeo only (mutually exclusive with self-hosted video above).',
                 },
               },
+              hooks: {
+                beforeValidate: [
+                  ({ value }: { value?: unknown }): unknown => {
+                    if (typeof value !== 'string') {
+                      return value
+                    }
+                    const trimmed = value.trim()
+                    return trimmed.length === 0 ? null : trimmed
+                  },
+                ],
+              },
               validate: (
                 val: unknown,
                 { siblingData }: { siblingData?: Record<string, unknown> },
@@ -859,7 +1049,6 @@ export const Projects: CollectionConfig = {
       type: 'select',
       enumName: 'enum_projects_execution_status',
       required: true,
-      defaultValue: 'completed',
       index: true,
       options: [
         {

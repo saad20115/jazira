@@ -106,6 +106,12 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
+      - name: Verify generated Payload types are up to date
+        run: |
+          set -euo pipefail
+          pnpm payload generate:types
+          git diff --exit-code src/payload-types.ts
+
       - name: Run database migrations (up / status / down / up)
         run: |
           pnpm payload migrate
@@ -113,6 +119,17 @@ jobs:
           pnpm payload migrate:down
           pnpm payload migrate
           pnpm payload migrate:status
+
+      - name: Verify zero Payload migration drift
+        run: |
+          set -euo pipefail
+          OUT="$(echo n | pnpm payload migrate:create ci_drift_check --no-color 2>&1)"
+          echo "$OUT"
+          echo "$OUT" | grep -Fq "No schema changes detected"
+          if [ -n "$(git status --porcelain src/migrations)" ]; then
+            echo "ERROR: Uncommitted migration changes detected in src/migrations!" >&2
+            exit 1
+          fi
 
       - name: Run unit and integration tests
         run: pnpm test

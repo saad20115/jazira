@@ -3537,8 +3537,7 @@
           "type": "enum_projects_execution_status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'completed'"
+          "notNull": false
         },
         "featured": {
           "name": "featured",
@@ -4523,8 +4522,7 @@
           "type": "enum_projects_execution_status",
           "typeSchema": "public",
           "primaryKey": false,
-          "notNull": false,
-          "default": "'completed'"
+          "notNull": false
         },
         "version_featured": {
           "name": "version_featured",

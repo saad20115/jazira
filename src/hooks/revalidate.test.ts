@@ -54,7 +54,7 @@ describe('revalidate hooks & tag builders', () => {
     expect(tags).toEqual(['global:home-page', 'global:home-page:ar', 'global:home-page:en'])
   })
 
-  it('skips revalidation on draft creation and draft-to-draft autosave, and revalidates on publish, unpublish, and delete (R-3, R-5)', () => {
+  it('skips revalidation on draft creation, draft-to-draft autosave, and draft/autosave on a published doc, and revalidates only on publish, unpublish, and published delete (R-3, R-4, R-5)', async () => {
     const afterChange = createRevalidateAfterChangeHook<SampleDoc>({
       routePrefix: '/projects',
       localizedPaths: ['/'],
@@ -71,7 +71,7 @@ describe('revalidate hooks & tag builders', () => {
     }
 
     // 1. Draft creation (undefined -> 'draft'): 0 revalidations
-    afterChange({
+    await afterChange({
       collection: { slug: 'projects', versions: { drafts: true } },
       context: {},
       data: draftDoc,
@@ -85,7 +85,7 @@ describe('revalidate hooks & tag builders', () => {
     expect(mockRevalidatePath).not.toHaveBeenCalled()
 
     // 2. Draft autosave ('draft' -> 'draft'): 0 revalidations
-    afterChange({
+    await afterChange({
       collection: { slug: 'projects', versions: { drafts: true } },
       context: {},
       data: draftDoc,
@@ -104,7 +104,7 @@ describe('revalidate hooks & tag builders', () => {
       slug: 'sofitel-makkah-hotel',
       _status: 'published',
     }
-    afterChange({
+    await afterChange({
       collection: { slug: 'projects', versions: { drafts: true } },
       context: {},
       data: publishedDoc,
@@ -134,15 +134,56 @@ describe('revalidate hooks & tag builders', () => {
     mockRevalidateTag.mockReset()
     mockRevalidatePath.mockReset()
 
-    // 4. Unpublish ('published' -> 'draft'): revalidates so the unpublished item leaves the public cache
-    afterChange({
+    // 4. Draft save or autosave on an already-published document (main table still 'published' or ?draft=true): 0 revalidations (P2-T4 R-4)
+    await afterChange({
       collection: { slug: 'projects', versions: { drafts: true } },
       context: {},
       data: draftDoc,
       doc: draftDoc,
       operation: 'update',
       previousDoc: publishedDoc,
-      req: {},
+      req: {
+        query: { draft: 'true', autosave: 'true' },
+      },
+    } as unknown as Parameters<CollectionAfterChangeHook<SampleDoc>>[0])
+
+    expect(mockRevalidateTag).not.toHaveBeenCalled()
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+
+    await afterChange({
+      collection: { slug: 'projects', versions: { drafts: true } },
+      context: { __mainDocBeforeChange: publishedDoc },
+      data: draftDoc,
+      doc: draftDoc,
+      operation: 'update',
+      previousDoc: publishedDoc,
+      req: {
+        payload: {
+          db: {
+            findOne: vi.fn().mockResolvedValue(publishedDoc),
+          },
+        },
+      },
+    } as unknown as Parameters<CollectionAfterChangeHook<SampleDoc>>[0])
+
+    expect(mockRevalidateTag).not.toHaveBeenCalled()
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+
+    // 5. Unpublish ('published' -> 'draft' in main table): revalidates so the unpublished item leaves the public cache
+    await afterChange({
+      collection: { slug: 'projects', versions: { drafts: true } },
+      context: { __mainDocBeforeChange: publishedDoc },
+      data: draftDoc,
+      doc: draftDoc,
+      operation: 'update',
+      previousDoc: publishedDoc,
+      req: {
+        payload: {
+          db: {
+            findOne: vi.fn().mockResolvedValue(draftDoc),
+          },
+        },
+      },
     } as unknown as Parameters<CollectionAfterChangeHook<SampleDoc>>[0])
 
     expect(mockRevalidateTag).toHaveBeenCalledTimes(6)
@@ -151,7 +192,7 @@ describe('revalidate hooks & tag builders', () => {
     mockRevalidateTag.mockReset()
     mockRevalidatePath.mockReset()
 
-    // 5. Delete: always revalidates
+    // 6. Delete of draft-only doc: 0 revalidations; delete of published doc: revalidates
     afterDelete({
       collection: { slug: 'projects', versions: { drafts: true } },
       context: {},
@@ -160,17 +201,28 @@ describe('revalidate hooks & tag builders', () => {
       req: {},
     } as unknown as Parameters<CollectionAfterDeleteHook<SampleDoc>>[0])
 
+    expect(mockRevalidateTag).not.toHaveBeenCalled()
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+
+    afterDelete({
+      collection: { slug: 'projects', versions: { drafts: true } },
+      context: {},
+      doc: publishedDoc,
+      id: 1,
+      req: {},
+    } as unknown as Parameters<CollectionAfterDeleteHook<SampleDoc>>[0])
+
     expect(mockRevalidateTag).toHaveBeenCalledTimes(6)
     expect(mockRevalidatePath).toHaveBeenCalledTimes(6)
   })
 
-  it('skips global revalidation on draft-to-draft autosave and revalidates when published (R-3, R-5)', () => {
+  it('skips global revalidation on draft-to-draft autosave and draft save over published global, and revalidates when published (R-3, R-4, R-5)', async () => {
     const globalAfterChange = createRevalidateGlobalAfterChangeHook({
       localizedPaths: ['/'],
     })
 
     // Draft autosave on global -> skipped
-    globalAfterChange({
+    await globalAfterChange({
       context: {},
       data: { _status: 'draft' },
       doc: { _status: 'draft' },
@@ -182,8 +234,27 @@ describe('revalidate hooks & tag builders', () => {
     expect(mockRevalidateTag).not.toHaveBeenCalled()
     expect(mockRevalidatePath).not.toHaveBeenCalled()
 
+    // Draft save on already-published global -> skipped (P2-T4 R-4)
+    await globalAfterChange({
+      context: {},
+      data: { _status: 'draft' },
+      doc: { _status: 'draft' },
+      global: { slug: 'home-page', versions: { drafts: true } },
+      previousDoc: { _status: 'published' },
+      req: {
+        payload: {
+          db: {
+            findGlobal: vi.fn().mockResolvedValue({ _status: 'published' }),
+          },
+        },
+      },
+    } as unknown as Parameters<GlobalAfterChangeHook>[0])
+
+    expect(mockRevalidateTag).not.toHaveBeenCalled()
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
+
     // Publish on global -> revalidates
-    globalAfterChange({
+    await globalAfterChange({
       context: {},
       data: { _status: 'published' },
       doc: { _status: 'published' },
@@ -203,7 +274,7 @@ describe('revalidate hooks & tag builders', () => {
     ])
   })
 
-  it('silently ignores "static generation store missing" outside Next runtime, but logs unexpected Invariant errors without throwing (R-4, R-5)', () => {
+  it('silently ignores "static generation store missing" outside Next runtime, but logs unexpected Invariant errors without throwing (R-4, R-5)', async () => {
     const warnSpy = vi.fn()
     const doc: SampleDoc = { id: 1, slug: 'sofitel-makkah-hotel', _status: 'published' }
     const afterChange = createRevalidateAfterChangeHook<SampleDoc>({
@@ -220,7 +291,7 @@ describe('revalidate hooks & tag builders', () => {
       throw new Error('Invariant: static generation store missing in revalidatePath /ar')
     })
 
-    const res1: unknown = afterChange({
+    const res1: unknown = await afterChange({
       collection: { slug: 'projects' },
       context: {},
       data: doc,
@@ -239,7 +310,7 @@ describe('revalidate hooks & tag builders', () => {
     })
     mockRevalidatePath.mockReset()
 
-    const res2: unknown = afterChange({
+    const res2: unknown = await afterChange({
       collection: { slug: 'projects' },
       context: {},
       data: doc,
@@ -253,11 +324,11 @@ describe('revalidate hooks & tag builders', () => {
     expect(warnSpy).toHaveBeenCalled()
   })
 
-  it('skips revalidation when context.disableRevalidate is true (R-5)', () => {
+  it('skips revalidation when context.disableRevalidate is true (R-5)', async () => {
     const doc: SampleDoc = { id: 1, slug: 'general-contracting', _status: 'published' }
     const afterChange = createRevalidateAfterChangeHook<SampleDoc>()
 
-    const result: unknown = afterChange({
+    const result: unknown = await afterChange({
       collection: { slug: 'services' },
       context: { disableRevalidate: true },
       data: doc,

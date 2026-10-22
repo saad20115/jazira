@@ -71,6 +71,11 @@ describe('videoUrlField, parseVideoUrl & toEmbedUrl (I4)', () => {
         normalized: 'https://vimeo.com/76979871?h=abc123def0',
         embed: 'https://player.vimeo.com/video/76979871?h=abc123def0',
       },
+      {
+        input: '  https://youtu.be/dQw4w9WgXcQ  ',
+        normalized: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+        embed: 'https://www.youtube-nocookie.com/embed/dQw4w9WgXcQ',
+      },
     ]
 
     const field = videoUrlField()
@@ -105,6 +110,10 @@ describe('videoUrlField, parseVideoUrl & toEmbedUrl (I4)', () => {
       'https://player.vimeo.com/video/123abc',
       'https://vimeo.com/76979871/bad"hash',
       'https://player.vimeo.com/video/76979871?h=bad<script>',
+      'https://youtube.com:8443/watch?v=dQw4w9WgXcQ',
+      'https://www.youtube.com:8080/watch?v=dQw4w9WgXcQ',
+      'https://youtu.be:8443/dQw4w9WgXcQ',
+      'https://vimeo.com:8443/76979871',
     ]
 
     for (const bad of rejectedInputs) {

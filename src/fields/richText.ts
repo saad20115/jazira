@@ -281,6 +281,12 @@ export function createLimitedLexicalEditor() {
   })
 }
 
+export function createParagraphOnlyLexicalEditor() {
+  return lexicalEditor({
+    features: [ParagraphFeature(), BoldFeature(), ItalicFeature()],
+  })
+}
+
 type RichTextFieldHook = FieldHook<
   TypeWithID & Record<string, unknown>,
   unknown,
@@ -316,6 +322,7 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
     }
     const validationResult = validateLimitedLexicalState(val, { mode, required })
     if (validationResult !== true) {
+      const globalSlug = (args as { global?: { slug?: string } }).global?.slug
       throw new ValidationError(
         {
           collection: args.collection?.slug,
@@ -326,6 +333,7 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
               path: name,
             },
           ],
+          global: globalSlug,
           id: args.originalDoc?.id ?? args.data?.id,
           req: args.req,
         },
@@ -348,7 +356,8 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
     label,
     localized,
     required,
-    editor: createLimitedLexicalEditor(),
+    editor:
+      mode === 'paragraphsOnly' ? createParagraphOnlyLexicalEditor() : createLimitedLexicalEditor(),
     ...restOverrides,
     admin: {
       ...overrideAdmin,
@@ -372,4 +381,18 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
       return true
     },
   }
+}
+
+export function paragraphRichTextField(
+  options: Omit<LimitedRichTextFieldOptions, 'mode'> = {},
+): RichTextField {
+  return limitedRichTextField({
+    name: 'text',
+    label: {
+      ar: 'النص (فقرات فقط)',
+      en: 'Text (Paragraphs Only)',
+    },
+    ...options,
+    mode: 'paragraphsOnly',
+  })
 }

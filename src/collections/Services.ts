@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import { type CollectionBeforeValidateHook, type CollectionConfig, ValidationError } from 'payload'
 
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
@@ -8,10 +8,127 @@ import { limitedRichTextField } from '../fields/richText'
 import { seoGroupField } from '../fields/seo'
 import { slugFields } from '../fields/slug'
 import {
+  captureMainPublishedDocBeforeChange,
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
 import { publishableVersions } from './_shared/publishable'
+
+const SERVICE_TIER_VALUES = ['main', 'additional'] as const
+const SERVICE_ICON_VALUES = SERVICE_ICON_OPTIONS.map((opt) => opt.value)
+
+const extractPositiveIntId = (raw: unknown): number | null => {
+  if (typeof raw === 'number' && Number.isInteger(raw) && raw > 0) {
+    return raw
+  }
+  if (typeof raw === 'string' && /^\d+$/.test(raw.trim())) {
+    const parsed = Number.parseInt(raw.trim(), 10)
+    return parsed > 0 ? parsed : null
+  }
+  if (typeof raw === 'object' && raw !== null && 'id' in raw) {
+    return extractPositiveIntId((raw as { id?: unknown }).id)
+  }
+  return null
+}
+
+const isNonEmptyInput = (raw: unknown): boolean => raw !== null && raw !== undefined && raw !== ''
+
+const verifySingleMediaId = async (
+  raw: unknown,
+  fieldPath: string,
+  req: Parameters<CollectionBeforeValidateHook>[0]['req'],
+): Promise<void> => {
+  const id = extractPositiveIntId(raw)
+  if (id === null) {
+    throw new ValidationError({
+      collection: 'services',
+      errors: [
+        {
+          path: fieldPath,
+          message: 'معرّف ملف الوسائط غير صالح. / Invalid media reference ID.',
+        },
+      ],
+      req,
+    })
+  }
+  try {
+    await req.payload.findByID({
+      collection: 'media',
+      id,
+      depth: 0,
+      overrideAccess: true,
+      req,
+    })
+  } catch {
+    throw new ValidationError({
+      collection: 'services',
+      errors: [
+        {
+          path: fieldPath,
+          message:
+            'ملف الوسائط المحدد غير موجود في مكتبة الوسائط. / The selected media item does not exist in the media library.',
+        },
+      ],
+      req,
+    })
+  }
+}
+
+const validateServiceBeforeValidate: CollectionBeforeValidateHook = async ({ data, req }) => {
+  if (!data || typeof data !== 'object') {
+    return data
+  }
+  const mutable = data as Record<string, unknown>
+
+  if ('tier' in mutable && isNonEmptyInput(mutable.tier)) {
+    if (
+      typeof mutable.tier !== 'string' ||
+      !(SERVICE_TIER_VALUES as readonly string[]).includes(mutable.tier)
+    ) {
+      throw new ValidationError({
+        collection: 'services',
+        errors: [
+          {
+            path: 'tier',
+            message: 'قيمة تصنيف الخدمة غير صالحة. / Invalid service tier value.',
+          },
+        ],
+        req,
+      })
+    }
+  }
+
+  if ('icon' in mutable && isNonEmptyInput(mutable.icon)) {
+    if (
+      typeof mutable.icon !== 'string' ||
+      !(SERVICE_ICON_VALUES as readonly string[]).includes(mutable.icon)
+    ) {
+      throw new ValidationError({
+        collection: 'services',
+        errors: [
+          {
+            path: 'icon',
+            message: 'قيمة أيقونة الخدمة غير صالحة. / Invalid service icon value.',
+          },
+        ],
+        req,
+      })
+    }
+  }
+
+  if ('image' in mutable && isNonEmptyInput(mutable.image)) {
+    await verifySingleMediaId(mutable.image, 'image', req)
+  }
+
+  if ('meta' in mutable && typeof mutable.meta === 'object' && mutable.meta !== null) {
+    const metaRecord = mutable.meta as Record<string, unknown>
+    if ('image' in metaRecord && isNonEmptyInput(metaRecord.image)) {
+      await verifySingleMediaId(metaRecord.image, 'meta.image', req)
+    }
+  }
+
+  return mutable
+}
 
 export const Services: CollectionConfig = {
   slug: 'services',
@@ -49,6 +166,8 @@ export const Services: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
+    beforeValidate: [validateServiceBeforeValidate],
+    beforeChange: [captureMainPublishedDocBeforeChange],
     afterChange: [
       createRevalidateAfterChangeHook({
         collection: 'services',

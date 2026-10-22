@@ -12,6 +12,7 @@ import { env } from '../env'
 import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
+  REVALIDATE_LOCALES,
 } from '../hooks/revalidate'
 import {
   ALLOWED_IMAGE_MIME_TYPES,
@@ -32,46 +33,132 @@ const validateUploadBeforeOperation: CollectionBeforeOperationHook = async (rawA
   return args
 }
 
+export function richTextReferencesMediaId(node: unknown, targetId: number | string): boolean {
+  if (!node || typeof node !== 'object') {
+    return false
+  }
+  if (Array.isArray(node)) {
+    return node.some((child) => richTextReferencesMediaId(child, targetId))
+  }
+  const record = node as Record<string, unknown>
+  if (record.type === 'upload' && record.relationTo === 'media') {
+    const rawVal = record.value
+    const uploadId =
+      typeof rawVal === 'object' && rawVal !== null && 'id' in rawVal
+        ? (rawVal as { id?: unknown }).id
+        : rawVal
+    if (
+      (typeof uploadId === 'number' || typeof uploadId === 'string') &&
+      String(uploadId) === String(targetId)
+    ) {
+      return true
+    }
+  }
+  for (const val of Object.values(record)) {
+    if (typeof val === 'object' && val !== null) {
+      if (richTextReferencesMediaId(val, targetId)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
+const formatReferencingDocLabel = (
+  collection: CollectionSlug,
+  doc: { id: number | string },
+  labelField: string,
+): string => {
+  const record = doc as unknown as Record<string, unknown>
+  const rawLabel = record[labelField]
+  const labelText =
+    typeof rawLabel === 'string' && rawLabel.trim().length > 0
+      ? rawLabel.trim()
+      : `#${String(doc.id)}`
+  return `${collection}(${labelText})`
+}
+
 const findReferencingLabels = async ({
   collection,
   where,
   labelField,
   draft,
+  localized,
   req,
 }: {
   collection: CollectionSlug
   where: Where
   labelField: string
   draft?: boolean
+  localized?: boolean
   req: Parameters<CollectionBeforeDeleteHook>[0]['req']
 }): Promise<string[]> => {
   if (!(collection in req.payload.collections)) {
     return []
   }
 
-  const result = await req.payload.find({
-    collection,
-    where,
-    limit: 10,
-    depth: 0,
-    draft: draft ?? false,
-    overrideAccess: true,
-    req,
-  })
+  const localesToQuery = localized ? REVALIDATE_LOCALES : ([undefined] as const)
+  const labels = new Set<string>()
 
-  if (result.totalDocs === 0) {
+  for (const locale of localesToQuery) {
+    const result = await req.payload.find({
+      collection,
+      where,
+      ...(locale ? { locale, fallbackLocale: false as const } : {}),
+      limit: 10,
+      depth: 0,
+      draft: draft ?? false,
+      overrideAccess: true,
+      req,
+    })
+
+    for (const doc of result.docs) {
+      labels.add(formatReferencingDocLabel(collection, doc, labelField))
+    }
+  }
+
+  return [...labels]
+}
+
+const findRichTextBodyReferencingLabels = async ({
+  collection,
+  labelField,
+  mediaId,
+  draft,
+  req,
+}: {
+  collection: 'services' | 'projects'
+  labelField: string
+  mediaId: number | string
+  draft: boolean
+  req: Parameters<CollectionBeforeDeleteHook>[0]['req']
+}): Promise<string[]> => {
+  if (!(collection in req.payload.collections)) {
     return []
   }
 
-  return result.docs.map((doc) => {
-    const record = doc as unknown as Record<string, unknown>
-    const rawLabel = record[labelField]
-    const labelText =
-      typeof rawLabel === 'string' && rawLabel.trim().length > 0
-        ? rawLabel.trim()
-        : `#${String(doc.id)}`
-    return `${collection}(${labelText})`
-  })
+  const labels = new Set<string>()
+  for (const locale of REVALIDATE_LOCALES) {
+    const result = await req.payload.find({
+      collection,
+      locale,
+      fallbackLocale: false,
+      limit: 100,
+      depth: 0,
+      draft,
+      overrideAccess: true,
+      req,
+    })
+
+    for (const doc of result.docs) {
+      const record = doc as unknown as Record<string, unknown>
+      if (richTextReferencesMediaId(record.body, mediaId)) {
+        labels.add(formatReferencingDocLabel(collection, doc, labelField))
+      }
+    }
+  }
+
+  return [...labels]
 }
 
 const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
@@ -80,6 +167,8 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
     where: Where
     labelField: string
     versioned?: boolean
+    localized?: boolean
+    richTextBody?: boolean
   }> = [
     {
       collection: 'team',
@@ -93,6 +182,8 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       },
       labelField: 'title',
       versioned: true,
+      localized: true,
+      richTextBody: true,
     },
     {
       collection: 'projects',
@@ -105,6 +196,8 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       },
       labelField: 'title',
       versioned: true,
+      localized: true,
+      richTextBody: true,
     },
     {
       collection: 'brands',
@@ -125,6 +218,7 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       where: check.where,
       labelField: check.labelField,
       draft: false,
+      localized: check.localized,
       req,
     })
     for (const item of publishedLabels) {
@@ -137,10 +231,40 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
         where: check.where,
         labelField: check.labelField,
         draft: true,
+        localized: check.localized,
         req,
       })
       for (const item of draftLabels) {
         references.add(item)
+      }
+    }
+
+    if (
+      check.richTextBody &&
+      (check.collection === 'services' || check.collection === 'projects')
+    ) {
+      const publishedBodyRefs = await findRichTextBodyReferencingLabels({
+        collection: check.collection,
+        labelField: check.labelField,
+        mediaId: id,
+        draft: false,
+        req,
+      })
+      for (const item of publishedBodyRefs) {
+        references.add(item)
+      }
+
+      if (check.versioned) {
+        const draftBodyRefs = await findRichTextBodyReferencingLabels({
+          collection: check.collection,
+          labelField: check.labelField,
+          mediaId: id,
+          draft: true,
+          req,
+        })
+        for (const item of draftBodyRefs) {
+          references.add(item)
+        }
       }
     }
   }
