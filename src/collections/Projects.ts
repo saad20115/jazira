@@ -217,6 +217,30 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = ({
       }
     }
 
+    const scopes = new Set<string>()
+    const currentScope = (doc as { scope?: unknown } | undefined)?.scope
+    const prevScope = (previousDoc as { scope?: unknown } | undefined)?.scope
+    if (Array.isArray(currentScope)) {
+      for (const item of currentScope) {
+        if (typeof item === 'string' && item.trim().length > 0) {
+          scopes.add(item.trim())
+        }
+      }
+    }
+    if (Array.isArray(prevScope)) {
+      for (const item of prevScope) {
+        if (typeof item === 'string' && item.trim().length > 0) {
+          scopes.add(item.trim())
+        }
+      }
+    }
+    for (const discipline of scopes) {
+      safeRevalidateTag(`projects:scope:${discipline}`, logger)
+      for (const locale of REVALIDATE_LOCALES) {
+        safeRevalidateTag(`projects:scope:${discipline}:${locale}`, logger)
+      }
+    }
+
     const isFeaturedNow = (doc as { featured?: unknown } | undefined)?.featured === true
     const wasFeaturedBefore = (previousDoc as { featured?: unknown } | undefined)?.featured === true
     if (isFeaturedNow || wasFeaturedBefore) {
@@ -254,6 +278,19 @@ const revalidateProjectRelatedAndHomeAfterDelete: CollectionAfterDeleteHook = ({
       }
     }
 
+    const scopeList = (doc as { scope?: unknown } | undefined)?.scope
+    if (Array.isArray(scopeList)) {
+      for (const item of scopeList) {
+        if (typeof item === 'string' && item.trim().length > 0) {
+          const trimmedScope = item.trim()
+          safeRevalidateTag(`projects:scope:${trimmedScope}`, logger)
+          for (const locale of REVALIDATE_LOCALES) {
+            safeRevalidateTag(`projects:scope:${trimmedScope}:${locale}`, logger)
+          }
+        }
+      }
+    }
+
     if ((doc as { featured?: unknown } | undefined)?.featured === true) {
       safeRevalidateTag('projects:featured', logger)
       for (const locale of REVALIDATE_LOCALES) {
@@ -285,7 +322,7 @@ export const Projects: CollectionConfig = {
   },
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'status', 'featured', 'year', 'order', '_status'],
+    defaultColumns: ['title', 'category', 'status', 'featured', '_status', 'updatedAt'],
     listSearchableFields: ['title', 'client', 'location', 'summary', 'slug'],
     enableRichTextLink: true,
     group: {

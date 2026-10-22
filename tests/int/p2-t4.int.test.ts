@@ -754,6 +754,7 @@ describe('P2-T4 integration suite (projects)', () => {
         body: {
           title: 'Jeddah Low Current Hospital Network',
           category: 'low-current',
+          scope: ['low-current', 'data-center'],
           location: 'Jeddah',
           featured: false,
           coverImage: uploadedMediaId,
@@ -770,6 +771,8 @@ describe('P2-T4 integration suite (projects)', () => {
           'collection:projects',
           'doc:projects:jeddah-low-current-hospital-network',
           'projects:category:low-current',
+          'projects:scope:low-current',
+          'projects:scope:data-center',
         ]),
       )
       expect(revalidatedTagsNonFeatured).not.toContain('projects:featured')
