@@ -5,7 +5,7 @@ import {
   OverviewField,
   PreviewField,
 } from '@payloadcms/plugin-seo/fields'
-import type { Field, GroupField } from 'payload'
+import { type Field, type GroupField, ValidationError } from 'payload'
 
 /**
  * Builds the SEO plugin fields with bilingual Arabic + English labels (P2-T3 R-5)
@@ -75,6 +75,37 @@ export function seoGroupField(): GroupField {
     label: {
       ar: 'تحسين محركات البحث (SEO)',
       en: 'SEO',
+    },
+    hooks: {
+      beforeValidate: [
+        ({ collection, global, req, value }): Record<string, unknown> | null | undefined => {
+          if (value === undefined) {
+            return undefined
+          }
+          if (value === null) {
+            return null
+          }
+          if (typeof value !== 'object' || Array.isArray(value)) {
+            const globalSlug = (global as { slug?: string } | undefined)?.slug
+            throw new ValidationError(
+              {
+                collection: collection?.slug,
+                errors: [
+                  {
+                    path: 'meta',
+                    message:
+                      'يجب أن تكون بيانات تحسين محركات البحث (meta) كائناً صالحاً. / SEO metadata (meta) must be a valid object.',
+                  },
+                ],
+                global: globalSlug,
+                req,
+              },
+              req.t,
+            )
+          }
+          return value as Record<string, unknown>
+        },
+      ],
     },
     fields: buildLocalizedSeoFields(),
   }

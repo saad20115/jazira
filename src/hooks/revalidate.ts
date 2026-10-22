@@ -137,19 +137,105 @@ interface MinimalDbAdapter {
   findOne?: (args: Record<string, unknown>) => Promise<unknown>
 }
 
-function getDbAdapter(req: unknown): MinimalDbAdapter | undefined {
+interface MinimalPayloadWithLookup {
+  db?: MinimalDbAdapter
+  findByID?: (args: Record<string, unknown>) => Promise<unknown>
+  findGlobal?: (args: Record<string, unknown>) => Promise<unknown>
+  logger?: MinimalLogger
+}
+
+function getPayloadFromReq(req: unknown): MinimalPayloadWithLookup | undefined {
   if (typeof req !== 'object' || req === null || !('payload' in req)) {
     return undefined
   }
-  const payloadObj = (req as { payload?: unknown }).payload
-  if (typeof payloadObj !== 'object' || payloadObj === null || !('db' in payloadObj)) {
+  const payloadObj = (req as { payload?: MinimalPayloadWithLookup | null }).payload
+  if (!payloadObj || typeof payloadObj !== 'object') {
     return undefined
   }
-  const dbObj = (payloadObj as { db?: unknown }).db
-  if (typeof dbObj !== 'object' || dbObj === null) {
-    return undefined
+  return payloadObj
+}
+
+function setContextValue(context: unknown, req: unknown, key: string, value: unknown): void {
+  if (typeof context === 'object' && context !== null) {
+    ;(context as Record<string, unknown>)[key] = value
   }
-  return dbObj
+  if (typeof req === 'object' && req !== null && 'context' in req) {
+    const reqCtx = (req as { context?: unknown }).context
+    if (typeof reqCtx === 'object' && reqCtx !== null) {
+      ;(reqCtx as Record<string, unknown>)[key] = value
+    }
+  }
+}
+
+async function readMainCollectionRow(
+  collectionSlug: string,
+  docId: unknown,
+  req: unknown,
+): Promise<{ doc: unknown; found: boolean }> {
+  if (docId === undefined || docId === null) {
+    return { doc: undefined, found: false }
+  }
+  const payload = getPayloadFromReq(req)
+  if (!payload) {
+    return { doc: undefined, found: false }
+  }
+
+  const db = payload.db
+  if (db && typeof db.findOne === 'function') {
+    const doc = await db.findOne({
+      collection: collectionSlug,
+      req,
+      where: { id: { equals: docId } },
+    })
+    return { doc, found: true }
+  }
+
+  if (typeof payload.findByID === 'function') {
+    const doc = await payload.findByID({
+      collection: collectionSlug,
+      depth: 0,
+      disableErrors: true,
+      draft: false,
+      id: docId,
+      overrideAccess: true,
+      req,
+    })
+    return { doc, found: true }
+  }
+
+  return { doc: undefined, found: false }
+}
+
+async function readMainGlobalRow(
+  globalSlug: string,
+  req: unknown,
+): Promise<{ doc: unknown; found: boolean }> {
+  const payload = getPayloadFromReq(req)
+  if (!payload) {
+    return { doc: undefined, found: false }
+  }
+
+  const db = payload.db
+  if (db && typeof db.findGlobal === 'function') {
+    const doc = await db.findGlobal({
+      req,
+      slug: globalSlug,
+    })
+    return { doc, found: true }
+  }
+
+  if (typeof payload.findGlobal === 'function') {
+    const doc = await payload.findGlobal({
+      depth: 0,
+      draft: false,
+      overrideAccess: true,
+      req,
+      slug: globalSlug,
+    })
+    return { doc, found: true }
+  }
+
+  return { doc: undefined, found: false }
 }
 
 /**
@@ -170,17 +256,19 @@ export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = a
   }
   const docId =
     (originalDoc as { id?: unknown } | undefined)?.id ?? (data as { id?: unknown } | undefined)?.id
-  const findOne = getDbAdapter(req)?.findOne
-  if (findOne && docId !== undefined && docId !== null) {
+  if (docId !== undefined && docId !== null) {
     try {
-      const mainDocBefore = await findOne({
-        collection: collection.slug,
-        req,
-        where: { id: { equals: docId } },
-      })
-      ;(context as Record<string, unknown>).__mainDocBeforeChange = mainDocBefore
-    } catch {
-      // Ignore lookup errors in beforeChange
+      const { doc: mainDocBefore, found } = await readMainCollectionRow(collection.slug, docId, req)
+      if (found) {
+        setContextValue(context, req, '__mainDocBeforeChange', mainDocBefore)
+      }
+    } catch (err) {
+      const logger = getPayloadFromReq(req)?.logger
+      logger?.warn?.(
+        { collection: collection.slug, docId, err },
+        'Failed to read main published doc in beforeChange; falling back to fail-safe revalidation',
+      )
+      setContextValue(context, req, '__mainDocLookupFailed', true)
     }
   }
   return safeData
@@ -199,17 +287,18 @@ export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = as
   if (!global.versions?.drafts) {
     return safeData
   }
-  const findGlobal = getDbAdapter(req)?.findGlobal
-  if (findGlobal) {
-    try {
-      const mainGlobalBefore = await findGlobal({
-        slug: global.slug,
-        req,
-      })
-      ;(context as Record<string, unknown>).__mainGlobalBeforeChange = mainGlobalBefore
-    } catch {
-      // Ignore lookup errors in beforeChange
+  try {
+    const { doc: mainGlobalBefore, found } = await readMainGlobalRow(global.slug, req)
+    if (found) {
+      setContextValue(context, req, '__mainGlobalBeforeChange', mainGlobalBefore)
     }
+  } catch (err) {
+    const logger = getPayloadFromReq(req)?.logger
+    logger?.warn?.(
+      { err, global: global.slug },
+      'Failed to read main published global in beforeChange; falling back to fail-safe revalidation',
+    )
+    setContextValue(context, req, '__mainGlobalLookupFailed', true)
   }
   return safeData
 }
@@ -218,7 +307,7 @@ export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = as
  * Determines whether a collection `afterChange` event actually changed the public/published version
  * (publish, update of published, unpublish, or scheduled publish/unpublish).
  * Saving a draft or autosaving on an already-published document leaves the main table row as
- * `_status: 'published'` while `doc._status` is `'draft'`, and must NOT revalidate anything (P2-T4 R-4).
+ * `_status: 'published'` while `doc._status` is `'draft'`, and must NOT revalidate anything (P2-T4 R-4 / R-10).
  */
 export async function shouldRevalidateCollectionAfterChange({
   collection,
@@ -252,33 +341,41 @@ export async function shouldRevalidateCollectionAfterChange({
     return false
   }
 
-  const findOne = getDbAdapter(req)?.findOne
+  if (
+    (context as { __mainDocLookupFailed?: unknown } | undefined)?.__mainDocLookupFailed === true
+  ) {
+    return true
+  }
+
   const docId =
     typeof doc === 'object' && doc !== null && 'id' in doc
       ? (doc as { id?: unknown }).id
       : undefined
 
-  if (findOne && docId !== undefined && docId !== null) {
+  if (docId !== undefined && docId !== null) {
     try {
-      const mainDocNow = await findOne({
-        collection: collection.slug,
-        req,
-        where: { id: { equals: docId } },
-      })
-      const mainStatusNow = extractStatus(mainDocNow)
-      // When saving a draft or autosaving on a published document, Payload skips `db.updateOne`
-      // on the main table, so `mainStatusNow` remains `'published'` while `doc._status` is `'draft'`.
-      if (mainStatusNow === 'published') {
-        return false
+      const { doc: mainDocNow, found } = await readMainCollectionRow(collection.slug, docId, req)
+      if (found) {
+        const mainStatusNow = extractStatus(mainDocNow)
+        // When saving a draft or autosaving on a published document, Payload skips `db.updateOne`
+        // on the main table, so `mainStatusNow` remains `'published'` while `doc._status` is `'draft'`.
+        if (mainStatusNow === 'published') {
+          return false
+        }
+        const mainDocBefore = (context as { __mainDocBeforeChange?: unknown } | undefined)
+          ?.__mainDocBeforeChange
+        const mainStatusBefore = extractStatus(mainDocBefore)
+        if (mainStatusBefore !== undefined) {
+          return mainStatusBefore === 'published'
+        }
       }
-      const mainDocBefore = (context as { __mainDocBeforeChange?: unknown } | undefined)
-        ?.__mainDocBeforeChange
-      const mainStatusBefore = extractStatus(mainDocBefore)
-      if (mainStatusBefore !== undefined) {
-        return mainStatusBefore === 'published'
-      }
-    } catch {
-      // Fall back to previousStatus check below
+    } catch (err) {
+      const logger = getPayloadFromReq(req)?.logger
+      logger?.warn?.(
+        { collection: collection.slug, docId, err },
+        'Failed to read main published doc in afterChange; falling back to fail-safe revalidation',
+      )
+      return true
     }
   }
 
@@ -316,14 +413,17 @@ export async function shouldRevalidateGlobalAfterChange({
     return false
   }
 
-  const findGlobal = getDbAdapter(req)?.findGlobal
+  if (
+    typeof context === 'object' &&
+    context !== null &&
+    (context as { __mainGlobalLookupFailed?: unknown }).__mainGlobalLookupFailed === true
+  ) {
+    return true
+  }
 
-  if (findGlobal) {
-    try {
-      const mainGlobalNow = await findGlobal({
-        slug: global.slug,
-        req,
-      })
+  try {
+    const { doc: mainGlobalNow, found } = await readMainGlobalRow(global.slug, req)
+    if (found) {
       const mainStatusNow = extractStatus(mainGlobalNow)
       if (mainStatusNow === 'published') {
         return false
@@ -336,9 +436,14 @@ export async function shouldRevalidateGlobalAfterChange({
       if (mainStatusBefore !== undefined) {
         return mainStatusBefore === 'published'
       }
-    } catch {
-      // Fall back to previousStatus check below
     }
+  } catch (err) {
+    const logger = getPayloadFromReq(req)?.logger
+    logger?.warn?.(
+      { err, global: global.slug },
+      'Failed to read main published global in afterChange; falling back to fail-safe revalidation',
+    )
+    return true
   }
 
   return previousStatus === 'published'
@@ -434,8 +539,12 @@ export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithI
       for (const path of collectLocalizedPaths(options, slugs)) {
         safeRevalidatePath(path, undefined, logger)
       }
-    } catch {
-      // Never throw into the editor's save
+    } catch (err) {
+      const logger = getPayloadFromReq(req)?.logger
+      logger?.warn?.(
+        { collection: collection.slug, err },
+        'Revalidation hook failed in afterChange; continuing without throwing',
+      )
     }
 
     return doc
@@ -468,8 +577,12 @@ export function createRevalidateAfterDeleteHook<T extends TypeWithID = TypeWithI
       for (const path of collectLocalizedPaths(options, slugs)) {
         safeRevalidatePath(path, undefined, logger)
       }
-    } catch {
-      // Never throw into the editor's delete
+    } catch (err) {
+      const logger = getPayloadFromReq(req)?.logger
+      logger?.warn?.(
+        { collection: collection.slug, err },
+        'Revalidation hook failed in afterDelete; continuing without throwing',
+      )
     }
 
     return doc
@@ -536,8 +649,12 @@ export function createRevalidateGlobalAfterChangeHook(
           }
         }
       }
-    } catch {
-      // Never throw into the editor's save
+    } catch (err) {
+      const logger = getPayloadFromReq(req)?.logger
+      logger?.warn?.(
+        { err, global: global.slug },
+        'Revalidation hook failed in global afterChange; continuing without throwing',
+      )
     }
 
     return safeDoc

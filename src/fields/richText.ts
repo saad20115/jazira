@@ -13,6 +13,7 @@ import {
 import {
   type FieldAffectingData,
   type FieldHook,
+  type RelationshipField,
   type RichTextField,
   type TypeWithID,
   ValidationError,
@@ -83,6 +84,51 @@ export interface ValidateLexicalOptions {
   required?: boolean
 }
 
+export function extractPositiveIntMediaId(raw: unknown): number | null {
+  if (typeof raw === 'number' && Number.isInteger(raw) && raw > 0) {
+    return raw
+  }
+  if (typeof raw === 'string' && /^[1-9]\d*$/.test(raw.trim())) {
+    const parsed = Number.parseInt(raw.trim(), 10)
+    return parsed > 0 ? parsed : null
+  }
+  if (typeof raw === 'object' && raw !== null && 'id' in raw) {
+    return extractPositiveIntMediaId((raw as { id?: unknown }).id)
+  }
+  return null
+}
+
+export function extractRichTextUploadMediaIds(node: unknown): number[] {
+  const ids = new Set<number>()
+
+  const walk = (current: unknown): void => {
+    if (!current || typeof current !== 'object') {
+      return
+    }
+    if (Array.isArray(current)) {
+      for (const item of current) {
+        walk(item)
+      }
+      return
+    }
+    const record = current as Record<string, unknown>
+    if (record.type === 'upload' && record.relationTo === 'media') {
+      const id = extractPositiveIntMediaId(record.value)
+      if (id !== null) {
+        ids.add(id)
+      }
+    }
+    for (const val of Object.values(record)) {
+      if (typeof val === 'object' && val !== null) {
+        walk(val)
+      }
+    }
+  }
+
+  walk(node)
+  return Array.from(ids)
+}
+
 function inspectLexicalNode(
   node: unknown,
   allowedTypes: ReadonlySet<string>,
@@ -151,6 +197,9 @@ function inspectLexicalNode(
       !(ALLOWED_UPLOAD_COLLECTIONS as readonly string[]).includes(relationTo)
     ) {
       return `مجموعة الرفع "${String(relationTo)}" غير مسموحة داخل النص المنسق؛ يُسمح بمجموعة "media" فقط. / Disallowed upload relationTo "${String(relationTo)}" at ${path}; only "media" is allowed (I2).`
+    }
+    if (extractPositiveIntMediaId(record.value) === null) {
+      return `معرّف ملف الوسائط في عقدة الرفع (${path}) غير صالح. / Invalid media upload reference ID at ${path}.`
     }
   }
 
@@ -315,14 +364,14 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
     required = false,
   } = options
 
-  const enforceAstHook: RichTextFieldHook = (args) => {
+  const enforceAstHook: RichTextFieldHook = async (args) => {
     const val = args.value
     if (val === null || val === undefined || val === '') {
       return val
     }
+    const globalSlug = (args as { global?: { slug?: string } }).global?.slug
     const validationResult = validateLimitedLexicalState(val, { mode, required })
     if (validationResult !== true) {
-      const globalSlug = (args as { global?: { slug?: string } }).global?.slug
       throw new ValidationError(
         {
           collection: args.collection?.slug,
@@ -340,6 +389,49 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
         args.req.t,
       )
     }
+
+    const payloadFromReq = (
+      args.req as unknown as {
+        payload?: { find?: (opts: Record<string, unknown>) => Promise<{ docs: unknown[] }> }
+      }
+    ).payload
+    if (mode === 'limited' && typeof payloadFromReq?.find === 'function') {
+      const uploadIds = extractRichTextUploadMediaIds(val)
+      if (uploadIds.length > 0) {
+        const foundMedia = await payloadFromReq.find({
+          collection: 'media',
+          depth: 0,
+          limit: uploadIds.length,
+          overrideAccess: true,
+          req: args.req,
+          where: {
+            id: {
+              in: uploadIds,
+            },
+          },
+        })
+        if (foundMedia.docs.length !== uploadIds.length) {
+          throw new ValidationError(
+            {
+              collection: args.collection?.slug,
+              errors: [
+                {
+                  label: args.field.label === false ? undefined : args.field.label,
+                  message:
+                    'أحد ملفات الوسائط المضمّنة في النص المنسق غير موجود في مكتبة الوسائط. / One or more media items embedded in the rich text body do not exist in the media library.',
+                  path: name,
+                },
+              ],
+              global: globalSlug,
+              id: args.originalDoc?.id ?? args.data?.id,
+              req: args.req,
+            },
+            args.req.t,
+          )
+        }
+      }
+    }
+
     return val
   }
 
@@ -395,4 +487,66 @@ export function paragraphRichTextField(
     ...options,
     mode: 'paragraphsOnly',
   })
+}
+
+/**
+ * Hidden relationship field (`bodyMedia`) that indexes every `media` upload ID referenced
+ * inside a localized richText `body` field across all locales (`ar` and `en`), on both
+ * draft and published saves (`P2-T4 R-11`).
+ */
+export function bodyMediaField(bodyFieldName = 'body'): RelationshipField {
+  return {
+    name: 'bodyMedia',
+    type: 'relationship',
+    relationTo: 'media',
+    hasMany: true,
+    admin: {
+      hidden: true,
+    },
+    hooks: {
+      beforeChange: [
+        ({ data, originalDoc, req, siblingData, siblingDocWithLocales }) => {
+          const operationLocale =
+            typeof req.locale === 'string' && req.locale !== 'all' && req.locale.length > 0
+              ? req.locale
+              : 'ar'
+          const siblingRecord = siblingData as Record<string, unknown> | undefined
+          const dataRecord = data as Record<string, unknown> | undefined
+          const originalRecord = originalDoc as Record<string, unknown> | undefined
+          const activeBody =
+            siblingRecord && siblingRecord[bodyFieldName] !== undefined
+              ? siblingRecord[bodyFieldName]
+              : dataRecord && dataRecord[bodyFieldName] !== undefined
+                ? dataRecord[bodyFieldName]
+                : originalRecord?.[bodyFieldName]
+
+          const mediaIds = new Set<number>()
+          for (const id of extractRichTextUploadMediaIds(activeBody)) {
+            mediaIds.add(id)
+          }
+
+          const localizedBodies = siblingDocWithLocales?.[bodyFieldName]
+          if (
+            localizedBodies &&
+            typeof localizedBodies === 'object' &&
+            !Array.isArray(localizedBodies) &&
+            !('root' in localizedBodies)
+          ) {
+            for (const [localeKey, localeBody] of Object.entries(
+              localizedBodies as Record<string, unknown>,
+            )) {
+              if (localeKey === operationLocale && activeBody !== undefined) {
+                continue
+              }
+              for (const id of extractRichTextUploadMediaIds(localeBody)) {
+                mediaIds.add(id)
+              }
+            }
+          }
+
+          return Array.from(mediaIds)
+        },
+      ],
+    },
+  }
 }

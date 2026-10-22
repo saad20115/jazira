@@ -1,5 +1,4 @@
 import {
-  APIError,
   type CollectionBeforeDeleteHook,
   type CollectionBeforeOperationHook,
   type CollectionConfig,
@@ -14,6 +13,7 @@ import {
   createRevalidateAfterDeleteHook,
   REVALIDATE_LOCALES,
 } from '../hooks/revalidate'
+import { createPublicAPIError } from '../security/apiError'
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   createSafeUploadFileHandler,
@@ -120,47 +120,6 @@ const findReferencingLabels = async ({
   return [...labels]
 }
 
-const findRichTextBodyReferencingLabels = async ({
-  collection,
-  labelField,
-  mediaId,
-  draft,
-  req,
-}: {
-  collection: 'services' | 'projects'
-  labelField: string
-  mediaId: number | string
-  draft: boolean
-  req: Parameters<CollectionBeforeDeleteHook>[0]['req']
-}): Promise<string[]> => {
-  if (!(collection in req.payload.collections)) {
-    return []
-  }
-
-  const labels = new Set<string>()
-  for (const locale of REVALIDATE_LOCALES) {
-    const result = await req.payload.find({
-      collection,
-      locale,
-      fallbackLocale: false,
-      limit: 100,
-      depth: 0,
-      draft,
-      overrideAccess: true,
-      req,
-    })
-
-    for (const doc of result.docs) {
-      const record = doc as unknown as Record<string, unknown>
-      if (richTextReferencesMediaId(record.body, mediaId)) {
-        labels.add(formatReferencingDocLabel(collection, doc, labelField))
-      }
-    }
-  }
-
-  return [...labels]
-}
-
 const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
   const checks: Array<{
     collection: CollectionSlug
@@ -168,7 +127,6 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
     labelField: string
     versioned?: boolean
     localized?: boolean
-    richTextBody?: boolean
   }> = [
     {
       collection: 'team',
@@ -178,12 +136,15 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
     {
       collection: 'services',
       where: {
-        or: [{ image: { equals: id } }, { 'meta.image': { equals: id } }],
+        or: [
+          { image: { equals: id } },
+          { 'meta.image': { equals: id } },
+          { bodyMedia: { equals: id } },
+        ],
       },
       labelField: 'title',
       versioned: true,
       localized: true,
-      richTextBody: true,
     },
     {
       collection: 'projects',
@@ -192,12 +153,12 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
           { coverImage: { equals: id } },
           { gallery: { equals: id } },
           { 'meta.image': { equals: id } },
+          { bodyMedia: { equals: id } },
         ],
       },
       labelField: 'title',
       versioned: true,
       localized: true,
-      richTextBody: true,
     },
     {
       collection: 'brands',
@@ -238,44 +199,13 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
         references.add(item)
       }
     }
-
-    if (
-      check.richTextBody &&
-      (check.collection === 'services' || check.collection === 'projects')
-    ) {
-      const publishedBodyRefs = await findRichTextBodyReferencingLabels({
-        collection: check.collection,
-        labelField: check.labelField,
-        mediaId: id,
-        draft: false,
-        req,
-      })
-      for (const item of publishedBodyRefs) {
-        references.add(item)
-      }
-
-      if (check.versioned) {
-        const draftBodyRefs = await findRichTextBodyReferencingLabels({
-          collection: check.collection,
-          labelField: check.labelField,
-          mediaId: id,
-          draft: true,
-          req,
-        })
-        for (const item of draftBodyRefs) {
-          references.add(item)
-        }
-      }
-    }
   }
 
   if (references.size > 0) {
     const refList = [...references].join(', ')
-    throw new APIError(
+    throw createPublicAPIError(
       `لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (${refList}). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (${refList}). Remove the reference first.`,
       400,
-      undefined,
-      true,
     )
   }
 }

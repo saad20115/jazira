@@ -1,5 +1,4 @@
 import {
-  APIError,
   Forbidden,
   type CollectionBeforeChangeHook,
   type CollectionBeforeDeleteHook,
@@ -9,6 +8,7 @@ import {
 } from 'payload'
 
 import { adminOrSelf, isAdmin, isAdminFieldLevel } from '../access/index'
+import { createPublicAPIError } from '../security/apiError'
 import { enforcePasswordPolicy } from '../security/passwordPolicy'
 
 type ActiveBeforeOperationArg = Exclude<
@@ -93,11 +93,9 @@ const preventLastAdminDemotionBeforeChange: CollectionBeforeChangeHook = async (
       })
 
       if (otherAdmins.totalDocs === 0) {
-        throw new APIError(
+        throw createPublicAPIError(
           'لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.',
           400,
-          undefined,
-          true,
         )
       }
     }
@@ -128,11 +126,9 @@ const preventLastAdminBeforeDelete: CollectionBeforeDeleteHook = async ({ id, re
     })
 
     if (otherAdmins.totalDocs === 0) {
-      throw new APIError(
+      throw createPublicAPIError(
         'لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.',
         400,
-        undefined,
-        true,
       )
     }
   }
@@ -197,9 +193,14 @@ export const Users: CollectionConfig = {
         }
 
         const rawId = req.routeParams?.id
-        const id = typeof rawId === 'string' && /^\d+$/.test(rawId) ? Number(rawId) : rawId
-        if (typeof id !== 'string' && typeof id !== 'number') {
-          throw new APIError('Invalid user ID.', 400, undefined, true)
+        const id =
+          typeof rawId === 'number' && Number.isInteger(rawId) && rawId > 0
+            ? rawId
+            : typeof rawId === 'string' && /^[1-9]\d*$/.test(rawId.trim())
+              ? Number.parseInt(rawId.trim(), 10)
+              : null
+        if (id === null) {
+          throw createPublicAPIError('معرّف المستخدم غير صالح. / Invalid user ID.', 400)
         }
 
         const targetUser = await req.payload.db.findOne<{ id: number | string }>({

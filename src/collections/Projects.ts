@@ -11,7 +11,7 @@ import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { pillarFields } from '../fields/groups/pillar'
 import { validateVideoEmbedUrl } from '../fields/link'
 import { orderField } from '../fields/order'
-import { limitedRichTextField } from '../fields/richText'
+import { bodyMediaField, limitedRichTextField } from '../fields/richText'
 import { seoGroupField } from '../fields/seo'
 import { slugFields } from '../fields/slug'
 import {
@@ -150,7 +150,7 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
     })
   }
 
-  // Always validate videoUrl host and port (YouTube / Vimeo https:// only) even on draft saves (R-8)
+  // Always validate videoUrl host and port (YouTube / Vimeo https:// only) even on draft saves (R-8, R-15)
   if (hasNonEmptyVideoUrl(mutable.videoUrl)) {
     const verdict = validateVideoEmbedUrl(mutable.videoUrl, { required: false })
     if (verdict !== true) {
@@ -165,6 +165,7 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
         req,
       })
     }
+    mutable.videoUrl = new URL((mutable.videoUrl as string).trim()).href
   }
 
   // Validate enum values on draft and published saves so invalid enums return 400 instead of 500 (R-6)
@@ -381,6 +382,12 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = as
     if (publishedPrevDoc) {
       docsToInspect.push(publishedPrevDoc)
     }
+    if (docsToInspect.length === 0) {
+      docsToInspect.push(safeDoc)
+      if (previousDoc && typeof previousDoc === 'object') {
+        docsToInspect.push(previousDoc as Record<string, unknown>)
+      }
+    }
 
     const logger = req.payload.logger
     const categories = new Set<string>()
@@ -424,8 +431,11 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = as
         safeRevalidatePath(`/${locale}`, undefined, logger)
       }
     }
-  } catch {
-    // Never throw into the editor's save
+  } catch (err) {
+    req.payload.logger.warn(
+      { err },
+      'revalidateProjectRelatedAndHomeAfterChange failed; continuing without throwing',
+    )
   }
 
   return safeDoc
@@ -476,8 +486,11 @@ const revalidateProjectRelatedAndHomeAfterDelete: CollectionAfterDeleteHook = ({
         safeRevalidatePath(`/${locale}`, undefined, logger)
       }
     }
-  } catch {
-    // Never throw into the editor's delete
+  } catch (err) {
+    req.payload.logger.warn(
+      { err },
+      'revalidateProjectRelatedAndHomeAfterDelete failed; continuing without throwing',
+    )
   }
 
   return safeDoc
@@ -931,7 +944,13 @@ export const Projects: CollectionConfig = {
                       return value
                     }
                     const trimmed = value.trim()
-                    return trimmed.length === 0 ? null : trimmed
+                    if (trimmed.length === 0) {
+                      return null
+                    }
+                    if (validateVideoEmbedUrl(trimmed, { required: false }) === true) {
+                      return new URL(trimmed).href
+                    }
+                    return trimmed
                   },
                 ],
               },
@@ -1096,5 +1115,6 @@ export const Projects: CollectionConfig = {
       },
     },
     orderField(),
+    bodyMediaField('body'),
   ],
 }

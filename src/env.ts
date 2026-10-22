@@ -76,6 +76,19 @@ function isSameOrSubdirectory(parentDir: string, candidateDir: string): boolean 
   return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel))
 }
 
+const jobsAutoRunSchema = z
+  .string({
+    error:
+      'PAYLOAD_JOBS_AUTORUN must be explicitly set to "true" or "false" in production so at most one instance runs the Payload jobs queue.',
+  })
+  .trim()
+  .toLowerCase()
+  .refine(
+    (val) => val === 'true' || val === 'false' || val === '1' || val === '0',
+    'PAYLOAD_JOBS_AUTORUN must be "true", "false", "1", or "0".',
+  )
+  .transform((val) => val === 'true' || val === '1')
+
 const envSchema = z
   .object({
     DATABASE_URL: z
@@ -106,6 +119,7 @@ const envSchema = z
     MEDIA_DIR: storageDirSchema('MEDIA_DIR'),
     VIDEOS_DIR: storageDirSchema('VIDEOS_DIR'),
     UPLOAD_TMP_DIR: storageDirSchema('UPLOAD_TMP_DIR'),
+    PAYLOAD_JOBS_AUTORUN: jobsAutoRunSchema,
   })
   .refine((data) => data.PAYLOAD_SECRET !== data.IP_HASH_SALT, {
     path: ['IP_HASH_SALT'],
@@ -141,6 +155,13 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
   const rawMediaDir = rawEnv.MEDIA_DIR?.trim()
   const rawVideosDir = rawEnv.VIDEOS_DIR?.trim()
   const rawUploadTmpDir = rawEnv.UPLOAD_TMP_DIR?.trim()
+  const rawJobsAutoRun = rawEnv.PAYLOAD_JOBS_AUTORUN?.trim()
+  const isProductionRuntime =
+    rawEnv.NODE_ENV === 'production' &&
+    rawEnv.NEXT_PHASE !== 'phase-production-build' &&
+    rawEnv.NEXT_PHASE !== 'phase-export' &&
+    rawEnv.NEXT_PHASE !== 'phase-production-compile'
+
   const result = envSchema.safeParse({
     DATABASE_URL: rawEnv.DATABASE_URL,
     SERVER_URL: rawEnv.SERVER_URL,
@@ -151,6 +172,11 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
     UPLOAD_TMP_DIR: rawUploadTmpDir
       ? rawUploadTmpDir
       : path.resolve(os.tmpdir(), 'aljazira-uploads'),
+    PAYLOAD_JOBS_AUTORUN: rawJobsAutoRun
+      ? rawJobsAutoRun
+      : isProductionRuntime
+        ? undefined
+        : 'true',
   })
 
   if (!result.success) {
@@ -174,11 +200,14 @@ const BUILD_PHASE_FALLBACK_ENV: Record<string, string> = {
   SERVER_URL: 'http://localhost:3000',
   PAYLOAD_SECRET: 'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-0001',
   IP_HASH_SALT: 'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-00002',
+  PAYLOAD_JOBS_AUTORUN: 'false',
 }
 
 function loadEnv(): Env {
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return parseEnv({
+      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PHASE: process.env.NEXT_PHASE,
       DATABASE_URL: process.env.DATABASE_URL || BUILD_PHASE_FALLBACK_ENV.DATABASE_URL,
       SERVER_URL: process.env.SERVER_URL || BUILD_PHASE_FALLBACK_ENV.SERVER_URL,
       PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_SECRET,
@@ -186,6 +215,8 @@ function loadEnv(): Env {
       MEDIA_DIR: process.env.MEDIA_DIR || path.resolve(process.cwd(), 'media'),
       VIDEOS_DIR: process.env.VIDEOS_DIR || path.resolve(process.cwd(), 'videos'),
       UPLOAD_TMP_DIR: process.env.UPLOAD_TMP_DIR || path.resolve(os.tmpdir(), 'aljazira-uploads'),
+      PAYLOAD_JOBS_AUTORUN:
+        process.env.PAYLOAD_JOBS_AUTORUN || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_JOBS_AUTORUN,
     })
   }
 

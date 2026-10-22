@@ -92,6 +92,7 @@ jobs:
             echo "APP_DB_PASS=${APP_DB_PASS}"
             echo "DATABASE_URL=postgresql://aljazira_app:${APP_DB_PASS}@127.0.0.1:5432/aljazira_dev"
             echo "TEST_DATABASE_URL=postgresql://aljazira_app:${APP_DB_PASS}@127.0.0.1:5432/aljazira_test"
+            echo "PAYLOAD_JOBS_AUTORUN=true"
           } >> "$GITHUB_ENV"
 
       - name: Install dependencies (frozen lockfile)

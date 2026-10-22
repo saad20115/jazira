@@ -3,11 +3,12 @@ import { describe, expect, it } from 'vitest'
 import { shouldAutoRunJobs } from './shouldAutoRun'
 
 describe('shouldAutoRunJobs (P2-T4 R-1)', () => {
-  it('returns true for a primary running server process (next start / next dev)', () => {
+  it('returns true for a primary running server process when PAYLOAD_JOBS_AUTORUN is explicit in production or defaulted in dev', () => {
     expect(
       shouldAutoRunJobs(
         {
           NODE_ENV: 'production',
+          PAYLOAD_JOBS_AUTORUN: 'true',
         },
         ['node', '/app/node_modules/next/dist/bin/next', 'start'],
       ),
@@ -17,12 +18,31 @@ describe('shouldAutoRunJobs (P2-T4 R-1)', () => {
       shouldAutoRunJobs(
         {
           NODE_ENV: 'production',
+          PAYLOAD_JOBS_AUTORUN: 'true',
           NODE_APP_INSTANCE: '0',
           WORKER_ID: 'primary',
         },
         ['node', '/app/node_modules/next/dist/bin/next', 'start'],
       ),
     ).toBe(true)
+
+    expect(
+      shouldAutoRunJobs(
+        {
+          NODE_ENV: 'development',
+        },
+        ['node', '/app/node_modules/next/dist/bin/next', 'dev'],
+      ),
+    ).toBe(true)
+
+    expect(
+      shouldAutoRunJobs(
+        {
+          NODE_ENV: 'production',
+        },
+        ['node', '/app/node_modules/next/dist/bin/next', 'start'],
+      ),
+    ).toBe(false)
   })
 
   it('returns false during Next.js build phases or CLI build argv', () => {

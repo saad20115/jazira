@@ -577,6 +577,22 @@ describe('P2-T4 integration suite (projects)', () => {
     )
     expect(switchToVimeoRes.status).toBe(200)
 
+    // Explicit default HTTPS port :443 is normalized by stripping :443 before storage (R-15)
+    const defaultPortNormalizedRes = await callJsonApi(
+      'PATCH',
+      `/api/projects/${String(videoProjectId)}?locale=ar`,
+      {
+        cookie: editorCookie,
+        body: {
+          videoUrl: 'https://www.youtube.com:443/watch?v=dQw4w9WgXcQ',
+        },
+      },
+    )
+    expect(defaultPortNormalizedRes.status).toBe(200)
+    expect((defaultPortNormalizedRes.data.doc as { videoUrl?: string }).videoUrl).toBe(
+      'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+    )
+
     // 6. Non-allowed videoUrl hosts, non-default ports (:8443), http:// scheme, or bare domain are rejected with 400 (even on draft save) (R-8)
     const invalidVideoUrls = [
       'https://evil.com/watch?v=dQw4w9WgXcQ',
@@ -764,6 +780,39 @@ describe('P2-T4 integration suite (projects)', () => {
         body: { title: 'Draft bad scope', scope: ['invalid-scope'], _status: 'draft' },
         expectedPath: 'scope',
       },
+      {
+        body: { title: 'Draft non-object meta string', meta: 'str', _status: 'draft' },
+        expectedPath: 'meta',
+      },
+      {
+        body: { title: 'Draft non-object meta array', meta: [], _status: 'draft' },
+        expectedPath: 'meta',
+      },
+      {
+        body: {
+          title: 'Draft missing upload media ID in body',
+          body: {
+            root: {
+              type: 'root',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'rtl',
+              children: [
+                {
+                  type: 'upload',
+                  version: 3,
+                  format: '',
+                  relationTo: 'media',
+                  value: 999999,
+                },
+              ],
+            },
+          },
+          _status: 'draft',
+        },
+        expectedPath: 'body',
+      },
     ]
 
     for (const item of badDraftPayloads) {
@@ -774,6 +823,38 @@ describe('P2-T4 integration suite (projects)', () => {
       expect(draftRes.status, `Expected 400 for draft ${item.expectedPath}`).toBe(400)
       expect(JSON.stringify(draftRes.data)).toContain(item.expectedPath)
     }
+
+    const badPublishBodyMediaRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        title: 'مشروع بصورة غير موجودة داخل النص الغني',
+        category: 'mep',
+        location: 'الرياض',
+        status: 'completed',
+        coverImage: uploadedMediaId,
+        body: {
+          root: {
+            type: 'root',
+            format: '',
+            indent: 0,
+            version: 1,
+            direction: 'rtl',
+            children: [
+              {
+                type: 'upload',
+                version: 3,
+                format: '',
+                relationTo: 'media',
+                value: 999999,
+              },
+            ],
+          },
+        },
+        _status: 'published',
+      },
+    })
+    expect(badPublishBodyMediaRes.status).toBe(400)
+    expect(JSON.stringify(badPublishBodyMediaRes.data)).toContain('body')
 
     const badPublishGalleryRes = await callJsonApi('POST', '/api/projects?locale=ar', {
       cookie: editorCookie,
@@ -819,9 +900,12 @@ describe('P2-T4 integration suite (projects)', () => {
 
     const enMetaMediaId = await uploadExtraMedia('en-only-meta-image')
     const bodyUploadMediaId = await uploadExtraMedia('richtext-body-upload-image')
+    const nestedQuoteMediaId = await uploadExtraMedia('richtext-nested-quote-upload-image')
+    const serviceBodyMediaId = await uploadExtraMedia('service-richtext-body-upload-image')
+    const highPageBodyMediaId = await uploadExtraMedia('project-105-body-upload-image')
     const unusedMediaId = await uploadExtraMedia('unused-media-image')
 
-    // Attach enMetaMediaId ONLY to `en` locale `meta.image`, and bodyUploadMediaId ONLY as a Lexical upload node in `body`
+    // Attach enMetaMediaId ONLY to `en` locale `meta.image`, bodyUploadMediaId inside a nested listitem, and nestedQuoteMediaId inside a quote node in `body` (R-7, R-11)
     const attachEnAndBodyMediaRes = await callJsonApi(
       'PATCH',
       `/api/projects/${String(secondProjectId)}?locale=en`,
@@ -840,11 +924,49 @@ describe('P2-T4 integration suite (projects)', () => {
               direction: 'ltr',
               children: [
                 {
-                  type: 'upload',
-                  version: 3,
+                  type: 'list',
+                  listType: 'bullet',
+                  tag: 'ul',
+                  start: 1,
                   format: '',
-                  relationTo: 'media',
-                  value: bodyUploadMediaId,
+                  indent: 0,
+                  version: 1,
+                  direction: 'ltr',
+                  children: [
+                    {
+                      type: 'listitem',
+                      value: 1,
+                      format: '',
+                      indent: 0,
+                      version: 1,
+                      direction: 'ltr',
+                      children: [
+                        {
+                          type: 'upload',
+                          version: 3,
+                          format: '',
+                          relationTo: 'media',
+                          value: bodyUploadMediaId,
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  type: 'quote',
+                  format: '',
+                  indent: 0,
+                  version: 1,
+                  direction: 'ltr',
+                  children: [
+                    {
+                      type: 'upload',
+                      version: 3,
+                      format: '',
+                      relationTo: 'media',
+                      value: nestedQuoteMediaId,
+                    },
+                  ],
                 },
               ],
             },
@@ -870,12 +992,129 @@ describe('P2-T4 integration suite (projects)', () => {
     expect(deleteBodyUploadRes.status).toBe(400)
     expect(JSON.stringify(deleteBodyUploadRes.data)).toContain('projects(')
 
+    const deleteNestedQuoteUploadRes = await callJsonApi(
+      'DELETE',
+      `/api/media/${String(nestedQuoteMediaId)}`,
+      {
+        cookie: editorCookie,
+      },
+    )
+    expect(deleteNestedQuoteUploadRes.status).toBe(400)
+    expect(JSON.stringify(deleteNestedQuoteUploadRes.data)).toContain('projects(')
+
+    // Attach serviceBodyMediaId inside a `services.body` upload node and verify deletion is blocked (R-11)
+    const serviceWithBodyUploadRes = await callJsonApi(
+      'POST',
+      '/api/services?locale=ar&draft=true',
+      {
+        cookie: editorCookie,
+        body: {
+          title: 'خدمة اختبارية بصورة داخل النص الغني',
+          tier: 'main',
+          icon: 'mep',
+          summary: 'ملخص خدمة اختبارية.',
+          body: {
+            root: {
+              type: 'root',
+              format: '',
+              indent: 0,
+              version: 1,
+              direction: 'rtl',
+              children: [
+                {
+                  type: 'upload',
+                  version: 3,
+                  format: '',
+                  relationTo: 'media',
+                  value: serviceBodyMediaId,
+                },
+              ],
+            },
+          },
+          _status: 'draft',
+        },
+      },
+    )
+    expect(serviceWithBodyUploadRes.status).toBe(201)
+
+    const deleteServiceBodyMediaRes = await callJsonApi(
+      'DELETE',
+      `/api/media/${String(serviceBodyMediaId)}`,
+      {
+        cookie: editorCookie,
+      },
+    )
+    expect(deleteServiceBodyMediaRes.status).toBe(400)
+    expect(JSON.stringify(deleteServiceBodyMediaRes.data)).toContain('services(')
+
+    // Create >100 projects so project #105 holds `highPageBodyMediaId` in its `body`, and verify `DELETE /api/media/:id` still blocks deletion without pagination truncation (R-11)
+    for (let i = 1; i <= 102; i += 1) {
+      await payload.create({
+        collection: 'projects',
+        draft: true,
+        locale: 'ar',
+        data: {
+          title: `مشروع إضافي لاختبار الترقيم رقم ${String(i)}`,
+          category: 'mep',
+          location: 'الرياض',
+          status: 'completed',
+          coverImage: Number(uploadedMediaId),
+          _status: 'draft',
+        },
+      })
+    }
+    const project105 = await payload.create({
+      collection: 'projects',
+      draft: true,
+      locale: 'ar',
+      data: {
+        title: 'مشروع رقم 105 بصورة داخل النص الغني',
+        category: 'mep',
+        location: 'الرياض',
+        status: 'completed',
+        coverImage: Number(uploadedMediaId),
+        body: {
+          root: {
+            type: 'root',
+            format: '',
+            indent: 0,
+            version: 1,
+            direction: 'rtl',
+            children: [
+              {
+                type: 'upload',
+                version: 3,
+                format: '',
+                relationTo: 'media',
+                value: Number(highPageBodyMediaId),
+              },
+            ],
+          },
+        },
+        _status: 'draft',
+      },
+    })
+    expect(project105.id).toBeDefined()
+
+    const deleteHighPageBodyMediaRes = await callJsonApi(
+      'DELETE',
+      `/api/media/${String(highPageBodyMediaId)}`,
+      {
+        cookie: editorCookie,
+      },
+    )
+    expect(deleteHighPageBodyMediaRes.status).toBe(400)
+    expect(JSON.stringify(deleteHighPageBodyMediaRes.data)).toContain('projects(')
+    expect(JSON.stringify(deleteHighPageBodyMediaRes.data)).not.toContain(
+      'An unknown error occurred.',
+    )
+
     // Unreferenced media item deletes cleanly (no false positives)
     const deleteUnusedRes = await callJsonApi('DELETE', `/api/media/${String(unusedMediaId)}`, {
       cookie: editorCookie,
     })
     expect(deleteUnusedRes.status).toBe(200)
-  })
+  }, 120_000)
 
   it('wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4)', async () => {
     const tagSpy = vi.mocked(nextCache.revalidateTag).mockImplementation(() => undefined)
@@ -929,7 +1168,24 @@ describe('P2-T4 integration suite (projects)', () => {
 
       const nonFeaturedId = (nonFeaturedRes.data.doc as { id: number | string }).id
 
-      // 2. Saving a draft or autosaving (?draft=true&autosave=true) on the published project — even setting featured: true in the draft — invalidates NOTHING (R-4)
+      // 2a. First Local API draft/autosave immediately after publish (featured: false in published row) invalidates NOTHING (R-10)
+      await payload.update({
+        collection: 'projects',
+        id: Number(nonFeaturedId),
+        draft: true,
+        autosave: true,
+        locale: 'en',
+        data: {
+          title: 'Jeddah Low Current Hospital Network (Local API Autosave 1)',
+          featured: true,
+          category: 'fire-fighting',
+          _status: 'draft',
+        },
+      })
+      expect(tagSpy).not.toHaveBeenCalled()
+      expect(pathSpy).not.toHaveBeenCalled()
+
+      // 2b. Saving a draft or autosaving via REST (?draft=true&autosave=true) on the published project — even setting featured: true in the draft — invalidates NOTHING (R-4, R-10)
       const autosaveOnPublishedRes = await callJsonApi(
         'PATCH',
         `/api/projects/${String(nonFeaturedId)}?locale=en&draft=true&autosave=true`,
@@ -973,7 +1229,41 @@ describe('P2-T4 integration suite (projects)', () => {
       tagSpy.mockClear()
       pathSpy.mockClear()
 
-      // 4. Unpublishing the published project (_status: 'draft' without ?draft=true) revalidates all tags and paths (R-4)
+      // 3b. First Local API draft/autosave immediately after publish (featured: true in published row) invalidates NOTHING (R-10)
+      await payload.update({
+        collection: 'projects',
+        id: Number(nonFeaturedId),
+        draft: true,
+        autosave: true,
+        locale: 'en',
+        data: {
+          title: 'Jeddah Low Current Hospital Network (Local API Autosave 2)',
+          featured: false,
+          category: 'mep',
+          _status: 'draft',
+        },
+      })
+      expect(tagSpy).not.toHaveBeenCalled()
+      expect(pathSpy).not.toHaveBeenCalled()
+
+      // 3c. Edit draft via REST (?draft=true&autosave=true) before unpublishing (so latest version row has _status: 'draft' and featured: false, while main table row has _status: 'published' and featured: true) (R-10)
+      const draftEditBeforeUnpublishRes = await callJsonApi(
+        'PATCH',
+        `/api/projects/${String(nonFeaturedId)}?locale=en&draft=true&autosave=true`,
+        {
+          cookie: editorCookie,
+          body: {
+            title: 'Jeddah Low Current Hospital Network (Draft Before Unpublish)',
+            featured: false,
+            _status: 'draft',
+          },
+        },
+      )
+      expect(draftEditBeforeUnpublishRes.status).toBe(200)
+      expect(tagSpy).not.toHaveBeenCalled()
+      expect(pathSpy).not.toHaveBeenCalled()
+
+      // 4. Unpublishing the published project AFTER a draft edit (_status: 'draft' without ?draft=true) revalidates all 15 tags and paths (R-4, R-10)
       const unpublishRes = await callJsonApi(
         'PATCH',
         `/api/projects/${String(nonFeaturedId)}?locale=en`,
@@ -1003,9 +1293,82 @@ describe('P2-T4 integration suite (projects)', () => {
           '/en/projects/jeddah-low-current-hospital-network',
         ]),
       )
+      expect(tagSpy.mock.calls.length + pathSpy.mock.calls.length).toBeGreaterThanOrEqual(15)
     } finally {
       tagSpy.mockRestore()
       pathSpy.mockRestore()
     }
+  })
+
+  it('preserves public bilingual APIError messages across Media, Brands, and Users endpoints (R-13)', async () => {
+    const adminCookie = `payload-token=${adminToken}`
+
+    // 1. Create a brand and a material referencing it, then verify DELETE /api/brands/:id returns exact bilingual message
+    const brandRes = await callJsonApi('POST', '/api/brands?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        name: 'علامة تجارية محمية',
+        logo: uploadedMediaId,
+        order: 1,
+      },
+    })
+    expect(brandRes.status).toBe(201)
+    const brandId = (brandRes.data.doc as { id: number | string }).id
+
+    const materialRes = await callJsonApi('POST', '/api/materials?locale=ar', {
+      cookie: editorCookie,
+      body: {
+        itemNo: 991,
+        description: 'مادة مرتبطة بالعلامة التجارية',
+        system: 'electrical',
+        brands: [brandId],
+      },
+    })
+    expect(materialRes.status).toBe(201)
+
+    const deleteBrandRes = await callJsonApi('DELETE', `/api/brands/${String(brandId)}`, {
+      cookie: editorCookie,
+    })
+    expect(deleteBrandRes.status).toBe(400)
+    const brandErrors = (deleteBrandRes.data as { errors?: Array<{ message?: string }> }).errors
+    expect(brandErrors?.[0]?.message).toContain(
+      'Cannot delete this brand because it is referenced by 1 approved material(s)',
+    )
+    expect(brandErrors?.[0]?.message).not.toBe('An unknown error occurred.')
+
+    // 2. Last-admin deletion and demotion return exact bilingual messages
+    const deleteLastAdminRes = await callJsonApi('DELETE', `/api/users/${String(adminUserId)}`, {
+      cookie: adminCookie,
+    })
+    expect(deleteLastAdminRes.status).toBe(400)
+    const deleteAdminErrors = (deleteLastAdminRes.data as { errors?: Array<{ message?: string }> })
+      .errors
+    expect(deleteAdminErrors?.[0]?.message).toContain('Cannot delete the last admin user.')
+    expect(deleteAdminErrors?.[0]?.message).not.toBe('An unknown error occurred.')
+
+    const demoteLastAdminRes = await callJsonApi('PATCH', `/api/users/${String(adminUserId)}`, {
+      cookie: adminCookie,
+      body: {
+        role: 'editor',
+      },
+    })
+    expect(demoteLastAdminRes.status).toBe(400)
+    const demoteAdminErrors = (demoteLastAdminRes.data as { errors?: Array<{ message?: string }> })
+      .errors
+    expect(demoteAdminErrors?.[0]?.message).toContain('Cannot demote the last admin user.')
+    expect(demoteAdminErrors?.[0]?.message).not.toBe('An unknown error occurred.')
+
+    // 3. Invalid non-integer ID on /:id/revoke-sessions returns 400 with bilingual message
+    const invalidRevokeRes = await callJsonApi(
+      'POST',
+      '/api/users/not-an-integer/revoke-sessions',
+      {
+        cookie: adminCookie,
+      },
+    )
+    expect(invalidRevokeRes.status).toBe(400)
+    const revokeErrors = (invalidRevokeRes.data as { errors?: Array<{ message?: string }> }).errors
+    expect(revokeErrors?.[0]?.message).toContain('Invalid user ID.')
+    expect(revokeErrors?.[0]?.message).not.toBe('An unknown error occurred.')
   })
 })

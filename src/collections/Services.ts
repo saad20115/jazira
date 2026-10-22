@@ -4,7 +4,7 @@ import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { SERVICE_ICON_OPTIONS } from '../components/icons/ServiceIcon'
 import { orderField } from '../fields/order'
-import { limitedRichTextField } from '../fields/richText'
+import { bodyMediaField, limitedRichTextField } from '../fields/richText'
 import { seoGroupField } from '../fields/seo'
 import { slugFields } from '../fields/slug'
 import {
@@ -354,5 +354,6 @@ export const Services: CollectionConfig = {
     },
     orderField(),
     seoGroupField(),
+    bodyMediaField('body'),
   ],
 }

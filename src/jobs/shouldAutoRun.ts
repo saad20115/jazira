@@ -18,6 +18,9 @@ export function shouldAutoRunJobs(
   if (explicitFlag === 'false' || explicitFlag === '0') {
     return false
   }
+  if (env.NODE_ENV === 'production' && explicitFlag !== 'true' && explicitFlag !== '1') {
+    return false
+  }
 
   if (
     env.NEXT_PHASE === 'phase-production-build' ||

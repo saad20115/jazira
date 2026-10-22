@@ -19,6 +19,7 @@ vi.mock('next/cache', () => ({
 import {
   buildCollectionTags,
   buildGlobalTags,
+  captureMainPublishedDocBeforeChange,
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
   createRevalidateGlobalAfterChangeHook,
@@ -341,5 +342,48 @@ describe('revalidate hooks & tag builders', () => {
     expect(result).toBe(doc)
     expect(mockRevalidateTag).not.toHaveBeenCalled()
     expect(mockRevalidatePath).not.toHaveBeenCalled()
+  })
+
+  it('logs a warning and falls back to invalidating (fail-safe) if reading the main row fails (P2-T4 R-10)', async () => {
+    const warnSpy = vi.fn()
+    const draftDoc: SampleDoc = { id: 1, slug: 'sofitel-makkah-hotel', _status: 'draft' }
+    const afterChange = createRevalidateAfterChangeHook<SampleDoc>({
+      routePrefix: '/projects',
+    })
+
+    const context: Record<string, unknown> = {}
+    await captureMainPublishedDocBeforeChange({
+      collection: { slug: 'projects', versions: { drafts: true } } as never,
+      context,
+      data: draftDoc,
+      operation: 'update',
+      originalDoc: draftDoc,
+      req: {
+        payload: {
+          findByID: () => Promise.reject(new Error('DB connection transient error')),
+          logger: { warn: warnSpy },
+        },
+      } as never,
+    })
+
+    expect(warnSpy).toHaveBeenCalledTimes(1)
+    expect(context.__mainDocLookupFailed).toBe(true)
+
+    await afterChange({
+      collection: { slug: 'projects', versions: { drafts: true } },
+      context,
+      data: draftDoc,
+      doc: draftDoc,
+      operation: 'update',
+      previousDoc: draftDoc,
+      req: {
+        payload: {
+          logger: { warn: warnSpy },
+        },
+      },
+    } as unknown as Parameters<CollectionAfterChangeHook<SampleDoc>>[0])
+
+    expect(mockRevalidateTag).toHaveBeenCalledTimes(6)
+    expect(mockRevalidatePath).toHaveBeenCalledTimes(6)
   })
 })

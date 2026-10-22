@@ -425,6 +425,7 @@ export interface Service {
      */
     image?: (number | null) | Media;
   };
+  bodyMedia?: (number | Media)[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -589,6 +590,7 @@ export interface Project {
    * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
    */
   order: number;
+  bodyMedia?: (number | Media)[] | null;
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -960,6 +962,7 @@ export interface ServicesSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
+  bodyMedia?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
@@ -1024,6 +1027,7 @@ export interface ProjectsSelect<T extends boolean = true> {
   status?: T;
   featured?: T;
   order?: T;
+  bodyMedia?: T;
   updatedAt?: T;
   createdAt?: T;
   _status?: T;

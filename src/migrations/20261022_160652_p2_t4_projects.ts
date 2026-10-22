@@ -169,6 +169,22 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   	"media_id" integer
   );
   
+  CREATE TABLE "services_rels" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"media_id" integer
+  );
+  
+  CREATE TABLE "_services_v_rels" (
+  	"id" serial PRIMARY KEY NOT NULL,
+  	"order" integer,
+  	"parent_id" integer NOT NULL,
+  	"path" varchar NOT NULL,
+  	"media_id" integer
+  );
+  
   ALTER TABLE "services" ALTER COLUMN "tier" DROP DEFAULT;
   ALTER TABLE "services" ALTER COLUMN "icon" DROP DEFAULT;
   ALTER TABLE "_services_v" ALTER COLUMN "version_tier" DROP DEFAULT;
@@ -197,6 +213,10 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   ALTER TABLE "_projects_v_locales" ADD CONSTRAINT "_projects_v_locales_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "public"."_projects_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_projects_v_rels" ADD CONSTRAINT "_projects_v_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."_projects_v"("id") ON DELETE cascade ON UPDATE no action;
   ALTER TABLE "_projects_v_rels" ADD CONSTRAINT "_projects_v_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "services_rels" ADD CONSTRAINT "services_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."services"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "services_rels" ADD CONSTRAINT "services_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_services_v_rels" ADD CONSTRAINT "_services_v_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "public"."_services_v"("id") ON DELETE cascade ON UPDATE no action;
+  ALTER TABLE "_services_v_rels" ADD CONSTRAINT "_services_v_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "public"."media"("id") ON DELETE cascade ON UPDATE no action;
   CREATE INDEX "projects_scope_order_idx" ON "projects_scope" USING btree ("order");
   CREATE INDEX "projects_scope_parent_idx" ON "projects_scope" USING btree ("parent_id");
   CREATE INDEX "projects_details_order_idx" ON "projects_details" USING btree ("_order");
@@ -258,6 +278,14 @@ export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): P
   CREATE INDEX "_projects_v_rels_parent_idx" ON "_projects_v_rels" USING btree ("parent_id");
   CREATE INDEX "_projects_v_rels_path_idx" ON "_projects_v_rels" USING btree ("path");
   CREATE INDEX "_projects_v_rels_media_id_idx" ON "_projects_v_rels" USING btree ("media_id");
+  CREATE INDEX "services_rels_order_idx" ON "services_rels" USING btree ("order");
+  CREATE INDEX "services_rels_parent_idx" ON "services_rels" USING btree ("parent_id");
+  CREATE INDEX "services_rels_path_idx" ON "services_rels" USING btree ("path");
+  CREATE INDEX "services_rels_media_id_idx" ON "services_rels" USING btree ("media_id");
+  CREATE INDEX "_services_v_rels_order_idx" ON "_services_v_rels" USING btree ("order");
+  CREATE INDEX "_services_v_rels_parent_idx" ON "_services_v_rels" USING btree ("parent_id");
+  CREATE INDEX "_services_v_rels_path_idx" ON "_services_v_rels" USING btree ("path");
+  CREATE INDEX "_services_v_rels_media_id_idx" ON "_services_v_rels" USING btree ("media_id");
   ALTER TABLE "payload_locked_documents_rels" ADD CONSTRAINT "payload_locked_documents_rels_projects_fk" FOREIGN KEY ("projects_id") REFERENCES "public"."projects"("id") ON DELETE cascade ON UPDATE no action;
   CREATE INDEX "payload_locked_documents_rels_projects_id_idx" ON "payload_locked_documents_rels" USING btree ("projects_id");`)
 }
@@ -299,6 +327,8 @@ export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs
   DROP TABLE "_projects_v" CASCADE;
   DROP TABLE "_projects_v_locales" CASCADE;
   DROP TABLE "_projects_v_rels" CASCADE;
+  DROP TABLE "services_rels" CASCADE;
+  DROP TABLE "_services_v_rels" CASCADE;
   ALTER TABLE "services" ALTER COLUMN "tier" SET DEFAULT 'main';
   ALTER TABLE "services" ALTER COLUMN "icon" SET DEFAULT 'mep';
   ALTER TABLE "_services_v" ALTER COLUMN "version_tier" SET DEFAULT 'main';

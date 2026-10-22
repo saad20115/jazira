@@ -1,4 +1,4 @@
-import { APIError, type CollectionBeforeDeleteHook, type CollectionConfig } from 'payload'
+import { type CollectionBeforeDeleteHook, type CollectionConfig } from 'payload'
 
 import { isAdminOrEditor } from '../access/index'
 import { validateExternalUrl } from '../fields/link'
@@ -7,6 +7,7 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
+import { createPublicAPIError } from '../security/apiError'
 
 const preventBrandDeletionWhenUsedByMaterials: CollectionBeforeDeleteHook = async ({ id, req }) => {
   const referencingMaterials = await req.payload.find({
@@ -30,11 +31,9 @@ const preventBrandDeletionWhenUsedByMaterials: CollectionBeforeDeleteHook = asyn
       })
       .join(', ')
 
-    throw new APIError(
+    throw createPublicAPIError(
       `لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في ${String(referencingMaterials.totalDocs)} مادة معتمدة (البنود: ${itemNumbers}). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by ${String(referencingMaterials.totalDocs)} approved material(s) (items: ${itemNumbers}). Remove it from those materials first.`,
       400,
-      undefined,
-      true,
     )
   }
 }

@@ -40,7 +40,41 @@ describe('parseEnv (S1, S2)', () => {
       MEDIA_DIR: path.resolve(process.cwd(), 'media'),
       VIDEOS_DIR: path.resolve(process.cwd(), 'videos'),
       UPLOAD_TMP_DIR: path.resolve(os.tmpdir(), 'aljazira-uploads'),
+      PAYLOAD_JOBS_AUTORUN: true,
     })
+  })
+
+  it('requires PAYLOAD_JOBS_AUTORUN to be explicitly set in production while defaulting to true in dev/test (P2-T4 R-14)', () => {
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+      }),
+    ).toThrow(/PAYLOAD_JOBS_AUTORUN.*production/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'invalid',
+      }),
+    ).toThrow(/PAYLOAD_JOBS_AUTORUN/i)
+
+    expect(
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'true',
+      }).PAYLOAD_JOBS_AUTORUN,
+    ).toBe(true)
+
+    expect(
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'false',
+      }).PAYLOAD_JOBS_AUTORUN,
+    ).toBe(false)
   })
 
   it('validates MEDIA_DIR, VIDEOS_DIR, and UPLOAD_TMP_DIR as separate absolute paths outside public/ (R-4, R-6, R-18)', () => {
