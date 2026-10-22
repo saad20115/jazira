@@ -1,0 +1,1224 @@
+<canvas id="1:2" name="🖥 Website" x="0" y="0" width="0" height="0">
+  <frame id="13:2" name="01 Home" x="0" y="0" width="1440" height="6204">
+    <frame id="17:199" name="Hero" x="0" y="0" width="1440" height="864">
+      <rounded-rectangle id="17:219" name="BG image" x="0" y="0" width="1440" height="864" />
+      <rounded-rectangle id="17:220" name="Overlay" x="0" y="0" width="1440" height="864" />
+      <ellipse id="17:221" name="Gold glow" x="370" y="120" width="700" height="700" />
+      <instance id="17:200" name="Eyebrow" x="556" y="200" width="328" height="30" />
+      <text id="17:203" name="Building the Future with Smart Solutions" x="220" y="258" width="1000" height="160" />
+      <text id="17:204" name="Al Jazira for Imdad Smart Company is a leading MEP contractor in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over four decades of proven excellence." x="400" y="446" width="640" height="90" />
+      <frame id="17:205" name="Frame" x="507" y="564" width="426" height="52">
+        <instance id="17:206" name="Button" x="0" y="0" width="230" height="50" />
+        <instance id="17:210" name="Button" x="246" y="0" width="180" height="52" />
+      </frame>
+      <frame id="17:214" name="Frame" x="715" y="644" width="10" height="60" />
+      <frame id="17:215" name="Scroll hint" x="651.5" y="732" width="137" height="42">
+        <text id="17:216" name="Scroll to explore" x="0" y="0" width="137" height="16" />
+        <frame id="17:217" name="Frame" x="59.5" y="24" width="18" height="18" />
+      </frame>
+    </frame>
+    <frame id="17:222" name="Who we are" x="0" y="864" width="1440" height="628">
+      <frame id="17:223" name="Visual" x="140" y="94" width="560" height="440">
+        <frame id="17:224" name="Corner bracket" x="-12" y="-12" width="80" height="80" />
+        <rounded-rectangle id="17:226" name="Image" x="8" y="8" width="540" height="410" />
+        <frame id="17:227" name="Badge" x="380" y="350" width="171" height="108">
+          <text id="17:228" name="45+" x="46.5" y="18" width="78" height="48" />
+          <text id="17:229" name="Years Experience" x="26" y="68" width="119" height="22" />
+        </frame>
+      </frame>
+      <frame id="17:230" name="Frame" x="764" y="78" width="536" height="472">
+        <instance id="17:231" name="Eyebrow" x="0" y="0" width="133" height="30" />
+        <text id="17:234" name="Engineering Excellence Since 1979" x="0" y="50" width="520" height="104" />
+        <text id="17:235" name="With nearly five decades of expertise in Gulf markets, Al Jazira for Imdad Smart Company has rapidly expanded and grown from strength to strength, delivering exceptional performance and earning a reputation as a highly dependable specialist MEP contractor." x="0" y="174" width="540" height="130" />
+        <text id="17:236" name="We deliver comprehensive MEP packages through our in-house engineers, minimizing reliance on subcontractors and ensuring better quality, service, and on-time delivery." x="0" y="324" width="540" height="78" />
+        <instance id="17:237" name="Button" x="0" y="422" width="231" height="50" />
+      </frame>
+    </frame>
+    <frame id="17:254" name="Core services" x="0" y="1492" width="1440" height="764">
+      <frame id="110:1586" name="Section head" x="140" y="72" width="1300" height="150">
+        <frame id="110:1587" name="Title" x="0" y="0" width="716" height="150">
+          <instance id="110:1588" name="Eyebrow" x="0" y="0" width="133" height="30" />
+          <text id="110:1591" name="Heading" x="0" y="46" width="716" height="104" />
+        </frame>
+        <frame id="110:1592" name="Intro &amp; controls" x="780" y="20" width="380" height="130">
+          <text id="110:1593" name="Intro" x="0" y="0" width="380" height="130" />
+        </frame>
+      </frame>
+      <instance id="175:3736" name="Services Carousel" x="140" y="262" width="1300" height="430" />
+    </frame>
+    <frame id="111:1608" name="Interactive systems" x="0" y="2256" width="1440" height="922">
+      <frame id="111:1609" name="Section head" x="140" y="72" width="1160" height="150">
+        <frame id="111:1610" name="Title" x="0" y="0" width="640" height="150">
+          <instance id="111:1611" name="Eyebrow" x="0" y="0" width="134" height="30" />
+          <text id="111:1614" name="Heading" x="0" y="46" width="640" height="104" />
+        </frame>
+        <text id="111:1615" name="Intro" x="720" y="72" width="440" height="78" />
+      </frame>
+      <frame id="111:1616" name="Explorer" x="140" y="270" width="1160" height="580">
+        <frame id="111:1617" name="3D building (rotating)" x="0" y="0" width="600" height="580">
+          <instance id="116:2668" name="3D Building" x="0" y="0" width="600" height="580" />
+          <frame id="111:1729" name="3D badge" x="20" y="20" width="297" height="30">
+            <frame id="111:1730" name="icon/cube" x="13" y="8" width="14" height="14" />
+            <text id="111:1733" name="3D model · live version available" x="33" y="7" width="251" height="16" />
+          </frame>
+          <frame id="119:3810" name="Open live 3D model" x="24" y="522" width="218" height="42">
+            <text id="119:3811" name="Open the live 3D model" x="16" y="10" width="164" height="22" />
+            <frame id="119:3812" name="icon/arrow-up-right" x="188" y="14" width="14" height="14" />
+          </frame>
+        </frame>
+        <frame id="111:1750" name="Systems" x="640" y="2" width="520" height="576">
+          <instance id="111:1751" name="Accordion Item" x="0" y="0" width="520" height="172" />
+          <instance id="111:1760" name="Accordion Item" x="0" y="184" width="520" height="80" />
+          <instance id="111:1769" name="Accordion Item" x="0" y="276" width="520" height="98" />
+          <instance id="111:1778" name="Accordion Item" x="0" y="386" width="520" height="98" />
+          <instance id="111:1787" name="Accordion Item" x="0" y="496" width="520" height="80" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="18:285" name="Trusted by industry leaders" x="0" y="3178" width="1440" height="425">
+      <rounded-rectangle id="18:306" name="BG image" x="0" y="0" width="1440" height="425" />
+      <rounded-rectangle id="18:307" name="Overlay" x="0" y="0" width="1440" height="425" />
+      <frame id="18:286" name="Section head" x="410" y="65" width="620" height="147">
+        <text id="18:287" name="Trusted by Industry Leaders" x="1" y="0" width="618" height="52" />
+        <text id="18:288" name="Our numbers speak for themselves — decades of reliable MEP solutions across the Gulf region." x="0" y="68" width="620" height="60" />
+        <rounded-rectangle id="18:289" name="Divider" x="284" y="144" width="52" height="3" />
+      </frame>
+      <frame id="18:290" name="Stats" x="140" y="268" width="1160" height="92">
+        <frame id="18:291" name="Frame" x="0" y="0" width="289.25" height="92">
+          <text id="18:292" name="45+" x="90.125" y="0" width="109" height="60" />
+          <text id="18:293" name="Years of Experience" x="67.125" y="66" width="155" height="26" />
+        </frame>
+        <rounded-rectangle id="18:294" name="Rectangle" x="289.25" y="14" width="1" height="64" />
+        <frame id="18:295" name="Frame" x="290.25" y="0" width="289.25" height="92">
+          <text id="18:296" name="100+" x="80.625" y="0" width="128" height="60" />
+          <text id="18:297" name="Completed Projects" x="65.625" y="66" width="158" height="26" />
+        </frame>
+        <rounded-rectangle id="18:298" name="Rectangle" x="579.5" y="14" width="1" height="64" />
+        <frame id="18:299" name="Frame" x="580.5" y="0" width="289.25" height="92">
+          <text id="18:300" name="85%" x="84.125" y="0" width="121" height="60" />
+          <text id="18:301" name="Self-Performed Work" x="61.625" y="66" width="166" height="26" />
+        </frame>
+        <rounded-rectangle id="18:302" name="Rectangle" x="869.75" y="14" width="1" height="64" />
+        <frame id="18:303" name="Frame" x="870.75" y="0" width="289.25" height="92">
+          <text id="18:304" name="21+" x="100.625" y="0" width="88" height="60" />
+          <text id="18:305" name="MEP Disciplines" x="84.625" y="66" width="120" height="26" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="18:308" name="Featured projects" x="0" y="3603" width="1440" height="1067">
+      <frame id="18:309" name="Section head" x="410" y="72" width="620" height="193">
+        <instance id="18:310" name="Eyebrow" x="233.5" y="0" width="153" height="30" />
+        <text id="18:313" name="Featured Projects" x="114.5" y="46" width="391" height="52" />
+        <text id="18:314" name="A showcase of our most prestigious MEP construction and smart systems projects across the Gulf region." x="0" y="114" width="620" height="60" />
+        <rounded-rectangle id="18:315" name="Divider" x="284" y="190" width="52" height="3" />
+      </frame>
+      <frame id="18:316" name="Grid" x="140" y="313" width="1160" height="584">
+        <instance id="18:317" name="Project Card" x="0" y="0" width="370.6600036621094" height="280" />
+        <instance id="18:335" name="Project Card" x="394.6600036621094" y="0" width="370.6600036621094" height="280" />
+        <instance id="18:353" name="Project Card" x="789.3200073242188" y="0" width="370.6600036621094" height="280" />
+        <instance id="18:372" name="Project Card" x="0" y="304" width="370.6600036621094" height="280" />
+        <instance id="18:390" name="Project Card" x="394.6600036621094" y="304" width="370.6600036621094" height="280" />
+        <instance id="18:408" name="Project Card" x="789.3200073242188" y="304" width="370.6600036621094" height="280" />
+      </frame>
+      <instance id="18:426" name="Button" x="620" y="945" width="200" height="50" />
+    </frame>
+    <frame id="18:579" name="Trusted partners" x="0" y="4670" width="1440" height="547">
+      <frame id="18:580" name="Section head" x="410" y="72" width="620" height="174">
+        <instance id="18:581" name="Eyebrow" x="219.5" y="0" width="181" height="30" />
+        <text id="18:584" name="Trusted Partners" x="124.5" y="46" width="371" height="52" />
+        <text id="18:585" name="We collaborate with world-leading brands to deliver the highest quality solutions." x="0" y="114" width="620" height="60" />
+      </frame>
+      <instance id="18:587" name="Logo Marquee" x="0" y="286" width="1440" height="196" />
+    </frame>
+    <frame id="18:660" name="CTA" x="0" y="5217" width="1440" height="484">
+      <rounded-rectangle id="18:672" name="BG image" x="0" y="0" width="1440" height="484" />
+      <rounded-rectangle id="18:673" name="Overlay" x="0" y="0" width="1440" height="484" />
+      <text id="18:661" name="Ready to Build Your Next Project?" x="270" y="83" width="900" height="128" />
+      <text id="18:662" name="Let our 45+ years of MEP expertise work for your next construction or infrastructure project. Get in touch for a free consultation." x="440" y="235" width="560" height="90" />
+      <frame id="18:663" name="Frame" x="539.5" y="349" width="361" height="52">
+        <instance id="18:664" name="Button" x="0" y="0" width="208" height="50" />
+        <instance id="18:668" name="Button" x="222" y="0" width="139" height="52" />
+      </frame>
+      <rounded-rectangle id="18:674" name="Deco square" x="230" y="90" width="109.0995866060257" height="109.0995866060257" />
+      <rounded-rectangle id="18:675" name="Deco square" x="300" y="330" width="69.5073589682579" height="69.5073589682579" />
+      <rounded-rectangle id="18:676" name="Deco square" x="1120" y="90" width="109.0995866060257" height="109.0995866060257" />
+      <rounded-rectangle id="18:677" name="Deco square" x="1080" y="330" width="71.16355866193771" height="71.16355866193771" />
+    </frame>
+    <instance id="18:678" name="Footer" x="0" y="5701" width="1440" height="503" />
+    <instance id="18:749" name="Navbar" x="0" y="0" width="1440" height="80" />
+    <instance id="18:775" name="WhatsApp FAB (fixed)" x="1144" y="796" width="280" height="88" />
+  </frame>
+  <frame id="13:3" name="02 Services" x="1680" y="0" width="1440" height="6433">
+    <frame id="24:1478" name="Page header" x="0" y="0" width="1440" height="537">
+      <rounded-rectangle id="24:1486" name="BG image" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="24:1487" name="Overlay" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="24:1479" name="Rectangle" x="692" y="190" width="56" height="3" />
+      <text id="24:1480" name="Our Services" x="542.5" y="211" width="355" height="64" />
+      <text id="24:1481" name="End-to-end MEP and construction services, with around 85% of every package delivered by our own engineers and technicians." x="400" y="293" width="640" height="60" />
+      <frame id="24:1482" name="Frame" x="641" y="371" width="158" height="16">
+        <text id="24:1483" name="Home" x="0" y="0" width="39" height="16" />
+        <ellipse id="24:1484" name="Ellipse" x="47" y="5.5" width="5" height="5" />
+        <text id="24:1485" name="Our Services" x="60" y="0" width="98" height="16" />
+      </frame>
+      <frame id="24:1488" name="Frame" x="0" y="449" width="1440" height="90">
+        <vector id="24:1489" name="Vector" x="0" y="13.125" width="1440" height="76.875" />
+      </frame>
+    </frame>
+    <frame id="24:1490" name="Services" x="0" y="537" width="1440" height="2194">
+      <frame id="24:1498" name="Service / General Contracting" x="140" y="56" width="1160" height="455">
+        <frame id="24:1499" name="Visual" x="0" y="27.5" width="540" height="400">
+          <rounded-rectangle id="24:1500" name="Rectangle" x="0" y="0" width="540" height="400" />
+          <frame id="24:1501" name="Frame" x="-20" y="-20" width="65" height="60">
+            <text id="24:1502" name="01" x="18" y="12" width="29" height="36" />
+          </frame>
+        </frame>
+        <frame id="24:1503" name="Frame" x="612" y="0" width="548" height="455">
+          <instance id="24:1504" name="Eyebrow" x="0" y="0" width="121" height="30" />
+          <text id="24:1507" name="General Contracting" x="0" y="48" width="456" height="52" />
+          <rounded-rectangle id="24:1508" name="Divider" x="0" y="118" width="52" height="3" />
+          <text id="24:1509" name="Execution of new construction projects adhering to the highest quality standards, with comprehensive project management from design to delivery." x="0" y="139" width="540" height="90" />
+          <frame id="24:1510" name="Frame" x="0" y="247" width="548" height="140">
+            <frame id="24:1511" name="Frame" x="0" y="0" width="244" height="26">
+              <frame id="24:1512" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1515" name="New construction projects" x="34" y="0" width="210" height="26" />
+            </frame>
+            <frame id="24:1516" name="Frame" x="0" y="38" width="396" height="26">
+              <frame id="24:1517" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1520" name="Project management from design to delivery" x="34" y="0" width="362" height="26" />
+            </frame>
+            <frame id="24:1521" name="Frame" x="0" y="76" width="411" height="26">
+              <frame id="24:1522" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1525" name="Maintenance &amp; upgrading of existing buildings" x="34" y="0" width="377" height="26" />
+            </frame>
+            <frame id="24:1526" name="Frame" x="0" y="114" width="353" height="26">
+              <frame id="24:1527" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1530" name="Civil &amp; MEP works with sister companies" x="34" y="0" width="319" height="26" />
+            </frame>
+          </frame>
+          <instance id="24:1531" name="Button" x="0" y="405" width="199" height="50" />
+        </frame>
+      </frame>
+      <frame id="24:1535" name="Service / MEP Works" x="140" y="581" width="1160" height="485">
+        <frame id="24:1540" name="Frame" x="0" y="0" width="548" height="485">
+          <instance id="24:1541" name="Eyebrow" x="0" y="0" width="122" height="30" />
+          <text id="24:1544" name="MEP Works" x="0" y="48" width="243" height="52" />
+          <rounded-rectangle id="24:1545" name="Divider" x="0" y="118" width="52" height="3" />
+          <text id="24:1546" name="Complete mechanical, electrical, and plumbing engineering services delivered by our in-house engineers, with innovative solutions to improve energy efficiency and reduce operating costs." x="0" y="139" width="540" height="120" />
+          <frame id="24:1547" name="Frame" x="0" y="277" width="548" height="140">
+            <frame id="24:1548" name="Frame" x="0" y="0" width="298" height="26">
+              <frame id="24:1549" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1552" name="HVAC, chilled water &amp; ventilation" x="34" y="0" width="264" height="26" />
+            </frame>
+            <frame id="24:1553" name="Frame" x="0" y="38" width="294" height="26">
+              <frame id="24:1554" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1557" name="Power distribution, lighting &amp; MV" x="34" y="0" width="260" height="26" />
+            </frame>
+            <frame id="24:1558" name="Frame" x="0" y="76" width="318" height="26">
+              <frame id="24:1559" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1562" name="Plumbing, water supply &amp; drainage" x="34" y="0" width="284" height="26" />
+            </frame>
+            <frame id="24:1563" name="Frame" x="0" y="114" width="303" height="26">
+              <frame id="24:1564" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1567" name="BMS, data networks &amp; low current" x="34" y="0" width="269" height="26" />
+            </frame>
+          </frame>
+          <instance id="24:1568" name="Button" x="0" y="435" width="199" height="50" />
+        </frame>
+        <frame id="24:1536" name="Visual" x="620" y="42.5" width="540" height="400">
+          <rounded-rectangle id="24:1537" name="Rectangle" x="0" y="0" width="540" height="400" />
+          <frame id="24:1538" name="Frame" x="489" y="-20" width="71" height="60">
+            <text id="24:1539" name="02" x="18" y="12" width="35" height="36" />
+          </frame>
+        </frame>
+      </frame>
+      <frame id="24:1572" name="Service / Firefighting Systems" x="140" y="1136" width="1160" height="455">
+        <frame id="24:1573" name="Visual" x="0" y="27.5" width="540" height="400">
+          <rounded-rectangle id="24:1574" name="Rectangle" x="0" y="0" width="540" height="400" />
+          <frame id="24:1575" name="Frame" x="-20" y="-20" width="72" height="60">
+            <text id="24:1576" name="03" x="18" y="12" width="36" height="36" />
+          </frame>
+        </frame>
+        <frame id="24:1577" name="Frame" x="612" y="0" width="548" height="455">
+          <instance id="24:1578" name="Eyebrow" x="0" y="0" width="123" height="30" />
+          <text id="24:1581" name="Firefighting Systems" x="0" y="48" width="459" height="52" />
+          <rounded-rectangle id="24:1582" name="Divider" x="0" y="118" width="52" height="3" />
+          <text id="24:1583" name="Design and implementation of firefighting systems according to international standards, with integrated safety solutions to protect lives and property." x="0" y="139" width="540" height="90" />
+          <frame id="24:1584" name="Frame" x="0" y="247" width="548" height="140">
+            <frame id="24:1585" name="Frame" x="0" y="0" width="291" height="26">
+              <frame id="24:1586" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1589" name="Fire pumps &amp; sprinkler networks" x="34" y="0" width="257" height="26" />
+            </frame>
+            <frame id="24:1590" name="Frame" x="0" y="38" width="285" height="26">
+              <frame id="24:1591" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1594" name="Fire detection &amp; alarm systems" x="34" y="0" width="251" height="26" />
+            </frame>
+            <frame id="24:1595" name="Frame" x="0" y="76" width="242" height="26">
+              <frame id="24:1596" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1599" name="Clean-agent suppression" x="34" y="0" width="208" height="26" />
+            </frame>
+            <frame id="24:1600" name="Frame" x="0" y="114" width="421" height="26">
+              <frame id="24:1601" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1604" name="Installation &amp; maintenance of safety equipment" x="34" y="0" width="387" height="26" />
+            </frame>
+          </frame>
+          <instance id="24:1605" name="Button" x="0" y="405" width="199" height="50" />
+        </frame>
+      </frame>
+      <frame id="24:1609" name="Service / Smart Systems" x="140" y="1661" width="1160" height="455">
+        <frame id="24:1614" name="Frame" x="0" y="0" width="548" height="455">
+          <instance id="24:1615" name="Eyebrow" x="0" y="0" width="123" height="30" />
+          <text id="24:1618" name="Smart Systems" x="0" y="48" width="340" height="52" />
+          <rounded-rectangle id="24:1619" name="Divider" x="0" y="118" width="52" height="3" />
+          <text id="24:1620" name="Audio visual, smart automation, security, IT networking, and building management system integration for modern intelligent buildings." x="0" y="139" width="540" height="90" />
+          <frame id="24:1621" name="Frame" x="0" y="247" width="548" height="140">
+            <frame id="24:1622" name="Frame" x="0" y="0" width="277" height="26">
+              <frame id="24:1623" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1626" name="Audio visual &amp; meeting rooms" x="34" y="0" width="243" height="26" />
+            </frame>
+            <frame id="24:1627" name="Frame" x="0" y="38" width="290" height="26">
+              <frame id="24:1628" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1631" name="CCTV, access control &amp; security" x="34" y="0" width="256" height="26" />
+            </frame>
+            <frame id="24:1632" name="Frame" x="0" y="76" width="293" height="26">
+              <frame id="24:1633" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1636" name="IT networks, data centers &amp; NOC" x="34" y="0" width="259" height="26" />
+            </frame>
+            <frame id="24:1637" name="Frame" x="0" y="114" width="372" height="26">
+              <frame id="24:1638" name="Frame" x="0" y="2" width="22" height="22" />
+              <text id="24:1641" name="Queue management &amp; smart automation" x="34" y="0" width="338" height="26" />
+            </frame>
+          </frame>
+          <instance id="24:1642" name="Button" x="0" y="405" width="199" height="50" />
+        </frame>
+        <frame id="24:1610" name="Visual" x="620" y="27.5" width="540" height="400">
+          <rounded-rectangle id="24:1611" name="Rectangle" x="0" y="0" width="540" height="400" />
+          <frame id="24:1612" name="Frame" x="488" y="-20" width="74" height="60">
+            <text id="24:1613" name="04" x="18" y="12" width="38" height="36" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="126:1887" name="Specialist services" x="0" y="2731" width="1440" height="950">
+      <frame id="126:1888" name="Section head" x="400" y="65" width="640" height="193">
+        <instance id="126:1889" name="Eyebrow" x="243.5" y="0" width="153" height="30" />
+        <text id="126:1890" name="Specialist Services" x="112" y="46" width="416" height="52" />
+        <text id="126:1891" name="Dedicated teams for each MEP discipline, plus equipment supply, testing and long-term maintenance." x="0" y="114" width="640" height="60" />
+        <rounded-rectangle id="126:1892" name="Divider" x="294" y="190" width="52" height="3" />
+      </frame>
+      <frame id="126:1895" name="Grid" x="140" y="306" width="1160" height="572">
+        <instance id="126:1896" name="Service Tile / HVAC, Ventilation &amp; Refrigeration" x="0" y="0" width="373.3333435058594" height="276" />
+        <instance id="126:1910" name="Service Tile / Plumbing, Water &amp; Drainage" x="393.3333435058594" y="0" width="373.3333435058594" height="276" />
+        <instance id="126:1924" name="Service Tile / Electrical &amp; Power Distribution" x="786.6666870117188" y="0" width="373.3333435058594" height="276" />
+        <instance id="126:1938" name="Service Tile / MEP Equipment Supply" x="0" y="296" width="373.3333435058594" height="276" />
+        <instance id="126:1953" name="Service Tile / Testing, Commissioning &amp; TAB" x="393.3333435058594" y="296" width="373.3333435058594" height="276" />
+        <instance id="126:1968" name="Service Tile / Maintenance &amp; Upgrades" x="786.6666870117188" y="296" width="373.3333435058594" height="276" />
+      </frame>
+    </frame>
+    <frame id="157:3293" name="Approved materials &amp; brands" x="0" y="3681" width="1440" height="1136">
+      <frame id="157:3294" name="Section head" x="140" y="65" width="1160" height="174">
+        <frame id="157:3295" name="Title" x="0" y="0" width="756" height="174">
+          <instance id="157:3296" name="Eyebrow" x="0" y="0" width="190" height="30" />
+          <text id="157:3299" name="Heading" x="0" y="46" width="652" height="52" />
+          <text id="157:3300" name="Intro" x="0" y="114" width="756" height="60" />
+        </frame>
+        <frame id="157:3301" name="Search" x="820" y="124" width="340" height="50">
+          <frame id="157:3302" name="icon/search" x="17" y="16" width="18" height="18" />
+          <text id="157:3305" name="Placeholder" x="45" y="14" width="177" height="22" />
+        </frame>
+      </frame>
+      <frame id="157:3306" name="System tabs" x="140" y="267" width="784" height="42">
+        <frame id="157:3307" name="Tab / All systems" x="0" y="0" width="154" height="42">
+          <text id="157:3308" name="All systems" x="17" y="10" width="86" height="22" />
+          <frame id="157:3309" name="Count" x="111" y="12" width="30" height="18">
+            <text id="157:3310" name="73" x="8" y="2" width="14" height="14" />
+          </frame>
+        </frame>
+        <frame id="157:3311" name="Tab / Electrical" x="164" y="0" width="136" height="40">
+          <text id="157:3312" name="Electrical" x="16" y="9" width="69" height="22" />
+          <frame id="157:3313" name="Count" x="93" y="11" width="31" height="18">
+            <text id="157:3314" name="20" x="8" y="2" width="15" height="14" />
+          </frame>
+        </frame>
+        <frame id="157:3315" name="Tab / Mechanical" x="310" y="0" width="157" height="42">
+          <text id="157:3316" name="Mechanical" x="17" y="10" width="89" height="22" />
+          <frame id="157:3317" name="Count" x="114" y="12" width="30" height="18">
+            <text id="157:3318" name="37" x="8" y="2" width="14" height="14" />
+          </frame>
+        </frame>
+        <frame id="157:3319" name="Tab / Structural" x="477" y="0" width="137" height="42">
+          <text id="157:3320" name="Structural" x="17" y="10" width="75" height="22" />
+          <frame id="157:3321" name="Count" x="100" y="12" width="24" height="18">
+            <text id="157:3322" name="8" x="8" y="2" width="8" height="14" />
+          </frame>
+        </frame>
+        <frame id="157:3323" name="Tab / Architectural" x="624" y="0" width="160" height="42">
+          <text id="157:3324" name="Architectural" x="17" y="10" width="98" height="22" />
+          <frame id="157:3325" name="Count" x="123" y="12" width="24" height="18">
+            <text id="157:3326" name="8" x="8" y="2" width="8" height="14" />
+          </frame>
+        </frame>
+      </frame>
+      <frame id="157:3327" name="Table (data from dashboard)" x="140" y="337" width="1160" height="646">
+        <frame id="157:3328" name="Header" x="1" y="1" width="1158" height="44">
+          <text id="157:3329" name="NO." x="24" y="14" width="64" height="16" />
+          <text id="157:3330" name="MATERIAL / ITEM" x="88" y="14" width="456" height="16" />
+          <text id="157:3331" name="BRAND" x="544" y="14" width="360" height="16" />
+          <text id="157:3332" name="ORIGIN" x="904" y="14" width="230" height="16" />
+        </frame>
+        <frame id="157:3333" name="Row 01" x="1" y="45" width="1158" height="60">
+          <text id="157:3334" name="01" x="24" y="19" width="64" height="22" />
+          <text id="157:3335" name="EMT Conduit" x="88" y="19" width="456" height="22" />
+          <frame id="157:3336" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3337" name="Al Rouf" x="0" y="0" width="70" height="30">
+              <text id="157:3338" name="Al Rouf" x="10" y="4" width="50" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3339" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3340" name="Row 02" x="1" y="105" width="1158" height="60">
+          <text id="157:3341" name="02" x="24" y="19" width="64" height="22" />
+          <text id="157:3342" name="Electric Box" x="88" y="19" width="456" height="22" />
+          <frame id="157:3343" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3344" name="Al Rouf" x="0" y="0" width="70" height="30">
+              <text id="157:3345" name="Al Rouf" x="10" y="4" width="50" height="22" />
+            </frame>
+            <frame id="157:3346" name="Alfanar" x="76" y="0" width="73" height="30">
+              <text id="157:3347" name="Alfanar" x="10" y="4" width="53" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3348" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3349" name="Row 03" x="1" y="165" width="1158" height="60">
+          <text id="157:3350" name="03" x="24" y="19" width="64" height="22" />
+          <text id="157:3351" name="Electrical Steel Box" x="88" y="19" width="456" height="22" />
+          <frame id="157:3352" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3353" name="Alfanar" x="0" y="0" width="73" height="30">
+              <text id="157:3354" name="Alfanar" x="10" y="4" width="53" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3355" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3356" name="Row 04" x="1" y="225" width="1158" height="60">
+          <text id="157:3357" name="04" x="24" y="19" width="64" height="22" />
+          <text id="157:3358" name="PVC Electric Conduit" x="88" y="19" width="456" height="22" />
+          <frame id="157:3359" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3360" name="EGA" x="0" y="0" width="49" height="30">
+              <text id="157:3361" name="EGA" x="10" y="4" width="29" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3362" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3363" name="Row 05" x="1" y="285" width="1158" height="60">
+          <text id="157:3364" name="05" x="24" y="19" width="64" height="22" />
+          <text id="157:3365" name="Cable Tray" x="88" y="19" width="456" height="22" />
+          <frame id="157:3366" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3367" name="United Technology Group" x="0" y="0" width="201" height="30">
+              <text id="157:3368" name="United Technology Group" x="10" y="4" width="181" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3369" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3370" name="Row 06" x="1" y="345" width="1158" height="60">
+          <text id="157:3371" name="06" x="24" y="19" width="64" height="22" />
+          <text id="157:3372" name="Cable Trunking" x="88" y="19" width="456" height="22" />
+          <frame id="157:3373" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3374" name="United Technology Group" x="0" y="0" width="201" height="30">
+              <text id="157:3375" name="United Technology Group" x="10" y="4" width="181" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3376" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3377" name="Row 07" x="1" y="405" width="1158" height="60">
+          <text id="157:3378" name="07" x="24" y="19" width="64" height="22" />
+          <text id="157:3379" name="Electric Cables" x="88" y="19" width="456" height="22" />
+          <frame id="157:3380" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3381" name="Jeddah Cables" x="0" y="0" width="128" height="30">
+              <text id="157:3382" name="Jeddah Cables" x="10" y="4" width="108" height="22" />
+            </frame>
+            <frame id="157:3383" name="Bahra Cables" x="134" y="0" width="117" height="30">
+              <text id="157:3384" name="Bahra Cables" x="10" y="4" width="97" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3385" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3386" name="Row 08" x="1" y="465" width="1158" height="60">
+          <text id="157:3387" name="08" x="24" y="19" width="64" height="22" />
+          <text id="157:3388" name="Wires" x="88" y="19" width="456" height="22" />
+          <frame id="157:3389" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3390" name="Bahra Cables" x="0" y="0" width="117" height="30">
+              <text id="157:3391" name="Bahra Cables" x="10" y="4" width="97" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3392" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3393" name="Row 09" x="1" y="525" width="1158" height="60">
+          <text id="157:3394" name="09" x="24" y="19" width="64" height="22" />
+          <text id="157:3395" name="Fire Alarm Cables" x="88" y="19" width="456" height="22" />
+          <frame id="157:3396" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3397" name="MESC" x="0" y="0" width="60" height="30">
+              <text id="157:3398" name="MESC" x="10" y="4" width="40" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3399" name="Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+        <frame id="157:3400" name="Row 10" x="1" y="585" width="1158" height="60">
+          <text id="157:3401" name="10" x="24" y="19" width="64" height="22" />
+          <text id="157:3402" name="Floor Box Data Cable" x="88" y="19" width="456" height="22" />
+          <frame id="157:3403" name="Brands" x="544" y="15" width="360" height="30">
+            <frame id="157:3404" name="Belden" x="0" y="0" width="69" height="30">
+              <text id="157:3405" name="Belden" x="10" y="4" width="49" height="22" />
+            </frame>
+            <frame id="157:3406" name="CommScope" x="75" y="0" width="114" height="30">
+              <text id="157:3407" name="CommScope" x="10" y="4" width="94" height="22" />
+            </frame>
+            <frame id="157:3408" name="MESC" x="195" y="0" width="60" height="30">
+              <text id="157:3409" name="MESC" x="10" y="4" width="40" height="22" />
+            </frame>
+          </frame>
+          <text id="157:3410" name="USA · Saudi Arabia" x="904" y="19" width="230" height="22" />
+        </frame>
+      </frame>
+      <frame id="157:3411" name="Table footer" x="140" y="1011" width="1160" height="53">
+        <text id="157:3412" name="Count" x="0" y="15.5" width="935" height="22" />
+        <instance id="157:3413" name="Button" x="951" y="0" width="209" height="53" />
+      </frame>
+    </frame>
+    <frame id="24:1646" name="How we work" x="0" y="4817" width="1440" height="629">
+      <rounded-rectangle id="24:1675" name="BG image" x="0" y="0" width="1440" height="629" />
+      <rounded-rectangle id="24:1676" name="Overlay" x="0" y="0" width="1440" height="629" />
+      <frame id="24:1647" name="Section head" x="400" y="72" width="640" height="193">
+        <instance id="24:1648" name="Eyebrow" x="247" y="0" width="146" height="30" />
+        <text id="24:1651" name="From Survey to Handover" x="38.5" y="46" width="563" height="52" />
+        <text id="24:1652" name="A clear, accountable process — delivered by one team from the first site visit to final commissioning." x="0" y="114" width="640" height="60" />
+        <rounded-rectangle id="24:1653" name="Divider" x="294" y="190" width="52" height="3" />
+      </frame>
+      <frame id="24:1654" name="Frame" x="140" y="317" width="1160" height="240">
+        <frame id="24:1655" name="Frame" x="0" y="0" width="219.60000610351562" height="240">
+          <text id="24:1656" name="01" x="23" y="27" width="41" height="48" />
+          <text id="24:1657" name="Survey &amp; Consult" x="23" y="87" width="173.60000610351562" height="24" />
+          <text id="24:1658" name="Site visit, requirements and scope definition." x="23" y="123" width="173.60000610351562" height="44" />
+        </frame>
+        <frame id="24:1659" name="Frame" x="235.60000610351562" y="0" width="219.60000610351562" height="240">
+          <text id="24:1660" name="02" x="23" y="27" width="49" height="48" />
+          <text id="24:1661" name="Design &amp; Value Engineering" x="23" y="87" width="173.60000610351562" height="48" />
+          <text id="24:1662" name="Coordinated shop drawings and cost-optimized options." x="23" y="147" width="173.60000610351562" height="66" />
+        </frame>
+        <frame id="24:1663" name="Frame" x="471.20001220703125" y="0" width="219.6000213623047" height="240">
+          <text id="24:1664" name="03" x="23" y="27" width="50" height="48" />
+          <text id="24:1665" name="Procurement &amp; Supply" x="23" y="87" width="173.6000213623047" height="48" />
+          <text id="24:1666" name="Genuine equipment from our partner brands." x="23" y="147" width="173.6000213623047" height="44" />
+        </frame>
+        <frame id="24:1667" name="Frame" x="706.800048828125" y="0" width="219.60000610351562" height="240">
+          <text id="24:1668" name="04" x="23" y="27" width="53" height="48" />
+          <text id="24:1669" name="Installation" x="23" y="87" width="173.60000610351562" height="24" />
+          <text id="24:1670" name="Executed by our own engineers and technicians." x="23" y="123" width="173.60000610351562" height="66" />
+        </frame>
+        <frame id="24:1671" name="Frame" x="942.4000244140625" y="0" width="217.60000610351562" height="240">
+          <text id="24:1672" name="05" x="22" y="26" width="52" height="48" />
+          <text id="24:1673" name="Testing &amp; Handover" x="22" y="86" width="173.60000610351562" height="24" />
+          <text id="24:1674" name="T&amp;C, TAB, as-built documents and O&amp;M support." x="22" y="122" width="173.60000610351562" height="66" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="24:1677" name="CTA" x="0" y="5446" width="1440" height="484">
+      <rounded-rectangle id="24:1689" name="BG image" x="0" y="0" width="1440" height="484" />
+      <rounded-rectangle id="24:1690" name="Overlay" x="0" y="0" width="1440" height="484" />
+      <text id="24:1678" name="Ready to Build Your Next Project?" x="270" y="83" width="900" height="128" />
+      <text id="24:1679" name="Let our 45+ years of MEP expertise work for your next construction or infrastructure project. Get in touch for a free consultation." x="440" y="235" width="560" height="90" />
+      <frame id="24:1680" name="Frame" x="539.5" y="349" width="361" height="52">
+        <instance id="24:1681" name="Button" x="0" y="0" width="208" height="50" />
+        <instance id="24:1685" name="Button" x="222" y="0" width="139" height="52" />
+      </frame>
+      <rounded-rectangle id="24:1691" name="Deco square" x="230" y="90" width="109.0995866060257" height="109.0995866060257" />
+      <rounded-rectangle id="24:1692" name="Deco square" x="300" y="330" width="69.5073589682579" height="69.5073589682579" />
+      <rounded-rectangle id="24:1693" name="Deco square" x="1120" y="90" width="109.0995866060257" height="109.0995866060257" />
+      <rounded-rectangle id="24:1694" name="Deco square" x="1080" y="330" width="71.16355866193771" height="71.16355866193771" />
+    </frame>
+    <instance id="24:1695" name="Footer" x="0" y="5930" width="1440" height="503" />
+    <instance id="24:1766" name="Navbar" x="0" y="0" width="1440" height="80" />
+    <instance id="24:1792" name="WhatsApp FAB (fixed)" x="1144" y="796" width="280" height="88" />
+  </frame>
+  <frame id="13:4" name="03 About Us" x="3360" y="0" width="1440" height="5550">
+    <frame id="21:1034" name="Page header" x="0" y="0" width="1440" height="537">
+      <rounded-rectangle id="21:1042" name="BG image" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="21:1043" name="Overlay" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="21:1035" name="Rectangle" x="692" y="190" width="56" height="3" />
+      <text id="21:1036" name="About Us" x="593" y="211" width="254" height="64" />
+      <text id="21:1037" name="Discover the story behind 45+ years of MEP engineering excellence in the Gulf region." x="400" y="293" width="640" height="60" />
+      <frame id="21:1038" name="Breadcrumb" x="656" y="371" width="128" height="16">
+        <text id="21:1039" name="Home" x="0" y="0" width="39" height="16" />
+        <ellipse id="21:1040" name="Ellipse" x="47" y="5.5" width="5" height="5" />
+        <text id="21:1041" name="About Us" x="60" y="0" width="68" height="16" />
+      </frame>
+      <frame id="21:1044" name="Wave" x="0" y="449" width="1440" height="90">
+        <vector id="21:1045" name="Vector" x="0" y="13.125" width="1440" height="76.875" />
+      </frame>
+    </frame>
+    <frame id="21:1046" name="Our story" x="0" y="537" width="1440" height="693">
+      <frame id="21:1047" name="Visual" x="140" y="118.5" width="540" height="440">
+        <frame id="21:1048" name="Frame" x="-12" y="-12" width="80" height="80" />
+        <rounded-rectangle id="21:1050" name="Rectangle" x="8" y="8" width="520" height="420" />
+        <frame id="21:1051" name="Badge" x="370" y="360" width="171" height="108">
+          <text id="21:1052" name="45+" x="46.5" y="18" width="78" height="48" />
+          <text id="21:1053" name="Years Experience" x="26" y="68" width="119" height="22" />
+        </frame>
+      </frame>
+      <frame id="21:1054" name="Frame" x="744" y="56" width="556" height="565">
+        <frame id="21:1055" name="Section head" x="0" y="0" width="540" height="169">
+          <instance id="21:1056" name="Eyebrow" x="0" y="0" width="122" height="30" />
+          <text id="21:1059" name="Engineering Excellence Since 1979" x="0" y="46" width="540" height="104" />
+          <rounded-rectangle id="21:1060" name="Divider" x="0" y="166" width="52" height="3" />
+        </frame>
+        <text id="21:1061" name="Al Jazira for Imdad Smart Company (formerly known as IMDAD Group) is a leading name in the MEP construction sector in the Gulf region. With over 45 years of proven experience, the company continues to specialize in Mechanical and Electrical construction, offering complete, collaborative, and end-to-end solutions that bring life to new buildings and sustain existing ones." x="0" y="189" width="560" height="156" />
+        <text id="21:1062" name="Starting as IMDAD sanitary works in KSA, the company diversified and constantly followed the market. For over 45 years, the team has been reinforcing its international presence in the Gulf, expanding its in-house expertise and enlarging its scope of MEP Engineering services." x="0" y="365" width="560" height="104" />
+        <frame id="21:1063" name="Quote" x="0" y="489" width="556" height="76">
+          <rounded-rectangle id="21:1064" name="Rectangle" x="0" y="0" width="3" height="76" />
+          <frame id="21:1065" name="Frame" x="21" y="0" width="535" height="76">
+            <text id="21:1066" name="“Developing and serving society with the highest levels of professional integrity and commitment.”" x="0" y="0" width="520" height="52" />
+            <text id="21:1067" name="Mr. Rashwan Mahmoud — Founder" x="0" y="60" width="261" height="16" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="21:1068" name="Core strengths" x="0" y="1230" width="1440" height="683">
+      <rounded-rectangle id="21:1113" name="BG image" x="0" y="0" width="1440" height="683" />
+      <rounded-rectangle id="21:1114" name="Overlay" x="0" y="0" width="1440" height="683" />
+      <frame id="21:1069" name="Section head" x="410" y="72" width="620" height="193">
+        <instance id="21:1070" name="Eyebrow" x="230" y="0" width="160" height="30" />
+        <text id="21:1073" name="Our Core Strengths" x="97.5" y="46" width="425" height="52" />
+        <text id="21:1074" name="Nearly five decades of building trust, delivering quality, and exceeding expectations across the Gulf region." x="0" y="114" width="620" height="60" />
+        <rounded-rectangle id="21:1075" name="Divider" x="284" y="190" width="52" height="3" />
+      </frame>
+      <frame id="21:1076" name="Frame" x="140" y="317" width="1160" height="294">
+        <frame id="21:1077" name="Frame" x="0" y="0" width="275" height="294">
+          <frame id="21:1078" name="Frame" x="27" y="29" width="221" height="48">
+            <frame id="21:1079" name="Frame" x="0" y="0" width="44" height="44">
+              <frame id="21:1080" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <text id="21:1082" name="1" x="205" y="0" width="16" height="48" />
+          </frame>
+          <text id="21:1083" name="Gulf Market Expertise" x="27" y="93" width="214" height="28" />
+          <rounded-rectangle id="21:1084" name="Rectangle" x="27" y="137" width="28" height="2" />
+          <text id="21:1085" name="Nearly five decades of deep expertise operating across Gulf markets, understanding local requirements and international standards." x="27" y="155" width="221" height="110" />
+        </frame>
+        <frame id="21:1086" name="Frame" x="295" y="0" width="275" height="294">
+          <frame id="21:1087" name="Frame" x="27" y="29" width="221" height="48">
+            <frame id="21:1088" name="Frame" x="0" y="0" width="44" height="44">
+              <frame id="21:1089" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <text id="21:1091" name="2" x="198" y="0" width="23" height="48" />
+          </frame>
+          <text id="21:1092" name="Proven Track Record" x="27" y="93" width="209" height="28" />
+          <rounded-rectangle id="21:1093" name="Rectangle" x="27" y="137" width="28" height="2" />
+          <text id="21:1094" name="Over 100 completed projects with a reputation for exceptional performance and dependable specialist MEP contracting." x="27" y="155" width="221" height="110" />
+        </frame>
+        <frame id="21:1095" name="Frame" x="590" y="0" width="275" height="294">
+          <frame id="21:1096" name="Frame" x="27" y="29" width="221" height="48">
+            <frame id="21:1097" name="Frame" x="0" y="0" width="44" height="44">
+              <frame id="21:1098" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <text id="21:1100" name="3" x="196" y="0" width="25" height="48" />
+          </frame>
+          <text id="21:1101" name="Quality &amp; Reliability" x="27" y="93" width="199" height="28" />
+          <rounded-rectangle id="21:1102" name="Rectangle" x="27" y="137" width="28" height="2" />
+          <text id="21:1103" name="Strong reputation for quality, reliability, and timely delivery — strictly conforming to international standards." x="27" y="155" width="221" height="88" />
+        </frame>
+        <frame id="21:1104" name="Frame" x="885" y="0" width="275" height="294">
+          <frame id="21:1105" name="Frame" x="27" y="29" width="221" height="48">
+            <frame id="21:1106" name="Frame" x="0" y="0" width="44" height="44">
+              <frame id="21:1107" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <text id="21:1109" name="4" x="193" y="0" width="28" height="48" />
+          </frame>
+          <text id="21:1110" name="In-House Execution" x="27" y="93" width="198" height="28" />
+          <rounded-rectangle id="21:1111" name="Rectangle" x="27" y="137" width="28" height="2" />
+          <text id="21:1112" name="85% of MEP work is self-performed by our in-house engineers, minimizing risks and ensuring consistent quality." x="27" y="155" width="221" height="88" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="108:1576" name="Mission &amp; vision" x="0" y="1913" width="1440" height="1618">
+      <frame id="108:1577" name="Section head" x="400" y="65" width="640" height="193">
+        <instance id="108:1578" name="Eyebrow" x="253.5" y="0" width="133" height="30" />
+        <text id="108:1579" name="Our Mission &amp; Vision" x="94" y="46" width="452" height="52" />
+        <text id="108:1580" name="The purpose behind every project we deliver — and where we are heading next." x="0" y="114" width="640" height="60" />
+        <rounded-rectangle id="108:1581" name="Divider" x="294" y="190" width="52" height="3" />
+      </frame>
+      <frame id="108:1584" name="Mission" x="140" y="328" width="1160" height="607">
+        <frame id="108:1585" name="Visual" x="0" y="103.5" width="540" height="400">
+          <rounded-rectangle id="108:1586" name="Rectangle" x="0" y="0" width="540" height="400" />
+          <frame id="108:1587" name="Frame" x="-20" y="-20" width="65" height="60">
+            <text id="108:1588" name="01" x="18" y="12" width="29" height="36" />
+          </frame>
+        </frame>
+        <frame id="108:1589" name="Frame" x="612" y="0" width="548" height="607">
+          <instance id="108:1590" name="Eyebrow" x="0" y="0" width="134" height="30" />
+          <text id="108:1591" name="Our Mission" x="0" y="48" width="548" height="52" />
+          <rounded-rectangle id="108:1592" name="Divider" x="0" y="118" width="52" height="3" />
+          <text id="108:1593" name="To safely deliver world-class Quality MEP projects and infrastructure projects on time, promoting environmental protection and sustainable community development." x="0" y="139" width="548" height="90" />
+          <frame id="108:1594" name="Frame" x="0" y="247" width="548" height="360">
+            <frame id="108:1621" name="Frame" x="0" y="0" width="548" height="78">
+              <frame id="108:1622" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1625" name="Engineering Excellence — Providing comprehensive and effective solutions across all mechanical, electrical, and plumbing works." x="34" y="0" width="514" height="78" />
+            </frame>
+            <frame id="108:1626" name="Frame" x="0" y="90" width="548" height="52">
+              <frame id="108:1627" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1630" name="Safety First — Strictly following occupational health and safety standards to protect individuals and assets at all sites." x="34" y="0" width="514" height="52" />
+            </frame>
+            <frame id="108:1631" name="Frame" x="0" y="154" width="548" height="78">
+              <frame id="108:1632" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1635" name="Sustainability — Implementing eco-friendly solutions that reduce energy consumption and contribute to sustainable community development." x="34" y="0" width="514" height="78" />
+            </frame>
+            <frame id="108:1636" name="Frame" x="0" y="244" width="548" height="52">
+              <frame id="108:1637" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1640" name="Customer Focus — Understanding client needs and adapting services to ensure full satisfaction with tailored solutions." x="34" y="0" width="514" height="52" />
+            </frame>
+            <frame id="108:1641" name="Frame" x="0" y="308" width="548" height="52">
+              <frame id="108:1642" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1645" name="Innovation — Developing innovative technologies and solutions to enhance project efficiency without compromising quality." x="34" y="0" width="514" height="52" />
+            </frame>
+          </frame>
+        </frame>
+      </frame>
+      <frame id="108:1646" name="Vision" x="140" y="1005" width="1160" height="535">
+        <frame id="108:1647" name="Frame" x="0" y="0" width="548" height="535">
+          <instance id="108:1648" name="Eyebrow" x="0" y="0" width="123" height="30" />
+          <text id="108:1649" name="Our Vision" x="0" y="48" width="548" height="52" />
+          <rounded-rectangle id="108:1650" name="Divider" x="0" y="118" width="52" height="3" />
+          <text id="108:1651" name="To become a regional market leader in the MEP Construction Industry, providing engineering excellence to valued clients through commitment to delivering best practices in corporate governance and transparency." x="0" y="139" width="548" height="120" />
+          <frame id="108:1652" name="Frame" x="0" y="277" width="548" height="258">
+            <frame id="108:1683" name="Frame" x="0" y="0" width="548" height="78">
+              <frame id="108:1684" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1687" name="Expanding Core Competencies — Strengthening our electro-mechanical capabilities and broadening our multi-disciplined EPIC service portfolio." x="34" y="0" width="514" height="78" />
+            </frame>
+            <frame id="108:1688" name="Frame" x="0" y="90" width="548" height="78">
+              <frame id="108:1689" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1692" name="Unique Technologies — Identifying and producing unique technologies that set us apart and deliver innovative solutions for our clients." x="34" y="0" width="514" height="78" />
+            </frame>
+            <frame id="108:1693" name="Frame" x="0" y="180" width="548" height="78">
+              <frame id="108:1694" name="Frame" x="0" y="0" width="22" height="22" />
+              <text id="108:1697" name="Strategic Partnerships — Aligning with key partners that enhance our capabilities to produce and distribute cutting-edge engineering ideas." x="34" y="0" width="514" height="78" />
+            </frame>
+          </frame>
+        </frame>
+        <frame id="108:1674" name="Visual" x="620" y="67.5" width="540" height="400">
+          <rounded-rectangle id="108:1675" name="Rectangle" x="0" y="0" width="540" height="400" />
+          <frame id="108:1676" name="Frame" x="489" y="-20" width="71" height="60">
+            <text id="108:1677" name="02" x="18" y="12" width="35" height="36" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="21:1162" name="Meet our team" x="0" y="3531" width="1440" height="1516">
+      <frame id="145:2156" name="Section head" x="140" y="72" width="1160" height="230">
+        <frame id="145:2157" name="Title" x="0" y="0" width="610" height="174">
+          <instance id="145:2158" name="Eyebrow" x="0" y="0" width="112" height="30" />
+          <text id="145:2161" name="Heading" x="0" y="46" width="339" height="52" />
+          <text id="145:2162" name="Lead" x="0" y="114" width="610" height="60" />
+        </frame>
+        <text id="145:2163" name="Intro" x="690" y="44" width="470" height="130" />
+      </frame>
+      <frame id="151:2797" name="Leadership" x="140" y="302" width="1160" height="768">
+        <frame id="151:2798" name="Row 1" x="304" y="0" width="552" height="340">
+          <instance id="151:2799" name="Team Card / Chairman" x="0" y="0" width="264" height="340" />
+          <instance id="151:2838" name="Team Card / Chief Executive Officer" x="288" y="0" width="264" height="340" />
+        </frame>
+        <frame id="151:2877" name="Row 2" x="160" y="364" width="840" height="404">
+          <frame id="151:2917" name="Offset" x="0" y="0" width="264" height="404">
+            <instance id="151:2878" name="Team Card / Commercial Director" x="0" y="64" width="264" height="340" />
+          </frame>
+          <frame id="151:2957" name="Offset" x="288" y="0" width="264" height="340">
+            <instance id="151:2918" name="Team Card / Engineering Manager" x="0" y="0" width="264" height="340" />
+          </frame>
+          <frame id="151:2997" name="Offset" x="576" y="0" width="264" height="404">
+            <instance id="151:2958" name="Team Card / Project Manager" x="0" y="64" width="264" height="340" />
+          </frame>
+        </frame>
+      </frame>
+      <frame id="151:2998" name="Wider team" x="140" y="1070" width="1160" height="368">
+        <frame id="151:2999" name="Header" x="0" y="72" width="1160" height="70">
+          <frame id="151:3000" name="Text" x="0" y="0" width="1160" height="70">
+            <text id="151:3001" name="The people behind every project" x="0" y="0" width="458" height="36" />
+            <text id="151:3002" name="Engineers, supervisors and specialists from our in-house team." x="0" y="44" width="501" height="26" />
+          </frame>
+        </frame>
+        <instance id="151:3004" name="Team Marquee" x="0" y="170" width="1160" height="198" />
+      </frame>
+    </frame>
+    <instance id="21:1258" name="Footer" x="0" y="5047" width="1440" height="503" />
+    <instance id="21:1329" name="Navbar" x="0" y="0" width="1440" height="80" />
+    <instance id="21:1355" name="WhatsApp FAB (fixed)" x="1144" y="796" width="280" height="88" />
+  </frame>
+  <frame id="13:5" name="04 Projects" x="5040" y="0" width="1440" height="4358">
+    <frame id="19:556" name="Page header" x="0" y="0" width="1440" height="537">
+      <rounded-rectangle id="19:564" name="BG image" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="19:565" name="Overlay" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="19:557" name="Rectangle" x="692" y="190" width="56" height="3" />
+      <text id="19:558" name="Our Projects" x="548" y="211" width="344" height="64" />
+      <text id="19:559" name="100+ completed MEP, fire fighting, smart-systems and data-center projects across the Gulf. Filter by discipline to explore our track record." x="400" y="293" width="640" height="60" />
+      <frame id="19:560" name="Breadcrumb" x="638.5" y="371" width="163" height="16">
+        <text id="19:561" name="Home" x="0" y="0" width="39" height="16" />
+        <ellipse id="19:562" name="Ellipse" x="47" y="5.5" width="5" height="5" />
+        <text id="19:563" name="Our Projects" x="60" y="0" width="103" height="16" />
+      </frame>
+      <frame id="19:566" name="Wave" x="0" y="449" width="1440" height="90">
+        <vector id="19:567" name="Vector" x="0" y="13.125" width="1440" height="76.875" />
+      </frame>
+    </frame>
+    <frame id="19:568" name="Explore projects" x="0" y="537" width="1440" height="1786">
+      <frame id="19:576" name="Filters" x="285.5" y="56" width="869" height="42">
+        <frame id="19:577" name="Frame" x="0" y="0" width="142" height="42">
+          <text id="19:578" name="All Projects" x="16" y="10" width="79" height="22" />
+          <frame id="19:579" name="Frame" x="103" y="10" width="29" height="22">
+            <text id="19:580" name="25" x="7" y="2" width="15" height="18" />
+          </frame>
+        </frame>
+        <frame id="19:581" name="Frame" x="150" y="0" width="137" height="42">
+          <text id="19:582" name="MEP Works" x="16" y="10" width="77" height="22" />
+          <frame id="19:583" name="Frame" x="101" y="10" width="26" height="22">
+            <text id="19:584" name="16" x="7" y="2" width="12" height="18" />
+          </frame>
+        </frame>
+        <frame id="19:585" name="Frame" x="295" y="0" width="137" height="42">
+          <text id="19:586" name="Firefighting" x="16" y="10" width="82" height="22" />
+          <frame id="19:587" name="Frame" x="106" y="10" width="21" height="22">
+            <text id="19:588" name="2" x="7" y="2" width="7" height="18" />
+          </frame>
+        </frame>
+        <frame id="19:589" name="Frame" x="440" y="0" width="142" height="42">
+          <text id="19:590" name="Low Current" x="16" y="10" width="86" height="22" />
+          <frame id="19:591" name="Frame" x="110" y="10" width="22" height="22">
+            <text id="19:592" name="4" x="7" y="2" width="8" height="18" />
+          </frame>
+        </frame>
+        <frame id="19:593" name="Frame" x="590" y="0" width="139" height="42">
+          <text id="19:594" name="Data Center" x="16" y="10" width="87" height="22" />
+          <frame id="19:595" name="Frame" x="111" y="10" width="18" height="22">
+            <text id="19:596" name="1" x="7" y="2" width="4" height="18" />
+          </frame>
+        </frame>
+        <frame id="19:597" name="Frame" x="737" y="0" width="132" height="42">
+          <text id="19:598" name="Civil &amp; MEP" x="16" y="10" width="77" height="22" />
+          <frame id="19:599" name="Frame" x="101" y="10" width="21" height="22">
+            <text id="19:600" name="2" x="7" y="2" width="7" height="18" />
+          </frame>
+        </frame>
+      </frame>
+      <frame id="19:601" name="Grid" x="140" y="138" width="1160" height="1496">
+        <instance id="19:602" name="Project Card" x="0" y="0" width="370.6600036621094" height="280" />
+        <instance id="19:620" name="Project Card" x="394.6600036621094" y="0" width="370.6600036621094" height="280" />
+        <instance id="19:638" name="Project Card" x="789.3200073242188" y="0" width="370.6600036621094" height="280" />
+        <instance id="19:657" name="Project Card" x="0" y="304" width="370.6600036621094" height="280" />
+        <instance id="19:675" name="Project Card" x="394.6600036621094" y="304" width="370.6600036621094" height="280" />
+        <instance id="19:693" name="Project Card" x="789.3200073242188" y="304" width="370.6600036621094" height="280" />
+        <instance id="19:711" name="Project Card" x="0" y="608" width="370.6600036621094" height="280" />
+        <instance id="19:729" name="Project Card" x="394.6600036621094" y="608" width="370.6600036621094" height="280" />
+        <instance id="19:747" name="Project Card" x="789.3200073242188" y="608" width="370.6600036621094" height="280" />
+        <instance id="19:765" name="Project Card" x="0" y="912" width="370.6600036621094" height="280" />
+        <instance id="19:783" name="Project Card" x="394.6600036621094" y="912" width="370.6600036621094" height="280" />
+        <instance id="19:801" name="Project Card" x="789.3200073242188" y="912" width="370.6600036621094" height="280" />
+        <instance id="19:819" name="Project Card" x="0" y="1216" width="370.6600036621094" height="280" />
+        <instance id="19:838" name="Project Card" x="394.6600036621094" y="1216" width="370.6600036621094" height="280" />
+        <instance id="19:857" name="Project Card" x="789.3200073242188" y="1216" width="370.6600036621094" height="280" />
+      </frame>
+      <frame id="19:875" name="Pagination" x="628" y="1674" width="184" height="40">
+        <frame id="19:876" name="Frame" x="0" y="0" width="40" height="40">
+          <text id="19:877" name="‹" x="17.5" y="9" width="5" height="22" />
+        </frame>
+        <frame id="19:878" name="Frame" x="48" y="0" width="40" height="40">
+          <text id="19:879" name="1" x="17" y="9" width="6" height="22" />
+        </frame>
+        <frame id="19:880" name="Frame" x="96" y="0" width="40" height="40">
+          <text id="19:881" name="2" x="15.5" y="9" width="9" height="22" />
+        </frame>
+        <frame id="19:882" name="Frame" x="144" y="0" width="40" height="40">
+          <text id="19:883" name="›" x="17.5" y="9" width="5" height="22" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="19:884" name="Impact in numbers" x="0" y="2323" width="1440" height="421">
+      <rounded-rectangle id="19:902" name="BG image" x="0" y="0" width="1440" height="421" />
+      <rounded-rectangle id="19:903" name="Overlay" x="0" y="0" width="1440" height="421" />
+      <frame id="19:885" name="Section head" x="410" y="65" width="620" height="147">
+        <text id="19:886" name="Our Impact in Numbers" x="50.5" y="0" width="519" height="52" />
+        <text id="19:887" name="Key metrics and proven milestones across four decades of engineering excellence." x="0" y="68" width="620" height="60" />
+        <rounded-rectangle id="19:888" name="Divider" x="284" y="144" width="52" height="3" />
+      </frame>
+      <frame id="19:889" name="Stats" x="140" y="264" width="1160" height="92">
+        <frame id="19:890" name="Frame" x="0" y="0" width="290" height="92">
+          <text id="19:891" name="100+" x="81" y="0" width="128" height="60" />
+          <text id="19:892" name="Completed Projects" x="66" y="66" width="158" height="26" />
+        </frame>
+        <frame id="19:893" name="Frame" x="290" y="0" width="290" height="92">
+          <text id="19:894" name="3" x="128" y="0" width="34" height="60" />
+          <text id="19:895" name="Countries Served" x="76.5" y="66" width="137" height="26" />
+        </frame>
+        <frame id="19:896" name="Frame" x="580" y="0" width="290" height="92">
+          <text id="19:897" name="45+" x="90.5" y="0" width="109" height="60" />
+          <text id="19:898" name="Years of Experience" x="67.5" y="66" width="155" height="26" />
+        </frame>
+        <frame id="19:899" name="Frame" x="870" y="0" width="290" height="92">
+          <text id="19:900" name="85%" x="84.5" y="0" width="121" height="60" />
+          <text id="19:901" name="Self-Performed Work" x="62" y="66" width="166" height="26" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="19:904" name="Portfolio" x="0" y="2744" width="1440" height="657">
+      <frame id="19:905" name="Visual" x="140" y="118.5" width="540" height="420">
+        <frame id="19:906" name="Frame" x="-12" y="-12" width="80" height="80" />
+        <rounded-rectangle id="19:908" name="Rectangle" x="8" y="8" width="520" height="400" />
+        <frame id="19:909" name="Badge" x="360" y="340" width="177" height="108">
+          <text id="19:910" name="100+" x="42.5" y="18" width="92" height="48" />
+          <text id="19:911" name="Projects Delivered" x="26" y="68" width="125" height="22" />
+        </frame>
+      </frame>
+      <frame id="19:912" name="Frame" x="744" y="72" width="556" height="513">
+        <frame id="19:913" name="Section head" x="0" y="0" width="520" height="169">
+          <instance id="19:914" name="Eyebrow" x="0" y="0" width="153" height="30" />
+          <text id="19:917" name="Projects That Define Engineering Excellence" x="0" y="46" width="520" height="104" />
+          <rounded-rectangle id="19:918" name="Divider" x="0" y="166" width="52" height="3" />
+        </frame>
+        <text id="19:919" name="With over 45 years of electro-mechanical construction experience across Saudi Arabia and the Gulf, IMDAD has successfully delivered landmark MEP projects ranging from 32-floor luxury hotel towers to mission-critical data centers and university campuses." x="0" y="189" width="540" height="104" />
+        <text id="19:920" name="Our in-house team self-performs 85% of MEP works including HVAC, high/low voltage electrical, fire suppression, and smart automation systems — ensuring unmatched execution quality and schedule compliance." x="0" y="313" width="540" height="104" />
+        <frame id="19:921" name="Quote" x="0" y="437" width="556" height="76">
+          <rounded-rectangle id="19:922" name="Rectangle" x="0" y="0" width="3" height="76" />
+          <frame id="19:923" name="Frame" x="21" y="0" width="535" height="76">
+            <text id="19:924" name="“Engineering iconic developments with uncompromised quality, precision, and safety.”" x="0" y="0" width="500" height="52" />
+            <text id="19:925" name="Al Jazira for Imdad Smart Co." x="0" y="60" width="231" height="16" />
+          </frame>
+        </frame>
+      </frame>
+    </frame>
+    <frame id="19:926" name="CTA" x="0" y="3401" width="1440" height="454">
+      <rounded-rectangle id="19:938" name="BG image" x="0" y="0" width="1440" height="454" />
+      <rounded-rectangle id="19:939" name="Overlay" x="0" y="0" width="1440" height="454" />
+      <text id="19:927" name="Have a Project in Mind?" x="270" y="83" width="900" height="128" />
+      <text id="19:928" name="Let our 45+ years of MEP expertise bring your next construction or infrastructure project to life. Get a free consultation today." x="440" y="235" width="560" height="60" />
+      <frame id="19:929" name="Frame" x="544" y="319" width="352" height="52">
+        <instance id="19:930" name="Button" x="0" y="0" width="199" height="50" />
+        <instance id="19:934" name="Button" x="213" y="0" width="139" height="52" />
+      </frame>
+      <rounded-rectangle id="19:940" name="Deco square" x="230" y="90" width="109.0995866060257" height="109.0995866060257" />
+      <rounded-rectangle id="19:941" name="Deco square" x="300" y="330" width="69.5073589682579" height="69.5073589682579" />
+      <rounded-rectangle id="19:942" name="Deco square" x="1120" y="90" width="109.0995866060257" height="109.0995866060257" />
+      <rounded-rectangle id="19:943" name="Deco square" x="1080" y="330" width="71.16355866193771" height="71.16355866193771" />
+    </frame>
+    <instance id="19:944" name="Footer" x="0" y="3855" width="1440" height="503" />
+    <instance id="19:1015" name="Navbar" x="0" y="0" width="1440" height="80" />
+    <instance id="19:1041" name="WhatsApp FAB (fixed)" x="1144" y="796" width="280" height="88" />
+  </frame>
+  <frame id="13:6" name="05 Project Detail – Sofitel Makkah" x="6720" y="0" width="1440" height="3921">
+    <frame id="20:880" name="Project hero" x="0" y="0" width="1440" height="526">
+      <rounded-rectangle id="20:891" name="BG image" x="0" y="0" width="1440" height="526" />
+      <rounded-rectangle id="20:892" name="Overlay" x="0" y="0" width="1440" height="526" />
+      <frame id="20:881" name="Back" x="652.5" y="230" width="135" height="22">
+        <frame id="20:882" name="Frame" x="0" y="3" width="16" height="16" />
+        <text id="20:884" name="Back to Projects" x="24" y="0" width="111" height="22" />
+      </frame>
+      <frame id="20:885" name="Frame" x="591" y="268" width="258" height="28">
+        <frame id="20:886" name="Frame" x="0" y="0" width="143" height="28">
+          <text id="20:887" name="Full MEP Works" x="13" y="6" width="117" height="16" />
+        </frame>
+        <frame id="20:888" name="Frame" x="151" y="0" width="107" height="28">
+          <text id="20:889" name="Completed" x="13" y="6" width="81" height="16" />
+        </frame>
+      </frame>
+      <text id="20:890" name="Sofitel Makkah Hotel" x="431.5" y="312" width="577" height="64" />
+      <frame id="20:893" name="Wave" x="0" y="438" width="1440" height="90">
+        <vector id="20:894" name="Vector" x="0" y="13.125" width="1440" height="76.875" />
+      </frame>
+    </frame>
+    <frame id="20:895" name="Information &amp; about" x="0" y="526" width="1440" height="946">
+      <frame id="106:1539" name="About the project" x="140" y="56" width="692" height="818">
+        <instance id="106:1540" name="Eyebrow" x="0" y="0" width="188" height="30" />
+        <text id="106:1543" name="Heading" x="0" y="50" width="692" height="104" />
+        <text id="106:1544" name="Intro" x="0" y="174" width="692" height="150" />
+        <frame id="106:1545" name="Accordion" x="0" y="344" width="692" height="474">
+          <instance id="106:1546" name="Accordion Item" x="0" y="0" width="692" height="198" />
+          <instance id="106:1555" name="Accordion Item" x="0" y="210" width="692" height="80" />
+          <instance id="106:1564" name="Accordion Item" x="0" y="302" width="692" height="80" />
+          <instance id="106:1573" name="Accordion Item" x="0" y="394" width="692" height="80" />
+        </frame>
+      </frame>
+      <frame id="106:1582" name="Sidebar" x="880" y="56" width="420" height="530">
+        <frame id="106:1583" name="Project sheet" x="0" y="0" width="420" height="328">
+          <text id="106:1584" name="Label" x="26" y="28" width="107" height="16" />
+          <frame id="106:1585" name="Spacer" x="26" y="44" width="10" height="14" />
+          <frame id="106:1586" name="Client" x="26" y="58" width="368" height="51">
+            <text id="106:1587" name="Client" x="0" y="14" width="41" height="22" />
+            <text id="106:1588" name="Beyout Makkah Co." x="53" y="14" width="315" height="22" />
+          </frame>
+          <frame id="106:1589" name="Location" x="26" y="109" width="368" height="51">
+            <text id="106:1590" name="Location" x="0" y="14" width="60" height="22" />
+            <text id="106:1591" name="Makkah" x="72" y="14" width="296" height="22" />
+          </frame>
+          <frame id="106:1592" name="Scope" x="26" y="160" width="368" height="51">
+            <text id="106:1593" name="Scope" x="0" y="14" width="44" height="22" />
+            <text id="106:1594" name="Full MEP" x="56" y="14" width="312" height="22" />
+          </frame>
+          <frame id="106:1595" name="Delivered by" x="26" y="211" width="368" height="51">
+            <text id="106:1596" name="Delivered by" x="0" y="14" width="87" height="22" />
+            <text id="106:1597" name="Our own staff" x="99" y="14" width="269" height="22" />
+          </frame>
+          <frame id="106:1598" name="Status" x="26" y="262" width="368" height="50">
+            <text id="106:1599" name="Status" x="0" y="14" width="45" height="22" />
+            <text id="106:1600" name="Completed" x="57" y="14" width="311" height="22" />
+          </frame>
+        </frame>
+        <frame id="106:1601" name="Planning a similar project" x="0" y="348" width="420" height="182">
+          <text id="106:1602" name="Title" x="24" y="24" width="271" height="28" />
+          <text id="106:1603" name="Text" x="24" y="62" width="372" height="22" />
+          <frame id="106:1604" name="Spacer" x="24" y="94" width="10" height="4" />
+          <instance id="106:1605" name="Button" x="24" y="108" width="372" height="50" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="20:947" name="Key deliverables" x="0" y="1472" width="1440" height="442">
+      <rounded-rectangle id="20:974" name="BG image" x="0" y="0" width="1440" height="442" />
+      <rounded-rectangle id="20:975" name="Overlay" x="0" y="0" width="1440" height="442" />
+      <frame id="20:948" name="Frame" x="140" y="65" width="879" height="96">
+        <instance id="20:949" name="Eyebrow" x="0" y="0" width="185" height="30" />
+        <text id="20:952" name="Key Deliverables &amp; Technical Highlights" x="0" y="44" width="879" height="52" />
+      </frame>
+      <frame id="20:953" name="Frame" x="140" y="197" width="1160" height="180">
+        <frame id="20:954" name="Frame" x="0" y="0" width="570" height="80">
+          <frame id="20:955" name="Frame" x="21" y="18" width="44" height="44">
+            <frame id="20:956" name="Frame" x="12" y="12" width="20" height="20" />
+          </frame>
+          <text id="20:958" name="Centralized chilled-water HVAC system &amp; air handling units (AHUs)" x="79" y="14" width="470" height="52" />
+        </frame>
+        <frame id="20:959" name="Frame" x="590" y="0" width="570" height="80">
+          <frame id="20:960" name="Frame" x="21" y="18" width="44" height="44">
+            <frame id="20:961" name="Frame" x="12" y="12" width="20" height="20" />
+          </frame>
+          <text id="20:963" name="High-voltage transformers &amp; emergency generator power distribution" x="79" y="14" width="470" height="52" />
+        </frame>
+        <frame id="20:964" name="Frame" x="0" y="100" width="570" height="80">
+          <frame id="20:965" name="Frame" x="21" y="18" width="44" height="44">
+            <frame id="20:966" name="Frame" x="12" y="12" width="20" height="20" />
+          </frame>
+          <text id="20:968" name="Domestic water booster pumps &amp; sanitary drainage risers" x="79" y="27" width="470" height="26" />
+        </frame>
+        <frame id="20:969" name="Frame" x="590" y="100" width="570" height="80">
+          <frame id="20:970" name="Frame" x="21" y="18" width="44" height="44">
+            <frame id="20:971" name="Frame" x="12" y="12" width="20" height="20" />
+          </frame>
+          <text id="20:973" name="Automated NFPA-compliant fire sprinkler &amp; alarm systems" x="79" y="14" width="470" height="52" />
+        </frame>
+      </frame>
+    </frame>
+    <frame id="20:976" name="Gallery" x="0" y="1914" width="1440" height="525">
+      <frame id="20:977" name="Frame" x="140" y="65" width="541" height="96">
+        <instance id="20:978" name="Eyebrow" x="0" y="0" width="105" height="30" />
+        <text id="20:981" name="Project Visual Showcase" x="0" y="44" width="541" height="52" />
+      </frame>
+      <frame id="20:982" name="Frame" x="140" y="193" width="1160" height="260">
+        <frame id="20:983" name="Photo 1" x="0" y="0" width="373.3333435058594" height="260" />
+        <frame id="20:987" name="Photo 2" x="393.3333435058594" y="0" width="373.33331298828125" height="260" />
+        <frame id="20:991" name="Photo 3" x="786.6666259765625" y="0" width="373.33331298828125" height="260" />
+      </frame>
+    </frame>
+    <frame id="20:995" name="CTA" x="0" y="2439" width="1440" height="438">
+      <rounded-rectangle id="20:1007" name="BG image" x="0" y="0" width="1440" height="438" />
+      <rounded-rectangle id="20:1008" name="Overlay" x="0" y="0" width="1440" height="438" />
+      <text id="20:996" name="Have a Project in Mind?" x="270" y="75" width="900" height="128" />
+      <text id="20:997" name="Let our 45+ years of MEP expertise bring your next construction or infrastructure project to life. Get a free consultation today." x="440" y="227" width="560" height="60" />
+      <frame id="20:998" name="Frame" x="544" y="311" width="352" height="52">
+        <instance id="20:999" name="Button" x="0" y="0" width="199" height="50" />
+        <instance id="20:1003" name="Button" x="213" y="0" width="139" height="52" />
+      </frame>
+    </frame>
+    <frame id="20:1009" name="Related projects" x="0" y="2877" width="1440" height="541">
+      <frame id="20:1010" name="Frame" x="140" y="65" width="396" height="92">
+        <text id="20:1011" name="Related Projects" x="0" y="0" width="360" height="52" />
+        <text id="20:1012" name="Explore more projects in the same category." x="0" y="62" width="396" height="30" />
+      </frame>
+      <frame id="20:1013" name="Frame" x="140" y="189" width="1160" height="280">
+        <instance id="20:1014" name="Project Card" x="0" y="0" width="370.6666564941406" height="280" />
+        <instance id="20:1033" name="Project Card" x="394.6666564941406" y="0" width="370.66668701171875" height="280" />
+        <instance id="20:1051" name="Project Card" x="789.3333740234375" y="0" width="370.66668701171875" height="280" />
+      </frame>
+    </frame>
+    <instance id="20:1069" name="Footer" x="0" y="3418" width="1440" height="503" />
+    <instance id="20:1140" name="Navbar" x="0" y="0" width="1440" height="80" />
+    <instance id="20:1166" name="WhatsApp FAB (fixed)" x="1144" y="796" width="280" height="88" />
+  </frame>
+  <frame id="13:8" name="07 Contact Us" x="8400" y="0" width="1440" height="2551.39990234375">
+    <frame id="23:1366" name="Page header" x="0" y="0" width="1440" height="537">
+      <rounded-rectangle id="23:1374" name="BG image" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="23:1375" name="Overlay" x="0" y="0" width="1440" height="537" />
+      <rounded-rectangle id="23:1367" name="Rectangle" x="692" y="190" width="56" height="3" />
+      <text id="23:1368" name="Contact Us" x="565" y="211" width="310" height="64" />
+      <text id="23:1369" name="We are always delighted to hear from you. Get in touch for a free consultation." x="400" y="293" width="640" height="60" />
+      <frame id="23:1370" name="Frame" x="645.5" y="371" width="149" height="16">
+        <text id="23:1371" name="Home" x="0" y="0" width="39" height="16" />
+        <ellipse id="23:1372" name="Ellipse" x="47" y="5.5" width="5" height="5" />
+        <text id="23:1373" name="Contact Us" x="60" y="0" width="89" height="16" />
+      </frame>
+      <frame id="23:1376" name="Frame" x="0" y="449" width="1440" height="90">
+        <vector id="23:1377" name="Vector" x="0" y="13.125" width="1440" height="76.875" />
+      </frame>
+    </frame>
+    <frame id="23:1378" name="Get in touch" x="0" y="537" width="1440" height="740.4000244140625">
+      <frame id="23:1379" name="Frame" x="140" y="56" width="592" height="554">
+        <instance id="23:1380" name="Eyebrow" x="0" y="0" width="141" height="30" />
+        <text id="23:1383" name="Let&#39;s talk about your project" x="0" y="46" width="540" height="104" />
+        <text id="23:1384" name="Request a quote for contracting or supply, ask for brand pricing, or speak directly with an engineer." x="0" y="166" width="540" height="60" />
+        <frame id="23:1385" name="Frame" x="0" y="242" width="10" height="8" />
+        <frame id="104:1488" name="Contact channels" x="0" y="266" width="592" height="194">
+          <frame id="23:1386" name="Channel / Phone" x="0" y="0" width="290" height="78">
+            <frame id="23:1387" name="Frame" x="17" y="17" width="44" height="44">
+              <frame id="23:1388" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <frame id="23:1390" name="Frame" x="75" y="17" width="198" height="44">
+              <text id="23:1391" name="Call us" x="0" y="0" width="55" height="16" />
+              <text id="23:1392" name="+966 57 353 4185" x="0" y="18" width="198" height="26" />
+            </frame>
+          </frame>
+          <frame id="104:1489" name="Channel / WhatsApp" x="302" y="0" width="290" height="78">
+            <frame id="104:1490" name="Frame" x="17" y="17" width="44" height="44">
+              <instance id="132:2200" name="Icon/social/whatsapp" x="12" y="12" width="20" height="20" />
+            </frame>
+            <frame id="104:1493" name="Frame" x="75" y="17" width="198" height="44">
+              <text id="104:1494" name="WhatsApp" x="0" y="0" width="76" height="16" />
+              <text id="104:1495" name="Chat with an engineer" x="0" y="18" width="198" height="26" />
+            </frame>
+          </frame>
+          <frame id="23:1393" name="Channel / Email" x="0" y="90" width="290" height="104">
+            <frame id="23:1394" name="Frame" x="17" y="30" width="44" height="44">
+              <frame id="23:1395" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <frame id="23:1397" name="Frame" x="75" y="30" width="198" height="44">
+              <text id="23:1398" name="Email" x="0" y="0" width="40" height="16" />
+              <text id="23:1399" name="info@aljazira.co" x="0" y="18" width="198" height="26" />
+            </frame>
+          </frame>
+          <frame id="23:1400" name="Channel / Address" x="302" y="90" width="290" height="104">
+            <frame id="23:1401" name="Frame" x="17" y="30" width="44" height="44">
+              <frame id="23:1402" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <frame id="23:1404" name="Frame" x="75" y="17" width="198" height="70">
+              <text id="23:1405" name="Head office" x="0" y="0" width="89" height="16" />
+              <text id="23:1406" name="7676 Bathaa Quraish, Makkah" x="0" y="18" width="198" height="52" />
+            </frame>
+          </frame>
+        </frame>
+        <frame id="23:1407" name="Channel / Working Hours" x="0" y="476" width="592" height="78">
+          <frame id="23:1408" name="Frame" x="17" y="17" width="44" height="44">
+            <frame id="23:1409" name="Frame" x="12" y="12" width="20" height="20" />
+          </frame>
+          <frame id="23:1411" name="Frame" x="75" y="17" width="500" height="44">
+            <text id="23:1412" name="Working Hours" x="0" y="0" width="118" height="16" />
+            <text id="23:1413" name="Sunday – Thursday, 8:00 AM – 5:00 PM" x="0" y="18" width="311" height="26" />
+          </frame>
+        </frame>
+      </frame>
+      <instance id="104:1498" name="Quote Form" x="780" y="56" width="520" height="612.4000244140625" />
+    </frame>
+    <frame id="23:1441" name="Find our office" x="0" y="1277.4000244140625" width="1440" height="771">
+      <rounded-rectangle id="23:1495" name="BG image" x="0" y="0" width="1440" height="771" />
+      <rounded-rectangle id="23:1496" name="Overlay" x="0" y="0" width="1440" height="771" />
+      <frame id="23:1442" name="Frame" x="395.5" y="72" width="649" height="163">
+        <instance id="23:1443" name="Eyebrow" x="251.5" y="0" width="146" height="30" />
+        <text id="23:1446" name="Find Our Office" x="161.5" y="46" width="326" height="52" />
+        <text id="23:1447" name="Visit us in Makkah Al Mokaramah, KSA — we&#39;d love to meet you in person." x="0" y="114" width="649" height="30" />
+        <rounded-rectangle id="23:1448" name="Divider" x="298.5" y="160" width="52" height="3" />
+      </frame>
+      <frame id="23:1449" name="Map (Google Maps embed in build)" x="140" y="279" width="1160" height="420">
+        <rounded-rectangle id="23:1450" name="Rectangle" x="-120" y="-80" width="1283.0309680104256" height="578.5667532682419" />
+        <rounded-rectangle id="23:1451" name="Rectangle" x="-120" y="-40" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1452" name="Rectangle" x="-120" y="0" width="1280.590548157692" height="573.0854806900024" />
+        <rounded-rectangle id="23:1453" name="Rectangle" x="-120" y="40" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1454" name="Rectangle" x="-120" y="80" width="1283.0309680104256" height="578.5667532682419" />
+        <rounded-rectangle id="23:1455" name="Rectangle" x="-120" y="120" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1456" name="Rectangle" x="-120" y="160" width="1280.590548157692" height="573.0854806900024" />
+        <rounded-rectangle id="23:1457" name="Rectangle" x="-120" y="200" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1458" name="Rectangle" x="-120" y="240" width="1283.0309680104256" height="578.5667532682419" />
+        <rounded-rectangle id="23:1459" name="Rectangle" x="-120" y="280" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1460" name="Rectangle" x="-120" y="320" width="1280.590548157692" height="573.0854806900024" />
+        <rounded-rectangle id="23:1461" name="Rectangle" x="-120" y="360" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1462" name="Rectangle" x="-120" y="400" width="1283.0309680104256" height="578.5667532682419" />
+        <rounded-rectangle id="23:1463" name="Rectangle" x="-120" y="440" width="1332.7152240276337" height="436.4280297756195" />
+        <rounded-rectangle id="23:1464" name="Rectangle" x="600" y="60" width="180" height="120" />
+        <rounded-rectangle id="23:1465" name="Rectangle" x="820" y="240" width="220" height="140" />
+        <rounded-rectangle id="23:1466" name="Rectangle" x="320" y="280" width="160" height="100" />
+        <rounded-rectangle id="23:1467" name="Rectangle" x="980" y="40" width="140" height="120" />
+        <frame id="23:1468" name="Frame" x="700" y="170" width="64" height="64" />
+        <frame id="23:1472" name="Frame" x="16" y="16" width="141" height="38">
+          <text id="23:1473" name="Open in Maps" x="12" y="8" width="97" height="22" />
+          <frame id="23:1474" name="Frame" x="115" y="12" width="14" height="14" />
+        </frame>
+        <frame id="23:1476" name="Office card" x="32" y="80" width="280" height="336">
+          <frame id="23:1477" name="Frame" x="22" y="22" width="183" height="44">
+            <frame id="23:1478" name="Frame" x="0" y="0" width="44" height="44">
+              <frame id="23:1479" name="Frame" x="12" y="12" width="20" height="20" />
+            </frame>
+            <text id="23:1481" name="Office Location" x="54" y="10" width="129" height="24" />
+          </frame>
+          <frame id="23:1482" name="Frame" x="22" y="80" width="236" height="62">
+            <text id="23:1483" name="Address" x="0" y="0" width="62" height="16" />
+            <text id="23:1484" name="7676 Bathaa Quraish, Makkah Al-Mukarramah, KSA" x="0" y="18" width="236" height="44" />
+          </frame>
+          <frame id="23:1485" name="Frame" x="22" y="156" width="236" height="40">
+            <text id="23:1486" name="Phone" x="0" y="0" width="46" height="16" />
+            <text id="23:1487" name="+966 57 353 4185" x="0" y="18" width="236" height="22" />
+          </frame>
+          <frame id="23:1488" name="Frame" x="22" y="210" width="236" height="40">
+            <text id="23:1489" name="Email" x="0" y="0" width="40" height="16" />
+            <text id="23:1490" name="info@aljazira.co" x="0" y="18" width="236" height="22" />
+          </frame>
+          <instance id="23:1491" name="Button" x="22" y="264" width="236" height="50" />
+        </frame>
+      </frame>
+    </frame>
+    <instance id="23:1497" name="Footer" x="0" y="2048.39990234375" width="1440" height="503" />
+    <instance id="23:1568" name="Navbar" x="0" y="0" width="1440" height="80" />
+    <instance id="23:1594" name="WhatsApp FAB (fixed)" x="1144" y="796" width="280" height="88" />
+  </frame>
+  <frame id="28:1609" name="00 Intro – start" x="-3360" y="0" width="1440" height="900">
+    <ellipse id="28:1610" name="Glow" x="570" y="280" width="300" height="300" />
+    <instance id="28:1611" name="Logo" x="570.75" y="386.5" width="298.5" height="86.41560363769531" />
+    <rounded-rectangle id="28:1613" name="Line" x="719.9949951171875" y="471.5" width="0.009999999776482582" height="3" />
+    <text id="28:1614" name="Tagline" x="491.5" y="507.5" width="363" height="22" />
+  </frame>
+  <frame id="28:1615" name="00 Intro – reveal" x="-1680" y="0" width="1440" height="900">
+    <ellipse id="28:1616" name="Glow" x="360" y="70" width="720" height="720" />
+    <instance id="28:1617" name="Logo" x="501.0999755859375" y="336.20001220703125" width="437.8000183105469" height="126.74288177490234" />
+    <rounded-rectangle id="28:1619" name="Line" x="610" y="491.79998779296875" width="220" height="3" />
+    <text id="28:1620" name="Tagline" x="491.5" y="513.7999877929688" width="363" height="22" />
+  </frame>
+  <frame id="28:1686" name="Overlay – Message sent" x="12000" y="0" width="1440" height="900">
+    <frame id="28:1624" name="Dialog" x="490" y="262" width="460" height="376">
+      <frame id="28:1625" name="Frame" x="192" y="44" width="76" height="76" />
+      <text id="28:1629" name="Message Sent Successfully" x="37.5" y="136" width="385" height="36" />
+      <text id="28:1630" name="Thank you for contacting Al Jazira for Imdad Smart Company. Our team will get back to you as soon as possible." x="48" y="188" width="364" height="78" />
+      <instance id="28:1631" name="Button" x="146" y="282" width="168" height="50" />
+    </frame>
+  </frame>
+  <frame id="28:1687" name="Overlay – Lightbox 1" x="12000" y="1000" width="1440" height="900">
+    <frame id="28:1638" name="Viewer" x="170" y="90" width="1100" height="720">
+      <rounded-rectangle id="28:1639" name="Image" x="0" y="0" width="1100" height="640" />
+      <text id="28:1640" name="1 / 3 · Site coordination with the project team" x="0" y="660" width="344" height="22" />
+      <frame id="28:1641" name="Close" x="1040" y="16" width="44" height="44" />
+      <frame id="28:1644" name="Prev" x="-26" y="294" width="52" height="52" />
+      <frame id="28:1647" name="Next" x="1074" y="294" width="52" height="52" />
+    </frame>
+  </frame>
+  <frame id="28:1688" name="Overlay – Lightbox 2" x="12000" y="2000" width="1440" height="900">
+    <frame id="28:1650" name="Viewer" x="170" y="90" width="1100" height="720">
+      <rounded-rectangle id="28:1651" name="Image" x="0" y="0" width="1100" height="640" />
+      <text id="28:1652" name="2 / 3 · Fire pump room installation" x="0" y="660" width="262" height="22" />
+      <frame id="28:1653" name="Close" x="1040" y="16" width="44" height="44" />
+      <frame id="28:1656" name="Prev" x="-26" y="294" width="52" height="52" />
+      <frame id="28:1659" name="Next" x="1074" y="294" width="52" height="52" />
+    </frame>
+  </frame>
+  <frame id="28:1689" name="Overlay – Lightbox 3" x="12000" y="3000" width="1440" height="900">
+    <frame id="28:1662" name="Viewer" x="170" y="90" width="1100" height="720">
+      <rounded-rectangle id="28:1663" name="Image" x="0" y="0" width="1100" height="640" />
+      <text id="28:1664" name="3 / 3 · MEP services &amp; ductwork" x="0" y="660" width="239" height="22" />
+      <frame id="28:1665" name="Close" x="1040" y="16" width="44" height="44" />
+      <frame id="28:1668" name="Prev" x="-26" y="294" width="52" height="52" />
+      <frame id="28:1671" name="Next" x="1074" y="294" width="52" height="52" />
+    </frame>
+  </frame>
+</canvas>IMPORTANT: After you call this tool, you MUST call get_design_context if trying to implement the design, since this tool only returns metadata. If you do not call get_design_context, the agent will not be able to implement the design.

@@ -9,8 +9,12 @@ every phase.
 All work is assigned and reviewed through `handoff/` — read `handoff/README.md` first.
 Your current task is the lowest-numbered row in `handoff/BOARD.md` with status `TODO` or
 `CHANGES_REQUESTED`; its card is `handoff/tasks/<ID>.md`. Submit with `handoff/reports/<ID>.md`,
-set the row to `IN_REVIEW`, and **stop**. You stop at the end of every task, not only every phase.
-You never edit `handoff/tasks/`, `handoff/reviews/`, `docs/0*.md` or this file.
+set the row to `IN_REVIEW`, post an `Executor → CTO` message in `handoff/MESSAGES.md`, and stop
+working on code. You stop at the end of every task, not only every phase.
+While you wait, **watch `handoff/MESSAGES.md`** for `CTO → Executor` messages and act on them
+(see "Messages and watching" in `handoff/README.md`). Do not wait for the user to relay anything.
+You never edit `handoff/tasks/`, `handoff/reviews/`, `docs/0*.md` or this file, and you never
+edit or delete earlier messages in `MESSAGES.md` (append only).
 
 ## Source of truth (read in this order)
 1. `docs/01-architecture.md` — stack, pinned versions, decisions you may NOT change on your own.
@@ -78,3 +82,13 @@ Plus the phase-specific acceptance criteria in `docs/04-phases.md`.
 - ...
 ```
 Be precise. "Should work" is not evidence. If something is not done, mark it `[ ]` and say why.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+## This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->
