@@ -317,8 +317,8 @@ describe('P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R
     )
   })
 
-  it('stale-payload sequence: resending stale ar auto-slug on ar update does not revert or lock the English slug (R-14)', async () => {
-    // 1. Create in ar -> 'fndq-swfytyl-mka-almkrma', slugLocked: false
+  it('stale-payload sequences: resending stale auto-slugs in ar or en saves does not revert or lock the slug (R-14, R-17)', async () => {
+    // --- Sequence 0 (R-14): resending stale ar auto-slug on ar update ---
     const doc = (await payload.create({
       collection: SLUG_TEST_COLLECTION as 'users',
       locale: 'ar',
@@ -330,7 +330,6 @@ describe('P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R
     expect(doc.slug).toBe('fndq-swfytyl-mka-almkrma')
     expect(doc.slugLocked).toBe(false)
 
-    // 2. Add en title -> 'sofitel-makkah-hotel', slugLocked: false
     const withEn = (await payload.update({
       collection: SLUG_TEST_COLLECTION as 'users',
       id: doc.id,
@@ -343,7 +342,6 @@ describe('P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R
     expect(withEn.slug).toBe('sofitel-makkah-hotel')
     expect(withEn.slugLocked).toBe(false)
 
-    // 3. Client resends stale ar snapshot including slug: 'fndq-swfytyl-mka-almkrma' -> keeps 'sofitel-makkah-hotel' & slugLocked: false
     const afterStaleArUpdate = (await payload.update({
       collection: SLUG_TEST_COLLECTION as 'users',
       id: doc.id,
@@ -356,6 +354,88 @@ describe('P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R
 
     expect(afterStaleArUpdate.slug).toBe('sofitel-makkah-hotel')
     expect(afterStaleArUpdate.slugLocked).toBe(false)
+
+    // --- Sequence 1 (R-17): create in ar ("مبنى المختبر" -> 'mbna-almkhtbr'); first en save resends slug: 'mbna-almkhtbr' with en title "Lab Building" ---
+    const lab1 = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'ar',
+      data: {
+        title: 'مبنى المختبر',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab1.slug).toBe('mbna-almkhtbr')
+    expect(lab1.slugLocked).toBe(false)
+
+    const lab1EnWithStaleArSlug = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: lab1.id,
+      locale: 'en',
+      data: {
+        title: 'Lab Building',
+        slug: 'mbna-almkhtbr',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab1EnWithStaleArSlug.slug).toBe('lab-building')
+    expect(lab1EnWithStaleArSlug.slugLocked).toBe(false)
+
+    // --- Sequence 2 (R-17): create in ar ("مبنى المختبر" -> 'mbna-almkhtbr'); en "Lab Building" -> 'lab-building'; resend slug: 'mbna-almkhtbr' in a subsequent en save ---
+    const lab2 = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'ar',
+      data: {
+        title: 'مبنى المختبر الرئيسي',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab2.slug).toBe('mbna-almkhtbr-alryysy')
+    expect(lab2.slugLocked).toBe(false)
+
+    const lab2En = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: lab2.id,
+      locale: 'en',
+      data: {
+        title: 'Main Lab Building',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab2En.slug).toBe('main-lab-building')
+    expect(lab2En.slugLocked).toBe(false)
+
+    const lab2EnResendStaleArSlug = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: lab2.id,
+      locale: 'en',
+      data: {
+        title: 'Main Lab Building',
+        slug: 'mbna-almkhtbr-alryysy',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab2EnResendStaleArSlug.slug).toBe('main-lab-building')
+    expect(lab2EnResendStaleArSlug.slugLocked).toBe(false)
+
+    // --- Sequence 3 (R-17): renaming an English title and resending the old English slug (both during rename and on a subsequent en save) ---
+    const lab2RenamedWithOldEnSlug = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: lab2.id,
+      locale: 'en',
+      data: {
+        title: 'Advanced Research Complex',
+        slug: 'main-lab-building',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab2RenamedWithOldEnSlug.slug).toBe('advanced-research-complex')
+    expect(lab2RenamedWithOldEnSlug.slugLocked).toBe(false)
+
+    const lab2AfterRenameResendOldEnSlug = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: lab2.id,
+      locale: 'en',
+      data: {
+        title: 'Advanced Research Complex',
+        slug: 'main-lab-building',
+      } as never,
+    })) as unknown as SlugTestDoc
+    expect(lab2AfterRenameResendOldEnSlug.slug).toBe('advanced-research-complex')
+    expect(lab2AfterRenameResendOldEnSlug.slugLocked).toBe(false)
   })
 
   it('resolves unique suffixes without collision when an 80-char title is used 3 times (R-15)', async () => {

@@ -28,6 +28,7 @@ export type SlugFieldHook = FieldHook<
  * Real collections use `slugFields()` / `slugLockedField()` to persist `slugLocked` in Postgres.
  */
 const lockedSlugDocsByPayload = new WeakMap<object, Set<string>>()
+const autoSlugsByPayloadDoc = new WeakMap<object, Map<string, Set<string>>>()
 
 function getLockedSetForPayload(payloadObj: unknown): Set<string> | undefined {
   if (typeof payloadObj !== 'object' || payloadObj === null) {
@@ -43,6 +44,40 @@ function getLockedSetForPayload(payloadObj: unknown): Set<string> | undefined {
   if (!set) {
     set = new Set<string>()
     lockedSlugDocsByPayload.set(payloadObj, set)
+  }
+  return set
+}
+
+function getAutoSlugHistoryForDoc(
+  payloadObj: unknown,
+  collectionSlug: string | undefined,
+  currentId: number | string | undefined,
+  createdAt: unknown,
+): Set<string> | undefined {
+  if (
+    typeof payloadObj !== 'object' ||
+    payloadObj === null ||
+    collectionSlug === undefined ||
+    currentId === undefined
+  ) {
+    return undefined
+  }
+  let docMap = autoSlugsByPayloadDoc.get(payloadObj)
+  if (!docMap) {
+    docMap = new Map<string, Set<string>>()
+    autoSlugsByPayloadDoc.set(payloadObj, docMap)
+  }
+  const createdKey =
+    createdAt instanceof Date
+      ? createdAt.toISOString()
+      : typeof createdAt === 'string'
+        ? createdAt
+        : ''
+  const key = `${collectionSlug}:${String(currentId)}:${createdKey}`
+  let set = docMap.get(key)
+  if (!set) {
+    set = new Set<string>()
+    docMap.set(key, set)
   }
   return set
 }
@@ -254,6 +289,126 @@ type PayloadFindLike = {
     overrideAccess?: boolean
     req?: PayloadRequest
   }) => Promise<Record<string, unknown> | null | undefined>
+  findVersions?: (opts: {
+    collection: string
+    depth?: number
+    limit?: number
+    locale?: string
+    overrideAccess?: boolean
+    pagination?: boolean
+    req?: PayloadRequest
+    where: Where
+  }) => Promise<{ docs?: Array<{ version?: Record<string, unknown> }> }>
+}
+
+async function isStoredOrHistoricalAutoSlugForDoc(
+  payload: PayloadFindLike | undefined,
+  collectionSlug: string | undefined,
+  currentId: number | string | undefined,
+  from: string,
+  fieldName: string,
+  candidateSlug: string,
+  hasDrafts: boolean,
+  hasVersions: boolean,
+  req: PayloadRequest | undefined,
+  docHistory: Set<string> | undefined,
+): Promise<boolean> {
+  const candidateBase = candidateSlug.replace(/-\d+$/, '')
+  if (docHistory && (docHistory.has(candidateSlug) || docHistory.has(candidateBase))) {
+    return true
+  }
+
+  if (!payload || !collectionSlug || currentId === undefined) {
+    return false
+  }
+
+  const txReq = req?.transactionID
+    ? ({ transactionID: req.transactionID } as unknown as PayloadRequest)
+    : undefined
+
+  // Check stored document in both 'ar' and 'en' locales (R-17)
+  if (typeof payload.findByID === 'function') {
+    for (const locale of ['ar', 'en']) {
+      try {
+        const docInLocale = await payload.findByID({
+          collection: collectionSlug,
+          depth: 0,
+          disableErrors: true,
+          draft: hasDrafts,
+          fallbackLocale: false,
+          id: currentId,
+          locale,
+          overrideAccess: true,
+          req: txReq,
+        })
+        const rawSource = docInLocale?.[from]
+        const extracted =
+          extractNonEmptyString(rawSource) ??
+          extractLocalizedSource(rawSource).en ??
+          extractLocalizedSource(rawSource).ar
+        if (extracted) {
+          const autoSlug = slugify(extracted)
+          if (docHistory && autoSlug) {
+            docHistory.add(autoSlug)
+          }
+          if (autoSlug === candidateSlug || autoSlug === candidateBase) {
+            return true
+          }
+        }
+      } catch {
+        // Ignore findByID error and continue
+      }
+    }
+  }
+
+  // Check historical versions in '_<collection>_v' if versions are enabled (R-17)
+  if (hasVersions && typeof payload.findVersions === 'function') {
+    for (const locale of ['ar', 'en']) {
+      try {
+        const versions = await payload.findVersions({
+          collection: collectionSlug,
+          depth: 0,
+          limit: 25,
+          locale,
+          overrideAccess: true,
+          pagination: false,
+          req: txReq,
+          where: {
+            parent: { equals: currentId },
+          },
+        })
+        for (const vDoc of versions.docs ?? []) {
+          const ver = vDoc.version
+          const verSlug = extractNonEmptyString(ver?.[fieldName])
+          if (verSlug) {
+            if (docHistory) {
+              docHistory.add(verSlug)
+            }
+            if (verSlug === candidateSlug || verSlug.replace(/-\d+$/, '') === candidateBase) {
+              return true
+            }
+          }
+          const verSource =
+            extractNonEmptyString(ver?.[from]) ??
+            extractLocalizedSource(ver?.[from]).en ??
+            extractLocalizedSource(ver?.[from]).ar
+          if (verSource) {
+            const verAutoSlug = slugify(verSource)
+            if (docHistory && verAutoSlug) {
+              docHistory.add(verAutoSlug)
+            }
+            if (verAutoSlug === candidateSlug || verAutoSlug === candidateBase) {
+              return true
+            }
+          }
+        }
+      } catch {
+        // Ignore findVersions error
+      }
+    }
+  }
+
+  return false
 }
 
 async function hasExistingSlugCollision(
@@ -589,7 +744,23 @@ export function buildSlugBeforeValidateHook(
 
     const normalizedCandidate = manualCandidate !== undefined ? slugify(manualCandidate) : undefined
 
-    const isStaleOrUnchangedAutoSlugOnUpdate =
+    const payload = args.req.payload as PayloadFindLike | undefined
+    const docHistory = getAutoSlugHistoryForDoc(
+      args.req.payload,
+      collectionSlug,
+      currentId,
+      originalRecord?.createdAt,
+    )
+    if (!wasAlreadyLocked && docHistory) {
+      if (prevSlug) {
+        docHistory.add(prevSlug)
+      }
+      if (originalLocalAutoSlug) {
+        docHistory.add(originalLocalAutoSlug)
+      }
+    }
+
+    let isStaleOrUnchangedAutoSlugOnUpdate =
       args.operation === 'update' &&
       manualCandidate !== undefined &&
       (manualCandidate === prevSlug ||
@@ -601,11 +772,32 @@ export function buildSlugBeforeValidateHook(
             normalizedCandidate === incomingLocalAutoSlug ||
             normalizedCandidate === originalLocalAutoSlug)))
 
+    if (
+      !isStaleOrUnchangedAutoSlugOnUpdate &&
+      args.operation === 'update' &&
+      !wasAlreadyLocked &&
+      normalizedCandidate !== undefined &&
+      normalizedCandidate.length > 0
+    ) {
+      const hasDrafts = Boolean(args.collection?.versions?.drafts)
+      const hasVersions = Boolean(args.collection?.versions)
+      isStaleOrUnchangedAutoSlugOnUpdate = await isStoredOrHistoricalAutoSlugForDoc(
+        payload,
+        collectionSlug,
+        currentId,
+        from,
+        fieldName,
+        normalizedCandidate,
+        hasDrafts,
+        hasVersions,
+        args.req,
+        docHistory,
+      )
+    }
+
     const isManualSlugInput =
       manualCandidate !== undefined &&
       (args.operation === 'create' || prevSlug === undefined || !isStaleOrUnchangedAutoSlugOnUpdate)
-
-    const payload = args.req.payload as PayloadFindLike | undefined
 
     // R-6, R-7, R-13 & R-2(3): If the editor typed a manual slug, normalize it via slugify,
     // verify uniqueness in beforeValidate (so draft creates & autosave updates also get the
@@ -680,6 +872,10 @@ export function buildSlugBeforeValidateHook(
       setSlugLockedFlag(args, lockFieldName, false)
     }
 
+    if (docHistory) {
+      docHistory.add(generatedBaseSlug)
+    }
+
     if (collectionSlug && payload && typeof payload.find === 'function') {
       try {
         const existingSlugs = await findExistingMatchingSlugs(
@@ -690,7 +886,11 @@ export function buildSlugBeforeValidateHook(
           currentId,
           args.req,
         )
-        return resolveUniqueSlug(generatedBaseSlug, existingSlugs)
+        const resolved = resolveUniqueSlug(generatedBaseSlug, existingSlugs)
+        if (docHistory) {
+          docHistory.add(resolved)
+        }
+        return resolved
       } catch {
         return generatedBaseSlug
       }
