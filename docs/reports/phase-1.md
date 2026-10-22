@@ -21,7 +21,7 @@
 - **Initial migration, Playwright e2e smoke, CI & Dependabot (`P1-T4`)**:
   - `src/migrations/20261021_074848_initial_users_media.ts`: Initial schema migration verified with `migrate` → `migrate:status` → `migrate:down` → `migrate` on a clean database.
   - `playwright.config.ts` + `tests/e2e/admin-smoke.spec.ts`: Playwright e2e smoke test (`pnpm test:e2e`) verifying `/admin/login` renders in Arabic (`<html lang="ar" dir="RTL">`, Arabic labels visible) and in English after switching (`<html lang="en" dir="LTR">`, English labels visible).
-  - `.github/workflows/ci.yml` (`B4`) + `.github/dependabot.yml` (`B3`) + `.gitleaksignore` (`S3`): GitHub Actions CI workflow with `permissions: contents: read`, all actions pinned by full 40-char commit SHA, per-run generated secrets, Postgres 18 service pinned by digest, `.next/static` secret leakage check (`S4`), `pnpm audit --prod --audit-level high`, and `gitleaks git`.
+  - `.github/workflows/ci.yml` (`B4`) + `.github/dependabot.yml` (`B3`) + `.gitleaksignore` (`S3`) + `docs/dependency-overrides.md`: GitHub Actions CI workflow with `permissions: contents: read`, all actions pinned to the commit SHA of the latest stable release (`actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1`, `pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0`, `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0`), per-run generated secrets, Postgres 18.6 and Mailpit v1.31.6 services pinned by digest, `.next/static` secret leakage check (`S4`), `pnpm audit --prod --audit-level high`, and `gitleaks git`. Dependabot groups `payload`/`@payloadcms/*` and `github-actions`, and ignores CTO-gated major bumps (`typescript >= 6.0.0`, `graphql >= 17.0.0`, `next >= 17.0.0`, `react >= 20.0.0`, `react-dom >= 20.0.0`).
 
 ### Evidence
 
@@ -207,7 +207,7 @@ ddcad3f docs: P1-T1 report
 
 ### Dependencies added/changed
 - `@payloadcms/email-nodemailer@3.91.0` — official Payload 3.91.0 SMTP email adapter used for forgot-password (`A5`) and Phase 5 quote notifications (`~125k` weekly downloads, published with Payload `3.91.0`).
-- `pnpm.overrides` in `package.json`:
+- `pnpm.overrides` in `package.json` (documented with advisories, parent chains, and removal conditions in [`docs/dependency-overrides.md`](../dependency-overrides.md)):
   - `"chokidar@^3.0.0": "4.0.3"` — replaces transitive `chokidar@3.6.0` (under `sass`) to eliminate `braces@3.0.3` (`GHSA-vfj7-8cjw-p6xm`).
   - `"dompurify": "3.4.16"` — upgrades transitive `dompurify@3.4.15` (under `monaco-editor`) to patched `3.4.16` (`GHSA-p98j-92pf-mc4p`, `GHSA-6688-9rhm-gjv2`).
   - `"esbuild@<=0.24.2": "0.28.2"` — upgrades transitive `esbuild@0.18.20` (under `drizzle-kit`) to `0.28.2` (`GHSA-67mh-4wv8-2f99`).

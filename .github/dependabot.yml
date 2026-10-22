@@ -9,7 +9,34 @@ updates:
         patterns:
           - 'payload'
           - '@payloadcms/*'
+    ignore:
+      - dependency-name: 'typescript'
+        versions:
+          - '>= 6.0.0'
+      - dependency-name: 'graphql'
+        versions:
+          - '>= 17.0.0'
+      - dependency-name: 'next'
+        versions:
+          - '>= 17.0.0'
+      - dependency-name: 'react'
+        versions:
+          - '>= 20.0.0'
+      - dependency-name: 'react-dom'
+        versions:
+          - '>= 20.0.0'
+      - dependency-name: '@types/react'
+        versions:
+          - '>= 20.0.0'
+      - dependency-name: '@types/react-dom'
+        versions:
+          - '>= 20.0.0'
+
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      github-actions:
+        patterns:
+          - '*'
