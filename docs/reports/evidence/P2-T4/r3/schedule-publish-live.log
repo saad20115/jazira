@@ -1,0 +1,629 @@
+[next-start] ▲ Next.js 16.4.2
+[next-start] - Local:         http://localhost:3000
+- Network:       http://172.16.48.47:3000
+✓ Ready in 403ms
+[next-start] ✓ Running next.config.ts took 115ms
+[next-start:err] ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+Production server listening at http://localhost:3000 (NODE_ENV=production, PAYLOAD_JOBS_AUTORUN=true)
+POST /api/users/first-register -> HTTP 200 user.id=1
+Created draft project ID=1, initial _status=draft
+Queued schedulePublish job in payload_jobs with waitUntil=2026-10-22T22:03:39.233Z — waiting for background autoRun cron (* * * * *) without calling /api/payload-jobs/run...
+[next-start] [01:03:39] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #1: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:40] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #2: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:41] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #3: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:42] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #4: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:43] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #5: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:44] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #6: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:45] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #7: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:46] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #8: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:47] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #9: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:48] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #10: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:49] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #11: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:50] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #12: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:51] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #13: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:52] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #14: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:53] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #15: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:54] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #16: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:55] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #17: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:56] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #18: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:57] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #19: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:58] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #20: GET /api/projects/1 returned HTTP 404
+[next-start] [01:03:59] ERROR: غير موجود
+    err: {
+      "type": "a",
+      "message": "غير موجود",
+      "stack":
+          a: غير موجود
+              at S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 404,
+      "name": "a"
+    }
+Poll #21: GET /api/projects/1 returned HTTP 404
+[next-start] [01:04:00] INFO: Running 1 jobs.
+    new: 1
+    retrying: 0
+Poll #22: GET /api/projects/1 returned HTTP 200 with _status="published", title="مشروع مجدول للنشر التلقائي في بيئة الإنتاج"
+[next-start] [01:04:00] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). Remove the reference first.
+    err: {
+      "type": "",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). Remove the reference first.
+              at r.s.error (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:461:51995)
+              at h (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:450:30374)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async B (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:93401)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:57989)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[next-start] [01:04:01] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). Remove the reference first.
+    err: {
+      "type": "",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع مجدول للنشر التلقائي في بيئة الإنتاج), projects(#1)). Remove the reference first.
+              at r.s.error (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:461:51995)
+              at h (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:450:30374)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async B (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:93401)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:57989)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[next-start] [01:04:01] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #995). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #995). Remove it from those materials first.
+    err: {
+      "type": "",
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #995). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #995). Remove it from those materials first.",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #995). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #995). Remove it from those materials first.
+              at r.s.error (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:461:51995)
+              at c (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:450:22110)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async B (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:93401)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:57989)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[next-start] [01:04:01] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+    err: {
+      "type": "",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at r.s.error (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:461:51995)
+              at h.hooks.beforeDelete (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:450:65248)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async B (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:93401)
+              at async A (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:57989)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[next-start] [01:04:01] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at r.s.error (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:461:51995)
+              at h.hooks.beforeChange (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:450:64813)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async et (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:121752)
+              at async S (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:132671)
+              at async Q (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:61396)
+              at async includes.i.handler (D:\jazira\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:36:142959)
+              at async io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23686)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[next-start] [01:04:01] ERROR: معرّف المستخدم غير صالح. / Invalid user ID.
+    err: {
+      "type": "",
+      "message": "معرّف المستخدم غير صالح. / Invalid user ID.",
+      "stack":
+          APIError: معرّف المستخدم غير صالح. / Invalid user ID.
+              at r.s.error (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:461:51995)
+              at handler (D:\jazira\.next\server\chunks\_0k-8gc5l92s7i._.js:450:63504)
+              at io (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:23692)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:87:43267
+              at async r0.renderToResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async ee (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:19439)
+              at async r0.handleResponse (D:\jazira\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+              at async et (D:\jazira\.next\server\chunks\_03tpcgpsan01y._.js:107:20434)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }

@@ -1,0 +1,151 @@
+=== git rev-parse HEAD ===
+49640ae1eee03ee4a10ba2b9eca667a889ae8a8c
+
+=== src/security/apiError.ts ===
+src/security/apiError.ts:15:export function createPublicAPIError(
+src/security/apiError.ts:21:  err.name = 'APIError'
+src/security/apiError.ts:31:export const ensurePublicErrorMessageAfterError: RootAfterErrorHook = ({ error, result }) => {
+
+=== src/payload.config.ts ===
+src/payload.config.ts:13:import { Projects } from './collections/Projects'
+src/payload.config.ts:21:import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
+src/payload.config.ts:22:import { ensurePublicErrorMessageAfterError } from './security/apiError'
+src/payload.config.ts:65:  collections: [Users, Media, Videos, Brands, Stats, Materials, Services, Team, Projects],
+src/payload.config.ts:67:    afterError: [ensurePublicErrorMessageAfterError],
+src/payload.config.ts:86:    autoRun: [
+src/payload.config.ts:93:    shouldAutoRun: () => shouldAutoRunJobs(),
+
+=== src/env.ts ===
+src/env.ts:79:const jobsAutoRunSchema = z
+src/env.ts:82:      'PAYLOAD_JOBS_AUTORUN must be explicitly set to "true" or "false" in production so at most one instance runs the Payload jobs queue.',
+src/env.ts:88:    'PAYLOAD_JOBS_AUTORUN must be "true", "false", "1", or "0".',
+src/env.ts:122:    PAYLOAD_JOBS_AUTORUN: jobsAutoRunSchema,
+src/env.ts:158:  const rawJobsAutoRun = rawEnv.PAYLOAD_JOBS_AUTORUN?.trim()
+src/env.ts:175:    PAYLOAD_JOBS_AUTORUN: rawJobsAutoRun
+src/env.ts:203:  PAYLOAD_JOBS_AUTORUN: 'false',
+src/env.ts:218:      PAYLOAD_JOBS_AUTORUN:
+src/env.ts:219:        process.env.PAYLOAD_JOBS_AUTORUN || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_JOBS_AUTORUN,
+
+=== src/jobs/shouldAutoRun.ts ===
+src/jobs/shouldAutoRun.ts:6: * - Next.js production builds / static export (`NEXT_PHASE=phase-production-build` or `next build`)
+src/jobs/shouldAutoRun.ts:13:export function shouldAutoRunJobs(
+src/jobs/shouldAutoRun.ts:26:    env.NEXT_PHASE === 'phase-production-build' ||
+src/jobs/shouldAutoRun.ts:27:    env.NEXT_PHASE === 'phase-export' ||
+src/jobs/shouldAutoRun.ts:28:    env.NEXT_PHASE === 'phase-production-compile'
+
+=== src/hooks/revalidate.ts ===
+src/hooks/revalidate.ts:170:async function readMainCollectionRow(
+src/hooks/revalidate.ts:185:    const doc = await db.findOne({
+src/hooks/revalidate.ts:209:async function readMainGlobalRow(
+src/hooks/revalidate.ts:220:    const doc = await db.findGlobal({
+src/hooks/revalidate.ts:245:export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = async ({
+src/hooks/revalidate.ts:271:      setContextValue(context, req, '__mainDocLookupFailed', true)
+src/hooks/revalidate.ts:280:export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = async ({
+src/hooks/revalidate.ts:312:export async function shouldRevalidateCollectionAfterChange({
+src/hooks/revalidate.ts:345:    (context as { __mainDocLookupFailed?: unknown } | undefined)?.__mainDocLookupFailed === true
+
+=== src/fields/richText.ts ===
+src/fields/richText.ts:101:export function extractRichTextUploadMediaIds(node: unknown): number[] {
+src/fields/richText.ts:401:        const foundMedia = await payloadFromReq.find({
+src/fields/richText.ts:497:export function bodyMediaField(bodyFieldName = 'body'): RelationshipField {
+
+=== src/fields/seo.ts ===
+src/fields/seo.ts:71:export function seoGroupField(): GroupField {
+src/fields/seo.ts:80:      beforeValidate: [
+src/fields/seo.ts:88:          if (typeof value !== 'object' || Array.isArray(value)) {
+
+=== src/collections/Media.ts ===
+src/collections/Media.ts:16:import { createPublicAPIError } from '../security/apiError'
+src/collections/Media.ts:123:const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Media.ts:142:          { bodyMedia: { equals: id } },
+src/collections/Media.ts:156:          { bodyMedia: { equals: id } },
+src/collections/Media.ts:206:    throw createPublicAPIError(
+
+=== src/collections/Brands.ts ===
+src/collections/Brands.ts:10:import { createPublicAPIError } from '../security/apiError'
+src/collections/Brands.ts:12:const preventBrandDeletionWhenUsedByMaterials: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Brands.ts:34:    throw createPublicAPIError(
+
+=== src/collections/Users.ts ===
+src/collections/Users.ts:11:import { createPublicAPIError } from '../security/apiError'
+src/collections/Users.ts:72:const preventLastAdminDemotionBeforeChange: CollectionBeforeChangeHook = async ({
+src/collections/Users.ts:96:        throw createPublicAPIError(
+src/collections/Users.ts:107:const preventLastAdminBeforeDelete: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Users.ts:129:      throw createPublicAPIError(
+src/collections/Users.ts:188:      path: '/:id/revoke-sessions',
+src/collections/Users.ts:203:          throw createPublicAPIError('معرّف المستخدم غير صالح. / Invalid user ID.', 400)
+src/collections/Users.ts:242:    beforeChange: [preventLastAdminDemotionBeforeChange],
+src/collections/Users.ts:243:    beforeDelete: [preventLastAdminBeforeDelete],
+
+=== src/collections/Services.ts ===
+src/collections/Services.ts:357:    bodyMediaField('body'),
+
+=== src/collections/Projects.ts ===
+src/collections/Projects.ts:18:  captureMainPublishedDocBeforeChange,
+src/collections/Projects.ts:117:const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
+src/collections/Projects.ts:343:const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = async ({
+src/collections/Projects.ts:437:      'revalidateProjectRelatedAndHomeAfterChange failed; continuing without throwing',
+src/collections/Projects.ts:444:const revalidateProjectRelatedAndHomeAfterDelete: CollectionAfterDeleteHook = ({
+src/collections/Projects.ts:492:      'revalidateProjectRelatedAndHomeAfterDelete failed; continuing without throwing',
+src/collections/Projects.ts:499:export const Projects: CollectionConfig = {
+src/collections/Projects.ts:535:    beforeValidate: [validateProjectBeforeValidate],
+src/collections/Projects.ts:536:    beforeChange: [captureMainPublishedDocBeforeChange],
+src/collections/Projects.ts:543:      revalidateProjectRelatedAndHomeAfterChange,
+src/collections/Projects.ts:551:      revalidateProjectRelatedAndHomeAfterDelete,
+src/collections/Projects.ts:1118:    bodyMediaField('body'),
+
+=== tests/int/p2-t4.int.test.ts ===
+tests/int/p2-t4.int.test.ts:67:    .split('/')
+tests/int/p2-t4.int.test.ts:124:    .split('/')
+tests/int/p2-t4.int.test.ts:269:  it('enforces Z1 & Z2 on projects: anonymous never sees draft projects (REST or Local API overrideAccess:false), sees published projects, and newer draft edits remain hidden until published', async () => {
+tests/int/p2-t4.int.test.ts:437:  it('supports scheduled publishing via Payload jobs queue (schedulePublish: true): transitions a draft project to published when the scheduled time arrives', async () => {
+tests/int/p2-t4.int.test.ts:488:  it('enforces mutual exclusion between video and videoUrl (video xor videoUrl), trims videoUrl whitespace, and rejects non-default ports and non-allowlisted hosts on draft and published saves (R-8)', async () => {
+tests/int/p2-t4.int.test.ts:624:  it('enforces slug uniqueness, required status with no default (R-9), field constraints, draft relationship/enum validation returning 400 (R-6), and media deletion guard across locales and richText upload nodes (R-7)', async () => {
+tests/int/p2-t4.int.test.ts:1119:  it('wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4)', async () => {
+tests/int/p2-t4.int.test.ts:1303:  it('preserves public bilingual APIError messages across Media, Brands, and Users endpoints (R-13)', async () => {
+
+=== Additional citations at 249d726414828731d1cb91e054a9e21205403861 ===
+src/env.test.ts:47:  it('requires PAYLOAD_JOBS_AUTORUN to be explicitly set in production while defaulting to true in dev/test (P2-T4 R-14)', () => {
+src/security/apiError.test.ts:7:  it('sets err.name to APIError so formatErrors preserves the message even when constructor.name is minified', () => {
+src/hooks/revalidate.test.ts:347:  it('logs a warning and falls back to invalidating (fail-safe) if reading the main row fails (P2-T4 R-10)', async () => {
+
+=== Spec & Round 1/2/3 Field Citations (git grep -n) ===
+src/collections/_shared/publishable.ts:5:export const publishableVersions = {
+src/fields/slug.ts:1010:export function slugFields(options: SlugFieldOptions = {}): [SingleTextField, CheckboxField] {
+src/fields/groups/pillar.ts:16:export function pillarFields(options: PillarFieldOptions = {}): Field[] {
+src/fields/richText.ts:354:export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}): RichTextField {
+src/fields/link.ts:111:export const ALLOWED_VIDEO_EMBED_HOSTS = [
+src/fields/link.ts:123:export function validateVideoEmbedUrl(
+src/fields/link.ts:140:  if (parsed.port !== '') {
+src/fields/videoUrl.ts:141:  if (parsed.port !== '') {
+src/collections/Projects.ts:516:    defaultColumns: ['title', 'category', 'status', 'featured', '_status', 'updatedAt'],
+src/collections/Projects.ts:565:              name: 'title',
+src/collections/Projects.ts:582:              name: 'category',
+src/collections/Projects.ts:635:              name: 'client',
+src/collections/Projects.ts:652:              name: 'location',
+src/collections/Projects.ts:669:              name: 'year',
+src/collections/Projects.ts:702:              name: 'scope',
+src/collections/Projects.ts:776:              name: 'scopeSummary',
+src/collections/Projects.ts:793:              name: 'deliveredBy',
+src/collections/Projects.ts:810:              name: 'summary',
+src/collections/Projects.ts:832:            limitedRichTextField({
+src/collections/Projects.ts:858:              name: 'coverImage',
+src/collections/Projects.ts:875:              name: 'gallery',
+src/collections/Projects.ts:900:              name: 'video',
+src/collections/Projects.ts:926:              name: 'videoUrl',
+src/collections/Projects.ts:979:              name: 'details',
+src/collections/Projects.ts:1011:              name: 'deliverables',
+src/collections/Projects.ts:1067:      name: 'status',
+src/collections/Projects.ts:1101:      name: 'featured',
+src/collections/Projects.ts:1117:    orderField(),
+docs/dependency-overrides.md:10:| `dompurify` | `3.4.17` | `GHSA-p98j-92pf-mc4p`, `GHSA-6688-9rhm-gjv2`, `GHSA-cg2g-xh64-v4q7`, `GHSA-mrv2-3pqr-j5jr`, `GHSA-c6gr-qvv4-5v3f` (Critical / High / Moderate / Low — mXSS / sanitizer bypass in `dompurify <= 3.4.16`) | `@payloadcms/ui@3.91.0 > @monaco-editor/react > monaco-editor > dompurify@3.4.15` | Same `3.4.x` line (`3.4.15` → `3.4.17`), patch security release with identical API surface. | Drop when `monaco-editor` (via `@payloadcms/ui`) ships with `dompurify >= 3.4.17`. |
+package.json:57:      "dompurify": "3.4.17",
+.github/workflows/ci.yml:113:          pnpm payload generate:types
+.github/workflows/ci.yml:127:          OUT="$(echo n | pnpm payload migrate:create ci_drift_check --no-color 2>&1)"
+.env.example:55:# Required explicitly in production (NODE_ENV=production): set PAYLOAD_JOBS_AUTORUN=true on the single
+.env.example:56:# primary job runner instance and PAYLOAD_JOBS_AUTORUN=false on any additional replica/worker.
+.env.example:58:PAYLOAD_JOBS_AUTORUN=true
+src/instrumentation.ts:22:      await getPayload({ config, cron: true })
+src/collections/Projects.ts:1061:          fields: [seoGroupField()],
+src/collections/Projects.ts:168:    mutable.videoUrl = new URL((mutable.videoUrl as string).trim()).href
+src/collections/Projects.ts:951:                      return new URL(trimmed).href
