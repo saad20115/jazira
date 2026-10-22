@@ -152,3 +152,10 @@ says so in the review.
   without BOM. **Never type a file:line by hand:** generate `citations.log` with `git grep -n` for
   every identifier you cite and cite only from it. A behaviour claim cites a test title that
   appears in `test.log`. A wrong citation or an invented identifier is a major finding.
+- (added 2026-10-23) A test is described from **its code** (locale, nesting, data), not from intent.
+  Never mention a file that is not in the submitted commit. If logs are post-processed (e.g. ANSI
+  colour stripped because Payload forces colour), say exactly how; any other edit is forbidden.
+
+### Migrations (added 2026-10-23)
+- Never edit a committed migration, merged or not. Every schema change is a new migration; add a
+  backfill step when existing rows need the new data.
