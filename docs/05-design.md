@@ -152,3 +152,11 @@ Binding for Phase 3. They fill what the Figma file does not specify.
 15. Tokens not in Figma variables but in the reference code (`design/tokens.md` "Literal colors",
     shadows, radii, gradients) are **allowed** — add them to `tokens.css` under their names from
     `tokens.md`; still no raw values inside components.
+16. **Interactive systems / 3D (2026-10-22, client request).** The tower must look like the
+    photo-real Figma render (`design/assets/images/tower-render.png`); the 12 "angle" frames in
+    116:1199 are the same image, so no real 3D source exists yet. Decision: **pre-rendered
+    cinematic shots** (offline Blender renders of a real 3D model of that tower and its MEP
+    systems) played as video with an HTML overlay for hotspots, accordion and related projects
+    (P3-T5); a **real-time viewer** of the same model with baked lighting behind "Open the live 3D
+    model" (P3-T11). The procedural `reference/3d/scene.js` is retired for this section. Assets
+    come from task A-1 (external); the code runs on placeholder clips until then.

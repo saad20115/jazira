@@ -203,8 +203,14 @@ relationship fields (written below as "stat" / "stats").
 - `whoWeAre`: `badgeStat` (relationship → stats), `title`, `text` (L,
   2 paragraphs as rich text limited to paragraphs), `button`, `image`.
 - `coreServices`: `sectionIntro`; items = `services` tier `main` ordered.
-- `interactiveSystems`: `sectionIntro`; `systems` (array max 8 of `pillar`) — accordion next to the
-  3D model; `fallbackImage` (upload); `liveModelLabel` (L).
+- `interactiveSystems`: `sectionIntro`; `systems` (array, exactly the 5 design items, each:
+  `title` (L), `text` (L), **`shot`** (select, unique: `hvac|fire|plumbing|power|smart` — the
+  cinematic clip shown, defined in code), **`disciplines`** (select hasMany from `projects.scope`
+  options — drives "related projects"; defaults: HVAC→`hvac`, Fire→`fire-fighting`,
+  Plumbing→`plumbing`, Power→`electrical`, Smart→`low-current`,`data-center`));
+  `heroImage` (upload, the overview still; falls back to the shipped hero render);
+  `relatedProjectsLabel` (L); `liveModelLabel` (L). Clips and hotspots are versioned static
+  assets (not CMS) — editors change text and mappings, not video.
 - `statsSection` (the "Trusted by Industry Leaders" block): `title`, `text` (L); `stats` =
   relationship → stats, hasMany, max 4.
 - `featuredProjects`: `sectionIntro`, `button`; items = `projects` where `featured`.
