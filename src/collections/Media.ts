@@ -3,6 +3,10 @@ import type { CollectionBeforeOperationHook, CollectionConfig } from 'payload'
 import { isAdminOrEditor } from '../access/index'
 import { env } from '../env'
 import {
+  createRevalidateAfterChangeHook,
+  createRevalidateAfterDeleteHook,
+} from '../hooks/revalidate'
+import {
   ALLOWED_IMAGE_MIME_TYPES,
   validateAndSanitizeMediaFile,
 } from '../security/uploadValidation'
@@ -40,6 +44,10 @@ export const Media: CollectionConfig = {
       ar: 'الوسائط',
       en: 'Media',
     },
+    description: {
+      ar: 'مكتبة الصور المرفوعة للموقع (JPEG، PNG، WebP، AVIF بحد أقصى 10 ميجابايت). يتم توليد المقاسات المحسّنة بصيغة WebP تلقائياً.',
+      en: 'Uploaded image library (JPEG, PNG, WebP, AVIF up to 10 MB). Automatically generates optimized WebP responsive sizes.',
+    },
   },
   access: {
     read: () => true,
@@ -49,6 +57,8 @@ export const Media: CollectionConfig = {
   },
   hooks: {
     beforeOperation: [validateUploadBeforeOperation],
+    afterChange: [createRevalidateAfterChangeHook({ collection: 'media' })],
+    afterDelete: [createRevalidateAfterDeleteHook({ collection: 'media' })],
   },
   upload: {
     // Stored outside public/ at the validated absolute MEDIA_DIR path (default <cwd>/media in dev)

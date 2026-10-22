@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    videos: Video;
+    brands: Brand;
+    stats: Stat;
+    materials: Material;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +82,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    videos: VideosSelect<false> | VideosSelect<true>;
+    brands: BrandsSelect<false> | BrandsSelect<true>;
+    stats: StatsSelect<false> | StatsSelect<true>;
+    materials: MaterialsSelect<false> | MaterialsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -118,6 +126,8 @@ export interface UserAuthOperations {
   };
 }
 /**
+ * Dashboard user accounts and role assignments (Admin or Content Editor).
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
@@ -146,6 +156,8 @@ export interface User {
   collection: 'users';
 }
 /**
+ * Uploaded image library (JPEG, PNG, WebP, AVIF up to 10 MB). Automatically generates optimized WebP responsive sizes.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
@@ -200,6 +212,123 @@ export interface Media {
   };
 }
 /**
+ * Self-hosted video files (MP4 or WebM, max 100 MB) used in the home hero background or project detail pages.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos".
+ */
+export interface Video {
+  id: number;
+  /**
+   * Descriptive title for the video in Arabic and English.
+   */
+  title: string;
+  /**
+   * Optional thumbnail image displayed before video playback starts.
+   */
+  poster?: (number | null) | Media;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * Approved manufacturers and partner brands linked to the approved materials schedule on the Services page and the partner marquee on the Home page.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands".
+ */
+export interface Brand {
+  id: number;
+  /**
+   * Unique official manufacturer or brand name.
+   */
+  name: string;
+  /**
+   * Optional — falls back to a styled wordmark tile when no logo image is uploaded.
+   */
+  logo?: (number | null) | Media;
+  /**
+   * Country or region of origin (e.g., KSA, Germany, USA).
+   */
+  origin?: string | null;
+  /**
+   * Official website URL (must start with https:// or http://).
+   */
+  website?: string | null;
+  /**
+   * Enable to display this brand in the scrolling partner marquee on the Home page.
+   */
+  showInMarquee?: boolean | null;
+  /**
+   * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
+   */
+  order: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Single source of truth for company metrics (e.g., 45+ years, 100+ projects, 85% self-performed). Referenced across pages so numbers are never typed twice.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats".
+ */
+export interface Stat {
+  id: number;
+  /**
+   * Displayed numeric figure or percentage (e.g., 45+, 100+, or 85%).
+   */
+  value: string;
+  /**
+   * Metric caption in Arabic and English (e.g., Years of Engineering Excellence).
+   */
+  label: string;
+  /**
+   * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
+   */
+  order: number;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Approved materials and manufacturers schedule displayed on the Services page, categorized by engineering system (Electrical, Mechanical, Structural, Architectural). Use the filter bar to filter by system.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "materials".
+ */
+export interface Material {
+  id: number;
+  /**
+   * Unique sequential item number in the approved materials schedule (default ascending sort).
+   */
+  itemNo: number;
+  /**
+   * Engineering discipline category (determines the filter tab on the Services page).
+   */
+  system: 'electrical' | 'mechanical' | 'structural' | 'architectural';
+  /**
+   * Name or specification of the approved engineering material in Arabic and English.
+   */
+  description: string;
+  /**
+   * Select one or more approved brands/manufacturers for this material item.
+   */
+  brands: (number | Brand)[];
+  /**
+   * Optional remarks regarding approval scope or specification notes.
+   */
+  notes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -230,6 +359,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'videos';
+        value: number | Video;
+      } | null)
+    | ({
+        relationTo: 'brands';
+        value: number | Brand;
+      } | null)
+    | ({
+        relationTo: 'stats';
+        value: number | Stat;
+      } | null)
+    | ({
+        relationTo: 'materials';
+        value: number | Material;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -360,6 +505,63 @@ export interface MediaSelect<T extends boolean = true> {
               filename?: T;
             };
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "videos_select".
+ */
+export interface VideosSelect<T extends boolean = true> {
+  title?: T;
+  poster?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "brands_select".
+ */
+export interface BrandsSelect<T extends boolean = true> {
+  name?: T;
+  logo?: T;
+  origin?: T;
+  website?: T;
+  showInMarquee?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "stats_select".
+ */
+export interface StatsSelect<T extends boolean = true> {
+  value?: T;
+  label?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "materials_select".
+ */
+export interface MaterialsSelect<T extends boolean = true> {
+  itemNo?: T;
+  system?: T;
+  description?: T;
+  brands?: T;
+  notes?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

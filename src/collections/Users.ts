@@ -158,6 +158,10 @@ export const Users: CollectionConfig = {
       ar: 'النظام',
       en: 'System',
     },
+    description: {
+      ar: 'حسابات مستخدمي لوحة التحكم وصلاحياتهم (مدير النظام أو محرر المحتوى).',
+      en: 'Dashboard user accounts and role assignments (Admin or Content Editor).',
+    },
   },
   access: {
     read: adminOrSelf,
