@@ -1,0 +1,342 @@
+[2026-10-22T19:56:50.948Z] Starting live next start verification on http://localhost:3144 (without manual jobs.run())
+[2026-10-22T19:56:51.655Z] [next-start] ▲ Next.js 16.4.2
+[2026-10-22T19:56:51.656Z] [next-start] - Local:         http://localhost:3144
+[2026-10-22T19:56:51.656Z] [next-start] - Network:       http://172.16.48.47:3144
+[2026-10-22T19:56:51.656Z] [next-start] ✓ Ready in 419ms
+[2026-10-22T19:56:51.772Z] [next-start] ✓ Running next.config.ts took 115ms
+[2026-10-22T19:56:51.792Z] [next-start:err] ⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+[2026-10-22T19:56:53.601Z] next start is listening on http://localhost:3144
+[2026-10-22T19:56:54.595Z] [next-start] [22:56:54] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:56:54.595Z] [next-start]     err: {
+[2026-10-22T19:56:54.595Z] [next-start]       "type": "a",
+[2026-10-22T19:56:54.595Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:56:54.596Z] [next-start]       "stack":
+[2026-10-22T19:56:54.596Z] [next-start]           a: غير موجود
+[2026-10-22T19:56:54.596Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:56:54.596Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:56:54.596Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:56:54.596Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:56:54.596Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:56:54.596Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:56:54.596Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:56:54.596Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:56:54.596Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:56:54.596Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:56:54.596Z] [next-start]       "data": null,
+[2026-10-22T19:56:54.596Z] [next-start]       "isOperational": true,
+[2026-10-22T19:56:54.596Z] [next-start]       "isPublic": true,
+[2026-10-22T19:56:54.596Z] [next-start]       "status": 404,
+[2026-10-22T19:56:54.596Z] [next-start]       "name": "a"
+[2026-10-22T19:56:54.596Z] [next-start]     }
+[2026-10-22T19:56:54.615Z] Initial anonymous GET statuses (before +60s schedule): publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:56:54.856Z] Queued +60s schedulePublish jobs (waitUntil=2026-10-22T19:57:54.615Z):
+id |    task_slug    |         wait_until         
+----+-----------------+----------------------------
+  1 | schedulePublish | 2026-10-22 19:57:54.615+00
+  2 | schedulePublish | 2026-10-22 19:57:54.615+00
+(2 rows)
+
+INSERT 0 2
+[2026-10-22T19:56:59.889Z] [next-start] [22:56:59] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:56:59.889Z] [next-start]     err: {
+[2026-10-22T19:56:59.889Z] [next-start]       "type": "a",
+[2026-10-22T19:56:59.889Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:56:59.889Z] [next-start]       "stack":
+[2026-10-22T19:56:59.889Z] [next-start]           a: غير موجود
+[2026-10-22T19:56:59.889Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:56:59.889Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:56:59.889Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:56:59.889Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:56:59.889Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:56:59.889Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:56:59.889Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:56:59.889Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:56:59.889Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:56:59.889Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:56:59.889Z] [next-start]       "data": null,
+[2026-10-22T19:56:59.889Z] [next-start]       "isOperational": true,
+[2026-10-22T19:56:59.890Z] [next-start]       "isPublic": true,
+[2026-10-22T19:56:59.890Z] [next-start]       "status": 404,
+[2026-10-22T19:56:59.890Z] [next-start]       "name": "a"
+[2026-10-22T19:56:59.890Z] [next-start]     }
+[2026-10-22T19:56:59.914Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:04.942Z] [next-start] [22:57:04] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:04.942Z] [next-start]     err: {
+[2026-10-22T19:57:04.943Z] [next-start]       "type": "a",
+[2026-10-22T19:57:04.943Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:04.943Z] [next-start]       "stack":
+[2026-10-22T19:57:04.943Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:04.943Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:04.943Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:04.943Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:04.943Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:04.943Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:04.943Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:04.943Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:04.943Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:04.943Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:04.943Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:04.943Z] [next-start]       "data": null,
+[2026-10-22T19:57:04.943Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:04.943Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:04.943Z] [next-start]       "status": 404,
+[2026-10-22T19:57:04.943Z] [next-start]       "name": "a"
+[2026-10-22T19:57:04.943Z] [next-start]     }
+[2026-10-22T19:57:04.961Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:09.989Z] [next-start] [22:57:09] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:09.989Z] [next-start]     err: {
+[2026-10-22T19:57:09.989Z] [next-start]       "type": "a",
+[2026-10-22T19:57:09.989Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:09.989Z] [next-start]       "stack":
+[2026-10-22T19:57:09.989Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:09.989Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:09.989Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:09.989Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:09.989Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:09.989Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:09.989Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:09.989Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:09.989Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:09.989Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:09.989Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:09.989Z] [next-start]       "data": null,
+[2026-10-22T19:57:09.989Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:09.989Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:09.989Z] [next-start]       "status": 404,
+[2026-10-22T19:57:09.989Z] [next-start]       "name": "a"
+[2026-10-22T19:57:09.989Z] [next-start]     }
+[2026-10-22T19:57:10.010Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:15.033Z] [next-start] [22:57:15] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:15.033Z] [next-start]     err: {
+[2026-10-22T19:57:15.033Z] [next-start]       "type": "a",
+[2026-10-22T19:57:15.033Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:15.033Z] [next-start]       "stack":
+[2026-10-22T19:57:15.033Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:15.033Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:15.033Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:15.033Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:15.033Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:15.033Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:15.033Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:15.033Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:15.033Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:15.033Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:15.033Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:15.033Z] [next-start]       "data": null,
+[2026-10-22T19:57:15.033Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:15.033Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:15.033Z] [next-start]       "status": 404,
+[2026-10-22T19:57:15.033Z] [next-start]       "name": "a"
+[2026-10-22T19:57:15.033Z] [next-start]     }
+[2026-10-22T19:57:15.049Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:20.074Z] [next-start] [22:57:20] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:20.074Z] [next-start]     err: {
+[2026-10-22T19:57:20.074Z] [next-start]       "type": "a",
+[2026-10-22T19:57:20.074Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:20.074Z] [next-start]       "stack":
+[2026-10-22T19:57:20.074Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:20.074Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:20.074Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:20.074Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:20.074Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:20.074Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:20.074Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:20.074Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:20.074Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:20.074Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:20.074Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:20.075Z] [next-start]       "data": null,
+[2026-10-22T19:57:20.075Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:20.075Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:20.075Z] [next-start]       "status": 404,
+[2026-10-22T19:57:20.075Z] [next-start]       "name": "a"
+[2026-10-22T19:57:20.075Z] [next-start]     }
+[2026-10-22T19:57:20.104Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:25.126Z] [next-start] [22:57:25] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:25.126Z] [next-start]     err: {
+[2026-10-22T19:57:25.126Z] [next-start]       "type": "a",
+[2026-10-22T19:57:25.126Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:25.126Z] [next-start]       "stack":
+[2026-10-22T19:57:25.126Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:25.126Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:25.126Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:25.126Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:25.126Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:25.126Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:25.126Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:25.126Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:25.126Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:25.126Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:25.126Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:25.126Z] [next-start]       "data": null,
+[2026-10-22T19:57:25.126Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:25.126Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:25.126Z] [next-start]       "status": 404,
+[2026-10-22T19:57:25.126Z] [next-start]       "name": "a"
+[2026-10-22T19:57:25.126Z] [next-start]     }
+[2026-10-22T19:57:25.141Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:30.154Z] [next-start] [22:57:30] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:30.154Z] [next-start]     err: {
+[2026-10-22T19:57:30.154Z] [next-start]       "type": "a",
+[2026-10-22T19:57:30.155Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:30.155Z] [next-start]       "stack":
+[2026-10-22T19:57:30.155Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:30.155Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:30.155Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:30.155Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:30.155Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:30.155Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:30.155Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:30.155Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:30.155Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:30.155Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:30.155Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:30.155Z] [next-start]       "data": null,
+[2026-10-22T19:57:30.155Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:30.155Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:30.155Z] [next-start]       "status": 404,
+[2026-10-22T19:57:30.155Z] [next-start]       "name": "a"
+[2026-10-22T19:57:30.155Z] [next-start]     }
+[2026-10-22T19:57:30.175Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:35.223Z] [next-start] [22:57:35] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:35.223Z] [next-start]     err: {
+[2026-10-22T19:57:35.223Z] [next-start]       "type": "a",
+[2026-10-22T19:57:35.223Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:35.223Z] [next-start]       "stack":
+[2026-10-22T19:57:35.223Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:35.223Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:35.223Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:35.224Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:35.224Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:35.224Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:35.224Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:35.224Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:35.224Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:35.224Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:35.224Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:35.224Z] [next-start]       "data": null,
+[2026-10-22T19:57:35.224Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:35.224Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:35.224Z] [next-start]       "status": 404,
+[2026-10-22T19:57:35.224Z] [next-start]       "name": "a"
+[2026-10-22T19:57:35.224Z] [next-start]     }
+[2026-10-22T19:57:35.241Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:40.255Z] [next-start] [22:57:40] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:40.256Z] [next-start]     err: {
+[2026-10-22T19:57:40.256Z] [next-start]       "type": "a",
+[2026-10-22T19:57:40.256Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:40.256Z] [next-start]       "stack":
+[2026-10-22T19:57:40.256Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:40.256Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:40.256Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:40.256Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:40.256Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:40.256Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:40.256Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:40.256Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:40.256Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:40.256Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:40.256Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:40.256Z] [next-start]       "data": null,
+[2026-10-22T19:57:40.256Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:40.256Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:40.256Z] [next-start]       "status": 404,
+[2026-10-22T19:57:40.256Z] [next-start]       "name": "a"
+[2026-10-22T19:57:40.256Z] [next-start]     }
+[2026-10-22T19:57:40.271Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:45.293Z] [next-start] [22:57:45] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:45.294Z] [next-start]     err: {
+[2026-10-22T19:57:45.294Z] [next-start]       "type": "a",
+[2026-10-22T19:57:45.294Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:45.294Z] [next-start]       "stack":
+[2026-10-22T19:57:45.294Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:45.294Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:45.294Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:45.294Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:45.294Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:45.294Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:45.294Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:45.294Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:45.294Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:45.294Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:45.294Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:45.295Z] [next-start]       "data": null,
+[2026-10-22T19:57:45.295Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:45.295Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:45.295Z] [next-start]       "status": 404,
+[2026-10-22T19:57:45.295Z] [next-start]       "name": "a"
+[2026-10-22T19:57:45.295Z] [next-start]     }
+[2026-10-22T19:57:45.326Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:50.370Z] [next-start] [22:57:50] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:50.370Z] [next-start]     err: {
+[2026-10-22T19:57:50.370Z] [next-start]       "type": "a",
+[2026-10-22T19:57:50.370Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:50.370Z] [next-start]       "stack":
+[2026-10-22T19:57:50.370Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:50.371Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:50.371Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:50.371Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:50.371Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:50.371Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:50.371Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:50.371Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:50.371Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:50.371Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:50.371Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:50.371Z] [next-start]       "data": null,
+[2026-10-22T19:57:50.372Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:50.372Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:50.372Z] [next-start]       "status": 404,
+[2026-10-22T19:57:50.372Z] [next-start]       "name": "a"
+[2026-10-22T19:57:50.372Z] [next-start]     }
+[2026-10-22T19:57:50.393Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:57:55.420Z] [next-start] [22:57:55] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:57:55.421Z] [next-start]     err: {
+[2026-10-22T19:57:55.421Z] [next-start]       "type": "a",
+[2026-10-22T19:57:55.421Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:57:55.421Z] [next-start]       "stack":
+[2026-10-22T19:57:55.421Z] [next-start]           a: غير موجود
+[2026-10-22T19:57:55.421Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:57:55.421Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:57:55.421Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:57:55.421Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:57:55.422Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:57:55.422Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:57:55.422Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:57:55.422Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:57:55.422Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:57:55.422Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:57:55.422Z] [next-start]       "data": null,
+[2026-10-22T19:57:55.422Z] [next-start]       "isOperational": true,
+[2026-10-22T19:57:55.422Z] [next-start]       "isPublic": true,
+[2026-10-22T19:57:55.422Z] [next-start]       "status": 404,
+[2026-10-22T19:57:55.423Z] [next-start]       "name": "a"
+[2026-10-22T19:57:55.423Z] [next-start]     }
+[2026-10-22T19:57:55.459Z] Poll anonymous GET: publishTarget(#1)=404, unpublishTarget(#2)=200
+[2026-10-22T19:58:00.048Z] [next-start] [22:58:00] [32mINFO[39m: [36mRunning 2 jobs.[39m
+[2026-10-22T19:58:00.048Z] [next-start]     [35mnew[39m: 2
+[2026-10-22T19:58:00.048Z] [next-start]     [35mretrying[39m: 0
+[2026-10-22T19:58:00.531Z] [next-start] [22:58:00] [31mERROR[39m: [36mغير موجود[39m
+[2026-10-22T19:58:00.531Z] [next-start]     err: {
+[2026-10-22T19:58:00.531Z] [next-start]       "type": "a",
+[2026-10-22T19:58:00.531Z] [next-start]       "message": "غير موجود",
+[2026-10-22T19:58:00.531Z] [next-start]       "stack":
+[2026-10-22T19:58:00.531Z] [next-start]           a: غير موجود
+[2026-10-22T19:58:00.531Z] [next-start]               at S (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:104282)
+[2026-10-22T19:58:00.531Z] [next-start]               at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+[2026-10-22T19:58:00.531Z] [next-start]               at async A (D:\jazira-dod-p2t4-r2\.next\server\chunks\node_modules__pnpm_01tjnh1xlrdod._.js:16:59879)
+[2026-10-22T19:58:00.531Z] [next-start]               at async io (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:23686)
+[2026-10-22T19:58:00.531Z] [next-start]               at async D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:87:43267
+[2026-10-22T19:58:00.532Z] [next-start]               at async r0.renderToResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+[2026-10-22T19:58:00.532Z] [next-start]               at async r0.executeRequest (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+[2026-10-22T19:58:00.532Z] [next-start]               at async ee (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:19439)
+[2026-10-22T19:58:00.532Z] [next-start]               at async r0.handleResponse (D:\jazira-dod-p2t4-r2\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_4a9e518a88c452031759fe75348842ec\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+[2026-10-22T19:58:00.532Z] [next-start]               at async et (D:\jazira-dod-p2t4-r2\.next\server\chunks\_0fea0ou23kywr._.js:107:20434)
+[2026-10-22T19:58:00.532Z] [next-start]       "data": null,
+[2026-10-22T19:58:00.532Z] [next-start]       "isOperational": true,
+[2026-10-22T19:58:00.532Z] [next-start]       "isPublic": true,
+[2026-10-22T19:58:00.532Z] [next-start]       "status": 404,
+[2026-10-22T19:58:00.532Z] [next-start]       "name": "a"
+[2026-10-22T19:58:00.532Z] [next-start]     }
+[2026-10-22T19:58:00.534Z] Poll anonymous GET: publishTarget(#1)=200, unpublishTarget(#2)=404
+[2026-10-22T19:58:00.535Z] SUCCESS: Scheduled publish flipped 404 -> 200 (id=1, _status=published, slug=live-auto-publish-1792699014418) and scheduled unpublish flipped 200 -> 404 via next start jobs.autoRun!

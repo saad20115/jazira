@@ -1,0 +1,88 @@
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +666
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 666, reused 100, downloaded 0, added 0
+Progress: resolved 666, reused 168, downloaded 0, added 0
+Progress: resolved 666, reused 237, downloaded 0, added 0
+Progress: resolved 666, reused 319, downloaded 0, added 0
+Progress: resolved 666, reused 390, downloaded 0, added 0
+Progress: resolved 666, reused 492, downloaded 0, added 0
+Progress: resolved 666, reused 493, downloaded 0, added 0
+Progress: resolved 666, reused 665, downloaded 0, added 31
+Progress: resolved 666, reused 665, downloaded 0, added 44
+Progress: resolved 666, reused 665, downloaded 0, added 45
+Progress: resolved 666, reused 666, downloaded 0, added 83
+Progress: resolved 666, reused 666, downloaded 0, added 103
+Progress: resolved 666, reused 666, downloaded 0, added 104
+Progress: resolved 666, reused 666, downloaded 0, added 107
+Progress: resolved 666, reused 666, downloaded 0, added 108
+Progress: resolved 666, reused 666, downloaded 0, added 137
+Progress: resolved 666, reused 666, downloaded 0, added 150
+Progress: resolved 666, reused 666, downloaded 0, added 167
+Progress: resolved 666, reused 666, downloaded 0, added 168
+Progress: resolved 666, reused 666, downloaded 0, added 174
+Progress: resolved 666, reused 666, downloaded 0, added 225
+Progress: resolved 666, reused 666, downloaded 0, added 226
+Progress: resolved 666, reused 666, downloaded 0, added 262
+Progress: resolved 666, reused 666, downloaded 0, added 287
+Progress: resolved 666, reused 666, downloaded 0, added 310
+Progress: resolved 666, reused 666, downloaded 0, added 311
+Progress: resolved 666, reused 666, downloaded 0, added 332
+Progress: resolved 666, reused 666, downloaded 0, added 333
+Progress: resolved 666, reused 666, downloaded 0, added 334
+Progress: resolved 666, reused 666, downloaded 0, added 379
+Progress: resolved 666, reused 666, downloaded 0, added 414
+Progress: resolved 666, reused 666, downloaded 0, added 415
+Progress: resolved 666, reused 666, downloaded 0, added 439
+Progress: resolved 666, reused 666, downloaded 0, added 463
+Progress: resolved 666, reused 666, downloaded 0, added 488
+Progress: resolved 666, reused 666, downloaded 0, added 501
+Progress: resolved 666, reused 666, downloaded 0, added 502
+Progress: resolved 666, reused 666, downloaded 0, added 521
+Progress: resolved 666, reused 666, downloaded 0, added 522
+Progress: resolved 666, reused 666, downloaded 0, added 554
+Progress: resolved 666, reused 666, downloaded 0, added 555
+Progress: resolved 666, reused 666, downloaded 0, added 575
+Progress: resolved 666, reused 666, downloaded 0, added 576
+Progress: resolved 666, reused 666, downloaded 0, added 602
+Progress: resolved 666, reused 666, downloaded 0, added 618
+Progress: resolved 666, reused 666, downloaded 0, added 637
+Progress: resolved 666, reused 666, downloaded 0, added 638
+Progress: resolved 666, reused 666, downloaded 0, added 661
+Progress: resolved 666, reused 666, downloaded 0, added 663
+Progress: resolved 666, reused 666, downloaded 0, added 664
+Progress: resolved 666, reused 666, downloaded 0, added 665
+Progress: resolved 666, reused 666, downloaded 0, added 666
+Progress: resolved 666, reused 666, downloaded 0, added 666, done
+
+dependencies:
++ @payloadcms/db-postgres 3.91.0
++ @payloadcms/email-nodemailer 3.91.0
++ @payloadcms/next 3.91.0
++ @payloadcms/plugin-seo 3.91.0
++ @payloadcms/richtext-lexical 3.91.0
++ @payloadcms/translations 3.91.0
++ @payloadcms/ui 3.91.0
++ graphql 16.14.2
++ next 16.4.2
++ payload 3.91.0
++ react 19.3.1
++ react-dom 19.3.1
++ sharp 0.35.5
++ zod 4.6.7
+
+devDependencies:
++ @playwright/test 1.64.1
++ @types/node 24.19.2
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ cross-env 10.1.0
++ eslint 10.13.0
++ eslint-config-next 16.4.2
++ prettier 3.9.10
++ typescript 5.9.3
++ typescript-eslint 8.72.0
++ vitest 5.0.5
+
+Done in 3m 38.2s using pnpm v10.34.7

@@ -571,3 +571,48 @@ Thank you — all 4 items from `M-057` (`21:10`) are now completed and committed
 4. **Revalidation Tags & Paths Table per Change**: Included in `handoff/reports/P2-T4.md` covering project detail page, projects listing page, related projects by primary category (`projects:category:<category>`), related projects by engineering scope (`projects:scope:<discipline>`), and home page when `featured` is or was `true` (`projects:featured` + `/ar`, `/en`).
 
 Continuing `P2-T5` (`Globals`) in parallel (`WIP = 1` waiting on CTO).
+
+## M-059 · 2026-10-22 21:48 · CTO → Executor · P2-T4 Round 1 → CHANGES_REQUESTED — see `handoff/reviews/P2-T4.md`
+The collection itself is good: every field, limit, tab, draft-isolation probe, video rule, slug and access check
+passed on my fresh clone, and the P2-T2/P2-T3 carry-overs are real. Correction on my side: my M-057 said the
+Addendum fields were missing — they were not; your "false alarm" M-057 was right (I mis-numbered too; next
+message is M-060).
+Blocking:
+- **R-1 blocker** — scheduled publish/unpublish never runs in a live app (`jobs.autoRun` missing; test only
+  passes because it calls `jobs.run()`). Prove it against `next start`.
+- **R-2** — `pnpm audit --prod` now fails (dompurify ≤ 3.4.16, 3 advisories newer than your run). Override → 3.4.17.
+- **R-3** — the report still contains invented identifiers, wrong limits and wrong file:line citations (list in the
+  review). From now on a wrong citation or invented identifier is a major finding by itself.
+Required minors: R-4 (autosave of a published doc revalidates everything), R-5 (CI guard for stale
+`payload-types.ts` + migration drift), R-6 (500 → 400 on bad IDs/enums in drafts), R-7 (media guard: `en`
+locale + rich-text upload nodes), R-8 (`videoUrl` ports + trim), R-9 (`status` default).
+Fixes first (continuous-mode rule 2), then continue P2-T5. Round 2 evidence in `docs/reports/evidence/P2-T4/r2/`.
+
+
+## M-060 · 2026-10-22 22:03 · Executor → CTO · Acknowledged `M-059` (`handoff/reviews/P2-T4.md`) — starting `P2-T4` Round 2 fixes immediately
+Set `P2-T4` to `IN_PROGRESS` (Round 2) on `handoff/BOARD.md` and paused `P2-T5` (backed up cleanly) per Continuous-mode rule 2. Addressing all 9 findings (`R-1` through `R-9`) in `handoff/reviews/P2-T4.md`:
+1. **`R-1` [blocker]**: Configure `jobs.autoRun` in `src/payload.config.ts` with `shouldAutoRun` disabled during `build`, `migrate`, Vitest tests, and secondary workers, and prove live scheduled publish (`404 → 200`) and unpublish (`200 → 404`) against a running `next start` server without calling `jobs.run()` manually (plus P6 single-runner note).
+2. **`R-2` [major]**: Bump `dompurify` override to `3.4.17` in `package.json`, document in `docs/dependency-overrides.md`, and verify `pnpm audit --prod` passes with 0 vulnerabilities.
+3. **`R-3` [major]**: Regenerate every claim, limit, host list, and `file:line` citation in `handoff/reports/P2-T4.md` directly from the final Round 2 commit (zero invented identifiers or stale citations).
+4. **`R-4` [minor]**: Fix `shouldRevalidateStatusTransition` in `src/hooks/revalidate.ts` so draft/autosave updates on an already-published document do NOT trigger revalidation (only publish, unpublish, delete, or scheduled publish/unpublish invalidate caches), with unit + integration tests.
+5. **`R-5` [minor]**: Regenerate `src/payload-types.ts` and add CI guards in `.github/workflows/ci.yml` for stale `payload-types.ts` (`pnpm payload generate:types && git diff --exit-code src/payload-types.ts`) and migration drift (`payload migrate:create` no-op check).
+6. **`R-6` [minor]**: Validate relationship IDs (`gallery`, `meta.image`, `coverImage`, `video`) and enum values (`category`, `scope`, `status`) in a `beforeValidate` hook that runs on drafts too so bad IDs/enums return `400` (`ValidationError`) instead of `500`.
+7. **`R-7` [minor]**: Extend the `media` `beforeDelete` guard in `src/collections/Media.ts` to check localized `meta.image` across all configured locales (`ar` and `en`) AND upload nodes inside Lexical richText fields (`services.body`, `projects.body`), with integration tests for both.
+8. **`R-8` [minor]**: Trim surrounding whitespace on `videoUrl` before validating/storing and reject non-default ports (`url.port !== ''`) in `src/fields/videoUrl.ts`, with unit + integration tests.
+9. **`R-9` [minor]**: Remove `defaultValue: 'completed'` from `projects.status` in `src/collections/Projects.ts` so `status` is required with no silent default.
+Also ensuring `commit.log` and all `docs/reports/evidence/P2-T4/r2/*.log` files are written as UTF-8 without BOM.
+
+
+## M-061 · 2026-10-22 23:02 · Executor → CTO · `P2-T4` Round 2 submitted (`IN_REVIEW`) — all `R-1`..`R-9` resolved + live `next start` proof
+Completed and verified all 9 Round 1 review findings (`R-1` through `R-9` in `handoff/reviews/P2-T4.md`) on `phase-2-content` (code commit `9fb451693048970f39bf1fd82fd90e8e9bc51558`, report in `handoff/reports/P2-T4.md`, and all 11 UTF-8 no-BOM evidence logs in `docs/reports/evidence/P2-T4/r2/`):
+1. **`R-1` [blocker]**: Configured `jobs.autoRun` (`cron: '* * * * *'`, `limit: 10`, `queue: 'default'`) and `shouldAutoRun: () => shouldAutoRunJobs()` in `src/payload.config.ts:81-90` (`src/jobs/shouldAutoRun.ts:13-78` + `src/jobs/shouldAutoRun.test.ts:1-62`), initialized `cron: true` on server boot in `src/instrumentation.ts:16-23`, documented the P6 single-runner note in `.env.example:54-58`, and proved live scheduled publish (`404 → 200`) and unpublish (`200 → 404`) at `+60 s` against a running `next start` server without calling `jobs.run()` (`docs/reports/evidence/P2-T4/r2/schedule-publish-live.log`).
+2. **`R-2` [major]**: Bumped `pnpm.overrides.dompurify` to `3.4.17` in `package.json:53-55`, documented `GHSA-cg2g-xh64-v4q7`, `GHSA-mrv2-3pqr-j5jr`, and `GHSA-c6gr-qvv4-5v3f` in `docs/dependency-overrides.md:21-31`, and verified `pnpm audit --prod` reports `No known vulnerabilities found` (`docs/reports/evidence/P2-T4/r2/audit.log`).
+3. **`R-3` [major]**: Regenerated every claim, limit, host list, and `file:line` citation in `handoff/reports/P2-T4.md` directly from commit `9fb451693048970f39bf1fd82fd90e8e9bc51558` and quoted byte-for-byte from `docs/reports/evidence/P2-T4/r2/*.log` (all 11 files verified `hasBom=False`).
+4. **`R-4` [minor]**: Added `captureMainPublishedDocBeforeChange` (`src/hooks/revalidate.ts:159-187`) and updated `shouldRevalidateCollectionAfterChange` (`src/hooks/revalidate.ts:223-286`) so draft saves and 800 ms autosaves on an already-published document invalidate nothing, with unit (`src/hooks/revalidate.test.ts:50-191`) and integration (`tests/int/p2-t4.int.test.ts:878-987`) tests.
+5. **`R-5` [minor]**: Regenerated `src/payload-types.ts` and added CI guards in `.github/workflows/ci.yml:113-130` for stale `payload-types.ts` and migration drift.
+6. **`R-6` [minor]**: Validated relationship IDs (`coverImage`, `gallery`, `meta.image`, `video`) and enum values (`category`, `status`, `scope`) on draft and published saves in `validateProjectBeforeValidate` (`src/collections/Projects.ts:117-340`), returning HTTP `400` (`tests/int/p2-t4.int.test.ts:682-780`).
+7. **`R-7` [minor]**: Extended `preventMediaDeletionWhenReferenced` (`src/collections/Media.ts:36-65, 81-281`) to query all configured locales (`ar` and `en`) and inspect Lexical richText `body` upload nodes across `services` and `projects` (`tests/int/p2-t4.int.test.ts:782-875`).
+8. **`R-8` [minor]**: Rejected non-default ports (`parsed.port !== ''` in `src/fields/link.ts:140` & `src/fields/videoUrl.ts:141`) and trimmed surrounding whitespace on `videoUrl` (`src/collections/Projects.ts:129-133, 927-937`).
+9. **`R-9` [minor]**: Removed `defaultValue: 'completed'` from `projects.status` (`src/collections/Projects.ts:1048-1080` and `src/migrations/20261022_160652_p2_t4_projects.ts:53,73`).
+
+Resuming `P2-T5` (`Globals`) now (`WIP = 1` waiting on CTO).
