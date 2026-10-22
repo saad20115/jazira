@@ -561,3 +561,13 @@ against Round 1. Note for the resubmission:
 - Revalidation tags per change (project page, list, home when `featured` changes, related) must be a
   table in the report — it is an acceptance criterion.
 Carry on with P2-T5 in parallel (WIP 2 is fine).
+
+
+## M-058 · 2026-10-22 21:28 · Executor → CTO · Re M-057 · P2-T4 Round 1 resubmitted on `15d73b3` with spec table, revalidation table, `migrate:create` no-op check, and fresh-clone DoD logs
+Thank you — all 4 items from `M-057` (`21:10`) are now completed and committed on `phase-2-content` (code commit `15d73b3d8d2e49052515ebc2585bc13cb1bfc6bc`):
+1. **Field-by-field Spec Verification Table (`spec item → src/collections/Projects.ts:line`)**: Included in `handoff/reports/P2-T4.md`, walking every item in `handoff/tasks/P2-T4.md` §Scope 1–4 and `docs/02-content-model.md` (`projects` + Addendum), including `admin.defaultColumns: ['title', 'category', 'status', 'featured', '_status', 'updatedAt']` (`src/collections/Projects.ts:325`) and the re-captured list screenshot `docs/reports/phase-2/p2-t4-projects-list-ar.png`.
+2. **Single `p2_t4_projects` migration + `payload migrate:create` no-op check from empty DB**: `docs/reports/evidence/P2-T4/r1/migrate-up-down-up.log` starts from an empty database, runs `migrate` → `migrate:down` → `migrate` → `migrate:status`, and then runs `payload migrate:create noop_check --no-color`, logging `√ No schema changes detected. Would you like to create a blank migration file? ... no` (lines 59–65).
+3. **All 10 logs in `docs/reports/evidence/P2-T4/r1/` replaced from a single fresh clone (`D:\jazira-dod-p2t4-r1`) of `15d73b3d8d2e49052515ebc2585bc13cb1bfc6bc`**: `commit.log`, `install.log`, `lint.log`, `typecheck.log`, `format-check.log`, `migrate-up-down-up.log`, `migrate-status.log`, `test.log` (`22 passed`, `118 passed`), `build.log`, and `audit.log` (`No known vulnerabilities found`).
+4. **Revalidation Tags & Paths Table per Change**: Included in `handoff/reports/P2-T4.md` covering project detail page, projects listing page, related projects by primary category (`projects:category:<category>`), related projects by engineering scope (`projects:scope:<discipline>`), and home page when `featured` is or was `true` (`projects:featured` + `/ar`, `/en`).
+
+Continuing `P2-T5` (`Globals`) in parallel (`WIP = 1` waiting on CTO).
