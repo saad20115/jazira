@@ -214,6 +214,42 @@ describe('linkField & URL validation (I3)', () => {
           reference: null,
         }),
       ).toBe('/services')
+
+      // R-16: Rejects populated reference with traversal/invalid slug (../../evil) and does not fall back to internalRoute
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: '/about',
+          reference: {
+            relationTo: 'projects',
+            value: { slug: '../../evil' },
+          },
+        }),
+      ).toBeNull()
+
+      // R-16: Rejects unknown relationTo (returns null instead of /<relationTo>)
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: '/about',
+          reference: {
+            relationTo: 'unknown-collection',
+            value: { slug: 'some-doc' },
+          },
+        }),
+      ).toBeNull()
+
+      // R-16: Unpopulated collection reference at depth 0 (bare ID) returns null and does not silently fall back to internalRoute
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: '/about',
+          reference: {
+            relationTo: 'projects',
+            value: 42,
+          },
+        }),
+      ).toBeNull()
     })
   })
 })

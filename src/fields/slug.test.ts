@@ -1,4 +1,9 @@
-import type { FieldHookArgs, TextFieldSingleValidation, TypeWithID } from 'payload'
+import {
+  type FieldHookArgs,
+  type TextFieldSingleValidation,
+  type TypeWithID,
+  ValidationError,
+} from 'payload'
 import { describe, expect, it, vi } from 'vitest'
 
 import {
@@ -349,6 +354,101 @@ describe('slugField & slugify', () => {
       expect(resolveUniqueSlug('mep-works', ['mep-works', 'mep-works-2'])).toBe('mep-works-3')
       expect(resolveUniqueSlug('mep-works', ['mep-works', 'mep-works-2', 'mep-works-7'])).toBe(
         'mep-works-8',
+      )
+    })
+
+    it('resolves unique suffixes near the 80-char cap by querying shortened candidate bases (R-15)', async () => {
+      // 80-char slug: 12 words -> exactly 79 or 80 chars
+      const longTitle =
+        'al-jazira-for-imdad-smart-company-integrated-electro-mechanical-building-system'
+      expect(longTitle.length).toBe(79)
+      const shortenedBase =
+        'al-jazira-for-imdad-smart-company-integrated-electro-mechanical-building'
+
+      const findMock = vi.fn().mockResolvedValue({
+        docs: [{ slug: longTitle }, { slug: `${shortenedBase}-2` }],
+      })
+
+      const result = await hook(
+        makeHookArgs({
+          req: {
+            locale: 'en',
+            payload: { find: findMock },
+          } as unknown as SlugHookArgs['req'],
+          siblingData: {
+            title: longTitle,
+          },
+        }),
+      )
+
+      expect(result).toBe(`${shortenedBase}-3`)
+      expect(typeof result === 'string' && result.length <= MAX_SLUG_LENGTH).toBe(true)
+    })
+
+    it('does not revert or lock slug when an ar update resends a stale ar-transliterated slug (R-14)', async () => {
+      const findByIDMock = vi.fn().mockResolvedValue({
+        id: 42,
+        title: 'Sofitel Makkah Hotel',
+      })
+
+      const staleArSiblingData: Record<string, unknown> = {
+        title: 'فندق سوفيتيل مكة المكرمة المطور',
+        slug: 'fndq-swfytyl-mka-almkrma',
+      }
+
+      const result = await hook(
+        makeHookArgs({
+          operation: 'update',
+          originalDoc: {
+            id: 42,
+            title: 'فندق سوفيتيل مكة المكرمة',
+            slug: 'sofitel-makkah-hotel',
+            slugLocked: false,
+            _status: 'draft',
+          },
+          previousValue: 'sofitel-makkah-hotel',
+          req: {
+            locale: 'ar',
+            payload: { findByID: findByIDMock },
+          } as unknown as SlugHookArgs['req'],
+          siblingData: staleArSiblingData,
+          value: 'fndq-swfytyl-mka-almkrma',
+        }),
+      )
+
+      expect(result).toBe('sofitel-makkah-hotel')
+      expect(staleArSiblingData.slugLocked).toBe(false)
+    })
+
+    it('throws ValidationError in beforeValidate when a manual slug collides during draft/autosave save (R-13)', async () => {
+      const findCollisionMock = vi.fn().mockResolvedValue({
+        docs: [{ id: 99, slug: 'sofitel-makkah-hotel' }],
+      })
+
+      let caughtError: unknown
+      try {
+        await hook(
+          makeHookArgs({
+            operation: 'create',
+            req: {
+              locale: 'ar',
+              payload: { find: findCollisionMock },
+            } as unknown as SlugHookArgs['req'],
+            siblingData: {
+              title: 'مشروع آخر',
+              slug: 'Sofitel Makkah Hotel',
+              _status: 'draft',
+            },
+            value: 'Sofitel Makkah Hotel',
+          }),
+        )
+      } catch (err) {
+        caughtError = err
+      }
+
+      expect(caughtError).toBeInstanceOf(ValidationError)
+      expect((caughtError as ValidationError).data.errors[0]?.message).toContain(
+        'This slug is already in use',
       )
     })
   })

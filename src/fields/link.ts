@@ -6,6 +6,8 @@ import type {
   TextFieldSingleValidation,
 } from 'payload'
 
+import { MAX_SLUG_LENGTH, SLUG_REGEX } from './slug'
+
 export const ALLOWED_LINK_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'] as const
 
 export const INTERNAL_ROUTE_OPTIONS = [
@@ -181,10 +183,15 @@ const RELATION_TO_ROUTE_PREFIX: Readonly<Record<string, string | undefined>> = {
 }
 
 /**
- * Resolves a `linkField` group value to its target href with deterministic precedence (R-11):
+ * Resolves a `linkField` group value to its target href with deterministic precedence (R-11, R-16):
  * 1. When `type === 'external'`, returns the validated external `url`.
  * 2. When `type !== 'external'` (internal):
- *    a) `reference` wins when present (mapped via `relationTo` + document `slug`).
+ *    a) `reference` wins when present (mapped via allowlisted `relationTo` + validated `SLUG_REGEX` `slug`).
+ *       - Unknown `relationTo` values return `null` (never `/<relationTo>`).
+ *       - Invalid/traversal `slug` values (e.g. `../../evil`) return `null`.
+ *       - Unpopulated collection references (`depth: 0`, where `value` is a bare ID `number | string`)
+ *         return `null` (never silently falling back to `internalRoute`); callers must query with `depth >= 1`
+ *         so `reference.value.slug` is populated.
  *    b) Otherwise, if `internalRoute === 'custom'`, returns the validated `internalPath`.
  *    c) Otherwise, returns the fixed `internalRoute` (`'/'`, `'/services'`, etc.).
  */
@@ -203,44 +210,49 @@ export function resolveLinkHref(link: LinkDataShape | null | undefined): string 
     return null
   }
 
-  // Internal link: 1. `reference` takes precedence when set (R-11)
+  // Internal link: 1. `reference` takes precedence when set (R-11, R-16)
   if (link.reference && typeof link.reference === 'object') {
     if ('relationTo' in link.reference && typeof link.reference.relationTo === 'string') {
-      const prefix =
-        RELATION_TO_ROUTE_PREFIX[link.reference.relationTo] ?? `/${link.reference.relationTo}`
-      const refVal = link.reference.value
-      if (
-        refVal &&
-        typeof refVal === 'object' &&
-        typeof refVal.slug === 'string' &&
-        refVal.slug.trim().length > 0
-      ) {
-        const cleanSlug = refVal.slug.trim()
-        return prefix === '/' ? `/${cleanSlug}` : `${prefix}/${cleanSlug}`
+      const prefix = RELATION_TO_ROUTE_PREFIX[link.reference.relationTo]
+      if (!prefix) {
+        return null
       }
-      if ((typeof refVal === 'string' && refVal.trim().length > 0) || typeof refVal === 'number') {
-        if (
-          prefix === '/' ||
-          prefix === '/about' ||
-          prefix === '/services' ||
-          prefix === '/projects' ||
-          prefix === '/contact' ||
-          prefix === '/privacy'
-        ) {
-          if (link.reference.relationTo.endsWith('-page')) {
-            return prefix
-          }
+      const refVal = link.reference.value
+      if (refVal !== null && refVal !== undefined && refVal !== '') {
+        if (link.reference.relationTo.endsWith('-page')) {
+          return prefix
         }
+        if (typeof refVal === 'object' && typeof refVal.slug === 'string') {
+          const cleanSlug = refVal.slug.trim()
+          if (
+            cleanSlug.length > 0 &&
+            cleanSlug.length <= MAX_SLUG_LENGTH &&
+            SLUG_REGEX.test(cleanSlug)
+          ) {
+            return prefix === '/' ? `/${cleanSlug}` : `${prefix}/${cleanSlug}`
+          }
+          return null
+        }
+        // Unpopulated collection reference at depth 0 (refVal is a bare ID):
+        // reference still takes precedence over internalRoute, returning null unless populated.
+        return null
       }
     } else if (
       'slug' in link.reference &&
-      typeof link.reference.slug === 'string' &&
-      link.reference.slug.trim().length > 0
+      link.reference.slug !== null &&
+      link.reference.slug !== undefined
     ) {
-      const candidatePath = `/${link.reference.slug.trim().replace(/^\/+/, '')}`
-      if (validateInternalPath(candidatePath, { required: true }) === true) {
-        return candidatePath
+      if (typeof link.reference.slug === 'string') {
+        const cleanSlug = link.reference.slug.trim().replace(/^\/+/, '')
+        if (
+          cleanSlug.length > 0 &&
+          cleanSlug.length <= MAX_SLUG_LENGTH &&
+          SLUG_REGEX.test(cleanSlug)
+        ) {
+          return `/${cleanSlug}`
+        }
       }
+      return null
     }
   }
 

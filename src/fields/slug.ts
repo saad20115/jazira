@@ -1,16 +1,19 @@
-import type {
-  CheckboxField,
-  FieldHook,
-  PayloadRequest,
-  TextField,
-  TextFieldSingleValidation,
-  TypeWithID,
-  Where,
+import {
+  type CheckboxField,
+  type FieldHook,
+  type PayloadRequest,
+  type TextField,
+  type TextFieldSingleValidation,
+  type TypeWithID,
+  ValidationError,
+  type Where,
 } from 'payload'
 
 export const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 export const MAX_SLUG_LENGTH = 80
 export const DEFAULT_SLUG_LOCK_FIELD = 'slugLocked'
+export const DUPLICATE_SLUG_MESSAGE =
+  'هذا المعرّف النصي (Slug) مستخدم بالفعل في سجل آخر. يرجى اختيار معرّف فريد. / This slug is already in use by another document. Please choose a unique slug.'
 
 export type SingleTextField = Extract<TextField, { hasMany?: false | undefined }>
 export type SlugFieldHook = FieldHook<
@@ -174,7 +177,7 @@ function escapeRegExp(value: string): string {
 /**
  * Resolves a unique slug against existing slugs by checking exact `baseSlug`
  * and `baseSlug-<n>` matches and taking `maxSuffix + 1` (R-9), while keeping
- * the resulting slug within `MAX_SLUG_LENGTH` (R-8).
+ * the resulting slug within `MAX_SLUG_LENGTH` (R-8, R-15).
  */
 export function resolveUniqueSlug(baseSlug: string, existingSlugs: Iterable<string>): string {
   const normalizedBase = truncateSlugAtWordBoundary(baseSlug, MAX_SLUG_LENGTH)
@@ -193,7 +196,7 @@ export function resolveUniqueSlug(baseSlug: string, existingSlugs: Iterable<stri
     return normalizedBase
   }
 
-  const computeNextForBase = (candidateBase: string): number => {
+  const computeMaxSuffixForBase = (candidateBase: string): number => {
     const numberedRegex = new RegExp(`^${escapeRegExp(candidateBase)}-([1-9]\\d*)$`)
     let maxSuffix = 1
     for (const s of taken) {
@@ -205,18 +208,20 @@ export function resolveUniqueSlug(baseSlug: string, existingSlugs: Iterable<stri
         }
       }
     }
-    return maxSuffix + 1
+    return maxSuffix
   }
 
-  let nextSuffix = computeNextForBase(normalizedBase)
+  let nextSuffix = computeMaxSuffixForBase(normalizedBase) + 1
   let suffixStr = `-${String(nextSuffix)}`
   let effectiveBase = normalizedBase
 
   if (effectiveBase.length + suffixStr.length > MAX_SLUG_LENGTH) {
     effectiveBase = truncateSlugAtWordBoundary(normalizedBase, MAX_SLUG_LENGTH - suffixStr.length)
-    if (taken.has(effectiveBase)) {
-      nextSuffix = Math.max(nextSuffix, computeNextForBase(effectiveBase))
-      suffixStr = `-${String(nextSuffix)}`
+    nextSuffix = Math.max(nextSuffix, computeMaxSuffixForBase(effectiveBase) + 1)
+    suffixStr = `-${String(nextSuffix)}`
+    if (effectiveBase.length + suffixStr.length > MAX_SLUG_LENGTH) {
+      effectiveBase = truncateSlugAtWordBoundary(normalizedBase, MAX_SLUG_LENGTH - suffixStr.length)
+      nextSuffix = Math.max(nextSuffix, computeMaxSuffixForBase(effectiveBase) + 1)
     }
   }
 
@@ -231,6 +236,7 @@ type PayloadFindLike = {
   find?: (opts: {
     collection: string
     depth?: number
+    draft?: boolean
     limit?: number
     overrideAccess?: boolean
     pagination?: boolean
@@ -248,6 +254,42 @@ type PayloadFindLike = {
     overrideAccess?: boolean
     req?: PayloadRequest
   }) => Promise<Record<string, unknown> | null | undefined>
+}
+
+async function hasExistingSlugCollision(
+  payload: PayloadFindLike,
+  collectionSlug: string,
+  fieldName: string,
+  slugValue: string,
+  currentId: number | string | undefined,
+  req: PayloadRequest | undefined,
+): Promise<boolean> {
+  if (typeof payload.find !== 'function') {
+    return false
+  }
+
+  const where: Where =
+    currentId !== undefined
+      ? {
+          and: [{ [fieldName]: { equals: slugValue } }, { id: { not_equals: currentId } }],
+        }
+      : { [fieldName]: { equals: slugValue } }
+
+  const txReq = req?.transactionID
+    ? ({ transactionID: req.transactionID } as unknown as PayloadRequest)
+    : undefined
+
+  const existing = await payload.find({
+    collection: collectionSlug,
+    depth: 0,
+    limit: 1,
+    overrideAccess: true,
+    pagination: false,
+    req: txReq,
+    where,
+  })
+
+  return (existing.docs ?? []).length > 0
 }
 
 export const validateSlug: TextFieldSingleValidation = (value, options) => {
@@ -273,34 +315,9 @@ export const validateSlug: TextFieldSingleValidation = (value, options) => {
   const req = (options as { req?: PayloadRequest } | undefined)?.req
   const payload = req?.payload as PayloadFindLike | undefined
 
-  if (collectionSlug && typeof payload?.find === 'function') {
-    const where: Where =
-      currentId !== undefined
-        ? {
-            and: [{ [fieldName]: { equals: value } }, { id: { not_equals: currentId } }],
-          }
-        : { [fieldName]: { equals: value } }
-
-    const txReq = req?.transactionID
-      ? ({ transactionID: req.transactionID } as unknown as PayloadRequest)
-      : undefined
-
-    return payload
-      .find({
-        collection: collectionSlug,
-        depth: 0,
-        limit: 1,
-        overrideAccess: true,
-        pagination: false,
-        req: txReq,
-        where,
-      })
-      .then((existing) => {
-        if ((existing.docs ?? []).length > 0) {
-          return 'هذا المعرّف النصي (Slug) مستخدم بالفعل في سجل آخر. يرجى اختيار معرّف فريد. / This slug is already in use by another document. Please choose a unique slug.'
-        }
-        return true as const
-      })
+  if (collectionSlug && payload && typeof payload.find === 'function') {
+    return hasExistingSlugCollision(payload, collectionSlug, fieldName, value, currentId, req)
+      .then((collides) => (collides ? DUPLICATE_SLUG_MESSAGE : (true as const)))
       .catch(() => true as const)
   }
 
@@ -331,9 +348,9 @@ async function resolveSourceStringForSlug(
   args: Parameters<SlugFieldHook>[0],
 ): Promise<string | undefined> {
   const siblingVal = args.siblingData[from]
-  const dataVal = (args.data as Record<string, unknown> | undefined)?.[from]
+  const dataVal = args.data?.[from]
   const localesVal = args.siblingDocWithLocales?.[from]
-  const originalVal = (args.originalDoc as Record<string, unknown> | undefined)?.[from]
+  const originalVal = args.originalDoc?.[from]
   const prevSiblingVal = args.previousSiblingDoc?.[from]
 
   const candidates = [siblingVal, dataVal, localesVal, originalVal, prevSiblingVal]
@@ -424,8 +441,28 @@ async function findExistingMatchingSlugs(
     return []
   }
 
+  // R-15: Include shortened bases that could be produced if baseSlug is near the 80-char cap
+  // and needs room for a `-2`, `-10`, or `-100` numeric suffix.
+  const candidateBases = new Set<string>([baseSlug])
+  for (const suffixReserved of [2, 3, 4]) {
+    if (baseSlug.length + suffixReserved > MAX_SLUG_LENGTH) {
+      const shortened = truncateSlugAtWordBoundary(baseSlug, MAX_SLUG_LENGTH - suffixReserved)
+      if (shortened.length > 0) {
+        candidateBases.add(shortened)
+      }
+    }
+  }
+
+  const orConditions: Where[] = []
+  const numberedPatterns: RegExp[] = []
+  for (const candidate of candidateBases) {
+    orConditions.push({ [fieldName]: { equals: candidate } })
+    orConditions.push({ [fieldName]: { like: `${candidate}-` } })
+    numberedPatterns.push(new RegExp(`^${escapeRegExp(candidate)}-([1-9]\\d*)$`))
+  }
+
   const slugMatchWhere: Where = {
-    or: [{ [fieldName]: { equals: baseSlug } }, { [fieldName]: { like: `${baseSlug}-` } }],
+    or: orConditions,
   }
 
   const where: Where =
@@ -448,11 +485,12 @@ async function findExistingMatchingSlugs(
     where,
   })
 
-  const numberedPattern = new RegExp(`^${escapeRegExp(baseSlug)}-([1-9]\\d*)$`)
   return (existing.docs ?? [])
     .map((doc) => doc[fieldName])
     .filter(
-      (s): s is string => typeof s === 'string' && (s === baseSlug || numberedPattern.test(s)),
+      (s): s is string =>
+        typeof s === 'string' &&
+        (candidateBases.has(s) || numberedPatterns.some((pattern) => pattern.test(s))),
     )
 }
 
@@ -493,8 +531,8 @@ export function buildSlugBeforeValidateHook(
 ): SlugFieldHook {
   return async (args) => {
     const collectionSlug = args.collection?.slug
-    const originalRecord = args.originalDoc as Record<string, unknown> | undefined
-    const dataRecord = args.data as Record<string, unknown> | undefined
+    const originalRecord = args.originalDoc
+    const dataRecord = args.data
     const rawId = originalRecord?.id ?? dataRecord?.id
     const currentId = typeof rawId === 'number' || typeof rawId === 'string' ? rawId : undefined
 
@@ -510,9 +548,6 @@ export function buildSlugBeforeValidateHook(
     const rawSiblingSlug = extractNonEmptyString(args.siblingData[fieldName])
     const rawValueSlug = extractNonEmptyString(args.value)
 
-    // Detect if the editor explicitly typed/changed the slug manually on this save:
-    // - On create: any non-empty slug provided in siblingData or value
-    // - On update: a non-empty slug in siblingData (or value when prevSlug is absent) that differs from prevSlug
     const manualCandidate =
       args.operation === 'create'
         ? (rawSiblingSlug ?? rawValueSlug)
@@ -521,12 +556,6 @@ export function buildSlugBeforeValidateHook(
           : prevSlug === undefined
             ? rawValueSlug
             : undefined
-
-    const isManualSlugInput =
-      manualCandidate !== undefined &&
-      (args.operation === 'create' ||
-        prevSlug === undefined ||
-        (manualCandidate !== prevSlug && slugify(manualCandidate) !== prevSlug))
 
     const incomingStatus = args.siblingData._status ?? dataRecord?._status
     const originalStatus = originalRecord?._status
@@ -545,15 +574,86 @@ export function buildSlugBeforeValidateHook(
 
     const wasAlreadyLocked = wasLockedInDoc || wasPublishedBefore
 
-    // R-6 & R-2(3): If the editor typed a manual slug, normalize it via slugify and lock slugLocked
+    // Resolve the current source title and local auto-generated slugs so we can distinguish
+    // a genuine manual edit from a stale auto-generated slug resent by an API client (R-14).
+    const source = await resolveSourceStringForSlug(from, args)
+    const generatedBaseSlug = source ? slugify(source) : undefined
+
+    const incomingLocalSource =
+      extractNonEmptyString(args.siblingData[from]) ?? extractNonEmptyString(dataRecord?.[from])
+    const originalLocalSource =
+      extractNonEmptyString(originalRecord?.[from]) ??
+      extractNonEmptyString(args.previousSiblingDoc?.[from])
+    const incomingLocalAutoSlug = incomingLocalSource ? slugify(incomingLocalSource) : undefined
+    const originalLocalAutoSlug = originalLocalSource ? slugify(originalLocalSource) : undefined
+
+    const normalizedCandidate = manualCandidate !== undefined ? slugify(manualCandidate) : undefined
+
+    const isStaleOrUnchangedAutoSlugOnUpdate =
+      args.operation === 'update' &&
+      manualCandidate !== undefined &&
+      (manualCandidate === prevSlug ||
+        normalizedCandidate === prevSlug ||
+        (!wasAlreadyLocked &&
+          normalizedCandidate !== undefined &&
+          normalizedCandidate.length > 0 &&
+          (normalizedCandidate === generatedBaseSlug ||
+            normalizedCandidate === incomingLocalAutoSlug ||
+            normalizedCandidate === originalLocalAutoSlug)))
+
+    const isManualSlugInput =
+      manualCandidate !== undefined &&
+      (args.operation === 'create' || prevSlug === undefined || !isStaleOrUnchangedAutoSlugOnUpdate)
+
+    const payload = args.req.payload as PayloadFindLike | undefined
+
+    // R-6, R-7, R-13 & R-2(3): If the editor typed a manual slug, normalize it via slugify,
+    // verify uniqueness in beforeValidate (so draft creates & autosave updates also get the
+    // friendly localized error), and lock slugLocked.
     if (isManualSlugInput) {
       setSlugLockedFlag(args, lockFieldName, true)
       if (typeof args.context === 'object') {
         ;(args.context as Record<string, unknown>)[`__${lockFieldName}`] = true
       }
-      const normalizedManual = slugify(manualCandidate)
-      // If slugify produces an empty string (e.g. only symbols), return trimmed manual input so validateSlug rejects it
-      return normalizedManual.length > 0 ? normalizedManual : manualCandidate
+      const finalManual =
+        normalizedCandidate && normalizedCandidate.length > 0
+          ? normalizedCandidate
+          : manualCandidate
+
+      if (
+        collectionSlug &&
+        payload &&
+        typeof payload.find === 'function' &&
+        SLUG_REGEX.test(finalManual)
+      ) {
+        const collides = await hasExistingSlugCollision(
+          payload,
+          collectionSlug,
+          fieldName,
+          finalManual,
+          currentId,
+          args.req,
+        )
+        if (collides) {
+          throw new ValidationError(
+            {
+              collection: collectionSlug,
+              errors: [
+                {
+                  label: args.field.label === false ? undefined : args.field.label,
+                  message: DUPLICATE_SLUG_MESSAGE,
+                  path: fieldName,
+                },
+              ],
+              id: currentId,
+              req: args.req,
+            },
+            args.req.t,
+          )
+        }
+      }
+
+      return finalManual
     }
 
     // R-2(2) & R-2(3): If slugLocked is already true, keep the existing slug untouched
@@ -563,16 +663,7 @@ export function buildSlugBeforeValidateHook(
     }
 
     // R-2(2): While slugLocked is false, (re)generate from English title if one exists, otherwise transliterated Arabic
-    const source = await resolveSourceStringForSlug(from, args)
-    if (!source) {
-      if (isPublishingNow) {
-        setSlugLockedFlag(args, lockFieldName, true)
-      }
-      return prevSlug ?? args.value
-    }
-
-    const baseSlug = slugify(source)
-    if (!baseSlug) {
+    if (!generatedBaseSlug) {
       if (isPublishingNow) {
         setSlugLockedFlag(args, lockFieldName, true)
       }
@@ -589,24 +680,23 @@ export function buildSlugBeforeValidateHook(
       setSlugLockedFlag(args, lockFieldName, false)
     }
 
-    const payload = args.req.payload as PayloadFindLike | undefined
     if (collectionSlug && payload && typeof payload.find === 'function') {
       try {
         const existingSlugs = await findExistingMatchingSlugs(
           payload,
           collectionSlug,
           fieldName,
-          baseSlug,
+          generatedBaseSlug,
           currentId,
           args.req,
         )
-        return resolveUniqueSlug(baseSlug, existingSlugs)
+        return resolveUniqueSlug(generatedBaseSlug, existingSlugs)
       } catch {
-        return baseSlug
+        return generatedBaseSlug
       }
     }
 
-    return baseSlug
+    return generatedBaseSlug
   }
 }
 
@@ -656,20 +746,18 @@ export function slugField(options: SlugFieldOptions = {}): SingleTextField {
     value,
   }) => {
     const collectionSlug = collection?.slug
-    const rawDocId =
-      (originalDoc as Record<string, unknown> | undefined)?.id ??
-      (data as Record<string, unknown> | undefined)?.id
+    const rawDocId = originalDoc?.id ?? data?.id
     const docId =
       typeof rawDocId === 'number' || typeof rawDocId === 'string' ? rawDocId : undefined
     const lockedSet = getLockedSetForPayload(req.payload)
     if (lockedSet && collectionSlug && docId !== undefined) {
       const isLocked =
         siblingData[lockFieldName] === true ||
-        (data as Record<string, unknown> | undefined)?.[lockFieldName] === true ||
-        (originalDoc as Record<string, unknown> | undefined)?.[lockFieldName] === true ||
+        data?.[lockFieldName] === true ||
+        originalDoc?.[lockFieldName] === true ||
         siblingData._status === 'published' ||
-        (data as Record<string, unknown> | undefined)?._status === 'published' ||
-        (originalDoc as Record<string, unknown> | undefined)?._status === 'published' ||
+        data?._status === 'published' ||
+        originalDoc?._status === 'published' ||
         (typeof context === 'object' &&
           (context as Record<string, unknown>)[`__${lockFieldName}`] === true)
 

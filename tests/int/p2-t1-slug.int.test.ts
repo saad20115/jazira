@@ -262,5 +262,141 @@ describe('P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R
     expect(caughtError).toBeInstanceOf(ValidationError)
     const validationErr = caughtError as ValidationError
     expect(validationErr.data.errors[0]?.message).toContain('This slug is already in use')
+
+    // R-13: Duplicate manual slug on explicit draft: true create ALSO fails with friendly ValidationError
+    let draftCreateError: unknown
+    try {
+      await payload.create({
+        collection: SLUG_TEST_COLLECTION as 'users',
+        locale: 'ar',
+        draft: true,
+        data: {
+          title: 'مشروع مسودة مكرر',
+          slug: 'my-custom-pnu-slug',
+        } as never,
+      })
+    } catch (err) {
+      draftCreateError = err
+    }
+
+    expect(draftCreateError).toBeInstanceOf(ValidationError)
+    expect((draftCreateError as ValidationError).data.errors[0]?.message).toContain(
+      'This slug is already in use',
+    )
+
+    // R-13: Duplicate manual slug on draft: true, autosave: true update ALSO fails with friendly ValidationError
+    const otherDoc = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'ar',
+      draft: true,
+      data: {
+        title: 'مشروع منفصل للمسودة',
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    let draftUpdateError: unknown
+    try {
+      await payload.update({
+        collection: SLUG_TEST_COLLECTION as 'users',
+        id: otherDoc.id,
+        locale: 'ar',
+        draft: true,
+        autosave: true,
+        data: {
+          title: 'مشروع منفصل للمسودة',
+          slug: 'my-custom-pnu-slug',
+        } as never,
+      })
+    } catch (err) {
+      draftUpdateError = err
+    }
+
+    expect(draftUpdateError).toBeInstanceOf(ValidationError)
+    expect((draftUpdateError as ValidationError).data.errors[0]?.message).toContain(
+      'This slug is already in use',
+    )
+  })
+
+  it('stale-payload sequence: resending stale ar auto-slug on ar update does not revert or lock the English slug (R-14)', async () => {
+    // 1. Create in ar -> 'fndq-swfytyl-mka-almkrma', slugLocked: false
+    const doc = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'ar',
+      data: {
+        title: 'فندق سوفيتيل مكة المكرمة',
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    expect(doc.slug).toBe('fndq-swfytyl-mka-almkrma')
+    expect(doc.slugLocked).toBe(false)
+
+    // 2. Add en title -> 'sofitel-makkah-hotel', slugLocked: false
+    const withEn = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: doc.id,
+      locale: 'en',
+      data: {
+        title: 'Sofitel Makkah Hotel',
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    expect(withEn.slug).toBe('sofitel-makkah-hotel')
+    expect(withEn.slugLocked).toBe(false)
+
+    // 3. Client resends stale ar snapshot including slug: 'fndq-swfytyl-mka-almkrma' -> keeps 'sofitel-makkah-hotel' & slugLocked: false
+    const afterStaleArUpdate = (await payload.update({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      id: doc.id,
+      locale: 'ar',
+      data: {
+        title: 'فندق سوفيتيل مكة المكرمة المطور',
+        slug: 'fndq-swfytyl-mka-almkrma',
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    expect(afterStaleArUpdate.slug).toBe('sofitel-makkah-hotel')
+    expect(afterStaleArUpdate.slugLocked).toBe(false)
+  })
+
+  it('resolves unique suffixes without collision when an 80-char title is used 3 times (R-15)', async () => {
+    const eightyCharTitle =
+      'Al Jazira For Imdad Smart Company Integrated Electro Mechanical Building System'
+
+    const doc1 = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'en',
+      data: {
+        title: eightyCharTitle,
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    const doc2 = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'en',
+      data: {
+        title: eightyCharTitle,
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    const doc3 = (await payload.create({
+      collection: SLUG_TEST_COLLECTION as 'users',
+      locale: 'en',
+      data: {
+        title: eightyCharTitle,
+      } as never,
+    })) as unknown as SlugTestDoc
+
+    expect(doc1.slug).toBe(
+      'al-jazira-for-imdad-smart-company-integrated-electro-mechanical-building-system',
+    )
+    expect(doc2.slug).toBe(
+      'al-jazira-for-imdad-smart-company-integrated-electro-mechanical-building-2',
+    )
+    expect(doc3.slug).toBe(
+      'al-jazira-for-imdad-smart-company-integrated-electro-mechanical-building-3',
+    )
+    expect(doc1.slug.length).toBeLessThanOrEqual(80)
+    expect(doc2.slug.length).toBeLessThanOrEqual(80)
+    expect(doc3.slug.length).toBeLessThanOrEqual(80)
   })
 })
