@@ -1,0 +1,146 @@
+src/fields/groups/button.ts:95:export function buttonGroup(options: ButtonGroupOptions = {}): NamedGroupField {
+src/fields/groups/cta.ts:147:export function ctaGroup(options: CtaGroupOptions = {}): NamedGroupField {
+src/fields/groups/pageHeader.ts:122:export function pageHeaderGroup(options: PageHeaderGroupOptions = {}): NamedGroupField {
+src/fields/groups/sectionIntro.ts:130:export function sectionIntroGroup(options: SectionIntroGroupOptions = {}): NamedGroupField {
+src/fields/groups/pillar.ts:16:export function pillarFields(options: PillarFieldOptions = {}): Field[] {
+src/fields/groups/collapsibleSection.ts:16:export function collapsibleSection(
+src/globals/_shared/publishableGlobal.ts:313:export function withPublishableGlobal<T extends GlobalConfig>(
+src/globals/SiteSettings.ts:349:export const SiteSettings: GlobalConfig = {
+src/globals/Navigation.ts:224:export const Navigation: GlobalConfig = {
+src/globals/HomePage.ts:115:export const HomePage: GlobalConfig = withPublishableGlobal({
+src/globals/ServicesPage.ts:12:export const ServicesPage: GlobalConfig = withPublishableGlobal({
+src/globals/AboutPage.ts:98:export const AboutPage: GlobalConfig = withPublishableGlobal({
+src/globals/ProjectsPage.ts:11:export const ProjectsPage: GlobalConfig = withPublishableGlobal({
+src/globals/ContactPage.ts:10:export const ContactPage: GlobalConfig = withPublishableGlobal({
+src/globals/PrivacyPage.ts:10:export const PrivacyPage: GlobalConfig = withPublishableGlobal({
+src/collections/Brands.ts:4:import { validateExternalUrl } from '../fields/link'
+src/collections/Brands.ts:159:        return validateExternalUrl(val, {
+src/collections/Team.ts:10:import { validateExternalUrl } from '../fields/link'
+src/collections/Team.ts:35:  const baseCheck = validateExternalUrl(value, {
+src/fields/link.test.ts:9:  validateExternalUrl,
+src/fields/link.test.ts:37:  describe('validateExternalUrl (I3 scheme allowlist)', () => {
+src/fields/link.test.ts:48:        expect(validateExternalUrl(url, { required: true })).toBe(true)
+src/fields/link.test.ts:77:        const result = validateExternalUrl(bad, { required: true })
+src/fields/link.test.ts:88:      expect(validateExternalUrl('https://www.linkedin.com/in/aljazira', opts)).toBe(true)
+src/fields/link.test.ts:89:      expect(typeof validateExternalUrl('http://www.linkedin.com/in/aljazira', opts)).toBe('string')
+src/fields/link.test.ts:90:      expect(typeof validateExternalUrl('https://linkedin.com.evil.com/in/aljazira', opts)).toBe(
+src/fields/link.ts:41:export function validateExternalUrl(
+src/fields/link.ts:131:  const baseVerdict = validateExternalUrl(value, {
+src/fields/link.ts:248:      validateExternalUrl(link.url, { required: true }) === true
+src/fields/link.ts:365:    return validateExternalUrl(value, { required })
+src/fields/richText.ts:22:import { validateExternalUrl, validateInternalPath } from './link'
+src/fields/richText.ts:76:  return validateExternalUrl(trimmed, {
+src/globals/SiteSettings.ts:4:import { validateExternalUrl } from '../fields/link'
+src/globals/SiteSettings.ts:139:      validateExternalUrl(val, {
+src/globals/SiteSettings.ts:212:          validateExternalUrl(val, {
+src/globals/SiteSettings.ts:275:          validateExternalUrl(val, {
+src/collections/Projects.ts:19:  clearCapturedMainDocState,
+src/collections/Projects.ts:442:    clearCapturedMainDocState(
+src/hooks/revalidate.ts:241:export function clearCapturedMainDocState(
+src/hooks/revalidate.ts:388:    clearCapturedMainDocState(context, req, collection.slug, docId)
+src/hooks/revalidate.ts:692:        clearCapturedMainDocState(context, req, collection.slug, docId)
+src/hooks/revalidate.ts:287:export function clearCapturedMainGlobalState(
+src/hooks/revalidate.ts:429:  clearCapturedMainGlobalState(context, req, global.slug)
+src/hooks/revalidate.ts:805:      clearCapturedMainGlobalState(context, req, global.slug)
+src/collections/Media.ts:68:const recordReferencingDoc = (
+src/collections/Media.ts:123:      recordReferencingDoc(referencesByKey, collection, doc, labelField)
+src/collections/Media.ts:69:  referencesByKey: Map<string, string>,
+src/collections/Media.ts:81:  const existing = referencesByKey.get(key)
+src/collections/Media.ts:83:    referencesByKey.set(key, formatted)
+src/collections/Media.ts:93:  referencesByKey,
+src/collections/Media.ts:101:  referencesByKey: Map<string, string>
+src/collections/Media.ts:313:  const referencesByKey = new Map<string, string>()
+src/collections/Media.ts:321:      referencesByKey,
+src/collections/Media.ts:332:        referencesByKey,
+src/collections/Media.ts:348:      referencesByKey.set(item, item)
+src/collections/Media.ts:352:  if (referencesByKey.size > 0) {
+src/collections/Media.ts:353:    const refList = [...referencesByKey.values()].join(', ')
+src/collections/Media.ts:205:const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Media.ts:394:    beforeDelete: [preventMediaDeletionWhenReferenced],
+tests/int/p2-t5.int.test.ts:141:describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page, services-page, about-page, projects-page, contact-page, privacy-page)', () => {
+tests/int/p2-t5.int.test.ts:503:  it('enforces Z2 on home-page (and all publishable page globals): anonymous REST GET /api/globals/home-page returns published version only while a newer draft exists', async () => {
+tests/int/p2-t5.int.test.ts:289:  it('enforces site-settings admin-only update (Z1): anonymous & editor cannot update, admin can update, and anonymous can read', async () => {
+tests/int/p2-t5.int.test.ts:846:  it('verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks', async () => {
+tests/int/p2-t5.int.test.ts:1291:  it('prevents deleting media referenced by globals in localized meta.image or richText body upload nodes (R-7)', async () => {
+tests/int/p2-t5.int.test.ts:423:  it('allows editor and admin to update navigation, preserves array order, and enforces I3 link validation', async () => {
+tests/int/p2-t5.int.test.ts:757:  it('enforces home-page invariants (hero.background xor hero.backgroundVideo, unique interactiveSystems.systems[].shot, statsSection max 4, and paragraphRichTextField AST limits)', async () => {
+tests/int/p2-t5.int.test.ts:1168:  it('returns HTTP 400 with field errors for invalid relationship IDs and enum values on global draft and published saves (R-6)', async () => {
+src/fields/groups/groups.test.ts:18:    it('builds a named group with localized label and linkField (includeLabel: false)', () => {
+src/fields/groups/groups.test.ts:59:    it('resolves hrefs from nested button.link or flat button objects via I3 rules', () => {
+src/fields/groups/groups.test.ts:84:    it('includes enabled checkbox, localized title/text, primary button, secondaryButton, and backgroundImage, and wraps in collapsibleSection', () => {
+src/fields/groups/groups.test.ts:106:    it('includes enabled checkbox, localized title/subtitle, and image upload -> media', () => {
+src/fields/groups/groups.test.ts:126:    it('includes enabled checkbox, localized eyebrow, title, intro, and any extraFields', () => {
+src/globals/globals.test.ts:23:  it('exports all 8 globals in ALL_GLOBALS with expected slugs and admin groups', () => {
+src/globals/globals.test.ts:51:  it('enforces explicit access rules on site-settings, navigation, and publishable page globals (Z1 & Z2)', () => {
+src/globals/globals.test.ts:69:  it('forces args.draft = false on unauthenticated read operations via enforcePublishedReadOnGlobalBeforeOperation', () => {
+src/globals/globals.test.ts:93:  it('configures collapsible sections in Figma order with Arabic labels and enabled checkboxes across all page globals', () => {
+src/hooks/revalidate.test.ts:41:  it('builds collection tags per collection, per doc slug, and per locale (ar, en)', () => {
+src/hooks/revalidate.test.ts:53:  it('builds global tags per global and per locale (ar, en)', () => {
+src/hooks/revalidate.test.ts:58:  it('skips revalidation on draft creation, draft-to-draft autosave, and draft/autosave on a published doc, and revalidates only on publish, unpublish, and published delete (R-3, R-4, R-5)', async () => {
+src/hooks/revalidate.test.ts:220:  it('skips global revalidation on draft-to-draft autosave and draft save over published global, and revalidates when published (R-3, R-4, R-5)', async () => {
+src/hooks/revalidate.test.ts:278:  it('silently ignores "static generation store missing" outside Next runtime, but logs unexpected Invariant errors without throwing (R-4, R-5)', async () => {
+src/hooks/revalidate.test.ts:328:  it('skips revalidation when context.disableRevalidate is true (R-5)', async () => {
+src/hooks/revalidate.test.ts:347:  it('logs a warning and falls back to invalidating (fail-safe) if reading the main row fails (P2-T4 R-10)', async () => {
+src/hooks/revalidate.test.ts:391:  it('keys captured state by collection/id and global slug and clears it after afterChange so shared req.context never leaks across operations (P2-T4 R-18)', async () => {
+src/collections/Stats.ts:10:export const Stats: CollectionConfig = {
+src/collections/Videos.ts:29:export const VIDEO_UPLOAD_INSTANCE_ID = crypto.randomBytes(6).toString('hex')
+src/collections/Videos.ts:31:export const VIDEO_UPLOAD_TEMP_DIR = path.join(
+src/collections/Videos.ts:157:export const Videos: CollectionConfig = {
+src/fields/groups/button.ts:29:export function resolveButtonHref(button: ButtonDataShape | null | undefined): string | null {
+src/fields/groups/button.ts:44:export function buttonFields(options: ButtonFieldsOptions = {}): Field[] {
+src/fields/groups/cta.ts:32:export function ctaFields(options: CtaFieldsOptions = {}): Field[] {
+src/fields/groups/pageHeader.ts:27:export function pageHeaderFields(options: PageHeaderFieldsOptions = {}): Field[] {
+src/fields/groups/pillar.ts:55:export function pillarGroup(options: PillarGroupOptions = {}): NamedGroupField {
+src/fields/groups/sectionIntro.ts:28:export function sectionIntroFields(options: SectionIntroFieldsOptions = {}): Field[] {
+src/globals/HomePage.ts:13:export const INTERACTIVE_SYSTEM_SHOT_VALUES = [
+src/globals/SiteSettings.ts:11:export const SOCIAL_PLATFORM_VALUES = [
+src/globals/_shared/publishableGlobal.ts:22:export const publishableGlobalVersions: PublishableGlobalVersions = {
+src/globals/_shared/publishableGlobal.ts:32:export const PAGES_ADMIN_GROUP = {
+src/globals/_shared/publishableGlobal.ts:37:export const SETTINGS_ADMIN_GROUP = {
+src/globals/_shared/publishableGlobal.ts:47:export const enforcePublishedReadOnGlobalBeforeOperation: GlobalBeforeOperationHook = ({
+src/globals/_shared/publishableGlobal.ts:292:export function createValidateGlobalDataBeforeValidateHook(
+src/globals/index.ts:28:export const ALL_GLOBALS = [
+src/hooks/revalidate.ts:11:export const REVALIDATE_LOCALES = ['ar', 'en'] as const
+src/hooks/revalidate.ts:22:export function isOutsideNextRuntimeError(err: unknown): boolean {
+src/hooks/revalidate.ts:34:export function safeRevalidateTag(tag: string, logger?: MinimalLogger): void {
+src/hooks/revalidate.ts:44:export function safeRevalidatePath(
+src/hooks/revalidate.ts:58:export function buildCollectionTags(
+src/hooks/revalidate.ts:81:export function buildGlobalTags(globalSlug: string): string[] {
+src/hooks/revalidate.ts:203:export function getCapturedMainDocBeforeChange(
+src/hooks/revalidate.ts:222:export function getCapturedMainDocLookupFailed(
+src/hooks/revalidate.ts:255:export function getCapturedMainGlobalBeforeChange(
+src/hooks/revalidate.ts:271:export function getCapturedMainGlobalLookupFailed(
+src/hooks/revalidate.ts:373:export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = async ({
+src/hooks/revalidate.ts:419:export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = async ({
+src/hooks/revalidate.ts:648:export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithID>(
+src/hooks/revalidate.ts:700:export function createRevalidateAfterDeleteHook<T extends TypeWithID = TypeWithID>(
+src/hooks/revalidate.ts:745:export function createRevalidateGlobalAfterChangeHook(
+src/globals/globals.test.ts:8:  ALL_GLOBALS,
+src/globals/globals.test.ts:24:    expect(ALL_GLOBALS.map((g) => g.slug)).toEqual([
+src/migrations/20261021_074848_initial_users_media.ts:3:export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
+src/migrations/20261021_074848_initial_users_media.ts:165:export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
+src/migrations/20261022_120943_p2_t2_videos_brands_stats_materials.ts:3:export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
+src/migrations/20261022_120943_p2_t2_videos_brands_stats_materials.ts:136:export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
+src/migrations/20261022_140011_p2_t3_services_team.ts:3:export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
+src/migrations/20261022_140011_p2_t3_services_team.ts:227:export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
+src/migrations/20261022_160652_p2_t4_projects.ts:3:export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
+src/migrations/20261022_160652_p2_t4_projects.ts:293:export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
+src/migrations/20261022_221250_p2_t5_globals.ts:3:export async function up({ db }: MigrateUpArgs): Promise<void> {
+src/migrations/20261022_221250_p2_t5_globals.ts:1377:export async function down({ db }: MigrateDownArgs): Promise<void> {
+src/migrations/index.ts:5:import * as migration_20261022_221250_p2_t5_globals from './20261022_221250_p2_t5_globals'
+src/migrations/index.ts:29:    up: migration_20261022_221250_p2_t5_globals.up,
+src/migrations/index.ts:30:    down: migration_20261022_221250_p2_t5_globals.down,
+src/migrations/index.ts:31:    name: '20261022_221250_p2_t5_globals',
+src/collections/Brands.ts:74:    beforeDelete: [preventBrandDeletionWhenUsedByMaterials],
+src/collections/Users.ts:243:    beforeDelete: [preventLastAdminBeforeDelete],
+src/fields/richText.ts:478:export function paragraphRichTextField(
+src/globals/AboutPage.ts:7:import { paragraphRichTextField } from '../fields/richText'
+src/globals/AboutPage.ts:182:        paragraphRichTextField({
+src/globals/HomePage.ts:8:import { paragraphRichTextField } from '../fields/richText'
+src/globals/HomePage.ts:293:        paragraphRichTextField({
+src/globals/ProjectsPage.ts:6:import { paragraphRichTextField } from '../fields/richText'
+src/globals/ProjectsPage.ts:148:        paragraphRichTextField({
+src/payload-types.ts:106:  globals: {
+src/payload.config.ts:76:  globals: [
+tests/int/p2-t5.int.test.ts:810:    // 4. Heading node inside paragraphRichTextField (whoWeAre.text) is rejected (paragraphs only)
+tests/int/p2-t5.int.test.ts:1442:    // 3. R-19: A project with an Arabic title and no English title is listed only ONCE by its Arabic title (not duplicated as projects(#id))

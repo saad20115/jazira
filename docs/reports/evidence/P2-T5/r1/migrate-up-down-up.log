@@ -1,0 +1,77 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t5-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate" "--no-color"
+
+[01:52:10] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:52:11] INFO: Migrating: 20261021_074848_initial_users_media
+[01:52:11] INFO: Migrated:  20261021_074848_initial_users_media (67ms)
+[01:52:11] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:52:11] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (36ms)
+[01:52:11] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:52:11] INFO: Migrated:  20261022_140011_p2_t3_services_team (62ms)
+[01:52:11] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:52:11] INFO: Migrated:  20261022_160652_p2_t4_projects (81ms)
+[01:52:11] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:52:11] INFO: Migrated:  20261022_221250_p2_t5_globals (413ms)
+[01:52:11] INFO: Done.
+
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t5-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down" "--no-color"
+
+[01:52:17] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:52:18] INFO: Rolling back batch 1 consisting of 5 migration(s).
+[01:52:18] INFO: Migrating down: 20261022_221250_p2_t5_globals
+[01:52:18] INFO: Migrated down:  20261022_221250_p2_t5_globals (141ms)
+[01:52:18] INFO: Migrating down: 20261022_160652_p2_t4_projects
+[01:52:18] INFO: Migrated down:  20261022_160652_p2_t4_projects (37ms)
+[01:52:18] INFO: Migrating down: 20261022_140011_p2_t3_services_team
+[01:52:18] INFO: Migrated down:  20261022_140011_p2_t3_services_team (27ms)
+[01:52:18] INFO: Migrating down: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:52:18] INFO: Migrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (22ms)
+[01:52:18] INFO: Migrating down: 20261021_074848_initial_users_media
+[01:52:18] INFO: Migrated down:  20261021_074848_initial_users_media (16ms)
+[01:52:18] INFO: Done.
+
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t5-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate" "--no-color"
+
+[01:52:24] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:52:24] INFO: Migrating: 20261021_074848_initial_users_media
+[01:52:24] INFO: Migrated:  20261021_074848_initial_users_media (70ms)
+[01:52:24] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:52:24] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (34ms)
+[01:52:24] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:52:24] INFO: Migrated:  20261022_140011_p2_t3_services_team (54ms)
+[01:52:24] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:52:25] INFO: Migrated:  20261022_160652_p2_t4_projects (78ms)
+[01:52:25] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:52:25] INFO: Migrated:  20261022_221250_p2_t5_globals (249ms)
+[01:52:25] INFO: Done.
+
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t5-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status" "--no-color"
+
+[01:52:31] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     1 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     1 │ Yes │
+│                      20261022_160652_p2_t4_projects │     1 │ Yes │
+│                       20261022_221250_p2_t5_globals │     1 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[01:52:31] INFO: Done.
+
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t5-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:create" "noop_check" "--no-color"
+
+[01:52:37] INFO: Starting migration: generating UP statements...
+? No schema changes detected. Would you like to create a blank migration file? » (y/N)[01:52:37] INFO: Migration UP complete. Generating DOWN statements...
+[01:52:37] INFO: Migration DOWN statements generation complete.
+√ No schema changes detected. Would you like to create a blank migration file? ... no
+

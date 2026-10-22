@@ -1,0 +1,847 @@
+
+> aljazira-website@0.1.0 test D:\jazira-dod-p2t5-r1
+> vitest run "--" "--reporter=verbose"
+
+
+ RUN  v5.0.5 D:/jazira-dod-p2t5-r1
+
+[01:52:46] INFO: Dropping database.
+[01:52:47] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:52:47] INFO: Migrating: 20261021_074848_initial_users_media
+[01:52:47] INFO: Migrated:  20261021_074848_initial_users_media (73ms)
+[01:52:47] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:52:47] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (44ms)
+[01:52:47] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:52:47] INFO: Migrated:  20261022_140011_p2_t3_services_team (57ms)
+[01:52:47] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:52:47] INFO: Migrated:  20261022_160652_p2_t4_projects (77ms)
+[01:52:47] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:52:47] INFO: Migrated:  20261022_221250_p2_t5_globals (300ms)
+[01:52:49] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:52:49] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:52:49] INFO: الحقل التالي غير صالح: روابط الشبكات الاجتماعية 1 > رابط الحساب
+[01:52:49] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:52:49] INFO: الحقل التالي غير صالح: روابط شريط التنقل العلوي (Header Links) 1 > الرابط > الرابط الخارجي
+[01:52:50] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:52:50] INFO: The following field is invalid: hero.backgroundVideo
+[01:52:50] INFO: The following field is invalid: interactiveSystems.systems
+[01:52:50] INFO: الحقل التالي غير صالح: قسم أرقامنا وإنجازاتنا — ثقة رواد الصناعة (Stats Section) > الأرقام والإحصائيات المعروضة (حتى 4 أرقام من مجموعة الأرقام)
+[01:52:50] INFO: الحقل التالي غير صالح: النص التعريفي (فقرات نصية فقط)
+[01:52:51] INFO: The following field is invalid: hero.background
+[01:52:51] INFO: The following field is invalid: statsSection.stats
+[01:52:51] INFO: The following field is invalid: meta.image
+[01:52:51] INFO: The following fields are invalid: interactiveSystems.systems.0.shot, interactiveSystems.systems.0.disciplines
+[01:52:51] INFO: The following fields are invalid: office.mapImage, socials.0.platform
+[01:52:52] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t5.int.test.ts:1339:36
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:52:53] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t5.int.test.ts:1413:40
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:52:54] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t5.int.test.ts:1470:34
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t5.int.test.ts (7 tests) 13277ms
+   ✓ P2-T5 integration suite (Globals: site-settings, navigation, home-page, services-page, about-page, projects-page, contact-page, privacy-page) (7)
+     ✓ enforces Z2 on home-page (and all publishable page globals): anonymous REST GET /api/globals/home-page returns published version only while a newer draft exists 497ms
+     ✓ verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks 682ms
+     ✓ prevents deleting media referenced by globals in localized meta.image or richText body upload nodes (R-7) 2962ms
+[01:53:01] INFO: Dropping database.
+[01:53:01] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:53:01] INFO: Migrating: 20261021_074848_initial_users_media
+[01:53:01] INFO: Migrated:  20261021_074848_initial_users_media (95ms)
+[01:53:01] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:53:01] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (54ms)
+[01:53:01] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:53:01] INFO: Migrated:  20261022_140011_p2_t3_services_team (80ms)
+[01:53:01] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:53:02] INFO: Migrated:  20261022_160652_p2_t4_projects (85ms)
+[01:53:02] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:53:02] INFO: Migrated:  20261022_221250_p2_t5_globals (307ms)
+[01:53:03] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:03] INFO: غير موجود
+[01:53:04] INFO: غير موجود
+[01:53:04] INFO: غير موجود
+[01:53:04] INFO: Running 1 jobs.
+    new: 1
+    retrying: 0
+[01:53:04] INFO: The following field is invalid: videoUrl
+[01:53:04] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: The following field is invalid: videoUrl
+[01:53:05] INFO: الحقل التالي غير صالح: حالة تنفيذ المشروع
+[01:53:05] INFO: الحقل التالي غير صالح: المعرّف النصي (Slug)
+[01:53:05] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[01:53:05] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[01:53:05] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[01:53:05] INFO: الحقل التالي غير صالح: المحتوى (Content) > نبذة مختصرة عن المشروع
+[01:53:05] INFO: الحقل التالي غير صالح: التفاصيل والمخرجات (Details) > الركائز والتفاصيل الفنية للمشروع
+[01:53:05] INFO: الحقل التالي غير صالح: التفاصيل والمخرجات (Details) > المخرجات والبنود المسلمة
+[01:53:05] INFO: الحقل التالي غير صالح: الوسائط (Media) > معرض صور المشروع
+[01:53:05] INFO: The following field is invalid: coverImage
+[01:53:05] INFO: The following field is invalid: gallery
+[01:53:05] INFO: The following field is invalid: meta.image
+[01:53:05] INFO: The following field is invalid: video
+[01:53:05] INFO: The following field is invalid: category
+[01:53:05] INFO: The following field is invalid: status
+[01:53:05] INFO: The following field is invalid: scope
+[01:53:05] INFO: الحقل التالي غير صالح: meta
+[01:53:05] INFO: الحقل التالي غير صالح: meta
+[01:53:05] INFO: الحقل التالي غير صالح: تفاصيل المشروع ودراسة الحالة
+[01:53:05] INFO: الحقل التالي غير صالح: تفاصيل المشروع ودراسة الحالة
+[01:53:05] INFO: The following field is invalid: gallery
+[01:53:06] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:875:33
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+(node:40900) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+[01:53:07] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:979:29
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:07] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:985:33
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:08] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:995:40
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:08] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:1040:39
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:13] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:1099:40
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:14] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventBrandDeletionWhenUsedByMaterials (D:/jazira-dod-p2t5-r1/src/collections/Brands.ts:34:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:1329:28
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:14] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventLastAdminBeforeDelete (D:/jazira-dod-p2t5-r1/src/collections/Users.ts:129:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:1340:32
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:14] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventLastAdminDemotionBeforeChange (D:/jazira-dod-p2t5-r1/src/collections/Users.ts:96:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:96:11)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:14] ERROR: معرّف المستخدم غير صالح. / Invalid user ID.
+    err: {
+      "type": "APIError",
+      "message": "معرّف المستخدم غير صالح. / Invalid user ID.",
+      "stack":
+          APIError: معرّف المستخدم غير صالح. / Invalid user ID.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at handler (D:/jazira-dod-p2t5-r1/src/collections/Users.ts:203:17)
+              at handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:32)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:94:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t4.int.test.ts:1362:30
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t4.int.test.ts (6 tests) 17331ms
+   ✓ P2-T4 integration suite (projects) (6)
+     ✓ enforces Z1 & Z2 on projects: anonymous never sees draft projects (REST or Local API overrideAccess:false), sees published projects, and newer draft edits remain hidden until published 450ms
+     ✓ supports scheduled publishing via Payload jobs queue (schedulePublish: true): transitions a draft project to published when the scheduled time arrives 693ms
+     ✓ enforces mutual exclusion between video and videoUrl (video xor videoUrl), trims videoUrl whitespace, and rejects non-default ports and non-allowlisted hosts on draft and published saves (R-8) 573ms
+     ✓ enforces slug uniqueness, required status with no default (R-9), field constraints, draft relationship/enum validation returning 400 (R-6), and media deletion guard across locales and richText upload nodes (R-7) 8283ms
+     ✓ wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4) 435ms
+[01:53:20] INFO: Dropping database.
+[01:53:21] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:53:21] INFO: Migrating: 20261021_074848_initial_users_media
+[01:53:21] INFO: Migrated:  20261021_074848_initial_users_media (66ms)
+[01:53:21] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:53:21] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (45ms)
+[01:53:21] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:53:21] INFO: Migrated:  20261022_140011_p2_t3_services_team (65ms)
+[01:53:21] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:53:21] INFO: Migrated:  20261022_160652_p2_t4_projects (75ms)
+[01:53:21] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:53:21] INFO: Migrated:  20261022_221250_p2_t5_globals (264ms)
+[01:53:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:23] INFO: غير موجود
+[01:53:23] INFO: غير موجود
+[01:53:23] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[01:53:23] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[01:53:23] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[01:53:23] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[01:53:23] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[01:53:23] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[01:53:23] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[01:53:23] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[01:53:23] INFO: غير موجود
+[01:53:23] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[01:53:23] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[01:53:23] INFO: الحقل التالي غير صالح: أيقونة الخدمة
+[01:53:23] INFO: الحقل التالي غير صالح: تصنيف الخدمة
+[01:53:24] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). Remove the reference first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t5-r1/src/collections/Media.ts:354:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t3.int.test.ts:74:11)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t3.int.test.ts:808:38
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t3.int.test.ts (4 tests) 8130ms
+   ✓ P2-T3 integration suite (services & team) (4)
+     ✓ enforces Z1 & Z2 on services: anonymous never sees draft services (even with ?draft=true), sees published services, and newer draft edits remain hidden until published 366ms
+     ✓ verifies P2-T3 R-1..R-6 fixes: staff bio cleared across all locales (R-1), LinkedIn https + path (R-2), LinkFeature enabledCollections (R-3), no silent icon/tier defaults on services (R-4), Arabic SEO field labels (R-5), and media beforeDelete guard (R-6) 649ms
+[01:53:30] INFO: Dropping database.
+[01:53:31] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:53:31] INFO: Migrating: 20261021_074848_initial_users_media
+[01:53:31] INFO: Migrated:  20261021_074848_initial_users_media (69ms)
+[01:53:31] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:53:31] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (45ms)
+[01:53:31] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:53:31] INFO: Migrated:  20261022_140011_p2_t3_services_team (62ms)
+[01:53:31] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:53:31] INFO: Migrated:  20261022_160652_p2_t4_projects (75ms)
+[01:53:31] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:53:31] INFO: Migrated:  20261022_221250_p2_t5_globals (324ms)
+[01:53:32] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:33] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:33] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:33] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:33] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:33] INFO: The following field is invalid: password
+[01:53:33] INFO: The following field is invalid: password
+[01:53:33] INFO: The following field is invalid: password
+[01:53:33] INFO: The following field is invalid: password
+[01:53:33] INFO: The following field is invalid: password
+[01:53:33] INFO: The following field is invalid: password
+[01:53:34] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[01:53:35] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[01:53:35] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[01:53:35] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[01:53:36] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[01:53:36] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:401:24
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+[01:53:36] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:410:32
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+[01:53:36] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:36] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:37] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:37] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:37] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:37] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventLastAdminDemotionBeforeChange (D:/jazira-dod-p2t5-r1/src/collections/Users.ts:96:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:37] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventLastAdminBeforeDelete (D:/jazira-dod-p2t5-r1/src/collections/Users.ts:129:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t5-r1/tests/int/p1-t3.int.test.ts:571:23
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+stdout | tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+[A5/R-1 Timing 20+20] known(median=21.47ms, max=36.96ms) vs unknown(median=4.79ms, max=6.33ms) | diff=16.68ms
+
+[01:53:42] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:42] INFO: The following field is invalid: file
+[01:53:42] INFO: The following field is invalid: file
+ ✓ tests/int/p1-t3.int.test.ts (9 tests) 12721ms
+   ✓ P1-T3 integration suite (Postgres test DB via migrations) (9)
+     ✓ registers the first user as admin via /api/users/first-register and blocks any second first-register attempt (A6) 659ms
+     ✓ allows admin to create an editor user (defaulting to editor) and prevents editor from escalating role via REST or Local API (Z1, Z3) 712ms
+     ✓ enforces the password policy (min 12 chars + common password blocklist) on create, update, and reset-password (A4) 936ms
+     ✓ locks the account after 5 failed login attempts for 15 minutes and refuses the correct password while locked (A1) 1813ms
+     ✓ revokes JWT access immediately on user logout and on admin-forced session removal (A2) 1055ms
+     ✓ refuses deleting or demoting the last admin user, while allowing deleting a second admin (R-2) 360ms
+     ✓ returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1) 5295ms
+     ✓ rejects anonymous uploads, rejects .svg and disguised HTML renamed .jpg by magic bytes, and accepts a real JPEG generating all 4 webp sizes (I5, Z1) 513ms
+[01:53:50] INFO: Dropping database.
+[01:53:50] INFO: Reading migration files from D:\jazira-dod-p2t5-r1\src\migrations
+[01:53:50] INFO: Migrating: 20261021_074848_initial_users_media
+[01:53:50] INFO: Migrated:  20261021_074848_initial_users_media (78ms)
+[01:53:50] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[01:53:50] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (50ms)
+[01:53:50] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[01:53:50] INFO: Migrated:  20261022_140011_p2_t3_services_team (67ms)
+[01:53:50] INFO: Migrating: 20261022_160652_p2_t4_projects
+[01:53:51] INFO: Migrated:  20261022_160652_p2_t4_projects (194ms)
+[01:53:51] INFO: Migrating: 20261022_221250_p2_t5_globals
+[01:53:51] INFO: Migrated:  20261022_221250_p2_t5_globals (356ms)
+[01:53:52] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:52] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:52] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:52] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:52] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:52] INFO: لا يسمح لك القيام بهذه العمليّة.
+[01:53:53] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[01:53:53] INFO: The following field is invalid: file
+[01:53:53] INFO: The following field is invalid: file
+[01:53:53] INFO: الحقل التالي غير صالح: الموقع الإلكتروني
+[01:53:53] INFO: الحقل التالي غير صالح: العلامات التجارية المعتمدة
+[01:53:53] INFO: الحقل التالي غير صالح: رقم البند
+[01:53:53] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+              at createPublicAPIError (D:/jazira-dod-p2t5-r1/src/security/apiError.ts:20:15)
+              at preventBrandDeletionWhenUsedByMaterials (D:/jazira-dod-p2t5-r1/src/collections/Brands.ts:34:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t5-r1/tests/int/p2-t2.int.test.ts:65:20)
+              at D:/jazira-dod-p2t5-r1/tests/int/p2-t2.int.test.ts:473:27
+              at async file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[01:53:54] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[01:53:54] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[01:53:55] INFO: The following field is invalid: file
+[01:53:55] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t5-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///D:/jazira-dod-p2t5-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t2.int.test.ts (4 tests) 10666ms
+   ✓ P2-T2 integration suite (videos, brands, stats, materials) (4)
+     ✓ enforces per-collection upload limits, randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> (R-1), isolates VIDEOS_DIR from MEDIA_DIR (R-6), rejects 101 MB MP4, and rejects disguised HTML (I5, R-9) 1015ms
+     ✓ isolates video upload temp dir outside staticDir (R-11), rejects multi-file requests without leaking temp files (R-12), and accepts exact 100 MiB inclusive while rejecting 100 MiB + 1 (R-13) 1855ms
+ ✓ src/fields/slug.test.ts (27 tests) 16ms
+ ✓ tests/int/p2-t1-slug.int.test.ts (4 tests) 1284ms
+ ✓ src/hooks/revalidate.test.ts (8 tests) 13ms
+ ✓ src/fields/link.test.ts (9 tests) 8ms
+ ✓ src/env.test.ts (8 tests) 16ms
+ ✓ src/fields/richText.test.ts (4 tests) 52ms
+ ✓ src/fields/videoUrl.test.ts (5 tests) 10ms
+ ✓ src/security/uploadValidation.test.ts (5 tests) 10ms
+ ✓ src/globals/globals.test.ts (4 tests) 12ms
+ ✓ src/fields/groups/groups.test.ts (5 tests) 8ms
+ ✓ src/eslint-no-server-in-client.test.ts (4 tests) 158ms
+ ✓ src/jobs/shouldAutoRun.test.ts (5 tests) 5ms
+ ✓ src/access/publishedOrLoggedIn.test.ts (4 tests) 6ms
+ ✓ src/fields/groups/pillar.test.ts (2 tests) 7ms
+ ✓ src/security/apiError.test.ts (2 tests) 6ms
+ ✓ src/fields/order.test.ts (2 tests) 4ms
+ ✓ src/security/passwordPolicy.test.ts (3 tests) 5ms
+ ✓ src/collections/_shared/publishable.test.ts (2 tests) 4ms
+ ✓ src/access/isAdminFieldLevel.test.ts (3 tests) 4ms
+ ✓ src/access/adminOrSelf.test.ts (3 tests) 4ms
+ ✓ src/access/isAdminOrEditor.test.ts (3 tests) 4ms
+ ✓ src/access/isAdmin.test.ts (3 tests) 4ms
+
+ Test Files  27 passed (27)
+      Tests  145 passed (145)
+   Start at  01:52:39
+   Duration  103.68s (tests 65%, import 34%, transform 1%)
+
+    Isolate  27 workers spawned · ~215ms startup each (spawn + environment, per file)
+             at least ~5.59s faster with isolate: false — reuses workers across files instead of one per file
+
