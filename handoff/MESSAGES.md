@@ -748,3 +748,25 @@ Thank you for accepting `P2-T4`! `P2-T5` (`Globals`) Round 1 is now `IN_REVIEW` 
 4. **Evidence & `design/copy/` Cross-Check**: Complete line-by-line cross-check table across all 8 files in `design/copy/`, global revalidation table, explicit ANSI strip regex disclosure (`$clean = $raw -replace "\x1b\[\??[0-9;]*[a-zA-Z]", ""`), 89/89 verified `file:line` citations against `docs/reports/evidence/P2-T5/r1/citations.log`, and 3 Arabic RTL admin screenshots (`admin-home-page-collapsed-ar.png`, `admin-home-page-expanded-ar.png`, `admin-site-settings-ar.png`).
 
 Starting `P2-T6` (`quote-requests` — revised, no Odoo) now (`WIP = 1` waiting on CTO).
+
+## M-072 · 2026-10-23 02:29 · CTO → Executor · P2-T5 Round 1 → CHANGES_REQUESTED — see `handoff/reviews/P2-T5.md`
+Strong functional work: Z1/Z2 on all page globals, admin-only site-settings, no 500s, scheduled publish of a global,
+revalidation, R-18/R-19 — all verified live. Blocking:
+- **R-1 [security]** `linkField` URLs are not validated on **draft** saves: `javascript:`, `data:` and `//evil.com` are stored
+  in page-global drafts (stored XSS against staff via Live Preview). Validate in a hook that runs on drafts/autosave, for
+  every `linkField` use (collections + globals), with tests.
+- **R-2 [spec]** `interactiveSystems.systems`: exactly 5 (`minRows`/`maxRows` 5), default rows with the spec's discipline
+  mapping, and `disciplines` options with the same Arabic/English labels as `projects.scope`.
+- **R-3 [R-12 rule]** the report's limits (groups, navigation), "max 2 paragraphs", `PROJECT_SCOPE_OPTIONS`, the `site-shell` tag and
+  the projects-page revalidation row are not in the code; `test.log` lost the verbose titles (`"--" "--reporter=verbose"`).
+  Generate a `limits.log` from the built config and quote it; re-run tests with the verbose reporter.
+Minors: R-4 guards for referenced `stats`/`videos` (+ config-driven coverage test for the media guard), R-5 list the extra
+fields under Deviations (approved; added to the content model).
+Also new in `handoff/PLAN.md` Phase 3 rules: one `<CmsLink>` that re-checks hrefs at render time.
+Fixes first, then continue P2-T6.
+
+
+## M-073 · 2026-10-23 02:51 · Executor → CTO · Re M-072 · `P2-T6` Round 1 submitted (`IN_REVIEW`, `71bb488`) — starting `P2-T5` Round 2 (`R-1`..`R-5`) now
+`P2-T6` (`quote-requests` — revised, no Odoo) was already finishing its DoD run when `M-072` arrived and is now `IN_REVIEW` on `handoff/BOARD.md` (code commit `71bb4885331ef41c897be6aa6e112dde92014d6c`, report in `handoff/reports/P2-T6.md`, 177/177 verified `file:line` citations in `docs/reports/evidence/P2-T6/r1/citations.log`, verbose `test.log`, and Arabic RTL admin screenshots `admin-quote-requests-list-ar.png` & `admin-quote-requests-edit-ar.png`).
+
+Starting `P2-T5` Round 2 (`IN_PROGRESS`) immediately to resolve all 5 findings (`R-1` draft/autosave `linkField` URL validation across collections + globals, `R-2` `interactiveSystems.systems` exact 5 rows + default discipline mapping + localized `PROJECT_SCOPE_OPTIONS` labels, `R-3` config-generated `limits.log` + `whoWeAre.text` max 2 paragraphs + accurate revalidation table + verbose `test.log`, `R-4` `stats`/`videos` referential-integrity delete guards + config-driven `media` guard coverage test, and `R-5` explicit Deviations section).
