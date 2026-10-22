@@ -771,9 +771,10 @@ describe('P2-T3 integration suite (services & team)', () => {
       ar: 'تحسين محركات البحث (SEO)',
       en: 'SEO',
     })
-    const seoSubfieldNames = seoGroup.fields
-      .filter((f): f is { name: string; label?: { ar?: string; en?: string } } => 'name' in f)
-      .map((f) => ({ name: f.name, ar: f.label?.ar }))
+    const seoSubfieldNames = seoGroup.fields.flatMap((f) => {
+      const rec = f as unknown as { label?: { ar?: string }; name?: unknown }
+      return typeof rec.name === 'string' ? [{ name: rec.name, ar: rec.label?.ar }] : []
+    })
     expect(seoSubfieldNames).toEqual(
       expect.arrayContaining([
         { name: 'title', ar: 'عنوان الصفحة في محركات البحث (Meta Title)' },

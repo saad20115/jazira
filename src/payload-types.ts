@@ -75,6 +75,7 @@ export interface Config {
     materials: Material;
     services: Service;
     team: Team;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -91,6 +92,7 @@ export interface Config {
     materials: MaterialsSelect<false> | MaterialsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -419,7 +421,7 @@ export interface Service {
     title?: string | null;
     description?: string | null;
     /**
-     * Maximum upload file size: 12MB. Recommended file size for images is <500KB.
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
      */
     image?: (number | null) | Media;
   };
@@ -463,6 +465,130 @@ export interface Team {
   order: number;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * Completed and in-progress engineering projects delivered by Al Jazira for Imdad Smart Co., including scope, media gallery, videos, and deliverables.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  /**
+   * Official project title in Arabic and English.
+   */
+  title: string;
+  /**
+   * Primary engineering category used for filtering and related projects.
+   */
+  category: 'mep' | 'fire-fighting' | 'low-current' | 'data-center' | 'civil-mep';
+  /**
+   * Optional — many private-sector clients are confidential.
+   */
+  client?: string | null;
+  /**
+   * Project city or location (e.g., Riyadh, Jeddah, Dammam).
+   */
+  location: string;
+  /**
+   * Project delivery or execution year (between 1990 and current year + 2).
+   */
+  year?: number | null;
+  /**
+   * Select one or more engineering disciplines executed in this project.
+   */
+  scope?:
+    ('mep' | 'hvac' | 'fire-fighting' | 'plumbing' | 'electrical' | 'low-current' | 'data-center' | 'civil')[] | null;
+  /**
+   * Short 1-line scope phrasing shown in the project info table.
+   */
+  scopeSummary?: string | null;
+  /**
+   * Attribution when the project was delivered via a partner or sister entity. Leave empty when delivered directly.
+   */
+  deliveredBy?: string | null;
+  /**
+   * Concise summary displayed on project cards and the project detail header (up to 280 characters).
+   */
+  summary?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Primary project cover image (required), displayed on project cards and the project detail hero.
+   */
+  coverImage: number | Media;
+  /**
+   * Additional project photos documenting execution and results (up to 30 images).
+   */
+  gallery?: (number | Media)[] | null;
+  /**
+   * Select a self-hosted video from the Videos library, OR provide an external video URL below (mutually exclusive).
+   */
+  video?: (number | null) | Video;
+  /**
+   * External HTTPS video URL from YouTube or Vimeo only (mutually exclusive with self-hosted video above).
+   */
+  videoUrl?: string | null;
+  /**
+   * Structured detail cards highlighting engineering aspects of the project (up to 8 items).
+   */
+  details?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Bullet list of key systems and deliverables completed in the project (up to 10 items).
+   */
+  deliverables?:
+    | {
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  /**
+   * URL-safe identifier auto-generated from the English title (or transliterated Arabic fallback). Editable.
+   */
+  slug: string;
+  slugLocked?: boolean | null;
+  /**
+   * Engineering execution status of the project (completed or in-progress).
+   */
+  status: 'completed' | 'in-progress';
+  /**
+   * Enable to highlight this project in the featured projects section on the Home page.
+   */
+  featured?: boolean | null;
+  /**
+   * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
+   */
+  order: number;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -611,6 +737,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'team';
         value: number | Team;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -849,6 +979,54 @@ export interface TeamSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  title?: T;
+  category?: T;
+  client?: T;
+  location?: T;
+  year?: T;
+  scope?: T;
+  scopeSummary?: T;
+  deliveredBy?: T;
+  summary?: T;
+  body?: T;
+  coverImage?: T;
+  gallery?: T;
+  video?: T;
+  videoUrl?: T;
+  details?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  deliverables?:
+    | T
+    | {
+        text?: T;
+        id?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  slug?: T;
+  slugLocked?: T;
+  status?: T;
+  featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -936,10 +1114,15 @@ export interface TaskSchedulePublish {
   input: {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
-    doc?: {
-      relationTo: 'services';
-      value: number | Service;
-    } | null;
+    doc?:
+      | ({
+          relationTo: 'services';
+          value: number | Service;
+        } | null)
+      | ({
+          relationTo: 'projects';
+          value: number | Project;
+        } | null);
     global?: string | null;
     user?: {
       relationTo: 'users';

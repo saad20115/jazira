@@ -82,12 +82,12 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
     versioned?: boolean
   }> = [
     {
-      collection: 'team' as CollectionSlug,
+      collection: 'team',
       where: { photo: { equals: id } },
       labelField: 'name',
     },
     {
-      collection: 'services' as CollectionSlug,
+      collection: 'services',
       where: {
         or: [{ image: { equals: id } }, { 'meta.image': { equals: id } }],
       },
@@ -95,7 +95,7 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       versioned: true,
     },
     {
-      collection: 'projects' as CollectionSlug,
+      collection: 'projects',
       where: {
         or: [
           { coverImage: { equals: id } },
@@ -107,12 +107,12 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       versioned: true,
     },
     {
-      collection: 'brands' as CollectionSlug,
+      collection: 'brands',
       where: { logo: { equals: id } },
       labelField: 'name',
     },
     {
-      collection: 'videos' as CollectionSlug,
+      collection: 'videos',
       where: { poster: { equals: id } },
       labelField: 'title',
     },

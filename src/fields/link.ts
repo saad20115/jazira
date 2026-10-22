@@ -108,6 +108,44 @@ export function validateExternalUrl(
   return true
 }
 
+export const ALLOWED_VIDEO_EMBED_HOSTS = [
+  'youtube.com',
+  'www.youtube.com',
+  'youtu.be',
+  'youtube-nocookie.com',
+  'www.youtube-nocookie.com',
+  'vimeo.com',
+  'www.vimeo.com',
+  'player.vimeo.com',
+] as const
+
+export function validateVideoEmbedUrl(
+  value: unknown,
+  options: { required?: boolean } = {},
+): true | string {
+  const { required = false } = options
+  if (value === null || value === undefined || value === '') {
+    return required ? 'رابط الفيديو مطلوب. / Video URL is required.' : true
+  }
+  const baseVerdict = validateExternalUrl(value, {
+    required,
+    allowedProtocols: ['https:'],
+    allowedHosts: ALLOWED_VIDEO_EMBED_HOSTS,
+  })
+  if (baseVerdict !== true) {
+    return baseVerdict
+  }
+  const parsed = new URL((value as string).trim())
+  const host = parsed.hostname.toLowerCase()
+  const path = parsed.pathname
+  const hasVideoIdInQuery = parsed.searchParams.has('v') && parsed.searchParams.get('v')?.trim()
+  const hasNonRootPath = path.length > 1 && path !== '/'
+  if (!hasVideoIdInQuery && !hasNonRootPath) {
+    return `يرجى إدخال رابط فيديو كامل من YouTube أو Vimeo (وليس الصفحة الرئيسية فقط ${host}). / Please provide a full YouTube or Vimeo video URL (not the bare domain ${host}).`
+  }
+  return true
+}
+
 export function validateInternalPath(
   value: unknown,
   options: { required?: boolean } = {},

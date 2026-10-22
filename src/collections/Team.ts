@@ -58,7 +58,10 @@ const clearStaffBioAllLocalesAfterChange: CollectionAfterChangeHook = async ({ d
       drizzle?: { execute?: (query: unknown) => Promise<unknown> }
       sessions?: Record<string, { db?: { execute?: (query: unknown) => Promise<unknown> } }>
     }
-    const txId = req.transactionID !== undefined ? String(req.transactionID) : undefined
+    const txId =
+      typeof req.transactionID === 'string' || typeof req.transactionID === 'number'
+        ? String(req.transactionID)
+        : undefined
     const executor = (txId ? dbObj.sessions?.[txId]?.db : undefined) ?? dbObj.drizzle
     if (typeof executor?.execute === 'function') {
       try {
@@ -70,7 +73,7 @@ const clearStaffBioAllLocalesAfterChange: CollectionAfterChangeHook = async ({ d
       }
     }
   }
-  return doc
+  return doc as Record<string, unknown>
 }
 
 export const Team: CollectionConfig = {

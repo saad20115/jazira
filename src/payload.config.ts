@@ -10,6 +10,7 @@ import { fileURLToPath } from 'url'
 import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
+import { Projects } from './collections/Projects'
 import { Services } from './collections/Services'
 import { Stats } from './collections/Stats'
 import { Team } from './collections/Team'
@@ -59,7 +60,7 @@ export default buildConfig({
     defaultLocale: 'ar',
     fallback: true,
   },
-  collections: [Users, Media, Videos, Brands, Stats, Materials, Services, Team],
+  collections: [Users, Media, Videos, Brands, Stats, Materials, Services, Team, Projects],
   editor: createLimitedLexicalEditor(),
   secret: env.PAYLOAD_SECRET,
   graphQL: {
