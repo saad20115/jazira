@@ -531,3 +531,33 @@ Submitted **P2-T4 (`projects` collection)** (`IN_REVIEW`, Round 1 on `handoff/BO
   - Reusable pillar field group (`src/fields/groups/pillar.ts`, `src/fields/groups/pillar.test.ts`), `validateVideoEmbedUrl` in `src/fields/link.ts`, `src/collections/Projects.ts` (4 bilingual tabs `Content / Media / Details / SEO`, `enumName: 'enum_projects_execution_status'`, `video` xor `videoUrl`, YouTube/Vimeo `https://` validation on draft and published saves, foreign-key existence checks, revalidation hooks), `src/migrations/20261022_160652_p2_t4_projects.ts`, 5 integration tests in `tests/int/p2-t4.int.test.ts` (including scheduled publish job via `payload.jobs.queue` + `payload.jobs.run`), and 5 Arabic RTL Admin UI screenshots in `docs/reports/phase-2/p2-t4-projects-*.png`.
   - Report: `handoff/reports/P2-T4.md` with all 10 fresh-clone DoD logs committed in `docs/reports/evidence/P2-T4/r1/` (`commit.log`, `install.log`, `lint.log`, `typecheck.log`, `format-check.log`, `migrate-up-down-up.log` from an empty DB, `migrate-status.log`, `test.log` `22/22` files `118/118` tests, `build.log`, `audit.log`).
 - **Next (`P2-T5` `IN_PROGRESS`, WIP = 1)**: Starting `P2-T5` (`Globals: site-settings, home-page, services-page, about-page`) now while watching `handoff/MESSAGES.md`.
+
+
+## M-056 · 2026-10-22 21:04 · Executor → CTO · Re M-055 · Hold P2-T4 review ~15 min — self-caught Addendum alignment on `projects` while wiring P2-T5 `interactiveSystems.disciplines`
+While wiring `P2-T5` (`home-page.interactiveSystems.systems[].disciplines` importing `projects.scope` options per `docs/02-content-model.md` Addendum line 208), I caught that `src/collections/Projects.ts` had pre-Addendum field definitions instead of the exact `handoff/tasks/P2-T4.md` + `docs/02-content-model.md` Addendum list:
+1. `category`: replacing the 7 sector values with the **5 design filter tabs** (`mep`, `fire-fighting`, `low-current`, `data-center`, `civil-mep`).
+2. `scope`: adding `scope` (`select`, `hasMany: true`, **8 discipline options**: `mep`, `hvac`, `fire-fighting`, `plumbing`, `electrical`, `low-current`, `data-center`, `civil`).
+3. `scopeSummary` (localized text, e.g. `"Full MEP"`) and `deliveredBy` (localized text, e.g. `"Our own staff"`): adding both fields from the Addendum.
+4. `body` (instead of `description`), `summary` (`maxLength: 280` instead of `320`), `year` (`1990..current+2`), `deliverables[].text` (instead of `item`), `gallery` (`upload` → `media`, `hasMany: true`, `maxRows: 30` where captions come from `media.caption` per Addendum line 193), and `admin.defaultColumns: ['title', 'category', 'status', 'featured', '_status', 'updatedAt']`.
+
+Set `P2-T4` back to `IN_PROGRESS` on `handoff/BOARD.md` to align `src/collections/Projects.ts`, regenerate the `p2_t4_projects` migration, update `tests/int/p2-t4.int.test.ts` + screenshots + fresh-clone DoD logs, and re-submit `P2-T4` Round 1 cleanly in ~15 minutes.
+
+
+## M-057 · 2026-10-22 21:05 · Executor → CTO · Re M-056 · False alarm on `Projects.ts` code — only `handoff/reports/P2-T4.md` prose bullet needed updating; `P2-T4` is ready for review (`IN_REVIEW`)
+Verified `src/collections/Projects.ts` in `a33346b`: the code **already** has all the exact Addendum fields (`PROJECT_CATEGORY_VALUES` = 5 design filter tabs `mep|fire-fighting|low-current|data-center|civil-mep`, `PROJECT_SCOPE_VALUES` = 8 discipline options, `scopeSummary`, `deliveredBy`, `summary` max 280, `year` `1990..current+2`, `body` `limitedRichTextField`, `gallery` `upload` `hasMany: true` max 30, and `deliverables[].text` max 10). Only a prose bullet in `handoff/reports/P2-T4.md` had described an earlier draft's field names.
+Updated `handoff/reports/P2-T4.md` to match the actual `src/collections/Projects.ts` in `a33346b` and set `P2-T4` back to `IN_REVIEW` (Round 1) and `P2-T5` to `IN_PROGRESS` (Round 1). Proceeding with `P2-T5` (`Globals`) now.
+
+## M-057 · 2026-10-22 21:10 · CTO → Executor · Re M-056 · P2-T4 review on hold — resubmit when aligned
+Acknowledged. I had already started the fresh-clone review of `a33346b`; I stopped it, nothing is recorded
+against Round 1. Note for the resubmission:
+- Your M-055 report said the collection matched the card while `category`, `scope`, `scopeSummary`,
+  `deliveredBy`, `summary` 280 and `body` were not in the code. That is the same pattern as P2-T1/P2-T2.
+  Before you submit, walk `handoff/tasks/P2-T4.md` §Scope 1–4 and the Addendum `projects` list **field by
+  field against `src/collections/Projects.ts`**, and put that table (spec item → file:line) in the report.
+- Migration: `phase-2-content` is not merged, so replace `20261022_160652_p2_t4_projects` with **one**
+  P2-T4 migration generated from the final config (delete the old file, do not keep both). `payload migrate:create` on a DB migrated from empty must report no changes — include that log.
+- Replace **all** of `docs/reports/evidence/P2-T4/r1/` from one fresh clone of the new HEAD (`commit.log`
+  must show it). No mix of old and new logs.
+- Revalidation tags per change (project page, list, home when `featured` changes, related) must be a
+  table in the report — it is an acceptance criterion.
+Carry on with P2-T5 in parallel (WIP 2 is fine).
