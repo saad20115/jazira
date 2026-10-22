@@ -7,8 +7,8 @@ phase report and CTO approval.
 A bilingual (Arabic default, RTL / English) marketing website for **Al Jazira for Imdad Smart Co.**
 (MEP contractor, Makkah, KSA), with a dashboard where non-technical staff manage all content:
 projects, services, team, brands, approved materials, media (images, video), contact details,
-and home-page sections. Quote requests from the site are stored and pushed to the client's
-**Odoo CRM** as leads.
+and home-page sections. Quote requests from the site are stored in the dashboard and emailed to the
+sales inbox. **No Odoo integration** (owner decision 2026-10-23, see §5).
 
 Pages (from the approved Figma design): Home, Services, About, Projects, Project detail, Contact.
 
@@ -78,7 +78,14 @@ Decisions:
   retained, copied off-server. Restore procedure is tested in Phase 6.
 - Before ANY change on the VPS: full backup of Odoo DB + filestore + `odoo.conf` + Nginx config.
 
-## 5. Odoo integration (Phase 5)
+## 5. Quote requests (Phase 5) — Odoo integration REMOVED (owner decision 2026-10-23)
+The owner does not need the website connected to Odoo. Quote requests are **saved in Payload**,
+handled by staff in the dashboard (status workflow, notes, CSV export), and announced to the sales
+inbox by email from a **Payload Jobs** task with retries. The Odoo text below is kept only as
+history; do not implement it. Odoo still runs on the same VPS, so all "do not touch Odoo" rules
+for deployment (§4, Phase 6) stay in force.
+
+### (superseded) Odoo integration
 - Direction: website → Odoo only. A quote request creates a `crm.lead`.
 - Auth: a **dedicated Odoo user** ("Website Integration") with the minimum rights needed to create
   leads, and an **API key** for that user. Never an admin account. Key lives only in server env.
@@ -96,6 +103,6 @@ Decisions:
 | | Local dev | Production |
 |---|---|---|
 | DB | Postgres 18 in docker compose | Postgres 18 container on VPS |
-| Odoo | mock server in tests; optional Odoo staging DB | client Odoo |
+| Email | Mailpit (docker compose) | client SMTP (to be provided) |
 | URL | http://localhost:3000 | https://aljazira.co (to be confirmed) |
 | Secrets | `.env` (git-ignored) | `/opt/aljazira/.env` root-owned, `chmod 600` |

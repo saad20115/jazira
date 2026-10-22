@@ -96,12 +96,16 @@ Created only by the server-side quote form handler (Phase 5). Never writable thr
   KSA/international format validation), `service` (relationship → services, optional),
   `message` (textarea, max 3000), `locale` (`ar|en`), `sourcePage` (text),
   `consent` (checkbox, required true)
-- System fields (read-only in admin): `odooStatus` (`pending|sent|failed`), `odooLeadId`,
-  `odooLastError` (max 500, sanitized), `odooAttempts`, `ipHash` (SHA-256 of IP + secret salt —
-  never store raw IP), `userAgent` (truncated 300)
+- **Staff workflow** (revised 2026-10-23 — no Odoo): `status` (`new|contacted|quoted|closed|spam`,
+  default `new`, bilingual labels), `assignedTo` (relationship → users, optional), `internalNotes`
+  (textarea, max 3000, staff only).
+- System fields (read-only in admin, written only by the handler/job): `emailStatus`
+  (`pending|sent|failed`), `emailAttempts`, `emailLastError` (max 500, sanitized), `ipHash` (SHA-256
+  of IP + secret salt — never store raw IP), `userAgent` (truncated 300)
 - Access: create — **nobody via API** (`() => false`; the handler uses Local API with
-  `overrideAccess: true` after its own validation); read — admin+editor; update — admin only
-  (status fields); delete — admin only.
+  `overrideAccess: true` after its own validation); read — admin+editor; update — admin+editor,
+  **only** the workflow fields (customer and system fields are read-only for everyone); delete —
+  admin only.
 - Retention: auto-delete after 24 months (scheduled job) — confirm with client.
 
 ## Globals

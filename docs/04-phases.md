@@ -82,18 +82,17 @@ normalized brands, site settings (contact info), services list from the design, 
       row needing client confirmation.
 - [ ] Nothing placeholder is published.
 
-## Phase 5 — Quote form → Odoo CRM
+## Phase 5 — Quote form → dashboard + email (Odoo removed 2026-10-23)
 **Scope:** server-side handler (route handler or server action) with zod validation and anti-abuse
-(I6); store in `quote-requests`; Payload Jobs task pushes to Odoo (`docs/01-architecture.md` §5,
-O1–O4); optional email notification; admin shows status and "retry" action (admin only).
+(I6); store in `quote-requests`; Payload Jobs task emails the sales inbox with retries (Q1–Q2);
+staff workflow in the dashboard (status, assignee, notes), admin CSV export (Q3), retention job.
 
 **Acceptance criteria**
-- [ ] Tests against a mock Odoo: success, Odoo down (retries then `failed`), invalid response,
-      retry after failure does not duplicate the lead.
+- [ ] Tests: email sent once; SMTP down → retries then `failed`, request kept; resend does not
+      duplicate; no email ever goes to the visitor's address.
 - [ ] Rate limit + honeypot + min-time verified by tests.
-- [ ] A real test lead created in the client's Odoo (staging DB if available) — screenshot — with
-      the dedicated integration user.
-- [ ] No Odoo credential reachable from client bundles (grep the `.next/static` output in CI).
+- [ ] Staff can move a request through the workflow; CSV export is formula-safe (test).
+- [ ] No SMTP credential or secret reachable from client bundles (grep the `.next/static` output in CI).
 
 ## Phase 6 — Production deployment (VPS beside Odoo)
 **Pre-requisites (CTO + client sign-off):** VPS access method, current Odoo setup inventory

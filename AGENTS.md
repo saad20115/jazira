@@ -44,7 +44,7 @@ Do not guess on architecture, security, data model, or dependencies.
   dev `push` for anything that will reach production. Migrations are committed and reviewed.
 - **Access control is explicit on every collection and global** (`read`, `create`, `update`,
   `delete`, and field-level where specified). A collection without explicit access is a bug.
-- **Server-only code stays server-only.** Odoo credentials, `PAYLOAD_SECRET`, DB URL, SMTP keys
+- **Server-only code stays server-only.** `PAYLOAD_SECRET`, DB URL, SMTP keys, `IP_HASH_SALT`
   must never be imported into a client component. Use `import 'server-only'` in those modules.
 - **Do not touch the production server, Odoo, or its database.** Deployment is a separate,
   CTO-approved phase. Everything before it runs locally.

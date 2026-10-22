@@ -71,12 +71,12 @@ The site is now the priority. Work **in this order** (it overrides the table ord
 | P4-T1 | Materials + brands seed with normalization (73 rows) — **runs on `phase-3-frontend` after P3-T2** | P3-T2 |
 | P4-T2 | Site settings, services, page copy (en from design, ar drafts), placeholders in draft, phase-4 report | P4-T1 |
 
-## Phase 5 — Quote form → Odoo · branch `phase-5-quotes`
+## Phase 5 — Quote form → dashboard + email · branch `phase-5-quotes` (no Odoo — owner decision 2026-10-23)
 | ID | Task | Depends on |
 |---|---|---|
-| P5-T1 | Quote server handler: zod, anti-abuse (I6), store, email notification | P4 |
-| P5-T2 | Odoo client (JSON-2 + JSON-RPC), mock Odoo, Jobs queue, retries, idempotency, admin retry, retention job, phase-5 report | P5-T1 |
-| P5-T3 | **HARD STOP** — real test lead in client Odoo with the integration user | P5-T2 + client data |
+| P5-T1 | Quote server handler: zod, anti-abuse (I6), store, enqueue email job | P4 |
+| P5-T2 | Email notification job (retries, idempotent, resend), staff workflow, admin CSV export, retention job, CI secret grep, phase-5 report | P5-T1 |
+| ~~P5-T3~~ | **Cancelled** — Odoo integration removed | — |
 
 ## Phase 6 — Production packaging · branch `phase-6-deploy`
 | ID | Task | Depends on |
@@ -96,6 +96,6 @@ The site is now the priority. Work **in this order** (it overrides the table ord
 | A-1 | **3D asset production**: Blender model of the Figma tower + 5 MEP systems, hero still, real-time GLB (lite + full) with baked lighting, system cameras + hotspot empties, end-frame stills per system (fallback). Brief: `handoff/briefs/A-1-3d-assets.md` | user decision |
 
 ## Hard stops — what the user/client must provide
-- P5-T3: Odoo version, whether a staging DB exists, the dedicated integration user + API key.
+- P6-T2 (email): the SMTP account/provider for production and the sales inbox address that receives quote requests.
 - A-1: who produces the 3D/cinematic assets (3D artist, stock models assembled, or AI video) and the budget.
 - P6-T2: VPS access, current Odoo setup inventory, full Odoo backup, final domains & DNS.
