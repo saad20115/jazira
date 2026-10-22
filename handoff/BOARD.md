@@ -12,7 +12,7 @@ watch the channel.
 | P1-T2 | Env validation, Payload & Next config, dev DB | ACCEPTED | 2 | 2026-10-21 | CTO |
 | P1-T3 | Access helpers, `users` (auth hardening), `media` (upload safety) | ACCEPTED | 2 | 2026-10-21 | CTO |
 | P1-T4 | Migration, e2e smoke, CI, phase-1 report | ACCEPTED | 2 | 2026-10-22 | CTO |
-| P2-T1 | Shared field factories & hooks | IN_REVIEW | 1 | 2026-10-22 | Antigravity |
+| P2-T1 | Shared field factories & hooks | IN_REVIEW | 2 | 2026-10-22 | Antigravity |
 | P2-T2 | `videos`, `brands`, `stats`, `materials` | IN_PROGRESS | 1 | 2026-10-22 | Antigravity |
 | P2-T3 | `services`, `team` | TODO | 0 | 2026-10-21 | CTO |
 | P2-T4 | `projects` | TODO | 0 | 2026-10-21 | CTO |
