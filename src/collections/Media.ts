@@ -8,6 +8,7 @@ import {
 } from '../hooks/revalidate'
 import {
   ALLOWED_IMAGE_MIME_TYPES,
+  createSafeUploadFileHandler,
   validateAndSanitizeMediaFile,
 } from '../security/uploadValidation'
 
@@ -64,6 +65,7 @@ export const Media: CollectionConfig = {
     // Stored outside public/ at the validated absolute MEDIA_DIR path (default <cwd>/media in dev)
     staticDir: env.MEDIA_DIR,
     mimeTypes: [...ALLOWED_IMAGE_MIME_TYPES],
+    handlers: [createSafeUploadFileHandler(env.MEDIA_DIR)],
     focalPoint: true,
     formatOptions: {
       format: 'webp',

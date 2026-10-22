@@ -1,6 +1,8 @@
 import crypto from 'crypto'
+import fsSync from 'fs'
 import fs from 'fs/promises'
-import { ValidationError } from 'payload'
+import path from 'path'
+import { type UploadConfig, ValidationError } from 'payload'
 
 export const ALLOWED_IMAGE_MIME_TYPES = [
   'image/jpeg',
@@ -309,4 +311,68 @@ export async function validateAndSanitizeVideoFile(
   file.name = generateRandomizedVideoFilename(detectedMime)
   file.mimetype = detectedMime
   return detectedMime
+}
+
+/**
+ * Custom upload `handlers` guard that runs before Payload's local filesystem fallback in `getFileHandler`.
+ * - Rejects dot-files, subdirectory paths (`videos/foo.mp4`, `.tmp/...`), and non-regular files with HTTP 404.
+ * - Returns HTTP 404 (instead of Payload's default 500 or EISDIR reset) when a file does not exist on disk (R-11, R-14).
+ */
+export function createSafeUploadFileHandler(
+  staticDir: string,
+): NonNullable<UploadConfig['handlers']>[number] {
+  const resolvedDir = path.resolve(staticDir)
+  return (_req, args) => {
+    const filename = args.params.filename
+    if (
+      !filename ||
+      filename.includes('/') ||
+      filename.includes('\\') ||
+      filename.startsWith('.')
+    ) {
+      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+    }
+
+    const filePath = path.resolve(resolvedDir, filename)
+    if (path.dirname(filePath) !== resolvedDir) {
+      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+    }
+
+    try {
+      const stats = fsSync.statSync(filePath)
+      if (!stats.isFile()) {
+        return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+      }
+    } catch {
+      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+    }
+  }
+}
+
+export function collectRequestTempFilePaths(req: { file?: unknown; files?: unknown }): string[] {
+  const paths = new Set<string>()
+  const addFromCandidate = (candidate: unknown) => {
+    if (!candidate || typeof candidate !== 'object') {
+      return
+    }
+    if (Array.isArray(candidate)) {
+      for (const item of candidate) {
+        addFromCandidate(item)
+      }
+      return
+    }
+    const tempFilePath = (candidate as { tempFilePath?: unknown }).tempFilePath
+    if (typeof tempFilePath === 'string' && tempFilePath.length > 0) {
+      paths.add(tempFilePath)
+    }
+  }
+
+  addFromCandidate(req.file)
+  if (req.files && typeof req.files === 'object') {
+    for (const val of Object.values(req.files as Record<string, unknown>)) {
+      addFromCandidate(val)
+    }
+  }
+
+  return Array.from(paths)
 }

@@ -1,4 +1,6 @@
+import crypto from 'crypto'
 import fs from 'fs/promises'
+import os from 'os'
 import path from 'path'
 import {
   type CollectionBeforeOperationHook,
@@ -6,6 +8,7 @@ import {
   type Endpoint,
   Forbidden,
   type PayloadHandler,
+  ValidationError,
 } from 'payload'
 
 import { isAdminOrEditor } from '../access/index'
@@ -16,10 +19,14 @@ import {
 } from '../hooks/revalidate'
 import {
   ALLOWED_VIDEO_MIME_TYPES,
+  collectRequestTempFilePaths,
+  createSafeUploadFileHandler,
   MAX_VIDEO_FILE_SIZE_BYTES,
   MAX_VIDEO_REQUEST_SIZE_BYTES,
   validateAndSanitizeVideoFile,
 } from '../security/uploadValidation'
+
+export const VIDEO_UPLOAD_TEMP_DIR = path.join(os.tmpdir(), 'aljazira-video-uploads')
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
@@ -28,8 +35,31 @@ type ActiveBeforeOperationArg = Exclude<
 
 const validateVideoUploadBeforeOperation: CollectionBeforeOperationHook = async (rawArg) => {
   const { args, operation, req } = rawArg as ActiveBeforeOperationArg
-  if ((operation === 'create' || operation === 'update') && req.file) {
-    await validateAndSanitizeVideoFile(req.file)
+  if (operation === 'create' || operation === 'update') {
+    const reqWithFiles = req as unknown as {
+      file?: typeof req.file
+      files?: Record<string, unknown>
+    }
+    if (reqWithFiles.files && typeof reqWithFiles.files === 'object') {
+      const keys = Object.keys(reqWithFiles.files)
+      if (
+        keys.length > 1 ||
+        (keys.length === 1 && keys[0] !== 'file') ||
+        Array.isArray(reqWithFiles.files.file)
+      ) {
+        throw new ValidationError({
+          errors: [
+            {
+              path: 'file',
+              message: 'Only a single "file" upload field is allowed per request.',
+            },
+          ],
+        })
+      }
+    }
+    if (req.file) {
+      await validateAndSanitizeVideoFile(req.file)
+    }
   }
   return args
 }
@@ -40,9 +70,9 @@ const validateVideoUploadBeforeOperation: CollectionBeforeOperationHook = async 
  * 1. Unauthenticated / non-admin-or-editor callers are rejected with 403 (`Forbidden`)
  *    before `addDataAndFileToRequest` reads or buffers a single byte of the request body (R-2).
  * 2. Authenticated admin/editor uploads stream to temporary files on disk (`useTempFiles: true`)
- *    rather than buffering up to 100 MB in memory, capped at `MAX_VIDEO_FILE_SIZE_BYTES` (100 MB)
- *    and `MAX_VIDEO_REQUEST_SIZE_BYTES` (105 MB, matching planned Nginx `client_max_body_size 105m`)
- *    while global `upload.limits.fileSize` stays 10 MB for `media` (R-2, R-5).
+ *    outside all served `staticDir` directories (`VIDEO_UPLOAD_TEMP_DIR`, R-11), capped at
+ *    1 file part (`files: 1`, R-12), `MAX_VIDEO_FILE_SIZE_BYTES` inclusive (`fileSize: MAX + 1`, R-13),
+ *    and `MAX_VIDEO_REQUEST_SIZE_BYTES` (105 MB, R-5).
  */
 function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' | '/:id'): Endpoint {
   const handler: PayloadHandler = async (req) => {
@@ -50,7 +80,11 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
       throw new Forbidden(req.t)
     }
 
-    const tempFileDir = path.join(env.VIDEOS_DIR, '.tmp')
+    const requestTempDir = path.join(
+      VIDEO_UPLOAD_TEMP_DIR,
+      `${String(Date.now())}-${crypto.randomBytes(6).toString('hex')}`,
+    )
+    await fs.mkdir(requestTempDir, { recursive: true })
 
     const scopedPayload = Object.create(req.payload, {
       config: {
@@ -62,10 +96,13 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
             abortOnLimit: false,
             limits: {
               ...req.payload.config.upload.limits,
-              fileSize: MAX_VIDEO_FILE_SIZE_BYTES,
+              files: 1,
+              // Busboy sets `file.truncated = true` when bytesRead >= limits.fileSize,
+              // so +1 allows an exact 100 MiB (104,857,600 bytes) file while truncating at 100 MiB + 1 (R-13).
+              fileSize: MAX_VIDEO_FILE_SIZE_BYTES + 1,
             },
             requestSizeLimit: MAX_VIDEO_REQUEST_SIZE_BYTES,
-            tempFileDir,
+            tempFileDir: requestTempDir,
             useTempFiles: true,
           },
         },
@@ -82,16 +119,16 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
       : undefined
 
     if (!defaultEndpoint) {
+      await fs.rm(requestTempDir, { recursive: true, force: true }).catch(() => undefined)
       return Response.json({ message: 'Endpoint not found' }, { status: 404 })
     }
 
     try {
       return await defaultEndpoint.handler(req)
     } finally {
-      const tempFilePath = (req.file as { tempFilePath?: string } | undefined)?.tempFilePath
-      if (typeof tempFilePath === 'string' && tempFilePath.length > 0) {
-        await fs.unlink(tempFilePath).catch(() => undefined)
-      }
+      const tempPaths = collectRequestTempFilePaths(req)
+      await Promise.all(tempPaths.map((p) => fs.unlink(p).catch(() => undefined)))
+      await fs.rm(requestTempDir, { recursive: true, force: true }).catch(() => undefined)
     }
   }
 
@@ -146,6 +183,7 @@ export const Videos: CollectionConfig = {
   upload: {
     staticDir: env.VIDEOS_DIR,
     mimeTypes: [...ALLOWED_VIDEO_MIME_TYPES],
+    handlers: [createSafeUploadFileHandler(env.VIDEOS_DIR)],
   },
   fields: [
     {

@@ -299,7 +299,7 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
     expect(videoDoc.title).toBe('فيديو الواجهة الرئيسية')
     expect(videoDoc.filename).toMatch(/^\d+-[0-9a-f]{16}\.mp4$/)
 
-    // R-6: Verify file is stored in VIDEOS_DIR and cannot be fetched via /api/media/file/
+    // R-6 & R-14: Verify file is stored in VIDEOS_DIR and /api/media/file/videos%2F<filename> returns 404
     const storedVideoPath = path.join(process.env.VIDEOS_DIR ?? '', videoDoc.filename)
     const storedStat = await fs.stat(storedVideoPath)
     expect(storedStat.size).toBe(12 * 1024 * 1024)
@@ -307,8 +307,7 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
       method: 'GET',
       slug: ['media', 'file', `videos%2F${videoDoc.filename}`],
     })
-    expect(mediaCrossRouteRes.status).toBeGreaterThanOrEqual(400)
-    expect(mediaCrossRouteRes.status).not.toBe(200)
+    expect(mediaCrossRouteRes.status).toBe(404)
 
     // R-1: Uploading valid MP4 (including polyglot with <script> in a 'free' box) as plain.html, plain.svg, vpoly.html, or noext stores as <timestamp>-<16hex>.mp4
     const polyglotMp4 = createPolyglotMp4BufferWithFreeBoxScript()
@@ -503,4 +502,112 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
     })
     expect(statDelete.status).toBe(200)
   })
+
+  it('isolates video upload temp dir outside staticDir (R-11), rejects multi-file requests without leaking temp files (R-12), and accepts exact 100 MiB inclusive while rejecting 100 MiB + 1 (R-13)', async () => {
+    const { VIDEO_UPLOAD_TEMP_DIR } = await import('../../src/collections/Videos')
+    const videosDir = path.resolve(process.env.VIDEOS_DIR ?? '')
+    const mediaDir = path.resolve(process.env.MEDIA_DIR ?? '')
+
+    // R-11: VIDEO_UPLOAD_TEMP_DIR is outside VIDEOS_DIR and MEDIA_DIR
+    expect(VIDEO_UPLOAD_TEMP_DIR.startsWith(videosDir)).toBe(false)
+    expect(VIDEO_UPLOAD_TEMP_DIR.startsWith(mediaDir)).toBe(false)
+
+    // R-11: GET /api/videos/file/.tmp and /api/videos/file/.tmp%2Fprobe.mp4 return 404 (never 200 or connection reset)
+    const dotTmpDirRes = await callJsonApi({
+      method: 'GET',
+      slug: ['videos', 'file', '.tmp'],
+    })
+    expect(dotTmpDirRes.status).toBe(404)
+
+    const dotTmpFileRes = await callJsonApi({
+      method: 'GET',
+      slug: ['videos', 'file', '.tmp%2Ftmp-1-12345'],
+    })
+    expect(dotTmpFileRes.status).toBe(404)
+
+    // R-12: Rejects multipart requests with multiple file parts (file + file2, and two 'file' fields) and leaves zero temp files
+    const smallMp4 = createValidMp4Buffer(4096)
+    const multiPartForm1 = new FormData()
+    multiPartForm1.set('_payload', JSON.stringify({ title: 'Multi File 1' }))
+    multiPartForm1.append(
+      'file',
+      new Blob([new Uint8Array(smallMp4)], { type: 'video/mp4' }),
+      'a.mp4',
+    )
+    multiPartForm1.append(
+      'file2',
+      new Blob([new Uint8Array(smallMp4)], { type: 'video/mp4' }),
+      'b.mp4',
+    )
+
+    const multiReq1 = new Request('http://localhost:3000/api/videos', {
+      method: 'POST',
+      headers: new Headers({
+        Origin: 'http://localhost:3000',
+        Cookie: `payload-token=${editorToken}`,
+        Authorization: `JWT ${editorToken}`,
+      }),
+      body: multiPartForm1,
+    })
+    const multiRes1 = await restPost(multiReq1, {
+      params: Promise.resolve({ slug: ['videos'] }),
+    })
+    expect(multiRes1.status).toBeGreaterThanOrEqual(400)
+
+    const multiPartForm2 = new FormData()
+    multiPartForm2.set('_payload', JSON.stringify({ title: 'Multi File 2' }))
+    multiPartForm2.append(
+      'file',
+      new Blob([new Uint8Array(smallMp4)], { type: 'video/mp4' }),
+      'a.mp4',
+    )
+    multiPartForm2.append(
+      'file',
+      new Blob([Buffer.from('<script>alert(1)</script>', 'utf8')], { type: 'text/html' }),
+      'evil.html',
+    )
+
+    const multiReq2 = new Request('http://localhost:3000/api/videos', {
+      method: 'POST',
+      headers: new Headers({
+        Origin: 'http://localhost:3000',
+        Cookie: `payload-token=${editorToken}`,
+        Authorization: `JWT ${editorToken}`,
+      }),
+      body: multiPartForm2,
+    })
+    const multiRes2 = await restPost(multiReq2, {
+      params: Promise.resolve({ slug: ['videos'] }),
+    })
+    expect(multiRes2.status).toBeGreaterThanOrEqual(400)
+
+    const leftoverTempEntries = await fs.readdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => [] as string[])
+    expect(leftoverTempEntries).toEqual([])
+
+    // R-13: Exact 100 MiB (104,857,600 bytes) is accepted with 201; 100 MiB + 1 (104,857,601 bytes) is rejected with 400
+    const exact100MiB = createValidMp4Buffer(100 * 1024 * 1024)
+    const exact100Res = await callUploadApi({
+      collectionSlug: 'videos',
+      cookie: `payload-token=${editorToken}`,
+      filename: 'exact-100mib.mp4',
+      mimeType: 'video/mp4',
+      fileBuffer: exact100MiB,
+      payloadFields: { title: 'فيديو 100 ميجابايت بالضبط' },
+    })
+    expect(exact100Res.status).toBe(201)
+
+    const hundredMiBPlusOne = createValidMp4Buffer(100 * 1024 * 1024 + 1)
+    const overByOneRes = await callUploadApi({
+      collectionSlug: 'videos',
+      cookie: `payload-token=${editorToken}`,
+      filename: 'over-by-1byte.mp4',
+      mimeType: 'video/mp4',
+      fileBuffer: hundredMiBPlusOne,
+      payloadFields: { title: 'فيديو زائد بايت واحد' },
+    })
+    expect(overByOneRes.status).toBe(400)
+
+    const leftoverAfter100MiB = await fs.readdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => [] as string[])
+    expect(leftoverAfter100MiB).toEqual([])
+  }, 120_000)
 })

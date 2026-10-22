@@ -78,6 +78,7 @@ export default buildConfig({
   email: buildNonBlockingEmailAdapter(),
   upload: {
     limits: {
+      files: 1,
       fileSize: MAX_MEDIA_FILE_SIZE_BYTES,
     },
   },
