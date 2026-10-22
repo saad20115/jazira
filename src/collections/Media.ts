@@ -65,18 +65,23 @@ export function richTextReferencesMediaId(node: unknown, targetId: number | stri
   return false
 }
 
-const formatReferencingDocLabel = (
+const recordReferencingDoc = (
+  referencesByKey: Map<string, string>,
   collection: CollectionSlug,
   doc: { id: number | string },
   labelField: string,
-): string => {
+): void => {
+  const key = `${collection}:${String(doc.id)}`
+  const fallbackFormatted = `${collection}(#${String(doc.id)})`
   const record = doc as unknown as Record<string, unknown>
   const rawLabel = record[labelField]
-  const labelText =
-    typeof rawLabel === 'string' && rawLabel.trim().length > 0
-      ? rawLabel.trim()
-      : `#${String(doc.id)}`
-  return `${collection}(${labelText})`
+  const hasRealLabel = typeof rawLabel === 'string' && rawLabel.trim().length > 0
+  const formatted = hasRealLabel ? `${collection}(${rawLabel.trim()})` : fallbackFormatted
+
+  const existing = referencesByKey.get(key)
+  if (existing === undefined || (existing === fallbackFormatted && hasRealLabel)) {
+    referencesByKey.set(key, formatted)
+  }
 }
 
 const findReferencingLabels = async ({
@@ -85,6 +90,7 @@ const findReferencingLabels = async ({
   labelField,
   draft,
   localized,
+  referencesByKey,
   req,
 }: {
   collection: CollectionSlug
@@ -92,14 +98,14 @@ const findReferencingLabels = async ({
   labelField: string
   draft?: boolean
   localized?: boolean
+  referencesByKey: Map<string, string>
   req: Parameters<CollectionBeforeDeleteHook>[0]['req']
-}): Promise<string[]> => {
+}): Promise<void> => {
   if (!(collection in req.payload.collections)) {
-    return []
+    return
   }
 
   const localesToQuery = localized ? REVALIDATE_LOCALES : ([undefined] as const)
-  const labels = new Set<string>()
 
   for (const locale of localesToQuery) {
     const result = await req.payload.find({
@@ -114,11 +120,9 @@ const findReferencingLabels = async ({
     })
 
     for (const doc of result.docs) {
-      labels.add(formatReferencingDocLabel(collection, doc, labelField))
+      recordReferencingDoc(referencesByKey, collection, doc, labelField)
     }
   }
-
-  return [...labels]
 }
 
 const getNestedValue = (obj: unknown, dotPath: string): unknown => {
@@ -306,32 +310,28 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
     },
   ]
 
-  const references = new Set<string>()
+  const referencesByKey = new Map<string, string>()
   for (const check of checks) {
-    const publishedLabels = await findReferencingLabels({
+    await findReferencingLabels({
       collection: check.collection,
       where: check.where,
       labelField: check.labelField,
       draft: false,
       localized: check.localized,
+      referencesByKey,
       req,
     })
-    for (const item of publishedLabels) {
-      references.add(item)
-    }
 
     if (check.versioned) {
-      const draftLabels = await findReferencingLabels({
+      await findReferencingLabels({
         collection: check.collection,
         where: check.where,
         labelField: check.labelField,
         draft: true,
         localized: check.localized,
+        referencesByKey,
         req,
       })
-      for (const item of draftLabels) {
-        references.add(item)
-      }
     }
   }
 
@@ -345,12 +345,12 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       req,
     })
     for (const item of globalRefs) {
-      references.add(item)
+      referencesByKey.set(item, item)
     }
   }
 
-  if (references.size > 0) {
-    const refList = [...references].join(', ')
+  if (referencesByKey.size > 0) {
+    const refList = [...referencesByKey.values()].join(', ')
     throw createPublicAPIError(
       `لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (${refList}). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (${refList}). Remove the reference first.`,
       400,

@@ -16,8 +16,10 @@ import { seoGroupField } from '../fields/seo'
 import { slugFields } from '../fields/slug'
 import {
   captureMainPublishedDocBeforeChange,
+  clearCapturedMainDocState,
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
+  getCapturedMainDocBeforeChange,
   REVALIDATE_LOCALES,
   safeRevalidatePath,
   safeRevalidateTag,
@@ -365,9 +367,9 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = as
     }
 
     const currentStatus = (doc as { _status?: unknown } | undefined)?._status
-    const mainDocBefore = (
-      context as { __mainDocBeforeChange?: Record<string, unknown> } | undefined
-    )?.__mainDocBeforeChange
+    const docId = (doc as { id?: unknown } | undefined)?.id
+    const mainDocBefore = getCapturedMainDocBeforeChange(context, req, collection.slug, docId) as
+      Record<string, unknown> | undefined
     const publishedPrevDoc =
       mainDocBefore && mainDocBefore._status === 'published'
         ? mainDocBefore
@@ -435,6 +437,13 @@ const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = as
     req.payload.logger.warn(
       { err },
       'revalidateProjectRelatedAndHomeAfterChange failed; continuing without throwing',
+    )
+  } finally {
+    clearCapturedMainDocState(
+      context,
+      req,
+      collection.slug,
+      (doc as { id?: unknown } | undefined)?.id,
     )
   }
 
@@ -536,6 +545,7 @@ export const Projects: CollectionConfig = {
     beforeChange: [captureMainPublishedDocBeforeChange],
     afterChange: [
       createRevalidateAfterChangeHook({
+        clearCapturedStateOnExit: false,
         collection: 'projects',
         routePrefix: '/projects',
         localizedPaths: ['/projects'],

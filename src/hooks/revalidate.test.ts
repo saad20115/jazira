@@ -367,7 +367,7 @@ describe('revalidate hooks & tag builders', () => {
     })
 
     expect(warnSpy).toHaveBeenCalledTimes(1)
-    expect(context.__mainDocLookupFailed).toBe(true)
+    expect(context['__mainDocLookupFailed:projects:1']).toBe(true)
 
     await afterChange({
       collection: { slug: 'projects', versions: { drafts: true } },
@@ -385,5 +385,78 @@ describe('revalidate hooks & tag builders', () => {
 
     expect(mockRevalidateTag).toHaveBeenCalledTimes(6)
     expect(mockRevalidatePath).toHaveBeenCalledTimes(6)
+    expect(context['__mainDocLookupFailed:projects:1']).toBeUndefined()
+  })
+
+  it('keys captured state by collection/id and global slug and clears it after afterChange so shared req.context never leaks across operations (P2-T4 R-18)', async () => {
+    const sharedReqContext: Record<string, unknown> = {}
+    const doc1: SampleDoc = { id: 1, slug: 'first-project', _status: 'draft' }
+    const doc2: SampleDoc = { id: 2, slug: 'second-project', _status: 'draft' }
+    const afterChange = createRevalidateAfterChangeHook<SampleDoc>({
+      routePrefix: '/projects',
+    })
+
+    // Doc #1 is being unpublished (main row was published before change, now draft)
+    await captureMainPublishedDocBeforeChange({
+      collection: { slug: 'projects', versions: { drafts: true } } as never,
+      context: sharedReqContext,
+      data: doc1,
+      operation: 'update',
+      originalDoc: doc1,
+      req: {
+        context: sharedReqContext,
+        payload: {
+          findByID: () => Promise.resolve({ id: 1, slug: 'first-project', _status: 'published' }),
+        },
+      } as never,
+    })
+
+    expect(sharedReqContext['__mainDocBeforeChange:projects:1']).toEqual({
+      id: 1,
+      slug: 'first-project',
+      _status: 'published',
+    })
+    // Doc #2 has NOT been captured as published — its key is absent even on the same sharedReqContext
+    expect(sharedReqContext['__mainDocBeforeChange:projects:2']).toBeUndefined()
+
+    await afterChange({
+      collection: { slug: 'projects', versions: { drafts: true } },
+      context: sharedReqContext,
+      data: doc1,
+      doc: doc1,
+      operation: 'update',
+      previousDoc: doc1,
+      req: {
+        context: sharedReqContext,
+        payload: {
+          findByID: () => Promise.resolve({ id: 1, slug: 'first-project', _status: 'draft' }),
+        },
+      },
+    } as unknown as Parameters<CollectionAfterChangeHook<SampleDoc>>[0])
+
+    expect(mockRevalidateTag).toHaveBeenCalledTimes(6)
+    expect(sharedReqContext['__mainDocBeforeChange:projects:1']).toBeUndefined()
+
+    // Subsequent draft update on Doc #2 sharing the same req.context must NOT inherit Doc #1's state
+    mockRevalidateTag.mockClear()
+    mockRevalidatePath.mockClear()
+
+    await afterChange({
+      collection: { slug: 'projects', versions: { drafts: true } },
+      context: sharedReqContext,
+      data: doc2,
+      doc: doc2,
+      operation: 'update',
+      previousDoc: doc2,
+      req: {
+        context: sharedReqContext,
+        payload: {
+          findByID: () => Promise.resolve({ id: 2, slug: 'second-project', _status: 'draft' }),
+        },
+      },
+    } as unknown as Parameters<CollectionAfterChangeHook<SampleDoc>>[0])
+
+    expect(mockRevalidateTag).not.toHaveBeenCalled()
+    expect(mockRevalidatePath).not.toHaveBeenCalled()
   })
 })

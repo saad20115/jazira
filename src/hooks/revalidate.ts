@@ -167,6 +167,134 @@ function setContextValue(context: unknown, req: unknown, key: string, value: unk
   }
 }
 
+function getContextValue(context: unknown, req: unknown, key: string): unknown {
+  if (typeof context === 'object' && context !== null && key in context) {
+    return (context as Record<string, unknown>)[key]
+  }
+  if (typeof req === 'object' && req !== null && 'context' in req) {
+    const reqCtx = (req as { context?: unknown }).context
+    if (typeof reqCtx === 'object' && reqCtx !== null && key in reqCtx) {
+      return (reqCtx as Record<string, unknown>)[key]
+    }
+  }
+  return undefined
+}
+
+function deleteContextKey(context: unknown, req: unknown, key: string): void {
+  if (typeof context === 'object' && context !== null && key in context) {
+    delete (context as Record<string, unknown>)[key]
+  }
+  if (typeof req === 'object' && req !== null && 'context' in req) {
+    const reqCtx = (req as { context?: unknown }).context
+    if (typeof reqCtx === 'object' && reqCtx !== null && key in reqCtx) {
+      delete (reqCtx as Record<string, unknown>)[key]
+    }
+  }
+}
+
+function buildMainDocKey(prefix: string, collectionSlug: string, docId: unknown): string {
+  return `${prefix}:${collectionSlug}:${String(docId)}`
+}
+
+function buildMainGlobalKey(prefix: string, globalSlug: string): string {
+  return `${prefix}:${globalSlug}`
+}
+
+export function getCapturedMainDocBeforeChange(
+  context: unknown,
+  req: unknown,
+  collectionSlug: string,
+  docId: unknown,
+): unknown {
+  if (docId !== undefined && docId !== null) {
+    const keyed = getContextValue(
+      context,
+      req,
+      buildMainDocKey('__mainDocBeforeChange', collectionSlug, docId),
+    )
+    if (keyed !== undefined) {
+      return keyed
+    }
+  }
+  return getContextValue(context, req, '__mainDocBeforeChange')
+}
+
+export function getCapturedMainDocLookupFailed(
+  context: unknown,
+  req: unknown,
+  collectionSlug: string,
+  docId: unknown,
+): boolean {
+  if (docId !== undefined && docId !== null) {
+    const keyed = getContextValue(
+      context,
+      req,
+      buildMainDocKey('__mainDocLookupFailed', collectionSlug, docId),
+    )
+    if (keyed === true) {
+      return true
+    }
+  }
+  return getContextValue(context, req, '__mainDocLookupFailed') === true
+}
+
+export function clearCapturedMainDocState(
+  context: unknown,
+  req: unknown,
+  collectionSlug: string,
+  docId: unknown,
+): void {
+  if (docId !== undefined && docId !== null) {
+    deleteContextKey(context, req, buildMainDocKey('__mainDocBeforeChange', collectionSlug, docId))
+    deleteContextKey(context, req, buildMainDocKey('__mainDocLookupFailed', collectionSlug, docId))
+  }
+  deleteContextKey(context, req, '__mainDocBeforeChange')
+  deleteContextKey(context, req, '__mainDocLookupFailed')
+}
+
+export function getCapturedMainGlobalBeforeChange(
+  context: unknown,
+  req: unknown,
+  globalSlug: string,
+): unknown {
+  const keyed = getContextValue(
+    context,
+    req,
+    buildMainGlobalKey('__mainGlobalBeforeChange', globalSlug),
+  )
+  if (keyed !== undefined) {
+    return keyed
+  }
+  return getContextValue(context, req, '__mainGlobalBeforeChange')
+}
+
+export function getCapturedMainGlobalLookupFailed(
+  context: unknown,
+  req: unknown,
+  globalSlug: string,
+): boolean {
+  const keyed = getContextValue(
+    context,
+    req,
+    buildMainGlobalKey('__mainGlobalLookupFailed', globalSlug),
+  )
+  if (keyed === true) {
+    return true
+  }
+  return getContextValue(context, req, '__mainGlobalLookupFailed') === true
+}
+
+export function clearCapturedMainGlobalState(
+  context: unknown,
+  req: unknown,
+  globalSlug: string,
+): void {
+  deleteContextKey(context, req, buildMainGlobalKey('__mainGlobalBeforeChange', globalSlug))
+  deleteContextKey(context, req, buildMainGlobalKey('__mainGlobalLookupFailed', globalSlug))
+  deleteContextKey(context, req, '__mainGlobalBeforeChange')
+  deleteContextKey(context, req, '__mainGlobalLookupFailed')
+}
+
 async function readMainCollectionRow(
   collectionSlug: string,
   docId: unknown,
@@ -257,10 +385,16 @@ export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = a
   const docId =
     (originalDoc as { id?: unknown } | undefined)?.id ?? (data as { id?: unknown } | undefined)?.id
   if (docId !== undefined && docId !== null) {
+    clearCapturedMainDocState(context, req, collection.slug, docId)
     try {
       const { doc: mainDocBefore, found } = await readMainCollectionRow(collection.slug, docId, req)
       if (found) {
-        setContextValue(context, req, '__mainDocBeforeChange', mainDocBefore)
+        setContextValue(
+          context,
+          req,
+          buildMainDocKey('__mainDocBeforeChange', collection.slug, docId),
+          mainDocBefore,
+        )
       }
     } catch (err) {
       const logger = getPayloadFromReq(req)?.logger
@@ -268,7 +402,12 @@ export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = a
         { collection: collection.slug, docId, err },
         'Failed to read main published doc in beforeChange; falling back to fail-safe revalidation',
       )
-      setContextValue(context, req, '__mainDocLookupFailed', true)
+      setContextValue(
+        context,
+        req,
+        buildMainDocKey('__mainDocLookupFailed', collection.slug, docId),
+        true,
+      )
     }
   }
   return safeData
@@ -287,10 +426,16 @@ export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = as
   if (!global.versions?.drafts) {
     return safeData
   }
+  clearCapturedMainGlobalState(context, req, global.slug)
   try {
     const { doc: mainGlobalBefore, found } = await readMainGlobalRow(global.slug, req)
     if (found) {
-      setContextValue(context, req, '__mainGlobalBeforeChange', mainGlobalBefore)
+      setContextValue(
+        context,
+        req,
+        buildMainGlobalKey('__mainGlobalBeforeChange', global.slug),
+        mainGlobalBefore,
+      )
     }
   } catch (err) {
     const logger = getPayloadFromReq(req)?.logger
@@ -298,7 +443,7 @@ export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = as
       { err, global: global.slug },
       'Failed to read main published global in beforeChange; falling back to fail-safe revalidation',
     )
-    setContextValue(context, req, '__mainGlobalLookupFailed', true)
+    setContextValue(context, req, buildMainGlobalKey('__mainGlobalLookupFailed', global.slug), true)
   }
   return safeData
 }
@@ -336,21 +481,19 @@ export async function shouldRevalidateCollectionAfterChange({
     return true
   }
 
+  const docId =
+    typeof doc === 'object' && doc !== null && 'id' in doc
+      ? (doc as { id?: unknown }).id
+      : undefined
+
   // `currentStatus` is 'draft'. Check if this was a draft/autosave request rather than an unpublish:
   if (isExplicitDraftOrAutosaveRequest(req, context)) {
     return false
   }
 
-  if (
-    (context as { __mainDocLookupFailed?: unknown } | undefined)?.__mainDocLookupFailed === true
-  ) {
+  if (getCapturedMainDocLookupFailed(context, req, collection.slug, docId)) {
     return true
   }
-
-  const docId =
-    typeof doc === 'object' && doc !== null && 'id' in doc
-      ? (doc as { id?: unknown }).id
-      : undefined
 
   if (docId !== undefined && docId !== null) {
     try {
@@ -362,8 +505,7 @@ export async function shouldRevalidateCollectionAfterChange({
         if (mainStatusNow === 'published') {
           return false
         }
-        const mainDocBefore = (context as { __mainDocBeforeChange?: unknown } | undefined)
-          ?.__mainDocBeforeChange
+        const mainDocBefore = getCapturedMainDocBeforeChange(context, req, collection.slug, docId)
         const mainStatusBefore = extractStatus(mainDocBefore)
         if (mainStatusBefore !== undefined) {
           return mainStatusBefore === 'published'
@@ -413,11 +555,7 @@ export async function shouldRevalidateGlobalAfterChange({
     return false
   }
 
-  if (
-    typeof context === 'object' &&
-    context !== null &&
-    (context as { __mainGlobalLookupFailed?: unknown }).__mainGlobalLookupFailed === true
-  ) {
+  if (getCapturedMainGlobalLookupFailed(context, req, global.slug)) {
     return true
   }
 
@@ -428,10 +566,7 @@ export async function shouldRevalidateGlobalAfterChange({
       if (mainStatusNow === 'published') {
         return false
       }
-      const mainGlobalBefore =
-        typeof context === 'object' && context !== null
-          ? (context as { __mainGlobalBeforeChange?: unknown }).__mainGlobalBeforeChange
-          : undefined
+      const mainGlobalBefore = getCapturedMainGlobalBeforeChange(context, req, global.slug)
       const mainStatusBefore = extractStatus(mainGlobalBefore)
       if (mainStatusBefore !== undefined) {
         return mainStatusBefore === 'published'
@@ -450,6 +585,13 @@ export async function shouldRevalidateGlobalAfterChange({
 }
 
 export interface RevalidateCollectionHookOptions {
+  /**
+   * Whether to clear the captured `__mainDocBeforeChange` / `__mainDocLookupFailed` state
+   * in `finally` at the end of this hook (`true` by default; set `false` when a subsequent
+   * collection `afterChange` hook on the same collection also reads the captured state and
+   * clears it in its own `finally`).
+   */
+  clearCapturedStateOnExit?: boolean
   collection?: string
   collectionSlug?: string
   /**
@@ -507,6 +649,10 @@ export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithI
   options: RevalidateCollectionHookOptions = {},
 ): CollectionAfterChangeHook<T> {
   return async ({ collection, context, doc, previousDoc, req }) => {
+    const docId =
+      typeof doc === 'object' && doc !== null && 'id' in doc
+        ? (doc as { id?: unknown }).id
+        : undefined
     try {
       if ((context as { disableRevalidate?: boolean } | undefined)?.disableRevalidate === true) {
         return doc
@@ -523,8 +669,7 @@ export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithI
         return doc
       }
 
-      const mainDocBefore = (context as { __mainDocBeforeChange?: unknown } | undefined)
-        ?.__mainDocBeforeChange
+      const mainDocBefore = getCapturedMainDocBeforeChange(context, req, collection.slug, docId)
 
       const collectionSlug = options.collectionSlug ?? options.collection ?? collection.slug
       const slugs = [extractSlug(doc), extractSlug(previousDoc), extractSlug(mainDocBefore)].filter(
@@ -545,6 +690,10 @@ export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithI
         { collection: collection.slug, err },
         'Revalidation hook failed in afterChange; continuing without throwing',
       )
+    } finally {
+      if (options.clearCapturedStateOnExit !== false) {
+        clearCapturedMainDocState(context, req, collection.slug, docId)
+      }
     }
 
     return doc
@@ -655,6 +804,8 @@ export function createRevalidateGlobalAfterChangeHook(
         { err, global: global.slug },
         'Revalidation hook failed in global afterChange; continuing without throwing',
       )
+    } finally {
+      clearCapturedMainGlobalState(context, req, global.slug)
     }
 
     return safeDoc
