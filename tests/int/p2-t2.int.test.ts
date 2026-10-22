@@ -132,8 +132,9 @@ function createValidMp4Buffer(sizeBytes: number): Buffer {
 
 describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
   beforeAll(async () => {
-    await fs.rm(process.env.MEDIA_DIR!, { recursive: true, force: true })
-    await fs.mkdir(process.env.MEDIA_DIR!, { recursive: true })
+    const mediaDir = process.env.MEDIA_DIR ?? ''
+    await fs.rm(mediaDir, { recursive: true, force: true })
+    await fs.mkdir(mediaDir, { recursive: true })
 
     const configModule = await import('../../src/payload.config')
     const routesModule = await import('@payloadcms/next/routes')
@@ -186,9 +187,7 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
   }, 120_000)
 
   afterAll(async () => {
-    if (payload) {
-      await payload.destroy()
-    }
+    await payload.destroy()
     if (process.env.MEDIA_DIR) {
       await fs.rm(process.env.MEDIA_DIR, { recursive: true, force: true })
     }

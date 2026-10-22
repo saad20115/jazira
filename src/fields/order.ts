@@ -8,8 +8,23 @@ export interface OrderFieldOptions {
   overrides?: Partial<SingleNumberField>
 }
 
+const DEFAULT_ORDER_DESCRIPTION = {
+  en: 'Manual ascending sort order (0, 1, 2…). Lower numbers appear first.',
+  ar: 'الترتيب التصاعدي اليدوي (0، 1، 2…). الأرقام الأصغر تظهر أولاً.',
+} as const
+
 export function orderField(options: OrderFieldOptions = {}): SingleNumberField {
   const { name = 'order', defaultValue = 0, overrides = {} } = options
+  const { admin: adminOverrides, hooks: hookOverrides, ...restOverrides } = overrides
+
+  const rawDesc = adminOverrides?.description
+  const mergedDescription =
+    typeof rawDesc === 'object'
+      ? {
+          ...DEFAULT_ORDER_DESCRIPTION,
+          ...rawDesc,
+        }
+      : (rawDesc ?? DEFAULT_ORDER_DESCRIPTION)
 
   return {
     name,
@@ -21,16 +36,21 @@ export function orderField(options: OrderFieldOptions = {}): SingleNumberField {
       en: 'Display Order',
       ar: 'ترتيب العرض',
     },
+    ...restOverrides,
     admin: {
       position: 'sidebar',
       step: 1,
-      description: {
-        en: 'Manual ascending sort order (0, 1, 2…). Lower numbers appear first.',
-        ar: 'الترتيب التصاعدي اليدوي (0، 1، 2…). الأرقام الأصغر تظهر أولاً.',
-      },
-      ...overrides.admin,
+      ...adminOverrides,
+      description: mergedDescription,
     },
-    ...overrides,
+    hooks: {
+      ...hookOverrides,
+      beforeValidate: [...(hookOverrides?.beforeValidate ?? [])],
+      beforeChange: [...(hookOverrides?.beforeChange ?? [])],
+      afterChange: [...(hookOverrides?.afterChange ?? [])],
+      afterRead: [...(hookOverrides?.afterRead ?? [])],
+      beforeDuplicate: [...(hookOverrides?.beforeDuplicate ?? [])],
+    },
     hasMany: false,
   }
 }

@@ -105,11 +105,7 @@ export function detectVideoMimeFromMagicBytes(buffer: Uint8Array): AllowedVideoM
       return 'video/mp4'
     }
 
-    const boxSize =
-      ((buffer[0] ?? 0) << 24) |
-      ((buffer[1] ?? 0) << 16) |
-      ((buffer[2] ?? 0) << 8) |
-      (buffer[3] ?? 0)
+    const boxSize = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3]
     const maxOffset = Math.min(buffer.length, boxSize >= 16 ? boxSize : buffer.length, 64)
 
     for (let offset = 16; offset + 4 <= maxOffset; offset += 4) {

@@ -3,7 +3,9 @@ import { describe, expect, it } from 'vitest'
 
 import {
   buildExternalUrlValidator,
+  buildInternalPathValidator,
   linkField,
+  resolveLinkHref,
   validateExternalUrl,
   validateInternalPath,
 } from './link'
@@ -91,16 +93,21 @@ describe('linkField & URL validation (I3)', () => {
     })
   })
 
-  describe('validateInternalPath', () => {
+  describe('validateInternalPath (R-11)', () => {
     it('accepts safe internal paths starting with a single /', () => {
       expect(validateInternalPath('/projects/sofitel-makkah-hotel', { required: true })).toBe(true)
       expect(validateInternalPath('/services#fire-fighting', { required: true })).toBe(true)
     })
 
-    it('rejects protocol-relative //, path traversal .., schemes, and missing leading /', () => {
+    it('rejects protocol-relative //, backslashes \\, percent-encoded slashes %2F/%5C, path traversal .., schemes, and missing leading / (R-11)', () => {
       const badPaths = [
         '//evil.com',
         '/\\evil.com',
+        '/a\\b',
+        '/%2F%2Fevil.com',
+        '/%2fprojects',
+        '/%5cevil.com',
+        '/projects/%2e%2e/admin',
         '/projects/../admin',
         'projects/sofitel',
         '/javascript:alert(1)',
@@ -108,12 +115,15 @@ describe('linkField & URL validation (I3)', () => {
       ]
 
       for (const bad of badPaths) {
-        expect(typeof validateInternalPath(bad, { required: true })).toBe('string')
+        expect(
+          typeof validateInternalPath(bad, { required: true }),
+          `Expected "${bad}" to be rejected`,
+        ).toBe('string')
       }
     })
   })
 
-  describe('linkField embedded validators', () => {
+  describe('linkField embedded validators & precedence (R-11)', () => {
     it('validates external URL when type === "external" and skips when type === "internal"', async () => {
       const validateUrl = buildExternalUrlValidator(true)
 
@@ -125,6 +135,85 @@ describe('linkField & URL validation (I3)', () => {
 
       const skippedForInternal = await validateUrl('', makeValidateOpts({ type: 'internal' }))
       expect(skippedForInternal).toBe(true)
+    })
+
+    it('validates internalPath only when type !== "external" and internalRoute === "custom" (R-11)', async () => {
+      const validatePath = buildInternalPathValidator(true)
+
+      // Skipped when internalRoute is a fixed route ('/services'), even if internalPath has stale invalid text
+      expect(
+        await validatePath(
+          'not-a-valid-path',
+          makeValidateOpts({ type: 'internal', internalRoute: '/services' }),
+        ),
+      ).toBe(true)
+
+      // Skipped when type is 'external'
+      expect(
+        await validatePath(
+          'not-a-valid-path',
+          makeValidateOpts({ type: 'external', internalRoute: 'custom' }),
+        ),
+      ).toBe(true)
+
+      // Enforced when type is 'internal' and internalRoute === 'custom'
+      const rejected = await validatePath(
+        '/%2F%2Fevil.com',
+        makeValidateOpts({ type: 'internal', internalRoute: 'custom' }),
+      )
+      expect(typeof rejected).toBe('string')
+
+      const accepted = await validatePath(
+        '/projects/sofitel-makkah-hotel',
+        makeValidateOpts({ type: 'internal', internalRoute: 'custom' }),
+      )
+      expect(accepted).toBe(true)
+    })
+
+    it('gives reference precedence over internalRoute and internalPath when both are set (R-11)', () => {
+      // Reference wins over fixed internalRoute
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: '/about',
+          reference: {
+            relationTo: 'projects',
+            value: { slug: 'sofitel-makkah-hotel' },
+          },
+        }),
+      ).toBe('/projects/sofitel-makkah-hotel')
+
+      // Reference wins over custom internalPath
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: 'custom',
+          internalPath: '/contact',
+          reference: {
+            relationTo: 'services',
+            value: { slug: 'mep-works' },
+          },
+        }),
+      ).toBe('/services/mep-works')
+
+      // Falls back to custom internalPath when reference is unset
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: 'custom',
+          internalPath: '/projects?scope=hvac',
+          reference: null,
+        }),
+      ).toBe('/projects?scope=hvac')
+
+      // Falls back to fixed internalRoute when reference is unset and internalRoute !== 'custom'
+      expect(
+        resolveLinkHref({
+          type: 'internal',
+          internalRoute: '/services',
+          reference: null,
+        }),
+      ).toBe('/services')
     })
   })
 })

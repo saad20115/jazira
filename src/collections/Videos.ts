@@ -50,7 +50,7 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
             ...req.payload.config.upload,
             abortOnLimit: false,
             limits: {
-              ...req.payload.config.upload?.limits,
+              ...req.payload.config.upload.limits,
               fileSize: MAX_VIDEO_FILE_SIZE_BYTES,
             },
             requestSizeLimit: MAX_VIDEO_MULTIPART_STREAM_BYTES,
@@ -61,7 +61,7 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
 
     req.payload = scopedPayload
 
-    const endpoints = req.payload.collections.videos?.config.endpoints
+    const endpoints = req.payload.collections.videos.config.endpoints
     const defaultEndpoint = Array.isArray(endpoints)
       ? endpoints.find(
           (ep) => ep.method === method && ep.path === endpointPath && ep.handler !== handler,

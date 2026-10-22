@@ -26,6 +26,7 @@ const CONTROL_CHARS_REGEX = /[\u0000-\u001F\u007F]/
 export interface ValidateUrlOptions {
   required?: boolean
   allowedProtocols?: readonly string[]
+  allowedSchemes?: readonly string[]
   allowedHosts?: readonly string[]
 }
 
@@ -39,7 +40,11 @@ export function validateExternalUrl(
   value: unknown,
   options: ValidateUrlOptions = {},
 ): true | string {
-  const { required = false, allowedProtocols = ALLOWED_LINK_PROTOCOLS, allowedHosts } = options
+  const {
+    required = false,
+    allowedProtocols = options.allowedSchemes ?? ALLOWED_LINK_PROTOCOLS,
+    allowedHosts,
+  } = options
 
   if (value === null || value === undefined || value === '') {
     return required ? 'الرابط مطلوب. / URL is required.' : true
@@ -122,10 +127,143 @@ export function validateInternalPath(
   if (!trimmed.startsWith('/') || trimmed.startsWith('//') || trimmed.startsWith('/\\')) {
     return 'يجب أن يبدأ المسار الداخلي بشرطة مائلة واحدة (/) وليس (//). / Internal path must start with a single "/" and not "//".'
   }
-  if (trimmed.includes(':') || trimmed.includes('..') || /\s/.test(trimmed)) {
+  // Reject any backslash `\` or percent-encoded `/` (%2f) / `\` (%5c) / control bytes (R-11)
+  if (trimmed.includes('\\') || /%(?:2f|5c|0[0-9a-f]|1[0-9a-f]|7f)/i.test(trimmed)) {
+    return 'المسار الداخلي يحتوي على شرطة عكسية أو محارف مرمّزة غير مسموحة. / Internal path contains disallowed backslashes or percent-encoded slashes.'
+  }
+
+  let decoded: string
+  try {
+    decoded = decodeURIComponent(trimmed)
+  } catch {
+    return 'المسار الداخلي يحتوي على ترميز غير صالح. / Internal path contains malformed percent-encoding.'
+  }
+
+  if (
+    CONTROL_CHARS_REGEX.test(decoded) ||
+    decoded.startsWith('//') ||
+    decoded.includes('\\') ||
+    decoded.includes(':') ||
+    decoded.includes('..') ||
+    trimmed.includes(':') ||
+    trimmed.includes('..') ||
+    /\s/.test(trimmed) ||
+    /\s/.test(decoded)
+  ) {
     return 'المسار الداخلي يحتوي على تسلسل غير آمن. / Internal path contains unsafe characters.'
   }
   return true
+}
+
+export interface LinkDataShape {
+  type?: string | null
+  internalRoute?: string | null
+  internalPath?: string | null
+  reference?:
+    | {
+        relationTo?: string | null
+        value?: { slug?: string | null } | string | number | null
+      }
+    | { slug?: string | null }
+    | null
+  url?: string | null
+}
+
+const RELATION_TO_ROUTE_PREFIX: Readonly<Record<string, string | undefined>> = {
+  projects: '/projects',
+  services: '/services',
+  'home-page': '/',
+  'about-page': '/about',
+  'services-page': '/services',
+  'projects-page': '/projects',
+  'contact-page': '/contact',
+  'privacy-page': '/privacy',
+}
+
+/**
+ * Resolves a `linkField` group value to its target href with deterministic precedence (R-11):
+ * 1. When `type === 'external'`, returns the validated external `url`.
+ * 2. When `type !== 'external'` (internal):
+ *    a) `reference` wins when present (mapped via `relationTo` + document `slug`).
+ *    b) Otherwise, if `internalRoute === 'custom'`, returns the validated `internalPath`.
+ *    c) Otherwise, returns the fixed `internalRoute` (`'/'`, `'/services'`, etc.).
+ */
+export function resolveLinkHref(link: LinkDataShape | null | undefined): string | null {
+  if (!link || typeof link !== 'object') {
+    return null
+  }
+
+  if (link.type === 'external') {
+    if (
+      typeof link.url === 'string' &&
+      validateExternalUrl(link.url, { required: true }) === true
+    ) {
+      return link.url.trim()
+    }
+    return null
+  }
+
+  // Internal link: 1. `reference` takes precedence when set (R-11)
+  if (link.reference && typeof link.reference === 'object') {
+    if ('relationTo' in link.reference && typeof link.reference.relationTo === 'string') {
+      const prefix =
+        RELATION_TO_ROUTE_PREFIX[link.reference.relationTo] ?? `/${link.reference.relationTo}`
+      const refVal = link.reference.value
+      if (
+        refVal &&
+        typeof refVal === 'object' &&
+        typeof refVal.slug === 'string' &&
+        refVal.slug.trim().length > 0
+      ) {
+        const cleanSlug = refVal.slug.trim()
+        return prefix === '/' ? `/${cleanSlug}` : `${prefix}/${cleanSlug}`
+      }
+      if ((typeof refVal === 'string' && refVal.trim().length > 0) || typeof refVal === 'number') {
+        if (
+          prefix === '/' ||
+          prefix === '/about' ||
+          prefix === '/services' ||
+          prefix === '/projects' ||
+          prefix === '/contact' ||
+          prefix === '/privacy'
+        ) {
+          if (link.reference.relationTo.endsWith('-page')) {
+            return prefix
+          }
+        }
+      }
+    } else if (
+      'slug' in link.reference &&
+      typeof link.reference.slug === 'string' &&
+      link.reference.slug.trim().length > 0
+    ) {
+      const candidatePath = `/${link.reference.slug.trim().replace(/^\/+/, '')}`
+      if (validateInternalPath(candidatePath, { required: true }) === true) {
+        return candidatePath
+      }
+    }
+  }
+
+  // 2. Custom internal path (`internalRoute === 'custom'`)
+  if (link.internalRoute === 'custom') {
+    if (
+      typeof link.internalPath === 'string' &&
+      validateInternalPath(link.internalPath, { required: true }) === true
+    ) {
+      return link.internalPath.trim()
+    }
+    return null
+  }
+
+  // 3. Fixed internal route select
+  if (typeof link.internalRoute === 'string' && link.internalRoute.trim().length > 0) {
+    const route = link.internalRoute.trim()
+    if (validateInternalPath(route, { required: true }) === true) {
+      return route
+    }
+  }
+
+  return null
 }
 
 export interface LinkFieldOptions {
@@ -156,9 +294,11 @@ export function buildInternalPathValidator(required = false): TextFieldSingleVal
   return (value, validateOpts) => {
     const sibling = validateOpts.siblingData as
       { type?: unknown; internalRoute?: unknown } | undefined
-    const isRequired =
-      required && sibling?.type !== 'external' && sibling?.internalRoute === 'custom'
-    return validateInternalPath(value, { required: isRequired })
+    // Validate `internalPath` ONLY when `type !== 'external'` AND `internalRoute === 'custom'` (R-11)
+    if (sibling?.type === 'external' || sibling?.internalRoute !== 'custom') {
+      return true
+    }
+    return validateInternalPath(value, { required })
   }
 }
 
@@ -181,6 +321,8 @@ export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
     internalRelations,
     overrides = {},
   } = options
+
+  const { admin: adminOverrides, hooks: hookOverrides, ...restOverrides } = overrides
 
   const fields: Field[] = []
 
@@ -251,6 +393,10 @@ export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
       },
       admin: {
         condition: isInternalCondition,
+        description: {
+          en: 'Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.',
+          ar: 'اختياري — عند تحديد مستند مرتبط، تكون له الأولوية على حقل الصفحة الداخلية أو المسار المخصص.',
+        },
       },
     })
   }
@@ -285,6 +431,19 @@ export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
     type: 'group',
     label,
     fields,
-    ...overrides,
+    ...restOverrides,
+    ...(adminOverrides ? { admin: { ...adminOverrides } } : {}),
+    ...(hookOverrides
+      ? {
+          hooks: {
+            ...hookOverrides,
+            beforeValidate: [...(hookOverrides.beforeValidate ?? [])],
+            beforeChange: [...(hookOverrides.beforeChange ?? [])],
+            afterChange: [...(hookOverrides.afterChange ?? [])],
+            afterRead: [...(hookOverrides.afterRead ?? [])],
+            beforeDuplicate: [...(hookOverrides.beforeDuplicate ?? [])],
+          },
+        }
+      : {}),
   }
 }
