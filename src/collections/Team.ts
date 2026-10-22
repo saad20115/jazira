@@ -152,7 +152,9 @@ export const Team: CollectionConfig = {
       validate: (async (value, options) => {
         const siblingRecord = options.siblingData as Record<string, unknown> | undefined
         const dataRecord = options.data as Record<string, unknown> | undefined
-        const effectiveTier = siblingRecord?.tier ?? dataRecord?.tier ?? 'leadership'
+        const previousDocRecord = (options as { previousDoc?: Record<string, unknown> }).previousDoc
+        const effectiveTier =
+          siblingRecord?.tier ?? dataRecord?.tier ?? previousDocRecord?.tier ?? 'leadership'
         if (effectiveTier === 'leadership') {
           if (value === null || value === undefined || value === '') {
             return 'الصورة الشخصية مطلوبة لأعضاء القيادة التنفيذية. / Photo is required for leadership team members.'
@@ -198,6 +200,21 @@ export const Team: CollectionConfig = {
       },
       localized: true,
       maxLength: 400,
+      hooks: {
+        beforeChange: [
+          ({ data, originalDoc, siblingData, value }) => {
+            const siblingRecord = siblingData as Record<string, unknown> | undefined
+            const dataRecord = data as Record<string, unknown> | undefined
+            const origRecord = originalDoc as Record<string, unknown> | undefined
+            const effectiveTier =
+              siblingRecord?.tier ?? dataRecord?.tier ?? origRecord?.tier ?? 'leadership'
+            if (effectiveTier !== 'leadership') {
+              return null
+            }
+            return value as string | null | undefined
+          },
+        ],
+      },
       admin: {
         condition: (data, siblingData) => {
           const siblingRecord = siblingData as Record<string, unknown> | undefined

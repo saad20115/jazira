@@ -222,6 +222,7 @@ export const Services: CollectionConfig = {
       name: 'image',
       type: 'upload',
       relationTo: 'media',
+      filterOptions: () => true,
       label: {
         ar: 'صورة الخدمة',
         en: 'Service Image',
