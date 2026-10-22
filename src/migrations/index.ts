@@ -3,6 +3,7 @@ import * as migration_20261022_120943_p2_t2_videos_brands_stats_materials from '
 import * as migration_20261022_140011_p2_t3_services_team from './20261022_140011_p2_t3_services_team'
 import * as migration_20261022_160652_p2_t4_projects from './20261022_160652_p2_t4_projects'
 import * as migration_20261022_221250_p2_t5_globals from './20261022_221250_p2_t5_globals'
+import * as migration_20261022_231435_p2_t6_quote_requests from './20261022_231435_p2_t6_quote_requests'
 
 export const migrations = [
   {
@@ -29,5 +30,10 @@ export const migrations = [
     up: migration_20261022_221250_p2_t5_globals.up,
     down: migration_20261022_221250_p2_t5_globals.down,
     name: '20261022_221250_p2_t5_globals',
+  },
+  {
+    up: migration_20261022_231435_p2_t6_quote_requests.up,
+    down: migration_20261022_231435_p2_t6_quote_requests.down,
+    name: '20261022_231435_p2_t6_quote_requests',
   },
 ]

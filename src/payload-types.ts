@@ -76,6 +76,7 @@ export interface Config {
     services: Service;
     team: Team;
     projects: Project;
+    'quote-requests': QuoteRequest;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -93,6 +94,7 @@ export interface Config {
     services: ServicesSelect<false> | ServicesSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    'quote-requests': QuoteRequestsSelect<false> | QuoteRequestsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -614,6 +616,43 @@ export interface Project {
   _status?: ('draft' | 'published') | null;
 }
 /**
+ * Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-requests".
+ */
+export interface QuoteRequest {
+  id: number;
+  name: string;
+  company?: string | null;
+  email: string;
+  /**
+   * KSA or international phone number (e.g. +966 57 353 4185).
+   */
+  phone: string;
+  service?: (number | null) | Service;
+  message?: string | null;
+  locale: 'ar' | 'en';
+  sourcePage?: string | null;
+  consent: boolean;
+  status: 'new' | 'contacted' | 'quoted' | 'closed' | 'spam';
+  assignedTo?: (number | null) | User;
+  /**
+   * Internal notes for sales and engineering staff (never exposed publicly — Q4).
+   */
+  internalNotes?: string | null;
+  emailStatus: 'pending' | 'sent' | 'failed';
+  emailAttempts?: number | null;
+  emailLastError?: string | null;
+  /**
+   * SHA-256(IP + IP_HASH_SALT) — raw IP address is never stored (D2).
+   */
+  ipHash?: string | null;
+  userAgent?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -764,6 +803,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'quote-requests';
+        value: number | QuoteRequest;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1049,6 +1092,31 @@ export interface ProjectsSelect<T extends boolean = true> {
   updatedAt?: T;
   createdAt?: T;
   _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-requests_select".
+ */
+export interface QuoteRequestsSelect<T extends boolean = true> {
+  name?: T;
+  company?: T;
+  email?: T;
+  phone?: T;
+  service?: T;
+  message?: T;
+  locale?: T;
+  sourcePage?: T;
+  consent?: T;
+  status?: T;
+  assignedTo?: T;
+  internalNotes?: T;
+  emailStatus?: T;
+  emailAttempts?: T;
+  emailLastError?: T;
+  ipHash?: T;
+  userAgent?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

@@ -11,6 +11,7 @@ import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
+import { QuoteRequests } from './collections/QuoteRequests'
 import { Services } from './collections/Services'
 import { Stats } from './collections/Stats'
 import { Team } from './collections/Team'
@@ -72,7 +73,18 @@ export default buildConfig({
     defaultLocale: 'ar',
     fallback: true,
   },
-  collections: [Users, Media, Videos, Brands, Stats, Materials, Services, Team, Projects],
+  collections: [
+    Users,
+    Media,
+    Videos,
+    Brands,
+    Stats,
+    Materials,
+    Services,
+    Team,
+    Projects,
+    QuoteRequests,
+  ],
   globals: [
     SiteSettings,
     Navigation,
