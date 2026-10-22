@@ -236,6 +236,11 @@ hasMany, max 4); `portfolio` — `eyebrow`, `title`, `text` (L rich text, paragr
 `quoteAuthor` (L), `badgeStat` (relationship → stats), `image`; `cta` (also used on project detail);
 `detailLabels` are i18n; `meta`.
 
+Approved additions (P2-T5 review, 2026-10-23 — design-backed): `home-page.whoWeAre.eyebrow`,
+`home-page.coreServices.button`, `cta.secondaryButton` + `cta.backgroundImage`, `mission/vision`
+`eyebrow`/`title`/`image`, `navigation.headerCta`/`footerCta`, `site-settings.copyright`, socials
+platform `whatsapp`, `home-page.meta`.
+
 `contact-page` (publishable): `pageHeader`; `getInTouch` (`sectionIntro`);
 `findOffice` (`sectionIntro`); `meta`. Contact details come from `site-settings`.
 

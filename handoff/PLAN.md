@@ -30,6 +30,9 @@ The site is now the priority. Work **in this order** (it overrides the table ord
 - **Figma fidelity** (`docs/05-design.md` §"CTO decisions"): side-by-side at 1440 `en` vs
   `design/screenshots/…` for every section, plus `ar` RTL at 1440 / 768 / 390. > 4 px is a finding.
 - Empty states: when the CMS has no item for a section, the section hides cleanly (no broken layout).
+- **Links (security I3, defence in depth):** every CMS link is rendered through one `<CmsLink>` component
+  that re-checks the href at render time (only `https:`, `http:` in dev, `mailto:`, `tel:`, and internal
+  paths starting with a single `/`); anything else renders as plain text. This also covers Live Preview.
 
 ## Phase 1 — Scaffold & foundations · branch `phase-1-scaffold`
 | ID | Task | Depends on |
