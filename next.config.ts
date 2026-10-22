@@ -41,9 +41,6 @@ const baseSecurityHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
-  experimental: {
-    proxyClientMaxBodySize: '110mb',
-  },
   outputFileTracingExcludes: {
     '*': ['./media/**', './videos/**', './storage/**'],
   },

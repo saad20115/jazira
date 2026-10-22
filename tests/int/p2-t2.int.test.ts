@@ -11,6 +11,7 @@ process.env.PAYLOAD_SECRET = 'test_payload_secret_with_at_least_forty_eight_rand
 process.env.IP_HASH_SALT = 'test_ip_hash_salt_with_at_least_forty_eight_random_bytes_1234567890ab'
 process.env.SERVER_URL = 'http://localhost:3000'
 process.env.MEDIA_DIR = path.resolve(process.cwd(), 'tmp-test-media-p2-t2')
+process.env.VIDEOS_DIR = path.resolve(process.cwd(), 'tmp-test-videos-p2-t2')
 
 type RouteHandler = (
   request: Request,
@@ -130,11 +131,26 @@ function createValidMp4Buffer(sizeBytes: number): Buffer {
   return buf
 }
 
+function createPolyglotMp4BufferWithFreeBoxScript(): Buffer {
+  const ftypBox = Buffer.from('\x00\x00\x00\x1cftypisom\x00\x00\x02\x00isomiso2mp41', 'binary')
+  const scriptPayload = Buffer.from('<script>alert(1)</script>', 'utf8')
+  const freeBoxSize = 8 + scriptPayload.length
+  const freeBox = Buffer.alloc(freeBoxSize)
+  freeBox.writeUInt32BE(freeBoxSize, 0)
+  freeBox.write('free', 4, 'ascii')
+  scriptPayload.copy(freeBox, 8)
+  const mdatBox = Buffer.from('\x00\x00\x00\x10mdat\x00\x00\x00\x00\x00\x00\x00\x00', 'binary')
+  return Buffer.concat([ftypBox, freeBox, mdatBox])
+}
+
 describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
   beforeAll(async () => {
     const mediaDir = process.env.MEDIA_DIR ?? ''
+    const videosDir = process.env.VIDEOS_DIR ?? ''
     await fs.rm(mediaDir, { recursive: true, force: true })
+    await fs.rm(videosDir, { recursive: true, force: true })
     await fs.mkdir(mediaDir, { recursive: true })
+    await fs.mkdir(videosDir, { recursive: true })
 
     const configModule = await import('../../src/payload.config')
     const routesModule = await import('@payloadcms/next/routes')
@@ -191,9 +207,12 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
     if (process.env.MEDIA_DIR) {
       await fs.rm(process.env.MEDIA_DIR, { recursive: true, force: true })
     }
+    if (process.env.VIDEOS_DIR) {
+      await fs.rm(process.env.VIDEOS_DIR, { recursive: true, force: true })
+    }
   })
 
-  it('allows anonymous public GET on videos, brands, stats, and materials, and blocks anonymous writes with 403 (Z1)', async () => {
+  it('allows anonymous public GET on videos, brands, stats, and materials, and blocks anonymous writes with 403 without buffering large bodies (Z1, R-2)', async () => {
     for (const slug of ['videos', 'brands', 'stats', 'materials'] as const) {
       const getRes = await callJsonApi({
         method: 'GET',
@@ -217,9 +236,46 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
       payloadFields: { title: 'Anon Video' },
     })
     expect(anonVideoUpload.status).toBe(403)
+
+    // R-2: Verify anonymous 99 MB multipart POST to /api/videos is rejected with 403 immediately (< 500ms) with 0 bytes read from the stream
+    const ninetyNineMb = 99 * 1024 * 1024
+    let bytesReadFromAnonStream = 0
+    const trackedAnonStream = new ReadableStream<Uint8Array>(
+      {
+        pull(controller) {
+          const chunk = new Uint8Array(64 * 1024)
+          bytesReadFromAnonStream += chunk.byteLength
+          controller.enqueue(chunk)
+        },
+      },
+      { highWaterMark: 0 },
+    )
+
+    const anonLargeHeaders = new Headers({
+      'Content-Length': String(ninetyNineMb),
+      'Content-Type': 'multipart/form-data; boundary=----AnonLargeBoundary',
+      Origin: 'http://localhost:3000',
+    })
+
+    const startAnonLarge = performance.now()
+    const anonLargeReq = new Request('http://localhost:3000/api/videos', {
+      method: 'POST',
+      headers: anonLargeHeaders,
+      body: trackedAnonStream,
+      duplex: 'half',
+    } as RequestInit)
+    const anonLargeRes = await restPost(anonLargeReq, {
+      params: Promise.resolve({ slug: ['videos'] }),
+    })
+    const elapsedAnonLargeMs = performance.now() - startAnonLarge
+
+    expect(anonLargeRes.status).toBe(403)
+    expect(anonLargeReq.bodyUsed).toBe(false)
+    expect(bytesReadFromAnonStream).toBe(0)
+    expect(elapsedAnonLargeMs).toBeLessThan(500)
   })
 
-  it('enforces per-collection upload limits: accepts valid MP4 (including > 10 MB on videos while rejecting > 10 MB on media), rejects 101 MB MP4, and rejects disguised HTML renamed .mp4 (I5)', async () => {
+  it('enforces per-collection upload limits, randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> (R-1), isolates VIDEOS_DIR from MEDIA_DIR (R-6), rejects 101 MB MP4, and rejects disguised HTML (I5, R-9)', async () => {
     // 1. Valid MP4 (12 MB — larger than the 10 MB global media limit, proving per-collection 100 MB limit on /api/videos)
     const twelveMbMp4 = createValidMp4Buffer(12 * 1024 * 1024)
     const validVideoRes = await callUploadApi({
@@ -241,8 +297,39 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
     expect(videoDoc.mimeType).toBe('video/mp4')
     expect(videoDoc.filesize).toBe(12 * 1024 * 1024)
     expect(videoDoc.title).toBe('فيديو الواجهة الرئيسية')
+    expect(videoDoc.filename).toMatch(/^\d+-[0-9a-f]{16}\.mp4$/)
 
-    // 2. Verify that /api/media still enforces the 10 MB global image limit
+    // R-6: Verify file is stored in VIDEOS_DIR and cannot be fetched via /api/media/file/
+    const storedVideoPath = path.join(process.env.VIDEOS_DIR ?? '', videoDoc.filename)
+    const storedStat = await fs.stat(storedVideoPath)
+    expect(storedStat.size).toBe(12 * 1024 * 1024)
+    const mediaCrossRouteRes = await callJsonApi({
+      method: 'GET',
+      slug: ['media', 'file', `videos%2F${videoDoc.filename}`],
+    })
+    expect(mediaCrossRouteRes.status).toBeGreaterThanOrEqual(400)
+    expect(mediaCrossRouteRes.status).not.toBe(200)
+
+    // R-1: Uploading valid MP4 (including polyglot with <script> in a 'free' box) as plain.html, plain.svg, vpoly.html, or noext stores as <timestamp>-<16hex>.mp4
+    const polyglotMp4 = createPolyglotMp4BufferWithFreeBoxScript()
+    for (const dangerousFilename of ['plain.html', 'plain.svg', 'vpoly.html', 'noext']) {
+      const polyRes = await callUploadApi({
+        collectionSlug: 'videos',
+        cookie: `payload-token=${editorToken}`,
+        filename: dangerousFilename,
+        mimeType: 'text/html',
+        fileBuffer: polyglotMp4,
+        payloadFields: { title: `Test ${dangerousFilename}` },
+      })
+      expect(polyRes.status).toBe(201)
+      const polyDoc = polyRes.body.doc as { filename: string; mimeType: string }
+      expect(polyDoc.mimeType).toBe('video/mp4')
+      expect(polyDoc.filename).toMatch(/^\d+-[0-9a-f]{16}\.mp4$/)
+      expect(polyDoc.filename).not.toContain('html')
+      expect(polyDoc.filename).not.toContain('svg')
+    }
+
+    // 2. Verify that /api/media still enforces the 10 MB global image limit with 413 (R-9)
     const elevenMbJpeg = Buffer.alloc(11 * 1024 * 1024, 0)
     elevenMbJpeg[0] = 0xff
     elevenMbJpeg[1] = 0xd8
@@ -255,7 +342,7 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
       fileBuffer: elevenMbJpeg,
       payloadFields: { alt: 'Too big image' },
     })
-    expect(oversizedImageRes.status).toBeGreaterThanOrEqual(400)
+    expect(oversizedImageRes.status).toBe(413)
 
     // 3. Rejects 101 MB MP4 on /api/videos
     const hundredAndOneMbMp4 = createValidMp4Buffer(101 * 1024 * 1024)
@@ -338,6 +425,33 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
     })
     expect(brandCreate.status).toBe(201)
     const brandId = (brandCreate.body.doc as { id: number }).id
+
+    // 3b. R-7 & R-8: Rejects non-existent brand ID with 400 (not 500 FK violation) and non-integer itemNo (4.5) with 400
+    const missingBrandMaterial = await callJsonApi({
+      method: 'POST',
+      slug: ['materials'],
+      cookie: `payload-token=${editorToken}`,
+      body: {
+        itemNo: 99,
+        system: 'electrical',
+        description: 'Material with non-existent brand',
+        brands: [999999],
+      },
+    })
+    expect(missingBrandMaterial.status).toBe(400)
+
+    const floatItemNoMaterial = await callJsonApi({
+      method: 'POST',
+      slug: ['materials'],
+      cookie: `payload-token=${editorToken}`,
+      body: {
+        itemNo: 4.5,
+        system: 'electrical',
+        description: 'Material with float itemNo',
+        brands: [brandId],
+      },
+    })
+    expect(floatItemNoMaterial.status).toBe(400)
 
     // 4. Editor creates an approved material referencing the brand
     const materialCreate = await callJsonApi({

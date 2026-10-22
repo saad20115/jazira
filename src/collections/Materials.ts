@@ -6,6 +6,26 @@ import {
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
 
+function extractNumericBrandId(entry: unknown): number | null {
+  if (typeof entry === 'number') {
+    return Number.isInteger(entry) && entry >= 1 ? entry : null
+  }
+  if (typeof entry === 'string' && /^[1-9]\d*$/.test(entry.trim())) {
+    const parsed = Number(entry.trim())
+    return Number.isSafeInteger(parsed) ? parsed : null
+  }
+  if (typeof entry === 'object' && entry !== null) {
+    const record = entry as Record<string, unknown>
+    if ('id' in record) {
+      return extractNumericBrandId(record.id)
+    }
+    if ('value' in record) {
+      return extractNumericBrandId(record.value)
+    }
+  }
+  return null
+}
+
 export const MATERIAL_SYSTEM_OPTIONS = [
   {
     value: 'electrical',
@@ -105,6 +125,15 @@ export const Materials: CollectionConfig = {
           en: 'Unique sequential item number in the approved materials schedule (default ascending sort).',
         },
       },
+      validate: (val: unknown) => {
+        if (typeof val !== 'number' || !Number.isFinite(val)) {
+          return 'رقم البند مطلوب. / Item number is required.'
+        }
+        if (!Number.isInteger(val) || val < 1) {
+          return 'يجب أن يكون رقم البند عدداً صحيحاً موجباً (1 أو أكبر). / Item number must be a positive integer (>= 1).'
+        }
+        return true
+      },
     },
     {
       name: 'system',
@@ -156,6 +185,40 @@ export const Materials: CollectionConfig = {
           ar: 'اختر علامة تجارية واحدة أو أكثر من قائمة العلامات التجارية المعتمدة لهذا البند.',
           en: 'Select one or more approved brands/manufacturers for this material item.',
         },
+      },
+      validate: async (val: unknown, { req }) => {
+        if (!Array.isArray(val) || val.length === 0) {
+          return 'يجب اختيار علامة تجارية واحدة على الأقل. / At least one brand is required.'
+        }
+
+        const numericIds: number[] = []
+        for (const item of val) {
+          const parsedId = extractNumericBrandId(item)
+          if (parsedId === null) {
+            return 'معرّف العلامة التجارية غير صالح. / Invalid brand reference ID.'
+          }
+          numericIds.push(parsedId)
+        }
+
+        const uniqueIds = Array.from(new Set(numericIds))
+        const found = await req.payload.find({
+          collection: 'brands',
+          depth: 0,
+          limit: uniqueIds.length,
+          overrideAccess: true,
+          pagination: false,
+          where: {
+            id: {
+              in: uniqueIds,
+            },
+          },
+        })
+
+        if (found.docs.length !== uniqueIds.length) {
+          return 'واحدة أو أكثر من العلامات التجارية المحددة غير موجودة. / One or more selected brands do not exist.'
+        }
+
+        return true
       },
     },
     {

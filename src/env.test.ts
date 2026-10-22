@@ -18,21 +18,26 @@ describe('parseEnv (S1, S2)', () => {
   it('validates startup env singleton and accepts a valid environment configuration', () => {
     expect(env.SERVER_URL).toBe('http://localhost:3000')
     expect(env.MEDIA_DIR).toBe(path.resolve(process.cwd(), 'media'))
+    expect(env.VIDEOS_DIR).toBe(path.resolve(process.cwd(), 'videos'))
     const raw = createValidRawEnv()
     const parsed = parseEnv(raw)
     expect(parsed).toEqual({
       ...raw,
       MEDIA_DIR: path.resolve(process.cwd(), 'media'),
+      VIDEOS_DIR: path.resolve(process.cwd(), 'videos'),
     })
   })
 
-  it('validates MEDIA_DIR as an absolute path outside public/ (R-4)', () => {
+  it('validates MEDIA_DIR and VIDEOS_DIR as separate absolute paths outside public/ (R-4, R-6)', () => {
     const customAbsDir = path.resolve(process.cwd(), 'custom-media-storage')
+    const customVideosDir = path.resolve(process.cwd(), 'custom-videos-storage')
     const parsed = parseEnv({
       ...createValidRawEnv(),
       MEDIA_DIR: customAbsDir,
+      VIDEOS_DIR: customVideosDir,
     })
     expect(parsed.MEDIA_DIR).toBe(customAbsDir)
+    expect(parsed.VIDEOS_DIR).toBe(customVideosDir)
 
     expect(() =>
       parseEnv({
@@ -44,9 +49,31 @@ describe('parseEnv (S1, S2)', () => {
     expect(() =>
       parseEnv({
         ...createValidRawEnv(),
+        VIDEOS_DIR: 'relative/videos',
+      }),
+    ).toThrow(/VIDEOS_DIR.*absolute/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
         MEDIA_DIR: path.resolve(process.cwd(), 'public/uploads'),
       }),
     ).toThrow(/MEDIA_DIR.*public/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        VIDEOS_DIR: path.resolve(process.cwd(), 'public/videos'),
+      }),
+    ).toThrow(/VIDEOS_DIR.*public/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        MEDIA_DIR: path.resolve(process.cwd(), 'media'),
+        VIDEOS_DIR: path.resolve(process.cwd(), 'media/videos'),
+      }),
+    ).toThrow(/VIDEOS_DIR.*sibling/i)
   })
 
   it('rejects missing PAYLOAD_SECRET and names the variable + openssl command without leaking values', () => {

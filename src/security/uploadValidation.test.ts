@@ -84,21 +84,40 @@ describe('uploadValidation (I5)', () => {
     await expect(validateAndSanitizeMediaFile(disguisedHtml)).rejects.toThrow(/file/i)
   })
 
-  it('accepts valid MP4 <= 100 MB and rejects > 100 MB or disguised HTML renamed .mp4 in validateAndSanitizeVideoFile', async () => {
-    const validMp4 = {
-      name: '../../hero-clip.mp4',
-      mimetype: 'video/mp4',
-      size: 24,
-      data: Buffer.from('\x00\x00\x00\x18ftypisom\x00\x00\x02\x00isomiso2mp41', 'binary'),
+  it('randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> derived strictly from detected magic bytes, ignoring .html/.svg/no-ext client names (R-1)', async () => {
+    const mp4Bytes = Buffer.from('\x00\x00\x00\x18ftypisom\x00\x00\x02\x00isomiso2mp41', 'binary')
+    const webmBytes = Buffer.from([
+      0x1a, 0x45, 0xdf, 0xa3, 0x9f, 0x42, 0x86, 0x81, 0x01, 0x42, 0xf7, 0x81, 0x01, 0x42, 0xf2,
+      0x81, 0x04, 0x42, 0xf3, 0x81, 0x08, 0x42, 0x82, 0x84, 0x77, 0x65, 0x62, 0x6d,
+    ])
+
+    for (const dangerousName of ['../../hero-clip.mp4', 'plain.html', 'plain.svg', 'noext']) {
+      const candidate = {
+        name: dangerousName,
+        mimetype: 'text/html',
+        size: mp4Bytes.length,
+        data: mp4Bytes,
+      }
+      await expect(validateAndSanitizeVideoFile(candidate)).resolves.toBe('video/mp4')
+      expect(candidate.name).toMatch(/^\d+-[0-9a-f]{16}\.mp4$/)
+      expect(candidate.mimetype).toBe('video/mp4')
     }
-    await expect(validateAndSanitizeVideoFile(validMp4)).resolves.toBe('video/mp4')
-    expect(validMp4.name).toBe('hero-clip.mp4')
+
+    const webmAsHtml = {
+      name: 'vpoly.html',
+      mimetype: 'text/html',
+      size: webmBytes.length,
+      data: webmBytes,
+    }
+    await expect(validateAndSanitizeVideoFile(webmAsHtml)).resolves.toBe('video/webm')
+    expect(webmAsHtml.name).toMatch(/^\d+-[0-9a-f]{16}\.webm$/)
+    expect(webmAsHtml.mimetype).toBe('video/webm')
 
     const oversizedMp4 = {
       name: 'huge.mp4',
       mimetype: 'video/mp4',
       size: MAX_VIDEO_FILE_SIZE_BYTES + 1024 * 1024, // 101 MB
-      data: Buffer.from('\x00\x00\x00\x18ftypisom\x00\x00\x02\x00isomiso2mp41', 'binary'),
+      data: mp4Bytes,
     }
     await expect(validateAndSanitizeVideoFile(oversizedMp4)).rejects.toThrow(/file/i)
 

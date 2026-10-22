@@ -1,9 +1,11 @@
+import fs from 'fs/promises'
 import path from 'path'
-import type {
-  CollectionBeforeOperationHook,
-  CollectionConfig,
-  Endpoint,
-  PayloadHandler,
+import {
+  type CollectionBeforeOperationHook,
+  type CollectionConfig,
+  type Endpoint,
+  Forbidden,
+  type PayloadHandler,
 } from 'payload'
 
 import { isAdminOrEditor } from '../access/index'
@@ -15,6 +17,7 @@ import {
 import {
   ALLOWED_VIDEO_MIME_TYPES,
   MAX_VIDEO_FILE_SIZE_BYTES,
+  MAX_VIDEO_REQUEST_SIZE_BYTES,
   validateAndSanitizeVideoFile,
 } from '../security/uploadValidation'
 
@@ -22,8 +25,6 @@ type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
   { operation: 'read' | 'readDistinct' }
 >
-
-const MAX_VIDEO_MULTIPART_STREAM_BYTES = 120 * 1024 * 1024 // 120 MB hard stream cap above the 100 MB file limit
 
 const validateVideoUploadBeforeOperation: CollectionBeforeOperationHook = async (rawArg) => {
   const { args, operation, req } = rawArg as ActiveBeforeOperationArg
@@ -35,12 +36,22 @@ const validateVideoUploadBeforeOperation: CollectionBeforeOperationHook = async 
 
 /**
  * Wraps Payload's built-in collection endpoints (`POST /`, `PATCH /`, `PATCH /:id`)
- * for `videos` so that multipart parsing on `/api/videos` allows up to 100 MB per file
- * (`MAX_VIDEO_FILE_SIZE_BYTES`), while the global `upload.limits.fileSize` in
- * `src/payload.config.ts` remains 10 MB (`MAX_MEDIA_FILE_SIZE_BYTES`) for images.
+ * for `videos` so that:
+ * 1. Unauthenticated / non-admin-or-editor callers are rejected with 403 (`Forbidden`)
+ *    before `addDataAndFileToRequest` reads or buffers a single byte of the request body (R-2).
+ * 2. Authenticated admin/editor uploads stream to temporary files on disk (`useTempFiles: true`)
+ *    rather than buffering up to 100 MB in memory, capped at `MAX_VIDEO_FILE_SIZE_BYTES` (100 MB)
+ *    and `MAX_VIDEO_REQUEST_SIZE_BYTES` (105 MB, matching planned Nginx `client_max_body_size 105m`)
+ *    while global `upload.limits.fileSize` stays 10 MB for `media` (R-2, R-5).
  */
 function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' | '/:id'): Endpoint {
   const handler: PayloadHandler = async (req) => {
+    if (!isAdminOrEditor({ req })) {
+      throw new Forbidden(req.t)
+    }
+
+    const tempFileDir = path.join(env.VIDEOS_DIR, '.tmp')
+
     const scopedPayload = Object.create(req.payload, {
       config: {
         enumerable: true,
@@ -53,7 +64,9 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
               ...req.payload.config.upload.limits,
               fileSize: MAX_VIDEO_FILE_SIZE_BYTES,
             },
-            requestSizeLimit: MAX_VIDEO_MULTIPART_STREAM_BYTES,
+            requestSizeLimit: MAX_VIDEO_REQUEST_SIZE_BYTES,
+            tempFileDir,
+            useTempFiles: true,
           },
         },
       },
@@ -72,7 +85,14 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
       return Response.json({ message: 'Endpoint not found' }, { status: 404 })
     }
 
-    return defaultEndpoint.handler(req)
+    try {
+      return await defaultEndpoint.handler(req)
+    } finally {
+      const tempFilePath = (req.file as { tempFilePath?: string } | undefined)?.tempFilePath
+      if (typeof tempFilePath === 'string' && tempFilePath.length > 0) {
+        await fs.unlink(tempFilePath).catch(() => undefined)
+      }
+    }
   }
 
   return {
@@ -124,7 +144,7 @@ export const Videos: CollectionConfig = {
     afterDelete: [createRevalidateAfterDeleteHook({ collection: 'videos' })],
   },
   upload: {
-    staticDir: path.join(env.MEDIA_DIR, 'videos'),
+    staticDir: env.VIDEOS_DIR,
     mimeTypes: [...ALLOWED_VIDEO_MIME_TYPES],
   },
   fields: [

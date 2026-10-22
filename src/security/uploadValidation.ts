@@ -1,3 +1,4 @@
+import crypto from 'crypto'
 import fs from 'fs/promises'
 import { ValidationError } from 'payload'
 
@@ -16,7 +17,22 @@ export type AllowedVideoMimeType = (typeof ALLOWED_VIDEO_MIME_TYPES)[number]
 
 export const MAX_MEDIA_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
 export const MAX_VIDEO_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB
-export const MAX_VIDEO_REQUEST_SIZE_BYTES = 105 * 1024 * 1024 // 105 MB (100 MB video + multipart form fields overhead)
+export const MAX_VIDEO_REQUEST_SIZE_BYTES = 105 * 1024 * 1024 // 105 MB (100 MB video + multipart form fields overhead; matches planned Phase 6 Nginx client_max_body_size 105m for /api/videos)
+
+const VIDEO_EXTENSION_BY_MIME: Record<AllowedVideoMimeType, 'mp4' | 'webm'> = {
+  'video/mp4': 'mp4',
+  'video/webm': 'webm',
+}
+
+/**
+ * Generates a randomized video filename whose extension is derived exclusively
+ * from the magic-byte-verified MIME type (`<timestamp>-<16hex>.<mp4|webm>`).
+ */
+export function generateRandomizedVideoFilename(detectedMime: AllowedVideoMimeType): string {
+  const ext = VIDEO_EXTENSION_BY_MIME[detectedMime]
+  const randomHex = crypto.randomBytes(8).toString('hex')
+  return `${String(Date.now())}-${randomHex}.${ext}`
+}
 
 const ALLOWED_MP4_FTYP_BRANDS = new Set([
   'isom',
@@ -290,7 +306,7 @@ export async function validateAndSanitizeVideoFile(
     })
   }
 
-  file.name = sanitizeUploadFilename(file.name)
+  file.name = generateRandomizedVideoFilename(detectedMime)
   file.mimetype = detectedMime
   return detectedMime
 }
