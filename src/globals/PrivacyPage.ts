@@ -70,12 +70,11 @@ export const PrivacyPage: GlobalConfig = withPublishableGlobal({
             en: 'Privacy Policy Body Content',
           },
         }),
+        bodyMediaField('body'),
       ],
     },
 
     // 3. SEO Meta
     collapsibleSection(seoGroupField()),
-
-    bodyMediaField('body'),
   ],
 })
