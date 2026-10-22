@@ -8,6 +8,29 @@ read the current card when you start a task.
 Design source: Figma `tD3pU1vtvSr8akTMJPFLkA`, exported offline in `design/` (see
 `design/INDEX.md`). Design rules and gap decisions: `docs/05-design.md` §"CTO decisions".
 
+## Execution order — revised 2026-10-23 (owner: "build the whole site design and wire it to the dashboard")
+The site is now the priority. Work **in this order** (it overrides the table order below):
+1. P2-T4 (round 3 fixes) → P2-T5 → P2-T6 → P2-T8 → CTO posts "merge phase 2".
+2. `phase-3-frontend`: **P3-T1 → P3-T2 → P4-T1 → P4-T2** (real content seeded on the phase-3 branch,
+   so every page is built and reviewed with the client's real data, not dev fixtures) → **P3-T3 →
+   P3-T4 → P2-T7** (dashboard UX + Live Preview, now that real pages exist) → **P3-T6 → P3-T7 →
+   P3-T8 → P3-T9 → P3-T5** (live 3D last, so the A-1 assets are final) → **P3-T10**.
+3. Then P5 → P6-T1 → P7 as before. Hard stops unchanged.
+
+### Phase 3 rules — "the site is wired to the dashboard" (apply to every P3 task)
+- **Every** visible text, number, image, video, link, list and section toggle on a public page comes
+  from the CMS (collections/globals) through `src/lib/cms/*`. Only UI chrome (button verbs, aria
+  labels, form messages, "1 / 3") lives in `src/i18n/{ar,en}.ts`. No business content in code.
+  Enforce it: a custom ESLint rule in `eslint-rules/` that flags string literals in JSX under
+  `src/app/(frontend)` and `src/components` (allow-list: punctuation, `src/i18n`, tests).
+- **Edit → publish → visible** without redeploy for every section, via the P2-T1 revalidate tags.
+  Evidence per page: a short recording (or before/after screenshots with timestamps) of an editor
+  changing one field per section in `/admin`, publishing, and the page updating; a draft change is
+  **not** visible to anonymous visitors but is visible in preview.
+- **Figma fidelity** (`docs/05-design.md` §"CTO decisions"): side-by-side at 1440 `en` vs
+  `design/screenshots/…` for every section, plus `ar` RTL at 1440 / 768 / 390. > 4 px is a finding.
+- Empty states: when the CMS has no item for a section, the section hides cleanly (no broken layout).
+
 ## Phase 1 — Scaffold & foundations · branch `phase-1-scaffold`
 | ID | Task | Depends on |
 |---|---|---|
@@ -25,8 +48,8 @@ Design source: Figma `tD3pU1vtvSr8akTMJPFLkA`, exported offline in `design/` (se
 | P2-T4 | `projects` (publishable, rich text, gallery, video, SEO) | P2-T2, P2-T3 |
 | P2-T5 | Globals: `site-settings`, `navigation`, `home-page`, page globals | P2-T4 |
 | P2-T6 | `quote-requests` (no API create) | P2-T3 |
-| P2-T7 | Dashboard UX: Arabic admin, groups, columns, Live Preview, dashboard home, branding | P2-T5, P2-T6 |
-| P2-T8 | Access test suite (Z1–Z6), migrations up/down, phase-2 report | P2-T7 |
+| P2-T7 | Dashboard UX: Arabic admin, groups, columns, Live Preview, dashboard home, branding — **runs in Phase 3 after P3-T4** (see Execution order) | P3-T4 |
+| P2-T8 | Access test suite (Z1–Z6), migrations up/down, phase-2 report | P2-T6 |
 
 ## Phase 3 — Public site from Figma · branch `phase-3-frontend`
 | ID | Task | Depends on |
@@ -45,7 +68,7 @@ Design source: Figma `tD3pU1vtvSr8akTMJPFLkA`, exported offline in `design/` (se
 ## Phase 4 — Real content seed · branch `phase-4-seed`
 | ID | Task | Depends on |
 |---|---|---|
-| P4-T1 | Materials + brands seed with normalization (73 rows) | P3 |
+| P4-T1 | Materials + brands seed with normalization (73 rows) — **runs on `phase-3-frontend` after P3-T2** | P3-T2 |
 | P4-T2 | Site settings, services, page copy (en from design, ar drafts), placeholders in draft, phase-4 report | P4-T1 |
 
 ## Phase 5 — Quote form → Odoo · branch `phase-5-quotes`
