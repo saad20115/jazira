@@ -138,3 +138,17 @@ says so in the review.
   you can. Never wait silently on a stuck command.
 - Integration tests must have timeouts (Vitest `testTimeout`/`hookTimeout`) and close every DB
   connection in `afterAll`, so a test run can never hang.
+
+### Evidence files (added 2026-10-22 after invented test output in a report)
+- Run every command you cite with its output saved **unedited** to
+  `docs/reports/evidence/<ID>/r<round>/<name>.log` (e.g. `pnpm lint 2>&1 | tee …/lint.log`),
+  from a **fresh clone of the commit you submit**, and commit those logs with the report.
+- The report quotes **only** from those files (copy, never retype or summarise inside a quote).
+  Test titles, error messages and counts must match the log byte for byte.
+- If something was not run, write "not run" — never reconstruct output.
+- Every evidence set starts with `commit.log` (`git rev-parse HEAD` and `git status --porcelain`
+  of the fresh clone), and `migrate-up-down-up.log` starts from an **empty** database.
+- (added 2026-10-22, P2-T4 R-12) Record logs with `NO_COLOR=1 FORCE_COLOR=0` (no ANSI codes), UTF-8
+  without BOM. **Never type a file:line by hand:** generate `citations.log` with `git grep -n` for
+  every identifier you cite and cite only from it. A behaviour claim cites a test title that
+  appears in `test.log`. A wrong citation or an invented identifier is a major finding.

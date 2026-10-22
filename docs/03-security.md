@@ -70,6 +70,11 @@ CTO review checks them one by one. "N/A" must be justified.
   scripts `'self' 'nonce-…' 'strict-dynamic'`; images `'self' data: blob:`; frames only the video
   hosts in I4; `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`. Admin routes may need a
   relaxed policy — scope it to `/admin` only and document every relaxation.
+  - **H3a (CTO decision 2026-10-22, 3D viewer)** The live 3D tower (P3-T5) decodes KTX2 textures and
+    meshopt geometry with WebAssembly in blob-URL workers. Only on the pages that render that section
+    (`/ar`, `/en` home), the policy adds `'wasm-unsafe-eval'` to `script-src` and `worker-src 'self' blob:`
+    — nothing else (never `'unsafe-eval'`, never `'unsafe-inline'`). The transcoder (`basis_transcoder.js`
+    / `.wasm`) and decoders are self-hosted under `public/`, same version as `three`; no CDN.
 - **H4** `poweredByHeader: false`; production error pages show no stack traces or versions.
 - **H5** HTTPS only (HTTP → 301), TLS 1.2+ (prefer 1.3), Let's Encrypt auto-renew tested.
 - **H6** Nginx rate limits: `/api/users/login`, `/api/users/forgot-password` 5 req/min/IP;

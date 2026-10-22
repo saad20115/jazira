@@ -1,4 +1,8 @@
-# A-1 — 3D & cinematic asset brief (Al Jazira tower)
+# A-1 — 3D asset brief (Al Jazira tower)
+
+> **Revised 2026-10-22:** the client wants the live model **inside the page card** (rotate, zoom,
+> enter/exit systems) and **less city detail**. The real-time GLB is now the main deliverable;
+> pre-rendered shots are reduced to end-frame stills per system (fallback). See §6.
 
 For: the 3D artist / studio (or whoever the owner assigns). Owner of this brief: CTO.
 Reference look: `design/assets/images/tower-render.png` and the section
@@ -48,3 +52,39 @@ Frame is **square-ish 1:1** (the site crops to the card; keep important action i
 - Review rounds: (1) clay/blockout + camera paths, (2) look-dev on hero still vs Figma render,
   (3) final shots. Each round approved by the owner; the CTO checks technical specs.
 - The hero still must be visually accepted as a match for the Figma render by the client.
+
+## 6. Revision 2026-10-22 — priorities now
+1. **Real-time first.** `tower-lite.glb` ≤ 2.5 MB (first view) and `tower.glb` ≤ 8 MB (full), both
+   with baked lighting matching the hero still; ≤ 150k triangles full / ≤ 50k lite; textures
+   ≤ 2K, KTX2-ready; materials glTF-PBR only (no Blender-only nodes).
+2. **City reduced:** no detailed buildings. Use a soft dusk backdrop — low-poly silhouettes with fog
+   or a blurred plate — plus the plaza ring, a few palms and lamps. The tower and systems carry
+   the scene.
+3. **Hero still** from `CAM_hero` still matches the Figma framing; it is the first paint, and the
+   live model starts at the same camera, so the still and the GLB must line up.
+4. **Systems:** each `SYS_*` collection exported as its own node, plus an empty `PIVOT_<system>`
+   (orbit centre when inside), `CAM_<system>` (entry viewpoint) and optional `PATH_<system>`
+   waypoint, and `HOT_<system>_<n>` empties for labels.
+5. **Façade ghosting:** `ARCH_facade` materials must work with opacity 1 → 0.15 in real time
+   (alpha blend, no refraction).
+6. **Fallback stills:** one end-frame still per system from its `CAM_<system>` (2048 and 1080),
+   plus a JSON of each `HOT_<system>_<n>` projected to 2D (0–1) in that still, for labels on weak
+   devices.
+   The 5 cinematic video shots are **dropped** unless the CTO asks for them later.
+
+## 7. Revision 2026-10-22 (evening, client) — city removed, look first
+Supersedes §6 item 2. Priority is now **look and motion** over further compression work.
+1. **No city:** delete all context blocks, city lights and far roads. Keep only the plot (plaza
+   ring, forecourt, palms, lamps at the base). Background = clean dusk sky gradient + ground fade,
+   identical in the Cycles still and the GLB/viewer.
+2. **Camera limits in scene `extras`:** `minDistance`, `maxDistance` (tower ≥ ~55 % of frame
+   height at max), polar min/max (never under the ground), pan clamp around the tower. The site
+   reads them; it does not hard-code its own.
+3. **Match `tower-render.png`:** dense thin mullions (not a checkerboard), reflective sky-gradient
+   glass, the dark east face, luminous gold pilasters, stepped setback and open crown frame, glazed
+   2-storey lobby with bronze canopies, the west-wing volume, landscaped forecourt. The freed
+   budget goes to the tower (still ≤ 150k tris full / ≤ 50k lite, sizes as §6).
+4. **Entry motion:** eased moves with no clipping, gradual façade ghost, section cuts where needed,
+   exact reverse back to `CAM_hero`.
+5. **Hero still without city — confirmed by the owner (2026-10-22):** same dusk sky as the live
+   model; the Figma city backdrop is an approved deviation.

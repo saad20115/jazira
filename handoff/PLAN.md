@@ -35,13 +35,12 @@ Design source: Figma `tD3pU1vtvSr8akTMJPFLkA`, exported offline in `design/` (se
 | P3-T2 | Shell & primitives: Logo, Button, Eyebrow, NavLink, Navbar, Footer, WhatsApp FAB, Accordion, icons, styleguide route | P3-T1 |
 | P3-T3 | Cards & motion: Service Tile/Card, Project Card, Brand/Partner Tile, Team Card/Member, Avatar/Portrait, marquees, Services Carousel | P3-T2 |
 | P3-T4 | Home page (all sections) + intro splash | P3-T3 |
-| P3-T5 | Interactive systems: cinematic tower explorer (pre-rendered clips + HTML overlay + related projects) | P3-T4 |
+| P3-T5 | Interactive systems: live 3D tower inside the card (rotate/zoom/enter-exit systems, related projects) | P3-T4 |
 | P3-T6 | Services page (incl. materials & brands table) | P3-T3 |
 | P3-T7 | About page (story, strengths, mission & vision, team) | P3-T3 |
 | P3-T8 | Projects list + Project detail (gallery + lightbox, related) | P3-T3 |
 | P3-T9 | Contact page + Quote Form UI (3 steps) + "Message sent" overlay | P3-T3 |
 | P3-T10 | SEO, 404/500, a11y (axe), Lighthouse, visual evidence pack, phase-3 report | P3-T4…T9 |
-| P3-T11 | Live 3D model viewer (Three.js, GLB from A-1) — **blocked on A-1**, skip until assets exist | P3-T5, A-1 |
 
 ## Phase 4 — Real content seed · branch `phase-4-seed`
 | ID | Task | Depends on |
@@ -71,7 +70,7 @@ Design source: Figma `tD3pU1vtvSr8akTMJPFLkA`, exported offline in `design/` (se
 ## External asset task (not code — owner decided by the user)
 | ID | Task | Depends on |
 |---|---|---|
-| A-1 | **3D asset production**: Blender model of the Figma tower + 5 MEP systems, hero still, 5 cinematic shots (forward + reverse), end frames, hotspot JSON, web GLB with baked lighting. Brief: `handoff/briefs/A-1-3d-assets.md` | user decision |
+| A-1 | **3D asset production**: Blender model of the Figma tower + 5 MEP systems, hero still, real-time GLB (lite + full) with baked lighting, system cameras + hotspot empties, end-frame stills per system (fallback). Brief: `handoff/briefs/A-1-3d-assets.md` | user decision |
 
 ## Hard stops — what the user/client must provide
 - P5-T3: Odoo version, whether a staging DB exists, the dedicated integration user + API key.
