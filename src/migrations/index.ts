@@ -2,6 +2,7 @@ import * as migration_20261021_074848_initial_users_media from './20261021_07484
 import * as migration_20261022_120943_p2_t2_videos_brands_stats_materials from './20261022_120943_p2_t2_videos_brands_stats_materials'
 import * as migration_20261022_140011_p2_t3_services_team from './20261022_140011_p2_t3_services_team'
 import * as migration_20261022_160652_p2_t4_projects from './20261022_160652_p2_t4_projects'
+import * as migration_20261022_184307_p2_t5_globals from './20261022_184307_p2_t5_globals'
 
 export const migrations = [
   {
@@ -23,5 +24,10 @@ export const migrations = [
     up: migration_20261022_160652_p2_t4_projects.up,
     down: migration_20261022_160652_p2_t4_projects.down,
     name: '20261022_160652_p2_t4_projects',
+  },
+  {
+    up: migration_20261022_184307_p2_t5_globals.up,
+    down: migration_20261022_184307_p2_t5_globals.down,
+    name: '20261022_184307_p2_t5_globals',
   },
 ]

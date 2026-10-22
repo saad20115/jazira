@@ -4,6 +4,7 @@ import {
   type CollectionBeforeOperationHook,
   type CollectionConfig,
   type CollectionSlug,
+  type GlobalSlug,
   type Where,
 } from 'payload'
 
@@ -161,6 +162,76 @@ const findRichTextBodyReferencingLabels = async ({
   return [...labels]
 }
 
+const getNestedValue = (obj: unknown, dotPath: string): unknown => {
+  let current: unknown = obj
+  for (const part of dotPath.split('.')) {
+    if (!current || typeof current !== 'object') {
+      return undefined
+    }
+    current = (current as Record<string, unknown>)[part]
+  }
+  return current
+}
+
+const uploadValueMatchesMediaId = (raw: unknown, targetId: number | string): boolean => {
+  if (raw === null || raw === undefined) {
+    return false
+  }
+  const resolved = typeof raw === 'object' && 'id' in raw ? (raw as { id?: unknown }).id : raw
+  return (
+    (typeof resolved === 'number' || typeof resolved === 'string') &&
+    String(resolved) === String(targetId)
+  )
+}
+
+const findGlobalMediaReferences = async ({
+  slug,
+  uploadPaths,
+  versioned,
+  richTextBody,
+  mediaId,
+  req,
+}: {
+  slug: GlobalSlug
+  uploadPaths: readonly string[]
+  versioned?: boolean
+  richTextBody?: boolean
+  mediaId: number | string
+  req: Parameters<CollectionBeforeDeleteHook>[0]['req']
+}): Promise<string[]> => {
+  const registeredGlobals = req.payload.globals.config
+  if (!registeredGlobals.some((g) => g.slug === slug)) {
+    return []
+  }
+
+  const draftStates = versioned ? ([false, true] as const) : ([false] as const)
+  for (const draft of draftStates) {
+    for (const locale of REVALIDATE_LOCALES) {
+      const doc = (await req.payload.findGlobal({
+        slug,
+        locale,
+        fallbackLocale: false,
+        depth: 0,
+        draft,
+        overrideAccess: true,
+        req,
+      })) as unknown as Record<string, unknown>
+
+      for (const path of uploadPaths) {
+        if (uploadValueMatchesMediaId(getNestedValue(doc, path), mediaId)) {
+          return [`global:${slug}`]
+        }
+      }
+
+      if (richTextBody && richTextReferencesMediaId(doc.body, mediaId)) {
+        return [`global:${slug}`]
+      }
+    }
+  }
+
+  return []
+}
+
 const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
   const checks: Array<{
     collection: CollectionSlug
@@ -208,6 +279,62 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
       collection: 'videos',
       where: { poster: { equals: id } },
       labelField: 'title',
+    },
+  ]
+
+  const globalChecks: Array<{
+    slug: GlobalSlug
+    uploadPaths: readonly string[]
+    versioned?: boolean
+    richTextBody?: boolean
+  }> = [
+    {
+      slug: 'site-settings',
+      uploadPaths: ['office.mapImage', 'defaultSeo.image'],
+    },
+    {
+      slug: 'home-page',
+      uploadPaths: [
+        'hero.background',
+        'whoWeAre.image',
+        'interactiveSystems.heroImage',
+        'cta.backgroundImage',
+        'meta.image',
+      ],
+      versioned: true,
+    },
+    {
+      slug: 'services-page',
+      uploadPaths: ['pageHeader.image', 'cta.backgroundImage', 'meta.image'],
+      versioned: true,
+    },
+    {
+      slug: 'about-page',
+      uploadPaths: [
+        'pageHeader.image',
+        'story.image',
+        'missionVision.mission.image',
+        'missionVision.vision.image',
+        'missionVision.image',
+        'meta.image',
+      ],
+      versioned: true,
+    },
+    {
+      slug: 'projects-page',
+      uploadPaths: ['pageHeader.image', 'portfolio.image', 'cta.backgroundImage', 'meta.image'],
+      versioned: true,
+    },
+    {
+      slug: 'contact-page',
+      uploadPaths: ['pageHeader.image', 'meta.image'],
+      versioned: true,
+    },
+    {
+      slug: 'privacy-page',
+      uploadPaths: ['pageHeader.image', 'meta.image'],
+      versioned: true,
+      richTextBody: true,
     },
   ]
 
@@ -266,6 +393,20 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
           references.add(item)
         }
       }
+    }
+  }
+
+  for (const globalCheck of globalChecks) {
+    const globalRefs = await findGlobalMediaReferences({
+      slug: globalCheck.slug,
+      uploadPaths: globalCheck.uploadPaths,
+      versioned: globalCheck.versioned,
+      richTextBody: globalCheck.richTextBody,
+      mediaId: id,
+      req,
+    })
+    for (const item of globalRefs) {
+      references.add(item)
     }
   }
 

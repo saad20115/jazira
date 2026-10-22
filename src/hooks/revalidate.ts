@@ -170,10 +170,10 @@ export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = a
   }
   const docId =
     (originalDoc as { id?: unknown } | undefined)?.id ?? (data as { id?: unknown } | undefined)?.id
-  const findOne = getDbAdapter(req)?.findOne
-  if (findOne && docId !== undefined && docId !== null) {
+  const db = getDbAdapter(req)
+  if (db?.findOne && docId !== undefined && docId !== null) {
     try {
-      const mainDocBefore = await findOne({
+      const mainDocBefore = await db.findOne({
         collection: collection.slug,
         req,
         where: { id: { equals: docId } },
@@ -199,10 +199,10 @@ export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = as
   if (!global.versions?.drafts) {
     return safeData
   }
-  const findGlobal = getDbAdapter(req)?.findGlobal
-  if (findGlobal) {
+  const db = getDbAdapter(req)
+  if (db?.findGlobal) {
     try {
-      const mainGlobalBefore = await findGlobal({
+      const mainGlobalBefore = await db.findGlobal({
         slug: global.slug,
         req,
       })
@@ -252,15 +252,15 @@ export async function shouldRevalidateCollectionAfterChange({
     return false
   }
 
-  const findOne = getDbAdapter(req)?.findOne
+  const db = getDbAdapter(req)
   const docId =
     typeof doc === 'object' && doc !== null && 'id' in doc
       ? (doc as { id?: unknown }).id
       : undefined
 
-  if (findOne && docId !== undefined && docId !== null) {
+  if (db?.findOne && docId !== undefined && docId !== null) {
     try {
-      const mainDocNow = await findOne({
+      const mainDocNow = await db.findOne({
         collection: collection.slug,
         req,
         where: { id: { equals: docId } },
@@ -316,11 +316,11 @@ export async function shouldRevalidateGlobalAfterChange({
     return false
   }
 
-  const findGlobal = getDbAdapter(req)?.findGlobal
+  const db = getDbAdapter(req)
 
-  if (findGlobal) {
+  if (db?.findGlobal) {
     try {
-      const mainGlobalNow = await findGlobal({
+      const mainGlobalNow = await db.findGlobal({
         slug: global.slug,
         req,
       })
