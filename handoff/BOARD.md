@@ -13,8 +13,8 @@ watch the channel.
 | P1-T3 | Access helpers, `users` (auth hardening), `media` (upload safety) | ACCEPTED | 2 | 2026-10-21 | CTO |
 | P1-T4 | Migration, e2e smoke, CI, phase-1 report | ACCEPTED | 2 | 2026-10-22 | CTO |
 | P2-T1 | Shared field factories & hooks | ACCEPTED | 3 | 2026-10-22 | CTO |
-| P2-T2 | `videos`, `brands`, `stats`, `materials` | IN_REVIEW | 3 | 2026-10-22 | Antigravity |
-| P2-T3 | `services`, `team` | IN_PROGRESS | 1 | 2026-10-22 | Antigravity |
+| P2-T2 | `videos`, `brands`, `stats`, `materials` | IN_REVIEW | 4 | 2026-10-22 | Antigravity |
+| P2-T3 | `services`, `team` | IN_REVIEW | 1 | 2026-10-22 | Antigravity |
 | P2-T4 | `projects` | TODO | 0 | 2026-10-21 | CTO |
 | P2-T5 | Globals | TODO | 0 | 2026-10-21 | CTO |
 | P2-T6 | `quote-requests` | TODO | 0 | 2026-10-21 | CTO |
