@@ -18,6 +18,16 @@ import { Users } from './collections/Users'
 import { Videos } from './collections/Videos'
 import { env } from './env'
 import { createLimitedLexicalEditor } from './fields/richText'
+import {
+  AboutPage,
+  ContactPage,
+  HomePage,
+  Navigation,
+  PrivacyPage,
+  ProjectsPage,
+  ServicesPage,
+  SiteSettings,
+} from './globals'
 import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
 import { ensurePublicErrorMessageAfterError } from './security/apiError'
 import { buildNonBlockingEmailAdapter } from './security/emailAdapter'
@@ -63,6 +73,16 @@ export default buildConfig({
     fallback: true,
   },
   collections: [Users, Media, Videos, Brands, Stats, Materials, Services, Team, Projects],
+  globals: [
+    SiteSettings,
+    Navigation,
+    HomePage,
+    ServicesPage,
+    AboutPage,
+    ProjectsPage,
+    ContactPage,
+    PrivacyPage,
+  ],
   hooks: {
     afterError: [ensurePublicErrorMessageAfterError],
   },

@@ -103,8 +103,26 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ar' | 'en') | ('ar' | 'en')[];
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+    navigation: Navigation;
+    'home-page': HomePage;
+    'services-page': ServicesPage;
+    'about-page': AboutPage;
+    'projects-page': ProjectsPage;
+    'contact-page': ContactPage;
+    'privacy-page': PrivacyPage;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    navigation: NavigationSelect<false> | NavigationSelect<true>;
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
+    'services-page': ServicesPageSelect<false> | ServicesPageSelect<true>;
+    'about-page': AboutPageSelect<false> | AboutPageSelect<true>;
+    'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
+    'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
+    'privacy-page': PrivacyPageSelect<false> | PrivacyPageSelect<true>;
+  };
   locale: 'ar' | 'en';
   widgets: {
     collections: CollectionsWidget;
@@ -1104,6 +1122,1531 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Official company identity, contact details, office location, working hours, social links, and default SEO (editable by Admins only).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  /**
+   * Official company name in Arabic and English used across header, footer, and metadata.
+   */
+  companyName: string;
+  /**
+   * Short tagline displayed on the intro splash screen and footer.
+   */
+  tagline?: string | null;
+  email: string;
+  phone: string;
+  whatsapp: string;
+  /**
+   * Label displayed on the WhatsApp contact card and floating action button.
+   */
+  whatsappLabel?: string | null;
+  address?: string | null;
+  mapUrl?: string | null;
+  /**
+   * Example: Sunday – Thursday, 8:00 AM – 5:00 PM.
+   */
+  workingHours?: string | null;
+  office?: {
+    title?: string | null;
+    address?: string | null;
+    mapImage?: (number | null) | Media;
+    mapUrl?: string | null;
+  };
+  socials?:
+    | {
+        platform: 'linkedin' | 'x' | 'instagram' | 'facebook' | 'youtube' | 'tiktok' | 'snapchat' | 'whatsapp';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  footerText?: string | null;
+  copyright?: string | null;
+  defaultSeo?: {
+    title?: string | null;
+    description?: string | null;
+    image?: (number | null) | Media;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Header navigation links and footer link columns ordered by array position.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation".
+ */
+export interface Navigation {
+  id: number;
+  /**
+   * Links are rendered in the top navbar in array order (up to 8 links).
+   */
+  header?:
+    | {
+        label: string;
+        link: {
+          type: 'internal' | 'external';
+          internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+          internalPath?: string | null;
+          /**
+           * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+           */
+          reference?:
+            | ({
+                relationTo: 'services';
+                value: number | Service;
+              } | null)
+            | ({
+                relationTo: 'projects';
+                value: number | Project;
+              } | null);
+          url?: string | null;
+          newTab?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  headerCta?: {
+    label?: string | null;
+    link?: {
+      type?: ('internal' | 'external') | null;
+      internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+      internalPath?: string | null;
+      /**
+       * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+       */
+      reference?:
+        | ({
+            relationTo: 'services';
+            value: number | Service;
+          } | null)
+        | ({
+            relationTo: 'projects';
+            value: number | Project;
+          } | null);
+      url?: string | null;
+      newTab?: boolean | null;
+    };
+  };
+  /**
+   * Footer navigation columns ordered by array position (up to 4 columns).
+   */
+  footer?:
+    | {
+        title: string;
+        links?:
+          | {
+              label: string;
+              link: {
+                type: 'internal' | 'external';
+                internalRoute?:
+                  ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+                internalPath?: string | null;
+                /**
+                 * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+                 */
+                reference?:
+                  | ({
+                      relationTo: 'services';
+                      value: number | Service;
+                    } | null)
+                  | ({
+                      relationTo: 'projects';
+                      value: number | Project;
+                    } | null);
+                url?: string | null;
+                newTab?: boolean | null;
+              };
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  footerCta?: {
+    title?: string | null;
+    text?: string | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    whatsappLabel?: string | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Home page sections in Figma order, each with an enable/disable toggle and draft/publish workflow.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  hero?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    subtitle?: string | null;
+    background?: (number | null) | Media;
+    backgroundVideo?: (number | null) | Video;
+    primaryCta?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    secondaryCta?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+  };
+  whoWeAre?: {
+    enabled?: boolean | null;
+    badgeStat?: (number | null) | Stat;
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    image?: (number | null) | Media;
+  };
+  coreServices?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+  };
+  interactiveSystems?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    systems?:
+      | {
+          title: string;
+          text: string;
+          shot: 'hvac' | 'fire' | 'plumbing' | 'power' | 'smart';
+          disciplines: (
+            'mep' | 'hvac' | 'fire-fighting' | 'plumbing' | 'electrical' | 'low-current' | 'data-center' | 'civil'
+          )[];
+          id?: string | null;
+        }[]
+      | null;
+    heroImage?: (number | null) | Media;
+    relatedProjectsLabel?: string | null;
+    liveModelLabel?: string | null;
+  };
+  statsSection?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    text?: string | null;
+    stats?: (number | Stat)[] | null;
+  };
+  featuredProjects?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+  };
+  partners?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+  };
+  cta?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    text?: string | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    secondaryButton?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    backgroundImage?: (number | null) | Media;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Services page sections in Figma order (Page Header, Services Intro, Specialist Services, Approved Materials, How We Work Process, CTA, and SEO).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page".
+ */
+export interface ServicesPage {
+  id: number;
+  pageHeader?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    /**
+     * Background image displayed behind the page title and breadcrumb.
+     */
+    image?: (number | null) | Media;
+  };
+  servicesIntro?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+  };
+  specialist?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+  };
+  materials?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+  };
+  process?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    steps?:
+      | {
+          title: string;
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  cta?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    text?: string | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    secondaryButton?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    backgroundImage?: (number | null) | Media;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * About Us page sections in Figma order (Page Header, Our Story, Core Strengths, Mission & Vision, Meet Our Team, and SEO).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page".
+ */
+export interface AboutPage {
+  id: number;
+  pageHeader?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    /**
+     * Background image displayed behind the page title and breadcrumb.
+     */
+    image?: (number | null) | Media;
+  };
+  story?: {
+    enabled?: boolean | null;
+    badgeStat?: (number | null) | Stat;
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    quote?: string | null;
+    quoteAuthor?: string | null;
+    image?: (number | null) | Media;
+  };
+  strengths?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    items?:
+      | {
+          title: string;
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  missionVision?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    mission?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      text?: string | null;
+      pillars?:
+        | {
+            title: string;
+            text: string;
+            id?: string | null;
+          }[]
+        | null;
+      image?: (number | null) | Media;
+    };
+    vision?: {
+      eyebrow?: string | null;
+      title?: string | null;
+      text?: string | null;
+      pillars?:
+        | {
+            title: string;
+            text: string;
+            id?: string | null;
+          }[]
+        | null;
+      image?: (number | null) | Media;
+    };
+    image?: (number | null) | Media;
+  };
+  team?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+    staffTitle?: string | null;
+    staffText?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Projects page sections in Figma order (Page Header, Impact in Numbers, Portfolio, CTA shared with project detail pages, and SEO).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page".
+ */
+export interface ProjectsPage {
+  id: number;
+  pageHeader?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    /**
+     * Background image displayed behind the page title and breadcrumb.
+     */
+    image?: (number | null) | Media;
+  };
+  impact?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    text?: string | null;
+    stats?: (number | Stat)[] | null;
+  };
+  portfolio?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    text?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+    quote?: string | null;
+    quoteAuthor?: string | null;
+    badgeStat?: (number | null) | Stat;
+    image?: (number | null) | Media;
+  };
+  cta?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    text?: string | null;
+    button?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    secondaryButton?: {
+      label?: string | null;
+      link?: {
+        type?: ('internal' | 'external') | null;
+        internalRoute?: ('/' | '/services' | '/about' | '/projects' | '/contact' | '/privacy' | 'custom') | null;
+        internalPath?: string | null;
+        /**
+         * Optional — when set, this linked document takes precedence over Internal Page / Custom Internal Path.
+         */
+        reference?:
+          | ({
+              relationTo: 'services';
+              value: number | Service;
+            } | null)
+          | ({
+              relationTo: 'projects';
+              value: number | Project;
+            } | null);
+        url?: string | null;
+        newTab?: boolean | null;
+      };
+    };
+    backgroundImage?: (number | null) | Media;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Contact Us page sections in Figma order (Page Header, Get in Touch, Find Our Office, and SEO). Contact details come from Site Settings.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page".
+ */
+export interface ContactPage {
+  id: number;
+  pageHeader?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    /**
+     * Background image displayed behind the page title and breadcrumb.
+     */
+    image?: (number | null) | Media;
+  };
+  getInTouch?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+  };
+  findOffice?: {
+    enabled?: boolean | null;
+    eyebrow?: string | null;
+    title?: string | null;
+    intro?: string | null;
+  };
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * Privacy Policy page header, rich-text body, and SEO metadata (placeholder remains in draft until client legal text is approved).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-page".
+ */
+export interface PrivacyPage {
+  id: number;
+  pageHeader?: {
+    enabled?: boolean | null;
+    title?: string | null;
+    subtitle?: string | null;
+    /**
+     * Background image displayed behind the page title and breadcrumb.
+     */
+    image?: (number | null) | Media;
+  };
+  enabled?: boolean | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Social sharing preview image (recommended 1200×630 px, max 10 MB).
+     */
+    image?: (number | null) | Media;
+  };
+  bodyMedia?: (number | Media)[] | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  companyName?: T;
+  tagline?: T;
+  email?: T;
+  phone?: T;
+  whatsapp?: T;
+  whatsappLabel?: T;
+  address?: T;
+  mapUrl?: T;
+  workingHours?: T;
+  office?:
+    | T
+    | {
+        title?: T;
+        address?: T;
+        mapImage?: T;
+        mapUrl?: T;
+      };
+  socials?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  footerText?: T;
+  copyright?: T;
+  defaultSeo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "navigation_select".
+ */
+export interface NavigationSelect<T extends boolean = true> {
+  header?:
+    | T
+    | {
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              internalRoute?: T;
+              internalPath?: T;
+              reference?: T;
+              url?: T;
+              newTab?: T;
+            };
+        id?: T;
+      };
+  headerCta?:
+    | T
+    | {
+        label?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              internalRoute?: T;
+              internalPath?: T;
+              reference?: T;
+              url?: T;
+              newTab?: T;
+            };
+      };
+  footer?:
+    | T
+    | {
+        title?: T;
+        links?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+              id?: T;
+            };
+        id?: T;
+      };
+  footerCta?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        whatsappLabel?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        subtitle?: T;
+        background?: T;
+        backgroundVideo?: T;
+        primaryCta?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        secondaryCta?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+      };
+  whoWeAre?:
+    | T
+    | {
+        enabled?: T;
+        badgeStat?: T;
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        image?: T;
+      };
+  coreServices?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+      };
+  interactiveSystems?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        systems?:
+          | T
+          | {
+              title?: T;
+              text?: T;
+              shot?: T;
+              disciplines?: T;
+              id?: T;
+            };
+        heroImage?: T;
+        relatedProjectsLabel?: T;
+        liveModelLabel?: T;
+      };
+  statsSection?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        text?: T;
+        stats?: T;
+      };
+  featuredProjects?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+      };
+  partners?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+      };
+  cta?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        text?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        secondaryButton?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        backgroundImage?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services-page_select".
+ */
+export interface ServicesPageSelect<T extends boolean = true> {
+  pageHeader?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+      };
+  servicesIntro?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+      };
+  specialist?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+      };
+  materials?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+      };
+  process?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  cta?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        text?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        secondaryButton?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        backgroundImage?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-page_select".
+ */
+export interface AboutPageSelect<T extends boolean = true> {
+  pageHeader?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+      };
+  story?:
+    | T
+    | {
+        enabled?: T;
+        badgeStat?: T;
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+        quote?: T;
+        quoteAuthor?: T;
+        image?: T;
+      };
+  strengths?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        items?:
+          | T
+          | {
+              title?: T;
+              text?: T;
+              id?: T;
+            };
+      };
+  missionVision?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        mission?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+              pillars?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              image?: T;
+            };
+        vision?:
+          | T
+          | {
+              eyebrow?: T;
+              title?: T;
+              text?: T;
+              pillars?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              image?: T;
+            };
+        image?: T;
+      };
+  team?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+        staffTitle?: T;
+        staffText?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects-page_select".
+ */
+export interface ProjectsPageSelect<T extends boolean = true> {
+  pageHeader?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+      };
+  impact?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        text?: T;
+        stats?: T;
+      };
+  portfolio?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        text?: T;
+        quote?: T;
+        quoteAuthor?: T;
+        badgeStat?: T;
+        image?: T;
+      };
+  cta?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        text?: T;
+        button?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        secondaryButton?:
+          | T
+          | {
+              label?: T;
+              link?:
+                | T
+                | {
+                    type?: T;
+                    internalRoute?: T;
+                    internalPath?: T;
+                    reference?: T;
+                    url?: T;
+                    newTab?: T;
+                  };
+            };
+        backgroundImage?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact-page_select".
+ */
+export interface ContactPageSelect<T extends boolean = true> {
+  pageHeader?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+      };
+  getInTouch?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+      };
+  findOffice?:
+    | T
+    | {
+        enabled?: T;
+        eyebrow?: T;
+        title?: T;
+        intro?: T;
+      };
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "privacy-page_select".
+ */
+export interface PrivacyPageSelect<T extends boolean = true> {
+  pageHeader?:
+    | T
+    | {
+        enabled?: T;
+        title?: T;
+        subtitle?: T;
+        image?: T;
+      };
+  enabled?: T;
+  body?: T;
+  meta?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        image?: T;
+      };
+  bodyMedia?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
@@ -1130,7 +2673,7 @@ export interface TaskSchedulePublish {
           relationTo: 'projects';
           value: number | Project;
         } | null);
-    global?: string | null;
+    global?: ('home-page' | 'services-page' | 'about-page' | 'projects-page' | 'contact-page' | 'privacy-page') | null;
     user?: {
       relationTo: 'users';
       value: number | User;
