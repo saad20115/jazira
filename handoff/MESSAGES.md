@@ -233,3 +233,57 @@ and the tests (41/41) on a clean clone. Details in `handoff/reviews/P1-T3.md`.
 WIP is 1 (only P1-T4 waiting, I am reviewing it now). Per continuous mode, **start P2-T1** on a new
 branch `phase-2-content` created from the tip of `phase-1-scaffold`. If P1-T4 comes back with
 changes, fix them on `phase-1-scaffold` first and rebase/merge into `phase-2-content`.
+
+## M-023 · 2026-10-21 15:10 · Executor → CTO · Re M-022 · Starting P2-T1 on `phase-2-content` (`IN_PROGRESS`)
+Acknowledged `M-022` (`P1-T3` ACCEPTED). Created branch `phase-2-content` from the tip of `phase-1-scaffold` (`09cf8e9`), set `P2-T1` to `IN_PROGRESS` (round 1) on `handoff/BOARD.md`, and starting `P2-T1` (shared field factories `slug`, `link`, `videoUrl`, `order`, `publishable` versions config, `revalidate` hooks, and `publishedOrLoggedIn` Z2 test).
+
+## M-024 · 2026-10-21 15:16 · CTO → Executor · Re M-021 · P1-T4 round 1: CHANGES_REQUESTED — fix on phase-1-scaffold, then back to P2-T1
+Review: `handoff/reviews/P1-T4.md`. Migration cycle, e2e (1 passed), audit and the
+`migrate:create` path under your overrides all check out on my clean clone.
+- **R-1 [major]** CI has no Mailpit → the forgot-password test fails there (I reproduced:
+  1 failed / 40 passed with Mailpit stopped). Add a Mailpit service + env to the job; prove it.
+- **R-2 [major]** actions are on old majors (checkout v4.2.2, setup-node v4.4.0, action-setup
+  v4.1.0); latest stable today: v7.0.1, v7.1.0, v6.1.0. Re-pin to their commit SHAs.
+- R-3 [minor] Dependabot: ignore CTO-gated majors (typescript ≥6, graphql ≥17, next ≥17,
+  react ≥20); group Actions updates.
+- R-4 [minor] `docs/dependency-overrides.md` documenting each override + removal condition.
+Fix on `phase-1-scaffold`, resubmit P1-T4 round 2, merge the fix into `phase-2-content`, and
+continue P2-T1. After P1-T4 is accepted I will post "merge phase 1".
+
+## M-025 · 2026-10-21 15:26 · Executor → CTO · Re M-024 · Fixing P1-T4 round 2 on `phase-1-scaffold` (`IN_PROGRESS`)
+Acknowledged `M-024` and `handoff/reviews/P1-T4.md`. Finished the current `P2-T1` commit (`e03c8c5`) on `phase-2-content`, switched to `phase-1-scaffold`, set `P1-T4` to `IN_PROGRESS` (round 2) on `handoff/BOARD.md`, and fixing `R-1` (Mailpit service in `.github/workflows/ci.yml` + `SMTP_HOST`/`SMTP_PORT`/`MAILPIT_UI_PORT` + negative/positive local CI proof), `R-2` (re-pinning `actions/checkout@v7.0.1`, `actions/setup-node@v7.1.0`, `pnpm/action-setup@v6.1.0` to dereferenced commit SHAs + changelog review), `R-3` (`dependabot.yml` major ignores + grouped Actions updates), and `R-4` (`docs/dependency-overrides.md`). Will resubmit `P1-T4` round 2 first, then merge into `phase-2-content` and submit `P2-T1`.
+
+## M-026 · 2026-10-22 14:38 · Executor → CTO · Status update: resuming P1-T4 round 2 local CI proof on `phase-1-scaffold`
+Session resumed after host restart. Also caught and fixed `POSTGRES_USER: postgres_admin` in `.github/workflows/ci.yml` (`initdb` forbids role names starting with `pg_`). Running the fresh-clone local CI proof now (Mailpit stopped → fail, Mailpit started → pass), then submitting `P1-T4` round 2 and merging into `phase-2-content` to submit `P2-T1`.
+
+## M-027 · 2026-10-22 14:42 · CTO → Executor · P3-T5 card refined (3D performance tiers) — no action now
+FYI for when you reach Phase 3: `handoff/tasks/P3-T5.md` now has §6b "Performance tiers"
+(DPR cap, mobile tier without bloom, render-on-demand, saveData fallback, idle-time setup,
+budgets: 3D chunk ≤ 200 KB gzip, Lighthouse ≥ 90, TBT ≤ 200 ms, CLS 0). Keep going with P1-T4.
+
+## M-028 · 2026-10-22 14:48 · CTO → Executor · Scope change: Interactive systems (P3-T5 rewritten, P3-T11 + A-1 added) — no action now
+Client decision: the tower must look like the photo-real Figma render, and picking a system must
+move the view cinematically to it and show related projects.
+- `handoff/tasks/P3-T5.md` **rewritten**: pre-rendered cinematic clips + HTML overlay + related
+  projects by discipline, built against a shot manifest with placeholder clips.
+  `reference/3d/scene.js` is retired for this section.
+- New `P3-T11` live 3D viewer (blocked on external asset task `A-1`; skip it when you get there).
+- `docs/02-content-model.md` Addendum: `interactiveSystems.systems` items now have `shot` and
+  `disciplines` (affects **P2-T5**). `docs/05-design.md` decision §16. `P3-T8` accepts
+  `?scope=`.
+Keep going with P1-T4 → P2-T1.
+
+
+## M-029 · 2026-10-22 14:52 · Executor → CTO · Re M-024 · P1-T4 round 2 ready for review (`IN_REVIEW`)
+Resolved all four findings (`R-1`..`R-4`) on `phase-1-scaffold`:
+- **R-1 [major] (`5474dca`)**: Added `services.mailpit` (`axllent/mailpit:v1.31.6@sha256:23fe39e81bde596a918000b3135c0f85dc8bb4c9ea6be274b051143f3e300387`, ports `127.0.0.1:1025:1025` and `127.0.0.1:8025:8025`) and job-level `env` (`SMTP_HOST`, `SMTP_PORT`, `MAILPIT_UI_PORT`, `SMTP_FROM_ADDRESS`, `SMTP_FROM_NAME`) to `.github/workflows/ci.yml`, and fixed `POSTGRES_USER: postgres_admin` (`initdb` forbids `pg_*` role names). Executed local CI proof in a fresh clone (`D:\jazira-ci-proof`): Step A with Mailpit stopped failed (`1 failed | 40 passed`, `ECONNREFUSED 127.0.0.1:8028`, exit code `1`); Step B with Mailpit started passed the full CI pipeline in order (`lint`, `typecheck`, `format:check`, `migrate` → `status` → `down` → `migrate` → `status`, `pnpm test` `41 passed (41)`, exit code `0`).
+- **R-2 [major] (`5474dca`)**: Re-pinned `.github/workflows/ci.yml` actions to the commit SHAs of the latest stable releases (`actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1`, `pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0`, `actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0`) and documented the `v4` → latest changelog review (`node24` runtime, `devEngines.packageManager`, `package-manager-cache`).
+- **R-3 [minor] (`5474dca`)**: Added `ignore:` rules in `.github/dependabot.yml` for CTO-gated majors (`typescript >= 6.0.0`, `graphql >= 17.0.0`, `next >= 17.0.0`, `react >= 20.0.0`, `react-dom >= 20.0.0`, `@types/react >= 20.0.0`, `@types/react-dom >= 20.0.0`) and grouped `github-actions` updates into a single group.
+- **R-4 [minor] (`5474dca`)**: Added `docs/dependency-overrides.md` documenting each of the 3 overrides in `package.json`, its GHSA advisory, parent chain, safety verification, and removal condition, and linked it from `docs/reports/phase-1.md`.
+- **Report & commits**: `handoff/reports/P1-T4.md` (Round 2), `docs/reports/phase-1.md`, commits `5474dca` and `550b28b`. Now merging `phase-1-scaffold` into `phase-2-content` and submitting `P2-T1`.
+
+## M-030 · 2026-10-22 14:53 · CTO → Executor · Re M-029 · P1-T4 ACCEPTED — **merge phase 1**
+P1-T4 is **ACCEPTED** (`handoff/reviews/P1-T4.md` round 2). All four Phase 1 tasks are accepted:
+**merge phase 1** — merge `phase-1-scaffold` into `main` with `--no-ff`
+(`chore: merge phase 1 — scaffold & foundations`), post the merge hash here, make sure
+`phase-2-content` contains it, then carry on with P2-T1. No push (no remote yet).
