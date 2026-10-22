@@ -182,12 +182,12 @@ function getContextValue(context: unknown, req: unknown, key: string): unknown {
 
 function deleteContextKey(context: unknown, req: unknown, key: string): void {
   if (typeof context === 'object' && context !== null && key in context) {
-    delete (context as Record<string, unknown>)[key]
+    Reflect.deleteProperty(context, key)
   }
   if (typeof req === 'object' && req !== null && 'context' in req) {
     const reqCtx = (req as { context?: unknown }).context
     if (typeof reqCtx === 'object' && reqCtx !== null && key in reqCtx) {
-      delete (reqCtx as Record<string, unknown>)[key]
+      Reflect.deleteProperty(reqCtx, key)
     }
   }
 }
@@ -649,10 +649,7 @@ export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithI
   options: RevalidateCollectionHookOptions = {},
 ): CollectionAfterChangeHook<T> {
   return async ({ collection, context, doc, previousDoc, req }) => {
-    const docId =
-      typeof doc === 'object' && doc !== null && 'id' in doc
-        ? (doc as { id?: unknown }).id
-        : undefined
+    const docId: unknown = (doc as { id?: unknown }).id
     try {
       if ((context as { disableRevalidate?: boolean } | undefined)?.disableRevalidate === true) {
         return doc

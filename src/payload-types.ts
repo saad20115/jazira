@@ -1950,6 +1950,7 @@ export interface PrivacyPage {
     };
     [k: string]: unknown;
   } | null;
+  bodyMedia?: (number | Media)[] | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -1958,7 +1959,6 @@ export interface PrivacyPage {
      */
     image?: (number | null) | Media;
   };
-  bodyMedia?: (number | Media)[] | null;
   _status?: ('draft' | 'published') | null;
   updatedAt?: string | null;
   createdAt?: string | null;
@@ -2633,6 +2633,7 @@ export interface PrivacyPageSelect<T extends boolean = true> {
       };
   enabled?: T;
   body?: T;
+  bodyMedia?: T;
   meta?:
     | T
     | {
@@ -2640,7 +2641,6 @@ export interface PrivacyPageSelect<T extends boolean = true> {
         description?: T;
         image?: T;
       };
-  bodyMedia?: T;
   _status?: T;
   updatedAt?: T;
   createdAt?: T;

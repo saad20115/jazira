@@ -1442,12 +1442,13 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
     // 3. R-19: A project with an Arabic title and no English title is listed only ONCE by its Arabic title (not duplicated as projects(#id))
     const dedupMedia = await payload.create({
       collection: 'media',
+      locale: 'ar',
       data: { alt: 'R-19 Dedup Media' },
       file: {
-        data: Buffer.from(jpegBuffer),
-        mimetype: 'image/jpeg',
-        name: 'r19-dedup.jpg',
-        size: jpegBuffer.byteLength,
+        data: tinyPng,
+        mimetype: 'image/png',
+        name: 'r19-dedup.png',
+        size: tinyPng.byteLength,
       },
       overrideAccess: true,
     })
@@ -1472,7 +1473,7 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
       token: adminToken,
     })
     expect(delDedupMediaBlocked.status).toBe(400)
-    const dedupErrMsg = JSON.stringify(delDedupMediaBlocked.data)
+    const dedupErrMsg = JSON.stringify(delDedupMediaBlocked.json)
     expect(dedupErrMsg).toContain('projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)')
     expect(dedupErrMsg).not.toContain(`projects(#${String(dedupProject.id)})`)
   })
