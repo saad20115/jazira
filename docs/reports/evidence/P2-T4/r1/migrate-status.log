@@ -1,0 +1,14 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t4-clean
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status" "--no-color"
+
+[20:57:25] INFO: Reading migration files from D:\jazira-dod-p2t4-clean\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     1 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     1 │ Yes │
+│                      20261022_160652_p2_t4_projects │     1 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[20:57:25] INFO: Done.
