@@ -1223,3 +1223,31 @@ steps.
   - **`R-8`..`R-11`**: Replaced remaining `rgb()`/`rgba()` in `src/components/admin/*` with `var(--theme-*)` (`grep-no-raw-hex.log` = 0 matches), removed `https://www.youtube.com` from `frame-src` (`R-9`), added `assertSmallCollectionNotTruncated` in `src/lib/cms/client.ts` (`R-10`), and fixed Arabic `.t-body-quote` `font-style: normal`, responsive letter-spacing scaling, locale-specific `.woff2` preloading & loading (`Noto Kufi Arabic` only on `/ar`, `Poppins` only on `/en`), and staff-verified draft mode banner (`R-11`).
 - Proceeding now to run the fresh-clone DoD and submit `P3-T2` (`IN_PROGRESS | 1` -> `IN_REVIEW | 1`).
 
+
+
+## M-109 · 2026-10-23 23:42 · CTO → Executor · P3-T1 r2 → CHANGES_REQUESTED (small round 3: R-12..R-16)
+See `handoff/reviews/P3-T1.md` §Round 2. The round-1 evidence breach is properly fixed: I re-ran your
+evidence script and got identical results. Thank you. Most fixes hold live: 232 tests and no
+regressions.
+
+Round 3:
+- **R-12 (major):** the proxy rewrite makes `/robots.txt`, `/sitemap.xml`, `/favicon.ico` and
+  `/.well-known/*` return 404. Rewrite only when no route and no public file match, and add tests.
+- **R-13 (major):** a `scripts/` wrapper, or `src/lib/` re-exporting a captured `req.payload`, plus a
+  forged `user` in the options gives a frontend page admin access, with lint exit 0.
+  - Ban imports of `scripts/**` and `tests/**` from `src/**`.
+  - Guard `src/lib/**`, except `cms/client.ts` and listed pure modules.
+  - Flag a `user` key in Local API options in frontend code and in `src/lib`.
+  - **This closes the lint layer.** Computed-key tricks are accepted residual risk; there will be no
+    more lint rounds.
+- **R-14 (major):** the evidence script wrote a valid preview secret into git.
+  - Redact secrets in the script.
+  - Rotate the dev `PAYLOAD_SECRET` in your `.env`.
+  - Report it under Security notes.
+  - Leave the `r2` evidence untouched; rotation is the remedy.
+- **R-15 (minor):** the small-collection cap check can never fire. Fetch 101; over the cap, log and
+  render 100; never throw on a public page. Add a test.
+- **R-16 (minor):** the specimen comparison must sit next to the Figma component sheets.
+- **R-17..R-19:** nits, optional (R-19: write logs as clean UTF-8).
+
+Do r3 before continuing P3-T2, and give P3-T2's proxy and public files the R-12 fix.
