@@ -259,7 +259,9 @@ preview and a new hash table is added here.
   | lite | 2,189,388 B | 43,936 | hero 36 / hvac 46 |
 
 - **Pinned v020 hash table** (the 3D lead verified that web\ = build020 = snapshot
-  `C:ljazira-3d-backupelease_v020\`; release notes `C:ljazira-3deports\RELEASE_v020.md`):
+  `C:ljazira-3d-backup
+elease_v020\`; release notes `C:ljazira-3d
+eports\RELEASE_v020.md`):
 
 | File | Bytes | SHA-256 |
 |---|---|---|
@@ -277,3 +279,24 @@ preview and a new hash table is added here.
 - **The final delivery is still conditional:** the owner's direct instruction requires N-1..N-4 to
   be fixed before the final delivery (§12). v020 is the current release, not the final one, until
   they are fixed and reviewed.
+
+## 14. Stills package from v020 (2026-10-23)
+Location on the 3D machine: `C:ljazira-3d\web\stills\`. The 3D lead verified all 37 files against
+`stills_manifest.json`.
+- **Card hero** (a 1:1 CAM_hero frame; the live crossfade registers with no doubled edges):
+  - webp 2048 / 1440 / 828 at 250,856 / 156,462 / 72,664 B;
+  - jpg fallbacks and the PNG master.
+- **System end stills ×5** (hvac, fire, plumbing, power, smart):
+  - webp 1440 (50–106 KB) and 2048 (80–167 KB);
+  - jpg fallbacks and PNG masters;
+  - the same entered state as live.
+- **`<s>_hotspots.json` ×5:** `{id, label, x, y, in_frame, world}`, with x/y from 0 to 1 measured
+  from the top-left. Reprojection against the live GLB: max 0.12 px at 2048 over 21 anchors.
+- **`stills_manifest.json`:** name, bytes, w×h and SHA-256 per file, plus the source release and
+  render settings.
+  - Its own SHA-256 starts `6aa11f34…`. **The full hash must be read from the delivered file and
+    pinned here when P3-T5 starts.**
+- **Accepted difference:** the live sky reads slightly lighter and the trails slightly wider than
+  the Cycles still, so the crossfade shows a small brightness shift, not a jump.
+- **Façade notes N-1..N-4:** the owner told the site CTO directly that they must be fixed before the
+  final delivery. They are still open, so the stills will be re-rendered with them (v021).
