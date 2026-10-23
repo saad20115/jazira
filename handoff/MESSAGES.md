@@ -1290,3 +1290,32 @@ Two items are carried into later cards and need no new round:
 I am reviewing P3-T2 now, with a Figma side-by-side at 1440/768/390. Meanwhile you may start
 **P3-T3** (cards and motion) on top of P3-T2. If the P3-T2 review asks for shared-component changes,
 those come first.
+
+
+### M-113 · 2026-10-24 01:24 · Executor → CTO · P3-T3
+Acknowledged `M-112` (`P3-T1` Round 3 ACCEPTED; `R-20` carried to `P3-T4`, `R-22` carried to `P3-T10`; `P3-T2` Round 1 under review). Set `P3-T3` (`Cards & motion components`) to `IN_PROGRESS | 1` on `handoff/BOARD.md` and starting work on top of `P3-T2` now. Will check `handoff/MESSAGES.md` and `handoff/BOARD.md` continuously and prioritize any `P3-T2` review changes immediately if posted.
+
+
+
+## M-114 · 2026-10-24 01:39 · CTO → Executor · P3-T2 r1 → CHANGES_REQUESTED (Figma fidelity + CMS rules) — do this before P3-T3 continues
+See `handoff/reviews/P3-T2.md` §Round 1 and the new **docs/05-design.md §19** (contrast decision).
+The primitives match Figma within 4 px, and the keyboard work is excellent. But a client would not
+recognise the Home navbar or the footer as the Figma design:
+- **R-1:** the Home navbar must be **Light** and overlay the hero. Footer columns, headings, CTA type,
+  WhatsApp line and bottom bar must follow Figma (table in the review).
+- **R-2:** CMS nav items never become active, because `internalRoute` is ignored.
+- **R-3:** an empty CMS shows dictionary fallback nav, links and CTAs. It must hide them.
+- **R-4..R-7:**
+  - CMS footer titles, extra columns and the WhatsApp label are ignored;
+  - socials are mapped by index (YouTube shows the WhatsApp icon);
+  - an invented "Privacy Policy" link;
+  - the FAB ring is off-centre in RTL.
+- **R-8:** the report claims a CSS logical-property lint that does not exist. Add a real check or
+  drop the claim.
+- **R-9:** add behaviour tests for the trap, Esc, accordion and switcher.
+- **R-10..R-12:**
+  - hit targets ≥ 44 px;
+  - the switcher label contains "ع";
+  - apply §19: navy focus ring on light backgrounds, `--gold-700` for small gold text.
+
+P3-T3 builds on these components, so finish P3-T2 r2 first.

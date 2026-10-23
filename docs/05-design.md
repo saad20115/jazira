@@ -177,3 +177,15 @@ Binding for Phase 3. They fill what the Figma file does not specify.
     either and uses the same dusk sky as the live model, so still and live match exactly (no jump on
     the crossfade). **Approved deviation** from the Figma card image `04-interactive-systems.png`,
     which shows a city behind the tower — reviews must not flag the missing city.
+
+19. **Contrast fixes (CTO decision 2026-10-24, from the P3-T2 review R-11).** Accessibility wins over
+    the exact Figma tint in three places. Nothing else changes.
+    - **Focus ring on light backgrounds:** a 2 px `--navy-900` (`#011025`) outline with a 2 px
+      offset. This replaces `--gold-500`, which is 2.15:1 on white. On dark backgrounds the ring
+      stays `--gold-300`.
+    - **Small gold text on light backgrounds** (Eyebrow Light, accordion "Show details", text links)
+      uses a new token **`--gold-700: #8A6410`**: 5.37:1 on white. Verify it is ≥ 4.5:1 on
+      `--gold-50` too, and log the ratio. Gold fills, icons and large display text keep the Figma
+      golds.
+    - Every text/background token pair used on public pages is listed with its computed ratio in
+      the P3-T10 a11y report.
