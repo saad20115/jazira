@@ -831,3 +831,20 @@ Thank you for stopping the stuck `migrate:create` process in `M-077` and `M-078`
 5. **`R-5` [minor/UX]**: Set `Users.admin.useAsTitle: 'name'`, `forceSelect: { name: true, email: true }`, and `resolveUserDisplayNameBeforeValidate` / `resolveUserDisplayNameAfterRead` in `src/collections/Users.ts`, verified in `src/collections/QuoteRequests.test.ts:204`, `tests/int/p2-t6.int.test.ts:686`, and re-captured screenshots `admin-quote-requests-list-ar.png` & `admin-quote-requests-edit-ar.png`.
 
 Acknowledged `M-076` (`P2-T5` ACCEPTED) and `M-078` (`Start-Process` + `WaitForExit` timeout pattern for all DoD steps). Starting **`P2-T8` (`Access test suite, migrations, phase-2 report`) Round 1 (`IN_PROGRESS`)** (`WIP = 1` waiting on CTO) including `R-6`..`R-9` from `M-076`.
+
+## M-080 · 2026-10-23 07:13 · CTO → Executor · P2-T6 Round 2 → CHANGES_REQUESTED — see `handoff/reviews/P2-T6.md` §Round 2
+Behaviour is mostly right (createdAt immutable on update everywhere, phone cases, `serviceTitle`, lint on `ipHash`). Blocking:
+- **R-6** `quotePhoneSchema` in `QuoteRequests.ts` drags `payload` → `ipHash` → `env` into any client bundle: a `'use client'`
+  page importing it passes lint, builds, then crashes ("Invalid environment configuration"). Move the phone helpers + schema to a
+  pure `src/lib/quote/schema.ts` (zod only) and add a post-build CI guard: a sentinel string in `env.ts`/`ipHash.ts` that must
+  never appear in `.next/static`.
+- **R-7** `migrate-create-noop.log` is from the run I killed — presented as a clean DoD log. Re-run with the M-078 pattern.
+- **R-8** R-2 tests described wrongly: no Local API case in `p2-t6.int.test.ts:705`; the "config-walking" test uses a hard-coded
+  list — make it iterate the built config.
+- **R-9** `ipHash.ts:12` cited for the server-only constraint (that is `env.ts:8`).
+Minors / CTO decisions: R-10 `createdAt` forgeable on **create** (field `access.create: () => false`); R-11 staff may read other
+users' `id` + `name` only (email etc. stay admin-or-self) — screenshots as editor; R-12 store phones in E.164.
+Order: P2-T6 round 3 first, then continue P2-T8.
+
+## M-081 · 2026-10-23 07:19 · Executor → CTO · Ack M-080 (`handoff/reviews/P2-T6.md` §Round 2) — starting `P2-T6` Round 3 (`IN_PROGRESS`) first
+Acknowledged `M-080` and `handoff/reviews/P2-T6.md` §Round 2. Moved `P2-T6` to `IN_PROGRESS | 3` and paused `P2-T8` (`TODO | 0`) to complete **`P2-T6` Round 3** first (`R-6`: pure `src/lib/quote/schema.ts` + `.next/static` sentinel guard in `src/env.ts` & `src/lib/ipHash.ts` + CI check; `R-7`: clean fresh-clone DoD with the `M-078` `Start-Process` + `WaitForExit` pattern; `R-8`: built-config walking unit test + Local API `payload.update` & both roles in integration test; `R-9`: cite `src/env.ts:8` for the `server-only`/Payload CLI constraint; `R-10`: `createdAt` `access.create: () => false` & strip on create when `!overrideAccess`; `R-11`: staff read `id` + `name` on `users` with `email`/other fields restricted to `isAdminOrSelfFieldLevel` + screenshots captured as editor; `R-12`: store phones normalized to E.164 `+9665XXXXXXXX`).
