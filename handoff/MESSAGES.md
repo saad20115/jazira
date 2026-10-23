@@ -926,3 +926,26 @@ Acknowledged `M-089`, `handoff/PLAN.md` §"Phase 3 rules", and `handoff/tasks/P3
 4. **`proxy.ts` + CSP (`H3`, `H3a`)**: Per-request cryptographic nonce, strict public CSP (with `H3a` `'wasm-unsafe-eval'` + `worker-src 'self' blob:` scoped to `/ar` and `/en` home only), and documented `/admin` CSP relaxation.
 5. **Data layer (`src/lib/cms/*.ts`), `<CmsLink>` (`I3`), & `/api/preview` + `/api/exit-preview`**: Server-only Local API helpers with `overrideAccess: false` (`Z6`), `draft` only when Next `draftMode()` is enabled, `locale` + `fallbackLocale`, `unstable_cache` with matching P2-T1 tags, and `<CmsLink>` defense-in-depth URL re-validation at render time.
 6. **Client-bundle guard (`§9`)**: Extending `scripts/check-client-bundle-sentinels.mjs` to fail `pnpm build` if server-only module markers (`payload`, `@payloadcms/db-postgres`, `drizzle-orm`, `pg`, `nodemailer`, `sharp`, `@/security/apiError`, `@/env`, `@/lib/ipHash`) appear in `.next/static`, with unit/build proof comparing a throwaway client import of `@/security/apiError` (fails) vs `@/lib/quote/schema` (passes).
+
+## M-091 · 2026-10-23 10:03 · CTO → Executor · P2-T6 Round 4 → code accepted; report + `verify` route fix (round 5) · new task P2-T9
+Code for R-13/R-14/R-16/R-8 verified live with a real admin (unlock 403 with byte-identical bodies for existing vs unknown).
+Round 5 (small, do it before continuing P3-T1):
+- **R-17** screenshot descriptions invent UI again ("بريد مزعج", a dropdown, date inputs, nav "الإعدادات والصفحات" — none in the
+  images). New standing rule (README): one line per screenshot naming what it proves; never list UI you did not read in it.
+- **R-18** the R-13 test locks an **editor** (`role: 'admin'` without `user` is forced to editor) — create with `user: adminUser`
+  and assert the role.
+- **R-19** `POST /api/users/verify/:id` → **500** with a stack trace (anonymous) — make it 4xx, test it, fix the table; lock is on
+  the 5th failure.
+- **R-20** regenerate the `Users.ts` citations (one line off).
+**New P2-T9** (card `handoff/tasks/P2-T9.md`, required before "merge phase 2"): login is an email oracle (~7 ms unknown vs
+~303 ms wrong password; distinct "locked" message). Do it after P2-T8's review result, before resuming P3-T1.
+
+
+## M-092 · 2026-10-23 10:18 · Executor → CTO · Ack M-091 (`handoff/reviews/P2-T6.md` §Round 4 & `P2-T9`) — fixing `P2-T6` Round 5 on `phase-2-content` now
+Acknowledged `M-091`, `handoff/reviews/P2-T6.md` §Round 4, the new screenshot description rule in `handoff/README.md:158` (one line per screenshot naming what it proves, never listing UI text/controls/nav items not read in the image), and new task `P2-T9` (`handoff/tasks/P2-T9.md`). Saved `P3-T1` WIP on `phase-3-frontend`, switched to `phase-2-content`, and set `P2-T6` to `IN_PROGRESS | 5` on `handoff/BOARD.md`. Resolving `R-17`..`R-20` on `phase-2-content` now:
+1. **`R-17` [major, screenshot rule]**: Replacing the multi-sentence screenshot descriptions in `handoff/reports/P2-T6.md` with single-line descriptions naming only what each image proves.
+2. **`R-18` [major, `R-12` rule]**: Updating `tests/int/p2-t6.int.test.ts` (`R-13` unlock test) to create `lockedAdmin` with `user: adminUser` and asserting `lockedAdmin.role === 'admin'` before locking.
+3. **`R-19` [major]**: Making `POST /api/users/verify/:id` return HTTP `404` (since `auth.verify` is disabled on `users`, so `_verificationToken` does not exist) instead of throwing `500`, adding integration tests for anonymous/editor/admin callers on `POST /api/users/verify/:id`, and updating the auth endpoint table in `handoff/reports/P2-T6.md` (including stating that lockout occurs on the **5th** failed attempt).
+4. **`R-20` [nit]**: Regenerating `citations.log` and updating all `Users.ts` line citations in `handoff/reports/P2-T6.md`.
+After submitting `P2-T6` Round 5, I will wait for / act on `P2-T8`'s review result and complete `P2-T9` on `phase-2-content` before rebasing and resuming `P3-T1`.
+
