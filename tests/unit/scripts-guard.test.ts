@@ -19,6 +19,10 @@ import {
   resolveFrontendClientChunkFiles,
   scanDirectoryForSentinels,
 } from '../../scripts/check-client-bundle-sentinels.mjs'
+import {
+  checkAllPublicCssLogicalProperties,
+  scanCssForPhysicalProperties,
+} from '../../scripts/check-css-logical-properties.mjs'
 import { redactSecretValues } from '../../scripts/evidence/p3-t1-evidence.mjs'
 import { generateTokensFile, TYPOGRAPHY_STYLE_MAP } from '../../scripts/generate-tokens.mjs'
 import { CMS_CLIENT_SERVER_ONLY_SENTINEL } from '../../src/lib/cms/client'
@@ -227,5 +231,40 @@ describe('scripts/check-client-bundle-sentinels.mjs, scripts/generate-tokens.mjs
         [liveSecret],
       ),
     ).toBe('/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar')
+  })
+
+  it('scanCssForPhysicalProperties flags physical directional properties unless /* logical-ignore: ... */ is present, and all public CSS files pass (P3-T2 R-8)', () => {
+    const badCss = [
+      '.box {',
+      '  margin-left: 16px;',
+      '  padding-right: 24px;',
+      '  left: 0;',
+      '  text-align: left;',
+      '  border-top-left-radius: 8px;',
+      '}',
+    ].join('\n')
+    const violations = scanCssForPhysicalProperties(badCss, 'src/components/Sample.module.css')
+    expect(violations).toHaveLength(5)
+    expect(violations.map((v) => v.property)).toEqual([
+      'margin-left',
+      'padding-right',
+      'left',
+      'text-align',
+      'border-top-left-radius',
+    ])
+
+    const justifiedCss = [
+      '.box {',
+      '  /* logical-ignore: physical canvas coordinate required */',
+      '  left: 0;',
+      '  margin-inline-start: 16px;',
+      '  text-align: start;',
+      '}',
+    ].join('\n')
+    expect(scanCssForPhysicalProperties(justifiedCss, 'src/components/Sample.module.css')).toEqual([])
+
+    const repoCheck = checkAllPublicCssLogicalProperties()
+    expect(repoCheck.scannedFileCount).toBeGreaterThanOrEqual(20)
+    expect(repoCheck.violations).toEqual([])
   })
 })

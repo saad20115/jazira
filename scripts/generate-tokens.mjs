@@ -219,6 +219,7 @@ export function buildTokensCss(tokens) {
   }
   // Short aliases referenced in `docs/05-design.md` §Tokens (lines 41–46)
   lines.push('  --gold: var(--gold-500);')
+  lines.push('  --gold-700: #8a6410;')
   lines.push('  --body: var(--text-body);')
   lines.push('  --muted: var(--text-muted);')
   // CTO decisions §10 (`docs/05-design.md` line 137): error state token (contrast >= 4.5:1 on white)
@@ -239,8 +240,16 @@ export function buildTokensCss(tokens) {
   lines.push('  --glass-border-white-8: rgba(255, 255, 255, 0.08);')
   lines.push('  --glass-border-white-10: rgba(255, 255, 255, 0.1);')
   lines.push('  --glass-border-white-14: rgba(255, 255, 255, 0.14);')
+  lines.push('  --glass-border-white-20: rgba(255, 255, 255, 0.2);')
+  lines.push('  --glass-border-white-22: rgba(255, 255, 255, 0.22);')
+  lines.push('  --glass-border-white-24: rgba(255, 255, 255, 0.24);')
+  lines.push('  --glass-border-white-30: rgba(255, 255, 255, 0.3);')
   lines.push('  --glass-border-white-50: rgba(255, 255, 255, 0.5);')
+  lines.push('  --overlay-navy-70: rgba(1, 16, 37, 0.7);')
+  lines.push('  --gold-border-45: rgba(223, 168, 42, 0.45);')
   lines.push('  --border-gold-light: rgba(239, 203, 118, 0.6);')
+  lines.push('  --success-border: rgba(51, 204, 128, 0.5);')
+  lines.push('  --success-dot: rgb(51, 204, 128);')
   lines.push('  --surface-navbar-light: rgba(255, 255, 255, 0.94);')
   lines.push('  --icon-social-muted: rgb(153, 166, 186);')
 
@@ -251,6 +260,24 @@ export function buildTokensCss(tokens) {
   lines.push('    rgba(1, 16, 37, 0.15),')
   lines.push('    rgba(1, 16, 37, 0.9)')
   lines.push('  );')
+  lines.push(
+    '  --gradient-service-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.25) 0%, rgba(1, 16, 37, 0.92) 100%);',
+  )
+  lines.push(
+    '  --gradient-service-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.45) 0%, rgba(1, 16, 37, 0.96) 100%);',
+  )
+  lines.push(
+    '  --gradient-project-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.15) 0%, rgba(1, 16, 37, 0.92) 100%);',
+  )
+  lines.push(
+    '  --gradient-project-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.35) 0%, rgba(1, 16, 37, 0.96) 100%);',
+  )
+  lines.push(
+    '  --gradient-team-card-overlay: linear-gradient(to top, var(--navy-950) 0%, rgba(1, 16, 37, 0) 100%);',
+  )
+  lines.push(
+    '  --gradient-portrait-glow: radial-gradient(circle at center, rgba(223, 168, 42, 0.28) 0%, rgba(223, 168, 42, 0) 100%);',
+  )
   lines.push(
     '  --gradient-gold-accent-line: linear-gradient(to right, var(--gold-500), var(--gold-300));',
   )
@@ -273,6 +300,7 @@ export function buildTokensCss(tokens) {
   }
   lines.push('  --shadow-navbar-light: 0 2px 8px 0 rgba(1, 16, 37, 0.06);')
   lines.push('  --shadow-button-dark-hover: 0 10px 12px 0 rgba(1, 16, 37, 0.25);')
+  lines.push('  --shadow-team-card-hover: 0 22px 44px 0 rgba(1, 16, 37, 0.28);')
 
   lines.push('')
   lines.push('  /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */')

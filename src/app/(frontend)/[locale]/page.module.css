@@ -1,6 +1,7 @@
 .heroShell {
-  min-block-size: calc(100dvh - var(--navbar-height));
-  padding-block: var(--section-padding-y);
+  min-block-size: var(--hero-height);
+  padding-block-start: calc(var(--navbar-height) + var(--section-padding-y));
+  padding-block-end: var(--section-padding-y);
   background: var(--gradient-navy-panel);
   color: var(--white);
   display: flex;

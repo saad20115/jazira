@@ -26,6 +26,28 @@ export function ArrowRightIcon({ size = 18, ...svgProps }: UiIconProps): ReactEl
   )
 }
 
+export function ArrowLeftIcon({ size = 18, ...svgProps }: UiIconProps): ReactElement {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 18 18"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      data-directional-icon="true"
+      data-icon="ui-arrow-left"
+      {...svgProps}
+    >
+      <path d="M14.25 9H3.75M7.5 5.25L3.75 9L7.5 12.75" />
+    </svg>
+  )
+}
+
 export function ChevronDownIcon({ size = 18, ...svgProps }: UiIconProps): ReactElement {
   return (
     <svg

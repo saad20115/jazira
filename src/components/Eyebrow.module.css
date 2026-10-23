@@ -19,7 +19,7 @@
 .toneLight {
   background-color: var(--gold-50);
   border-color: var(--border-gold-light);
-  color: var(--gold-600);
+  color: var(--gold-700);
 }
 
 .toneDark {

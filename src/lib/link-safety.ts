@@ -179,6 +179,23 @@ export interface CmsLinkDataLike {
   newTab?: boolean | null
 }
 
+const NAMED_INTERNAL_ROUTE_MAP: Readonly<Record<string, string>> = {
+  '/': '/',
+  home: '/',
+  '/services': '/services',
+  services: '/services',
+  '/about': '/about',
+  about: '/about',
+  'about-us': '/about',
+  '/projects': '/projects',
+  projects: '/projects',
+  '/contact': '/contact',
+  contact: '/contact',
+  'contact-us': '/contact',
+  '/privacy': '/privacy',
+  privacy: '/privacy',
+}
+
 /**
  * Resolves a CMS `linkField` / `buttonGroup` object into a validated `{ href, isExternal, newTab }`
  * or `null` if unsafe/incomplete.
@@ -231,7 +248,8 @@ export function resolveSafeCmsLinkData(
 
   // 2. Named internal route or custom internal path
   const route = typeof link.internalRoute === 'string' ? link.internalRoute.trim() : ''
-  const candidatePath = route === 'custom' || !route ? link.internalPath : route
+  const mappedRoute = route ? (NAMED_INTERNAL_ROUTE_MAP[route.toLowerCase()] ?? route) : ''
+  const candidatePath = route === 'custom' || !route ? link.internalPath : mappedRoute
   const safeInternal = sanitizeCmsHref(candidatePath, options)
   if (!safeInternal || safeInternal.isExternal) {
     return null

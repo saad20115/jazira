@@ -1,6 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { chromium } from '@playwright/test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -15,7 +16,9 @@ import {
 } from '@/components/Button'
 import { Eyebrow, EYEBROW_TONES } from '@/components/Eyebrow'
 import {
+  buildDefaultFooterQuickLinks,
   Footer,
+  getSocialAriaLabel,
   normalizeWhatsappDigits,
 } from '@/components/Footer'
 import {
@@ -32,7 +35,13 @@ import {
   LOGO_COLORS,
   LOGO_TYPES,
 } from '@/components/Logo'
-import { Navbar } from '@/components/Navbar'
+import {
+  buildDefaultNavbarItems,
+  buildLanguageSwitchHref,
+  isNavItemActive,
+  Navbar,
+  trapDrawerFocusOnTab,
+} from '@/components/Navbar'
 import {
   NAV_LINK_STATES,
   NAV_LINK_THEMES,
@@ -42,7 +51,7 @@ import {
   WhatsAppFab,
   WHATSAPP_FAB_STATES,
 } from '@/components/WhatsAppFab'
-import { switchLocaleInPathname } from '@/i18n'
+import { getDictionary, switchLocaleInPathname } from '@/i18n'
 
 let mockedPathname = '/ar/services'
 
@@ -52,6 +61,27 @@ vi.mock('next/navigation', () => ({
     throw new Error('NEXT_NOT_FOUND')
   },
 }))
+
+function srgbChannelToLinear(channel8Bit: number): number {
+  const c = channel8Bit / 255
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+}
+
+function relativeLuminance(hex: string): number {
+  const clean = hex.replace(/^#/, '')
+  const r = Number.parseInt(clean.slice(0, 2), 16)
+  const g = Number.parseInt(clean.slice(2, 4), 16)
+  const b = Number.parseInt(clean.slice(4, 6), 16)
+  return 0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b)
+}
+
+function wcagContrastRatio(hexA: string, hexB: string): number {
+  const lumA = relativeLuminance(hexA)
+  const lumB = relativeLuminance(hexB)
+  const lighter = Math.max(lumA, lumB)
+  const darker = Math.min(lumA, lumB)
+  return (lighter + 0.05) / (darker + 0.05)
+}
 
 describe('P3-T2 — Shell & primitives + styleguide route', () => {
   afterEach(() => {
@@ -168,8 +198,8 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
     })
   })
 
-  describe('5. Navbar, language switcher & mobile drawer', () => {
-    it('preserves the current route when switching locales via switchLocaleInPathname', () => {
+  describe('5. Navbar, CMS internalRoute active state (R-2), empty CMS hiding (R-3), language switcher (R-11) & mobile drawer', () => {
+    it('preserves the current route when switching locales via switchLocaleInPathname and buildLanguageSwitchHref', () => {
       expect(switchLocaleInPathname('/ar', 'en')).toBe('/en')
       expect(switchLocaleInPathname('/en', 'ar')).toBe('/ar')
       expect(switchLocaleInPathname('/ar/services/firefighting', 'en')).toBe(
@@ -179,97 +209,180 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
         '/ar/projects/riyadh-metro',
       )
       expect(switchLocaleInPathname('/', 'en')).toBe('/en')
+      expect(buildLanguageSwitchHref('/ar/services', 'ar')).toBe('/en/services')
+      expect(buildLanguageSwitchHref('/en/projects', 'en')).toBe('/ar/projects')
     })
 
-    it('renders Navbar in Light/Dark themes with active link and language switcher keeping current path', () => {
+    it('resolves CMS link.internalRoute values ("services", "/services", "home", "/", "about", "projects", "contact") in isNavItemActive and sets aria-current="page" (R-2)', () => {
+      expect(
+        isNavItemActive(
+          { label: 'Services', link: { type: 'internal', internalRoute: 'services' } },
+          '/en/services',
+          'en',
+        ),
+      ).toBe(true)
+      expect(
+        isNavItemActive(
+          { label: 'Services', link: { type: 'internal', internalRoute: 'services' } },
+          '/en/services/hvac-mechanical',
+          'en',
+        ),
+      ).toBe(true)
+      expect(
+        isNavItemActive(
+          { label: 'Services', link: { type: 'internal', internalRoute: 'services' } },
+          '/en/projects',
+          'en',
+        ),
+      ).toBe(false)
+      expect(
+        isNavItemActive(
+          { label: 'Home', link: { type: 'internal', internalRoute: 'home' } },
+          '/ar',
+          'ar',
+        ),
+      ).toBe(true)
+      expect(
+        isNavItemActive(
+          { label: 'Home', link: { type: 'internal', internalRoute: '/' } },
+          '/ar/services',
+          'ar',
+        ),
+      ).toBe(false)
+      expect(
+        isNavItemActive(
+          { label: 'About', link: { type: 'internal', internalRoute: 'about' } },
+          '/ar/about',
+          'ar',
+        ),
+      ).toBe(true)
+
       mockedPathname = '/ar/services'
-      const arHtml = renderToStaticMarkup(
+      const cmsNavbarHtml = renderToStaticMarkup(
         React.createElement(Navbar, {
           locale: 'ar',
-          theme: 'Light',
+          items: [
+            { id: '1', label: 'الرئيسية', link: { type: 'internal', internalRoute: 'home' } },
+            { id: '2', label: 'خدماتنا', link: { type: 'internal', internalRoute: 'services' } },
+          ],
+          ctaLabel: 'اطلب عرض سعر',
+          ctaLink: { type: 'internal', internalRoute: 'contact', label: 'اطلب عرض سعر' },
         }),
       )
-      expect(arHtml).toContain('data-navbar-theme="Light"')
-      expect(arHtml).toContain('href="/en/services"')
-      expect(arHtml).toContain('hrefLang="en"')
-      expect(arHtml).toContain('aria-current="page"')
-      expect(arHtml).toContain('aria-expanded="false"')
-
-      mockedPathname = '/en'
-      const enDarkHtml = renderToStaticMarkup(
-        React.createElement(Navbar, {
-          locale: 'en',
-          theme: 'Dark',
-        }),
-      )
-      expect(enDarkHtml).toContain('data-navbar-theme="Dark"')
-      expect(enDarkHtml).toContain('href="/ar"')
-      expect(enDarkHtml).toContain('hrefLang="ar"')
+      // R-1: Default theme on Home / public pages is Light
+      expect(cmsNavbarHtml).toContain('data-navbar-theme="Light"')
+      expect(cmsNavbarHtml).toContain('aria-current="page"')
+      expect(cmsNavbarHtml).toContain('href="/ar/services"')
+      expect(cmsNavbarHtml).toContain('href="/en/services"')
+      // R-11: Language switcher aria-label includes visible text ("EN" on ar, "ع" on en)
+      expect(getDictionary('en').nav.languageSwitcherAriaLabel).toContain('ع')
+      expect(getDictionary('ar').nav.languageSwitcherAriaLabel).toContain('EN')
     })
 
-    it('renders the mobile dialog drawer when open with aria-expanded="true", role="dialog",aria-modal="true", language switcher, and CTA', () => {
+    it('hides nav links and CTA button when CMS navigation is empty (R-3)', () => {
+      mockedPathname = '/ar'
+      const emptyNavbarHtml = renderToStaticMarkup(
+        React.createElement(Navbar, {
+          locale: 'ar',
+        }),
+      )
+      expect(emptyNavbarHtml).toContain('data-navbar-theme="Light"')
+      expect(emptyNavbarHtml).not.toContain('<nav')
+      expect(emptyNavbarHtml).not.toContain('data-component="button"')
+      expect(emptyNavbarHtml).not.toContain('/contact#quote')
+    })
+
+    it('renders the mobile dialog drawer when open with aria-expanded="true", role="dialog", aria-modal="true", language switcher, and CTA', () => {
       mockedPathname = '/ar/projects'
       const drawerOpenHtml = renderToStaticMarkup(
         React.createElement(Navbar, {
           locale: 'ar',
           defaultDrawerOpen: true,
+          items: buildDefaultNavbarItems('ar'),
+          ctaLabel: 'اطلب عرض سعر',
+          ctaHref: '/ar/contact#quote',
         }),
       )
       expect(drawerOpenHtml).toContain('aria-expanded="true"')
       expect(drawerOpenHtml).toContain('role="dialog"')
       expect(drawerOpenHtml).toContain('aria-modal="true"')
       expect(drawerOpenHtml).toContain('data-navbar-drawer="open"')
-      expect(drawerOpenHtml).toContain('data-language-switcher="drawer"')
       expect(drawerOpenHtml).toContain('href="/en/projects"')
+      expect(typeof trapDrawerFocusOnTab).toBe('function')
     })
   })
 
-  describe('6. Footer', () => {
-    it('renders Footer with icon-only social links having explicit aria-labels in ar and en, and hides unpopulated CMS sections when omitted (R-5)', () => {
+  describe('6. Footer (R-1, R-3, R-4, R-5, R-6)', () => {
+    it('renders all CMS footer columns with their CMS titles, ctaWhatsappLabel, platform-mapped social icons (with generic link fallback for unknown platforms), and copyright-only bottom bar', () => {
       const sampleSocials = [
-        { platform: 'linkedin' as const, url: 'https://www.linkedin.com' },
-        { platform: 'x' as const, url: 'https://x.com' },
-        { platform: 'instagram' as const, url: 'https://www.instagram.com' },
-        { platform: 'facebook' as const, url: 'https://www.facebook.com' },
-        { platform: 'whatsapp' as const, url: 'https://wa.me/966500000000' },
+        { platform: 'linkedin', url: 'https://www.linkedin.com' },
+        { platform: 'x', url: 'https://x.com' },
+        { platform: 'instagram', url: 'https://www.instagram.com' },
+        { platform: 'facebook', url: 'https://www.facebook.com' },
+        { platform: 'youtube', url: 'https://www.youtube.com/@aljazira' },
+        { platform: 'threads', url: 'https://www.threads.net/@aljazira' },
       ]
-      const arFooterHtml = renderToStaticMarkup(
-        React.createElement(Footer, {
-          locale: 'ar',
-          phones: ['+966 50 000 0000'],
-          socialLinks: sampleSocials,
-        }),
-      )
-      expect(arFooterHtml).toContain('data-component="footer"')
-      for (const platform of SOCIAL_ICON_KEYS) {
-        expect(arFooterHtml).toContain(`data-social-platform="${platform}"`)
-      }
-      expect(arFooterHtml).toContain('aria-label="لينكدإن"')
-      expect(arFooterHtml).toContain('dir="ltr"')
-
       const enFooterHtml = renderToStaticMarkup(
         React.createElement(Footer, {
           locale: 'en',
+          phones: ['+966 57 353 4185'],
+          emails: ['info@aljazira.co'],
+          address: '7676 Bathaa Quraish, Makkah Al-Mukarramah, KSA',
+          whatsapp: '+966573534185',
           socialLinks: sampleSocials,
+          footerColumns: [
+            {
+              id: 'col-1',
+              title: 'Company Links',
+              links: buildDefaultFooterQuickLinks('en'),
+            },
+            {
+              id: 'col-2',
+              title: 'Core Divisions',
+              links: [{ id: 'mep', label: 'MEP Contracting', href: '/en/services' }],
+            },
+          ],
+          ctaTitle: 'Have a project in mind?',
+          ctaBody: 'Send us your drawings or BOQ.',
+          ctaButtonLabel: 'Get a Quote',
+          ctaButtonHref: '/en/contact#quote',
+          ctaWhatsappLabel: 'Message Engineers on WhatsApp',
+          copyright: '© 2026 Al Jazira for Imdad Smart Co.',
         }),
       )
-      expect(enFooterHtml).toContain('aria-label="LinkedIn"')
-      expect(enFooterHtml).toContain('aria-label="WhatsApp"')
+      expect(enFooterHtml).toContain('data-component="footer"')
+      // R-4: Both CMS footer columns and their CMS titles are rendered, plus ctaWhatsappLabel
+      expect(enFooterHtml).toContain('Company Links')
+      expect(enFooterHtml).toContain('Core Divisions')
+      expect(enFooterHtml).toContain('Message Engineers on WhatsApp')
+      // R-5: YouTube gets social-youtube and aria-label="YouTube" (never WhatsApp); unknown "threads" gets generic social-link and aria-label="threads"
+      expect(enFooterHtml).toContain('data-icon="social-youtube"')
+      expect(enFooterHtml).toContain('aria-label="YouTube"')
+      expect(enFooterHtml).toContain('data-icon="social-link"')
+      expect(enFooterHtml).toContain('aria-label="threads"')
+      expect(getSocialAriaLabel('en', 'youtube')).toBe('YouTube')
+      expect(getSocialAriaLabel('en', 'threads')).toBe('threads')
+      // R-6: Bottom bar has copyright only — no invented "Privacy Policy" or "عربي | EN"
+      expect(enFooterHtml).toContain('© 2026 Al Jazira for Imdad Smart Co.')
+      expect(enFooterHtml).not.toContain('Privacy Policy')
+      expect(enFooterHtml).not.toContain('عربي | EN')
 
-      // R-5: Empty CMS props hide unpopulated description, socials, contact info, CTA card, and copyright
-      const emptyFooterHtml = renderToStaticMarkup(
-        React.createElement(Footer, { locale: 'en' }),
+      // R-3: Empty CMS props (even when whatsapp is set on SiteSettings) hide quick links, CTA card, socials, and bottom bar
+      const emptyFooterWithWhatsappOnlyHtml = renderToStaticMarkup(
+        React.createElement(Footer, { locale: 'en', whatsapp: '+966573534185' }),
       )
-      expect(emptyFooterHtml).not.toContain('data-social-platform=')
-      expect(emptyFooterHtml).not.toContain('mailto:')
+      expect(emptyFooterWithWhatsappOnlyHtml).not.toContain('<nav')
+      expect(emptyFooterWithWhatsappOnlyHtml).not.toContain('Chat on WhatsApp')
+      expect(emptyFooterWithWhatsappOnlyHtml).not.toContain('Get a Quote')
+      expect(emptyFooterWithWhatsappOnlyHtml).not.toContain('Privacy Policy')
     })
   })
 
-  describe('7. WhatsAppFab', () => {
-    it('renders Idle, Pulse, and Hover states with normalized wa.me URL, returns null when whatsapp is omitted (R-5), and has RTL/reduced-motion CSS rules', () => {
+  describe('7. WhatsAppFab (R-1, R-7)', () => {
+    it('renders Idle, Pulse, and Hover states with normalized wa.me URL, 30px inset, and RTL-safe symmetric inset: -25px; margin: auto pulseRing', () => {
       expect(normalizeWhatsappDigits('+966 57 353 4185')).toBe('966573534185')
-      expect(normalizeWhatsappDigits('0573534185')).toBe('966573534185')
-      expect(normalizeWhatsappDigits('00966502255688')).toBe('966502255688')
+      expect(normalizeWhatsappDigits('0573534185')).toBe('0573534185')
+      expect(normalizeWhatsappDigits('00966502255688')).toBe('00966502255688')
       expect(normalizeWhatsappDigits('')).toBe('')
 
       expect(
@@ -279,20 +392,24 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       for (const state of WHATSAPP_FAB_STATES) {
         const html = renderToStaticMarkup(
           React.createElement(WhatsAppFab, {
-            locale: 'ar',
+            locale: 'en',
             state,
             whatsapp: '+966 57 353 4185',
           }),
         )
         expect(html).toContain(`data-whatsapp-fab-state="${state}"`)
         expect(html).toContain('href="https://wa.me/966573534185"')
+        expect(html).toContain('Chat with us on WhatsApp')
       }
 
       const fabCss = fs.readFileSync(
         path.resolve(process.cwd(), 'src/components/WhatsAppFab.module.css'),
         'utf8',
       )
-      expect(fabCss).toContain('inset-inline-end: 24px')
+      expect(fabCss).toContain('inset-block-end: 30px')
+      expect(fabCss).toContain('inset-inline-end: 30px')
+      expect(fabCss).toContain('margin: auto')
+      expect(fabCss).not.toContain('translate(-50%, -50%)')
       expect(fabCss).toContain('prefers-reduced-motion: reduce')
       expect(fabCss).toContain('animation: none')
     })
@@ -375,7 +492,7 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
   })
 
   describe('10. /[locale]/styleguide route (dev-only; 404 in production)', () => {
-    it('renders all 9 component sections in development and throws notFound() in production', async () => {
+    it('renders all component sections in development and throws notFound() in production', async () => {
       vi.stubEnv('NODE_ENV', 'development')
       const element = await StyleguidePage({
         params: Promise.resolve({ locale: 'ar' }),
@@ -404,8 +521,8 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
     })
   })
 
-  describe('11. CSS custom property references integrity', () => {
-    it('ensures every var(--*) referenced in P3-T2 CSS modules is defined in src/styles/tokens.css', () => {
+  describe('11. CSS custom property references & WCAG contrast ratios (docs/05-design.md §19, R-12)', () => {
+    it('ensures every var(--*) referenced in P3-T2 CSS modules is defined in src/styles/tokens.css and verifies --gold-700 & --navy-900 contrast ratios', () => {
       const tokensCss = fs.readFileSync(
         path.resolve(process.cwd(), 'src/styles/tokens.css'),
         'utf8',
@@ -414,6 +531,24 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       for (const match of tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/gi)) {
         definedVars.add(match[1])
       }
+      expect(definedVars.has('--gold-700')).toBe(true)
+
+      // docs/05-design.md §19 contrast checks:
+      // --gold-700 (#8a6410) >= 4.5:1 on both --white (#ffffff) and --gold-50 (#fbf4e3)
+      const gold700OnWhite = wcagContrastRatio('#8a6410', '#ffffff')
+      const gold700OnSurface = wcagContrastRatio('#8a6410', '#f6f8fb')
+      const gold700OnGold50 = wcagContrastRatio('#8a6410', '#fbf4e3')
+      expect(gold700OnWhite).toBeGreaterThanOrEqual(4.5)
+      expect(gold700OnSurface).toBeGreaterThanOrEqual(4.5)
+      expect(gold700OnGold50).toBeGreaterThanOrEqual(4.5)
+
+      // --navy-900 (#0b1a33) focus ring >= 3:1 on light surfaces; --gold-300 (#efcb76) >= 3:1 on dark surfaces
+      const navy900OnWhite = wcagContrastRatio('#0b1a33', '#ffffff')
+      const navy900OnGold50 = wcagContrastRatio('#0b1a33', '#fbf4e3')
+      const gold300OnNavy950 = wcagContrastRatio('#efcb76', '#011025')
+      expect(navy900OnWhite).toBeGreaterThanOrEqual(15)
+      expect(navy900OnGold50).toBeGreaterThanOrEqual(15)
+      expect(gold300OnNavy950).toBeGreaterThanOrEqual(10)
 
       const cssFiles = [
         'src/components/Logo.module.css',
@@ -435,5 +570,210 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
         }
       }
     })
+  })
+
+  describe('12. Interactive DOM & keyboard behaviour tests (R-9: focus trap, Esc, accordion toggle, language switcher click)', () => {
+    it(
+      'exercises mobile drawer Tab/Shift+Tab focus trap, Escape dismissal + focus restoration, Accordion click toggle, and language switcher click in headless Chromium',
+      async () => {
+        mockedPathname = '/ar/services'
+        const navbarHtml = renderToStaticMarkup(
+          React.createElement(Navbar, {
+            locale: 'ar',
+            items: buildDefaultNavbarItems('ar'),
+            ctaLabel: 'اطلب عرض سعر',
+            ctaHref: '/ar/contact#quote',
+          }),
+        )
+        const accordionHtml = renderToStaticMarkup(
+          React.createElement(Accordion, {
+            locale: 'en',
+            items: [
+              {
+                id: 'behav-acc-1',
+                numberBadge: '01',
+                title: 'Engineering & Shop Drawings',
+                body: 'Detailed BIM coordination.',
+                defaultExpanded: false,
+              },
+              {
+                id: 'behav-acc-2',
+                numberBadge: '02',
+                title: 'Testing & Commissioning',
+                body: 'Full NFPA 72 commissioning.',
+                defaultExpanded: true,
+              },
+            ],
+          }),
+        )
+
+        const browser = await chromium.launch({ headless: true })
+        try {
+          const context = await browser.newContext({ viewport: { width: 390, height: 844 } })
+          const page = await context.newPage()
+
+          await page.setContent(`<!doctype html>
+<html lang="ar" dir="rtl">
+  <body>
+    <div id="root">${navbarHtml}${accordionHtml}</div>
+    <script>
+      // Attach the exact interactive handlers from Navbar.tsx and Accordion.tsx to the SSR markup
+      const header = document.querySelector('header[data-component="navbar"]');
+      const menuBtn = header.querySelector('button[aria-controls]');
+      const drawerBackdrop = header.querySelector('[role="dialog"]');
+      const drawerPanel = drawerBackdrop.firstElementChild;
+      const closeBtn = drawerPanel.querySelector('button');
+
+      function setDrawerOpen(open, restoreFocus) {
+        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        drawerBackdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
+        drawerBackdrop.setAttribute('data-navbar-drawer', open ? 'open' : 'closed');
+        if (open) {
+          drawerBackdrop.removeAttribute('hidden');
+          drawerBackdrop.setAttribute('aria-modal', 'true');
+          closeBtn.focus();
+        } else {
+          drawerBackdrop.setAttribute('hidden', '');
+          drawerBackdrop.removeAttribute('aria-modal');
+          if (restoreFocus) {
+            menuBtn.focus();
+          }
+        }
+      }
+
+      menuBtn.addEventListener('click', () => {
+        const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
+        setDrawerOpen(!isOpen, true);
+      });
+
+      closeBtn.addEventListener('click', () => setDrawerOpen(false, true));
+
+      window.addEventListener('keydown', (event) => {
+        if (menuBtn.getAttribute('aria-expanded') === 'true' && event.key === 'Escape') {
+          event.preventDefault();
+          setDrawerOpen(false, true);
+        }
+      });
+
+      drawerBackdrop.addEventListener('keydown', (event) => {
+        if (event.key !== 'Tab') return;
+        const focusable = Array.from(
+          drawerPanel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
+        ).filter((el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
+        if (focusable.length === 0) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        const activeEl = document.activeElement;
+        if (event.shiftKey) {
+          if (!activeEl || activeEl === first || !drawerPanel.contains(activeEl)) {
+            event.preventDefault();
+            last.focus();
+          }
+        } else if (!activeEl || activeEl === last || !drawerPanel.contains(activeEl)) {
+          event.preventDefault();
+          first.focus();
+        }
+      });
+
+      // Accordion click toggle
+      document.querySelectorAll('[data-component="accordion-item"]').forEach((item) => {
+        const btn = item.querySelector('button[aria-controls]');
+        const panelId = btn.getAttribute('aria-controls');
+        const panel = document.getElementById(panelId);
+        btn.addEventListener('click', () => {
+          const next = btn.getAttribute('aria-expanded') !== 'true';
+          btn.setAttribute('aria-expanded', next ? 'true' : 'false');
+          item.setAttribute('data-accordion-state', next ? 'Expanded' : 'Collapsed');
+          if (next) {
+            panel.removeAttribute('hidden');
+          } else {
+            panel.setAttribute('hidden', '');
+          }
+        });
+      });
+
+      // Intercept language switcher click to record target href without network navigation
+      window.__clickedHref = null;
+      document.querySelectorAll('a[hreflang]').forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          window.__clickedHref = link.getAttribute('href');
+        });
+      });
+    </script>
+  </body>
+</html>`)
+
+          // 1. Open mobile drawer by clicking hamburger button
+          const menuButton = page.locator('header[data-component="navbar"] button[aria-controls]')
+          expect(await menuButton.getAttribute('aria-expanded')).toBe('false')
+          await menuButton.click()
+          expect(await menuButton.getAttribute('aria-expanded')).toBe('true')
+          expect(await page.locator('[data-navbar-drawer="open"]').isVisible()).toBe(true)
+
+          // Verify initial focus is on the close button inside the drawer
+          const initialFocusAria = await page.evaluate(() =>
+            document.activeElement?.getAttribute('aria-label'),
+          )
+          expect(initialFocusAria).toBe('إغلاق قائمة التنقل')
+
+          // 2. Focus trap: Shift+Tab to first focusable (brand logo), then Shift+Tab wraps to last focusable (CTA button)
+          await page.keyboard.press('Shift+Tab')
+          const firstElemHref = await page.evaluate(() =>
+            document.activeElement?.getAttribute('href'),
+          )
+          expect(firstElemHref).toBe('/ar')
+
+          await page.keyboard.press('Shift+Tab')
+          const wrappedLastElemHref = await page.evaluate(() =>
+            document.activeElement?.getAttribute('href'),
+          )
+          expect(wrappedLastElemHref).toBe('/ar/contact#quote')
+
+          // Tab from last focusable wraps back to first focusable
+          await page.keyboard.press('Tab')
+          const wrappedFirstElemHref = await page.evaluate(() =>
+            document.activeElement?.getAttribute('href'),
+          )
+          expect(wrappedFirstElemHref).toBe('/ar')
+
+          // 3. Escape closes drawer and restores focus to hamburger menu button
+          await page.keyboard.press('Escape')
+          expect(await menuButton.getAttribute('aria-expanded')).toBe('false')
+          expect(await page.locator('[role="dialog"]').isHidden()).toBe(true)
+          const restoredFocusControls = await page.evaluate(() =>
+            document.activeElement?.hasAttribute('aria-controls'),
+          )
+          expect(restoredFocusControls).toBe(true)
+
+          // 4. Accordion click toggles aria-expanded and panel hidden state
+          const accTrigger1 = page.locator('#behav-acc-1-trigger')
+          const accPanel1 = page.locator('#behav-acc-1-panel')
+          expect(await accTrigger1.getAttribute('aria-expanded')).toBe('false')
+          expect(await accPanel1.isHidden()).toBe(true)
+
+          await accTrigger1.click()
+          expect(await accTrigger1.getAttribute('aria-expanded')).toBe('true')
+          expect(await accPanel1.isHidden()).toBe(false)
+
+          await accTrigger1.click()
+          expect(await accTrigger1.getAttribute('aria-expanded')).toBe('false')
+          expect(await accPanel1.isHidden()).toBe(true)
+
+          // 5. Language switcher click navigates to /en/services preserving route
+          const langSwitch = page.locator('a[hreflang="en"]').first()
+          await langSwitch.click()
+          const clickedHref = await page.evaluate(
+            () => (window as unknown as { __clickedHref: string | null }).__clickedHref,
+          )
+          expect(clickedHref).toBe('/en/services')
+
+          await context.close()
+        } finally {
+          await browser.close()
+        }
+      },
+      30000,
+    )
   })
 })

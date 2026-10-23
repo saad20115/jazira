@@ -6,8 +6,8 @@ import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 
 /**
- * Self-contained machine-captured evidence generator for `P3-T2` (`R-1`, `M-107`,
- * `handoff/tasks/P3-T2.md`, `handoff/README.md` §"Machine-captured evidence").
+ * Self-contained machine-captured evidence generator for `P3-T2` (`R-1`..`R-12`, `M-107`,
+ * `handoff/tasks/P3-T2.md`, `handoff/README.md` §"Machine-captured evidence", `docs/05-design.md` §19).
  *
  * Usage:
  *   node scripts/evidence/p3-t2-evidence.mjs --dev [baseUrl] [evidenceDir] [phase3Dir]
@@ -23,6 +23,27 @@ function getRepoHeaderBlock() {
     // ignore
   }
   return [`$ pwd`, cwd, `$ git rev-parse HEAD`, head, ''].join('\n')
+}
+
+function srgbToLinear(c8) {
+  const c = c8 / 255
+  return c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4)
+}
+
+function relativeLuminance(hex) {
+  const clean = hex.replace(/^#/, '')
+  const r = Number.parseInt(clean.slice(0, 2), 16)
+  const g = Number.parseInt(clean.slice(2, 4), 16)
+  const b = Number.parseInt(clean.slice(4, 6), 16)
+  return 0.2126 * srgbToLinear(r) + 0.7152 * srgbToLinear(g) + 0.0722 * srgbToLinear(b)
+}
+
+function computeContrastRatio(fgHex, bgHex) {
+  const l1 = relativeLuminance(fgHex)
+  const l2 = relativeLuminance(bgHex)
+  const lighter = Math.max(l1, l2)
+  const darker = Math.min(l1, l2)
+  return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(2))
 }
 
 const COMPONENT_SECTION_MAP = [
@@ -139,11 +160,123 @@ async function runProd404Check(baseUrl, evidenceDir) {
   )
 }
 
+function writeContrastReport(evidenceDir, headerBlock) {
+  const pairs = [
+    {
+      label: 'Small gold text on white (Accordion "Show details", ServiceTile "Learn more")',
+      foregroundToken: '--gold-700',
+      foregroundHex: '#8a6410',
+      backgroundToken: '--white',
+      backgroundHex: '#ffffff',
+      minRequired: 4.5,
+    },
+    {
+      label: 'Small gold text on surface (PartnerTile hover subtitle on surface)',
+      foregroundToken: '--gold-700',
+      foregroundHex: '#8a6410',
+      backgroundToken: '--surface',
+      backgroundHex: '#f6f8fb',
+      minRequired: 4.5,
+    },
+    {
+      label: 'Small gold text on gold-50 (Eyebrow Light, Accordion expanded badge)',
+      foregroundToken: '--gold-700',
+      foregroundHex: '#8a6410',
+      backgroundToken: '--gold-50',
+      backgroundHex: '#fbf4e3',
+      minRequired: 4.5,
+    },
+    {
+      label: 'Light-surface focus-visible ring on white',
+      foregroundToken: '--navy-900',
+      foregroundHex: '#0b1a33',
+      backgroundToken: '--white',
+      backgroundHex: '#ffffff',
+      minRequired: 3.0,
+    },
+    {
+      label: 'Light-surface focus-visible ring on surface',
+      foregroundToken: '--navy-900',
+      foregroundHex: '#0b1a33',
+      backgroundToken: '--surface',
+      backgroundHex: '#f6f8fb',
+      minRequired: 3.0,
+    },
+    {
+      label: 'Light-surface focus-visible ring on gold-50',
+      foregroundToken: '--navy-900',
+      foregroundHex: '#0b1a33',
+      backgroundToken: '--gold-50',
+      backgroundHex: '#fbf4e3',
+      minRequired: 3.0,
+    },
+    {
+      label: 'Dark-surface focus-visible ring & Eyebrow Dark text on navy-950',
+      foregroundToken: '--gold-300',
+      foregroundHex: '#efcb76',
+      backgroundToken: '--navy-950',
+      backgroundHex: '#011025',
+      minRequired: 4.5,
+    },
+    {
+      label: 'Dark-surface focus-visible ring on navy-900',
+      foregroundToken: '--gold-300',
+      foregroundHex: '#efcb76',
+      backgroundToken: '--navy-900',
+      backgroundHex: '#0b1a33',
+      minRequired: 4.5,
+    },
+    {
+      label: 'Gold Button text (--navy-950) on --gold-500 fill',
+      foregroundToken: '--navy-950',
+      foregroundHex: '#011025',
+      backgroundToken: '--gold-500',
+      backgroundHex: '#dfa82a',
+      minRequired: 4.5,
+    },
+    {
+      label: 'Body text (--text-body) on --white',
+      foregroundToken: '--text-body',
+      foregroundHex: '#475467',
+      backgroundToken: '--white',
+      backgroundHex: '#ffffff',
+      minRequired: 4.5,
+    },
+  ].map((entry) => {
+    const ratio = computeContrastRatio(entry.foregroundHex, entry.backgroundHex)
+    const pass = ratio >= entry.minRequired
+    if (!pass) {
+      throw new Error(
+        `Contrast check failed for ${entry.label}: ${String(ratio)}:1 < ${String(entry.minRequired)}:1`,
+      )
+    }
+    return { ...entry, ratio, pass }
+  })
+
+  const lines = [
+    headerBlock.trimEnd(),
+    '=== WCAG 2.1 Contrast Verification (docs/05-design.md §19, R-12) ===',
+    ...pairs.map(
+      (p) =>
+        `- [PASS] ${p.label}: ${p.foregroundToken} (${p.foregroundHex}) on ${p.backgroundToken} (${p.backgroundHex}) -> ${String(p.ratio)}:1 (required >= ${String(p.minRequired)}:1)`,
+    ),
+    '',
+  ]
+  fs.writeFileSync(path.join(evidenceDir, 'contrast-ratios.log'), `${lines.join('\n')}\n`, 'utf8')
+  fs.writeFileSync(
+    path.join(evidenceDir, 'contrast-ratios.json'),
+    `${JSON.stringify({ generatedAt: new Date().toISOString(), pairs }, null, 2)}\n`,
+    'utf8',
+  )
+}
+
 async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
   fs.mkdirSync(evidenceDir, { recursive: true })
   fs.mkdirSync(phase3Dir, { recursive: true })
   const outDirs = [evidenceDir, phase3Dir]
   const headerBlock = getRepoHeaderBlock()
+
+  writeContrastReport(evidenceDir, headerBlock)
 
   const browser = await chromium.launch({ headless: true })
   try {
@@ -233,7 +366,6 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
           await createSideBySideImage(figmaBuf, sectionBuf, sideBySidePath)
           copyToDirs(sideBySidePath, outDirs)
         }
-        // Icons section screenshot
         const iconsLocator = page.locator('[data-styleguide-section="icons"]')
         const iconsPath = path.join(evidenceDir, 'styleguide-icons-en.png')
         await iconsLocator.screenshot({ path: iconsPath })
@@ -243,7 +375,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       await context.close()
     }
 
-    // 2. Navbar + mobile drawer at 1440 / 768 / 390 in ar and en
+    // 2. Navbar + mobile drawer at 1440 / 768 / 390 in ar and en (captured on /[locale]/styleguide where full preview nav items & CTA are rendered)
     const viewports = [
       { width: 1440, height: 900, hasDrawer: false },
       { width: 768, height: 1024, hasDrawer: true },
@@ -256,7 +388,10 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
           viewport: { width: vp.width, height: vp.height },
         })
         const page = await context.newPage()
-        await page.goto(`${baseUrl}/${locale}`, { waitUntil: 'networkidle', timeout: 60000 })
+        await page.goto(`${baseUrl}/${locale}/styleguide`, {
+          waitUntil: 'networkidle',
+          timeout: 60000,
+        })
         await page.evaluate(async () => {
           document.querySelectorAll('nextjs-portal').forEach((el) => el.remove())
           if (document.fonts && document.fonts.ready) {
@@ -269,7 +404,9 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         copyToDirs(closedPath, outDirs)
 
         if (vp.hasDrawer) {
-          const burger = page.locator('header[data-component="navbar"] button[aria-controls]')
+          const burger = page
+            .locator('header[data-component="navbar"] button[aria-controls]')
+            .first()
           await burger.click()
           await page.locator('[data-navbar-drawer="open"]').waitFor({ state: 'visible' })
           const drawerPath = path.join(
@@ -283,6 +420,142 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         await context.close()
       }
     }
+
+    // 2b. Verify Figma geometry on /en/styleguide & /ar/styleguide at 1440 and /ar & /en Home overlay (`R-1`, `R-3`, `R-7`, `R-10`)
+    const geoContext = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+    const geoPage = await geoContext.newPage()
+    await geoPage.goto(`${baseUrl}/en`, { waitUntil: 'networkidle', timeout: 60000 })
+    const homeMetrics = await geoPage.evaluate(() => {
+      const nav = document.querySelector('header[data-component="navbar"]')
+      const main = document.querySelector('main')
+      const navRect = nav ? nav.getBoundingClientRect() : null
+      const mainRect = main ? main.getBoundingClientRect() : null
+      const navStyle = nav ? window.getComputedStyle(nav) : null
+      return {
+        theme: nav ? nav.getAttribute('data-navbar-theme') : null,
+        navTop: navRect ? Math.round(navRect.top) : null,
+        navBottom: navRect ? Math.round(navRect.bottom) : null,
+        mainTop: mainRect ? Math.round(mainRect.top) : null,
+        borderBottomWidth: navStyle ? navStyle.borderBottomWidth : null,
+      }
+    })
+
+    await geoPage.goto(`${baseUrl}/en/styleguide`, { waitUntil: 'networkidle', timeout: 60000 })
+    const styleguideEnMetrics = await geoPage.evaluate(() => {
+      const topNav = document.querySelector('header[data-component="navbar"]')
+      const desktopNav = topNav ? topNav.querySelector('nav') : null
+      const navRect = desktopNav ? desktopNav.getBoundingClientRect() : null
+
+      const footerEl = document.querySelector('footer[data-component="footer"]')
+      const footerRect = footerEl ? footerEl.getBoundingClientRect() : null
+      const quickLinksCol = footerEl
+        ? footerEl.querySelectorAll('[class*="linksColumn"]')[0]
+        : null
+      const contactCol = footerEl ? footerEl.querySelector('[class*="contactColumn"]') : null
+      const descEl = footerEl ? footerEl.querySelector('[class*="description"]') : null
+      const headingEl = footerEl ? footerEl.querySelector('h2') : null
+      const ctaTitleEl = footerEl ? footerEl.querySelector('[class*="ctaTitle"]') : null
+      const ctaBodyEl = footerEl ? footerEl.querySelector('[class*="ctaBody"]') : null
+
+      const fLeft = footerRect ? footerRect.left : 0
+      const qlRect = quickLinksCol ? quickLinksCol.getBoundingClientRect() : null
+      const ctRect = contactCol ? contactCol.getBoundingClientRect() : null
+      const descRect = descEl ? descEl.getBoundingClientRect() : null
+      const hStyle = headingEl ? window.getComputedStyle(headingEl) : null
+      const ctaTitleStyle = ctaTitleEl ? window.getComputedStyle(ctaTitleEl) : null
+      const ctaBodyStyle = ctaBodyEl ? window.getComputedStyle(ctaBodyEl) : null
+
+      return {
+        navbarLinksLeft: navRect ? Math.round(navRect.left) : null,
+        navbarLinksRight: navRect ? Math.round(navRect.right) : null,
+        footerHeight: footerRect ? Math.round(footerRect.height) : null,
+        footerDescriptionWidth: descRect ? Math.round(descRect.width) : null,
+        footerQuickLinksX: qlRect ? Math.round(qlRect.left - fLeft) : null,
+        footerContactX: ctRect ? Math.round(ctRect.left - fLeft) : null,
+        footerHeadingFontSize: hStyle ? hStyle.fontSize : null,
+        footerHeadingFontWeight: hStyle ? hStyle.fontWeight : null,
+        footerHeadingTextTransform: hStyle ? hStyle.textTransform : null,
+        footerCtaTitleFontSize: ctaTitleStyle ? ctaTitleStyle.fontSize : null,
+        footerCtaBodyFontSize: ctaBodyStyle ? ctaBodyStyle.fontSize : null,
+        footerCtaBodyLineHeight: ctaBodyStyle ? ctaBodyStyle.lineHeight : null,
+      }
+    })
+
+    await geoPage.goto(`${baseUrl}/ar/styleguide`, { waitUntil: 'networkidle', timeout: 60000 })
+    const rtlFabMetrics = await geoPage.evaluate(() => {
+      const pulseFab = document.querySelector('[data-whatsapp-fab-state="Pulse"]')
+      const ring = pulseFab ? pulseFab.querySelector('[class*="pulseRing"]') : null
+      const btn = pulseFab ? pulseFab.querySelector('a') : null
+      const rRect = ring ? ring.getBoundingClientRect() : null
+      const bRect = btn ? btn.getBoundingClientRect() : null
+      return {
+        ringCenterX: rRect ? Math.round(rRect.left + rRect.width / 2) : null,
+        ringCenterY: rRect ? Math.round(rRect.top + rRect.height / 2) : null,
+        buttonCenterX: bRect ? Math.round(bRect.left + bRect.width / 2) : null,
+        buttonCenterY: bRect ? Math.round(bRect.top + bRect.height / 2) : null,
+      }
+    })
+    await geoContext.close()
+
+    // Mobile 390px hit-target verification (`R-10`)
+    const mobileGeoContext = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    const mobileGeoPage = await mobileGeoContext.newPage()
+    await mobileGeoPage.goto(`${baseUrl}/ar/styleguide`, {
+      waitUntil: 'networkidle',
+      timeout: 60000,
+    })
+    await mobileGeoPage
+      .locator('header[data-component="navbar"] button[aria-controls]')
+      .first()
+      .click()
+    await mobileGeoPage.locator('[data-navbar-drawer="open"]').waitFor({ state: 'visible' })
+    const mobileHitTargets = await mobileGeoPage.evaluate(() => {
+      const drawerLink = document.querySelector('[data-navbar-drawer="open"] nav a')
+      const socialBtn = document.querySelector('footer[data-component="footer"] ul a')
+      const footerQuickLink = document.querySelector('footer[data-component="footer"] nav a')
+      return {
+        drawerLinkHeight: drawerLink ? Math.round(drawerLink.getBoundingClientRect().height) : null,
+        socialButtonWidth: socialBtn ? Math.round(socialBtn.getBoundingClientRect().width) : null,
+        socialButtonHeight: socialBtn ? Math.round(socialBtn.getBoundingClientRect().height) : null,
+        footerQuickLinkHeight: footerQuickLink
+          ? Math.round(footerQuickLink.getBoundingClientRect().height)
+          : null,
+      }
+    })
+    await mobileGeoContext.close()
+
+    const geometryPayload = {
+      baseUrl,
+      generatedAt: new Date().toISOString(),
+      homeMetrics,
+      styleguideEnMetrics,
+      rtlFabMetrics,
+      mobileHitTargets,
+    }
+    fs.writeFileSync(
+      path.join(evidenceDir, 'figma-geometry-verification.json'),
+      `${JSON.stringify(geometryPayload, null, 2)}\n`,
+      'utf8',
+    )
+    const geoLines = [
+      headerBlock.trimEnd(),
+      '=== Figma Geometry, RTL FAB Centering & 390px Hit Target Verification (R-1, R-7, R-10) ===',
+      `- Home Navbar Theme: ${String(homeMetrics.theme)} (expected Light), borderBottomWidth=${String(homeMetrics.borderBottomWidth)} (expected 0px)`,
+      `- Home Navbar Overlay: navbar y=${String(homeMetrics.navTop)}..${String(homeMetrics.navBottom)}, <main> y=${String(homeMetrics.mainTop)} (expected 0)`,
+      `- Desktop Navbar Links x-range at 1440px: ${String(styleguideEnMetrics.navbarLinksLeft)}–${String(styleguideEnMetrics.navbarLinksRight)} (centred around 720px)`,
+      `- Footer Quick Links x=${String(styleguideEnMetrics.footerQuickLinksX)} (expected 508), Contact Info x=${String(styleguideEnMetrics.footerContactX)} (expected 716)`,
+      `- Footer Height=${String(styleguideEnMetrics.footerHeight)}px (expected 503px), Description Width=${String(styleguideEnMetrics.footerDescriptionWidth)}px (expected 300px)`,
+      `- Footer Column Heading: fontSize=${String(styleguideEnMetrics.footerHeadingFontSize)}, fontWeight=${String(styleguideEnMetrics.footerHeadingFontWeight)}, textTransform=${String(styleguideEnMetrics.footerHeadingTextTransform)}`,
+      `- Footer CTA Title fontSize=${String(styleguideEnMetrics.footerCtaTitleFontSize)}, CTA Body=${String(styleguideEnMetrics.footerCtaBodyFontSize)}/${String(styleguideEnMetrics.footerCtaBodyLineHeight)}`,
+      `- RTL WhatsApp FAB Pulse Ring Center: (${String(rtlFabMetrics.ringCenterX)}, ${String(rtlFabMetrics.ringCenterY)}) vs Button Center: (${String(rtlFabMetrics.buttonCenterX)}, ${String(rtlFabMetrics.buttonCenterY)})`,
+      `- Mobile 390px Hit Targets: drawerLinkHeight=${String(mobileHitTargets.drawerLinkHeight)}px, socialButton=${String(mobileHitTargets.socialButtonWidth)}x${String(mobileHitTargets.socialButtonHeight)}px, footerQuickLinkHeight=${String(mobileHitTargets.footerQuickLinkHeight)}px`,
+      '',
+    ]
+    fs.writeFileSync(
+      path.join(evidenceDir, 'figma-geometry-verification.log'),
+      `${geoLines.join('\n')}\n`,
+      'utf8',
+    )
 
     // 3. Machine-captured keyboard walkthrough (Desktop Navbar, Mobile Drawer focus trap + Esc, Accordion)
     const readActiveElementInfo = async (pg) =>
@@ -303,10 +576,13 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         }
       })
 
-    // 3a. Desktop Navbar tab order at 1440x900 (/ar)
+    // 3a. Desktop Navbar tab order at 1440x900 (/ar/styleguide)
     const desktopKbContext = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     const desktopKbPage = await desktopKbContext.newPage()
-    await desktopKbPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle', timeout: 60000 })
+    await desktopKbPage.goto(`${baseUrl}/ar/styleguide`, {
+      waitUntil: 'networkidle',
+      timeout: 60000,
+    })
     const desktopNavbarSteps = []
     const desktopLabels = [
       'Tab 1 (skip link)',
@@ -328,13 +604,12 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     }
     await desktopKbContext.close()
 
-    // 3b. Mobile Drawer tab order, focus trap, and Escape at 390x844 (/ar)
+    // 3b. Mobile Drawer tab order, focus trap, and Escape at 390x844 (/ar/styleguide)
     const kbContext = await browser.newContext({ viewport: { width: 390, height: 844 } })
     const kbPage = await kbContext.newPage()
-    await kbPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle', timeout: 60000 })
+    await kbPage.goto(`${baseUrl}/ar/styleguide`, { waitUntil: 'networkidle', timeout: 60000 })
 
     const mobileDrawerSteps = []
-    // Tab 1: skip-link -> Tab 2: brand logo -> Tab 3: hamburger button
     await kbPage.keyboard.press('Tab')
     mobileDrawerSteps.push({ step: 'Tab 1 (skip link)', active: await readActiveElementInfo(kbPage) })
     await kbPage.keyboard.press('Tab')
@@ -418,13 +693,13 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       headerBlock.trimEnd(),
       `BaseURL: ${baseUrl}`,
       '',
-      '=== 1. Desktop Navbar Keyboard Walkthrough (/ar at 1440x900) ===',
+      '=== 1. Desktop Navbar Keyboard Walkthrough (/ar/styleguide at 1440x900) ===',
       ...desktopNavbarSteps.map(
         (s) =>
           `- ${s.step}: <${String(s.active?.tag)}> text="${String(s.active?.text ?? '')}" aria-label="${String(s.active?.ariaLabel ?? '')}" aria-current="${String(s.active?.ariaCurrent ?? '')}" href="${String(s.active?.href ?? '')}" outline="${String(s.active?.outlineWidth)} ${String(s.active?.outlineStyle)} ${String(s.active?.outlineColor)}"`,
       ),
       '',
-      '=== 2. Mobile Drawer Keyboard Walkthrough (/ar at 390x844) ===',
+      '=== 2. Mobile Drawer Keyboard Walkthrough (/ar/styleguide at 390x844) ===',
       ...mobileDrawerSteps.map(
         (s) =>
           `- ${s.step}: <${String(s.active?.tag)}> text="${String(s.active?.text ?? '')}" aria-label="${String(s.active?.ariaLabel ?? '')}" aria-expanded="${String(s.active?.ariaExpanded ?? '')}" href="${String(s.active?.href ?? '')}" outline="${String(s.active?.outlineWidth)} ${String(s.active?.outlineStyle)} ${String(s.active?.outlineColor)}"`,
@@ -457,7 +732,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     }
 
     process.stdout.write(
-      `[p3-t2-evidence] Completed dev styleguide screenshots, side-by-side sheets, responsive navbar/drawer captures, and keyboard walkthrough in ${evidenceDir}.\n`,
+      `[p3-t2-evidence] Completed dev styleguide screenshots, side-by-side sheets, responsive navbar/drawer captures, Figma geometry verification, contrast log, and keyboard walkthrough in ${evidenceDir}.\n`,
     )
   } finally {
     await browser.close()
@@ -468,7 +743,7 @@ async function main() {
   const flags = new Set(process.argv.slice(2).filter((a) => a.startsWith('--')))
   const args = process.argv.slice(2).filter((a) => !a.startsWith('--'))
   const baseUrl = (args[0] || process.env.BASE_URL || 'http://localhost:3000').replace(/\/+$/, '')
-  const evidenceDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T2/r1')
+  const evidenceDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T2/r2')
   const phase3Dir = path.resolve(process.cwd(), args[2] || 'docs/reports/phase-3/P3-T2')
 
   if (flags.has('--prod')) {

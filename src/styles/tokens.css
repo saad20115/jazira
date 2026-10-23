@@ -20,6 +20,7 @@
   --text-muted: #8a93a3;
   --white: #ffffff;
   --gold: var(--gold-500);
+  --gold-700: #8a6410;
   --body: var(--text-body);
   --muted: var(--text-muted);
   --danger: #b42318;
@@ -44,8 +45,16 @@
   --glass-border-white-8: rgba(255, 255, 255, 0.08);
   --glass-border-white-10: rgba(255, 255, 255, 0.1);
   --glass-border-white-14: rgba(255, 255, 255, 0.14);
+  --glass-border-white-20: rgba(255, 255, 255, 0.2);
+  --glass-border-white-22: rgba(255, 255, 255, 0.22);
+  --glass-border-white-24: rgba(255, 255, 255, 0.24);
+  --glass-border-white-30: rgba(255, 255, 255, 0.3);
   --glass-border-white-50: rgba(255, 255, 255, 0.5);
+  --overlay-navy-70: rgba(1, 16, 37, 0.7);
+  --gold-border-45: rgba(223, 168, 42, 0.45);
   --border-gold-light: rgba(239, 203, 118, 0.6);
+  --success-border: rgba(51, 204, 128, 0.5);
+  --success-dot: rgb(51, 204, 128);
   --surface-navbar-light: rgba(255, 255, 255, 0.94);
   --icon-social-muted: rgb(153, 166, 186);
 
@@ -55,6 +64,12 @@
     rgba(1, 16, 37, 0.15),
     rgba(1, 16, 37, 0.9)
   );
+  --gradient-service-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.25) 0%, rgba(1, 16, 37, 0.92) 100%);
+  --gradient-service-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.45) 0%, rgba(1, 16, 37, 0.96) 100%);
+  --gradient-project-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.15) 0%, rgba(1, 16, 37, 0.92) 100%);
+  --gradient-project-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.35) 0%, rgba(1, 16, 37, 0.96) 100%);
+  --gradient-team-card-overlay: linear-gradient(to top, var(--navy-950) 0%, rgba(1, 16, 37, 0) 100%);
+  --gradient-portrait-glow: radial-gradient(circle at center, rgba(223, 168, 42, 0.28) 0%, rgba(223, 168, 42, 0) 100%);
   --gradient-gold-accent-line: linear-gradient(to right, var(--gold-500), var(--gold-300));
   --gradient-marquee-edge-fade: linear-gradient(to right, var(--surface), rgba(246, 248, 251, 0));
   --gradient-navy-panel: linear-gradient(to bottom, var(--navy-800), var(--navy-950));
@@ -73,6 +88,7 @@
   --shadow-dark-elevated: 0 10px 12px rgba(1, 16, 37, 0.2);
   --shadow-navbar-light: 0 2px 8px 0 rgba(1, 16, 37, 0.06);
   --shadow-button-dark-hover: 0 10px 12px 0 rgba(1, 16, 37, 0.25);
+  --shadow-team-card-hover: 0 22px 44px 0 rgba(1, 16, 37, 0.28);
 
   /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */
   --radius-pill: 100px;

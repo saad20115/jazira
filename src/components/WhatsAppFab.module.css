@@ -6,8 +6,8 @@
 
 .fixed {
   position: fixed;
-  inset-block-end: 24px;
-  inset-inline-end: 24px;
+  inset-block-end: 30px;
+  inset-inline-end: 30px;
   z-index: 35;
 }
 
@@ -19,13 +19,13 @@
   background-color: var(--navy-950);
   color: var(--white);
   font-family: var(--font-sans);
-  font-weight: var(--t-label-link-weight);
-  font-size: var(--t-label-link-size);
-  line-height: var(--t-label-link-lh);
-  letter-spacing: var(--t-label-link-ls);
-  padding-block: 8px;
+  font-weight: var(--t-label-nav-weight);
+  font-size: var(--t-label-nav-size);
+  line-height: var(--t-label-nav-lh);
+  letter-spacing: var(--t-label-nav-ls);
+  padding-block: 9px;
   padding-inline: 14px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   box-shadow: var(--shadow-card-rest);
   white-space: nowrap;
   opacity: 0;
@@ -52,8 +52,8 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 64px;
-  block-size: 64px;
+  inline-size: 60px;
+  block-size: 60px;
   flex-shrink: 0;
 }
 
@@ -62,11 +62,11 @@
   block-size: 100px;
 }
 
+/* R-7: Use symmetric `inset` + `margin: auto` so the pulse ring is centered in both LTR and RTL */
 .pulseRing {
   position: absolute;
-  inset-block-start: 50%;
-  inset-inline-start: 50%;
-  transform: translate(-50%, -50%);
+  inset: -25px;
+  margin: auto;
   inline-size: 64px;
   block-size: 64px;
   border-radius: var(--radius-pill);
@@ -76,6 +76,7 @@
 }
 
 .inline.statePulse .pulseRing {
+  inset: 0;
   inline-size: 100px;
   block-size: 100px;
   opacity: 0.2;
@@ -133,6 +134,10 @@
 }
 
 .fabButton:focus-visible {
-  outline: 2px solid var(--gold-500);
-  outline-offset: 3px;
+  outline: 2px solid var(--navy-900);
+  outline-offset: 2px;
+}
+
+:global([data-theme='dark']) .fabButton:focus-visible {
+  outline-color: var(--gold-300);
 }

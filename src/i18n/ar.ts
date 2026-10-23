@@ -60,11 +60,17 @@ export interface UiDictionary {
     socialX: string
     socialInstagram: string
     socialFacebook: string
+    socialYoutube: string
+    socialTiktok: string
+    socialSnapchat: string
     socialWhatsapp: string
     socialAriaLinkedin: string
     socialAriaX: string
     socialAriaInstagram: string
     socialAriaFacebook: string
+    socialAriaYoutube: string
+    socialAriaTiktok: string
+    socialAriaSnapchat: string
     socialAriaWhatsapp: string
     privacyPolicy: string
     languageToggle: string
@@ -72,6 +78,36 @@ export interface UiDictionary {
   accordion: {
     showDetails: string
     hideDetails: string
+  }
+  cards: {
+    learnMore: string
+    viewAllServices: string
+    viewAllServicesButton: string
+    viewProject: string
+    linkedinProfile: string
+    projectCategories: {
+      mep: string
+      'fire-fighting': string
+      'low-current': string
+      'data-center': string
+      'civil-mep': string
+    }
+    projectStatus: {
+      completed: string
+      'in-progress': string
+    }
+  }
+  carousel: {
+    regionLabel: string
+    carouselRoleDescription: string
+    slideRoleDescription: string
+    slideOfTotal: string
+    previousSlide: string
+    nextSlide: string
+  }
+  marquee: {
+    partnersRegionLabel: string
+    teamRegionLabel: string
   }
   draftMode: {
     bannerText: string
@@ -126,7 +162,7 @@ export const arDictionary = {
     footerNavigation: 'روابط تذييل الصفحة',
     mobileMenuOpen: 'فتح القائمة',
     mobileMenuClose: 'إغلاق القائمة',
-    languageSwitcherLabel: 'Switch language to English',
+    languageSwitcherLabel: 'EN English — Switch language to English',
     whatsappChatLabel: 'تواصل معنا عبر واتساب',
     carouselPrev: 'الشريحة السابقة',
     carouselNext: 'الشريحة التالية',
@@ -153,12 +189,12 @@ export const arDictionary = {
     requestQuote: 'اطلب عرض سعر',
     languageSwitcherShort: 'EN',
     languageSwitcherLabel: 'English (EN)',
-    languageSwitcherAriaLabel: 'التبديل إلى اللغة الإنجليزية (Switch to English)',
+    languageSwitcherAriaLabel: 'EN — التبديل إلى اللغة الإنجليزية (Switch to English)',
     openMenu: 'فتح قائمة التنقل',
     closeMenu: 'إغلاق قائمة التنقل',
     mainNavAriaLabel: 'القائمة الرئيسية',
     mobileDrawerAriaLabel: 'قائمة التنقل للأجهزة المحمولة',
-    whatsappChatTooltip: 'تواصل عبر واتساب',
+    whatsappChatTooltip: 'تواصل معنا عبر واتساب',
     whatsappFabAriaLabel: 'تواصل معنا عبر واتساب',
   },
   footer: {
@@ -173,11 +209,17 @@ export const arDictionary = {
     socialX: 'منصة إكس',
     socialInstagram: 'إنستغرام',
     socialFacebook: 'فيسبوك',
+    socialYoutube: 'يوتيوب',
+    socialTiktok: 'تيك توك',
+    socialSnapchat: 'سناب شات',
     socialWhatsapp: 'واتساب',
     socialAriaLinkedin: 'لينكدإن',
     socialAriaX: 'منصة إكس',
     socialAriaInstagram: 'إنستغرام',
     socialAriaFacebook: 'فيسبوك',
+    socialAriaYoutube: 'يوتيوب',
+    socialAriaTiktok: 'تيك توك',
+    socialAriaSnapchat: 'سناب شات',
     socialAriaWhatsapp: 'واتساب',
     privacyPolicy: 'سياسة الخصوصية',
     languageToggle: 'عربي | EN',
@@ -185,6 +227,36 @@ export const arDictionary = {
   accordion: {
     showDetails: 'عرض التفاصيل',
     hideDetails: 'إخفاء التفاصيل',
+  },
+  cards: {
+    learnMore: 'اعرف المزيد',
+    viewAllServices: 'عرض جميع الخدمات',
+    viewAllServicesButton: 'عرض جميع الخدمات',
+    viewProject: 'عرض المشروع',
+    linkedinProfile: 'حساب لينكدإن',
+    projectCategories: {
+      mep: 'الأعمال الكهروميكانيكية',
+      'fire-fighting': 'مكافحة الحريق',
+      'low-current': 'التيار الخفيف',
+      'data-center': 'مراكز البيانات',
+      'civil-mep': 'الأعمال المدنية والكهروميكانيكية',
+    },
+    projectStatus: {
+      completed: 'مكتمل',
+      'in-progress': 'قيد التنفيذ',
+    },
+  },
+  carousel: {
+    regionLabel: 'معرض الخدمات',
+    carouselRoleDescription: 'معرض متحرك',
+    slideRoleDescription: 'شريحة',
+    slideOfTotal: '{current} من {total}',
+    previousSlide: 'الخدمة السابقة',
+    nextSlide: 'الخدمة التالية',
+  },
+  marquee: {
+    partnersRegionLabel: 'العلامات التجارية الشريكة',
+    teamRegionLabel: 'أعضاء الفريق الهندسي',
   },
   draftMode: {
     bannerText: 'وضع المعاينة المباشرة (مسودة غير منشورة للزوار)',

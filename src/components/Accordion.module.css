@@ -37,8 +37,8 @@
 }
 
 .headerButton:focus-visible {
-  outline: 2px solid var(--gold-500);
-  outline-offset: 4px;
+  outline: 2px solid var(--navy-900);
+  outline-offset: 2px;
 }
 
 .leadingGroup {
@@ -70,7 +70,7 @@
 
 .itemExpanded .badge {
   background-color: var(--gold-50);
-  color: var(--gold-600);
+  color: var(--gold-700);
 }
 
 .title {
@@ -95,7 +95,7 @@
   font-size: var(--t-body-s-size);
   line-height: var(--t-body-s-lh);
   letter-spacing: var(--t-body-s-ls);
-  color: var(--gold-600);
+  color: var(--gold-700);
 }
 
 @media (max-width: 639px) {

@@ -4,7 +4,11 @@ import type { Metadata } from 'next'
 import { draftMode, headers } from 'next/headers'
 import type React from 'react'
 
-import { Footer, type FooterQuickLinkItem, type FooterSocialItem } from '@/components/Footer'
+import {
+  Footer,
+  type FooterColumnItem,
+  type FooterSocialItem,
+} from '@/components/Footer'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
 import {
@@ -191,12 +195,16 @@ async function LocaleShellFooter({
 
   const { siteSettings, navigation } = await loadShellGlobals(locale)
 
-  const footerQuickLinks: FooterQuickLinkItem[] | undefined =
-    navigation?.footer && navigation.footer[0]?.links && navigation.footer[0].links.length > 0
-      ? navigation.footer[0].links.map((row) => ({
-          id: row.id,
-          label: row.label,
-          link: row.link,
+  const footerColumns: FooterColumnItem[] | undefined =
+    navigation?.footer && navigation.footer.length > 0
+      ? navigation.footer.map((col) => ({
+          id: col.id,
+          title: col.title,
+          links: (col.links ?? []).map((row) => ({
+            id: row.id,
+            label: row.label,
+            link: row.link,
+          })),
         }))
       : undefined
 
@@ -220,11 +228,12 @@ async function LocaleShellFooter({
           navigation?.footerCta?.button?.label ? navigation.footerCta.button.link : undefined
         }
         ctaTitle={navigation?.footerCta?.title}
+        ctaWhatsappLabel={navigation?.footerCta?.whatsappLabel}
         description={siteSettings?.footerText}
         emails={siteSettings?.email ? [siteSettings.email] : undefined}
+        footerColumns={footerColumns}
         locale={locale}
         phones={siteSettings?.phone ? [siteSettings.phone] : undefined}
-        quickLinks={footerQuickLinks}
         siteName={siteSettings?.companyName}
         socialLinks={socialLinks}
         whatsapp={siteSettings?.whatsapp}
