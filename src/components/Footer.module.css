@@ -7,12 +7,19 @@
 }
 
 .container {
-  max-inline-size: var(--container-max);
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-width) + (var(--space-32) * 2));
   margin-inline: auto;
-  padding-inline: var(--container-pad);
+  padding-inline: var(--space-32);
   display: flex;
   flex-direction: column;
   gap: 56px;
+}
+
+@media (max-width: 767.98px) {
+  .container {
+    padding-inline: var(--gutter-mobile);
+  }
 }
 
 .topGrid {
@@ -92,7 +99,7 @@
 
 .socialButton:hover {
   background-color: var(--glass-white-14);
-  border-color: var(--gold-400);
+  border-color: var(--gold-300);
   color: var(--gold-300);
   transform: translateY(-1px);
 }
@@ -217,27 +224,27 @@
 
 .ctaBody {
   font-family: var(--font-sans);
-  font-weight: var(--t-body-xs-weight);
-  font-size: var(--t-body-xs-size);
-  line-height: var(--t-body-xs-lh);
-  letter-spacing: var(--t-body-xs-ls);
+  font-weight: var(--t-caption-weight);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+  letter-spacing: var(--t-caption-ls);
   color: var(--white);
   opacity: 0.62;
 }
 
 .ctaWhatsappLink {
   font-family: var(--font-sans);
-  font-weight: var(--t-body-xs-weight);
-  font-size: var(--t-body-xs-size);
-  line-height: var(--t-body-xs-lh);
-  letter-spacing: var(--t-body-xs-ls);
+  font-weight: var(--t-caption-weight);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+  letter-spacing: var(--t-caption-ls);
   color: var(--gold-300);
   text-decoration: none;
   transition: color 160ms ease;
 }
 
 .ctaWhatsappLink:hover {
-  color: var(--gold-400);
+  color: var(--gold-500);
 }
 
 .divider {
@@ -256,10 +263,10 @@
 
 .copyright {
   font-family: var(--font-sans);
-  font-weight: var(--t-body-xs-weight);
-  font-size: var(--t-body-xs-size);
-  line-height: var(--t-body-xs-lh);
-  letter-spacing: var(--t-body-xs-ls);
+  font-weight: var(--t-caption-weight);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+  letter-spacing: var(--t-caption-ls);
   color: var(--white);
   opacity: 0.5;
 }
@@ -272,10 +279,10 @@
 
 .bottomLink {
   font-family: var(--font-sans);
-  font-weight: var(--t-body-xs-weight);
-  font-size: var(--t-body-xs-size);
-  line-height: var(--t-body-xs-lh);
-  letter-spacing: var(--t-body-xs-ls);
+  font-weight: var(--t-caption-weight);
+  font-size: var(--t-caption-size);
+  line-height: var(--t-caption-lh);
+  letter-spacing: var(--t-caption-ls);
   color: var(--white);
   opacity: 0.62;
   text-decoration: none;

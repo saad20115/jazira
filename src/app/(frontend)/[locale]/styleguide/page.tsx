@@ -24,7 +24,11 @@ import {
   LOGO_COLORS,
   LOGO_TYPES,
 } from '@/components/Logo'
-import { Navbar } from '@/components/Navbar'
+import {
+  Navbar,
+  NAVBAR_PAGES,
+  NAVBAR_THEMES,
+} from '@/components/Navbar'
 import {
   NAV_LINK_STATES,
   NavLink,
@@ -55,12 +59,6 @@ const NODE_IDS = {
   whatsappFab: 'Figma 12:93',
   accordionItem: 'Figma 105:310',
   icons: 'Figma Icons (10 Service + 5 Social + Directional)',
-} as const
-
-const NAVBAR_VARIANT_LABELS = {
-  lightHome: 'Theme=Light, Page=Home',
-  darkHome: 'Theme=Dark, Page=Home',
-  lightServices: 'Theme=Light, Page=Services',
 } as const
 
 const BADGE_ONE = '01'
@@ -264,41 +262,28 @@ export default async function StyleguidePage({
           </div>
 
           <div className={styles.fullBleedStack}>
-            <div className={styles.navbarFrame}>
-              <div className={styles.frameLabelBar} dir="ltr">
-                {NAVBAR_VARIANT_LABELS.lightHome}
-              </div>
-              <Navbar
-                locale={resolvedLocale}
-                page="Home"
-                staticPreview
-                theme="Light"
-              />
-            </div>
-
-            <div className={`${styles.navbarFrame} ${styles.navbarFrameDark}`}>
-              <div className={styles.frameLabelBar} dir="ltr">
-                {NAVBAR_VARIANT_LABELS.darkHome}
-              </div>
-              <Navbar
-                locale={resolvedLocale}
-                page="Home"
-                staticPreview
-                theme="Dark"
-              />
-            </div>
-
-            <div className={styles.navbarFrame}>
-              <div className={styles.frameLabelBar} dir="ltr">
-                {NAVBAR_VARIANT_LABELS.lightServices}
-              </div>
-              <Navbar
-                locale={resolvedLocale}
-                page="Services"
-                staticPreview
-                theme="Light"
-              />
-            </div>
+            {NAVBAR_THEMES.flatMap((navTheme) =>
+              NAVBAR_PAGES.map((navPage) => {
+                const isDarkNav = navTheme === 'Dark'
+                const variantCaption = `Theme=${navTheme}, Page=${navPage}`
+                return (
+                  <div
+                    className={`${styles.navbarFrame} ${isDarkNav ? styles.navbarFrameDark : ''}`}
+                    key={`${navTheme}-${navPage}`}
+                  >
+                    <div className={styles.frameLabelBar} dir="ltr">
+                      {variantCaption}
+                    </div>
+                    <Navbar
+                      locale={resolvedLocale}
+                      page={navPage}
+                      staticPreview
+                      theme={navTheme}
+                    />
+                  </div>
+                )
+              }),
+            )}
           </div>
         </section>
 

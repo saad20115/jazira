@@ -13,9 +13,16 @@
 }
 
 .container {
-  max-inline-size: var(--container-max);
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-width) + (var(--space-32) * 2));
   margin-inline: auto;
-  padding-inline: var(--container-pad);
+  padding-inline: var(--space-32);
+}
+
+@media (max-width: 767.98px) {
+  .container {
+    padding-inline: var(--gutter-mobile);
+  }
 }
 
 .heroHeader {
@@ -35,10 +42,10 @@
 
 .heroTitle {
   font-family: var(--font-sans);
-  font-weight: var(--t-h1-weight);
-  font-size: var(--t-h1-size);
-  line-height: var(--t-h1-lh);
-  letter-spacing: var(--t-h1-ls);
+  font-weight: var(--t-h2-weight);
+  font-size: var(--t-h2-size);
+  line-height: var(--t-h2-lh);
+  letter-spacing: var(--t-h2-ls);
   color: var(--white);
 }
 
@@ -47,7 +54,7 @@
   font-weight: var(--t-body-m-weight);
   font-size: var(--t-body-m-size);
   line-height: var(--t-body-m-lh);
-  color: var(--steel-300);
+  color: var(--text-muted);
   max-inline-size: 760px;
 }
 
@@ -64,7 +71,7 @@
   border-radius: var(--radius-2xl);
   padding-block: 32px;
   padding-inline: 32px;
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-rest);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -92,8 +99,8 @@
 .nodeBadge {
   font-family: var(--font-sans);
   font-weight: var(--t-label-eyebrow-weight);
-  font-size: var(--t-body-xs-size);
-  line-height: var(--t-body-xs-lh);
+  font-size: var(--t-caption-s-size);
+  line-height: var(--t-caption-s-lh);
   color: var(--gold-600);
   background-color: var(--gold-50);
   border: 1px solid var(--border-gold-light);
@@ -135,14 +142,14 @@
 
 .cellCaption {
   font-family: var(--font-sans);
-  font-weight: var(--t-body-xs-weight);
-  font-size: var(--t-body-xs-size);
-  line-height: var(--t-body-xs-lh);
-  color: var(--steel-500);
+  font-weight: var(--t-caption-s-weight);
+  font-size: var(--t-caption-s-size);
+  line-height: var(--t-caption-s-lh);
+  color: var(--text-body);
 }
 
 .logoCellDark .cellCaption {
-  color: var(--steel-300);
+  color: var(--text-muted);
 }
 
 /* Button matrix */
@@ -255,8 +262,8 @@
   background-color: var(--surface);
   border-block-end: 1px solid var(--border);
   font-family: var(--font-sans);
-  font-size: var(--t-body-xs-size);
-  color: var(--steel-600);
+  font-size: var(--t-caption-s-size);
+  color: var(--text-body);
 }
 
 /* WhatsApp FAB row */
@@ -355,12 +362,12 @@
 .iconKey {
   font-family: var(--font-sans);
   font-weight: var(--t-label-button-weight);
-  font-size: var(--t-body-xs-size);
+  font-size: var(--t-caption-size);
   color: var(--navy-950);
 }
 
 .iconLabel {
   font-family: var(--font-sans);
-  font-size: var(--t-body-xs-size);
-  color: var(--steel-500);
+  font-size: var(--t-caption-s-size);
+  color: var(--text-body);
 }

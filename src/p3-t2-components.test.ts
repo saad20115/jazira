@@ -377,4 +377,37 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       ).rejects.toThrow('NEXT_NOT_FOUND')
     })
   })
+
+  describe('11. CSS custom property references integrity', () => {
+    it('ensures every var(--*) referenced in P3-T2 CSS modules is defined in src/styles/tokens.css', () => {
+      const tokensCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/styles/tokens.css'),
+        'utf8',
+      )
+      const definedVars = new Set<string>()
+      for (const match of tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/gi)) {
+        definedVars.add(match[1])
+      }
+
+      const cssFiles = [
+        'src/components/Logo.module.css',
+        'src/components/Button.module.css',
+        'src/components/Eyebrow.module.css',
+        'src/components/NavLink.module.css',
+        'src/components/Navbar.module.css',
+        'src/components/Footer.module.css',
+        'src/components/WhatsAppFab.module.css',
+        'src/components/Accordion.module.css',
+        'src/app/(frontend)/[locale]/styleguide/styleguide.module.css',
+      ]
+
+      for (const relPath of cssFiles) {
+        const cssContent = fs.readFileSync(path.resolve(process.cwd(), relPath), 'utf8')
+        for (const match of cssContent.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)) {
+          const varName = match[1]
+          expect(definedVars.has(varName), `${relPath} references undefined ${varName}`).toBe(true)
+        }
+      }
+    })
+  })
 })

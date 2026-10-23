@@ -32,13 +32,13 @@
 }
 
 .themeDark {
-  background-color: var(--glass-navy-82);
+  background-color: var(--overlay-navy-90);
   border-block-end-color: var(--glass-border-white-8);
   color: var(--white);
 }
 
 .themeDark.transparentHero:not(.scrolled) {
-  background-color: var(--glass-navy-55);
+  background-color: var(--overlay-navy-55);
   border-block-end-color: var(--glass-border-white-8);
   box-shadow: none;
 }
@@ -46,18 +46,25 @@
 .themeDark.scrolled {
   background-color: var(--navy-950);
   border-block-end-color: var(--glass-border-white-14);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-rest);
 }
 
 .inner {
-  max-inline-size: var(--container-max);
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-width) + (var(--space-32) * 2));
   block-size: 100%;
   margin-inline: auto;
-  padding-inline: var(--container-pad);
+  padding-inline: var(--space-32);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+}
+
+@media (max-width: 767.98px) {
+  .inner {
+    padding-inline: var(--gutter-mobile);
+  }
 }
 
 .brandLink {
@@ -138,7 +145,7 @@
   inset-block: 0;
   inset-inline: 0;
   z-index: 50;
-  background-color: var(--overlay-scrim);
+  background-color: var(--overlay-navy-55);
   backdrop-filter: blur(4px);
   display: flex;
   justify-content: flex-end;
@@ -152,7 +159,7 @@
   color: var(--white);
   border-inline-start: 1px solid var(--glass-border-white-10);
   padding-block: 20px 32px;
-  padding-inline: var(--container-pad);
+  padding-inline: var(--space-24);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -232,7 +239,7 @@
 }
 
 .drawerLangSwitcher:hover {
-  background-color: var(--glass-white-12);
+  background-color: var(--glass-white-14);
   border-color: var(--gold-300);
 }
 
@@ -250,6 +257,6 @@
   border-radius: var(--radius-pill);
   background-color: var(--gold-500);
   color: var(--navy-950);
-  font-size: var(--t-body-xs-size);
+  font-size: var(--t-caption-size);
   font-weight: var(--t-label-eyebrow-weight);
 }

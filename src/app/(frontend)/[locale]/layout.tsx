@@ -189,7 +189,7 @@ export default async function LocaleRootLayout({
         {!isDevSpecimenOrStyleguide ? (
           <Navbar
             ctaLabel={navigation?.headerCta?.label}
-            ctaLink={navigation?.headerCta?.link}
+            ctaLink={navigation?.headerCta?.label ? navigation.headerCta.link : undefined}
             items={headerNavItems}
             locale={resolvedLocale}
             siteName={siteSettings?.companyName}
@@ -203,7 +203,9 @@ export default async function LocaleRootLayout({
               copyright={siteSettings?.copyright}
               ctaBody={navigation?.footerCta?.text}
               ctaButtonLabel={navigation?.footerCta?.button?.label}
-              ctaButtonLink={navigation?.footerCta?.button?.link}
+              ctaButtonLink={
+                navigation?.footerCta?.button?.label ? navigation.footerCta.button.link : undefined
+              }
               ctaTitle={navigation?.footerCta?.title}
               description={siteSettings?.footerText}
               emails={siteSettings?.email ? [siteSettings.email] : undefined}
