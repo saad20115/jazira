@@ -53,6 +53,12 @@ const nextConfig: NextConfig = {
       {
         pathname: '/api/media/file/**',
       },
+      {
+        pathname: '/images/**',
+      },
+      {
+        pathname: '/brand/**',
+      },
     ],
   },
   headers() {

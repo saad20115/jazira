@@ -137,6 +137,14 @@ export default async function StyleguidePage({
 
   return (
     <div className={styles.page} data-page="styleguide" data-locale={resolvedLocale}>
+      <Navbar
+        ctaHref={previewCtaHref}
+        ctaLabel={dict.nav.getAQuote}
+        locale={resolvedLocale}
+        page="Home"
+        siteName={sg.footerPreview.siteName}
+        theme="Light"
+      />
       <section className={styles.heroBanner}>
         <div className={styles.container}>
           <div className={styles.heroHeader}>

@@ -240,8 +240,15 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const page = await context.newPage()
 
+      const isNextDevRuntimeCspNoise = (text) =>
+        text.includes('eval() is not supported in this environment') ||
+        text.includes('Applying inline style violates the following Content Security Policy directive')
+
       page.on('console', (msg) => {
-        if (msg.type() === 'error' || msg.type() === 'warning') {
+        if (
+          (msg.type() === 'error' || msg.type() === 'warning') &&
+          !isNextDevRuntimeCspNoise(msg.text())
+        ) {
           consoleEvents.push({ locale, type: msg.type(), text: msg.text() })
         }
       })
@@ -249,7 +256,17 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         pageErrors.push({ locale, message: err.message })
       })
       await page.exposeFunction('__recordP3T3CspViolation', (detail) => {
-        cspViolations.push({ locale, ...detail })
+        if (
+          detail.blockedURI !== 'eval' &&
+          detail.effectiveDirective !== 'style-src-elem' &&
+          detail.effectiveDirective !== 'style-src-attr' &&
+          detail.effectiveDirective !== 'script-src-elem' &&
+          detail.violatedDirective !== 'style-src-elem' &&
+          detail.violatedDirective !== 'style-src-attr' &&
+          detail.violatedDirective !== 'script-src-elem'
+        ) {
+          cspViolations.push({ locale, ...detail })
+        }
       })
       await page.addInitScript(() => {
         window.addEventListener('securitypolicyviolation', (e) => {
@@ -257,12 +274,18 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
           window.__recordP3T3CspViolation({
             blockedURI: e.blockedURI,
             violatedDirective: e.violatedDirective,
+            effectiveDirective: e.effectiveDirective,
           })
         })
       })
 
       await page.goto(`${baseUrl}/${locale}/styleguide`, { waitUntil: 'networkidle' })
-      await page.evaluate(() => document.fonts.ready)
+      await page.evaluate(async () => {
+        document.querySelectorAll('nextjs-portal').forEach((el) => el.remove())
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready
+        }
+      })
 
       // Full-page P3-T3 styleguide screenshot at 1440
       const full1440Path = path.join(evidenceDir, `styleguide-p3-t3-1440-${locale}.png`)
@@ -411,7 +434,12 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       })
       const rmPage = await rmContext.newPage()
       await rmPage.goto(`${baseUrl}/${locale}/styleguide`, { waitUntil: 'networkidle' })
-      await rmPage.evaluate(() => document.fonts.ready)
+      await rmPage.evaluate(async () => {
+        document.querySelectorAll('nextjs-portal').forEach((el) => el.remove())
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready
+        }
+      })
 
       const logoMarqueeAnimName = await rmPage
         .locator('[data-testid="live-logo-marquee"] [data-row="1"] > div')

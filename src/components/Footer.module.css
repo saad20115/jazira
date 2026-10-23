@@ -345,6 +345,11 @@
   transition: opacity 160ms ease;
 }
 
+.ctaWhatsappLink svg {
+  color: var(--gold-300);
+  flex-shrink: 0;
+}
+
 .ctaWhatsappLink:hover {
   opacity: 1;
 }
