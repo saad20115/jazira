@@ -258,7 +258,22 @@ preview and a new hash table is added here.
   | full | 7,180,984 B | 53,312 | hero 58 / hvac 88 |
   | lite | 2,189,388 B | 43,936 | hero 36 / hvac 46 |
 
-- **The hash table** is pending from the 3D lead. Until it arrives, P3-T5 cannot pin v020.
+- **Pinned v020 hash table** (the 3D lead verified that web\ = build020 = snapshot
+  `C:ljazira-3d-backupelease_v020\`; release notes `C:ljazira-3deports\RELEASE_v020.md`):
+
+| File | Bytes | SHA-256 |
+|---|---|---|
+| `tower.glb` | 7,180,984 | `ef31638cf5364f5ee24294651f5c15ef1ef02897655a5e910e2dcba73f93b7aa` |
+| `tower-lite.glb` | 2,189,388 | `8f48a42f729dbc63af4b6cd6af04ddbd9453adf2619ac7218cea6c5216e8f61e` |
+| `manifest.json` | 7,159 | `76c8193184cd7704aed3e2c841d578ed0cfa0a303fa1237679a87ce7a4ff5510` |
+
+- **Draw calls** (re-measured on the live files):
+  - full: hero 58, systems 63–88;
+  - lite: hero 36, systems 42–46.
+- **Known text-only defect:** the `fan_spin` `note` string says "+=". The behaviour is **"−="
+  (clockwise from above)**, and the site follows the behaviour. The text is fixed in the next
+  version.
+- The v019c archive stays intact (§11).
 - **The final delivery is still conditional:** the owner's direct instruction requires N-1..N-4 to
   be fixed before the final delivery (§12). v020 is the current release, not the final one, until
   they are fixed and reviewed.
