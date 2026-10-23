@@ -1,0 +1,131 @@
+src/collections/Media.ts:177:export function deriveFieldTargetPaths(
+src/collections/Media.ts:236:export function deriveGlobalTargetReferences(
+src/collections/Media.ts:257:export const findGlobalTargetReferences = async ({
+src/collections/Media.ts:359:  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'media')
+src/collections/Media.ts:361:  const referencesByKey = new Map<string, string>()
+src/collections/Media.ts:401:    const refList = [...referencesByKey.values()].join(', ')
+src/collections/Media.ts:71:const recordReferencingDoc = (
+src/collections/Media.ts:72:  referencesByKey: Map<string, string>,
+src/collections/Media.ts:81:  const hasRealLabel = typeof rawLabel === 'string' && rawLabel.trim().length > 0
+src/collections/Media.ts:86:    referencesByKey.set(key, formatted)
+src/collections/Projects.ts:501:    clearCapturedMainDocState(
+src/collections/Projects.ts:53:export const PROJECT_SCOPE_OPTIONS = [
+src/collections/Projects.ts:775:              options: [...PROJECT_SCOPE_OPTIONS],
+src/collections/Stats.ts:12:const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Stats.ts:69:    beforeDelete: [preventStatDeletionWhenReferenced],
+src/collections/Videos.ts:164:const preventVideoDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Videos.ts:238:    beforeDelete: [preventVideoDeletionWhenReferenced],
+src/fields/groups/button.ts:29:export function resolveButtonHref(button: ButtonDataShape | null | undefined): string | null {
+src/fields/groups/button.ts:44:export function buttonFields(options: ButtonFieldsOptions = {}): Field[] {
+src/fields/groups/button.ts:95:export function buttonGroup(options: ButtonGroupOptions = {}): NamedGroupField {
+src/fields/groups/collapsibleSection.ts:16:export function collapsibleSection(
+src/fields/groups/cta.ts:116:        name: 'secondaryButton',
+src/fields/groups/cta.ts:128:      name: 'backgroundImage',
+src/fields/groups/cta.ts:147:export function ctaGroup(options: CtaGroupOptions = {}): NamedGroupField {
+src/fields/groups/cta.ts:32:export function ctaFields(options: CtaFieldsOptions = {}): Field[] {
+src/fields/groups/pageHeader.ts:122:export function pageHeaderGroup(options: PageHeaderGroupOptions = {}): NamedGroupField {
+src/fields/groups/pageHeader.ts:27:export function pageHeaderFields(options: PageHeaderFieldsOptions = {}): Field[] {
+src/fields/groups/pillar.ts:16:export function pillarFields(options: PillarFieldOptions = {}): Field[] {
+src/fields/groups/pillar.ts:55:export function pillarGroup(options: PillarGroupOptions = {}): NamedGroupField {
+src/fields/groups/sectionIntro.ts:130:export function sectionIntroGroup(options: SectionIntroGroupOptions = {}): NamedGroupField {
+src/fields/groups/sectionIntro.ts:28:export function sectionIntroFields(options: SectionIntroFieldsOptions = {}): Field[] {
+src/fields/link.test.ts:256:    it('rejects javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host paths in validateLinkGroupBeforeValidate on draft/autosave (R-1)', () => {
+src/fields/link.ts:155:export function validateInternalPath(
+src/fields/link.ts:379:export const validateLinkGroupBeforeValidate: FieldHook = ({
+src/fields/link.ts:43:export function validateExternalUrl(
+src/fields/link.ts:569:      beforeValidate: [validateLinkGroupBeforeValidate, ...(hookOverrides?.beforeValidate ?? [])],
+src/fields/richText.ts:261:  const { maxParagraphs, mode = 'limited', required = false } = options
+src/fields/richText.ts:281:  if (typeof maxParagraphs === 'number' && maxParagraphs > 0) {
+src/fields/richText.ts:289:      return `الحد الأقصى لعدد الفقرات المسموح به في هذا الحقل هو ${String(maxParagraphs)} فقرات (المُدخل: ${String(paragraphCount)}). / Maximum ${String(maxParagraphs)} paragraphs allowed (received ${String(paragraphCount)}).`
+src/fields/richText.ts:361:  maxParagraphs?: number
+src/fields/richText.ts:375:    maxParagraphs,
+src/fields/richText.ts:388:    const validationResult = validateLimitedLexicalState(val, { maxParagraphs, mode, required })
+src/fields/richText.ts:483:      const astResult = validateLimitedLexicalState(value, { maxParagraphs, mode, required })
+src/fields/richText.ts:495:export function paragraphRichTextField(
+src/fields/richText.ts:83:  maxParagraphs?: number
+src/globals/_shared/publishableGlobal.ts:22:export const publishableGlobalVersions: PublishableGlobalVersions = {
+src/globals/_shared/publishableGlobal.ts:292:export function createValidateGlobalDataBeforeValidateHook(
+src/globals/_shared/publishableGlobal.ts:313:export function withPublishableGlobal<T extends GlobalConfig>(
+src/globals/_shared/publishableGlobal.ts:32:export const PAGES_ADMIN_GROUP = {
+src/globals/_shared/publishableGlobal.ts:37:export const SETTINGS_ADMIN_GROUP = {
+src/globals/_shared/publishableGlobal.ts:47:export const enforcePublishedReadOnGlobalBeforeOperation: GlobalBeforeOperationHook = ({
+src/globals/AboutPage.ts:116:        localizedPaths: ['/about'],
+src/globals/AboutPage.ts:182:        paragraphRichTextField({
+src/globals/AboutPage.ts:24:        name: 'eyebrow',
+src/globals/AboutPage.ts:293:            name: 'image',
+src/globals/AboutPage.ts:35:        name: 'title',
+src/globals/AboutPage.ts:84:        name: 'image',
+src/globals/AboutPage.ts:98:export const AboutPage: GlobalConfig = withPublishableGlobal({
+src/globals/ContactPage.ts:10:export const ContactPage: GlobalConfig = withPublishableGlobal({
+src/globals/ContactPage.ts:28:        localizedPaths: ['/contact'],
+src/globals/globals.test.ts:168:  it('configures interactiveSystems.systems with exact minRows: 5, maxRows: 5, default 5 discipline mappings, and localized PROJECT_SCOPE_OPTIONS labels (R-2)', () => {
+src/globals/globals.test.ts:202:  it('derives all global and collection upload/relationship paths for media, stats, and videos directly from config (R-4)', () => {
+src/globals/HomePage.ts:13:export const INTERACTIVE_SYSTEM_SHOT_VALUES = [
+src/globals/HomePage.ts:186:      interactiveData.systems = getDefaultInteractiveSystems(reqLocale)
+src/globals/HomePage.ts:190:        systems: getDefaultInteractiveSystems(reqLocale),
+src/globals/HomePage.ts:227:export const HomePage: GlobalConfig = withPublishableGlobal({
+src/globals/HomePage.ts:246:        localizedPaths: ['/'],
+src/globals/HomePage.ts:30:export const DEFAULT_INTERACTIVE_SYSTEMS_AR: readonly DefaultInteractiveSystemItem[] = [
+src/globals/HomePage.ts:384:          name: 'eyebrow',
+src/globals/HomePage.ts:405:        paragraphRichTextField({
+src/globals/HomePage.ts:409:          maxParagraphs: 2,
+src/globals/HomePage.ts:446:          buttonGroup({
+src/globals/HomePage.ts:468:            name: 'systems',
+src/globals/HomePage.ts:471:            minRows: 5,
+src/globals/HomePage.ts:472:            maxRows: 5,
+src/globals/HomePage.ts:473:            defaultValue: ({ locale }: { locale?: string }) => getDefaultInteractiveSystems(locale),
+src/globals/HomePage.ts:488:            validate: (val: unknown) => {
+src/globals/HomePage.ts:575:                options: [...PROJECT_SCOPE_OPTIONS],
+src/globals/HomePage.ts:63:export const DEFAULT_INTERACTIVE_SYSTEMS_EN: readonly DefaultInteractiveSystemItem[] = [
+src/globals/HomePage.ts:721:    collapsibleSection(seoGroupField()),
+src/globals/HomePage.ts:96:export function getDefaultInteractiveSystems(locale?: string): DefaultInteractiveSystemItem[] {
+src/globals/index.ts:28:export const ALL_GLOBALS = [
+src/globals/Navigation.ts:172:    name: 'footerCta',
+src/globals/Navigation.ts:224:export const Navigation: GlobalConfig = {
+src/globals/Navigation.ts:247:        layoutPaths: ['/'],
+src/globals/Navigation.ts:74:    name: 'headerCta',
+src/globals/PrivacyPage.ts:10:export const PrivacyPage: GlobalConfig = withPublishableGlobal({
+src/globals/PrivacyPage.ts:28:        localizedPaths: ['/privacy'],
+src/globals/ProjectsPage.ts:11:export const ProjectsPage: GlobalConfig = withPublishableGlobal({
+src/globals/ProjectsPage.ts:148:        paragraphRichTextField({
+src/globals/ProjectsPage.ts:27:      createRevalidateGlobalAfterChangeHook({
+src/globals/ProjectsPage.ts:29:        localizedPaths: ['/projects'],
+src/globals/ProjectsPage.ts:30:        layoutPaths: ['/projects'],
+src/globals/ProjectsPage.ts:31:        extraTags: ['collection:projects'],
+src/globals/ProjectsPage.ts:32:      }),
+src/globals/ServicesPage.ts:12:export const ServicesPage: GlobalConfig = withPublishableGlobal({
+src/globals/ServicesPage.ts:30:        localizedPaths: ['/services'],
+src/globals/SiteSettings.ts:11:export const SOCIAL_PLATFORM_VALUES = [
+src/globals/SiteSettings.ts:139:      validateExternalUrl(val, {
+src/globals/SiteSettings.ts:212:          validateExternalUrl(val, {
+src/globals/SiteSettings.ts:275:          validateExternalUrl(val, {
+src/globals/SiteSettings.ts:294:    name: 'copyright',
+src/globals/SiteSettings.ts:349:export const SiteSettings: GlobalConfig = {
+src/globals/SiteSettings.ts:374:        layoutPaths: ['/'],
+src/hooks/revalidate.test.ts:391:  it('keys captured state by collection/id and global slug and clears it after afterChange so shared req.context never leaks across operations (P2-T4 R-18)', async () => {
+src/hooks/revalidate.ts:203:export function getCapturedMainDocBeforeChange(
+src/hooks/revalidate.ts:222:export function getCapturedMainDocLookupFailed(
+src/hooks/revalidate.ts:241:export function clearCapturedMainDocState(
+src/hooks/revalidate.ts:255:export function getCapturedMainGlobalBeforeChange(
+src/hooks/revalidate.ts:271:export function getCapturedMainGlobalLookupFailed(
+src/hooks/revalidate.ts:287:export function clearCapturedMainGlobalState(
+src/hooks/revalidate.ts:419:export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = async ({
+src/hooks/revalidate.ts:692:        clearCapturedMainDocState(context, req, collection.slug, docId)
+src/hooks/revalidate.ts:745:export function createRevalidateGlobalAfterChangeHook(
+src/hooks/revalidate.ts:769:      for (const tag of buildGlobalTags(globalSlug)) {
+src/hooks/revalidate.ts:797:      }
+src/hooks/revalidate.ts:805:      clearCapturedMainGlobalState(context, req, global.slug)
+src/hooks/revalidate.ts:81:export function buildGlobalTags(globalSlug: string): string[] {
+src/migrations/20261022_221250_p2_t5_globals.ts:1377:export async function down({ db }: MigrateDownArgs): Promise<void> {
+src/migrations/20261022_221250_p2_t5_globals.ts:3:export async function up({ db }: MigrateUpArgs): Promise<void> {
+src/migrations/index.ts:30:    up: migration_20261022_221250_p2_t5_globals.up,
+src/migrations/index.ts:33:  },
+src/migrations/index.ts:5:import * as migration_20261022_221250_p2_t5_globals from './20261022_221250_p2_t5_globals'
+src/payload.config.ts:88:  globals: [
+tests/int/p2-t5.int.test.ts:1547:    const delDedupMediaBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1558:  it('rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals and collections (R-1)', async () => {
+tests/int/p2-t5.int.test.ts:1659:  it('prevents deleting stats and videos referenced by globals or collections across published and draft versions and locales (R-4)', async () => {
+tests/int/p2-t5.int.test.ts:289:  it('enforces site-settings admin-only update (Z1): anonymous & editor cannot update, admin can update, and anonymous can read', async () => {
+tests/int/p2-t5.int.test.ts:503:  it('enforces Z2 on home-page (and all publishable page globals): anonymous REST GET /api/globals/home-page returns published version only while a newer draft exists', async () => {
+tests/int/p2-t5.int.test.ts:757:  it('enforces home-page invariants (hero.background xor hero.backgroundVideo, unique interactiveSystems.systems[].shot, statsSection max 4, and paragraphRichTextField AST limits)', async () => {
+tests/int/p2-t5.int.test.ts:923:  it('verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks', async () => {

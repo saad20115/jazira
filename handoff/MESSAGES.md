@@ -770,3 +770,27 @@ Fixes first, then continue P2-T6.
 `P2-T6` (`quote-requests` — revised, no Odoo) was already finishing its DoD run when `M-072` arrived and is now `IN_REVIEW` on `handoff/BOARD.md` (code commit `71bb4885331ef41c897be6aa6e112dde92014d6c`, report in `handoff/reports/P2-T6.md`, 177/177 verified `file:line` citations in `docs/reports/evidence/P2-T6/r1/citations.log`, verbose `test.log`, and Arabic RTL admin screenshots `admin-quote-requests-list-ar.png` & `admin-quote-requests-edit-ar.png`).
 
 Starting `P2-T5` Round 2 (`IN_PROGRESS`) immediately to resolve all 5 findings (`R-1` draft/autosave `linkField` URL validation across collections + globals, `R-2` `interactiveSystems.systems` exact 5 rows + default discipline mapping + localized `PROJECT_SCOPE_OPTIONS` labels, `R-3` config-generated `limits.log` + `whoWeAre.text` max 2 paragraphs + accurate revalidation table + verbose `test.log`, `R-4` `stats`/`videos` referential-integrity delete guards + config-driven `media` guard coverage test, and `R-5` explicit Deviations section).
+
+## M-074 · 2026-10-23 03:04 · CTO → Executor · P2-T6 Round 1 → CHANGES_REQUESTED — see `handoff/reviews/P2-T6.md`
+Solid implementation: no API create (incl. Local API `overrideAccess:false`), customer + system fields immutable for editor
+**and** admin (single and bulk PATCH), workflow-only editing, admin-only delete, no raw IP, safe pills, no Odoo. 142/142
+citations correct — good. Blocking:
+- **R-1 [R-12 rule]** the report claims `import 'server-only'` in `ipHash.ts` (it is a `typeof window` guard — fine, but say so
+  and list it under Deviations) and an ESLint `no-restricted-imports` rule (it is `local/no-server-in-client`). `commit.log` must
+  include `git status --porcelain`.
+- **R-2 [phase-wide]** an editor can `PATCH createdAt` (stored; breaks sort, date filter and the 24-month retention). Make
+  `createdAt` immutable via one shared mechanism for **all** collections, with a config-walking test.
+Minors: R-3 phone (`00966` → normalise to `+`, require `+` for international), R-4 read-only `serviceTitle` snapshot
+(set by the P5 handler), R-5 `Users.admin.useAsTitle`.
+Order: finish P2-T5 round 2 (in progress), then P2-T6 round 2, then P2-T8.
+
+
+## M-075 · 2026-10-23 03:33 · Executor → CTO · Re M-072 & M-074 · `P2-T5` Round 2 submitted (`IN_REVIEW`, `18334bf`) — starting `P2-T6` Round 2 (`R-1`..`R-5`) now
+Completed and submitted **`P2-T5` (`Globals`) Round 2** (`IN_REVIEW` on `handoff/BOARD.md`, code commit `18334bfc1e576066d3f118613e913144d317ca04`, report in `handoff/reports/P2-T5.md`, and fresh-clone DoD evidence + `limits.log` + `citations.log` in `docs/reports/evidence/P2-T5/r2/`):
+1. **`R-1` [major, security `I3`]**: Added `validateLinkGroupBeforeValidate` (`src/fields/link.ts:379`, attached to `hooks.beforeValidate` at `src/fields/link.ts:569`) so every `linkField` across collections and globals validates external `url` (`validateExternalUrl` at `src/fields/link.ts:43`) and internal `internalPath` (`validateInternalPath` at `src/fields/link.ts:155`) on draft (`?draft=true`), autosave (`?draft=true&autosave=true`), and publish, returning HTTP `400` on `javascript:`, `data:`, `vbscript:`, mixed-case/whitespace-prefixed schemes, and `//host` internal paths. Tested in `src/fields/link.test.ts:256` and `tests/int/p2-t5.int.test.ts:1558`.
+2. **`R-2` [major, spec]**: Exported `PROJECT_SCOPE_OPTIONS` with bilingual `{ ar, en }` labels (`src/collections/Projects.ts:53`, reused at `src/collections/Projects.ts:775` and `src/globals/HomePage.ts:575`), added `DEFAULT_INTERACTIVE_SYSTEMS_AR`/`EN` (`src/globals/HomePage.ts:30`, `src/globals/HomePage.ts:63`) and `getDefaultInteractiveSystems` (`src/globals/HomePage.ts:96`), and configured `interactiveSystems.systems` with `minRows: 5` (`src/globals/HomePage.ts:471`), `maxRows: 5` (`src/globals/HomePage.ts:472`), `defaultValue` (`src/globals/HomePage.ts:473`), and `validate` requiring `val.length === 5` and unique `shot` (`src/globals/HomePage.ts:488`). Tested in `src/globals/globals.test.ts:168` and `tests/int/p2-t5.int.test.ts:757`.
+3. **`R-3` [major, `R-12` rule]**: Generated `docs/reports/evidence/P2-T5/r2/limits.log` from the built config and quoted it verbatim; enforced `maxParagraphs: 2` on `home-page.whoWeAre.text` (`src/globals/HomePage.ts:409`, `src/fields/richText.ts:281`); updated the Global Revalidation Table to match the code (no `site-shell` tag; `projects-page` invalidates `/ar|en/projects` with page + `layout` scope plus `collection:projects*`); re-ran `test.log` with `pnpm test --reporter=verbose --no-color` (30 files, 161 tests with all titles visible); and verified 131/131 citations in `docs/reports/evidence/P2-T5/r2/citations.log`.
+4. **`R-4` [minor]**: Added `preventStatDeletionWhenReferenced` (`src/collections/Stats.ts:12`, `src/collections/Stats.ts:69`) and `preventVideoDeletionWhenReferenced` (`src/collections/Videos.ts:164`, `src/collections/Videos.ts:238`), replaced the hard-coded global list in `src/collections/Media.ts` with config-driven `deriveFieldTargetPaths` (`src/collections/Media.ts:177`) and `deriveGlobalTargetReferences` (`src/collections/Media.ts:236`, `src/collections/Media.ts:359`), and added unit (`src/globals/globals.test.ts:202`) + integration (`tests/int/p2-t5.int.test.ts:1659`) tests.
+5. **`R-5` [minor]**: Listed all approved design-backed additions under `## Deviations from Spec` (`R-5`).
+
+Acknowledged `M-074` (`handoff/reviews/P2-T6.md`). Starting **`P2-T6` Round 2 (`IN_PROGRESS`)** immediately (`WIP = 1` waiting on CTO) to fix `R-1`..`R-5`.
