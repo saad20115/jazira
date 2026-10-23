@@ -169,8 +169,8 @@ export interface User {
   id: number;
   name: string;
   role: 'admin' | 'editor';
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -199,8 +199,8 @@ export interface Media {
   id: number;
   alt: string;
   caption?: string | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   url?: string | null;
   thumbnailURL?: string | null;
   filename?: string | null;
@@ -261,8 +261,8 @@ export interface Video {
    * Optional thumbnail image displayed before video playback starts.
    */
   poster?: (number | null) | Media;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   url?: string | null;
   thumbnailURL?: string | null;
   filename?: string | null;
@@ -305,8 +305,8 @@ export interface Brand {
    * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
    */
   order: number;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * Single source of truth for company metrics (e.g., 45+ years, 100+ projects, 85% self-performed). Referenced across pages so numbers are never typed twice.
@@ -328,8 +328,8 @@ export interface Stat {
    * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
    */
   order: number;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * Approved materials and manufacturers schedule displayed on the Services page, categorized by engineering system (Electrical, Mechanical, Structural, Architectural). Use the filter bar to filter by system.
@@ -359,8 +359,8 @@ export interface Material {
    * Optional remarks regarding approval scope or specification notes.
    */
   notes?: string | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * Main and specialist services displayed on the Home and Services pages.
@@ -446,8 +446,8 @@ export interface Service {
     image?: (number | null) | Media;
   };
   bodyMedia?: (number | Media)[] | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
@@ -484,8 +484,8 @@ export interface Team {
    * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
    */
   order: number;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * Completed and in-progress engineering projects delivered by Al Jazira for Imdad Smart Co., including scope, media gallery, videos, and deliverables.
@@ -611,8 +611,8 @@ export interface Project {
    */
   order: number;
   bodyMedia?: (number | Media)[] | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
   _status?: ('draft' | 'published') | null;
 }
 /**
@@ -631,6 +631,10 @@ export interface QuoteRequest {
    */
   phone: string;
   service?: (number | null) | Service;
+  /**
+   * Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).
+   */
+  serviceTitle?: string | null;
   message?: string | null;
   locale: 'ar' | 'en';
   sourcePage?: string | null;
@@ -649,8 +653,8 @@ export interface QuoteRequest {
    */
   ipHash?: string | null;
   userAgent?: string | null;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -857,8 +861,8 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;
@@ -882,8 +886,8 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   url?: T;
   thumbnailURL?: T;
   filename?: T;
@@ -945,8 +949,8 @@ export interface MediaSelect<T extends boolean = true> {
 export interface VideosSelect<T extends boolean = true> {
   title?: T;
   poster?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   url?: T;
   thumbnailURL?: T;
   filename?: T;
@@ -968,8 +972,8 @@ export interface BrandsSelect<T extends boolean = true> {
   website?: T;
   showInMarquee?: T;
   order?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -979,8 +983,8 @@ export interface StatsSelect<T extends boolean = true> {
   value?: T;
   label?: T;
   order?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -992,8 +996,8 @@ export interface MaterialsSelect<T extends boolean = true> {
   description?: T;
   brands?: T;
   notes?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1024,8 +1028,8 @@ export interface ServicesSelect<T extends boolean = true> {
         image?: T;
       };
   bodyMedia?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   _status?: T;
 }
 /**
@@ -1041,8 +1045,8 @@ export interface TeamSelect<T extends boolean = true> {
   linkedin?: T;
   active?: T;
   order?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1089,8 +1093,8 @@ export interface ProjectsSelect<T extends boolean = true> {
   featured?: T;
   order?: T;
   bodyMedia?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
   _status?: T;
 }
 /**
@@ -1103,6 +1107,7 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   email?: T;
   phone?: T;
   service?: T;
+  serviceTitle?: T;
   message?: T;
   locale?: T;
   sourcePage?: T;
@@ -1115,8 +1120,8 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   emailLastError?: T;
   ipHash?: T;
   userAgent?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

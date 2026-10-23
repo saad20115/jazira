@@ -5,6 +5,7 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 function extractNumericBrandId(entry: unknown): number | null {
   if (typeof entry === 'number') {
@@ -59,7 +60,7 @@ export const MATERIAL_SYSTEM_OPTIONS = [
 
 export type MaterialSystem = (typeof MATERIAL_SYSTEM_OPTIONS)[number]['value']
 
-export const Materials: CollectionConfig = {
+export const Materials: CollectionConfig = withImmutableCreatedAt({
   slug: 'materials',
   timestamps: true,
   defaultSort: 'itemNo',
@@ -239,4 +240,4 @@ export const Materials: CollectionConfig = {
       },
     },
   ],
-}
+})

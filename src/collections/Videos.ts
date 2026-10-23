@@ -27,6 +27,7 @@ import {
   MAX_VIDEO_REQUEST_SIZE_BYTES,
   validateAndSanitizeVideoFile,
 } from '../security/uploadValidation'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 import {
   deriveGlobalTargetReferences,
   findGlobalTargetReferences,
@@ -197,7 +198,7 @@ const preventVideoDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
   }
 }
 
-export const Videos: CollectionConfig = {
+export const Videos: CollectionConfig = withImmutableCreatedAt({
   slug: 'videos',
   timestamps: true,
   labels: {
@@ -279,4 +280,4 @@ export const Videos: CollectionConfig = {
       },
     },
   ],
-}
+})

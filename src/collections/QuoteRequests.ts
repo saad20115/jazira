@@ -5,10 +5,12 @@ import {
   type FieldAccess,
   type PayloadRequest,
 } from 'payload'
+import { z } from 'zod'
 
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { isValidIpHash } from '../lib/ipHash'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 export const QUOTE_REQUEST_STATUS_VALUES = ['new', 'contacted', 'quoted', 'closed', 'spam'] as const
 export type QuoteRequestStatus = (typeof QUOTE_REQUEST_STATUS_VALUES)[number]
@@ -45,46 +47,81 @@ export const workflowFieldAccess = {
 }
 
 /**
- * KSA & international phone number validator (`Scope 1`):
- * Accepts KSA local mobile/landline (`05XXXXXXXX`, `01XXXXXXXX`) or international
- * E.164 / formatted numbers (`+966 57 353 4185`, `+971 50 123 4567`, `+1 (555) 234-5678`)
- * containing only digits, optional leading `+`, spaces, hyphens, and parentheses,
- * with 8 to 15 total digits.
+ * KSA & international phone number normalizer and validator (`Scope 1` & `R-3`):
+ * - Normalises leading `00` international prefix to `+` first.
+ * - Requires `+` (followed by `[1-9]`) for any international number, or KSA local
+ *   prefix (`05XXXXXXXX` / `01XXXXXXXX`, 10 digits).
+ * - Rejects bare international numbers without `+` (e.g. `966573534185`) and
+ *   repeated-digit junk (e.g. `+111111111111111`).
+ * - Enforces 9 national significant digits for `+966` / `00966`.
  */
-export const PHONE_ALLOWED_CHARS_REGEX = /^\+?[0-9][0-9\s()-]{6,28}$/
+export const INTERNATIONAL_PHONE_CHARS_REGEX = /^\+[1-9][0-9\s()-]{6,28}$/
+export const KSA_LOCAL_PHONE_CHARS_REGEX = /^0[15][0-9\s()-]{7,14}$/
+const REPEATED_DIGIT_RUN_REGEX = /(\d)\1{6,}/
+
+export function normalizeQuotePhone(value: string): string {
+  const trimmed = value.trim()
+  if (trimmed.startsWith('00')) {
+    return `+${trimmed.slice(2).trimStart()}`
+  }
+  return trimmed
+}
 
 export function isValidKsaOrInternationalPhone(value: unknown): boolean {
   if (typeof value !== 'string') {
     return false
   }
-  const trimmed = value.trim()
-  if (trimmed.length === 0 || trimmed.length > 30) {
+  const normalized = normalizeQuotePhone(value)
+  if (normalized.length === 0 || normalized.length > 30) {
     return false
   }
-  if (!PHONE_ALLOWED_CHARS_REGEX.test(trimmed)) {
+
+  const isInternational = INTERNATIONAL_PHONE_CHARS_REGEX.test(normalized)
+  const isKsaLocal = KSA_LOCAL_PHONE_CHARS_REGEX.test(normalized)
+  if (!isInternational && !isKsaLocal) {
     return false
   }
-  const digitsOnly = trimmed.replace(/\D/g, '')
+
+  const digitsOnly = normalized.replace(/\D/g, '')
   if (digitsOnly.length < 8 || digitsOnly.length > 15) {
     return false
   }
-  // If KSA local format starting with 05, require 10 digits (05XXXXXXXX)
-  if (trimmed.startsWith('05') && digitsOnly.length !== 10) {
+
+  if (REPEATED_DIGIT_RUN_REGEX.test(digitsOnly)) {
     return false
   }
-  // If KSA international format starting with +966 or 00966, validate national significant digits
-  if (trimmed.startsWith('+966')) {
+
+  if (isKsaLocal) {
+    return digitsOnly.length === 10
+  }
+
+  // International format starting with +966 (including normalized 00966)
+  if (normalized.startsWith('+966')) {
     const national = digitsOnly.slice(3).replace(/^0+/, '')
     if (national.length !== 9) {
       return false
     }
   }
+
   return true
 }
 
+export const QUOTE_PHONE_ERROR_MESSAGE =
+  'يرجى إدخال رقم هاتف سعودي أو دولي صالح (مثال: +966 57 353 4185 أو 05XXXXXXXX). / Please provide a valid KSA or international phone number.'
+
+/**
+ * Shared Zod schema for quote phone validation & normalization (reused by P3-T9 & P5-T1).
+ */
+export const quotePhoneSchema = z
+  .string()
+  .transform((val) => normalizeQuotePhone(val))
+  .refine((val) => isValidKsaOrInternationalPhone(val), {
+    message: QUOTE_PHONE_ERROR_MESSAGE,
+  })
+
 export const validateQuotePhone = (value: unknown): true | string => {
   if (!isValidKsaOrInternationalPhone(value)) {
-    return 'يرجى إدخال رقم هاتف سعودي أو دولي صالح (مثال: +966 57 353 4185 أو 05XXXXXXXX). / Please provide a valid KSA or international phone number.'
+    return QUOTE_PHONE_ERROR_MESSAGE
   }
   return true
 }
@@ -140,7 +177,8 @@ async function verifyRelatedDocExists(
   rawVal: unknown,
   fieldPath: string,
   req: PayloadRequest,
-): Promise<void> {
+  locale?: QuoteLocale,
+): Promise<Record<string, unknown>> {
   const relId = extractRelationshipId(rawVal)
   if (relId === null || typeof relId !== 'number') {
     throw new ValidationError({
@@ -160,10 +198,12 @@ async function verifyRelatedDocExists(
     where: { id: { equals: relId } },
     limit: 1,
     depth: 0,
+    locale: locale ?? 'ar',
+    fallbackLocale: 'ar',
     overrideAccess: true,
     req,
   })
-  if (found.totalDocs === 0) {
+  if (found.totalDocs === 0 || !found.docs[0]) {
     throw new ValidationError({
       collection: 'quote-requests',
       errors: [
@@ -175,6 +215,8 @@ async function verifyRelatedDocExists(
       req,
     })
   }
+
+  return found.docs[0] as unknown as Record<string, unknown>
 }
 
 const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async ({
@@ -202,7 +244,10 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
     mutable.email = mutable.email.trim().toLowerCase()
   }
   if (typeof mutable.phone === 'string') {
-    mutable.phone = mutable.phone.trim()
+    mutable.phone = normalizeQuotePhone(mutable.phone)
+  }
+  if (typeof mutable.serviceTitle === 'string') {
+    mutable.serviceTitle = mutable.serviceTitle.trim().slice(0, 200)
   }
   if (typeof mutable.sourcePage === 'string') {
     mutable.sourcePage = mutable.sourcePage.trim()
@@ -301,7 +346,20 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
   }
 
   if ('service' in mutable && isNonEmptyInput(mutable.service)) {
-    await verifyRelatedDocExists('services', mutable.service, 'service', req)
+    const requestLocale: QuoteLocale = mutable.locale === 'en' ? 'en' : 'ar'
+    const serviceDoc = await verifyRelatedDocExists(
+      'services',
+      mutable.service,
+      'service',
+      req,
+      requestLocale,
+    )
+    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
+      const resolvedTitle = serviceDoc.title
+      if (typeof resolvedTitle === 'string' && resolvedTitle.trim().length > 0) {
+        mutable.serviceTitle = resolvedTitle.trim().slice(0, 200)
+      }
+    }
   }
 
   if ('assignedTo' in mutable && isNonEmptyInput(mutable.assignedTo)) {
@@ -311,7 +369,7 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
   return mutable
 }
 
-export const QuoteRequests: CollectionConfig = {
+export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
   slug: 'quote-requests',
   labels: {
     singular: {
@@ -437,6 +495,23 @@ export const QuoteRequests: CollectionConfig = {
       access: readOnlyFieldAccess,
       admin: {
         readOnly: true,
+      },
+    },
+    {
+      name: 'serviceTitle',
+      type: 'text',
+      label: {
+        ar: 'عنوان الخدمة وقت الطلب (نسخة محفوظة)',
+        en: 'Service Title Snapshot',
+      },
+      maxLength: 200,
+      access: readOnlyFieldAccess,
+      admin: {
+        readOnly: true,
+        description: {
+          ar: 'نسخة نصية لعنوان الخدمة بلغة الطلب لضمان بقاء السجل مقروءاً حتى لو حُذفت الخدمة لاحقاً (R-4).',
+          en: 'Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).',
+        },
       },
     },
     {
@@ -708,4 +783,4 @@ export const QuoteRequests: CollectionConfig = {
       },
     },
   ],
-}
+})

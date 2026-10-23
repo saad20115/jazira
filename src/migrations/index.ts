@@ -4,6 +4,7 @@ import * as migration_20261022_140011_p2_t3_services_team from './20261022_14001
 import * as migration_20261022_160652_p2_t4_projects from './20261022_160652_p2_t4_projects'
 import * as migration_20261022_221250_p2_t5_globals from './20261022_221250_p2_t5_globals'
 import * as migration_20261022_231435_p2_t6_quote_requests from './20261022_231435_p2_t6_quote_requests'
+import * as migration_20261023_005934_p2_t6_quote_requests_service_title from './20261023_005934_p2_t6_quote_requests_service_title'
 
 export const migrations = [
   {
@@ -35,5 +36,10 @@ export const migrations = [
     up: migration_20261022_231435_p2_t6_quote_requests.up,
     down: migration_20261022_231435_p2_t6_quote_requests.down,
     name: '20261022_231435_p2_t6_quote_requests',
+  },
+  {
+    up: migration_20261023_005934_p2_t6_quote_requests_service_title.up,
+    down: migration_20261023_005934_p2_t6_quote_requests_service_title.down,
+    name: '20261023_005934_p2_t6_quote_requests_service_title',
   },
 ]

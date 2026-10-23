@@ -7,6 +7,7 @@ import {
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
 import { createPublicAPIError } from '../security/apiError'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 import { deriveGlobalTargetReferences, findGlobalTargetReferences } from './Media'
 
 const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
@@ -33,7 +34,7 @@ const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ i
   }
 }
 
-export const Stats: CollectionConfig = {
+export const Stats: CollectionConfig = withImmutableCreatedAt({
   slug: 'stats',
   timestamps: true,
   defaultSort: 'order',
@@ -116,4 +117,4 @@ export const Stats: CollectionConfig = {
     },
     orderField(),
   ],
-}
+})

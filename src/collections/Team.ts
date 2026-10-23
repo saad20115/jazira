@@ -13,6 +13,7 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 export const activeOrLoggedIn: Access = ({ req }) => {
   if (isAdminOrEditor({ req })) {
@@ -76,7 +77,7 @@ const clearStaffBioAllLocalesAfterChange: CollectionAfterChangeHook = async ({ d
   return doc as Record<string, unknown>
 }
 
-export const Team: CollectionConfig = {
+export const Team: CollectionConfig = withImmutableCreatedAt({
   slug: 'team',
   labels: {
     singular: {
@@ -313,4 +314,4 @@ export const Team: CollectionConfig = {
     },
     orderField(),
   ],
-}
+})

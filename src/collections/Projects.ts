@@ -25,6 +25,7 @@ import {
   safeRevalidateTag,
   shouldRevalidateCollectionAfterChange,
 } from '../hooks/revalidate'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 import { publishableVersions } from './_shared/publishable'
 
 export const PROJECT_CATEGORY_VALUES = [
@@ -564,7 +565,7 @@ const revalidateProjectRelatedAndHomeAfterDelete: CollectionAfterDeleteHook = ({
   return safeDoc
 }
 
-export const Projects: CollectionConfig = {
+export const Projects: CollectionConfig = withImmutableCreatedAt({
   slug: 'projects',
   timestamps: true,
   defaultSort: 'order',
@@ -1129,4 +1130,4 @@ export const Projects: CollectionConfig = {
     orderField(),
     bodyMediaField('body'),
   ],
-}
+})

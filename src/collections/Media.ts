@@ -23,6 +23,7 @@ import {
   createSafeUploadFileHandler,
   validateAndSanitizeMediaFile,
 } from '../security/uploadValidation'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
@@ -406,7 +407,7 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
   }
 }
 
-export const Media: CollectionConfig = {
+export const Media: CollectionConfig = withImmutableCreatedAt({
   slug: 'media',
   timestamps: true,
   labels: {
@@ -511,4 +512,4 @@ export const Media: CollectionConfig = {
       },
     },
   ],
-}
+})

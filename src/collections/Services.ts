@@ -12,6 +12,7 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 import { publishableVersions } from './_shared/publishable'
 
 const SERVICE_TIER_VALUES = ['main', 'additional'] as const
@@ -130,7 +131,7 @@ const validateServiceBeforeValidate: CollectionBeforeValidateHook = async ({ dat
   return mutable
 }
 
-export const Services: CollectionConfig = {
+export const Services: CollectionConfig = withImmutableCreatedAt({
   slug: 'services',
   labels: {
     singular: {
@@ -356,4 +357,4 @@ export const Services: CollectionConfig = {
     seoGroupField(),
     bodyMediaField('body'),
   ],
-}
+})

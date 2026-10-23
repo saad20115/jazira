@@ -5,11 +5,13 @@ import {
   type CollectionBeforeOperationHook,
   type CollectionBeforeValidateHook,
   type CollectionConfig,
+  type FieldHook,
 } from 'payload'
 
 import { adminOrSelf, isAdmin, isAdminFieldLevel } from '../access/index'
 import { createPublicAPIError } from '../security/apiError'
 import { enforcePasswordPolicy } from '../security/passwordPolicy'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
@@ -134,9 +136,52 @@ const preventLastAdminBeforeDelete: CollectionBeforeDeleteHook = async ({ id, re
   }
 }
 
-export const Users: CollectionConfig = {
+export const resolveUserDisplayNameBeforeValidate: FieldHook = ({
+  value,
+  siblingData,
+  data,
+  originalDoc,
+}) => {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value.trim()
+  }
+  const siblingEmail =
+    (siblingData as { email?: unknown } | undefined)?.email ??
+    (data as { email?: unknown } | undefined)?.email
+  if (typeof siblingEmail === 'string' && siblingEmail.trim().length > 0) {
+    return siblingEmail.trim().toLowerCase()
+  }
+  const origName = (originalDoc as { name?: unknown } | undefined)?.name
+  if (typeof origName === 'string' && origName.trim().length > 0) {
+    return origName.trim()
+  }
+  const origEmail = (originalDoc as { email?: unknown } | undefined)?.email
+  if (typeof origEmail === 'string' && origEmail.trim().length > 0) {
+    return origEmail.trim().toLowerCase()
+  }
+  return value as unknown
+}
+
+export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data }) => {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value.trim()
+  }
+  const fallbackEmail =
+    (siblingData as { email?: unknown } | undefined)?.email ??
+    (data as { email?: unknown } | undefined)?.email
+  if (typeof fallbackEmail === 'string' && fallbackEmail.trim().length > 0) {
+    return fallbackEmail.trim()
+  }
+  return value as unknown
+}
+
+export const Users: CollectionConfig = withImmutableCreatedAt({
   slug: 'users',
   timestamps: true,
+  forceSelect: {
+    name: true,
+    email: true,
+  },
   labels: {
     singular: {
       ar: 'مستخدم',
@@ -148,7 +193,7 @@ export const Users: CollectionConfig = {
     },
   },
   admin: {
-    useAsTitle: 'email',
+    useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'role', 'updatedAt'],
     group: {
       ar: 'النظام',
@@ -251,6 +296,10 @@ export const Users: CollectionConfig = {
         ar: 'الاسم',
         en: 'Name',
       },
+      hooks: {
+        beforeValidate: [resolveUserDisplayNameBeforeValidate],
+        afterRead: [resolveUserDisplayNameAfterRead],
+      },
     },
     {
       name: 'role',
@@ -284,4 +333,4 @@ export const Users: CollectionConfig = {
       },
     },
   ],
-}
+})

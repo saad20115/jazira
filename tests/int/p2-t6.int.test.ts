@@ -589,4 +589,377 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
     expect(filterByDate.status).toBe(200)
     expect((filterByDate.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
   })
+
+  it('normalizes 00966 phone prefix to +966, rejects bare international and repeated-digit phones (R-3), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and populates Users display name fallback to email (R-5)', async () => {
+    // R-3: Rejects 00966 with wrong national digit count, bare 966573534185 without +, and +111111111111111
+    for (const invalidPhone of ['009665735341', '966573534185', '+111111111111111']) {
+      await expect(
+        payload.create({
+          collection: 'quote-requests',
+          overrideAccess: true,
+          data: {
+            name: 'اختبار رقم هاتف غير صالح',
+            email: 'phone-check@example.sa',
+            phone: invalidPhone,
+            locale: 'ar',
+            consent: true,
+            status: 'new',
+            emailStatus: 'pending',
+          },
+        }),
+      ).rejects.toThrow()
+    }
+
+    // R-4: Create a temporary service, create a quote request with 00966 phone, verify normalization and serviceTitle snapshot
+    const tempService = await payload.create({
+      collection: 'services',
+      draft: false,
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        title: 'أنظمة التيار الخفيف والتحكم الذكي (ELV)',
+        slug: 'temp-elv-systems-r4',
+        tier: 'additional',
+        icon: 'mep',
+        shortDescription: 'أنظمة الأمن والمراقبة والتحكم بالمباني.',
+        order: 9,
+        _status: 'published',
+      },
+    })
+
+    const quoteWith00966 = await payload.create({
+      collection: 'quote-requests',
+      overrideAccess: true,
+      data: {
+        name: 'م. ماجد الدوسري',
+        company: 'شركة الرؤية الذكية',
+        email: 'majed@smartvision.example.sa',
+        phone: '00966 57 353 4185',
+        service: tempService.id,
+        locale: 'ar',
+        consent: true,
+        status: 'new',
+        emailStatus: 'pending',
+      },
+    })
+
+    // Phone normalized from 00966 to +966, and serviceTitle snapshot captured
+    expect(quoteWith00966.phone).toBe('+966 57 353 4185')
+    expect(quoteWith00966.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
+
+    // Editor and admin cannot tamper with serviceTitle via REST PATCH
+    const patchServiceTitle = await callJsonApi({
+      method: 'PATCH',
+      slugPath: ['quote-requests', String(quoteWith00966.id)],
+      token: adminToken,
+      body: {
+        serviceTitle: 'عنوان خدمة مزور',
+        status: 'contacted',
+      },
+    })
+    expect(patchServiceTitle.status).toBe(200)
+
+    // Delete the referenced service -> service becomes null (ON DELETE SET NULL), serviceTitle remains intact
+    await payload.delete({
+      collection: 'services',
+      id: tempService.id,
+      overrideAccess: true,
+    })
+
+    const afterServiceDeleted = await payload.findByID({
+      collection: 'quote-requests',
+      id: quoteWith00966.id,
+      depth: 0,
+      overrideAccess: true,
+    })
+    expect(afterServiceDeleted.service).toBeNull()
+    expect(afterServiceDeleted.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
+    expect(afterServiceDeleted.status).toBe('contacted')
+
+    await payload.delete({
+      collection: 'quote-requests',
+      id: quoteWith00966.id,
+      overrideAccess: true,
+    })
+
+    // R-5: User created without display name falls back to email so useAsTitle ('name') is never blank/Untitled
+    const fallbackUser = await payload.create({
+      collection: 'users',
+      overrideAccess: true,
+      data: {
+        name: '   ',
+        email: 'fallback-title-p2t6@aljazira.co',
+        password: 'Str0ng!User#Pass2026$Zz',
+        role: 'editor',
+      },
+    })
+    expect(fallbackUser.name).toBe('fallback-title-p2t6@aljazira.co')
+
+    await payload.delete({
+      collection: 'users',
+      id: fallbackUser.id,
+      overrideAccess: true,
+    })
+  })
+
+  it('prevents staff and admins from rewriting createdAt via REST PATCH or Local API update across all 10 collections (R-2)', async () => {
+    const forgedCreatedAt = '2000-01-01T00:00:00.000Z'
+
+    // Create sample records for the collections not yet instantiated in beforeAll
+    const png1x1 = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC',
+      'base64',
+    )
+    const mediaDoc = await payload.create({
+      collection: 'media',
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        alt: 'صورة اختبار عدم قابلية تعديل تاريخ الإنشاء',
+      },
+      file: {
+        data: png1x1,
+        mimetype: 'image/png',
+        name: 'r2-immutable-created-at.png',
+        size: png1x1.length,
+      },
+    })
+
+    // Minimal valid MP4 ftyp box buffer (32 bytes)
+    const minimalMp4 = Buffer.from(
+      '00000018667479706d703432000000006d70343269736f6d000000086d646174',
+      'hex',
+    )
+    const videoDoc = await payload.create({
+      collection: 'videos',
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        title: 'فيديو اختبار R-2',
+      },
+      file: {
+        data: minimalMp4,
+        mimetype: 'video/mp4',
+        name: 'r2-immutable.mp4',
+        size: minimalMp4.length,
+      },
+    })
+
+    const brandDoc = await payload.create({
+      collection: 'brands',
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        name: 'علامة اختبار R-2',
+        order: 1,
+      },
+    })
+
+    const statDoc = await payload.create({
+      collection: 'stats',
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        value: '45+',
+        label: 'عاماً من الخبرة (R-2)',
+        order: 1,
+      },
+    })
+
+    const materialDoc = await payload.create({
+      collection: 'materials',
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        itemNo: 77,
+        system: 'electrical',
+        description: 'قواطع كهربائية (R-2)',
+        brands: [brandDoc.id],
+      },
+    })
+
+    const teamDoc = await payload.create({
+      collection: 'team',
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        name: 'م. خالد العتيبي',
+        position: 'مهندس موقع',
+        tier: 'staff',
+        active: true,
+        order: 1,
+      },
+    })
+
+    const projectDoc = await payload.create({
+      collection: 'projects',
+      draft: false,
+      locale: 'ar',
+      overrideAccess: true,
+      data: {
+        title: 'مشروع اختبار R-2',
+        slug: 'r2-immutable-created-at-project',
+        summary: 'ملخص مشروع اختبار R-2.',
+        location: 'مكة المكرمة',
+        category: 'mep',
+        scope: ['hvac'],
+        coverImage: mediaDoc.id,
+        status: 'completed',
+        featured: false,
+        order: 1,
+        _status: 'published',
+      },
+    })
+
+    const quoteDoc = await payload.create({
+      collection: 'quote-requests',
+      overrideAccess: true,
+      data: {
+        name: 'عميل اختبار R-2',
+        email: 'r2-quote@example.sa',
+        phone: '+966 57 353 4185',
+        locale: 'ar',
+        consent: true,
+        status: 'new',
+        emailStatus: 'pending',
+      },
+    })
+
+    const targets: Array<{
+      slug:
+        | 'users'
+        | 'media'
+        | 'videos'
+        | 'brands'
+        | 'stats'
+        | 'materials'
+        | 'services'
+        | 'team'
+        | 'projects'
+        | 'quote-requests'
+      id: number
+      originalCreatedAt: string
+      token: string
+      extraPatch: Record<string, unknown>
+    }> = [
+      {
+        slug: 'users',
+        id: editorUser.id,
+        originalCreatedAt: editorUser.createdAt,
+        token: adminToken,
+        extraPatch: { name: 'مهندس متابعة العروض' },
+      },
+      {
+        slug: 'media',
+        id: mediaDoc.id,
+        originalCreatedAt: mediaDoc.createdAt,
+        token: editorToken,
+        extraPatch: { alt: 'صورة اختبار محدثة' },
+      },
+      {
+        slug: 'videos',
+        id: videoDoc.id,
+        originalCreatedAt: videoDoc.createdAt,
+        token: editorToken,
+        extraPatch: { title: 'فيديو اختبار محدث' },
+      },
+      {
+        slug: 'brands',
+        id: brandDoc.id,
+        originalCreatedAt: brandDoc.createdAt,
+        token: editorToken,
+        extraPatch: { name: 'علامة اختبار محدثة' },
+      },
+      {
+        slug: 'stats',
+        id: statDoc.id,
+        originalCreatedAt: statDoc.createdAt,
+        token: editorToken,
+        extraPatch: { value: '46+' },
+      },
+      {
+        slug: 'materials',
+        id: materialDoc.id,
+        originalCreatedAt: materialDoc.createdAt,
+        token: editorToken,
+        extraPatch: { description: 'قواطع كهربائية محدثة' },
+      },
+      {
+        slug: 'services',
+        id: serviceId,
+        originalCreatedAt: (
+          await payload.findByID({ collection: 'services', id: serviceId, overrideAccess: true })
+        ).createdAt,
+        token: editorToken,
+        extraPatch: { shortDescription: 'تنفيذ كافة أنظمة التكييف والكهرباء والسباكة (محدث).' },
+      },
+      {
+        slug: 'team',
+        id: teamDoc.id,
+        originalCreatedAt: teamDoc.createdAt,
+        token: editorToken,
+        extraPatch: { position: 'مهندس موقع أول' },
+      },
+      {
+        slug: 'projects',
+        id: projectDoc.id,
+        originalCreatedAt: projectDoc.createdAt,
+        token: editorToken,
+        extraPatch: { summary: 'ملخص مشروع اختبار R-2 محدث.' },
+      },
+      {
+        slug: 'quote-requests',
+        id: quoteDoc.id,
+        originalCreatedAt: quoteDoc.createdAt,
+        token: editorToken,
+        extraPatch: { status: 'contacted' },
+      },
+    ]
+
+    for (const target of targets) {
+      const patchRes = await callJsonApi({
+        method: 'PATCH',
+        slugPath: [target.slug, String(target.id)],
+        token: target.token,
+        body: {
+          ...target.extraPatch,
+          createdAt: forgedCreatedAt,
+        },
+      })
+      expect(patchRes.status, `REST PATCH on ${target.slug}`).toBe(200)
+
+      const fetched = (await payload.findByID({
+        collection: target.slug,
+        id: target.id,
+        depth: 0,
+        overrideAccess: true,
+      })) as { createdAt: string }
+
+      expect(fetched.createdAt, `${target.slug} createdAt must remain immutable`).toBe(
+        target.originalCreatedAt,
+      )
+      expect(fetched.createdAt).not.toBe(forgedCreatedAt)
+    }
+
+    // Also verify bulk REST PATCH on quote-requests cannot rewrite createdAt
+    const bulkPatchRes = await callJsonApi({
+      method: 'PATCH',
+      slugPath: ['quote-requests'],
+      query: { 'where[id][equals]': String(quoteDoc.id) },
+      token: adminToken,
+      body: {
+        status: 'quoted',
+        createdAt: forgedCreatedAt,
+      },
+    })
+    expect(bulkPatchRes.status).toBe(200)
+    const quoteAfterBulk = await payload.findByID({
+      collection: 'quote-requests',
+      id: quoteDoc.id,
+      depth: 0,
+      overrideAccess: true,
+    })
+    expect(quoteAfterBulk.createdAt).toBe(quoteDoc.createdAt)
+    expect(quoteAfterBulk.status).toBe('quoted')
+  })
 })

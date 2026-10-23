@@ -8,6 +8,7 @@ import {
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
 import { createPublicAPIError } from '../security/apiError'
+import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 const preventBrandDeletionWhenUsedByMaterials: CollectionBeforeDeleteHook = async ({ id, req }) => {
   const referencingMaterials = await req.payload.find({
@@ -38,7 +39,7 @@ const preventBrandDeletionWhenUsedByMaterials: CollectionBeforeDeleteHook = asyn
   }
 }
 
-export const Brands: CollectionConfig = {
+export const Brands: CollectionConfig = withImmutableCreatedAt({
   slug: 'brands',
   timestamps: true,
   defaultSort: 'order',
@@ -180,4 +181,4 @@ export const Brands: CollectionConfig = {
     },
     orderField(),
   ],
-}
+})
