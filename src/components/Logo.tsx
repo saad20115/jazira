@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { ReactElement } from 'react'
 
 import styles from './Logo.module.css'
@@ -68,13 +69,12 @@ export function Logo({
       data-logo-size={size}
       data-logo-type={type}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- Brand SVGs are static vector assets in /brand/*.svg */}
-      <img
+      <Image
         alt={alt}
         className={styles.image}
-        decoding="async"
         height={dimensions.height}
         src={src}
+        unoptimized
         width={dimensions.width}
       />
     </span>
