@@ -1,0 +1,4 @@
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-dod-p2t6-r2-9416a766
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+
