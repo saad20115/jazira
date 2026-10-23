@@ -19,6 +19,10 @@ import {
   isAdminOrSelfFieldLevel,
 } from '../access/index'
 import { createPublicAPIError } from '../security/apiError'
+import {
+  hardenLoginEnumerationBeforeOperation,
+  maskLockedAuthAfterError,
+} from '../security/loginEnumeration'
 import { enforcePasswordPolicy } from '../security/passwordPolicy'
 import { immutableCreatedAtField, withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
@@ -351,11 +355,12 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     },
   ],
   hooks: {
-    beforeOperation: [enforcePasswordBeforeOperation],
+    beforeOperation: [enforcePasswordBeforeOperation, hardenLoginEnumerationBeforeOperation],
     beforeValidate: [enforceRoleAndPasswordBeforeValidate],
     beforeChange: [preventLastAdminDemotionBeforeChange],
     afterRead: [restrictOtherUserFieldsForEditorAfterRead],
     beforeDelete: [preventLastAdminBeforeDelete],
+    afterError: [maskLockedAuthAfterError],
   },
   fields: [
     {
