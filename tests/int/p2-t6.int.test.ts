@@ -775,13 +775,14 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
     })
   })
 
-  it('enforces Users.access.unlock = isAdmin: editor unlocking another user (existing or unknown email) or self returns 403, anonymous returns 403, and admin unlocking a locked account returns 200 and restores login (R-13)', async () => {
+  it('enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19)', async () => {
     const lockedAdminEmail = 'locked-admin-p2t6@aljazira.co'
     const lockedAdminPassword = 'Str0ng!Locked#Pass2026$XyZ'
 
     const lockedAdmin = await payload.create({
       collection: 'users',
       overrideAccess: true,
+      user: adminUser,
       data: {
         name: 'م. سلطان القحطاني (مدير نظام مقفل)',
         email: lockedAdminEmail,
@@ -789,10 +790,11 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         role: 'admin',
       },
     })
+    expect(lockedAdmin.role).toBe('admin')
 
     try {
-      // 1. Six failed logins lock the admin account (maxLoginAttempts = 5)
-      for (let i = 0; i < 6; i++) {
+      // 1. Five failed logins lock the admin account on the 5th failure (maxLoginAttempts = 5)
+      for (let i = 0; i < 5; i++) {
         const badLogin = await callJsonApi({
           method: 'POST',
           slugPath: ['users', 'login'],
@@ -804,7 +806,7 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         expect(badLogin.status).toBe(401)
       }
 
-      // Confirm account is locked: valid password now fails with 401
+      // Confirm account is locked after the 5th failure: valid password now fails with 401
       const loginWhileLocked = await callJsonApi({
         method: 'POST',
         slugPath: ['users', 'login'],
@@ -878,6 +880,28 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         },
       })
       expect(loginAfterAdminUnlock.status).toBe(200)
+
+      // 6. POST /api/users/verify/:id returns 404 (4xx, never 500) for anonymous, editor, and admin callers (R-19)
+      const anonVerify = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'verify', 'fake-token-123'],
+        body: {},
+      })
+      const editorVerify = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'verify', 'fake-token-123'],
+        token: editorToken,
+        body: {},
+      })
+      const adminVerify = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'verify', 'fake-token-123'],
+        token: adminToken,
+        body: {},
+      })
+      expect(anonVerify.status).toBe(404)
+      expect(editorVerify.status).toBe(404)
+      expect(adminVerify.status).toBe(404)
     } finally {
       await payload.delete({
         collection: 'users',

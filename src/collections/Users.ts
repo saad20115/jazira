@@ -8,6 +8,7 @@ import {
   type CollectionConfig,
   type FieldAccess,
   type FieldHook,
+  type PayloadHandler,
 } from 'payload'
 
 import {
@@ -225,6 +226,19 @@ export const restrictOtherUserFieldsForEditorAfterRead: CollectionAfterReadHook 
   }
 }
 
+export const disableVerifyEmailEndpointHandler: PayloadHandler = () =>
+  Response.json(
+    {
+      errors: [
+        {
+          message:
+            'التحقق من البريد الإلكتروني غير مفعّل لحسابات الموظفين. / Email verification is disabled for staff accounts.',
+        },
+      ],
+    },
+    { status: 404 },
+  )
+
 export const Users: CollectionConfig = withImmutableCreatedAt({
   slug: 'users',
   timestamps: true,
@@ -279,6 +293,11 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     },
   },
   endpoints: [
+    {
+      path: '/verify/:id',
+      method: 'post',
+      handler: disableVerifyEmailEndpointHandler,
+    },
     {
       path: '/:id/revoke-sessions',
       method: 'post',

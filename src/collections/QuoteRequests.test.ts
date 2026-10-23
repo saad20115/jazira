@@ -29,6 +29,7 @@ import {
   workflowFieldAccess,
 } from './QuoteRequests'
 import {
+  disableVerifyEmailEndpointHandler,
   resolveUserDisplayNameAfterRead,
   resolveUserDisplayNameBeforeValidate,
   restrictOtherUserFieldsForEditorAfterRead,
@@ -215,13 +216,20 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
     }
   })
 
-  it('configures Users.admin.useAsTitle = name, Users.access.read = isAdminOrEditor, Users.access.unlock = isAdmin, and restricts other users email/role/sessions to adminOrSelf (R-5, R-11, R-13)', () => {
+  it('configures Users.admin.useAsTitle = name, Users.access.read = isAdminOrEditor, Users.access.unlock = isAdmin, disables POST /api/users/verify/:id (404), and restricts other users email/role/sessions to adminOrSelf (R-5, R-11, R-13, R-19)', async () => {
     expect(Users.admin?.useAsTitle).toBe('name')
     expect(Users.access?.read).toBe(isAdminOrEditor)
     expect(Users.access?.unlock).toBe(isAdmin)
     expect(Users.forceSelect).toEqual({
       name: true,
     })
+
+    const verifyEndpoint = Array.isArray(Users.endpoints)
+      ? Users.endpoints.find((ep) => ep.path === '/verify/:id' && ep.method === 'post')
+      : undefined
+    expect(verifyEndpoint?.handler).toBe(disableVerifyEmailEndpointHandler)
+    const verifyRes = await disableVerifyEmailEndpointHandler({} as never)
+    expect(verifyRes.status).toBe(404)
 
     for (const restrictedFieldName of ['email', 'role', 'updatedAt', 'createdAt']) {
       const field = Users.fields.find(
