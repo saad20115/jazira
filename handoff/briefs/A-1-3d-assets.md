@@ -111,8 +111,15 @@ The owner compared the current model with `design/assets/images/tower-render.png
 2. **Glazing.** Both camera-facing faces are glass, with the same mullion rhythm, reflections and
    lit floors. There is no dark or blank face in the hero view.
 3. **Stepped setback.** Build it on both faces at the camera corner, mirrored, with the same step
-   count and depth as the reference. The open crown frame and the gold pilasters follow the
-   reference.
+   count and depth as the reference. The gold pilasters follow the reference.
+3a. **Crown: the gold edge follows the glass (owner, 2026-10-23, relayed by the 3D lead).** "The
+   upper gold edge at the top of the tower should follow the glass path."
+   - Drop the separate diagonal crown beam.
+   - The champagne ring and the gold light line run on top of the glass parapet along the **whole
+     roof outline**, including the notch edges.
+   - The line still rises 87.0 → 90.5 m from the left pilaster to the right one.
+   - Gate: ≤ 5 px edge overlay on the crown, and one continuous warm line in both Cycles and the live
+     GLB.
 4. **Base.** The lobby, canopies and forecourt line up with the new orientation (the lobby faces
    the camera as in the reference).
 5. **Proof** (before any further motion or compression work):
