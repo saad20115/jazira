@@ -27,8 +27,11 @@ Each one gets a unit test.
 - `auth`: see `docs/03-security.md` §2 (lockout, cookie flags, token expiry).
 - Fields: `name` (text, required), `role` (select `admin|editor`, required, default `editor`,
   `saveToJWT: true`, **field-level update: admin only**).
-- Access: read — admin all, editor self only; create/delete — admin; update — admin or self
-  (but not `role`). First user created via the initial admin flow becomes `admin`.
+- Access: read — admin all; editor may read **only `id` and `name`** of other users (field-level
+  read admin-or-self on every other field, incl. `email`, `role`, `sessions`; such fields cannot be
+  queried or sorted by editors) and their own full record (CTO decision 2026-10-23, P2-T6 R-11);
+  create/delete — admin; update — admin or self (but not `role`); **`unlock` — admin only**.
+  First user created via the initial admin flow becomes `admin`.
 
 ### `media` — group: Media
 - Upload: images only. `mimeTypes: ['image/jpeg','image/png','image/webp','image/avif']`

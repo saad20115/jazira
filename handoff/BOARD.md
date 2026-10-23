@@ -17,7 +17,7 @@ watch the channel.
 | P2-T3 | `services`, `team` | ACCEPTED | 1 | 2026-10-22 | CTO |
 | P2-T4 | `projects` | ACCEPTED | 4 | 2026-10-23 | CTO |
 | P2-T5 | Globals | ACCEPTED | 2 | 2026-10-23 | CTO |
-| P2-T6 | `quote-requests` | IN_REVIEW | 3 | 2026-10-23 | Antigravity |
+| P2-T6 | `quote-requests` | CHANGES_REQUESTED | 3 | 2026-10-23 | CTO |
 | P2-T7 | Dashboard UX & Live Preview | TODO | 0 | 2026-10-21 | CTO |
 | P2-T8 | Access test suite, migrations, phase-2 report | IN_PROGRESS | 1 | 2026-10-23 | Antigravity |
 | P3-T1 | Frontend foundations, i18n, CSP | TODO | 0 | 2026-10-21 | CTO |
