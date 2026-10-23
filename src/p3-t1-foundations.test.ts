@@ -44,6 +44,7 @@ import {
   isAdminRoutePath,
   isHomePagePath,
 } from './security/csp'
+import { extractLocaleFontPreloadsFromCss } from './styles/font-preload'
 
 function walkFiles(dir: string, filterFn: (filePath: string) => boolean): string[] {
   if (!fs.existsSync(dir)) return []
@@ -307,6 +308,27 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     expect(resolveLocaleFromPathname('/en/about')).toBe('en')
     expect(resolveLocaleFromPathname('/ar/services')).toBe('ar')
     expect(resolveLocaleFromPathname('/fr')).toBe('ar')
+
+    // R-7: Unknown locale prefix (/fr) rewrites to /ar/__not_found__ so global-not-found renders <html lang="ar" dir="rtl">
+    const frReq = new NextRequest('http://localhost:3000/fr')
+    const frRes = proxy(frReq)
+    expect(frRes.headers.get('x-middleware-rewrite')).toBe('http://localhost:3000/ar/__not_found__')
+    expect(frRes.headers.get('Content-Security-Policy')).toContain("default-src 'self'")
+
+    // R-11: extractLocaleFontPreloadsFromCss separates Noto Kufi Arabic (ar) and Poppins (en) normal weights
+    const sampleCss = [
+      '@font-face{font-family:Poppins;font-style:italic;font-weight:400;font-display:swap;src:url(../media/poppins-italic-400.woff2)format("woff2");unicode-range:U+??}',
+      '@font-face{font-family:Poppins;font-style:normal;font-weight:400;font-display:swap;src:url(../media/poppins-normal-400.woff2)format("woff2");unicode-range:U+??}',
+      '@font-face{font-family:Poppins;font-style:normal;font-weight:700;font-display:swap;src:url(../media/poppins-normal-700.woff2)format("woff2");unicode-range:U+??}',
+      '@font-face{font-family:Noto Kufi Arabic;font-style:normal;font-weight:400;font-display:swap;src:url(../media/noto-kufi-ar.woff2)format("woff2");unicode-range:U+6??}',
+    ].join('\n')
+    expect(extractLocaleFontPreloadsFromCss(sampleCss)).toEqual({
+      ar: ['/_next/static/media/noto-kufi-ar.woff2'],
+      en: [
+        '/_next/static/media/poppins-normal-400.woff2',
+        '/_next/static/media/poppins-normal-700.woff2',
+      ],
+    })
   })
 })
 

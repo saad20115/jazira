@@ -14,7 +14,7 @@ export const poppins = Poppins({
   style: ['normal', 'italic'],
   display: 'swap',
   variable: '--font-poppins',
-  preload: true,
+  preload: false,
 })
 
 export const notoKufiArabic = Noto_Kufi_Arabic({
@@ -23,7 +23,7 @@ export const notoKufiArabic = Noto_Kufi_Arabic({
   style: ['normal'],
   display: 'swap',
   variable: '--font-noto-kufi-arabic',
-  preload: true,
+  preload: false,
 })
 
 /**

@@ -41,6 +41,9 @@ const baseSecurityHeaders = [
 const nextConfig: NextConfig = {
   output: 'standalone',
   poweredByHeader: false,
+  experimental: {
+    globalNotFound: true,
+  },
   outputFileTracingExcludes: {
     '*': ['./media/**', './videos/**', './storage/**'],
   },

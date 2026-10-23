@@ -95,13 +95,33 @@ export function proxy(request: NextRequest): NextResponse {
     nonce,
     pathname,
   })
-  const resolvedLocale = resolveLocaleFromPathname(pathname)
+  const firstSegment = pathname.split('/').filter(Boolean)[0]
+  const hasSupportedLocalePrefix = isSupportedLocale(firstSegment)
+  const resolvedLocale = hasSupportedLocalePrefix ? firstSegment : DEFAULT_LOCALE
 
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-nonce', nonce)
   requestHeaders.set('x-aljazira-locale', resolvedLocale)
   requestHeaders.set('x-aljazira-pathname', pathname)
   requestHeaders.set('Content-Security-Policy', publicCsp)
+
+  const isBlockedProdDevRoute =
+    process.env.NODE_ENV === 'production' &&
+    (pathname.endsWith('/_specimen') ||
+      pathname.endsWith('/%5Fspecimen') ||
+      pathname.endsWith('/%5fspecimen') ||
+      pathname.endsWith('/styleguide'))
+
+  if (!hasSupportedLocalePrefix || isBlockedProdDevRoute) {
+    const notFoundRewriteUrl = new URL(`/${resolvedLocale}/__not_found__`, request.url)
+    const rewriteResponse = NextResponse.rewrite(notFoundRewriteUrl, {
+      request: {
+        headers: requestHeaders,
+      },
+    })
+    rewriteResponse.headers.set('Content-Security-Policy', publicCsp)
+    return rewriteResponse
+  }
 
   const response = NextResponse.next({
     request: {

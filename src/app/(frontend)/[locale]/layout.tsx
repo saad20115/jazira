@@ -16,6 +16,7 @@ import {
 } from '@/i18n'
 import { getNavigation, getSiteSettings, resolveAuthenticatedStaffUser } from '@/lib/cms'
 import type { Navigation, SiteSetting } from '@/payload-types'
+import { preloadLocaleFonts } from '@/styles/font-preload'
 import { getLocaleFontClassName } from '@/styles/fonts'
 import gridStyles from '@/styles/grid.module.css'
 
@@ -256,6 +257,8 @@ export default async function LocaleRootLayout({
 
   const isDevSpecimenOrStyleguide =
     activePathname.endsWith('/_specimen') || activePathname.endsWith('/styleguide')
+
+  preloadLocaleFonts(resolvedLocale)
 
   return (
     <html lang={resolvedLocale} dir={dir} className={getLocaleFontClassName(resolvedLocale)}>

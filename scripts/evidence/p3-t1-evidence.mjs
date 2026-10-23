@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 
@@ -24,7 +25,7 @@ import sharp from 'sharp'
  *    - `GET /admin/login` -> `/admin` relaxed CSP + `Set-Cookie: payload-lng=ar`
  *    - `GET /fr` -> `404` + `<html lang="ar" dir="rtl">` (`R-7`)
  *    - `GET /en/this-page-does-not-exist` -> `404` + `<html lang="en" dir="ltr">` + localized `<title>Page Not Found` (`R-7`)
- *    - `GET /api/preview` (`401` wrong secret, `400` open-redirect `//evil.example.com`, `307` valid preview + `__prerender_bypass` cookie)
+ *    - `GET /api/preview` (`401` wrong secret, `400` open-redirect `//evil.example.com`, `403` anonymous caller with valid secret)
  *    - `GET /api/preview/exit?returnTo=/ar` (`307` + cleared `__prerender_bypass` cookie)
  * 2. `console-csp-network.json`, `console-csp.log`, & `fonts-network-proof.log`:
  *    - Playwright headless Chromium visits `/ar` and `/en` (and `/ar/_specimen` + `/en/_specimen` when HTTP 200 in dev)
@@ -35,18 +36,24 @@ import sharp from 'sharp'
  */
 
 function resolvePreviewSecret() {
-  if (process.env.PREVIEW_SECRET && process.env.PREVIEW_SECRET.trim().length > 0) {
-    return process.env.PREVIEW_SECRET.trim()
-  }
-  const envPath = path.resolve(process.cwd(), '.env')
-  if (fs.existsSync(envPath)) {
-    const envContent = fs.readFileSync(envPath, 'utf8')
-    const match = envContent.match(/^PREVIEW_SECRET=(.+)$/m)
-    if (match && match[1]) {
-      return match[1].trim().replace(/^['"]|['"]$/g, '')
+  let payloadSecret = process.env.PAYLOAD_SECRET ? process.env.PAYLOAD_SECRET.trim() : ''
+  if (!payloadSecret) {
+    const envPath = path.resolve(process.cwd(), '.env')
+    if (fs.existsSync(envPath)) {
+      const envContent = fs.readFileSync(envPath, 'utf8')
+      const match = envContent.match(/^PAYLOAD_SECRET=(.+)$/m)
+      if (match && match[1]) {
+        payloadSecret = match[1].trim().replace(/^['"]|['"]$/g, '')
+      }
     }
   }
-  return 'dev-only-preview-secret-change-me-in-production-32chars'
+  if (!payloadSecret) {
+    payloadSecret = 'dev-only-secret-change-me-in-production-32chars'
+  }
+  return crypto
+    .createHmac('sha256', payloadSecret)
+    .update('aljazira-live-preview-secret-v1')
+    .digest('hex')
 }
 
 function getRepoHeaderBlock() {
