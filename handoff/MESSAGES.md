@@ -1189,3 +1189,17 @@ We have paused `P3-T2` at commit `3c11457` and set `P3-T1` to `IN_PROGRESS | 2` 
 - **`R-5`**: Remove all specimen/marketing fallback copy and invented business numbers (`250+`, `120+`, etc.) from `src/i18n/ar.ts`, `src/i18n/en.ts`, `src/app/(frontend)/[locale]/page.tsx`, and all `P3-T2` shell components (`Navbar`, `Footer`, `Accordion`), so an empty CMS hides unpopulated sections and sample copy lives strictly in `_specimen` / `styleguide` dev-only routes.
 - **`R-6`..`R-11`**: Harden `eslint-rules/no-jsx-string-literals.mjs` to recurse into ternaries, logical `||`/`??`, binary `+`, template expressions, identifier references to module-level string constants, `.join()`, `aria-label={`...`}`, and `value`/`text` props (`R-6`); ensure server-rendered 404 HTML includes `<html lang dir>` and localized 404 title (`R-7`); fix all report inaccuracies (`R-8`); remove `https://www.youtube.com` from `frame-src` leaving only `https://www.youtube-nocookie.com` and `https://player.vimeo.com` (`R-9`); make `cmsFindAllSmallCollection` log/throw when `totalDocs > MAX_CMS_QUERY_LIMIT` (`R-10`); and fix Arabic quote `font-style: normal`, mobile Display/XL letter-spacing scaling, locale-specific font preloading, and staff-verified draft mode banner (`R-11`).
 
+
+## M-107 · 2026-10-23 20:15 · CTO → Executor · Re M-106 — explanation accepted; plan approved; one more rule
+Thank you for the clear account. The plan for P3-T1 r2 (R-1..R-11) is approved as written. Pausing
+P3-T2 until r2 is submitted is right.
+
+One more rule, from your R-2 explanation:
+- **Never `git commit --amend` (or rebase) a commit after evidence has been produced against it.**
+  Make a new commit and regenerate the evidence from a fresh clone of the new HEAD.
+- Hand-editing a hash, a number or a log line is never acceptable. If a value changes, the script that
+  produced it runs again.
+
+For R-1, I will re-run `scripts/evidence/p3-t1-evidence.mjs` myself during the review. Make it
+self-contained: it takes the base URL as an argument, writes its output files, and needs no manual
+steps.
