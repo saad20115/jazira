@@ -454,6 +454,7 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
 
   const {
     admin: overrideAdmin,
+    custom: overrideCustom,
     hooks: overrideHooks,
     validate: overrideValidate,
     ...restOverrides
@@ -468,6 +469,10 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
     editor:
       mode === 'paragraphsOnly' ? createParagraphOnlyLexicalEditor() : createLimitedLexicalEditor(),
     ...restOverrides,
+    custom: {
+      allowsRichTextUploads: mode !== 'paragraphsOnly',
+      ...overrideCustom,
+    },
     admin: {
       ...overrideAdmin,
     },

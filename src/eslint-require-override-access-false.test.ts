@@ -8,7 +8,12 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('server-only', () => ({}))
 
 import { requireOverrideAccessFalseRule } from '../eslint-rules/require-override-access-false.mjs'
-import { buildSafeCmsQueryArgs } from './lib/cms/client'
+import { FORBIDDEN_CLIENT_BUNDLE_SENTINELS } from '../scripts/check-client-bundle-sentinels.mjs'
+import {
+  buildSafeCmsCountArgs,
+  buildSafeCmsQueryArgs,
+  CMS_CLIENT_SERVER_ONLY_SENTINEL,
+} from './lib/cms/client'
 
 function lintSnippet(code: string, filename: string): Linter.LintMessage[] {
   const linter = new Linter({ configType: 'flat' })
@@ -16,7 +21,7 @@ function lintSnippet(code: string, filename: string): Linter.LintMessage[] {
     code,
     [
       {
-        files: ['**/*.ts', '**/*.tsx'],
+        files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs'],
         languageOptions: {
           parser: tseslint.parser,
           ecmaVersion: 'latest',
@@ -38,7 +43,7 @@ function lintSnippet(code: string, filename: string): Linter.LintMessage[] {
   )
 }
 
-function collectTsFiles(dirPath: string): string[] {
+function collectSourceFiles(dirPath: string): string[] {
   if (!fs.existsSync(dirPath)) {
     return []
   }
@@ -46,7 +51,7 @@ function collectTsFiles(dirPath: string): string[] {
   for (const entry of fs.readdirSync(dirPath, { withFileTypes: true })) {
     const fullPath = path.join(dirPath, entry.name)
     if (entry.isDirectory()) {
-      results.push(...collectTsFiles(fullPath))
+      results.push(...collectSourceFiles(fullPath))
     } else if (entry.isFile() && /\.(?:ts|tsx|js|jsx|mjs)$/.test(entry.name)) {
       results.push(fullPath)
     }
@@ -54,7 +59,7 @@ function collectTsFiles(dirPath: string): string[] {
   return results
 }
 
-describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2-T8 Scope 3, R-6)', () => {
+describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2-T8 Scope 3, R-6, R-11, R-12)', () => {
   it('flags payload.find, payload.findByID, and payload.findGlobal calls in src/app/(frontend) and src/lib/cms when overrideAccess: false is missing or true', () => {
     const badFrontendCode = [
       'export async function loadHome(payload: any) {',
@@ -102,25 +107,41 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     expect(lintSnippet(undocumentedCommentCode, 'src/lib/cms/client.ts')).toHaveLength(1)
   })
 
-  it('bans importing payload, @payload-config, or getPayload in src/app/(frontend)/**, src/components/**, and src/lib/cms/** outside src/lib/cms/client.ts (R-6)', () => {
+  it('bans importing AND re-exporting payload, @payload-config, or getPayload repo-wide outside the explicit server allow-list, including in .js/.mjs files (R-6, R-12)', () => {
     const importPayloadCode = [
       "import { getPayload } from 'payload'",
       "import config from '@payload-config'",
       'export const x = [getPayload, config]',
     ].join('\n')
 
-    const frontendImportMsgs = lintSnippet(importPayloadCode, 'src/app/(frontend)/ar/page.tsx')
-    expect(frontendImportMsgs).toHaveLength(2)
-    expect(frontendImportMsgs.every((m) => m.message.includes('is forbidden'))).toBe(true)
+    const reexportPayloadCode = [
+      "export { getPayload } from 'payload'",
+      "export { default as config } from '@payload-config'",
+      "export * from 'payload'",
+      "export { getPayload as aliasGetPayload } from './anything'",
+    ].join('\n')
 
-    const componentImportMsgs = lintSnippet(importPayloadCode, 'src/components/ProjectCard.tsx')
-    expect(componentImportMsgs).toHaveLength(2)
+    for (const forbiddenFile of [
+      'src/app/(frontend)/ar/page.tsx',
+      'src/components/ProjectCard.tsx',
+      'src/lib/cms/reexport.ts',
+      'src/lib/cms/reexport.js',
+      'src/lib/cms/reexport.mjs',
+      'src/lib/barrel.ts',
+    ]) {
+      const importMsgs = lintSnippet(importPayloadCode, forbiddenFile)
+      expect(importMsgs, `Expected import error in ${forbiddenFile}`).toHaveLength(2)
+      expect(importMsgs.every((m) => m.message.includes('is forbidden'))).toBe(true)
 
-    const nonWrapperCmsMsgs = lintSnippet(importPayloadCode, 'src/lib/cms/collections.ts')
-    expect(nonWrapperCmsMsgs).toHaveLength(2)
+      const reexportMsgs = lintSnippet(reexportPayloadCode, forbiddenFile)
+      expect(reexportMsgs, `Expected re-export error in ${forbiddenFile}`).toHaveLength(4)
+      expect(reexportMsgs.every((m) => m.message.includes('is forbidden'))).toBe(true)
+    }
 
-    // Allowed inside the single typed wrapper `src/lib/cms/client.ts`
+    // Allowed inside the explicit server allow-list (`src/lib/cms/client.ts`, `src/collections/*`, `src/payload.config.ts`)
     expect(lintSnippet(importPayloadCode, 'src/lib/cms/client.ts')).toEqual([])
+    expect(lintSnippet(importPayloadCode, 'src/collections/Projects.ts')).toEqual([])
+    expect(lintSnippet(importPayloadCode, 'src/payload.config.ts')).toEqual([])
   })
 
   it('catches all R-6 evasion vectors: aliased/client receivers, destructured find, computed access, .call/.apply/.bind, trailing spread override, and findVersionByID/countVersions', () => {
@@ -148,41 +169,79 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     expect(msgs).toHaveLength(12)
   })
 
-  it('enforces overrideAccess: false and draft from draftMode() in buildSafeCmsQueryArgs even if runtime properties are injected (R-6)', () => {
-    const safePublished = buildSafeCmsQueryArgs(
-      {
-        collection: 'projects',
-        locale: 'ar',
-        overrideAccess: true,
-        draft: true,
-      },
-      false,
-    )
-    expect(safePublished).toEqual({
-      collection: 'projects',
+  it('constructs Payload args strictly from the explicit property whitelist in buildSafeCmsQueryArgs and buildSafeCmsCountArgs, dropping injected user, req, showHiddenFields, overrideAccess, and draft (R-6, R-11)', () => {
+    const smuggledInput: Record<string, unknown> = {
+      collection: 'users',
       locale: 'ar',
+      fallbackLocale: 'ar',
+      where: { role: { equals: 'admin' } },
+      limit: 10,
+      page: 1,
+      sort: '-createdAt',
+      depth: 1,
+      pagination: true,
+      select: { name: true },
+      user: { id: 1, role: 'admin', email: 'admin@aljazira.co' },
+      req: { user: { id: 1, role: 'admin' } },
+      showHiddenFields: true,
+      overrideAccess: true,
+      draft: true,
+    }
+
+    const safePublished = buildSafeCmsQueryArgs(smuggledInput, false)
+    expect(safePublished).toEqual({
+      collection: 'users',
+      locale: 'ar',
+      fallbackLocale: 'ar',
+      where: { role: { equals: 'admin' } },
+      limit: 10,
+      page: 1,
+      sort: '-createdAt',
+      depth: 1,
+      pagination: true,
+      select: { name: true },
       draft: false,
       overrideAccess: false,
     })
+    expect('user' in safePublished).toBe(false)
+    expect('req' in safePublished).toBe(false)
+    expect('showHiddenFields' in safePublished).toBe(false)
 
     const safeDraft = buildSafeCmsQueryArgs(
       {
-        collection: 'projects',
+        slug: 'home-page',
         locale: 'en',
+        user: { id: 1, role: 'admin' },
+        req: { user: { id: 1, role: 'admin' } },
+        showHiddenFields: true,
         overrideAccess: true,
         draft: false,
       },
       true,
     )
     expect(safeDraft).toEqual({
-      collection: 'projects',
+      slug: 'home-page',
       locale: 'en',
       draft: true,
       overrideAccess: false,
     })
+
+    const safeCount = buildSafeCmsCountArgs(smuggledInput)
+    expect(safeCount).toEqual({
+      collection: 'users',
+      locale: 'ar',
+      where: { role: { equals: 'admin' } },
+      overrideAccess: false,
+    })
+    expect('user' in safeCount).toBe(false)
+    expect('req' in safeCount).toBe(false)
+    expect('showHiddenFields' in safeCount).toBe(false)
+    expect('draft' in safeCount).toBe(false)
+
+    expect(FORBIDDEN_CLIENT_BUNDLE_SENTINELS).toContain(CMS_CLIENT_SERVER_ONLY_SENTINEL)
   })
 
-  it('does not flag calls in backend collections, hooks, or integration tests outside src/app/(frontend), src/components, and src/lib/cms', () => {
+  it('does not flag calls in backend collections, hooks, or integration tests in the server allow-list', () => {
     const backendCode = [
       'export async function hookCheck(payload: any) {',
       "  return payload.find({ collection: 'projects' })",
@@ -202,7 +261,7 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     ]
 
     for (const dir of targetDirs) {
-      for (const file of collectTsFiles(dir)) {
+      for (const file of collectSourceFiles(dir)) {
         const rel = path.relative(repoRoot, file).replace(/\\/g, '/')
         const code = fs.readFileSync(file, 'utf8')
         expect(lintSnippet(code, rel), `Z6 violation in ${rel}`).toEqual([])

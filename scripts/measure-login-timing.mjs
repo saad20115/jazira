@@ -1,12 +1,11 @@
-import { spawn, type ChildProcess } from 'child_process'
-import crypto from 'crypto'
-import { sql } from '@payloadcms/db-postgres'
-import { getPayload } from 'payload'
-
-import payloadConfig from '../src/payload.config'
+import { execFileSync, spawn } from 'node:child_process'
+import crypto from 'node:crypto'
 
 /**
  * Production login timing & message-oracle verification script (`P2-T9`).
+ *
+ * Usage:
+ *   node scripts/measure-login-timing.mjs [--url http://127.0.0.1:3419]
  *
  * Against a running `next start` production server (or spawns one automatically when
  * `--url` is not provided):
@@ -31,17 +30,12 @@ const SAMPLES = 20
 const WARMUP_ROUNDS = 3
 const THRESHOLD_PERCENT = 15.0
 
-type Category = 'existing_wrong_password' | 'locked_account' | 'unknown_email'
-
-interface TimingSample {
-  bodyText: string
-  category: Category
-  durationMs: number
-  round: number
-  status: number
-}
-
-function percentile(sorted: number[], p: number): number {
+/**
+ * @param {number[]} sorted
+ * @param {number} p
+ * @returns {number}
+ */
+function percentile(sorted, p) {
   if (sorted.length === 0) return 0
   const idx = (sorted.length - 1) * p
   const lo = Math.floor(idx)
@@ -51,7 +45,10 @@ function percentile(sorted: number[], p: number): number {
   return sorted[lo] * (1 - weight) + sorted[hi] * weight
 }
 
-function computeStats(values: number[]) {
+/**
+ * @param {number[]} values
+ */
+function computeStats(values) {
   const sorted = [...values].sort((a, b) => a - b)
   const min = sorted[0] ?? 0
   const max = sorted[sorted.length - 1] ?? 0
@@ -63,7 +60,11 @@ function computeStats(values: number[]) {
   return { iqr, max, mean, median, min, p25, p75 }
 }
 
-function generatePayloadSaltAndHash(password: string): Promise<{ hash: string; salt: string }> {
+/**
+ * @param {string} password
+ * @returns {Promise<{ hash: string; salt: string }>}
+ */
+function generatePayloadSaltAndHash(password) {
   return new Promise((resolve, reject) => {
     const salt = crypto.randomBytes(32).toString('hex')
     crypto.pbkdf2(password, salt, 600_000, 32, 'sha256', (err, hashBuffer) => {
@@ -79,7 +80,32 @@ function generatePayloadSaltAndHash(password: string): Promise<{ hash: string; s
   })
 }
 
-async function waitForServerReady(baseUrl: string, timeoutMs = 45_000): Promise<void> {
+/**
+ * Executes a SQL statement against the local PostgreSQL container (`aljazira-db-1`).
+ *
+ * @param {string} sqlText
+ * @returns {string}
+ */
+function runPsql(sqlText) {
+  return execFileSync(
+    'docker',
+    [
+      'exec',
+      '-i',
+      'aljazira-db-1',
+      'sh',
+      '-c',
+      'PGPASSWORD="$APP_DB_PASSWORD" psql -h 127.0.0.1 -U "$APP_DB_USER" -d "$APP_DB_NAME" -t -A',
+    ],
+    { encoding: 'utf8', input: sqlText },
+  ).trim()
+}
+
+/**
+ * @param {string} baseUrl
+ * @param {number} [timeoutMs]
+ */
+async function waitForServerReady(baseUrl, timeoutMs = 45_000) {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
     try {
@@ -95,11 +121,12 @@ async function waitForServerReady(baseUrl: string, timeoutMs = 45_000): Promise<
   throw new Error(`Timed out waiting for next start server at ${baseUrl}`)
 }
 
-async function postLogin(
-  baseUrl: string,
-  email: string,
-  password: string,
-): Promise<{ bodyText: string; durationMs: number; status: number }> {
+/**
+ * @param {string} baseUrl
+ * @param {string} email
+ * @param {string} password
+ */
+async function postLogin(baseUrl, email, password) {
   const start = performance.now()
   const res = await fetch(`${baseUrl}/api/users/login`, {
     body: JSON.stringify({ email, password }),
@@ -125,24 +152,17 @@ async function main() {
   const port = Number(process.env.TIMING_PORT ?? 3419)
   const baseUrl = providedUrl ?? `http://127.0.0.1:${String(port)}`
 
-  const payload = await getPayload({ config: payloadConfig })
-  const drizzleDb = (
-    payload.db as unknown as {
-      drizzle: { execute: (q: unknown) => Promise<{ rows?: Array<Record<string, unknown>> }> }
-    }
-  ).drizzle
+  /** @type {import('node:child_process').ChildProcess | null} */
+  let serverProc = null
 
-  let serverProc: ChildProcess | null = null
-
-  const testEmails: string[] = [
+  const testEmails = [
     'timing-warmup@aljazira.co',
     'timing-locked@aljazira.co',
     ...Array.from({ length: 6 }, (_, i) => `timing-unlocked-${String(i + 1)}@aljazira.co`),
   ]
 
   try {
-    // Clean any leftover timing probe users
-    await drizzleDb.execute(sql`DELETE FROM "users" WHERE "email" LIKE 'timing-%@aljazira.co'`)
+    runPsql(`DELETE FROM "users" WHERE "email" LIKE 'timing-%@aljazira.co';`)
 
     const realPassword = 'Str0ng!Timing#RealPass2026'
     const { hash, salt } = await generatePayloadSaltAndHash(realPassword)
@@ -150,9 +170,8 @@ async function main() {
 
     for (const email of testEmails) {
       const displayName = `Timing Probe (${email})`
-      await drizzleDb.execute(
-        sql`INSERT INTO "users" ("name", "email", "role", "salt", "hash", "login_attempts", "lock_until", "updated_at", "created_at")
-            VALUES (${displayName}, ${email}, 'editor', ${salt}, ${hash}, 0, NULL, ${nowIso}, ${nowIso})`,
+      runPsql(
+        `INSERT INTO "users" ("name", "email", "role", "salt", "hash", "login_attempts", "lock_until", "updated_at", "created_at") VALUES ('${displayName}', '${email}', 'editor', '${salt}', '${hash}', 0, NULL, '${nowIso}', '${nowIso}');`,
       )
     }
 
@@ -186,21 +205,13 @@ async function main() {
       }
     }
 
-    const lockedUserDoc = await payload.db.findOne<{
-      id: number | string
-      lockUntil?: null | string
-      loginAttempts?: number
-    }>({
-      collection: 'users',
-      where: { email: { equals: 'timing-locked@aljazira.co' } },
-    })
-    if (
-      !lockedUserDoc?.lockUntil ||
-      new Date(lockedUserDoc.lockUntil).getTime() <= Date.now() ||
-      lockedUserDoc.loginAttempts !== 5
-    ) {
+    const lockedStateRaw = runPsql(
+      `SELECT "login_attempts" || '|' || COALESCE("lock_until"::text, '') FROM "users" WHERE "email" = 'timing-locked@aljazira.co';`,
+    )
+    const [attemptsStr, lockUntilStr] = lockedStateRaw.split('|')
+    if (attemptsStr !== '5' || !lockUntilStr) {
       throw new Error(
-        `Expected timing-locked@aljazira.co to have active lockUntil and loginAttempts=5 after 5 failed attempts, got ${JSON.stringify(lockedUserDoc)}`,
+        `Expected timing-locked@aljazira.co to have login_attempts=5 and non-null lock_until after 5 failed attempts, got "${lockedStateRaw}"`,
       )
     }
 
@@ -211,14 +222,17 @@ async function main() {
       await postLogin(baseUrl, 'timing-locked@aljazira.co', `Warmup!Wrong#${String(w)}`)
     }
 
-    const samplesByCategory: Record<Category, TimingSample[]> = {
+    const samplesByCategory = {
+      /** @type {Array<{ bodyText: string; category: string; durationMs: number; round: number; status: number }>} */
       existing_wrong_password: [],
+      /** @type {Array<{ bodyText: string; category: string; durationMs: number; round: number; status: number }>} */
       locked_account: [],
+      /** @type {Array<{ bodyText: string; category: string; durationMs: number; round: number; status: number }>} */
       unknown_email: [],
     }
 
     // 20 interleaved measurement rounds.
-    // Rotate through the 6 unlocked accounts (at most 4 tries each -> max 3 or 4 attempts < 5)
+    // Rotate through the 6 unlocked accounts (at most 4 tries each -> max 4 attempts < 5)
     // so every `existing_wrong_password` sample hits an active, unlocked account.
     for (let round = 1; round <= SAMPLES; round++) {
       const unlockedIdx = Math.floor((round - 1) / 4) + 1
@@ -315,11 +329,11 @@ async function main() {
     console.log(
       '|-------------------------|----------|----------|-------------|----------|----------|-----------|----------|',
     )
-    for (const [label, st] of [
+    for (const [label, st] of /** @type {const} */ ([
       ['unknown_email          ', unknownStats],
       ['existing_wrong_password', existingStats],
       ['locked_account         ', lockedStats],
-    ] as const) {
+    ])) {
       console.log(
         `| ${label} | ${st.min.toFixed(2).padStart(8)} | ${st.p25.toFixed(2).padStart(8)} | ${st.median.toFixed(2).padStart(11)} | ${st.p75.toFixed(2).padStart(8)} | ${st.iqr.toFixed(2).padStart(8)} | ${st.mean.toFixed(2).padStart(9)} | ${st.max.toFixed(2).padStart(8)} |`,
       )
@@ -342,7 +356,7 @@ async function main() {
       )
     }
   } finally {
-    await drizzleDb.execute(sql`DELETE FROM "users" WHERE "email" LIKE 'timing-%@aljazira.co'`)
+    runPsql(`DELETE FROM "users" WHERE "email" LIKE 'timing-%@aljazira.co';`)
     if (serverProc?.pid) {
       if (process.platform === 'win32') {
         spawn('taskkill', ['/T', '/F', '/PID', String(serverProc.pid)], { stdio: 'ignore' })
@@ -350,11 +364,7 @@ async function main() {
         serverProc.kill('SIGTERM')
       }
     }
-    process.exit(0)
   }
 }
 
-main().catch((err: unknown) => {
-  console.error(err)
-  process.exit(1)
-})
+await main()

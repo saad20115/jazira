@@ -2,12 +2,15 @@ import fs from 'fs/promises'
 import os from 'os'
 import path from 'path'
 import { getPayload, type Payload } from 'payload'
-import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+
+vi.mock('server-only', () => ({}))
 
 import {
   deriveCollectionTargetReferences,
   findCollectionTargetReferences,
 } from '../../src/collections/Media'
+import { cmsCount, cmsFind, cmsFindByID, cmsFindGlobal } from '../../src/lib/cms/client'
 import { hashIp } from '../../src/lib/ipHash'
 import type { User } from '../../src/payload-types'
 
@@ -1744,6 +1747,78 @@ describe('P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6
       expect(internalNavRes.status).toBe(200)
     } finally {
       envRecord.NODE_ENV = originalNodeEnv
+    }
+  })
+
+  it('enforces Z6 R-11 whitelist at runtime: smuggling user, req, showHiddenFields, overrideAccess, or draft via a non-literal options object into cmsFind, cmsFindByID, cmsFindGlobal, and cmsCount has zero effect', async () => {
+    const smuggledUsersOpts: Record<string, unknown> = {
+      collection: 'users',
+      user: adminUser,
+      req: { user: adminUser },
+      showHiddenFields: true,
+      overrideAccess: true,
+      draft: true,
+    }
+    await expect(cmsFind(smuggledUsersOpts as never)).rejects.toThrow()
+    await expect(cmsCount(smuggledUsersOpts as never)).rejects.toThrow()
+
+    const draftOnlyProject = await payload.create({
+      collection: 'projects',
+      locale: 'ar',
+      draft: true,
+      overrideAccess: true,
+      data: {
+        title: 'مشروع مسودة لاختبار R-11',
+        slug: 'r11-draft-whitelist-test',
+        status: 'in-progress',
+        category: 'mep',
+        order: 99,
+        _status: 'draft',
+      },
+    })
+
+    try {
+      const smuggledProjectFindOpts: Record<string, unknown> = {
+        collection: 'projects',
+        where: { id: { equals: draftOnlyProject.id } },
+        user: adminUser,
+        req: { user: adminUser },
+        showHiddenFields: true,
+        overrideAccess: true,
+        draft: true,
+      }
+      const findRes = await cmsFind<'projects'>(smuggledProjectFindOpts as never)
+      expect(findRes.docs).toHaveLength(0)
+
+      const smuggledProjectByIdOpts: Record<string, unknown> = {
+        collection: 'projects',
+        id: draftOnlyProject.id,
+        user: adminUser,
+        req: { user: adminUser },
+        showHiddenFields: true,
+        overrideAccess: true,
+        draft: true,
+      }
+      const byIdRes = await cmsFindByID<'projects'>(smuggledProjectByIdOpts as never)
+      expect(byIdRes).toBeNull()
+
+      const smuggledGlobalOpts: Record<string, unknown> = {
+        slug: 'privacy-page',
+        locale: 'ar',
+        user: adminUser,
+        req: { user: adminUser },
+        showHiddenFields: true,
+        overrideAccess: true,
+        draft: true,
+      }
+      const globalRes = await cmsFindGlobal<'privacy-page'>(smuggledGlobalOpts as never)
+      expect(globalRes.pageHeader?.title).not.toBe('مسودة سرية Z2-6')
+    } finally {
+      await payload.delete({
+        collection: 'projects',
+        id: draftOnlyProject.id,
+        overrideAccess: true,
+      })
     }
   })
 })

@@ -5,6 +5,59 @@ import tseslint from 'typescript-eslint'
 import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
 import { requireOverrideAccessFalseRule } from './eslint-rules/require-override-access-false.mjs'
 
+export const SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS = [
+  'src/payload.config.ts',
+  'src/instrumentation.ts',
+  'src/lib/cms/client.ts',
+  'src/collections/**/*.{ts,tsx,js,mjs}',
+  'src/globals/**/*.{ts,tsx,js,mjs}',
+  'src/fields/**/*.{ts,tsx,js,mjs}',
+  'src/hooks/**/*.{ts,tsx,js,mjs}',
+  'src/access/**/*.{ts,tsx,js,mjs}',
+  'src/security/**/*.{ts,tsx,js,mjs}',
+  'src/migrations/**/*.{ts,tsx,js,mjs}',
+  'src/app/(payload)/**/*.{ts,tsx,js,mjs}',
+  'scripts/**/*.{ts,tsx,js,mjs}',
+  'tests/**/*.{ts,tsx,js,mjs}',
+  '**/*.test.{ts,tsx,js,mjs}',
+  'next.config.ts',
+  'vitest.config.ts',
+  'playwright.config.ts',
+  'eslint.config.mjs',
+]
+
+export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
+  paths: [
+    {
+      name: 'payload',
+      message:
+        'Importing or re-exporting "payload" is forbidden outside the server allow-list. Use src/lib/cms/client.ts wrappers instead (Z6, R-12).',
+    },
+    {
+      name: '@payload-config',
+      message:
+        'Importing or re-exporting "@payload-config" is forbidden outside the server allow-list (Z6, R-12).',
+    },
+    {
+      name: '@/payload.config',
+      message:
+        'Importing or re-exporting "@/payload.config" is forbidden outside the server allow-list (Z6, R-12).',
+    },
+    {
+      name: '@/payload.config.ts',
+      message:
+        'Importing or re-exporting "@/payload.config.ts" is forbidden outside the server allow-list (Z6, R-12).',
+    },
+  ],
+  patterns: [
+    {
+      group: ['payload/*', '**/payload.config', '**/payload.config.*'],
+      message:
+        'Importing or re-exporting Payload modules or payload.config is forbidden outside the server allow-list (Z6, R-12).',
+    },
+  ],
+}
+
 export default defineConfig([
   {
     ignores: [
@@ -32,17 +85,8 @@ export default defineConfig([
         tsconfigRootDir: import.meta.dirname,
       },
     },
-    plugins: {
-      local: {
-        rules: {
-          'no-server-in-client': noServerInClientRule,
-          'require-override-access-false': requireOverrideAccessFalseRule,
-        },
-      },
-    },
     rules: {
-      'local/no-server-in-client': 'error',
-      'local/require-override-access-false': 'error',
+      '@typescript-eslint/no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
@@ -55,6 +99,29 @@ export default defineConfig([
           caughtErrorsIgnorePattern: '^(_|ignore)',
         },
       ],
+    },
+  },
+  {
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx', '**/*.mjs', '**/*.cjs'],
+    plugins: {
+      local: {
+        rules: {
+          'no-server-in-client': noServerInClientRule,
+          'require-override-access-false': requireOverrideAccessFalseRule,
+        },
+      },
+    },
+    rules: {
+      'local/no-server-in-client': 'error',
+      'local/require-override-access-false': 'error',
+      'no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
+    },
+  },
+  {
+    files: SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS,
+    rules: {
+      'no-restricted-imports': 'off',
+      '@typescript-eslint/no-restricted-imports': 'off',
     },
   },
 ])

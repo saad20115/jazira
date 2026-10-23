@@ -162,6 +162,11 @@ jobs:
       - name: Audit production dependencies
         run: pnpm audit --prod --audit-level high
 
+      - name: Verify Phase 2 report citations (R-13)
+        run: |
+          pnpm check:citations docs/reports/phase-2.md handoff/reports/P2-T8.md docs/reports/evidence/P2-T8/r3/citations.log
+          pnpm check:citations handoff/reports/P2-T9.md docs/reports/evidence/P2-T9/r1/citations.log
+
       - name: Scan git history with gitleaks (S3)
         run: |
           set -euo pipefail

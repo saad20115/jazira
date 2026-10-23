@@ -38,6 +38,8 @@ const INTERNAL_PAYLOAD_SYSTEM_SLUGS = new Set([
 const COLLECTION_ACCESS_OPS = ['read', 'create', 'update', 'delete'] as const
 const GLOBAL_ACCESS_OPS = ['read', 'update'] as const
 
+const PAYLOAD_DEFAULT_ACCESS_NAMES = new Set(['defaultAccess', 'defaultUnlockAccess'])
+
 export function assertExplicitAccessFunction(
   fn: Access | undefined,
   targetLabel: string,
@@ -47,10 +49,11 @@ export function assertExplicitAccessFunction(
     typeof fn,
     `${targetLabel}.access.${op} is missing (must be an explicit Access function per Z1)`,
   ).toBe('function')
+  const fnName = fn?.name ?? ''
   expect(
-    fn?.name,
-    `${targetLabel}.access.${op} must not have function name 'defaultAccess' (Z1)`,
-  ).not.toBe('defaultAccess')
+    PAYLOAD_DEFAULT_ACCESS_NAMES.has(fnName) || /^default.*Access$/i.test(fnName),
+    `${targetLabel}.access.${op} must not use Payload default access function "${fnName}" (Z1, R-19)`,
+  ).toBe(false)
 }
 
 const makeAccessArgs = (
@@ -101,7 +104,7 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
       for (const op of COLLECTION_ACCESS_OPS) {
         assertExplicitAccessFunction(col.access[op], `sanitized collection:${col.slug}`, op)
       }
-      if (col.slug === 'users') {
+      if (Boolean(col.auth)) {
         assertExplicitAccessFunction(
           col.access.unlock,
           `sanitized collection:${col.slug}`,
@@ -122,8 +125,11 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
       }
     }
 
-    // Negative self-test: prove assertExplicitAccessFunction catches missing/defaultAccess
+    // Negative self-test: prove assertExplicitAccessFunction catches missing, defaultAccess, and defaultUnlockAccess (R-19)
     const simulatedDefaultAccess: Access = function defaultAccess({ req: { user } }) {
+      return Boolean(user)
+    }
+    const simulatedDefaultUnlockAccess: Access = function defaultUnlockAccess({ req: { user } }) {
       return Boolean(user)
     }
     expect(() => {
@@ -132,6 +138,9 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
     expect(() => {
       assertExplicitAccessFunction(simulatedDefaultAccess, 'synthetic:broken', 'update')
     }).toThrow(/defaultAccess/)
+    expect(() => {
+      assertExplicitAccessFunction(simulatedDefaultUnlockAccess, 'synthetic:broken', 'unlock')
+    }).toThrow(/defaultUnlockAccess/)
   })
 
   it('evaluates every collection and global access function across anonymous, editor, and admin callers (Z1–Z4)', async () => {

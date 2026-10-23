@@ -21,7 +21,8 @@
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
     "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
-    "limits": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/print-limits.ts"
+    "limits": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/print-limits.ts",
+    "check:citations": "node scripts/check-citations.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.91.0",

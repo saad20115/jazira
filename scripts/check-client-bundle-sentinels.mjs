@@ -2,15 +2,17 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 /**
- * Post-build client bundle sentinel scanner (`P2-T6 R-6`, `docs/03-security.md` S4).
+ * Post-build client bundle sentinel scanner (`P2-T6 R-6`, `P2-T8 R-12`, `docs/03-security.md` S4).
  *
  * Scans `.next/static` (or a specified directory) to ensure server-only modules
- * (`src/env.ts` and `src/lib/ipHash.ts`) never leak transitively into client chunks.
+ * (`src/env.ts`, `src/lib/ipHash.ts`, and `src/lib/cms/client.ts`) never leak
+ * transitively into client chunks.
  */
 
 export const FORBIDDEN_CLIENT_BUNDLE_SENTINELS = [
   '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__',
   '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__',
+  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__',
   'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-0001',
   'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-00002',
 ]
@@ -66,7 +68,7 @@ if (
   if (hits.length > 0) {
     for (const hit of hits) {
       process.stderr.write(
-        `[check-client-bundle-sentinels] ERROR: Server-only sentinel "${hit.sentinel}" leaked into client bundle file "${hit.file}" (S4, R-6)!\n`,
+        `[check-client-bundle-sentinels] ERROR: Server-only sentinel "${hit.sentinel}" leaked into client bundle file "${hit.file}" (S4, R-6, R-12)!\n`,
       )
     }
     process.exit(1)

@@ -389,6 +389,67 @@ export function deriveCollectionTargetReferences(
   return specs
 }
 
+/**
+ * Config-walking invariant check (`P2-T8 R-18`): verifies that every collection `richText`
+ * field that allows Lexical `upload` nodes (`custom.allowsRichTextUploads !== false`) has a
+ * `bodyMedia` sibling `relationship`/`upload` field targeting `'media'` in the same field list,
+ * so `findCollectionTargetReferences` can always query indexed media references in SQL.
+ */
+export function assertCollectionRichTextFieldsHaveBodyMediaSibling(
+  collectionsConfig: ReadonlyArray<CollectionConfig | SanitizedCollectionConfig>,
+): void {
+  const checkFieldList = (fields: readonly Field[], collectionSlug: string, prefix = ''): void => {
+    const hasBodyMediaSibling = fields.some(
+      (f) =>
+        (f.type === 'relationship' || f.type === 'upload') &&
+        'name' in f &&
+        f.name === 'bodyMedia' &&
+        (f.relationTo === 'media' ||
+          (Array.isArray(f.relationTo) && f.relationTo.includes('media'))),
+    )
+
+    for (const field of fields) {
+      if (field.type === 'collapsible' || field.type === 'row') {
+        checkFieldList(field.fields, collectionSlug, prefix)
+        continue
+      }
+      if (field.type === 'tabs') {
+        for (const tab of field.tabs) {
+          const tabPrefix =
+            'name' in tab && typeof tab.name === 'string' ? joinPath(prefix, tab.name) : prefix
+          checkFieldList(tab.fields, collectionSlug, tabPrefix)
+        }
+        continue
+      }
+      if (!('name' in field) || typeof field.name !== 'string') {
+        continue
+      }
+      const currentPath = joinPath(prefix, field.name)
+      if (field.type === 'group' || field.type === 'array') {
+        checkFieldList(field.fields, collectionSlug, currentPath)
+        continue
+      }
+      if (field.type === 'richText') {
+        const allowsUploads =
+          (field.custom as { allowsRichTextUploads?: boolean } | undefined)
+            ?.allowsRichTextUploads !== false
+        if (allowsUploads && !hasBodyMediaSibling) {
+          throw new Error(
+            `Collection "${collectionSlug}" has richText field "${currentPath}" allowing uploads without a "bodyMedia" sibling targeting "media" (R-18).`,
+          )
+        }
+      }
+    }
+  }
+
+  for (const col of collectionsConfig) {
+    if (col.slug.startsWith('payload-')) {
+      continue
+    }
+    checkFieldList(col.fields, col.slug)
+  }
+}
+
 export function buildCollectionTargetWhere(
   fieldPaths: readonly string[],
   targetId: number | string,

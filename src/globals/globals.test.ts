@@ -7,6 +7,7 @@ import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { Brands } from '../collections/Brands'
 import { Materials } from '../collections/Materials'
 import {
+  assertCollectionRichTextFieldsHaveBodyMediaSibling,
   buildCollectionTargetWhere,
   deriveCollectionTargetReferences,
   deriveFieldTargetPaths,
@@ -21,6 +22,7 @@ import { Stats } from '../collections/Stats'
 import { Team } from '../collections/Team'
 import { Users } from '../collections/Users'
 import { Videos } from '../collections/Videos'
+import payloadConfig from '../payload.config'
 import { getDefaultInteractiveSystems } from './HomePage'
 import {
   AboutPage,
@@ -429,5 +431,20 @@ describe('P2-T5 Globals unit suite', () => {
         } as never,
       }),
     ).rejects.toThrow(/Could not verify media references/)
+
+    // Verify every collection richText field allowing uploads has a bodyMedia sibling (R-18)
+    const builtConfig = await payloadConfig
+    expect(() => {
+      assertCollectionRichTextFieldsHaveBodyMediaSibling(builtConfig.collections)
+    }).not.toThrow()
+
+    expect(() => {
+      assertCollectionRichTextFieldsHaveBodyMediaSibling([
+        {
+          slug: 'synthetic-articles',
+          fields: [{ name: 'body', type: 'richText' }],
+        },
+      ])
+    }).toThrow(/without a "bodyMedia" sibling targeting "media"/)
   })
 })
