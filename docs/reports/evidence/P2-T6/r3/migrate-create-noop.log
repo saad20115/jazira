@@ -1,0 +1,8 @@
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\aljazira-dod-p2t6-r3-626972a0
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:create" "noop_check"
+
+[08:18:44] INFO: Starting migration: generating UP statements...
+? No schema changes detected. Would you like to create a blank migration file? » (y/N)[08:18:44] INFO: Migration UP complete. Generating DOWN statements...
+[08:18:44] INFO: Migration DOWN statements generation complete.
+√ No schema changes detected. Would you like to create a blank migration file? ... no
