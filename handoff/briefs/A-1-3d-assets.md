@@ -117,16 +117,28 @@ The owner compared the current model with `design/assets/images/tower-render.png
    - Drop the separate diagonal crown beam.
    - The champagne ring and the gold light line run on top of the glass parapet along the **whole
      roof outline**, including the notch edges.
-   - The line still rises 87.0 → 90.5 m from the left pilaster to the right one.
-   - Gate: ≤ 5 px edge overlay on the crown, and one continuous warm line in both Cycles and the live
-     GLB.
+   - ~~The line still rises 87.0 → 90.5 m~~ — superseded by 3c (the crown is level).
+   - Gate: superseded by 3c.
 3b. **Crown storey set back (owner, 2026-10-23, relayed by the 3D lead).** "The last step is two
    levels and the upper one is set back."
    - The crown storey (L22 + parapet) is set back 2.5 m from the S face along its whole length, as in
      the reference.
    - The S-face roof edge shows in front of it, with a lit slab-edge line.
-   - The gold ring follows the set-back glass; heights refit to 86.99 / 87.78 / 90.06 / 89.73 m.
-   - Gate: the crown line stays ≤ 5 px against the reference (v013: max 3 px).
+   - The gold ring follows the set-back glass. The set-back storey stays, level as in 3c (the
+     86.99 / 87.78 / 90.06 / 89.73 m refit is withdrawn).
+3c. **Crown is level (owner, 2026-10-23: "there are deviations in the parapet at the top of the
+   building and the shape is unprofessional"; 3D lead decision).**
+   - The reference image is not perspective-consistent. Fitting its 2D line put kinks in the
+     parapet.
+   - The parapet and crown are **one level height** (about 89.0–89.5 m), planar, with mitred
+     corners.
+   - The gold line on top is a single continuous straight line.
+   - The notch terraces get one thin warm slab-edge line per step, with glass returns and no drawn
+     outlines.
+   - **Gate:**
+     - level and planar is mandatory;
+     - crown edge overlay ≤ 10 px at the crown's far ends and ≤ 5 px elsewhere;
+     - pilasters ≤ 5 px (unchanged).
 4. **Base.** The lobby, canopies and forecourt line up with the new orientation (the lobby faces
    the camera as in the reference).
 5. **Proof** (before any further motion or compression work):
