@@ -1,0 +1,55 @@
+.wrapper {
+  min-block-size: calc(100dvh - var(--navbar-height));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--container-gutter);
+  background: var(--gradient-navy-panel);
+  color: var(--white);
+}
+
+.card {
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-width) * 0.6);
+  padding-block: var(--space-48);
+  padding-inline: var(--space-32);
+  background-color: var(--glass-white-6);
+  border: 1px solid var(--glass-border-white-16);
+  border-radius: var(--radius-2xl);
+  box-shadow: var(--shadow-panel-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
+}
+
+.code {
+  color: var(--gold-500);
+}
+
+.title {
+  color: var(--white);
+}
+
+.description {
+  color: var(--text-muted);
+}
+
+.cta {
+  margin-block-start: var(--space-8);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-12);
+  padding-inline: var(--space-24);
+  background-color: var(--gold-500);
+  color: var(--navy-950);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-button-gold);
+  transition: background-color 0.15s ease-in-out;
+}
+
+.cta:hover {
+  background-color: var(--gold-300);
+}

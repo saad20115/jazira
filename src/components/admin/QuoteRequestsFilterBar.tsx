@@ -80,7 +80,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeStatus === '' ? 700 : 500,
             border:
               activeStatus === ''
-                ? '1px solid #5090E0'
+                ? '1px solid rgb(80, 144, 224)'
                 : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
             background: activeStatus === '' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
             color: 'var(--theme-text, inherit)',
@@ -147,7 +147,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeAssignedExists === '' ? 700 : 500,
             border:
               activeAssignedExists === ''
-                ? '1px solid #5090E0'
+                ? '1px solid rgb(80, 144, 224)'
                 : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
             background: activeAssignedExists === '' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
             color: 'var(--theme-text, inherit)',
@@ -170,7 +170,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeAssignedExists === 'true' ? 700 : 500,
             border:
               activeAssignedExists === 'true'
-                ? '1px solid #5090E0'
+                ? '1px solid rgb(80, 144, 224)'
                 : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
             background:
               activeAssignedExists === 'true' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
@@ -194,7 +194,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeAssignedExists === 'false' ? 700 : 500,
             border:
               activeAssignedExists === 'false'
-                ? '1px solid #5090E0'
+                ? '1px solid rgb(80, 144, 224)'
                 : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
             background:
               activeAssignedExists === 'false' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
@@ -223,7 +223,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeDateGte === '' ? 700 : 500,
             border:
               activeDateGte === ''
-                ? '1px solid #5090E0'
+                ? '1px solid rgb(80, 144, 224)'
                 : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
             background: activeDateGte === '' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
             color: 'var(--theme-text, inherit)',

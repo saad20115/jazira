@@ -27,8 +27,8 @@ export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusSty
     },
     background: 'rgba(80, 144, 224, 0.16)',
     border: 'rgba(80, 144, 224, 0.48)',
-    color: '#5090E0',
-    dot: '#5090E0',
+    color: 'rgb(80, 144, 224)',
+    dot: 'rgb(80, 144, 224)',
   },
   contacted: {
     label: {
@@ -37,8 +37,8 @@ export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusSty
     },
     background: 'rgba(245, 158, 11, 0.16)',
     border: 'rgba(245, 158, 11, 0.48)',
-    color: '#F59E0B',
-    dot: '#F59E0B',
+    color: 'rgb(245, 158, 11)',
+    dot: 'rgb(245, 158, 11)',
   },
   quoted: {
     label: {
@@ -47,8 +47,8 @@ export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusSty
     },
     background: 'rgba(139, 92, 246, 0.16)',
     border: 'rgba(139, 92, 246, 0.48)',
-    color: '#A78BFA',
-    dot: '#A78BFA',
+    color: 'rgb(167, 139, 250)',
+    dot: 'rgb(167, 139, 250)',
   },
   closed: {
     label: {
@@ -57,8 +57,8 @@ export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusSty
     },
     background: 'rgba(16, 185, 129, 0.16)',
     border: 'rgba(16, 185, 129, 0.48)',
-    color: '#10B981',
-    dot: '#10B981',
+    color: 'rgb(16, 185, 129)',
+    dot: 'rgb(16, 185, 129)',
   },
   spam: {
     label: {
@@ -67,8 +67,8 @@ export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusSty
     },
     background: 'rgba(239, 68, 68, 0.16)',
     border: 'rgba(239, 68, 68, 0.48)',
-    color: '#EF4444',
-    dot: '#EF4444',
+    color: 'rgb(239, 68, 68)',
+    dot: 'rgb(239, 68, 68)',
   },
 }
 

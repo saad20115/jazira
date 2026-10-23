@@ -120,10 +120,10 @@ export const config = {
      * - api (Payload & Next API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, brand/, media/ (static assets)
+     * - favicon.ico, icon.svg, brand/, media/ (static assets)
      */
     {
-      source: '/((?!api|_next/static|_next/image|favicon\\.ico|brand/).*)',
+      source: '/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|brand/).*)',
       missing: [
         { type: 'header', key: 'next-router-prefetch' },
         { type: 'header', key: 'purpose', value: 'prefetch' },

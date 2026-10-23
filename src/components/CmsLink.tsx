@@ -54,7 +54,7 @@ export function CmsLink({
     )
   }
 
-  const openInNewTab = Boolean(newTab ?? resolved.newTab)
+  const openInNewTab = newTab !== null && newTab !== undefined ? newTab : resolved.newTab
   const target = openInNewTab ? '_blank' : rest.target
   const rel =
     resolved.isExternal || openInNewTab ? 'noopener noreferrer' : rest.rel

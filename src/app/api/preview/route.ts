@@ -1,13 +1,12 @@
 import { draftMode } from 'next/headers'
 import { type NextRequest, NextResponse } from 'next/server'
 
-import { getPayloadClient } from '@/lib/cms/client'
+import { resolveAuthenticatedStaffUser } from '@/lib/cms/client'
 import {
   previewQuerySchema,
   resolvePreviewTargetPath,
   verifyPreviewSecret,
 } from '@/lib/preview'
-import type { User } from '@/payload-types'
 
 /**
  * `GET /api/preview` (`handoff/tasks/P3-T1.md` §7, `docs/03-security.md` Z2, I1):
@@ -49,11 +48,9 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     )
   }
 
-  const payload = await getPayloadClient()
-  const authResult = await payload.auth({ headers: request.headers })
-  const user = authResult.user as User | null | undefined
+  const staffUser = await resolveAuthenticatedStaffUser(request.headers)
 
-  if (!user || (user.role !== 'admin' && user.role !== 'editor')) {
+  if (!staffUser) {
     return NextResponse.json(
       { error: 'Forbidden: authenticated staff session required for preview.' },
       { status: 403 },

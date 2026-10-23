@@ -57,8 +57,8 @@ export const ServiceIconField: React.FC<ServiceIconFieldProps> = ({ field, path,
                 padding: '0.65rem 0.85rem',
                 borderRadius: '0.5rem',
                 border: isSelected
-                  ? '2px solid #5090E0'
-                  : '1px solid var(--theme-elevation-200, #333c4d)',
+                  ? '2px solid rgb(80, 144, 224)'
+                  : '1px solid var(--theme-elevation-200, rgb(51, 60, 77))',
                 background: isSelected
                   ? 'rgba(80, 144, 224, 0.14)'
                   : 'var(--theme-elevation-50, transparent)',
@@ -77,9 +77,9 @@ export const ServiceIconField: React.FC<ServiceIconFieldProps> = ({ field, path,
                   height: '2.25rem',
                   borderRadius: '0.375rem',
                   background: isSelected
-                    ? '#3239A0'
+                    ? 'rgb(50, 57, 160)'
                     : 'var(--theme-elevation-150, rgba(128,128,128,0.15))',
-                  color: isSelected ? '#FFFFFF' : '#5090E0',
+                  color: isSelected ? 'rgb(255, 255, 255)' : 'rgb(80, 144, 224)',
                   flexShrink: 0,
                 }}
               >

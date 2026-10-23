@@ -27,8 +27,8 @@ export const EMAIL_STATUS_PILL_STYLES: Record<QuoteEmailStatusValue, EmailStatus
     },
     background: 'rgba(245, 158, 11, 0.16)',
     border: 'rgba(245, 158, 11, 0.48)',
-    color: '#F59E0B',
-    dot: '#F59E0B',
+    color: 'rgb(245, 158, 11)',
+    dot: 'rgb(245, 158, 11)',
   },
   sent: {
     label: {
@@ -37,8 +37,8 @@ export const EMAIL_STATUS_PILL_STYLES: Record<QuoteEmailStatusValue, EmailStatus
     },
     background: 'rgba(16, 185, 129, 0.16)',
     border: 'rgba(16, 185, 129, 0.48)',
-    color: '#10B981',
-    dot: '#10B981',
+    color: 'rgb(16, 185, 129)',
+    dot: 'rgb(16, 185, 129)',
   },
   failed: {
     label: {
@@ -47,8 +47,8 @@ export const EMAIL_STATUS_PILL_STYLES: Record<QuoteEmailStatusValue, EmailStatus
     },
     background: 'rgba(239, 68, 68, 0.16)',
     border: 'rgba(239, 68, 68, 0.48)',
-    color: '#EF4444',
-    dot: '#EF4444',
+    color: 'rgb(239, 68, 68)',
+    dot: 'rgb(239, 68, 68)',
   },
 }
 
