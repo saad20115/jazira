@@ -104,7 +104,9 @@ The owner compared the current model with `design/assets/images/tower-render.png
 1. **Orientation and plan.** Rework the plan and massing so the reference reads the same way from
    `CAM_hero`:
    - the camera-facing corner sits near the vertical centre line of the frame;
-   - both adjacent faces are visible at a similar angle, about 45° each;
+   - both adjacent faces are visible in the **same proportions as the reference**: between the gold
+     pilasters the left face is about 195 px and the right face about 110 px at 1024 px. The
+     reference governs, not a fixed 45°;
    - do not just orbit the camera around the old model.
 2. **Glazing.** Both camera-facing faces are glass, with the same mullion rhythm, reflections and
    lit floors. There is no dark or blank face in the hero view.
