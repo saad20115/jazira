@@ -179,6 +179,15 @@ P3-T5 may reference **only** these names. Child mesh names are internal and can 
 - **Materials:** `MAT_<s>_glow`, `MAT_concrete_floor`.
 - **Variants:** `KHR_materials_variants` `highlight_<s>`.
 - **Extras:** all scene `extras`, including `camera_limits`, mirrored in `manifest.json`.
+- **`extras.enter`** (values the viewer applies on entering a system and restores on exit):
+  - `facade_opacity`;
+  - `interior_opacity`;
+  - **`site_emissive_scale`** (v019c+): a number from 0 to 1, about 0.35 and calibrated against
+    Cycles. While a system is entered, it multiplies `emissiveIntensity` on the SITE and POD
+    materials (plinth, canopies, plaza site-light bake); it goes back to 1.0 on exit. This keeps the
+    live entered views consistent with the Cycles end stills.
+  - The 3D lead supplies the full `extras` schema (key, type, range, meaning) as
+    `extras-schema.md` next to `manifest.json`. New keys are additive only.
 
 Removed in v019: the per-equipment meshes (`HVAC_roof_plant` … `SMART_access_control`). No site code or
 spec referenced them (checked on `main` and `phase-3-frontend`).
