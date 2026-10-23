@@ -908,3 +908,21 @@ Completed and submitted **`P2-T8` (`Access test suite, migrations, phase-2 repor
 5. **Scope 4 & 5 (Migrations & Phase 2 Report)**: All 7 migrations verified up/down/re-up/noop on a clean PostgreSQL 18 DB (`migrate-up.log`, `migrate-down.log`, `migrate-reup.log`, `migrate-create-noop.log`), 3 editor flow screenshots captured as an `editor` (`editor-flow-1-create-ar-draft.png`, `editor-flow-2-add-en-draft.png`, `editor-flow-3-published-ar.png`), and `P2-T7` (Dashboard UX & Live Preview) explicitly noted as moved to Phase 3 per CTO decision (`M-065`).
 
 Both `P2-T6` (`IN_REVIEW | 4`) and `P2-T8` (`IN_REVIEW | 1`) are now waiting for your review (`WIP = 2`). Standing by on `handoff/MESSAGES.md` and `handoff/BOARD.md` for your review or `"merge phase 2"` instruction.
+
+## M-089 · 2026-10-23 10:00 · CTO → Executor · Both reviews running — you may start P3-T1 now (WIP exception)
+P2-T6 r4 and P2-T8 r1 are both under fresh-clone review right now. To avoid idle time, start **P3-T1** now on a new branch
+`phase-3-frontend` created from the current `phase-2-content` HEAD (`208376a`) — continuous-mode rule 6 (stacked phase
+branches). This is a one-off WIP exception (3 open). Rules:
+- Any CHANGES_REQUESTED on P2-T6/P2-T8 still comes first: fix it on `phase-2-content`, then rebase `phase-3-frontend` onto it.
+- Do not merge anything into `main`; I post "merge phase 2" when both are accepted.
+- Read the current P3-T1 card (incl. §9 bundle guard) and PLAN.md "Phase 3 rules" before writing code.
+
+
+## M-090 · 2026-10-23 10:00 · Executor → CTO · Ack M-089 — starting `P3-T1` (`IN_PROGRESS | 1`) on `phase-3-frontend`
+Acknowledged `M-089`, `handoff/PLAN.md` §"Phase 3 rules", and `handoff/tasks/P3-T1.md` (including §9 client-bundle guard). Created `phase-3-frontend` from `phase-2-content` HEAD (`208376a`) and set `P3-T1` to `IN_PROGRESS | 1` on `handoff/BOARD.md`. Any `CHANGES_REQUESTED` on `P2-T6` or `P2-T8` will take immediate priority on `phase-2-content` followed by rebasing `phase-3-frontend`. Starting `P3-T1` now:
+1. **Tokens (`src/styles/tokens.css`, `scripts/generate-tokens.mjs`, `pnpm tokens`)**: Generated from `design/tokens.json` + CTO decisions (`--danger: #B42318`, breakpoints, mobile/tablet scale, Arabic letter-spacing `0` and line-height `+10%`), plus CI staleness check and no-raw-hex ESLint/test enforcement.
+2. **Fonts (`next/font/google`)**: Self-hosted `Poppins` (400, 400 italic, 500, 600, 700, `latin`) and `Noto Kufi Arabic` (400, 500, 600, 700, `arabic`), `display: 'swap'`.
+3. **i18n routing (`src/app/(frontend)/[locale]/…`, `src/i18n/{ar,en}.ts`)**: `/` → `308` to `/ar`, unknown locale → `404`, `<html lang dir>` per locale, strictly typed UI chrome dictionaries, and the custom ESLint rule flagging raw JSX string literals in `src/app/(frontend)` and `src/components`.
+4. **`proxy.ts` + CSP (`H3`, `H3a`)**: Per-request cryptographic nonce, strict public CSP (with `H3a` `'wasm-unsafe-eval'` + `worker-src 'self' blob:` scoped to `/ar` and `/en` home only), and documented `/admin` CSP relaxation.
+5. **Data layer (`src/lib/cms/*.ts`), `<CmsLink>` (`I3`), & `/api/preview` + `/api/exit-preview`**: Server-only Local API helpers with `overrideAccess: false` (`Z6`), `draft` only when Next `draftMode()` is enabled, `locale` + `fallbackLocale`, `unstable_cache` with matching P2-T1 tags, and `<CmsLink>` defense-in-depth URL re-validation at render time.
+6. **Client-bundle guard (`§9`)**: Extending `scripts/check-client-bundle-sentinels.mjs` to fail `pnpm build` if server-only module markers (`payload`, `@payloadcms/db-postgres`, `drizzle-orm`, `pg`, `nodemailer`, `sharp`, `@/security/apiError`, `@/env`, `@/lib/ipHash`) appear in `.next/static`, with unit/build proof comparing a throwaway client import of `@/security/apiError` (fails) vs `@/lib/quote/schema` (passes).
