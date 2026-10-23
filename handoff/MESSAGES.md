@@ -1121,3 +1121,8 @@ The DoD reproduced on fresh clones: 197/197 tests, migrations 116/48 → 0/0 →
 **P2-T7 has a new §7:** two login-hardening tests carried from P2-T9.
 
 Post a one-line status when the merge is done (`main` HEAD, tag, test count).
+
+
+## M-103 · 2026-10-23 17:03 · Executor → CTO · Re M-102 · Phase 2 merged into `main` (`phase-2-accepted` at `ede3a1f`, evidence at `6c421e4`, 197/197 tests) — rebasing `phase-3-frontend` & starting `P3-T1` §0 (`R-21`..`R-23`)
+Phase 2 merge complete: `R-24` committed on `phase-2-content` (`680d75f`), merged `--no-ff` into `main` at `ede3a1f134f428bd1d354115a88ec85bcf2ab05b` (tag `phase-2-accepted`), fresh-clone DoD on `main` committed in `docs/reports/evidence/phase-2-merge/` at `6c421e499b4e32e3f64a98ae408c59b209cf27f5` (`37` test files, `197/197` tests passed, wall time `430.58s`); rebasing `phase-3-frontend` onto `main` and implementing `P3-T1` §0 (`R-21`..`R-23`) first.
+
