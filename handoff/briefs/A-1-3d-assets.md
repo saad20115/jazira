@@ -169,3 +169,19 @@ The owner compared the current model with `design/assets/images/tower-render.png
   - One vertex-colour material per system, plus at most one emissive, to hold lite ≤ 60 draw calls.
   - Budgets, schema and file names are unchanged.
 
+
+## 10. GLB naming contract for the site (v019, 2026-10-23)
+P3-T5 may reference **only** these names. Child mesh names are internal and can change.
+- **Roots:** `SYS_<s>`.
+- **Empties:** `HOT_*`, `PIVOT_*`, `CAM_*`, `PATH_*`.
+- **Meshes:** `floor_slabs`, plus `<S>_equipment` and `<S>_glow` per system (HVAC, FIRE, PLUMB, POWER,
+  SMART). `*_glow` is hidden at rest and shown only for the entered system.
+- **Materials:** `MAT_<s>_glow`, `MAT_concrete_floor`.
+- **Variants:** `KHR_materials_variants` `highlight_<s>`.
+- **Extras:** all scene `extras`, including `camera_limits`, mirrored in `manifest.json`.
+
+Removed in v019: the per-equipment meshes (`HVAC_roof_plant` … `SMART_access_control`). No site code or
+spec referenced them (checked on `main` and `phase-3-frontend`).
+
+Pilasters (owner, v019b): they stop at 82.0 m with a 1 m gold parapet return to the set-back crown
+storey.
