@@ -381,11 +381,45 @@ describe('P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6
     })
     recordedCollectionMatrix.push(usersSelfRow)
 
-    // users (other user record for editor: GET returns 200 with ONLY { id, name } and no email/role/sessions per R-11; PATCH/DELETE return 403/404)
+    // users (other user record for editor: GET returns 200 with ONLY { id, name } and no email/role/sessions per R-11; PATCH/DELETE return 403/404; all 12 cells measured per R-4)
+    const usersOtherAnonRead = await callJsonApi({
+      method: 'GET',
+      slugPath: ['users', String(adminUser.id)],
+    })
+    const usersOtherAnonCreate = await callJsonApi({
+      method: 'POST',
+      slugPath: ['users'],
+      body: {
+        name: 'مستخدم مجهول (other)',
+        email: 'anon-other-create-z5@aljazira.co',
+        password: 'Str0ng!AnonOt#Pass2026$AbC',
+        role: 'editor',
+      },
+    })
+    const usersOtherAnonUpdate = await callJsonApi({
+      method: 'PATCH',
+      slugPath: ['users', String(adminUser.id)],
+      body: { name: 'تعديل مجهول' },
+    })
+    const usersOtherAnonDelete = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['users', String(adminUser.id)],
+    })
     const usersOtherEditorRead = await callJsonApi({
       method: 'GET',
       slugPath: ['users', String(adminUser.id)],
       token: editorToken,
+    })
+    const usersOtherEditorCreate = await callJsonApi({
+      method: 'POST',
+      slugPath: ['users'],
+      token: editorToken,
+      body: {
+        name: 'مستخدم أنشأه محرر (other)',
+        email: 'editor-other-create-z5@aljazira.co',
+        password: 'Str0ng!EdOtCr#Pass2026$AbC',
+        role: 'editor',
+      },
     })
     const usersOtherEditorPatch = await callJsonApi({
       method: 'PATCH',
@@ -398,6 +432,35 @@ describe('P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6
       slugPath: ['users', String(adminUser.id)],
       token: editorToken,
     })
+    const usersOtherAdminRead = await callJsonApi({
+      method: 'GET',
+      slugPath: ['users', String(editorUser.id)],
+      token: adminToken,
+    })
+    const usersOtherAdminCreate = await callJsonApi({
+      method: 'POST',
+      slugPath: ['users'],
+      token: adminToken,
+      body: {
+        name: 'م. عمر الزهراني (مؤقت للحذف R-4)',
+        email: 'temp-admin-other-delete-z5@aljazira.co',
+        password: 'Str0ng!AdmOt#Pass2026$AbC',
+        role: 'editor',
+      },
+    })
+    const tempOtherUserId = (usersOtherAdminCreate.body.doc as { id: number }).id
+    const usersOtherAdminUpdate = await callJsonApi({
+      method: 'PATCH',
+      slugPath: ['users', String(tempOtherUserId)],
+      token: adminToken,
+      body: { name: 'م. عمر الزهراني (محدث بواسطة المدير)' },
+    })
+    const usersOtherAdminDelete = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['users', String(tempOtherUserId)],
+      token: adminToken,
+    })
+
     expect(usersOtherEditorRead.status).toBe(200)
     expect(usersOtherEditorRead.body).toEqual({
       id: adminUser.id,
@@ -408,21 +471,38 @@ describe('P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6
     expect(usersOtherEditorRead.body.sessions).toBeUndefined()
     expect([403, 404]).toContain(usersOtherEditorPatch.status)
     expect(usersOtherEditorDelete.status).toBe(403)
-    recordedCollectionMatrix.push({
+
+    const usersOtherRow: CollectionMatrixRow = {
+      target: 'users (other — id & name only for editor per R-11)',
+      anonRead: usersOtherAnonRead.status,
+      anonCreate: usersOtherAnonCreate.status,
+      anonUpdate: usersOtherAnonUpdate.status,
+      anonDelete: usersOtherAnonDelete.status,
+      editorRead: usersOtherEditorRead.status,
+      editorCreate: usersOtherEditorCreate.status,
+      editorUpdate: usersOtherEditorPatch.status,
+      editorDelete: usersOtherEditorDelete.status,
+      adminRead: usersOtherAdminRead.status,
+      adminCreate: usersOtherAdminCreate.status,
+      adminUpdate: usersOtherAdminUpdate.status,
+      adminDelete: usersOtherAdminDelete.status,
+    }
+    expect(usersOtherRow).toEqual({
       target: 'users (other — id & name only for editor per R-11)',
       anonRead: 403,
       anonCreate: 403,
       anonUpdate: 403,
       anonDelete: 403,
-      editorRead: usersOtherEditorRead.status,
+      editorRead: 200,
       editorCreate: 403,
-      editorUpdate: usersOtherEditorPatch.status,
-      editorDelete: usersOtherEditorDelete.status,
+      editorUpdate: 403,
+      editorDelete: 403,
       adminRead: 200,
       adminCreate: 201,
       adminUpdate: 200,
       adminDelete: 200,
     })
+    recordedCollectionMatrix.push(usersOtherRow)
 
     // 2. media
     const anonMediaCreate = await callUploadApi({
@@ -1314,51 +1394,147 @@ describe('P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6
     expect(editorGetPubWithDraft.status).toBe(200)
     expect(editorGetPubWithDraft.body.title).toBe('عنوان مسودة جديد لم يُنشر بعد')
 
-    // 3. Versioned global: save draft on contact-page and verify anonymous ?draft=true sees published only
-    const saveDraftGlobal = await callJsonApi({
-      method: 'POST',
-      slugPath: ['globals', 'contact-page'],
-      query: { locale: 'ar', draft: 'true' },
-      token: editorToken,
-      body: {
-        _status: 'draft',
-        pageHeader: {
-          title: 'عنوان مسودة غير منشور لصفحة التواصل',
-          subtitle: 'مسودة داخلية',
+    // 3. All 6 versioned page globals: save draft on each and verify anonymous ?draft=true & Local API see published only while editor sees draft (Z2, R-5)
+    const versionedPageGlobalCases: ReadonlyArray<{
+      slug:
+        | 'home-page'
+        | 'services-page'
+        | 'about-page'
+        | 'projects-page'
+        | 'contact-page'
+        | 'privacy-page'
+      groupKey: 'hero' | 'pageHeader'
+      publishedTitle: string
+      draftTitle: string
+      draftBody: Record<string, unknown>
+    }> = [
+      {
+        slug: 'home-page',
+        groupKey: 'hero',
+        publishedTitle: 'شريككم الهندسي الموثوق',
+        draftTitle: 'عنوان مسودة غير منشور للصفحة الرئيسية',
+        draftBody: {
+          _status: 'draft',
+          hero: {
+            eyebrow: 'الجزيرة للإمداد الذكي',
+            title: 'عنوان مسودة غير منشور للصفحة الرئيسية',
+          },
         },
       },
-    })
-    expect(saveDraftGlobal.status).toBe(200)
+      {
+        slug: 'services-page',
+        groupKey: 'pageHeader',
+        publishedTitle: 'خدماتنا الهندسية',
+        draftTitle: 'عنوان مسودة غير منشور لصفحة الخدمات',
+        draftBody: {
+          _status: 'draft',
+          pageHeader: {
+            title: 'عنوان مسودة غير منشور لصفحة الخدمات',
+            subtitle: 'مسودة داخلية',
+          },
+        },
+      },
+      {
+        slug: 'about-page',
+        groupKey: 'pageHeader',
+        publishedTitle: 'من نحن',
+        draftTitle: 'عنوان مسودة غير منشور لصفحة من نحن',
+        draftBody: {
+          _status: 'draft',
+          pageHeader: {
+            title: 'عنوان مسودة غير منشور لصفحة من نحن',
+            subtitle: 'مسودة داخلية',
+          },
+        },
+      },
+      {
+        slug: 'projects-page',
+        groupKey: 'pageHeader',
+        publishedTitle: 'مشاريعنا',
+        draftTitle: 'عنوان مسودة غير منشور لصفحة المشاريع',
+        draftBody: {
+          _status: 'draft',
+          pageHeader: {
+            title: 'عنوان مسودة غير منشور لصفحة المشاريع',
+            subtitle: 'مسودة داخلية',
+          },
+        },
+      },
+      {
+        slug: 'contact-page',
+        groupKey: 'pageHeader',
+        publishedTitle: 'تواصل معنا',
+        draftTitle: 'عنوان مسودة غير منشور لصفحة التواصل',
+        draftBody: {
+          _status: 'draft',
+          pageHeader: {
+            title: 'عنوان مسودة غير منشور لصفحة التواصل',
+            subtitle: 'مسودة داخلية',
+          },
+        },
+      },
+      {
+        slug: 'privacy-page',
+        groupKey: 'pageHeader',
+        publishedTitle: 'سياسة الخصوصية',
+        draftTitle: 'عنوان مسودة غير منشور لصفحة سياسة الخصوصية',
+        draftBody: {
+          _status: 'draft',
+          pageHeader: {
+            title: 'عنوان مسودة غير منشور لصفحة سياسة الخصوصية',
+            subtitle: 'مسودة داخلية',
+          },
+        },
+      },
+    ]
 
-    const anonGlobalDraft = await callJsonApi({
-      method: 'GET',
-      slugPath: ['globals', 'contact-page'],
-      query: { locale: 'ar', draft: 'true' },
-    })
-    expect(anonGlobalDraft.status).toBe(200)
-    expect((anonGlobalDraft.body.pageHeader as { title: string }).title).toBe('تواصل معنا')
+    for (const globalCase of versionedPageGlobalCases) {
+      const saveDraftGlobal = await callJsonApi({
+        method: 'POST',
+        slugPath: ['globals', globalCase.slug],
+        query: { locale: 'ar', draft: 'true' },
+        token: editorToken,
+        body: globalCase.draftBody,
+      })
+      expect(saveDraftGlobal.status, `save draft on ${globalCase.slug}`).toBe(200)
 
-    const localGlobalAnon = await payload.findGlobal({
-      slug: 'contact-page',
-      locale: 'ar',
-      draft: true,
-      overrideAccess: false,
-    })
-    expect(localGlobalAnon.pageHeader?.title).toBe('تواصل معنا')
+      const anonGlobalDraft = await callJsonApi({
+        method: 'GET',
+        slugPath: ['globals', globalCase.slug],
+        query: { locale: 'ar', draft: 'true' },
+      })
+      expect(anonGlobalDraft.status).toBe(200)
+      expect(
+        (anonGlobalDraft.body[globalCase.groupKey] as { title: string }).title,
+        `anon REST ?draft=true on ${globalCase.slug}`,
+      ).toBe(globalCase.publishedTitle)
 
-    const editorGlobalDraft = await callJsonApi({
-      method: 'GET',
-      slugPath: ['globals', 'contact-page'],
-      query: { locale: 'ar', draft: 'true' },
-      token: editorToken,
-    })
-    expect(editorGlobalDraft.status).toBe(200)
-    expect((editorGlobalDraft.body.pageHeader as { title: string }).title).toBe(
-      'عنوان مسودة غير منشور لصفحة التواصل',
-    )
+      const localGlobalAnon = (await payload.findGlobal({
+        slug: globalCase.slug,
+        locale: 'ar',
+        draft: true,
+        overrideAccess: false,
+      })) as unknown as Record<string, { title?: string } | undefined>
+      expect(
+        localGlobalAnon[globalCase.groupKey]?.title,
+        `anon Local API draft:true on ${globalCase.slug}`,
+      ).toBe(globalCase.publishedTitle)
+
+      const editorGlobalDraft = await callJsonApi({
+        method: 'GET',
+        slugPath: ['globals', globalCase.slug],
+        query: { locale: 'ar', draft: 'true' },
+        token: editorToken,
+      })
+      expect(editorGlobalDraft.status).toBe(200)
+      expect(
+        (editorGlobalDraft.body[globalCase.groupKey] as { title: string }).title,
+        `editor REST ?draft=true on ${globalCase.slug}`,
+      ).toBe(globalCase.draftTitle)
+    }
   }, 120_000)
 
-  it('enforces Z3: editor cannot escalate own role to admin via REST PATCH or Local API (overrideAccess: false), while admin can update roles (Z3, Z5)', async () => {
+  it('enforces Z3: editor cannot escalate own role to admin via REST PATCH or Local API (overrideAccess: false), while admin can update roles (Z3, Z5, R-5)', async () => {
     const editorEscalationAttempt = await callJsonApi({
       method: 'PATCH',
       slugPath: ['users', String(editorUser.id)],
@@ -1389,6 +1565,29 @@ describe('P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6
       },
     })
     expect(afterLocalAttempt.role).toBe('editor')
+
+    // Admin CAN update a user's role via REST PATCH and Local API (overrideAccess: false) (R-5)
+    const adminPromotesEditor = await callJsonApi({
+      method: 'PATCH',
+      slugPath: ['users', String(editorUser.id)],
+      token: adminToken,
+      body: {
+        role: 'admin',
+      },
+    })
+    expect(adminPromotesEditor.status).toBe(200)
+    expect((adminPromotesEditor.body.doc as { role: string }).role).toBe('admin')
+
+    const adminRestoresEditor = await payload.update({
+      collection: 'users',
+      id: editorUser.id,
+      user: adminUser,
+      overrideAccess: false,
+      data: {
+        role: 'editor',
+      },
+    })
+    expect(adminRestoresEditor.role).toBe('editor')
   })
 
   it('verifies R-8 (config-driven collection media guard) and R-9 (http: external links rejected when NODE_ENV === production) over REST', async () => {

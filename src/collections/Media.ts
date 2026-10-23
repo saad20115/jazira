@@ -365,7 +365,7 @@ export function deriveCollectionTargetReferences(
 ): CollectionTargetReferenceSpec[] {
   const specs: CollectionTargetReferenceSpec[] = []
   for (const col of collectionsConfig) {
-    if (col.slug === targetCollection) {
+    if (col.slug === targetCollection || col.slug.startsWith('payload-')) {
       continue
     }
     const { fieldPaths, richTextPaths } = deriveFieldTargetPaths(col.fields, targetCollection)
@@ -421,12 +421,8 @@ export const findCollectionTargetReferences = async ({
 
   const draftStates = check.versioned ? ([false, true] as const) : ([false] as const)
   const where = buildCollectionTargetWhere(check.fieldPaths, targetId)
-  const needsInMemoryPathScan =
-    check.fieldPaths.some((p) => p.includes('.')) ||
-    (check.richTextPaths.length > 0 && !check.fieldPaths.includes('bodyMedia'))
 
   for (const draft of draftStates) {
-    let whereFailed = false
     if (where !== null) {
       try {
         await findReferencingLabels({
@@ -439,33 +435,10 @@ export const findCollectionTargetReferences = async ({
           req,
         })
       } catch {
-        whereFailed = true
-      }
-    }
-
-    if (needsInMemoryPathScan || whereFailed) {
-      const localesToQuery = check.localized ? REVALIDATE_LOCALES : ([undefined] as const)
-      for (const locale of localesToQuery) {
-        const result = await req.payload.find({
-          collection: check.slug,
-          ...(locale ? { locale, fallbackLocale: false as const } : {}),
-          limit: 100,
-          depth: 0,
-          draft,
-          overrideAccess: true,
-          req,
-        })
-        for (const doc of result.docs) {
-          const matchedField = check.fieldPaths.some((path) =>
-            uploadValueMatchesMediaId(getNestedValue(doc, path), targetId),
-          )
-          const matchedRichText = check.richTextPaths.some((rtPath) =>
-            richTextReferencesMediaId(getNestedValue(doc, rtPath), targetId),
-          )
-          if (matchedField || matchedRichText) {
-            recordReferencingDoc(referencesByKey, check.slug, doc, check.labelField)
-          }
-        }
+        throw createPublicAPIError(
+          `تعذر التحقق من ارتباطات الوسائط في مجموعة "${check.slug}". تم إيقاف الحذف حفاظاً على سلامة البيانات. / Could not verify media references in collection "${check.slug}". Deletion blocked (fail-closed).`,
+          400,
+        )
       }
     }
   }

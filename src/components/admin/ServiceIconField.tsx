@@ -1,11 +1,22 @@
 'use client'
 
 import { FieldDescription, FieldError, FieldLabel, useField, useTranslation } from '@payloadcms/ui'
-import type { SelectFieldClientComponent } from 'payload'
 
 import { SERVICE_ICON_OPTIONS, ServiceIcon } from '../icons/ServiceIcon'
 
-export const ServiceIconField: SelectFieldClientComponent = ({ field, path, readOnly }) => {
+export interface ServiceIconFieldProps {
+  field: {
+    label?: Record<string, string> | string
+    required?: boolean
+    admin?: {
+      description?: Record<string, string> | string
+    }
+  }
+  path: string
+  readOnly?: boolean
+}
+
+export const ServiceIconField: React.FC<ServiceIconFieldProps> = ({ field, path, readOnly }) => {
   const { setValue, showError, value } = useField<string>({ path })
   const { i18n } = useTranslation()
   const isEnglish = i18n.language === 'en'

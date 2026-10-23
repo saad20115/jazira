@@ -1,7 +1,10 @@
 'use client'
 
 import { useTranslation } from '@payloadcms/ui'
-import type { DefaultCellComponentProps } from 'payload'
+
+export interface AdminCellComponentProps {
+  cellData?: unknown
+}
 
 export type QuoteEmailStatusValue = 'pending' | 'sent' | 'failed'
 
@@ -49,7 +52,7 @@ export const EMAIL_STATUS_PILL_STYLES: Record<QuoteEmailStatusValue, EmailStatus
   },
 }
 
-export const EmailStatusPillCell: React.FC<DefaultCellComponentProps> = ({ cellData }) => {
+export const EmailStatusPillCell: React.FC<AdminCellComponentProps> = ({ cellData }) => {
   const { i18n } = useTranslation()
   const isEnglish = i18n.language === 'en'
   const rawStatus = typeof cellData === 'string' ? cellData : 'pending'

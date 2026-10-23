@@ -1,15 +1,25 @@
 /**
- * Custom ESLint rule `local/require-override-access-false` (Z6, P2-T8 Scope 3).
+ * Custom ESLint rule `local/require-override-access-false` (Z6, P2-T8 Scope 3 & R-6).
  *
- * In `src/app/(frontend)/**` and `src/lib/cms/**`, Payload Local API calls
- * (`find`, `findByID`, `findGlobal`, `count`, `findDistinct`, `findVersions`,
- * `findGlobalVersions`, `create`, `update`, `delete`, `updateGlobal`) default to
- * `overrideAccess: true` unless `overrideAccess: false` is explicitly passed.
- *
- * Every such call must either:
- * 1. Pass `overrideAccess: false` in its first options object argument, OR
- * 2. Have an explicit justification comment (`// z6-allow-override-access: <reason>`)
- *    on the preceding line, the call line, or the `overrideAccess` property line.
+ * Enforces three defense-in-depth layers for Z6:
+ * 1. Import ban in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/cms/**`
+ *    (except the single typed wrapper `src/lib/cms/client.ts`): importing `payload`,
+ *    `@payload-config`, `@/payload.config`, or `getPayload` is a lint error. Public
+ *    pages and components must read data only through `src/lib/cms/*`, and `src/lib/cms/*`
+ *    must call Payload only through the typed wrapper in `src/lib/cms/client.ts`.
+ * 2. Call-site verification in `src/app/(frontend)/**`, `src/components/**`, and
+ *    `src/lib/cms/**`: every Payload Local API call (`find`, `findByID`, `findGlobal`,
+ *    `count`, `findDistinct`, `findVersions`, `findVersionByID`, `findGlobalVersions`,
+ *    `findGlobalVersionByID`, `countVersions`, `countGlobalVersions`, `create`, `update`,
+ *    `delete`, `updateGlobal`, `restoreVersion`, `restoreGlobalVersion`, `duplicate`) —
+ *    whether invoked via `payload.<method>(...)`, an aliased receiver (`client.<method>`),
+ *    computed member access (`payload['find']`), `.call()`/`.apply()`/`.bind()`, or a
+ *    destructured method (`const { find } = payload; find(...)`) — must pass an
+ *    un-overridden `{ overrideAccess: false }` in its options object (no trailing spread
+ *    or duplicate key that could overwrite it).
+ * 3. Only the single documented justification comment form
+ *    (`// z6-allow-override-access: <reason>`) is accepted when an intentional
+ *    exception is required.
  */
 
 export const GUARDED_PAYLOAD_METHODS = new Set([
@@ -19,15 +29,21 @@ export const GUARDED_PAYLOAD_METHODS = new Set([
   'count',
   'findDistinct',
   'findVersions',
+  'findVersionByID',
   'findGlobalVersions',
+  'findGlobalVersionByID',
+  'countVersions',
+  'countGlobalVersions',
   'create',
   'update',
   'delete',
   'updateGlobal',
+  'restoreVersion',
+  'restoreGlobalVersion',
+  'duplicate',
 ])
 
-const JUSTIFICATION_COMMENT_REGEX =
-  /(?:z6-allow-override-access\s*:\s*\S+|overrideAccess\s*:\s*true\s*(?:--|—|:|-)\s*\S+)/i
+const JUSTIFICATION_COMMENT_REGEX = /z6-allow-override-access\s*:\s*\S+/
 
 /**
  * @param {string} filename
@@ -40,26 +56,124 @@ export function isFrontendOrCmsFile(filename) {
   const normalized = filename.replace(/\\/g, '/')
   return (
     /(?:^|\/)src\/app\/\(frontend\)\//.test(normalized) ||
+    /(?:^|\/)src\/components\//.test(normalized) ||
     /(?:^|\/)src\/lib\/cms(?:\/|$)/.test(normalized)
   )
 }
 
 /**
- * @param {import('eslint').Rule.Node} expr
+ * Returns true when `filename` is inside `src/app/(frontend)/**`, `src/components/**`,
+ * or `src/lib/cms/**` outside the single allowed wrapper module `src/lib/cms/client.ts`
+ * (and unit test files `*.test.ts`).
+ *
+ * @param {string} filename
  * @returns {boolean}
  */
-function isPayloadLikeReceiver(expr) {
+export function isPayloadImportForbiddenFile(filename) {
+  if (typeof filename !== 'string' || filename.length === 0) {
+    return false
+  }
+  const normalized = filename.replace(/\\/g, '/')
+  if (/\.test\.[jt]sx?$/.test(normalized)) {
+    return false
+  }
+  if (
+    /(?:^|\/)src\/app\/\(frontend\)\//.test(normalized) ||
+    /(?:^|\/)src\/components\//.test(normalized)
+  ) {
+    return true
+  }
+  if (/(?:^|\/)src\/lib\/cms\//.test(normalized)) {
+    return !/(?:^|\/)src\/lib\/cms\/client\.[jt]s$/.test(normalized)
+  }
+  return false
+}
+
+/**
+ * @param {unknown} sourceValue
+ * @returns {boolean}
+ */
+function isForbiddenPayloadModuleSource(sourceValue) {
+  if (typeof sourceValue !== 'string') {
+    return false
+  }
+  const trimmed = sourceValue.trim()
+  return (
+    trimmed === 'payload' ||
+    trimmed.startsWith('payload/') ||
+    trimmed === '@payload-config' ||
+    trimmed === '@/payload.config' ||
+    /(?:^|\/)payload\.config(?:\.[jt]s)?$/.test(trimmed)
+  )
+}
+
+/**
+ * @param {import('eslint').Rule.Node | null | undefined} propNode
+ * @returns {string | null}
+ */
+function getPropertyName(propNode) {
+  if (!propNode || typeof propNode !== 'object') {
+    return null
+  }
+  if (propNode.type === 'Identifier') {
+    return propNode.name
+  }
+  if (propNode.type === 'Literal' && typeof propNode.value === 'string') {
+    return propNode.value
+  }
+  return null
+}
+
+/**
+ * @param {import('eslint').Rule.Node | null | undefined} memberNode
+ * @returns {string | null}
+ */
+function getMemberMethodName(memberNode) {
+  if (!memberNode || memberNode.type !== 'MemberExpression') {
+    return null
+  }
+  if (!memberNode.computed && memberNode.property.type === 'Identifier') {
+    return memberNode.property.name
+  }
+  if (
+    memberNode.computed &&
+    memberNode.property.type === 'Literal' &&
+    typeof memberNode.property.value === 'string'
+  ) {
+    return memberNode.property.value
+  }
+  return null
+}
+
+/**
+ * @param {import('eslint').Rule.Node | null | undefined} expr
+ * @param {Set<string>} trackedPayloadVars
+ * @returns {boolean}
+ */
+function isPayloadLikeExpression(expr, trackedPayloadVars) {
   if (!expr || typeof expr !== 'object') {
     return false
   }
   if (expr.type === 'Identifier') {
-    return expr.name === 'payload' || expr.name.toLowerCase().endsWith('payload')
-  }
-  if (expr.type === 'MemberExpression' && !expr.computed && expr.property.type === 'Identifier') {
-    return expr.property.name === 'payload' || expr.property.name.toLowerCase().endsWith('payload')
+    return (
+      trackedPayloadVars.has(expr.name) ||
+      expr.name === 'payload' ||
+      expr.name === 'client' ||
+      expr.name.toLowerCase().includes('payload')
+    )
   }
   if (expr.type === 'AwaitExpression') {
-    return isPayloadLikeReceiver(expr.argument)
+    return isPayloadLikeExpression(expr.argument, trackedPayloadVars)
+  }
+  if (expr.type === 'ChainExpression') {
+    return isPayloadLikeExpression(expr.expression, trackedPayloadVars)
+  }
+  if (expr.type === 'MemberExpression') {
+    const propName = getMemberMethodName(expr)
+    if (propName && (propName === 'payload' || propName.toLowerCase().includes('payload'))) {
+      return true
+    }
+    return false
   }
   if (expr.type === 'CallExpression') {
     if (expr.callee.type === 'Identifier') {
@@ -69,15 +183,60 @@ function isPayloadLikeReceiver(expr) {
         expr.callee.name.toLowerCase().includes('payload')
       )
     }
-    if (
-      expr.callee.type === 'MemberExpression' &&
-      !expr.callee.computed &&
-      expr.callee.property.type === 'Identifier'
-    ) {
-      return expr.callee.property.name.toLowerCase().includes('payload')
+    if (expr.callee.type === 'MemberExpression') {
+      const propName = getMemberMethodName(expr.callee)
+      return Boolean(propName && propName.toLowerCase().includes('payload'))
     }
   }
   return false
+}
+
+/**
+ * Checks whether an options ObjectExpression safely sets `overrideAccess: false`
+ * without being clobbered by a subsequent spread (`...other`) or duplicate key.
+ *
+ * @param {import('eslint').Rule.Node | undefined} optionsArg
+ * @returns {{ hasUnclobberedLiteralFalse: boolean, overridePropNode: import('eslint').Rule.Node | null }}
+ */
+function inspectOptionsObject(optionsArg) {
+  /** @type {import('eslint').Rule.Node | null} */
+  let overridePropNode = null
+  let hasUnclobberedLiteralFalse = false
+
+  if (!optionsArg || optionsArg.type !== 'ObjectExpression') {
+    return { hasUnclobberedLiteralFalse: false, overridePropNode: null }
+  }
+
+  for (const prop of optionsArg.properties) {
+    if (prop.type === 'SpreadElement') {
+      // Any spread after `overrideAccess: false` can overwrite `overrideAccess` at runtime!
+      if (hasUnclobberedLiteralFalse) {
+        hasUnclobberedLiteralFalse = false
+      }
+      continue
+    }
+    if (prop.type === 'Property') {
+      const keyName = !prop.computed
+        ? getPropertyName(prop.key)
+        : prop.key.type === 'Literal' && typeof prop.key.value === 'string'
+          ? prop.key.value
+          : null
+
+      if (keyName === 'overrideAccess') {
+        overridePropNode = prop
+        if (prop.value.type === 'Literal' && prop.value.value === false) {
+          hasUnclobberedLiteralFalse = true
+        } else {
+          hasUnclobberedLiteralFalse = false
+        }
+      } else if (prop.computed && hasUnclobberedLiteralFalse) {
+        // Dynamic computed property key after `overrideAccess: false` could also overwrite it
+        hasUnclobberedLiteralFalse = false
+      }
+    }
+  }
+
+  return { hasUnclobberedLiteralFalse, overridePropNode }
 }
 
 /**
@@ -119,11 +278,13 @@ export const requireOverrideAccessFalseRule = {
     type: 'problem',
     docs: {
       description:
-        'Require `overrideAccess: false` (or a `// z6-allow-override-access: <reason>` justification comment) on Payload Local API calls inside `src/app/(frontend)` and `src/lib/cms` (Z6).',
+        'Ban direct Payload imports in `src/app/(frontend)`, `src/components`, and non-wrapper `src/lib/cms` files, and require un-overridden `overrideAccess: false` (or `// z6-allow-override-access: <reason>`) on all Payload Local API calls (Z6, R-6).',
     },
     messages: {
+      forbiddenPayloadImport:
+        'Importing "{{source}}" is forbidden in `src/app/(frontend)`, `src/components`, and `src/lib/cms` outside `src/lib/cms/client.ts`. Use the typed Z6 wrapper functions (`cmsFind`, `cmsFindByID`, `cmsFindGlobal`, `cmsCount`) instead (Z6, R-6).',
       missingOverrideAccessFalse:
-        'Payload Local API call "{{method}}()" in frontend/CMS code must pass "{ overrideAccess: false }" (or include a "// z6-allow-override-access: <reason>" comment) (Z6).',
+        'Payload Local API call "{{method}}()" in frontend/CMS code must pass an un-overridden "{ overrideAccess: false }" (or include a "// z6-allow-override-access: <reason>" comment) (Z6).',
     },
     schema: [],
   },
@@ -133,49 +294,198 @@ export const requireOverrideAccessFalseRule = {
       return {}
     }
 
+    const forbidImports = isPayloadImportForbiddenFile(filename)
     const sourceCode = context.sourceCode ?? context.getSourceCode()
 
-    return {
-      CallExpression(node) {
-        if (
-          node.callee.type !== 'MemberExpression' ||
-          node.callee.computed ||
-          node.callee.property.type !== 'Identifier'
-        ) {
-          return
-        }
+    /** @type {Set<string>} */
+    const trackedPayloadVars = new Set(['payload', 'client'])
+    /** @type {Map<string, string>} localVarName -> guardedMethodName */
+    const destructuredPayloadMethods = new Map()
 
-        const methodName = node.callee.property.name
-        if (!GUARDED_PAYLOAD_METHODS.has(methodName)) {
-          return
-        }
-
-        if (!isPayloadLikeReceiver(node.callee.object)) {
-          return
-        }
-
-        const firstArg = node.arguments[0]
-        /** @type {import('eslint').Rule.Node | null} */
-        let overridePropNode = null
-        let hasLiteralFalse = false
-
-        if (firstArg && firstArg.type === 'ObjectExpression') {
-          for (const prop of firstArg.properties) {
-            if (
-              prop.type === 'Property' &&
-              !prop.computed &&
-              ((prop.key.type === 'Identifier' && prop.key.name === 'overrideAccess') ||
-                (prop.key.type === 'Literal' && prop.key.value === 'overrideAccess'))
+    /**
+     * @param {import('eslint').Rule.Node | null | undefined} pattern
+     */
+    function trackObjectPatternFromPayload(pattern) {
+      if (!pattern || pattern.type !== 'ObjectPattern') {
+        return
+      }
+      for (const prop of pattern.properties) {
+        if (prop.type === 'Property') {
+          const origName = getPropertyName(prop.key)
+          if (origName && GUARDED_PAYLOAD_METHODS.has(origName)) {
+            if (prop.value.type === 'Identifier') {
+              destructuredPayloadMethods.set(prop.value.name, origName)
+            } else if (
+              prop.value.type === 'AssignmentPattern' &&
+              prop.value.left.type === 'Identifier'
             ) {
-              overridePropNode = prop
-              if (prop.value.type === 'Literal' && prop.value.value === false) {
-                hasLiteralFalse = true
+              destructuredPayloadMethods.set(prop.value.left.name, origName)
+            }
+          }
+        }
+      }
+    }
+
+    return {
+      ImportDeclaration(node) {
+        if (!forbidImports) {
+          return
+        }
+        const sourceVal = node.source?.value
+        if (isForbiddenPayloadModuleSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+        for (const spec of node.specifiers ?? []) {
+          if (
+            spec.type === 'ImportSpecifier' &&
+            spec.imported.type === 'Identifier' &&
+            (spec.imported.name === 'getPayload' || spec.imported.name === 'getPayloadClient')
+          ) {
+            context.report({
+              node: spec,
+              messageId: 'forbiddenPayloadImport',
+              data: { source: spec.imported.name },
+            })
+          }
+        }
+      },
+
+      ImportExpression(node) {
+        if (!forbidImports) {
+          return
+        }
+        if (node.source?.type === 'Literal' && isForbiddenPayloadModuleSource(node.source.value)) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadImport',
+            data: { source: String(node.source.value) },
+          })
+        }
+      },
+
+      VariableDeclarator(node) {
+        if (!node.init) {
+          return
+        }
+        if (isPayloadLikeExpression(node.init, trackedPayloadVars)) {
+          if (node.id.type === 'Identifier') {
+            trackedPayloadVars.add(node.id.name)
+          } else if (node.id.type === 'ObjectPattern') {
+            trackObjectPatternFromPayload(node.id)
+          }
+          return
+        }
+        // Also track `const fn = payload.find` or `const fn = payload['find']`
+        if (node.id.type === 'Identifier' && node.init.type === 'MemberExpression') {
+          const methodName = getMemberMethodName(node.init)
+          if (
+            methodName &&
+            GUARDED_PAYLOAD_METHODS.has(methodName) &&
+            isPayloadLikeExpression(node.init.object, trackedPayloadVars)
+          ) {
+            destructuredPayloadMethods.set(node.id.name, methodName)
+          }
+        }
+      },
+
+      AssignmentExpression(node) {
+        if (isPayloadLikeExpression(node.right, trackedPayloadVars)) {
+          if (node.left.type === 'Identifier') {
+            trackedPayloadVars.add(node.left.name)
+          } else if (node.left.type === 'ObjectPattern') {
+            trackObjectPatternFromPayload(node.left)
+          }
+        }
+      },
+
+      CallExpression(node) {
+        const callee = node.callee.type === 'ChainExpression' ? node.callee.expression : node.callee
+
+        // Check `require('payload')` in forbidden files
+        if (
+          forbidImports &&
+          callee.type === 'Identifier' &&
+          callee.name === 'require' &&
+          node.arguments[0]?.type === 'Literal' &&
+          isForbiddenPayloadModuleSource(node.arguments[0].value)
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadImport',
+            data: { source: String(node.arguments[0].value) },
+          })
+          return
+        }
+
+        /** @type {string | null} */
+        let matchedMethodName = null
+        /** @type {import('eslint').Rule.Node | undefined} */
+        let optionsArg = undefined
+        let requiresAutomaticFalse = true
+
+        // Case 1: Destructured / aliased method identifier `find({ ... })`
+        if (callee.type === 'Identifier' && destructuredPayloadMethods.has(callee.name)) {
+          matchedMethodName = destructuredPayloadMethods.get(callee.name) ?? callee.name
+          optionsArg = node.arguments[0]
+        } else if (callee.type === 'MemberExpression') {
+          const propName = getMemberMethodName(callee)
+
+          // Case 2: `payload.find.call(payload, { ... })`, `payload['find'].apply(payload, [{ ... }])`, `.bind(payload, { ... })`
+          if (
+            (propName === 'call' || propName === 'apply' || propName === 'bind') &&
+            callee.object.type === 'MemberExpression'
+          ) {
+            const innerMethod = getMemberMethodName(callee.object)
+            if (
+              innerMethod &&
+              GUARDED_PAYLOAD_METHODS.has(innerMethod) &&
+              isPayloadLikeExpression(callee.object.object, trackedPayloadVars)
+            ) {
+              matchedMethodName = innerMethod
+              if (propName === 'apply') {
+                const arrArg = node.arguments[1]
+                optionsArg =
+                  arrArg && arrArg.type === 'ArrayExpression'
+                    ? (arrArg.elements[0] ?? undefined)
+                    : undefined
+              } else {
+                optionsArg = node.arguments[1]
               }
+            }
+          } else if (propName && GUARDED_PAYLOAD_METHODS.has(propName)) {
+            // Case 3: `payload.find(...)`, `payload['find'](...)`, `client.find(...)`, `aliased.find(...)`
+            if (isPayloadLikeExpression(callee.object, trackedPayloadVars)) {
+              matchedMethodName = propName
+              optionsArg = node.arguments[0]
+            } else if (
+              node.arguments[0]?.type === 'ObjectExpression' &&
+              node.arguments[0].properties.some(
+                (p) =>
+                  p.type === 'Property' &&
+                  (getPropertyName(p.key) === 'collection' || getPropertyName(p.key) === 'slug'),
+              )
+            ) {
+              // Any receiver in frontend/CMS code calling a guarded Payload method with `{ collection: ... }` or `{ slug: ... }`
+              matchedMethodName = propName
+              optionsArg = node.arguments[0]
+            } else {
+              requiresAutomaticFalse = false
             }
           }
         }
 
-        if (hasLiteralFalse) {
+        if (!matchedMethodName || !requiresAutomaticFalse) {
+          return
+        }
+
+        const { hasUnclobberedLiteralFalse, overridePropNode } = inspectOptionsObject(optionsArg)
+
+        if (hasUnclobberedLiteralFalse) {
           return
         }
 
@@ -186,7 +496,7 @@ export const requireOverrideAccessFalseRule = {
         context.report({
           node: overridePropNode ?? node,
           messageId: 'missingOverrideAccessFalse',
-          data: { method: methodName },
+          data: { method: matchedMethodName },
         })
       },
     }

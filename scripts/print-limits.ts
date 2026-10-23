@@ -78,11 +78,7 @@ export function generateLimitsLogLines(): string[] {
   return out
 }
 
-if (
-  typeof process !== 'undefined' &&
-  Array.isArray(process.argv) &&
-  process.argv[1]?.replace(/\\/g, '/').endsWith('scripts/print-limits.ts')
-) {
+if (typeof process !== 'undefined' && !process.env.VITEST && process.env.NODE_ENV !== 'test') {
   for (const line of generateLimitsLogLines()) {
     process.stdout.write(`${line}\n`)
   }

@@ -11,6 +11,7 @@ import {
   deriveCollectionTargetReferences,
   deriveFieldTargetPaths,
   deriveGlobalTargetReferences,
+  findCollectionTargetReferences,
   Media,
 } from '../collections/Media'
 import { Projects, PROJECT_SCOPE_OPTIONS } from '../collections/Projects'
@@ -209,7 +210,7 @@ describe('P2-T5 Globals unit suite', () => {
     }
   })
 
-  it('derives all global and collection upload/relationship paths for media, stats, and videos directly from config (R-4)', () => {
+  it('derives all global and collection upload/relationship paths for media, stats, and videos directly from config and fails closed on query errors (R-4, R-8, R-10)', async () => {
     const mediaGlobals = deriveGlobalTargetReferences(ALL_GLOBALS, 'media')
     expect(mediaGlobals).toEqual([
       {
@@ -413,5 +414,20 @@ describe('P2-T5 Globals unit suite', () => {
     expect(deriveFieldTargetPaths(Brands.fields, 'media').fieldPaths).toEqual(['logo'])
     expect(deriveFieldTargetPaths(Videos.fields, 'media').fieldPaths).toEqual(['poster'])
     expect(deriveFieldTargetPaths(Projects.fields, 'videos').fieldPaths).toEqual(['video'])
+
+    // Verify findCollectionTargetReferences fails closed if the where query throws (R-10)
+    await expect(
+      findCollectionTargetReferences({
+        check: syntheticDerived[0],
+        targetId: 42,
+        referencesByKey: new Map(),
+        req: {
+          payload: {
+            collections: { brands: {} },
+            find: () => Promise.reject(new Error('simulated query failure')),
+          },
+        } as never,
+      }),
+    ).rejects.toThrow(/Could not verify media references/)
   })
 })

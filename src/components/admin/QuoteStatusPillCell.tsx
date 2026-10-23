@@ -1,7 +1,10 @@
 'use client'
 
 import { useTranslation } from '@payloadcms/ui'
-import type { DefaultCellComponentProps } from 'payload'
+
+export interface AdminCellComponentProps {
+  cellData?: unknown
+}
 
 export type QuoteRequestStatusValue = 'new' | 'contacted' | 'quoted' | 'closed' | 'spam'
 
@@ -69,7 +72,7 @@ export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusSty
   },
 }
 
-export const QuoteStatusPillCell: React.FC<DefaultCellComponentProps> = ({ cellData }) => {
+export const QuoteStatusPillCell: React.FC<AdminCellComponentProps> = ({ cellData }) => {
   const { i18n } = useTranslation()
   const isEnglish = i18n.language === 'en'
   const rawStatus = typeof cellData === 'string' ? cellData : 'new'
