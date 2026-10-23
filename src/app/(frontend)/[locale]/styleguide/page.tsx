@@ -28,7 +28,6 @@ import {
 } from '@/components/Logo'
 import { LogoMarquee, type LogoMarqueePosition } from '@/components/LogoMarquee'
 import {
-  buildDefaultNavbarItems,
   Navbar,
   type NavbarPage,
   type NavbarTheme,
@@ -134,7 +133,6 @@ export default async function StyleguidePage({
   const resolvedLocale: SupportedLocale = locale
   const dict = getDictionary(resolvedLocale)
   const sg = getStyleguideStrings(resolvedLocale)
-  const previewNavItems = buildDefaultNavbarItems(resolvedLocale)
   const previewCtaHref = `/${resolvedLocale}/contact#quote`
 
   return (
@@ -333,7 +331,6 @@ export default async function StyleguidePage({
                     <Navbar
                       ctaHref={previewCtaHref}
                       ctaLabel={dict.nav.getAQuote}
-                      items={previewNavItems}
                       locale={resolvedLocale}
                       page={navPage}
                       staticPreview

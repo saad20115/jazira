@@ -222,8 +222,7 @@ export function Navbar({
   // against a single top `<header>` landmark.
   const isDevStyleguideShell =
     process.env.NODE_ENV !== 'production' &&
-    !staticPreview &&
-    (currentPath === '/ar/styleguide' || currentPath === '/en/styleguide')
+    (staticPreview || currentPath === '/ar/styleguide' || currentPath === '/en/styleguide')
   const navItems: readonly NavbarNavItem[] =
     items && items.length > 0
       ? items
