@@ -172,6 +172,17 @@ says so in the review.
   - **Every log shows where it ran:** each DoD script step prints `pwd` and `git rev-parse HEAD` first;
     logs from the working tree instead of the fresh clone are rejected.
   - Numbers you quote (downloads, sizes, timings) come from a command whose output is in a log.
+- (added 2026-10-23, P3-T1 R-1/R-2 — machine-captured evidence)
+  - Console, CSP, hydration and network evidence come from a **committed script** in
+    `scripts/evidence/` (e.g. Playwright collecting `console`, `pageerror`,
+    `securitypolicyviolation` events and the request list) that writes JSON or log files. The
+    reviewer re-runs it.
+  - Screenshots are only for visuals. **Any text overlaid on or pasted under a screenshot is
+    forbidden**, and so is any artefact made to look like tool output.
+  - Commit hashes in reports and logs are printed by `git rev-parse HEAD` inside the clone, never
+    typed by hand.
+  - A fresh clone starts in an empty directory with no copied `node_modules`. `install.log` must show
+    packages being added.
 
 ### Migrations (added 2026-10-23)
 - Never edit a committed migration, merged or not. Every schema change is a new migration; add a
