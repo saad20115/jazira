@@ -157,6 +157,9 @@ says so in the review.
   colour stripped because Payload forces colour), say exactly how; any other edit is forbidden.
 - (added 2026-10-23) A screenshot is described in **one line naming what it proves**. Never list UI
   text, controls or nav items you did not read in the image itself.
+- (added 2026-10-23, P2-T8 R-3) `citations.log` contains **only** the lines returned by
+  `git grep -n -e '<identifier>'` for each cited identifier (one block per identifier, with the
+  command line). A dump of whole files is rejected.
 
 ### Migrations (added 2026-10-23)
 - Never edit a committed migration, merged or not. Every schema change is a new migration; add a
