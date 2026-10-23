@@ -215,3 +215,20 @@ being confirmed directly with the owner; see `handoff/reviews/A-1.md`.
   - release notes: `C:\aljazira-3d\reports\RELEASE_v019c.md`;
   - snapshot: `C:\aljazira-3d-backup\release_v019c\`.
 - **Any change** becomes a new version, needs owner approval, and gets a new hash table here.
+
+## 12. v020 in progress (owner, 2026-10-23): "the HVAC fans need to rotate and spin"
+This is not released. v019c (§11) stays the pinned release until the owner approves v020 in the live
+preview and a new hash table is added here.
+- **Naming contract (§10) additions:**
+  - mesh `HVAC_fans` under `SYS_hvac`, with material `MAT_hvac_fans`: a blade texture on discs, each
+    disc UV-mapped to the full 0–1 square;
+  - +1 draw call when hvac is entered, with lite still ≤ 60.
+- **Extras on `SYS_hvac`:**
+  `fan_spin = { material: "MAT_hvac_fans", rpm: ~45, play: "entered", ramp_s: 1.0 }`.
+- **Site playback:**
+  - set `map.center = (0.5, 0.5)`;
+  - while hvac is entered, add ω·dt to `map.rotation` each frame, ramping up and down over `ramp_s`;
+  - no glTF animation clip and no new extensions;
+  - **`prefers-reduced-motion: reduce` → no spin** (the site's motion rule);
+  - stop when the tab is hidden or the card is off-screen.
+- **Reference:** `web/viewer-test/index.html`.
