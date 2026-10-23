@@ -239,3 +239,26 @@ preview and a new hash table is added here.
   - **`prefers-reduced-motion: reduce` → no spin** (the site's motion rule);
   - stop when the tab is hidden or the card is off-screen.
 - **Reference:** `web/viewer-test/index.html`.
+
+## 13. Release v020 approved (owner, relayed by the 3D lead, 2026-10-23); supersedes v019c
+"I approve v020 as a new version for the site."
+- **What changed from v019c:**
+  - mesh `HVAC_fans` and material `MAT_hvac_fans` (alphaMode MASK);
+  - new texture `tex_hvac_fans` (14 KTX2 per file);
+  - `SYS_hvac.fan_spin = {material:"MAT_hvac_fans", rpm:45, play:"entered", ramp_s:1}`.
+- **Playback:**
+  - `map.center = (0.5, 0.5)`;
+  - `map.rotation -= rpm/60·2π·dt·level`, clockwise from above;
+  - `level` ramps 0↔1 over `ramp_s` on enter and exit;
+  - no spin under reduced motion, a hidden tab or an off-screen card (§12).
+- **Numbers:**
+
+  | File | Size | Tris | Draw calls |
+  |---|---|---|---|
+  | full | 7,180,984 B | 53,312 | hero 58 / hvac 88 |
+  | lite | 2,189,388 B | 43,936 | hero 36 / hvac 46 |
+
+- **The hash table** is pending from the 3D lead. Until it arrives, P3-T5 cannot pin v020.
+- **The final delivery is still conditional:** the owner's direct instruction requires N-1..N-4 to
+  be fixed before the final delivery (§12). v020 is the current release, not the final one, until
+  they are fixed and reviewed.
