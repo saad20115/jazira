@@ -266,11 +266,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       }
     }
 
-    // 3. Machine-captured keyboard walkthrough (Navbar, mobile drawer focus trap + Esc, Accordion)
-    const kbContext = await browser.newContext({ viewport: { width: 390, height: 844 } })
-    const kbPage = await kbContext.newPage()
-    await kbPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle', timeout: 60000 })
-
+    // 3. Machine-captured keyboard walkthrough (Desktop Navbar, Mobile Drawer focus trap + Esc, Accordion)
     const readActiveElementInfo = async (pg) =>
       pg.evaluate(() => {
         const el = document.activeElement
@@ -281,12 +277,43 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
           text: (el.textContent || '').trim().slice(0, 60),
           ariaLabel: el.getAttribute('aria-label'),
           ariaExpanded: el.getAttribute('aria-expanded'),
+          ariaCurrent: el.getAttribute('aria-current'),
           href: el.getAttribute('href'),
           outlineStyle: style.outlineStyle,
           outlineWidth: style.outlineWidth,
           outlineColor: style.outlineColor,
         }
       })
+
+    // 3a. Desktop Navbar tab order at 1440x900 (/ar)
+    const desktopKbContext = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+    const desktopKbPage = await desktopKbContext.newPage()
+    await desktopKbPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle', timeout: 60000 })
+    const desktopNavbarSteps = []
+    const desktopLabels = [
+      'Tab 1 (skip link)',
+      'Tab 2 (brand logo)',
+      'Tab 3 (NavLink: Home - active)',
+      'Tab 4 (NavLink: Services)',
+      'Tab 5 (NavLink: About Us)',
+      'Tab 6 (NavLink: Projects)',
+      'Tab 7 (NavLink: Contact Us)',
+      'Tab 8 (Desktop language switcher)',
+      'Tab 9 (Desktop Request a Quote CTA)',
+    ]
+    for (const label of desktopLabels) {
+      await desktopKbPage.keyboard.press('Tab')
+      desktopNavbarSteps.push({
+        step: label,
+        active: await readActiveElementInfo(desktopKbPage),
+      })
+    }
+    await desktopKbContext.close()
+
+    // 3b. Mobile Drawer tab order, focus trap, and Escape at 390x844 (/ar)
+    const kbContext = await browser.newContext({ viewport: { width: 390, height: 844 } })
+    const kbPage = await kbContext.newPage()
+    await kbPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle', timeout: 60000 })
 
     const mobileDrawerSteps = []
     // Tab 1: skip-link -> Tab 2: brand logo -> Tab 3: hamburger button
@@ -308,10 +335,17 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       active: await readActiveElementInfo(kbPage),
     })
 
-    // Shift+Tab from first focusable wraps to last focusable inside drawer (focus trap)
+    // Shift+Tab 1 moves from close button (2nd focusable) to drawer brand logo (1st focusable)
     await kbPage.keyboard.press('Shift+Tab')
     mobileDrawerSteps.push({
-      step: 'Shift+Tab from first drawer element -> wraps to last drawer element (focus trap)',
+      step: 'Shift+Tab 1 -> moves to first drawer element (drawer brand logo)',
+      active: await readActiveElementInfo(kbPage),
+    })
+
+    // Shift+Tab 2 from first focusable wraps to last focusable inside drawer (focus trap)
+    await kbPage.keyboard.press('Shift+Tab')
+    mobileDrawerSteps.push({
+      step: 'Shift+Tab 2 from first drawer element -> wraps to last drawer element (focus trap)',
       active: await readActiveElementInfo(kbPage),
     })
 
@@ -331,7 +365,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     })
     await kbContext.close()
 
-    // Accordion keyboard check on /ar/styleguide
+    // 3c. Accordion keyboard check on /ar/styleguide
     const accContext = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     const accPage = await accContext.newPage()
     await accPage.goto(`${baseUrl}/ar/styleguide`, { waitUntil: 'networkidle', timeout: 60000 })
@@ -347,6 +381,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     const kbPayload = {
       baseUrl,
       generatedAt: new Date().toISOString(),
+      desktopNavbarSteps,
       mobileDrawerSteps,
       accordionKeyboard: {
         beforeToggle: accBefore,
@@ -365,13 +400,19 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       headerBlock.trimEnd(),
       `BaseURL: ${baseUrl}`,
       '',
-      '=== 1. Navbar & Mobile Drawer Keyboard Walkthrough (/ar at 390x844) ===',
-      ...mobileDrawerSteps.map(
+      '=== 1. Desktop Navbar Keyboard Walkthrough (/ar at 1440x900) ===',
+      ...desktopNavbarSteps.map(
         (s) =>
-          `- ${s.step}: <${String(s.active?.tag)}> aria-label="${String(s.active?.ariaLabel ?? '')}" aria-expanded="${String(s.active?.ariaExpanded ?? '')}" href="${String(s.active?.href ?? '')}" outline="${String(s.active?.outlineWidth)} ${String(s.active?.outlineStyle)} ${String(s.active?.outlineColor)}"`,
+          `- ${s.step}: <${String(s.active?.tag)}> text="${String(s.active?.text ?? '')}" aria-label="${String(s.active?.ariaLabel ?? '')}" aria-current="${String(s.active?.ariaCurrent ?? '')}" href="${String(s.active?.href ?? '')}" outline="${String(s.active?.outlineWidth)} ${String(s.active?.outlineStyle)} ${String(s.active?.outlineColor)}"`,
       ),
       '',
-      '=== 2. Accordion Keyboard Walkthrough (/ar/styleguide#interactive-acc-1-trigger) ===',
+      '=== 2. Mobile Drawer Keyboard Walkthrough (/ar at 390x844) ===',
+      ...mobileDrawerSteps.map(
+        (s) =>
+          `- ${s.step}: <${String(s.active?.tag)}> text="${String(s.active?.text ?? '')}" aria-label="${String(s.active?.ariaLabel ?? '')}" aria-expanded="${String(s.active?.ariaExpanded ?? '')}" href="${String(s.active?.href ?? '')}" outline="${String(s.active?.outlineWidth)} ${String(s.active?.outlineStyle)} ${String(s.active?.outlineColor)}"`,
+      ),
+      '',
+      '=== 3. Accordion Keyboard Walkthrough (/ar/styleguide#interactive-acc-1-trigger) ===',
       `- Focused before Enter: aria-expanded="${String(accBefore?.ariaExpanded)}" outline="${String(accBefore?.outlineWidth)} ${String(accBefore?.outlineStyle)}"`,
       `- After Enter key: aria-expanded="${String(accAfterEnter?.ariaExpanded)}"`,
       `- After Space key: aria-expanded="${String(accAfterSpace?.ariaExpanded)}"`,
