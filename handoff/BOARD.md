@@ -20,7 +20,7 @@ watch the channel.
 | P2-T6 | `quote-requests` | ACCEPTED | 5 | 2026-10-23 | CTO |
 | P2-T7 | Dashboard UX & Live Preview | TODO | 0 | 2026-10-21 | CTO |
 | P2-T8 | Access test suite, migrations, phase-2 report | IN_REVIEW | 3 | 2026-10-23 | Antigravity |
-| P2-T9 | Login enumeration hardening (timing + locked message) | IN_REVIEW | 1 | 2026-10-23 | Antigravity |
+| P2-T9 | Login enumeration hardening (timing + locked message) | ACCEPTED | 1 | 2026-10-23 | CTO |
 | P3-T1 | Frontend foundations, i18n, CSP | IN_PROGRESS | 1 | 2026-10-23 | Antigravity |
 | P3-T2 | Shell & primitives + styleguide | TODO | 0 | 2026-10-21 | CTO |
 | P3-T3 | Cards & motion components | TODO | 0 | 2026-10-21 | CTO |
