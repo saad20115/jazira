@@ -12,9 +12,11 @@ import { env } from '../env'
  * Client-side imports of `@/lib/ipHash` are blocked at lint time by `local/no-server-in-client`
  * (`eslint-rules/no-server-in-client.mjs`) and guarded at runtime below.
  */
+export const IPHASH_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__'
+
 if (typeof window !== 'undefined') {
   throw new Error(
-    'src/lib/ipHash.ts is a server-only module and must never be imported in client code (S4, D2).',
+    `src/lib/ipHash.ts is a server-only module and must never be imported in client code (S4, D2, ${IPHASH_SERVER_ONLY_SENTINEL}).`,
   )
 }
 

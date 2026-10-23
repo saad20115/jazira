@@ -1,25 +1,26 @@
 import type { Field } from 'payload'
 import { describe, expect, it } from 'vitest'
 
+import { isAdminOrEditor, isAdminOrSelfFieldLevel } from '../access/index'
+import {
+  formatPhoneForDisplay,
+  isValidKsaOrInternationalPhone,
+  normalizeQuotePhone,
+  quotePhoneSchema,
+} from '../lib/quote/schema'
+import payloadConfig from '../payload.config'
 import {
   neverUpdateFieldAccess,
   preserveCreatedAtBeforeChange,
   preserveCreatedAtBeforeValidate,
   stripCreatedAtOnUpdateBeforeOperation,
 } from './_shared/immutableTimestamps'
-import { Brands } from './Brands'
-import { Materials } from './Materials'
-import { Media } from './Media'
-import { Projects } from './Projects'
 import {
   isAdminOrEditorFieldLevel,
   isValidEmailAddress,
-  isValidKsaOrInternationalPhone,
-  normalizeQuotePhone,
   QUOTE_EMAIL_STATUS_VALUES,
   QUOTE_LOCALE_VALUES,
   QUOTE_REQUEST_STATUS_VALUES,
-  quotePhoneSchema,
   QuoteRequests,
   readOnlyFieldAccess,
   validateQuoteConsent,
@@ -27,28 +28,12 @@ import {
   validateQuotePhone,
   workflowFieldAccess,
 } from './QuoteRequests'
-import { Services } from './Services'
-import { Stats } from './Stats'
-import { Team } from './Team'
 import {
   resolveUserDisplayNameAfterRead,
   resolveUserDisplayNameBeforeValidate,
+  restrictOtherUserFieldsForEditorAfterRead,
   Users,
 } from './Users'
-import { Videos } from './Videos'
-
-const ALL_COLLECTIONS = [
-  Users,
-  Media,
-  Videos,
-  Brands,
-  Stats,
-  Materials,
-  Services,
-  Team,
-  Projects,
-  QuoteRequests,
-] as const
 
 describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
   it('configures slug, Sales admin group, defaultColumns, defaultSort -createdAt, and Z1/Z4 collection access', () => {
@@ -106,6 +91,7 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
       'ipHash',
       'userAgent',
       'createdAt',
+      'updatedAt',
     ])
     expect(fieldNames.some((n) => n.toLowerCase().includes('odoo'))).toBe(false)
     expect(QUOTE_REQUEST_STATUS_VALUES).toEqual(['new', 'contacted', 'quoted', 'closed', 'spam'])
@@ -133,11 +119,14 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
     expect(isAdminOrEditorFieldLevel(anonReq)).toBe(false)
   })
 
-  it('validates and normalizes KSA and international phone numbers (including 00966, requiring + for international, rejecting repeated-digit junk), email addresses, and consent === true (R-3)', () => {
-    // Normalization of leading 00 to +
-    expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966 57 353 4185')
+  it('validates and normalizes KSA and international phone numbers to E.164 (including 00966 and 05XXXXXXXX, requiring + for international, rejecting repeated-digit junk), email addresses, and consent === true (R-3, R-6, R-12)', () => {
+    // Normalization to canonical E.164 (R-12)
+    expect(normalizeQuotePhone('0573534185')).toBe('+966573534185')
+    expect(normalizeQuotePhone('057 353 4185')).toBe('+966573534185')
+    expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966573534185')
+    expect(normalizeQuotePhone('+966 57 353 4185')).toBe('+966573534185')
     expect(normalizeQuotePhone('  00966573534185  ')).toBe('+966573534185')
-    expect(normalizeQuotePhone('0573534185')).toBe('0573534185')
+    expect(formatPhoneForDisplay('+966573534185')).toBe('+966 57 353 4185')
 
     // Valid KSA & international phones
     expect(isValidKsaOrInternationalPhone('+966 57 353 4185')).toBe(true)
@@ -149,7 +138,8 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
     expect(isValidKsaOrInternationalPhone('+971 50 123 4567')).toBe(true)
     expect(isValidKsaOrInternationalPhone('+1 (555) 234-5678')).toBe(true)
     expect(validateQuotePhone('+966 57 353 4185')).toBe(true)
-    expect(quotePhoneSchema.parse('00966 57 353 4185')).toBe('+966 57 353 4185')
+    expect(quotePhoneSchema.parse('00966 57 353 4185')).toBe('+966573534185')
+    expect(quotePhoneSchema.parse('057 353 4185')).toBe('+966573534185')
 
     // Invalid phones (R-3 edge cases)
     expect(isValidKsaOrInternationalPhone('')).toBe(false)
@@ -178,35 +168,72 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
     expect(typeof validateQuoteConsent(undefined)).toBe('string')
   })
 
-  it('walks all 10 collections and verifies that every collection enforces immutable createdAt via shared field access and hooks (R-2)', () => {
-    expect(ALL_COLLECTIONS).toHaveLength(10)
+  it('iterates config.collections from the built Payload config and verifies that every application collection enforces immutable createdAt on create and update (R-2, R-8, R-10)', async () => {
+    const config = await payloadConfig
+    const appCollections = config.collections.filter((col) => !col.slug.startsWith('payload-'))
+
+    expect(appCollections.map((c) => c.slug)).toEqual([
+      'users',
+      'media',
+      'videos',
+      'brands',
+      'stats',
+      'materials',
+      'services',
+      'team',
+      'projects',
+      'quote-requests',
+    ])
     expect(neverUpdateFieldAccess({ req: { user: { id: 1, role: 'admin' } } } as never)).toBe(false)
 
-    for (const col of ALL_COLLECTIONS) {
+    for (const col of appCollections) {
       const createdAtField = col.fields.find(
         (f): f is Field & { name: string; type: string } =>
           'name' in f && f.name === 'createdAt' && 'type' in f,
       )
       expect(createdAtField, `collection ${col.slug} must define createdAt`).toBeDefined()
       expect(createdAtField?.type).toBe('date')
-      const updateAccess = (
-        createdAtField as { access?: { update?: (...args: never[]) => boolean } } | undefined
-      )?.access?.update
-      expect(typeof updateAccess, `collection ${col.slug} createdAt.access.update`).toBe('function')
-      expect(updateAccess?.()).toBe(false)
+      const fieldAccess = (
+        createdAtField as
+          | {
+              access?: {
+                create?: (...args: never[]) => boolean
+                update?: (...args: never[]) => boolean
+              }
+            }
+          | undefined
+      )?.access
+      expect(typeof fieldAccess?.create, `collection ${col.slug} createdAt.access.create`).toBe(
+        'function',
+      )
+      expect(fieldAccess?.create?.()).toBe(false)
+      expect(typeof fieldAccess?.update, `collection ${col.slug} createdAt.access.update`).toBe(
+        'function',
+      )
+      expect(fieldAccess?.update?.()).toBe(false)
 
-      expect(col.hooks?.beforeOperation).toContain(stripCreatedAtOnUpdateBeforeOperation)
-      expect(col.hooks?.beforeValidate).toContain(preserveCreatedAtBeforeValidate)
-      expect(col.hooks?.beforeChange).toContain(preserveCreatedAtBeforeChange)
+      expect(col.hooks.beforeOperation).toContain(stripCreatedAtOnUpdateBeforeOperation)
+      expect(col.hooks.beforeValidate).toContain(preserveCreatedAtBeforeValidate)
+      expect(col.hooks.beforeChange).toContain(preserveCreatedAtBeforeChange)
     }
   })
 
-  it('configures Users.admin.useAsTitle = name with email fallback so assignees never render as Untitled (R-5)', () => {
+  it('configures Users.admin.useAsTitle = name, Users.access.read = isAdminOrEditor, and restricts other users email/role/sessions to adminOrSelf (R-5, R-11)', () => {
     expect(Users.admin?.useAsTitle).toBe('name')
+    expect(Users.access?.read).toBe(isAdminOrEditor)
     expect(Users.forceSelect).toEqual({
       name: true,
-      email: true,
     })
+
+    for (const restrictedFieldName of ['email', 'role', 'updatedAt', 'createdAt']) {
+      const field = Users.fields.find(
+        (f): f is Field & { name: string; access?: { read?: unknown } } =>
+          'name' in f && f.name === restrictedFieldName,
+      )
+      expect(field?.access?.read, `Users.${restrictedFieldName}.access.read`).toBe(
+        isAdminOrSelfFieldLevel,
+      )
+    }
 
     expect(
       resolveUserDisplayNameBeforeValidate({
@@ -224,12 +251,43 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
       } as never),
     ).toBe('editor@aljazira.co')
 
+    // Self or admin fallback when name is null
     expect(
       resolveUserDisplayNameAfterRead({
         value: null,
-        data: { email: 'staff@aljazira.co' },
+        data: { id: 10, email: 'staff@aljazira.co' },
         siblingData: {},
+        req: { user: { id: 10, role: 'editor' } },
       } as never),
     ).toBe('staff@aljazira.co')
+
+    // Editor reading another user never falls back to email and strips non-{id,name} fields
+    expect(
+      resolveUserDisplayNameAfterRead({
+        value: null,
+        data: { id: 1, email: 'admin@aljazira.co' },
+        siblingData: {},
+        req: { user: { id: 2, role: 'editor' } },
+      } as never),
+    ).toBeNull()
+
+    const strippedOtherUser: unknown = restrictOtherUserFieldsForEditorAfterRead({
+      doc: {
+        id: 1,
+        name: 'م. أحمد الحربي',
+        email: 'admin@aljazira.co',
+        role: 'admin',
+        sessions: [{ id: 'sess-1' }],
+        createdAt: '2026-10-23T00:00:00.000Z',
+        updatedAt: '2026-10-23T00:00:00.000Z',
+      },
+      req: { user: { id: 2, role: 'editor' } } as never,
+      context: {},
+      collection: Users as never,
+    })
+    expect(strippedOtherUser).toEqual({
+      id: 1,
+      name: 'م. أحمد الحربي',
+    })
   })
 })

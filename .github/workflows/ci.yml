@@ -151,6 +151,10 @@ jobs:
             echo "ERROR: Database password leaked into .next/static!" >&2
             exit 1
           fi
+          if grep -Fq "__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_" -R .next/static; then
+            echo "ERROR: Server-only module sentinel leaked into .next/static (R-6)!" >&2
+            exit 1
+          fi
 
       - name: Run Playwright e2e smoke tests
         run: pnpm test:e2e

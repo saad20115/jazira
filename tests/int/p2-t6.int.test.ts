@@ -366,7 +366,7 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
       'طلب تسعير пакет أعمال MEP كاملة لمشروع فندق 18 طابقاً في مكة المكرمة.',
     )
     expect(storedAfterTamper.name).toBe('م. فهد السبيعي')
-    expect(storedAfterTamper.phone).toBe('+966 57 353 4185')
+    expect(storedAfterTamper.phone).toBe('+966573534185')
     expect(storedAfterTamper.emailStatus).toBe('pending')
     expect(storedAfterTamper.emailAttempts).toBe(1)
     expect(storedAfterTamper.emailLastError).toBe('SMTP timeout after 10000ms (sanitized)')
@@ -590,7 +590,7 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
     expect((filterByDate.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
   })
 
-  it('normalizes 00966 phone prefix to +966, rejects bare international and repeated-digit phones (R-3), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and populates Users display name fallback to email (R-5)', async () => {
+  it('normalizes phone inputs (0573534185, 057 353 4185, 00966 57 353 4185, +966 57 353 4185) to canonical E.164 +966573534185 (R-3, R-12), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and allows editors to read only id + name of other users (R-5, R-11)', async () => {
     // R-3: Rejects 00966 with wrong national digit count, bare 966573534185 without +, and +111111111111111
     for (const invalidPhone of ['009665735341', '966573534185', '+111111111111111']) {
       await expect(
@@ -610,7 +610,36 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
       ).rejects.toThrow()
     }
 
-    // R-4: Create a temporary service, create a quote request with 00966 phone, verify normalization and serviceTitle snapshot
+    // R-12: All valid KSA local and international formats store canonical E.164 (+966573534185)
+    for (const rawPhoneVariant of [
+      '0573534185',
+      '057 353 4185',
+      '00966 57 353 4185',
+      '+966 57 353 4185',
+      '+966 (57) 353-4185',
+    ]) {
+      const createdVariant = await payload.create({
+        collection: 'quote-requests',
+        overrideAccess: true,
+        data: {
+          name: 'عميل اختبار تطبيع E.164',
+          email: 'e164-check@example.sa',
+          phone: rawPhoneVariant,
+          locale: 'ar',
+          consent: true,
+          status: 'new',
+          emailStatus: 'pending',
+        },
+      })
+      expect(createdVariant.phone, `rawPhoneVariant=${rawPhoneVariant}`).toBe('+966573534185')
+      await payload.delete({
+        collection: 'quote-requests',
+        id: createdVariant.id,
+        overrideAccess: true,
+      })
+    }
+
+    // R-4: Create a temporary service, create a quote request with 00966 phone assigned to adminUser, verify E.164 normalization and serviceTitle snapshot
     const tempService = await payload.create({
       collection: 'services',
       draft: false,
@@ -636,6 +665,7 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         email: 'majed@smartvision.example.sa',
         phone: '00966 57 353 4185',
         service: tempService.id,
+        assignedTo: adminUser.id,
         locale: 'ar',
         consent: true,
         status: 'new',
@@ -643,9 +673,50 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
       },
     })
 
-    // Phone normalized from 00966 to +966, and serviceTitle snapshot captured
-    expect(quoteWith00966.phone).toBe('+966 57 353 4185')
+    // Phone normalized to canonical E.164 (+966573534185), and serviceTitle snapshot captured
+    expect(quoteWith00966.phone).toBe('+966573534185')
     expect(quoteWith00966.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
+
+    // R-11: Editor reading the quote request at depth=1 sees the assignee's id and name, but never another user's email, role, or sessions
+    const quoteDepth1AsEditor = await callJsonApi({
+      method: 'GET',
+      slugPath: ['quote-requests', String(quoteWith00966.id)],
+      query: { depth: '1' },
+      token: editorToken,
+    })
+    expect(quoteDepth1AsEditor.status).toBe(200)
+    const populatedAssignee = quoteDepth1AsEditor.body.assignedTo as Record<string, unknown>
+    expect(populatedAssignee).toEqual({
+      id: adminUser.id,
+      name: 'مدير المبيعات والنظام',
+    })
+    expect(populatedAssignee.email).toBeUndefined()
+    expect(populatedAssignee.role).toBeUndefined()
+    expect(populatedAssignee.sessions).toBeUndefined()
+
+    // R-11: Editor reading GET /api/users/:adminId directly sees ONLY { id, name }, whereas GET /api/users/:editorId (self) includes email and role
+    const otherUserAsEditor = await callJsonApi({
+      method: 'GET',
+      slugPath: ['users', String(adminUser.id)],
+      token: editorToken,
+    })
+    expect(otherUserAsEditor.status).toBe(200)
+    expect(otherUserAsEditor.body).toEqual({
+      id: adminUser.id,
+      name: 'مدير المبيعات والنظام',
+    })
+    expect(otherUserAsEditor.body.email).toBeUndefined()
+    expect(otherUserAsEditor.body.role).toBeUndefined()
+    expect(otherUserAsEditor.body.sessions).toBeUndefined()
+
+    const selfUserAsEditor = await callJsonApi({
+      method: 'GET',
+      slugPath: ['users', String(editorUser.id)],
+      token: editorToken,
+    })
+    expect(selfUserAsEditor.status).toBe(200)
+    expect(selfUserAsEditor.body.email).toBe('editor-p2t6@aljazira.co')
+    expect(selfUserAsEditor.body.role).toBe('editor')
 
     // Editor and admin cannot tamper with serviceTitle via REST PATCH
     const patchServiceTitle = await callJsonApi({
@@ -702,10 +773,10 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
     })
   })
 
-  it('prevents staff and admins from rewriting createdAt via REST PATCH or Local API update across all 10 collections (R-2)', async () => {
+  it('prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8)', async () => {
     const forgedCreatedAt = '2000-01-01T00:00:00.000Z'
 
-    // Create sample records for the collections not yet instantiated in beforeAll
+    // Create sample records and verify R-10 (forged createdAt on create via REST POST / Local API overrideAccess: false is ignored)
     const png1x1 = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAADElEQVR4nGP4//8/AAX+Av4N70a4AAAAAElFTkSuQmCC',
       'base64',
@@ -713,9 +784,11 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
     const mediaDoc = await payload.create({
       collection: 'media',
       locale: 'ar',
-      overrideAccess: true,
+      user: editorUser,
+      overrideAccess: false,
       data: {
         alt: 'صورة اختبار عدم قابلية تعديل تاريخ الإنشاء',
+        createdAt: forgedCreatedAt,
       },
       file: {
         data: png1x1,
@@ -724,6 +797,7 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         size: png1x1.length,
       },
     })
+    expect(mediaDoc.createdAt).not.toBe(forgedCreatedAt)
 
     // Minimal valid MP4 ftyp box buffer (32 bytes)
     const minimalMp4 = Buffer.from(
@@ -733,9 +807,11 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
     const videoDoc = await payload.create({
       collection: 'videos',
       locale: 'ar',
-      overrideAccess: true,
+      user: editorUser,
+      overrideAccess: false,
       data: {
         title: 'فيديو اختبار R-2',
+        createdAt: forgedCreatedAt,
       },
       file: {
         data: minimalMp4,
@@ -744,59 +820,95 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         size: minimalMp4.length,
       },
     })
+    expect(videoDoc.createdAt).not.toBe(forgedCreatedAt)
 
-    const brandDoc = await payload.create({
-      collection: 'brands',
-      locale: 'ar',
-      overrideAccess: true,
-      data: {
+    // Create via REST POST with forged createdAt on brands, stats, materials, services, team, projects (as editor) and users (as admin) (R-10)
+    const brandCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['brands'],
+      token: editorToken,
+      body: {
         name: 'علامة اختبار R-2',
         order: 1,
+        createdAt: forgedCreatedAt,
       },
     })
+    expect(brandCreateRes.status).toBe(201)
+    const brandDoc = brandCreateRes.body.doc as { id: number; createdAt: string }
+    expect(brandDoc.createdAt).not.toBe(forgedCreatedAt)
 
-    const statDoc = await payload.create({
-      collection: 'stats',
-      locale: 'ar',
-      overrideAccess: true,
-      data: {
+    const statCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['stats'],
+      token: editorToken,
+      body: {
         value: '45+',
         label: 'عاماً من الخبرة (R-2)',
         order: 1,
+        createdAt: forgedCreatedAt,
       },
     })
+    expect(statCreateRes.status).toBe(201)
+    const statDoc = statCreateRes.body.doc as { id: number; createdAt: string }
+    expect(statDoc.createdAt).not.toBe(forgedCreatedAt)
 
-    const materialDoc = await payload.create({
-      collection: 'materials',
-      locale: 'ar',
-      overrideAccess: true,
-      data: {
+    const materialCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['materials'],
+      token: editorToken,
+      body: {
         itemNo: 77,
         system: 'electrical',
         description: 'قواطع كهربائية (R-2)',
         brands: [brandDoc.id],
+        createdAt: forgedCreatedAt,
       },
     })
+    expect(materialCreateRes.status).toBe(201)
+    const materialDoc = materialCreateRes.body.doc as { id: number; createdAt: string }
+    expect(materialDoc.createdAt).not.toBe(forgedCreatedAt)
 
-    const teamDoc = await payload.create({
-      collection: 'team',
-      locale: 'ar',
-      overrideAccess: true,
-      data: {
+    const serviceCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['services'],
+      token: editorToken,
+      body: {
+        title: 'خدمة اختبار R-10',
+        slug: 'r10-immutable-created-at-service',
+        tier: 'additional',
+        icon: 'mep',
+        shortDescription: 'وصف مختصر لخدمة اختبار عدم تزوير تاريخ الإنشاء.',
+        order: 5,
+        _status: 'published',
+        createdAt: forgedCreatedAt,
+      },
+    })
+    expect(serviceCreateRes.status).toBe(201)
+    const r10ServiceDoc = serviceCreateRes.body.doc as { id: number; createdAt: string }
+    expect(r10ServiceDoc.createdAt).not.toBe(forgedCreatedAt)
+
+    const teamCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['team'],
+      token: editorToken,
+      body: {
         name: 'م. خالد العتيبي',
         position: 'مهندس موقع',
         tier: 'staff',
         active: true,
         order: 1,
+        createdAt: forgedCreatedAt,
       },
     })
+    expect(teamCreateRes.status).toBe(201)
+    const teamDoc = teamCreateRes.body.doc as { id: number; createdAt: string }
+    expect(teamDoc.createdAt).not.toBe(forgedCreatedAt)
 
-    const projectDoc = await payload.create({
-      collection: 'projects',
-      draft: false,
-      locale: 'ar',
-      overrideAccess: true,
-      data: {
+    const projectCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['projects'],
+      token: editorToken,
+      body: {
         title: 'مشروع اختبار R-2',
         slug: 'r2-immutable-created-at-project',
         summary: 'ملخص مشروع اختبار R-2.',
@@ -808,7 +920,32 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         featured: false,
         order: 1,
         _status: 'published',
+        createdAt: forgedCreatedAt,
       },
+    })
+    expect(projectCreateRes.status).toBe(201)
+    const projectDoc = projectCreateRes.body.doc as { id: number; createdAt: string }
+    expect(projectDoc.createdAt).not.toBe(forgedCreatedAt)
+
+    const userCreateRes = await callJsonApi({
+      method: 'POST',
+      slugPath: ['users'],
+      token: adminToken,
+      body: {
+        name: 'مستخدم اختبار R-10',
+        email: 'r10-created-at@aljazira.co',
+        password: 'Str0ng!User#Pass2026$R10',
+        role: 'editor',
+        createdAt: forgedCreatedAt,
+      },
+    })
+    expect(userCreateRes.status).toBe(201)
+    const r10UserDoc = userCreateRes.body.doc as { id: number; createdAt: string }
+    expect(r10UserDoc.createdAt).not.toBe(forgedCreatedAt)
+    await payload.delete({
+      collection: 'users',
+      id: r10UserDoc.id,
+      overrideAccess: true,
     })
 
     const quoteDoc = await payload.create({
@@ -839,49 +976,42 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         | 'quote-requests'
       id: number
       originalCreatedAt: string
-      token: string
       extraPatch: Record<string, unknown>
     }> = [
       {
         slug: 'users',
         id: editorUser.id,
         originalCreatedAt: editorUser.createdAt,
-        token: adminToken,
         extraPatch: { name: 'مهندس متابعة العروض' },
       },
       {
         slug: 'media',
         id: mediaDoc.id,
         originalCreatedAt: mediaDoc.createdAt,
-        token: editorToken,
         extraPatch: { alt: 'صورة اختبار محدثة' },
       },
       {
         slug: 'videos',
         id: videoDoc.id,
         originalCreatedAt: videoDoc.createdAt,
-        token: editorToken,
         extraPatch: { title: 'فيديو اختبار محدث' },
       },
       {
         slug: 'brands',
         id: brandDoc.id,
         originalCreatedAt: brandDoc.createdAt,
-        token: editorToken,
         extraPatch: { name: 'علامة اختبار محدثة' },
       },
       {
         slug: 'stats',
         id: statDoc.id,
         originalCreatedAt: statDoc.createdAt,
-        token: editorToken,
         extraPatch: { value: '46+' },
       },
       {
         slug: 'materials',
         id: materialDoc.id,
         originalCreatedAt: materialDoc.createdAt,
-        token: editorToken,
         extraPatch: { description: 'قواطع كهربائية محدثة' },
       },
       {
@@ -890,43 +1020,75 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
         originalCreatedAt: (
           await payload.findByID({ collection: 'services', id: serviceId, overrideAccess: true })
         ).createdAt,
-        token: editorToken,
         extraPatch: { shortDescription: 'تنفيذ كافة أنظمة التكييف والكهرباء والسباكة (محدث).' },
       },
       {
         slug: 'team',
         id: teamDoc.id,
         originalCreatedAt: teamDoc.createdAt,
-        token: editorToken,
         extraPatch: { position: 'مهندس موقع أول' },
       },
       {
         slug: 'projects',
         id: projectDoc.id,
         originalCreatedAt: projectDoc.createdAt,
-        token: editorToken,
         extraPatch: { summary: 'ملخص مشروع اختبار R-2 محدث.' },
       },
       {
         slug: 'quote-requests',
         id: quoteDoc.id,
         originalCreatedAt: quoteDoc.createdAt,
-        token: editorToken,
         extraPatch: { status: 'contacted' },
       },
     ]
 
     for (const target of targets) {
-      const patchRes = await callJsonApi({
+      // 1. REST PATCH as editor (on users, editor updates self)
+      const editorPatchRes = await callJsonApi({
         method: 'PATCH',
         slugPath: [target.slug, String(target.id)],
-        token: target.token,
+        token: editorToken,
         body: {
           ...target.extraPatch,
           createdAt: forgedCreatedAt,
         },
       })
-      expect(patchRes.status, `REST PATCH on ${target.slug}`).toBe(200)
+      expect(editorPatchRes.status, `editor REST PATCH on ${target.slug}`).toBe(200)
+
+      // 2. REST PATCH as admin
+      const adminPatchRes = await callJsonApi({
+        method: 'PATCH',
+        slugPath: [target.slug, String(target.id)],
+        token: adminToken,
+        body: {
+          ...target.extraPatch,
+          createdAt: forgedCreatedAt,
+        },
+      })
+      expect(adminPatchRes.status, `admin REST PATCH on ${target.slug}`).toBe(200)
+
+      // 3. Local API payload.update with overrideAccess: false as editor and admin (R-8)
+      await payload.update({
+        collection: target.slug,
+        id: target.id,
+        user: editorUser,
+        overrideAccess: false,
+        data: {
+          ...target.extraPatch,
+          createdAt: forgedCreatedAt,
+        },
+      })
+
+      await payload.update({
+        collection: target.slug,
+        id: target.id,
+        user: adminUser,
+        overrideAccess: false,
+        data: {
+          ...target.extraPatch,
+          createdAt: forgedCreatedAt,
+        },
+      })
 
       const fetched = (await payload.findByID({
         collection: target.slug,

@@ -151,6 +151,8 @@ const envSchema = z
 
 export type Env = z.infer<typeof envSchema>
 
+export const ENV_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__'
+
 export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
   const rawMediaDir = rawEnv.MEDIA_DIR?.trim()
   const rawVideosDir = rawEnv.VIDEOS_DIR?.trim()
@@ -188,7 +190,7 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
       .join('\n')
 
     throw new Error(
-      `Invalid environment configuration (src/env.ts):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,
+      `Invalid environment configuration (src/env.ts, ${ENV_SERVER_ONLY_SENTINEL}):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,
     )
   }
 

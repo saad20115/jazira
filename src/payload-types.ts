@@ -169,8 +169,8 @@ export interface User {
   id: number;
   name: string;
   role: 'admin' | 'editor';
-  createdAt: string;
   updatedAt: string;
+  createdAt: string;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -861,8 +861,8 @@ export interface PayloadMigration {
 export interface UsersSelect<T extends boolean = true> {
   name?: T;
   role?: T;
-  createdAt?: T;
   updatedAt?: T;
+  createdAt?: T;
   email?: T;
   resetPasswordToken?: T;
   resetPasswordExpiration?: T;

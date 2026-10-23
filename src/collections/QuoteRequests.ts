@@ -5,12 +5,34 @@ import {
   type FieldAccess,
   type PayloadRequest,
 } from 'payload'
-import { z } from 'zod'
 
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { isValidIpHash } from '../lib/ipHash'
+import {
+  E164_GENERAL_PHONE_REGEX,
+  E164_KSA_PHONE_REGEX,
+  formatPhoneForDisplay,
+  INTERNATIONAL_PHONE_CHARS_REGEX,
+  isValidKsaOrInternationalPhone,
+  KSA_LOCAL_PHONE_CHARS_REGEX,
+  normalizeQuotePhone,
+  QUOTE_PHONE_ERROR_MESSAGE,
+  quotePhoneSchema,
+} from '../lib/quote/schema'
 import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+
+export {
+  E164_GENERAL_PHONE_REGEX,
+  E164_KSA_PHONE_REGEX,
+  formatPhoneForDisplay,
+  INTERNATIONAL_PHONE_CHARS_REGEX,
+  isValidKsaOrInternationalPhone,
+  KSA_LOCAL_PHONE_CHARS_REGEX,
+  normalizeQuotePhone,
+  QUOTE_PHONE_ERROR_MESSAGE,
+  quotePhoneSchema,
+}
 
 export const QUOTE_REQUEST_STATUS_VALUES = ['new', 'contacted', 'quoted', 'closed', 'spam'] as const
 export type QuoteRequestStatus = (typeof QUOTE_REQUEST_STATUS_VALUES)[number]
@@ -45,79 +67,6 @@ export const workflowFieldAccess = {
   create: (): boolean => false,
   update: isAdminOrEditorFieldLevel,
 }
-
-/**
- * KSA & international phone number normalizer and validator (`Scope 1` & `R-3`):
- * - Normalises leading `00` international prefix to `+` first.
- * - Requires `+` (followed by `[1-9]`) for any international number, or KSA local
- *   prefix (`05XXXXXXXX` / `01XXXXXXXX`, 10 digits).
- * - Rejects bare international numbers without `+` (e.g. `966573534185`) and
- *   repeated-digit junk (e.g. `+111111111111111`).
- * - Enforces 9 national significant digits for `+966` / `00966`.
- */
-export const INTERNATIONAL_PHONE_CHARS_REGEX = /^\+[1-9][0-9\s()-]{6,28}$/
-export const KSA_LOCAL_PHONE_CHARS_REGEX = /^0[15][0-9\s()-]{7,14}$/
-const REPEATED_DIGIT_RUN_REGEX = /(\d)\1{6,}/
-
-export function normalizeQuotePhone(value: string): string {
-  const trimmed = value.trim()
-  if (trimmed.startsWith('00')) {
-    return `+${trimmed.slice(2).trimStart()}`
-  }
-  return trimmed
-}
-
-export function isValidKsaOrInternationalPhone(value: unknown): boolean {
-  if (typeof value !== 'string') {
-    return false
-  }
-  const normalized = normalizeQuotePhone(value)
-  if (normalized.length === 0 || normalized.length > 30) {
-    return false
-  }
-
-  const isInternational = INTERNATIONAL_PHONE_CHARS_REGEX.test(normalized)
-  const isKsaLocal = KSA_LOCAL_PHONE_CHARS_REGEX.test(normalized)
-  if (!isInternational && !isKsaLocal) {
-    return false
-  }
-
-  const digitsOnly = normalized.replace(/\D/g, '')
-  if (digitsOnly.length < 8 || digitsOnly.length > 15) {
-    return false
-  }
-
-  if (REPEATED_DIGIT_RUN_REGEX.test(digitsOnly)) {
-    return false
-  }
-
-  if (isKsaLocal) {
-    return digitsOnly.length === 10
-  }
-
-  // International format starting with +966 (including normalized 00966)
-  if (normalized.startsWith('+966')) {
-    const national = digitsOnly.slice(3).replace(/^0+/, '')
-    if (national.length !== 9) {
-      return false
-    }
-  }
-
-  return true
-}
-
-export const QUOTE_PHONE_ERROR_MESSAGE =
-  'يرجى إدخال رقم هاتف سعودي أو دولي صالح (مثال: +966 57 353 4185 أو 05XXXXXXXX). / Please provide a valid KSA or international phone number.'
-
-/**
- * Shared Zod schema for quote phone validation & normalization (reused by P3-T9 & P5-T1).
- */
-export const quotePhoneSchema = z
-  .string()
-  .transform((val) => normalizeQuotePhone(val))
-  .refine((val) => isValidKsaOrInternationalPhone(val), {
-    message: QUOTE_PHONE_ERROR_MESSAGE,
-  })
 
 export const validateQuotePhone = (value: unknown): true | string => {
   if (!isValidKsaOrInternationalPhone(value)) {
@@ -243,9 +192,6 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
   if (typeof mutable.email === 'string') {
     mutable.email = mutable.email.trim().toLowerCase()
   }
-  if (typeof mutable.phone === 'string') {
-    mutable.phone = normalizeQuotePhone(mutable.phone)
-  }
   if (typeof mutable.serviceTitle === 'string') {
     mutable.serviceTitle = mutable.serviceTitle.trim().slice(0, 200)
   }
@@ -281,6 +227,8 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
         message:
           'يرجى إدخال رقم هاتف سعودي أو دولي صالح. / Please provide a valid KSA or international phone number.',
       })
+    } else if (typeof mutable.phone === 'string') {
+      mutable.phone = normalizeQuotePhone(mutable.phone)
     }
     if (mutable.consent !== true) {
       errors.push({
@@ -289,6 +237,8 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
           'يجب الموافقة على سياسة الخصوصية ومعالجة البيانات. / Consent to the privacy policy is required.',
       })
     }
+  } else if (typeof mutable.phone === 'string' && isValidKsaOrInternationalPhone(mutable.phone)) {
+    mutable.phone = normalizeQuotePhone(mutable.phone)
   }
 
   if ('status' in mutable && isNonEmptyInput(mutable.status)) {

@@ -1,17 +1,25 @@
 import {
   Forbidden,
+  type CollectionAfterReadHook,
   type CollectionBeforeChangeHook,
   type CollectionBeforeDeleteHook,
   type CollectionBeforeOperationHook,
   type CollectionBeforeValidateHook,
   type CollectionConfig,
+  type FieldAccess,
   type FieldHook,
 } from 'payload'
 
-import { adminOrSelf, isAdmin, isAdminFieldLevel } from '../access/index'
+import {
+  adminOrSelf,
+  isAdmin,
+  isAdminFieldLevel,
+  isAdminOrEditor,
+  isAdminOrSelfFieldLevel,
+} from '../access/index'
 import { createPublicAPIError } from '../security/apiError'
 import { enforcePasswordPolicy } from '../security/passwordPolicy'
-import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+import { immutableCreatedAtField, withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
@@ -162,17 +170,59 @@ export const resolveUserDisplayNameBeforeValidate: FieldHook = ({
   return value as unknown
 }
 
-export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data }) => {
+const isAdminOrEditorUserFieldAccess: FieldAccess = ({ req }) => {
+  const user = req.user as { role?: string } | null | undefined
+  return user?.role === 'admin' || user?.role === 'editor'
+}
+
+export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data, req }) => {
   if (typeof value === 'string' && value.trim().length > 0) {
     return value.trim()
   }
-  const fallbackEmail =
-    (siblingData as { email?: unknown } | undefined)?.email ??
-    (data as { email?: unknown } | undefined)?.email
-  if (typeof fallbackEmail === 'string' && fallbackEmail.trim().length > 0) {
-    return fallbackEmail.trim()
+  const canReadEmail = isAdminOrSelfFieldLevel({
+    doc: (data ?? siblingData) as Record<string, unknown>,
+    req,
+  })
+  if (canReadEmail) {
+    const fallbackEmail =
+      (siblingData as { email?: unknown } | undefined)?.email ??
+      (data as { email?: unknown } | undefined)?.email
+    if (typeof fallbackEmail === 'string' && fallbackEmail.trim().length > 0) {
+      return fallbackEmail.trim()
+    }
   }
   return value as unknown
+}
+
+/**
+ * Defense-in-depth `afterRead` hook (`R-11`): when a non-admin staff user (`editor`)
+ * reads another user's document (including via `depth=1` relationship population on
+ * `quote-requests.assignedTo`), strip every field except `id` and `name`.
+ */
+export const restrictOtherUserFieldsForEditorAfterRead: CollectionAfterReadHook = ({
+  doc,
+  req,
+}): Record<string, unknown> => {
+  if (!doc || typeof doc !== 'object') {
+    return doc as Record<string, unknown>
+  }
+  const record = doc as Record<string, unknown>
+  const caller = req.user as { id?: number | string; role?: string } | null | undefined
+  if (!caller || caller.role === 'admin') {
+    return record
+  }
+  const recordId = record.id
+  if (
+    caller.id !== undefined &&
+    (typeof recordId === 'number' || typeof recordId === 'string') &&
+    String(caller.id) === String(recordId)
+  ) {
+    return record
+  }
+  return {
+    id: record.id,
+    name: record.name,
+  }
 }
 
 export const Users: CollectionConfig = withImmutableCreatedAt({
@@ -180,7 +230,6 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
   timestamps: true,
   forceSelect: {
     name: true,
-    email: true,
   },
   labels: {
     singular: {
@@ -205,7 +254,7 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     },
   },
   access: {
-    read: adminOrSelf,
+    read: isAdminOrEditor,
     create: isAdmin,
     update: adminOrSelf,
     delete: isAdmin,
@@ -285,6 +334,7 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     beforeOperation: [enforcePasswordBeforeOperation],
     beforeValidate: [enforceRoleAndPasswordBeforeValidate],
     beforeChange: [preventLastAdminDemotionBeforeChange],
+    afterRead: [restrictOtherUserFieldsForEditorAfterRead],
     beforeDelete: [preventLastAdminBeforeDelete],
   },
   fields: [
@@ -296,9 +346,21 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
         ar: 'الاسم',
         en: 'Name',
       },
+      access: {
+        read: isAdminOrEditorUserFieldAccess,
+      },
       hooks: {
         beforeValidate: [resolveUserDisplayNameBeforeValidate],
         afterRead: [resolveUserDisplayNameAfterRead],
+      },
+    },
+    {
+      name: 'email',
+      type: 'email',
+      required: true,
+      unique: true,
+      access: {
+        read: isAdminOrSelfFieldLevel,
       },
     },
     {
@@ -328,8 +390,29 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
         },
       ],
       access: {
+        read: isAdminOrSelfFieldLevel,
         create: isAdminFieldLevel,
         update: isAdminFieldLevel,
+      },
+    },
+    {
+      name: 'updatedAt',
+      type: 'date',
+      index: true,
+      admin: {
+        disableBulkEdit: true,
+        hidden: true,
+      },
+      access: {
+        read: isAdminOrSelfFieldLevel,
+      },
+      label: ({ t }) => t('general:updatedAt'),
+    },
+    {
+      ...immutableCreatedAtField,
+      access: {
+        ...immutableCreatedAtField.access,
+        read: isAdminOrSelfFieldLevel,
       },
     },
   ],
