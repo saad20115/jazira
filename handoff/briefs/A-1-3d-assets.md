@@ -182,10 +182,16 @@ P3-T5 may reference **only** these names. Child mesh names are internal and can 
 - **`extras.enter`** (values the viewer applies on entering a system and restores on exit):
   - `facade_opacity`;
   - `interior_opacity`;
-  - **`site_emissive_scale`** (v019c+): a number from 0 to 1, about 0.35 and calibrated against
-    Cycles. While a system is entered, it multiplies `emissiveIntensity` on the SITE and POD
-    materials (plinth, canopies, plaza site-light bake); it goes back to 1.0 on exit. This keeps the
-    live entered views consistent with the Cycles end stills.
+  - **`site_emissive_scale`** (v019c final: **0.08**). While a system is entered, it multiplies
+    `emissiveIntensity` on the SITE/POD site-lit materials (`MAT_stone`, bronze canopies, paving,
+    planting).
+  - **`site_occlusion_scale`** (v019c final: **0.7**). While entered, `aoMapIntensity` on the same
+    materials is lerped from 1 to this value, so the sky reaches them and they read navy, as in the
+    Cycles end stills, not black.
+  - Both are restored to 1.0 on exit and are animated with the same fade as `facade_opacity`.
+  - The list of affected materials is part of `extras-schema.md`, not hard-coded in the site.
+  - Reference implementation: the 3D test viewer (`web/viewer-test/index.html`, `SITE_LIT` +
+    `applyFade`). The 3D lead ships it as a reference file with the assets.
   - The 3D lead supplies the full `extras` schema (key, type, range, meaning) as
     `extras-schema.md` next to `manifest.json`. New keys are additive only.
 
