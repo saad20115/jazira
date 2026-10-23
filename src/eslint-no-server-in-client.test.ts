@@ -1,8 +1,17 @@
+import fs from 'node:fs'
+import os from 'node:os'
+import path from 'node:path'
+
 import { Linter } from 'eslint'
 import tseslint from 'typescript-eslint'
 import { describe, expect, it } from 'vitest'
 
 import { noServerInClientRule } from '../eslint-rules/no-server-in-client.mjs'
+import {
+  FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
+  FORBIDDEN_SERVER_LIBRARY_MARKERS,
+  scanDirectoryForSentinels,
+} from '../scripts/check-client-bundle-sentinels.mjs'
 
 function lintSnippet(code: string): Linter.LintMessage[] {
   const linter = new Linter({ configType: 'flat' })
@@ -111,5 +120,64 @@ describe('local/no-server-in-client ESLint rule (S4, R-3, R-5, R-12)', () => {
 
     const messages = lintSnippet(serverCode)
     expect(messages).toEqual([])
+  })
+
+  it('flags @/security/apiError and server libraries (drizzle-orm, pg, nodemailer, sharp) inside a "use client" module while allowing @/lib/quote/schema (P3-T1 §9)', () => {
+    const badClientCode = [
+      "'use client'",
+      "import { createPublicAPIError } from '@/security/apiError'",
+      "import { eq } from 'drizzle-orm'",
+      "import { Pool } from 'pg'",
+      "import nodemailer from 'nodemailer'",
+      "import sharp from 'sharp'",
+      'export const bad = [createPublicAPIError, eq, Pool, nodemailer, sharp]',
+    ].join('\n')
+
+    const badMessages = lintSnippet(badClientCode)
+    expect(badMessages).toHaveLength(5)
+    expect(badMessages.map((m) => m.message)).toEqual([
+      'Server-only module "@/security/apiError" must not be imported in a "use client" component (S4, R-12).',
+      'Server-only module "drizzle-orm" must not be imported in a "use client" component (S4, R-12).',
+      'Server-only module "pg" must not be imported in a "use client" component (S4, R-12).',
+      'Server-only module "nodemailer" must not be imported in a "use client" component (S4, R-12).',
+      'Server-only module "sharp" must not be imported in a "use client" component (S4, R-12).',
+    ])
+
+    const goodClientCode = [
+      "'use client'",
+      "import { quoteRequestPayloadSchema } from '@/lib/quote/schema'",
+      'export const good = quoteRequestPayloadSchema',
+    ].join('\n')
+
+    expect(lintSnippet(goodClientCode)).toEqual([])
+  })
+
+  it('scanDirectoryForSentinels detects both server sentinels and server library markers in .next/static chunks (P3-T1 §9)', () => {
+    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'client-sentinel-test-'))
+    try {
+      const chunksDir = path.join(tmpDir, 'chunks')
+      fs.mkdirSync(chunksDir, { recursive: true })
+      fs.writeFileSync(path.join(chunksDir, 'clean.js'), 'console.log("safe client chunk");\n', 'utf8')
+      expect(scanDirectoryForSentinels(tmpDir)).toEqual([])
+
+      fs.writeFileSync(
+        path.join(chunksDir, 'leaked.js'),
+        `const a = "${FORBIDDEN_CLIENT_BUNDLE_SENTINELS[3]}"; const b = "${FORBIDDEN_SERVER_LIBRARY_MARKERS[2]}";\n`,
+        'utf8',
+      )
+      const hits = scanDirectoryForSentinels(tmpDir)
+      expect(hits).toEqual([
+        {
+          file: 'chunks/leaked.js',
+          sentinel: '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_API_ERROR__',
+        },
+        {
+          file: 'chunks/leaked.js',
+          sentinel: 'drizzle-orm/node-postgres',
+        },
+      ])
+    } finally {
+      fs.rmSync(tmpDir, { recursive: true, force: true })
+    }
   })
 })

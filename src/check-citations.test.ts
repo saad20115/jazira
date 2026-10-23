@@ -59,7 +59,7 @@ describe('scripts/check-citations.mjs mechanical citation checker (P2-T8 R-13)',
   it('verifies exact line matches against repository files and citations.log blocks and rejects wrong lines or catch-all blocks', () => {
     const validLog = [
       "$ git grep -n -e 'SAFE_CMS_QUERY_WHITELIST_KEYS' -- src/lib/cms/client.ts",
-      'src/lib/cms/client.ts:21:export const SAFE_CMS_QUERY_WHITELIST_KEYS = [',
+      'src/lib/cms/client.ts:51:export const SAFE_CMS_QUERY_WHITELIST_KEYS = [',
     ].join('\n')
 
     const okResult = verifyCitations({
@@ -67,7 +67,7 @@ describe('scripts/check-citations.mjs mechanical citation checker (P2-T8 R-13)',
       reports: [
         {
           reportPath: 'test-report.md',
-          markdown: 'Whitelist: `SAFE_CMS_QUERY_WHITELIST_KEYS` (`src/lib/cms/client.ts:21`).',
+          markdown: 'Whitelist: `SAFE_CMS_QUERY_WHITELIST_KEYS` (`src/lib/cms/client.ts:51`).',
         },
       ],
       citationsLogText: validLog,
