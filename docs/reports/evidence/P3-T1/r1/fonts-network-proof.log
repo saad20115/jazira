@@ -1,0 +1,49 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+
+=== Browser Console & Font Network Audit: /ar ===
+URL: http://localhost:3016/ar
+HTTP Status: 200
+<html lang="ar" dir="rtl">
+Computed body font-family: "Noto Kufi Arabic", "Noto Kufi Arabic Fallback", "Noto Kufi Arabic", sans-serif
+Computed h1 font-family: "Noto Kufi Arabic", "Noto Kufi Arabic Fallback", "Noto Kufi Arabic", sans-serif
+Hydration <script nonce> elements in DOM: 11
+Console errors: 0
+Console warnings: 0
+CSP / hydration violations: 0
+Uncaught pageerror events: 0
+External Google Fonts requests (googleapis/gstatic): 0
+Self-hosted font requests (.woff2): 10
+  [200] (font) http://localhost:3016/_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2
+  [200] (font) http://localhost:3016/_next/static/media/5de307a1cf21ffb0-s.p.2mgv7i7jizf-l.woff2
+  [200] (font) http://localhost:3016/_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2
+  [200] (font) http://localhost:3016/_next/static/media/744885950b1fe0ff-s.p.30d2r2x65bwdm.woff2
+  [200] (font) http://localhost:3016/_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2
+  [200] (font) http://localhost:3016/_next/static/media/b06c83c7cc676c09-s.p.3yhl5gv5w-0s5.woff2
+  [200] (font) http://localhost:3016/_next/static/media/b6620be20ad708dd-s.p.3xsquyelyuj-f.woff2
+  [200] (font) http://localhost:3016/_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2
+  [200] (font) http://localhost:3016/_next/static/media/edcf447d6990da7e-s.p.2dp-f23wu3v3i.woff2
+  [200] (font) http://localhost:3016/_next/static/media/4641603b8553767b-s.1y712r_ow2ydl.woff2
+
+=== Browser Console & Font Network Audit: /en ===
+URL: http://localhost:3016/en
+HTTP Status: 200
+<html lang="en" dir="ltr">
+Computed body font-family: Poppins, "Poppins Fallback", Poppins, sans-serif
+Computed h1 font-family: Poppins, "Poppins Fallback", Poppins, sans-serif
+Hydration <script nonce> elements in DOM: 11
+Console errors: 0
+Console warnings: 0
+CSP / hydration violations: 0
+Uncaught pageerror events: 0
+External Google Fonts requests (googleapis/gstatic): 0
+Self-hosted font requests (.woff2): 9
+  [200] (font) http://localhost:3016/_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2
+  [200] (font) http://localhost:3016/_next/static/media/5de307a1cf21ffb0-s.p.2mgv7i7jizf-l.woff2
+  [200] (font) http://localhost:3016/_next/static/media/744885950b1fe0ff-s.p.30d2r2x65bwdm.woff2
+  [200] (font) http://localhost:3016/_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2
+  [200] (font) http://localhost:3016/_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2
+  [200] (font) http://localhost:3016/_next/static/media/b06c83c7cc676c09-s.p.3yhl5gv5w-0s5.woff2
+  [200] (font) http://localhost:3016/_next/static/media/b6620be20ad708dd-s.p.3xsquyelyuj-f.woff2
+  [200] (font) http://localhost:3016/_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2
+  [200] (font) http://localhost:3016/_next/static/media/edcf447d6990da7e-s.p.2dp-f23wu3v3i.woff2

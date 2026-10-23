@@ -1,0 +1,8 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896a5360a0d69b86c71f42c44f5cd1584f9e
+COMMAND: pnpm check:citations handoff/reports/P3-T1.md docs/reports/evidence/P3-T1/r1/citations.log
+
+> aljazira-website@0.1.0 check:citations D:\jazira
+> node scripts/check-citations.mjs "handoff/reports/P3-T1.md" "docs/reports/evidence/P3-T1/r1/citations.log"
+
+[check:citations] PASS: Verified 70 paired citation(s) across 1 report(s) against 45 identifier-only git grep block(s) in docs/reports/evidence/P3-T1/r1/citations.log (0 un-paired citations, 0 errors).

@@ -1,0 +1,8 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+
+=== git rev-parse HEAD ===
+6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+
+=== git status --porcelain ===
+

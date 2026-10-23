@@ -1,0 +1,24 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+COMMAND: node "C:\Users\User21.CSE\AppData\Local\Temp\p3t1-hex-check.mjs"
+
+=== 1. pnpm tokens:check ===
+[tokens] Verified src/styles/tokens.css is up-to-date with design/tokens.json.
+
+=== 2. Grep for raw hex colors (#[0-9a-fA-F]{3,8}) across src/app/(frontend) and src/components ===
+Scanned: src/app/(frontend)/[locale]/%5Fspecimen/page.tsx
+Scanned: src/app/(frontend)/[locale]/%5Fspecimen/specimen.module.css
+Scanned: src/app/(frontend)/[locale]/layout.tsx
+Scanned: src/app/(frontend)/[locale]/not-found.module.css
+Scanned: src/app/(frontend)/[locale]/not-found.tsx
+Scanned: src/app/(frontend)/[locale]/page.module.css
+Scanned: src/app/(frontend)/[locale]/page.tsx
+Scanned: src/app/(frontend)/[locale]/[...rest]/page.tsx
+Scanned: src/components/admin/EmailStatusPillCell.tsx
+Scanned: src/components/admin/QuoteRequestsFilterBar.tsx
+Scanned: src/components/admin/QuoteStatusPillCell.tsx
+Scanned: src/components/admin/ServiceIconField.tsx
+Scanned: src/components/CmsLink.tsx
+Scanned: src/components/icons/ServiceIcon.tsx
+Total files scanned: 14
+Raw hex color matches found: 0

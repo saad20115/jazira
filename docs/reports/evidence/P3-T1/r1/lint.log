@@ -1,0 +1,8 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+COMMAND: pnpm lint
+
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r1-dod
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+

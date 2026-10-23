@@ -1,0 +1,181 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+
+=== 1. Root redirect (GET / -> 308 /ar): http://localhost:3016/ ===
+HTTP/1.1 308 Permanent Redirect
+accept-ch: Sec-CH-Prefers-Color-Scheme
+connection: keep-alive
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-YjFhZjRiMWUtZWVjMC00NzQ3LWI4YzQtMzgyNTA2Njk1ZDBm' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-YjFhZjRiMWUtZWVjMC00NzQ3LWI4YzQtMzgyNTA2Njk1ZDBm'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+location: /ar
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+refresh: 0;url=/ar
+transfer-encoding: chunked
+vary: Sec-CH-Prefers-Color-Scheme
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 2. Arabic Home (GET /ar -> 200 OK + H3/H3a CSP): http://localhost:3016/ar ===
+HTTP/1.1 200 OK
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+link: </_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/5de307a1cf21ffb0-s.p.2mgv7i7jizf-l.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/744885950b1fe0ff-s.p.30d2r2x65bwdm.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/b06c83c7cc676c09-s.p.3yhl5gv5w-0s5.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/b6620be20ad708dd-s.p.3xsquyelyuj-f.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2", </_next/static/media/edcf447d6990da7e-s.p.2dp-f23wu3v3i.woff2>; rel=preload; as="font"; crossorigin=""; nonce="Njk1NDlmMDAtOGEyYi00OWQ2LTk5NDItMmRjNDA1YTVhYmEz"; type="font/woff2"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 3. English Home (GET /en -> 200 OK + H3/H3a CSP): http://localhost:3016/en ===
+HTTP/1.1 200 OK
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+link: </_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/5de307a1cf21ffb0-s.p.2mgv7i7jizf-l.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/744885950b1fe0ff-s.p.30d2r2x65bwdm.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/b06c83c7cc676c09-s.p.3yhl5gv5w-0s5.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/b6620be20ad708dd-s.p.3xsquyelyuj-f.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/media/edcf447d6990da7e-s.p.2dp-f23wu3v3i.woff2>; rel=preload; as="font"; crossorigin=""; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"; type="font/woff2", </_next/static/chunks/3zylw76s3qrf1.css>; rel=preload; as="style"; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1", </_next/static/chunks/2e88v41e8trt4.css>; rel=preload; as="style"; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1", </_next/static/chunks/41j9xnd-_k6ec.css>; rel=preload; as="style"; nonce="OTkwZWU2ZTYtNzE0MS00NDQ5LWE3NzMtYmYxZDY1Y2ZiZmQ1"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 4. Non-home route (GET /ar/projects -> H3 CSP WITHOUT H3a wasm-unsafe-eval or worker-src): http://localhost:3016/ar/projects ===
+HTTP/1.1 404 Not Found
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh' 'strict-dynamic'; style-src 'self' 'nonce-ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+link: </_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/5de307a1cf21ffb0-s.p.2mgv7i7jizf-l.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/744885950b1fe0ff-s.p.30d2r2x65bwdm.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/b06c83c7cc676c09-s.p.3yhl5gv5w-0s5.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/b6620be20ad708dd-s.p.3xsquyelyuj-f.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/media/edcf447d6990da7e-s.p.2dp-f23wu3v3i.woff2>; rel=preload; as="font"; crossorigin=""; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"; type="font/woff2", </_next/static/chunks/3zylw76s3qrf1.css>; rel=preload; as="style"; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh", </_next/static/chunks/2e88v41e8trt4.css>; rel=preload; as="style"; nonce="ZmMzMGI2ZDAtMzkzNS00MzFjLWFmNjQtNDA5ZDcwZTFlZTFh"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 5. Unknown locale (GET /fr -> 404 Not Found): http://localhost:3016/fr ===
+HTTP/1.1 404 Not Found
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0' 'strict-dynamic'; style-src 'self' 'nonce-NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+link: </_next/static/media/47fe1b7cd6e6ed85-s.p.3bh2vc0w-r-ll.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/5de307a1cf21ffb0-s.p.2mgv7i7jizf-l.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/744885950b1fe0ff-s.p.30d2r2x65bwdm.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/8e6fa89aa22d24ec-s.p.2o7m9ogm38dql.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/a218039a3287bcfd-s.p.43zbiuwnnoiok.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/b06c83c7cc676c09-s.p.3yhl5gv5w-0s5.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/b6620be20ad708dd-s.p.3xsquyelyuj-f.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/e2334d715941921e-s.p.3o_v2fun1jzxk.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/media/edcf447d6990da7e-s.p.2dp-f23wu3v3i.woff2>; rel=preload; as="font"; crossorigin=""; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"; type="font/woff2", </_next/static/chunks/3zylw76s3qrf1.css>; rel=preload; as="style"; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0", </_next/static/chunks/2e88v41e8trt4.css>; rel=preload; as="style"; nonce="NjIwYjM0NDgtMDdkMi00Y2E0LThjNmEtMmYwNDZiMjVjNjU0"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 6. Specimen route in production (GET /ar/_specimen -> 404 Not Found): http://localhost:3016/ar/_specimen ===
+HTTP/1.1 404 Not Found
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-OGFkZjMxZjAtY2EwMS00OWFhLWIxMDYtNmM2NDE0YTY1MGE0' 'strict-dynamic'; style-src 'self' 'nonce-OGFkZjMxZjAtY2EwMS00OWFhLWIxMDYtNmM2NDE0YTY1MGE0'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+link: </_next/static/chunks/3zylw76s3qrf1.css>; rel=preload; as="style"; nonce="OGFkZjMxZjAtY2EwMS00OWFhLWIxMDYtNmM2NDE0YTY1MGE0", </_next/static/chunks/2e88v41e8trt4.css>; rel=preload; as="style"; nonce="OGFkZjMxZjAtY2EwMS00OWFhLWIxMDYtNmM2NDE0YTY1MGE0"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 7. Specimen route in production (GET /en/_specimen -> 404 Not Found): http://localhost:3016/en/_specimen ===
+HTTP/1.1 404 Not Found
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-NTZmZDg2YTUtNjc5NS00NGQzLTk1YjgtM2ViMDVhY2FjYTkw' 'strict-dynamic'; style-src 'self' 'nonce-NTZmZDg2YTUtNjc5NS00NGQzLTk1YjgtM2ViMDVhY2FjYTkw'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:14 GMT
+keep-alive: timeout=5
+link: </_next/static/chunks/3zylw76s3qrf1.css>; rel=preload; as="style"; nonce="NTZmZDg2YTUtNjc5NS00NGQzLTk1YjgtM2ViMDVhY2FjYTkw", </_next/static/chunks/2e88v41e8trt4.css>; rel=preload; as="style"; nonce="NTZmZDg2YTUtNjc5NS00NGQzLTk1YjgtM2ViMDVhY2FjYTkw"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+
+=== 8. Admin route (GET /admin/login -> scoped Admin CSP + payload-lng=ar cookie): http://localhost:3016/admin/login ===
+HTTP/1.1 200 OK
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.gravatar.com; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:15 GMT
+keep-alive: timeout=5
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+set-cookie: payload-lng=ar; Path=/; Expires=Sat, 23 Oct 2027 15:59:14 GMT; Max-Age=31536000
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN
+x-robots-tag: noindex
+
+=== 9. Specimen route in development (NODE_ENV=development GET /ar/_specimen -> 200 OK): http://localhost:3015/ar/_specimen ===
+HTTP/1.1 200 OK
+accept-ch: Sec-CH-Prefers-Color-Scheme
+cache-control: no-store
+connection: keep-alive
+content-encoding: gzip
+content-security-policy: default-src 'self'; script-src 'self' 'nonce-YjJiOTU3ZmUtMjI5Zi00OWQyLTg0MjEtZDk0NDg1MDgzZmQ4' 'strict-dynamic'; style-src 'self' 'nonce-YjJiOTU3ZmUtMjI5Zi00OWQyLTg0MjEtZDk0NDg1MDgzZmQ4'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://www.youtube.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+content-type: text/html; charset=utf-8
+critical-ch: Sec-CH-Prefers-Color-Scheme
+cross-origin-opener-policy: same-origin
+date: Fri, 23 Oct 2026 15:59:36 GMT
+keep-alive: timeout=5
+link: </_next/static/chunks/%5Broot-of-the-server%5D__0ojewxllug8rf._.css>; rel=preload; as="style"; nonce="YjJiOTU3ZmUtMjI5Zi00OWQyLTg0MjEtZDk0NDg1MDgzZmQ4"
+permissions-policy: camera=(), microphone=(), geolocation=(), payment=()
+referrer-policy: strict-origin-when-cross-origin
+transfer-encoding: chunked
+vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch, Accept-Encoding
+x-content-type-options: nosniff
+x-frame-options: SAMEORIGIN

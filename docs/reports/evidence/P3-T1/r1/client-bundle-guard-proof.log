@@ -1,0 +1,23 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+COMMAND: node "C:\Users\User21.CSE\AppData\Local\Temp\p3t1-guard-proof.mjs"
+
+=== Case A1: Throwaway client component importing '@/security/apiError' -> ESLint check (MUST FAIL) ===
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r1-dod\src\components\_ThrowawayGuardProbe.tsx
+  2:1  error  Server-only module "@/security/apiError" must not be imported in a "use client" component (S4, R-12)  local/no-server-in-client
+
+✖ 1 problem (1 error, 0 warnings)
+Exit code: 1
+
+=== Case A2: Post-build sentinel scanner on client chunk containing '@/security/apiError' markers (MUST FAIL) ===
+[check-client-bundle-sentinels] ERROR: Server-only sentinel/library marker "__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_API_ERROR__" leaked into client bundle file "chunks/throwaway-api-error.js" (S4, R-6, R-12, P3-T1 §9)!
+[check-client-bundle-sentinels] ERROR: Server-only sentinel/library marker "createPublicAPIError" leaked into client bundle file "chunks/throwaway-api-error.js" (S4, R-6, R-12, P3-T1 §9)!
+Exit code: 1
+
+=== Case B1: Throwaway client component importing '@/lib/quote/schema' -> ESLint check (MUST PASS) ===
+(zero lint errors)
+Exit code: 0
+
+=== Case B2: Post-build sentinel scanner on client chunk containing '@/lib/quote/schema' (MUST PASS) ===
+[check-client-bundle-sentinels] Verified zero server-only sentinels or server library markers in ../p3t1-bundle-probe-6h0Trg
+Exit code: 0

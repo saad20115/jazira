@@ -1,0 +1,215 @@
+$ git grep -n -e 'generateTokensFile' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:422:export function generateTokensFile({ checkOnly = false } = {}) {
+scripts/generate-tokens.mjs:452:    const res = generateTokensFile({ checkOnly })
+
+$ git grep -n -e 'TYPOGRAPHY_STYLE_MAP' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:20:export const TYPOGRAPHY_STYLE_MAP = {
+scripts/generate-tokens.mjs:309:    const mapEntry = TYPOGRAPHY_STYLE_MAP[styleName]
+scripts/generate-tokens.mjs:339:    const { slug } = TYPOGRAPHY_STYLE_MAP[styleName]
+scripts/generate-tokens.mjs:352:    const { slug } = TYPOGRAPHY_STYLE_MAP[styleName]
+scripts/generate-tokens.mjs:365:    const { slug, tablet } = TYPOGRAPHY_STYLE_MAP[styleName]
+scripts/generate-tokens.mjs:382:    const { slug, mobile } = TYPOGRAPHY_STYLE_MAP[styleName]
+scripts/generate-tokens.mjs:395:    const { slug, selectors } = TYPOGRAPHY_STYLE_MAP[styleName]
+
+$ git grep -n -e 'fontVariablesClassName' -- src/styles/fonts.ts
+src/styles/fonts.ts:27:export const fontVariablesClassName = `${poppins.variable} ${notoKufiArabic.variable}`
+
+$ git grep -n -e 'CMS_CLIENT_SERVER_ONLY_SENTINEL' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:10:export const CMS_CLIENT_SERVER_ONLY_SENTINEL =
+src/lib/cms/client.ts:14:export const CMS_SERVER_ONLY_SENTINEL = CMS_CLIENT_SERVER_ONLY_SENTINEL
+src/lib/cms/client.ts:217:      `CMS Local API client must never execute in the browser (${CMS_CLIENT_SERVER_ONLY_SENTINEL}).`,
+
+$ git grep -n -e 'MAX_CMS_QUERY_LIMIT' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:23:export const MAX_CMS_QUERY_LIMIT = 100
+src/lib/cms/client.ts:89: * - `limit` is capped at `MAX_CMS_QUERY_LIMIT` (`<= 100`).
+src/lib/cms/client.ts:293: * Clamps a requested `limit` to `[1, MAX_CMS_QUERY_LIMIT]` (`1..100`) (`R-23`).
+src/lib/cms/client.ts:304:    if (truncated > MAX_CMS_QUERY_LIMIT) {
+src/lib/cms/client.ts:305:      return MAX_CMS_QUERY_LIMIT
+src/lib/cms/client.ts:314: * clamps `limit` to `<= MAX_CMS_QUERY_LIMIT` (`100`), strips `pagination`, and attaches
+src/lib/cms/client.ts:341: * Validates and builds unpaginated query arguments (`pagination: false`, `limit: MAX_CMS_QUERY_LIMIT`)
+src/lib/cms/client.ts:370:    limit: MAX_CMS_QUERY_LIMIT,
+src/lib/cms/client.ts:438:    limit: MAX_CMS_QUERY_LIMIT,
+
+$ git grep -n -e 'SMALL_UNPAGINATED_COLLECTION_SLUGS' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:34:export const SMALL_UNPAGINATED_COLLECTION_SLUGS = [
+src/lib/cms/client.ts:42:export type SmallUnpaginatedCollectionSlug = (typeof SMALL_UNPAGINATED_COLLECTION_SLUGS)[number]
+src/lib/cms/client.ts:342: * strictly for `SMALL_UNPAGINATED_COLLECTION_SLUGS` (`R-23`).
+src/lib/cms/client.ts:356:    !(SMALL_UNPAGINATED_COLLECTION_SLUGS as readonly string[]).includes(collection)
+src/lib/cms/client.ts:359:      `Collection "${String(collection)}" is not an allowed small unpaginated collection (${SMALL_UNPAGINATED_COLLECTION_SLUGS.join(', ')}) (R-23).`,
+
+$ git grep -n -e 'SAFE_CMS_QUERY_WHITELIST_KEYS' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:48: * - `pagination` is intentionally excluded from `SAFE_CMS_QUERY_WHITELIST_KEYS` (`R-23`);
+src/lib/cms/client.ts:51:export const SAFE_CMS_QUERY_WHITELIST_KEYS = [
+src/lib/cms/client.ts:88: *   and typed as `never`, and `buildSafeCmsQueryArgs` copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`.
+src/lib/cms/client.ts:313: * Builds Payload query arguments strictly from `SAFE_CMS_QUERY_WHITELIST_KEYS` (`R-11`, `R-23`),
+src/lib/cms/client.ts:322:  for (const key of SAFE_CMS_QUERY_WHITELIST_KEYS) {
+src/lib/cms/client.ts:398: * Copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`, clamps `limit <= 100`, never allows
+src/lib/cms/client.ts:447: * Copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`, sets `overrideAccess: false` unconditionally,
+src/lib/cms/client.ts:473: * Copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`, sets `overrideAccess: false` unconditionally,
+
+$ git grep -n -e 'clampCmsQueryLimit' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:295:export function clampCmsQueryLimit(
+src/lib/cms/client.ts:331:    whitelisted.limit = clampCmsQueryLimit(rawOptions.limit, DEFAULT_CMS_QUERY_LIMIT)
+
+$ git grep -n -e 'resolvePublicDraftContext' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:263:export async function resolvePublicDraftContext(): Promise<{
+src/lib/cms/client.ts:288:  const ctx = await resolvePublicDraftContext()
+src/lib/cms/client.ts:407:    resolvePublicDraftContext(),
+src/lib/cms/client.ts:428:    resolvePublicDraftContext(),
+src/lib/cms/client.ts:455:    resolvePublicDraftContext(),
+src/lib/cms/client.ts:481:    resolvePublicDraftContext(),
+
+$ git grep -n -e 'buildSafeCmsQueryArgs' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:88: *   and typed as `never`, and `buildSafeCmsQueryArgs` copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`.
+src/lib/cms/client.ts:317:export function buildSafeCmsQueryArgs(
+src/lib/cms/client.ts:409:  const safeArgs = buildSafeCmsQueryArgs(options as unknown as Record<string, unknown>, draft)
+src/lib/cms/client.ts:457:  const safeArgs = buildSafeCmsQueryArgs(options as unknown as Record<string, unknown>, draft)
+src/lib/cms/client.ts:483:  const safeArgs = buildSafeCmsQueryArgs(options as unknown as Record<string, unknown>, draft)
+
+$ git grep -n -e 'buildSafeCmsSmallCollectionArgs' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:344:export function buildSafeCmsSmallCollectionArgs(
+src/lib/cms/client.ts:430:  const safeArgs = buildSafeCmsSmallCollectionArgs(
+
+$ git grep -n -e 'cmsFind' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:21: * Maximum `limit` allowed on paginated `cmsFind` queries (`R-23`).
+src/lib/cms/client.ts:26: * Default `limit` applied when `limit` is omitted or invalid on `cmsFind` (`R-23`).
+src/lib/cms/client.ts:32: * named helper `cmsFindAllSmallCollection` (`R-23`).
+src/lib/cms/client.ts:45: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`, `R-23`).
+src/lib/cms/client.ts:49: *   `pagination: false` is only available via `cmsFindAllSmallCollection`.
+src/lib/cms/client.ts:66: * Explicit property whitelist for `cmsFindAllSmallCollection` (`R-11`, `R-23`).
+src/lib/cms/client.ts:84: * Options accepted by `cmsFind`.
+src/lib/cms/client.ts:90: * - `cmsFind` unconditionally sets `overrideAccess: false` and resolves `draft` from `draftMode()`.
+src/lib/cms/client.ts:111: * Options accepted by `cmsFindAllSmallCollection` (`R-23`).
+src/lib/cms/client.ts:402:export async function cmsFind<TSlug extends CmsCollectionSlug>(
+src/lib/cms/client.ts:423:export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCollectionSlug>(
+src/lib/cms/client.ts:450:export async function cmsFindByID<TSlug extends CmsCollectionSlug>(
+src/lib/cms/client.ts:476:export async function cmsFindGlobal<TSlug extends CmsGlobalSlug>(
+
+$ git grep -n -e 'cmsFindAllSmallCollection' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:32: * named helper `cmsFindAllSmallCollection` (`R-23`).
+src/lib/cms/client.ts:49: *   `pagination: false` is only available via `cmsFindAllSmallCollection`.
+src/lib/cms/client.ts:66: * Explicit property whitelist for `cmsFindAllSmallCollection` (`R-11`, `R-23`).
+src/lib/cms/client.ts:111: * Options accepted by `cmsFindAllSmallCollection` (`R-23`).
+src/lib/cms/client.ts:423:export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCollectionSlug>(
+
+$ git grep -n -e 'cmsFindByID' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:45: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`, `R-23`).
+src/lib/cms/client.ts:450:export async function cmsFindByID<TSlug extends CmsCollectionSlug>(
+
+$ git grep -n -e 'cmsFindGlobal' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:45: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`, `R-23`).
+src/lib/cms/client.ts:476:export async function cmsFindGlobal<TSlug extends CmsGlobalSlug>(
+
+$ git grep -n -e 'cmsCount' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:79: * Explicit property whitelist for `cmsCount` (`R-11`).
+src/lib/cms/client.ts:497:export async function cmsCount<TSlug extends CmsCollectionSlug>(
+
+$ git grep -n -e 'getServices' -- src/lib/cms/collections.ts
+src/lib/cms/collections.ts:64:export async function getServices(
+
+$ git grep -n -e 'getProjects' -- src/lib/cms/collections.ts
+src/lib/cms/collections.ts:188:export async function getProjects(
+
+$ git grep -n -e 'getSiteSettings' -- src/lib/cms/globals.ts
+src/lib/cms/globals.ts:57:export async function getSiteSettings(locale: SupportedLocale): Promise<SiteSetting> {
+
+$ git grep -n -e 'getHomePage' -- src/lib/cms/globals.ts
+src/lib/cms/globals.ts:65:export async function getHomePage(locale: SupportedLocale): Promise<HomePage> {
+
+$ git grep -n -e 'requireOverrideAccessFalseRule' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:421:export const requireOverrideAccessFalseRule = {
+eslint-rules/require-override-access-false.mjs:835:export default requireOverrideAccessFalseRule
+
+$ git grep -n -e 'EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:55:export const EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES = [
+eslint-rules/require-override-access-false.mjs:118: *   `EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES` are permitted.
+eslint-rules/require-override-access-false.mjs:133:    EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES.some((relPath) =>
+
+$ git grep -n -e 'RESTRICTED_PAYLOAD_IMPORTS_CONFIG' -- eslint.config.mjs
+eslint.config.mjs:31:export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
+eslint.config.mjs:134:      '@typescript-eslint/no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
+
+$ git grep -n -e 'noServerInClientRule' -- eslint-rules/no-server-in-client.mjs
+eslint-rules/no-server-in-client.mjs:150:export const noServerInClientRule = {
+
+$ git grep -n -e 'API_ERROR_SERVER_ONLY_SENTINEL' -- src/security/apiError.ts
+src/security/apiError.ts:3:export const API_ERROR_SERVER_ONLY_SENTINEL =
+src/security/apiError.ts:24:    throw new Error(API_ERROR_SERVER_ONLY_SENTINEL)
+
+$ git grep -n -e 'FORBIDDEN_CLIENT_BUNDLE_SENTINELS' -- scripts/check-client-bundle-sentinels.mjs
+scripts/check-client-bundle-sentinels.mjs:16:export const FORBIDDEN_CLIENT_BUNDLE_SENTINELS = [
+scripts/check-client-bundle-sentinels.mjs:38:  ...FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
+
+$ git grep -n -e 'DEFAULT_LOCALE' -- src/i18n/index.ts
+src/i18n/index.ts:6:export const DEFAULT_LOCALE: SupportedLocale = 'ar'
+
+$ git grep -n -e 'getDictionary' -- src/i18n/index.ts
+src/i18n/index.ts:25:export function getDictionary(locale: SupportedLocale): UiDictionary {
+
+$ git grep -n -e 'arDictionary' -- src/i18n/ar.ts
+src/i18n/ar.ts:112:export const arDictionary = {
+
+$ git grep -n -e 'enDictionary' -- src/i18n/en.ts
+src/i18n/en.ts:3:export const enDictionary = {
+
+$ git grep -n -e 'noJsxStringLiteralsRule' -- eslint-rules/no-jsx-string-literals.mjs
+eslint-rules/no-jsx-string-literals.mjs:61:export const noJsxStringLiteralsRule = {
+
+$ git grep -n -e 'proxy' -- src/proxy.ts
+src/proxy.ts:29: * Next.js 16 proxy (`src/proxy.ts`, `docs/01-architecture.md` §3, `docs/03-security.md` H3 & H3a,
+src/proxy.ts:41:export function proxy(request: NextRequest): NextResponse {
+
+$ git grep -n -e 'generateCspNonce' -- src/proxy.ts
+src/proxy.ts:24:export function generateCspNonce(): string {
+src/proxy.ts:43:  const nonce = generateCspNonce()
+
+$ git grep -n -e 'buildPublicCspHeader' -- src/security/csp.ts
+src/security/csp.ts:47:export function buildPublicCspHeader({ nonce, pathname }: PublicCspOptions): string {
+
+$ git grep -n -e 'buildAdminCspHeader' -- src/security/csp.ts
+src/security/csp.ts:120:export function buildAdminCspHeader(): string {
+
+$ git grep -n -e 'isHomePagePath' -- src/security/csp.ts
+src/security/csp.ts:20:export function isHomePagePath(pathname: string): boolean {
+src/security/csp.ts:48:  const isHome = isHomePagePath(pathname)
+
+$ git grep -n -e 'ADMIN_CSP_RELAXATIONS' -- src/security/csp.ts
+src/security/csp.ts:81:export const ADMIN_CSP_RELAXATIONS = [
+
+$ git grep -n -e 'isValidInternalCmsPath' -- src/lib/link-safety.ts
+src/lib/link-safety.ts:25:export function isValidInternalCmsPath(rawPath: string): boolean {
+src/lib/link-safety.ts:113:    if (!isValidInternalCmsPath(trimmed)) {
+
+$ git grep -n -e 'sanitizeCmsHref' -- src/lib/link-safety.ts
+src/lib/link-safety.ts:99:export function sanitizeCmsHref(
+src/lib/link-safety.ts:197:    const safeExt = sanitizeCmsHref(link.url, options)
+src/lib/link-safety.ts:221:        const safeRef = sanitizeCmsHref(`/${rel}/${slug}`, options)
+src/lib/link-safety.ts:235:  const safeInternal = sanitizeCmsHref(candidatePath, options)
+
+$ git grep -n -e 'resolveSafeCmsLinkData' -- src/lib/link-safety.ts
+src/lib/link-safety.ts:186:export function resolveSafeCmsLinkData(
+
+$ git grep -n -e 'CmsLink' -- src/components/CmsLink.tsx
+src/components/CmsLink.tsx:6:  type CmsLinkDataLike,
+src/components/CmsLink.tsx:7:  resolveSafeCmsLinkData,
+src/components/CmsLink.tsx:11:export interface CmsLinkProps
+src/components/CmsLink.tsx:14:  link?: CmsLinkDataLike | null | undefined
+src/components/CmsLink.tsx:22: * `<CmsLink>` (`handoff/PLAN.md` §"Phase 3 rules", `docs/03-security.md` I3):
+src/components/CmsLink.tsx:30:export function CmsLink({
+src/components/CmsLink.tsx:39:}: CmsLinkProps): React.ReactElement {
+src/components/CmsLink.tsx:43:    ? resolveSafeCmsLinkData(link, { locale, nodeEnv })
+src/components/CmsLink.tsx:83:export default CmsLink
+
+$ git grep -n -e 'verifyPreviewSecret' -- src/lib/preview.ts
+src/lib/preview.ts:20:export function verifyPreviewSecret(candidate: string): boolean {
+
+$ git grep -n -e 'resolvePreviewTargetPath' -- src/lib/preview.ts
+src/lib/preview.ts:66:export function resolvePreviewTargetPath(input: {
+
+$ git grep -n -e 'GET' -- src/app/api/preview/route.ts
+src/app/api/preview/route.ts:12: * `GET /api/preview` (`handoff/tasks/P3-T1.md` §7, `docs/03-security.md` Z2, I1):
+src/app/api/preview/route.ts:19:export async function GET(request: NextRequest): Promise<NextResponse> {
+
+$ git grep -n -e 'GET' -- src/app/api/preview/exit/route.ts
+src/app/api/preview/exit/route.ts:8: * `GET /api/preview/exit` (`handoff/tasks/P3-T1.md` §7):
+src/app/api/preview/exit/route.ts:13:export async function GET(request: NextRequest): Promise<NextResponse> {

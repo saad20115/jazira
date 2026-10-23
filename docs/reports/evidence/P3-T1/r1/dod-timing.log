@@ -1,0 +1,13 @@
+pwd: C:/Users/User21.CSE/AppData/Local/Temp/aljazira-p3-t1-r1-dod
+HEAD: 6f4c896bb97f5fc86e6c33743f3f153ed9a86db0
+=== P3-T1 Round 1 Fresh-Clone DoD Timing Log (M-100) ===
+1-install                        | elapsed=   1.97s | timeout= 240s | exit=0 | TIMED_OUT=False
+2-tokens-and-no-raw-hex          | elapsed=   0.31s | timeout=  60s | exit=0 | TIMED_OUT=False
+3-client-bundle-guard-proof      | elapsed=  33.19s | timeout=  60s | exit=0 | TIMED_OUT=False
+4-lint                           | elapsed=  32.95s | timeout= 120s | exit=0 | TIMED_OUT=False
+5-typecheck                      | elapsed=  13.08s | timeout= 120s | exit=0 | TIMED_OUT=False
+6-test                           | elapsed= 170.75s | timeout= 300s | exit=0 | TIMED_OUT=False
+7-build                          | elapsed=  48.06s | timeout= 300s | exit=0 | TIMED_OUT=False
+8-audit                          | elapsed=   1.79s | timeout=  60s | exit=0 | TIMED_OUT=False
+9-live-evidence-and-screenshots  | elapsed=     32s | timeout= 300s | exit=0 | TIMED_OUT=False
+TOTAL_WALL_TIME=335.87s
