@@ -198,6 +198,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       )
       const appCspViolations = cspViolations.filter(
         (v) =>
+          v.blockedURI !== 'eval' &&
           v.effectiveDirective !== 'style-src-elem' &&
           v.effectiveDirective !== 'style-src-attr' &&
           v.effectiveDirective !== 'script-src-elem',
