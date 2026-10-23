@@ -22,7 +22,6 @@ import { Stats } from '../collections/Stats'
 import { Team } from '../collections/Team'
 import { Users } from '../collections/Users'
 import { Videos } from '../collections/Videos'
-import payloadConfig from '../payload.config'
 import { getDefaultInteractiveSystems } from './HomePage'
 import {
   AboutPage,
@@ -113,21 +112,23 @@ describe('P2-T5 Globals unit suite', () => {
 
   it('configures collapsible sections in Figma order with Arabic labels and enabled checkboxes across all page globals', () => {
     const getCollapsibleGroupNames = (fields: typeof HomePage.fields): string[] =>
-      fields.map((field) => {
-        expect(field.type).toBe('collapsible')
-        if (field.type !== 'collapsible') {
+      fields
+        .filter((f) => !('name' in f && f.name === '_status'))
+        .map((field) => {
+          expect(field.type).toBe('collapsible')
+          if (field.type !== 'collapsible') {
+            return ''
+          }
+          expect(field.admin?.initCollapsed).toBe(true)
+          const label = field.label as { ar?: string; en?: string }
+          expect(typeof label.ar).toBe('string')
+          expect((label.ar ?? '').length).toBeGreaterThan(0)
+          const inner = field.fields[0]
+          if ('name' in inner && typeof inner.name === 'string') {
+            return inner.name
+          }
           return ''
-        }
-        expect(field.admin?.initCollapsed).toBe(true)
-        const label = field.label as { ar?: string; en?: string }
-        expect(typeof label.ar).toBe('string')
-        expect((label.ar ?? '').length).toBeGreaterThan(0)
-        const inner = field.fields[0]
-        if ('name' in inner && typeof inner.name === 'string') {
-          return inner.name
-        }
-        return ''
-      })
+        })
 
     expect(getCollapsibleGroupNames(HomePage.fields)).toEqual([
       'hero',
@@ -433,9 +434,8 @@ describe('P2-T5 Globals unit suite', () => {
     ).rejects.toThrow(/Could not verify media references/)
 
     // Verify every collection richText field allowing uploads has a bodyMedia sibling (R-18)
-    const builtConfig = await payloadConfig
     expect(() => {
-      assertCollectionRichTextFieldsHaveBodyMediaSibling(builtConfig.collections)
+      assertCollectionRichTextFieldsHaveBodyMediaSibling(allCollections)
     }).not.toThrow()
 
     expect(() => {

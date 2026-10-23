@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 
 import { Brands } from '../collections/Brands'
 import { Materials } from '../collections/Materials'
-import { Media } from '../collections/Media'
+import { assertCollectionRichTextFieldsHaveBodyMediaSibling, Media } from '../collections/Media'
 import { Projects } from '../collections/Projects'
 import { QuoteRequests } from '../collections/QuoteRequests'
 import { Services } from '../collections/Services'
@@ -99,6 +99,7 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
       (c) => !INTERNAL_PAYLOAD_SYSTEM_SLUGS.has(c.slug),
     )
     expect(appCollections.length).toBeGreaterThanOrEqual(10)
+    assertCollectionRichTextFieldsHaveBodyMediaSibling(config.collections)
 
     for (const col of appCollections) {
       for (const op of COLLECTION_ACCESS_OPS) {

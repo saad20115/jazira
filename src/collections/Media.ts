@@ -398,26 +398,22 @@ export function deriveCollectionTargetReferences(
 export function assertCollectionRichTextFieldsHaveBodyMediaSibling(
   collectionsConfig: ReadonlyArray<CollectionConfig | SanitizedCollectionConfig>,
 ): void {
-  const checkFieldList = (fields: readonly Field[], collectionSlug: string, prefix = ''): void => {
-    const hasBodyMediaSibling = fields.some(
-      (f) =>
-        (f.type === 'relationship' || f.type === 'upload') &&
-        'name' in f &&
-        f.name === 'bodyMedia' &&
-        (f.relationTo === 'media' ||
-          (Array.isArray(f.relationTo) && f.relationTo.includes('media'))),
-    )
-
+  const checkFieldList = (
+    fields: readonly Field[],
+    collectionSlug: string,
+    mediaRelPaths: ReadonlySet<string>,
+    prefix = '',
+  ): void => {
     for (const field of fields) {
       if (field.type === 'collapsible' || field.type === 'row') {
-        checkFieldList(field.fields, collectionSlug, prefix)
+        checkFieldList(field.fields, collectionSlug, mediaRelPaths, prefix)
         continue
       }
       if (field.type === 'tabs') {
         for (const tab of field.tabs) {
           const tabPrefix =
             'name' in tab && typeof tab.name === 'string' ? joinPath(prefix, tab.name) : prefix
-          checkFieldList(tab.fields, collectionSlug, tabPrefix)
+          checkFieldList(tab.fields, collectionSlug, mediaRelPaths, tabPrefix)
         }
         continue
       }
@@ -426,13 +422,17 @@ export function assertCollectionRichTextFieldsHaveBodyMediaSibling(
       }
       const currentPath = joinPath(prefix, field.name)
       if (field.type === 'group' || field.type === 'array') {
-        checkFieldList(field.fields, collectionSlug, currentPath)
+        checkFieldList(field.fields, collectionSlug, mediaRelPaths, currentPath)
         continue
       }
       if (field.type === 'richText') {
         const allowsUploads =
           (field.custom as { allowsRichTextUploads?: boolean } | undefined)
             ?.allowsRichTextUploads !== false
+        const expectedSiblingPath = `${currentPath}Media`
+        const fallbackBodyMediaPath = joinPath(prefix, 'bodyMedia')
+        const hasBodyMediaSibling =
+          mediaRelPaths.has(expectedSiblingPath) || mediaRelPaths.has(fallbackBodyMediaPath)
         if (allowsUploads && !hasBodyMediaSibling) {
           throw new Error(
             `Collection "${collectionSlug}" has richText field "${currentPath}" allowing uploads without a "bodyMedia" sibling targeting "media" (R-18).`,
@@ -446,7 +446,8 @@ export function assertCollectionRichTextFieldsHaveBodyMediaSibling(
     if (col.slug.startsWith('payload-')) {
       continue
     }
-    checkFieldList(col.fields, col.slug)
+    const { fieldPaths } = deriveFieldTargetPaths(col.fields, 'media')
+    checkFieldList(col.fields, col.slug, new Set(fieldPaths))
   }
 }
 
