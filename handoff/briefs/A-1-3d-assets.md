@@ -11,7 +11,7 @@ Reference look: `design/assets/images/tower-render.png` and the section
 ## 1. What we need and why
 The home page shows a night-time glass tower. When a visitor picks an MEP system in the side
 list, the camera moves cinematically to where that system lives in the building, the façade
-turns semi-transparent, the system's equipment glows gold, and labels appear. The website plays
+turns semi-transparent, the system's equipment shows in near-natural MEP colours with a thin gold accent (§9), and labels appear. The website plays
 these as short videos (pre-rendered) and also offers a real-time 3D viewer of the same model.
 
 ## 2. The model (Blender, one master `.blend`)
@@ -33,7 +33,7 @@ these as short videos (pre-rendered) and also offers a real-time 3D viewer of th
 | Item | Spec |
 |---|---|
 | `hero` still | Same framing as `tower-render.png`, 2048×2048, plus 1440 and 828 crops |
-| 5 shots `hvac`, `fire`, `plumbing`, `power`, `smart` | Each starts **exactly** on the hero frame, camera moves to the system (4–6 s, ease-in-out), façade fades to ~15 % opacity, system glows gold with subtle flow animation (air/water/power), ends on a stable hold frame |
+| 5 shots `hvac`, `fire`, `plumbing`, `power`, `smart` | Each starts **exactly** on the hero frame, camera moves to the system (4–6 s, ease-in-out), façade fades to ~15 % opacity, system shows in near-natural colours with a thin gold accent and subtle flow (chevrons, §9), ends on a stable hold frame |
 | `forward` and `reverse` clips per shot | 24 fps; reverse = the same move backwards (render or reverse in edit) |
 | `endFrame` per shot | Still of the last frame, 2048×2048 |
 | Formats | ProRes 422 HQ or PNG sequence masters; the dev team encodes to WebM/MP4 |
@@ -130,14 +130,15 @@ The owner compared the current model with `design/assets/images/tower-render.png
    building and the shape is unprofessional"; 3D lead decision).**
    - The reference image is not perspective-consistent. Fitting its 2D line put kinks in the
      parapet.
-   - The parapet and crown are **one level height** (about 89.0–89.5 m), planar, with mitred
-     corners.
+   - The parapet and crown are **one level height, 88.75 m**, planar, with mitred corners. The
+     2.5 m set-back storey is kept.
    - The gold line on top is a single continuous straight line.
    - The notch terraces get one thin warm slab-edge line per step, with glass returns and no drawn
      outlines.
-   - **Gate:**
+   - **Gate (final, 2026-10-23):**
      - level and planar is mandatory;
-     - crown edge overlay ≤ 10 px at the crown's far ends and ≤ 5 px elsewhere;
+     - the crown edge overlay is a regression check: ≤ 12 px at the crown's far ends, ≤ 9 px
+       elsewhere. A sweep showed no level crown can meet ≤ 10 / ≤ 5 against this reference;
      - pilasters ≤ 5 px (unchanged).
 4. **Base.** The lobby, canopies and forecourt line up with the new orientation (the lobby faces
    the camera as in the reference).
@@ -148,3 +149,23 @@ The owner compared the current model with `design/assets/images/tower-render.png
    - a top (plan) view with the camera position marked.
 
    Budgets, no city, sky and camera-limit rules from §6–§7 are unchanged.
+
+## 9. Revision 2026-10-23 (owner, via the 3D lead) — systems in near-natural colours
+"The five systems need near-natural colours, showing some logical details." This supersedes
+"equipment glows gold" in §1 and §3.
+- **Colours.** Entered systems use natural MEP colour coding, lifted slightly for night:
+  - fire: red;
+  - plumbing: blue water pipes, off-white GRP tanks;
+  - HVAC: grey and galvanised;
+  - power: RAL 7035 switchgear, galvanised trays;
+  - smart: black racks with LED and screen emission.
+- **Gold.** Brand gold (`#DFA82A` / `#EFCB76`) stays only as a thin accent glow on the selected
+  system's key equipment and on the HOT markers.
+- **Logical details.**
+  - Flow chevrons, optionally UV-scrolled in live; this is the "subtle flow".
+  - Valves with handwheels, gauges, supports, panel seams and status LEDs.
+- **Mechanism unchanged.** `KHR_materials_variants` `highlight_<s>` now swaps to the lifted natural
+  materials.
+  - One vertex-colour material per system, plus at most one emissive, to hold lite ≤ 60 draw calls.
+  - Budgets, schema and file names are unchanged.
+
