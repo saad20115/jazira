@@ -8,7 +8,7 @@ import { z } from 'zod'
  * frontend form components (`P3-T9`) and server-side handlers/collections (`P2-T6`, `P5-T1`).
  */
 
-export const INTERNATIONAL_PHONE_CHARS_REGEX = /^(?:\+|00)[1-9][0-9\s()-]{6,28}$/
+export const INTERNATIONAL_PHONE_CHARS_REGEX = /^(?:\+|00)\s*[1-9][0-9\s()-]{6,28}$/
 export const KSA_LOCAL_PHONE_CHARS_REGEX = /^0[15][0-9\s()-]{7,14}$/
 export const E164_KSA_PHONE_REGEX = /^\+966[15]\d{8}$/
 export const E164_GENERAL_PHONE_REGEX = /^\+[1-9]\d{7,14}$/
@@ -20,19 +20,23 @@ export const QUOTE_PHONE_ERROR_MESSAGE =
 /**
  * Normalizes a KSA local (`05XXXXXXXX` / `01XXXXXXXX`) or international (`+...` / `00...`)
  * phone string to canonical E.164 format (`+9665XXXXXXXX`, `+971501234567`) by stripping
- * whitespace, parentheses, and hyphens, converting leading `00` to `+`, and converting
- * 10-digit KSA local `05`/`01` numbers to `+9665`/`+9661` (`R-3`, `R-12`).
+ * whitespace, parentheses, and hyphens, converting leading `00` to `+`, converting
+ * 10-digit KSA local `05`/`01` numbers to `+9665`/`+9661`, and stripping an optional
+ * trunk `0` after `+966` (`+966 0573534185` -> `+966573534185`) (`R-3`, `R-12`, `R-16`).
  */
 export function normalizeQuotePhone(value: string): string {
   const trimmed = value.trim()
   const compact = trimmed.replace(/[\s()-]+/g, '')
-  if (compact.startsWith('00')) {
-    return `+${compact.slice(2)}`
+  let normalized = compact
+  if (normalized.startsWith('00')) {
+    normalized = `+${normalized.slice(2)}`
+  } else if (/^0[15]\d{8}$/.test(normalized)) {
+    normalized = `+966${normalized.slice(1)}`
   }
-  if (/^0[15]\d{8}$/.test(compact)) {
-    return `+966${compact.slice(1)}`
+  if (/^\+9660[15]\d{8}$/.test(normalized)) {
+    normalized = `+966${normalized.slice(5)}`
   }
-  return compact
+  return normalized
 }
 
 /**

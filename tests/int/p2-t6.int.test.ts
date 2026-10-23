@@ -610,12 +610,14 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
       ).rejects.toThrow()
     }
 
-    // R-12: All valid KSA local and international formats store canonical E.164 (+966573534185)
+    // R-12 & R-16: All valid KSA local and international formats (including +966 05... and 00 966 ...) store canonical E.164 (+966573534185)
     for (const rawPhoneVariant of [
       '0573534185',
       '057 353 4185',
       '00966 57 353 4185',
+      '00 966 57 353 4185',
       '+966 57 353 4185',
+      '+966 0573534185',
       '+966 (57) 353-4185',
     ]) {
       const createdVariant = await payload.create({
@@ -771,6 +773,118 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
       id: fallbackUser.id,
       overrideAccess: true,
     })
+  })
+
+  it('enforces Users.access.unlock = isAdmin: editor unlocking another user (existing or unknown email) or self returns 403, anonymous returns 403, and admin unlocking a locked account returns 200 and restores login (R-13)', async () => {
+    const lockedAdminEmail = 'locked-admin-p2t6@aljazira.co'
+    const lockedAdminPassword = 'Str0ng!Locked#Pass2026$XyZ'
+
+    const lockedAdmin = await payload.create({
+      collection: 'users',
+      overrideAccess: true,
+      data: {
+        name: 'م. سلطان القحطاني (مدير نظام مقفل)',
+        email: lockedAdminEmail,
+        password: lockedAdminPassword,
+        role: 'admin',
+      },
+    })
+
+    try {
+      // 1. Six failed logins lock the admin account (maxLoginAttempts = 5)
+      for (let i = 0; i < 6; i++) {
+        const badLogin = await callJsonApi({
+          method: 'POST',
+          slugPath: ['users', 'login'],
+          body: {
+            email: lockedAdminEmail,
+            password: `WrongPassword!${String(i)}#2026`,
+          },
+        })
+        expect(badLogin.status).toBe(401)
+      }
+
+      // Confirm account is locked: valid password now fails with 401
+      const loginWhileLocked = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'login'],
+        body: {
+          email: lockedAdminEmail,
+          password: lockedAdminPassword,
+        },
+      })
+      expect(loginWhileLocked.status).toBe(401)
+
+      // 2. Anonymous POST /api/users/unlock -> 403
+      const anonUnlock = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'unlock'],
+        body: { email: lockedAdminEmail },
+      })
+      expect(anonUnlock.status).toBe(403)
+
+      // 3. Editor unlocking someone else (existing email vs unknown email) -> both 403 with identical error (no email oracle!)
+      const editorUnlockExisting = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'unlock'],
+        token: editorToken,
+        body: { email: lockedAdminEmail },
+      })
+      const editorUnlockUnknown = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'unlock'],
+        token: editorToken,
+        body: { email: 'unknown-oracle-probe-p2t6@aljazira.co' },
+      })
+      expect(editorUnlockExisting.status).toBe(403)
+      expect(editorUnlockUnknown.status).toBe(403)
+      expect(editorUnlockExisting.body).toEqual(editorUnlockUnknown.body)
+
+      // 4. Editor unlocking themself -> 403 (decision: only admins may unlock accounts)
+      const editorUnlockSelf = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'unlock'],
+        token: editorToken,
+        body: { email: 'editor-p2t6@aljazira.co' },
+      })
+      expect(editorUnlockSelf.status).toBe(403)
+
+      // Confirm the locked admin account is STILL locked after editor's rejected unlock attempt
+      const loginStillLocked = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'login'],
+        body: {
+          email: lockedAdminEmail,
+          password: lockedAdminPassword,
+        },
+      })
+      expect(loginStillLocked.status).toBe(401)
+
+      // 5. Admin unlocking the locked account -> 200, and subsequent login with valid password -> 200
+      const adminUnlock = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'unlock'],
+        token: adminToken,
+        body: { email: lockedAdminEmail },
+      })
+      expect(adminUnlock.status).toBe(200)
+
+      const loginAfterAdminUnlock = await callJsonApi({
+        method: 'POST',
+        slugPath: ['users', 'login'],
+        body: {
+          email: lockedAdminEmail,
+          password: lockedAdminPassword,
+        },
+      })
+      expect(loginAfterAdminUnlock.status).toBe(200)
+    } finally {
+      await payload.delete({
+        collection: 'users',
+        id: lockedAdmin.id,
+        overrideAccess: true,
+      })
+    }
   })
 
   it('prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8)', async () => {

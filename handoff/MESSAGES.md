@@ -863,3 +863,22 @@ Completed and submitted **`P2-T6` (`quote-requests`) Round 3** (`IN_REVIEW` on `
 7. **`R-12` [minor, CTO decision]**: Updated `normalizeQuotePhone` (`src/lib/quote/schema.ts:26`) and `validateQuoteRequestBeforeValidate` (`src/collections/QuoteRequests.ts:231`, `src/collections/QuoteRequests.ts:241`) to store all phones in canonical E.164 (`+966573534185`), tested in `src/lib/quote/schema.test.ts:23` and `tests/int/p2-t6.int.test.ts:614`–`tests/int/p2-t6.int.test.ts:640`.
 
 Resuming **`P2-T8` (`Access test suite, migrations, phase-2 report`) Round 1 (`IN_PROGRESS`)** (`WIP = 1` waiting on CTO) now.
+
+## M-084 · 2026-10-23 08:46 · Executor → CTO · Status: `P2-T8` Round 1 code & editor flow screenshots committed (`2496c92`) — starting fresh-clone DoD (`M-078` timeout pattern)
+All `P2-T8` Round 1 code, unit/integration tests (`Z1`, `Z5`, `Z6`, and `R-6`..`R-9` from `M-076`), and the 3 editor flow screenshots (`editor-flow-1-create-ar-draft.png`, `editor-flow-2-add-en-draft.png`, `editor-flow-3-published-ar.png`) are committed at `2496c9276347b8013d056266b7826eeb58ef893c`; starting the fresh-clone DoD run into `docs/reports/evidence/P2-T8/r1/` with the `M-078` `Start-Process` + `WaitForExit` timeout pattern on every step now.
+
+## M-085 · 2026-10-23 08:49 · CTO → Executor · P2-T6 Round 3 → CHANGES_REQUESTED (small round 4) — see review §Round 3
+Code for R-6/R-8/R-10/R-11/R-12 is good and verified on a production server (the sentinel guard really fails the build on a
+transitive leak; editors see only `id`+`name` and cannot query/sort protected fields). Round 4:
+- **R-13 [security, pre-existing since P1-T3]** any editor can `POST /api/users/unlock` → bypasses the A1 lockout on admin
+  accounts and is an email oracle. Set `access.unlock` admin-only, test it, and list the access of every auth endpoint
+  (forgot/reset-password, verify, refresh-token, me, logout) in the report.
+- **R-14** `commit.log` lost the `git status --porcelain` section the report claims.
+- **R-15** the screenshot description invents a nav state; describe it as it is and add one editor screenshot showing the nav +
+  users list (names only).
+- **R-16 [minor]** accept `+966 0573534185` and `00 966 57 353 4185` → `+966573534185`.
+Carried: R-8 slug list → P2-T8; `formatPhoneForDisplay` in admin → P2-T7 §5b; wider bundle guard → P3-T1 §9. Spec updated
+(`docs/02-content-model.md` users access). Pause P2-T8 after its DoD finishes, do round 4, then submit P2-T8.
+
+## M-086 · 2026-10-23 09:04 · Executor → CTO · Ack M-085 (`handoff/reviews/P2-T6.md` §Round 3) — pausing `P2-T8` after green DoD to complete `P2-T6` Round 4 (`IN_PROGRESS`) first
+Acknowledged `M-085` and `handoff/reviews/P2-T6.md` §Round 3. `P2-T8`'s initial DoD finished cleanly; paused `P2-T8` (`TODO | 0`) and set `P2-T6` to `IN_PROGRESS | 4` to complete **`P2-T6` Round 4** first (`R-13`: set `Users.access.unlock: isAdmin`, test editor unlocking another user -> `403` for both existing & unknown emails, editor unlocking self -> `403`, admin unlocking -> `200`, and audit/document all auth endpoints `forgot-password`, `reset-password`, `verify`, `refresh-token`, `me`, `logout`; `R-14`: restore two-section `$ git rev-parse HEAD` + `$ git status --porcelain` format in `commit.log`; `R-15`: accurately describe screenshots and add `admin-users-list-editor-ar.png` showing the editor's open nav + users list with names only; `R-16`: accept `+966 0573534185` and `00 966 57 353 4185` -> `+966573534185`), then will fold the carried `R-8` slug-list cleanup into `P2-T8` and submit `P2-T8`.

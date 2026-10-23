@@ -258,6 +258,7 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     create: isAdmin,
     update: adminOrSelf,
     delete: isAdmin,
+    unlock: isAdmin,
     admin: ({ req }) => {
       const user = req.user as { role?: string } | null | undefined
       return user?.role === 'admin' || user?.role === 'editor'

@@ -20,13 +20,17 @@ describe('src/lib/quote/schema.ts pure phone validator & E.164 normalizer (R-6, 
     expect(importLines.join('\n')).not.toContain('env')
   })
 
-  it('normalizes KSA local (05/01) and international (00/+) phone inputs to canonical E.164 (R-12)', () => {
+  it('normalizes KSA local (05/01) and international (00/+) phone inputs to canonical E.164, including +966 05... and 00 966 ... (R-12, R-16)', () => {
     expect(normalizeQuotePhone('0573534185')).toBe('+966573534185')
     expect(normalizeQuotePhone('057 353 4185')).toBe('+966573534185')
     expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966573534185')
+    expect(normalizeQuotePhone('00 966 57 353 4185')).toBe('+966573534185')
     expect(normalizeQuotePhone('+966 57 353 4185')).toBe('+966573534185')
+    expect(normalizeQuotePhone('+966 0573534185')).toBe('+966573534185')
+    expect(normalizeQuotePhone('00 966 0573534185')).toBe('+966573534185')
     expect(normalizeQuotePhone('  +966 (57) 353-4185  ')).toBe('+966573534185')
     expect(normalizeQuotePhone('011 234 5678')).toBe('+966112345678')
+    expect(normalizeQuotePhone('+966 0112345678')).toBe('+966112345678')
     expect(normalizeQuotePhone('+971 50 123 4567')).toBe('+971501234567')
     expect(normalizeQuotePhone('00971-50-123-4567')).toBe('+971501234567')
   })
@@ -38,11 +42,13 @@ describe('src/lib/quote/schema.ts pure phone validator & E.164 normalizer (R-6, 
     expect(formatPhoneForDisplay('+971501234567')).toBe('+971501234567')
   })
 
-  it('validates and transforms phones to E.164 via quotePhoneSchema while rejecting invalid inputs (R-3, R-6, R-12)', () => {
+  it('validates and transforms phones to E.164 via quotePhoneSchema while rejecting invalid inputs (R-3, R-6, R-12, R-16)', () => {
     expect(quotePhoneSchema.parse('0573534185')).toBe('+966573534185')
     expect(quotePhoneSchema.parse('057 353 4185')).toBe('+966573534185')
     expect(quotePhoneSchema.parse('00966 57 353 4185')).toBe('+966573534185')
+    expect(quotePhoneSchema.parse('00 966 57 353 4185')).toBe('+966573534185')
     expect(quotePhoneSchema.parse('+966 57 353 4185')).toBe('+966573534185')
+    expect(quotePhoneSchema.parse('+966 0573534185')).toBe('+966573534185')
     expect(quotePhoneSchema.parse('+971 50 123 4567')).toBe('+971501234567')
 
     expect(isValidKsaOrInternationalPhone('966573534185')).toBe(false)

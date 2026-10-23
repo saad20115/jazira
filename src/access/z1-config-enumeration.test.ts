@@ -79,6 +79,9 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
       for (const op of COLLECTION_ACCESS_OPS) {
         assertExplicitAccessFunction(col.access?.[op], `collection:${col.slug}`, op)
       }
+      if (col.auth) {
+        assertExplicitAccessFunction(col.access?.unlock, `collection:${col.slug}`, 'unlock')
+      }
     }
 
     expect(ALL_GLOBALS).toHaveLength(8)
@@ -114,6 +117,7 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
 
     const internalKv = config.collections.find((c) => c.slug === 'payload-kv')
     const payloadDefaultAccessFn = internalKv?.access.create
+    const payloadDefaultUnlockFn = internalKv?.access.unlock
 
     for (const col of appCollections) {
       for (const op of COLLECTION_ACCESS_OPS) {
@@ -122,6 +126,14 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
           `sanitized collection:${col.slug}`,
           op,
           payloadDefaultAccessFn,
+        )
+      }
+      if (col.slug === 'users') {
+        assertExplicitAccessFunction(
+          col.access.unlock,
+          `sanitized collection:${col.slug}`,
+          'unlock',
+          payloadDefaultUnlockFn,
         )
       }
     }
@@ -179,7 +191,7 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
     )
     const adminArgs = makeAccessArgs({ id: 1, role: 'admin', email: 'admin@aljazira.co' }, 99)
 
-    // 1. users: read staff (isAdminOrEditor, with email/role/sessions restricted to adminOrSelf per R-11); update admin or self; create/delete admin only
+    // 1. users: read staff (isAdminOrEditor, with email/role/sessions restricted to adminOrSelf per R-11); update admin or self; create/delete/unlock admin only (R-13)
     expect(await appCollections['users'].access.read(anonArgs)).toBe(false)
     expect(await appCollections['users'].access.read(editorOtherArgs)).toBe(true)
     expect(await appCollections['users'].access.read(adminArgs)).toBe(true)
@@ -194,6 +206,10 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
     expect(await appCollections['users'].access.delete(anonArgs)).toBe(false)
     expect(await appCollections['users'].access.delete(editorSelfArgs)).toBe(false)
     expect(await appCollections['users'].access.delete(adminArgs)).toBe(true)
+    expect(await appCollections['users'].access.unlock(anonArgs)).toBe(false)
+    expect(await appCollections['users'].access.unlock(editorSelfArgs)).toBe(false)
+    expect(await appCollections['users'].access.unlock(editorOtherArgs)).toBe(false)
+    expect(await appCollections['users'].access.unlock(adminArgs)).toBe(true)
 
     // 2. Always-public read, editor/admin write/delete: media, videos, brands, stats, materials, team
     for (const slug of ['media', 'videos', 'brands', 'stats', 'materials', 'team'] as const) {
