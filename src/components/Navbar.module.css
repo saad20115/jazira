@@ -1,7 +1,7 @@
 .navbar {
   inline-size: 100%;
   block-size: 80px;
-  backdrop-filter: blur(10px);
+  position: relative;
   border-block-end-style: solid;
   border-block-end-width: 1px;
   transition:
@@ -261,4 +261,8 @@
   color: var(--navy-950);
   font-size: var(--t-caption-size);
   font-weight: var(--t-label-eyebrow-weight);
+}
+
+.navbar:not(:has(.drawerBackdrop)) {
+  backdrop-filter: blur(10px);
 }

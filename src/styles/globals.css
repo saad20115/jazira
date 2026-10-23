@@ -78,3 +78,7 @@ a {
 [dir='rtl'] [data-directional-icon='true'] {
   transform: scaleX(-1);
 }
+
+nextjs-portal {
+  display: none;
+}

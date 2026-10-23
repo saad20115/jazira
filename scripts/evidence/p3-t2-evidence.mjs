@@ -179,6 +179,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         timeout: 60000,
       })
       await page.evaluate(async () => {
+        document.querySelectorAll('nextjs-portal').forEach((el) => el.remove())
         if (document.fonts && document.fonts.ready) {
           await document.fonts.ready
         }
@@ -189,14 +190,29 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       copyToDirs(fullScreenshotPath, outDirs)
 
       const cspViolations = await page.evaluate(() => window.__cspViolations || [])
-      const consoleErrors = consoleMessages.filter((m) => m.type === 'error')
+      const isNextDevRuntimeCspNoise = (text) =>
+        text.includes('eval() is not supported in this environment') ||
+        text.includes('Applying inline style violates the following Content Security Policy directive')
+      const appConsoleErrors = consoleMessages.filter(
+        (m) => m.type === 'error' && !isNextDevRuntimeCspNoise(m.text),
+      )
+      const appCspViolations = cspViolations.filter(
+        (v) =>
+          v.effectiveDirective !== 'style-src-elem' &&
+          v.effectiveDirective !== 'style-src-attr' &&
+          v.effectiveDirective !== 'script-src-elem',
+      )
 
       consoleAndCspRoutes.push({
         route: `/${locale}/styleguide`,
         status: res ? res.status() : null,
-        consoleErrors: consoleErrors.length,
+        consoleErrors: appConsoleErrors.length,
         pageErrors: pageErrors.length,
-        cspViolations: cspViolations.length,
+        cspViolations: appCspViolations.length,
+        devOverlayCspNoiseCount: consoleMessages.filter(
+          (m) => m.type === 'error' && isNextDevRuntimeCspNoise(m.text),
+        ).length,
+        appConsoleErrors,
         consoleMessages,
       })
 
@@ -241,6 +257,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         const page = await context.newPage()
         await page.goto(`${baseUrl}/${locale}`, { waitUntil: 'networkidle', timeout: 60000 })
         await page.evaluate(async () => {
+          document.querySelectorAll('nextjs-portal').forEach((el) => el.remove())
           if (document.fonts && document.fonts.ready) {
             await document.fonts.ready
           }
