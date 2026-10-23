@@ -1,3 +1,6 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 import { NextRequest } from 'next/server'
 import { getPayload, type Payload } from 'payload'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -32,6 +35,8 @@ vi.mock('next/headers', () => ({
 
 import { GET as exitPreviewGet } from '../../src/app/api/preview/exit/route'
 import { GET as previewGet } from '../../src/app/api/preview/route'
+import robots from '../../src/app/robots'
+import sitemap from '../../src/app/sitemap'
 import {
   cmsFind,
   cmsFindAllSmallCollection,
@@ -50,6 +55,7 @@ import {
 import { getPreviewSecret } from '../../src/lib/preview'
 import type { Service, User } from '../../src/payload-types'
 import payloadConfig from '../../src/payload.config'
+import { proxy } from '../../src/proxy'
 
 let payload: Payload
 let editorUser: User | undefined
@@ -345,5 +351,81 @@ describe('P3-T1 Integration — Z6 data layer, R-23 pagination/limit caps, draft
     expect(exitRes.headers.get('location')).toBe('http://localhost:3000/en/services')
     expect(draftModeState.disableCalled).toBe(true)
     expect(draftModeState.isEnabled).toBe(false)
+  })
+
+  it('R-15: when 101 docs exist in a small collection (stats), cmsFindAllSmallCollection logs a warning, never throws, and returns the first 100 docs', async () => {
+    const createdStatIds: Array<number | string> = []
+    const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {})
+    try {
+      for (let i = 1; i <= 101; i += 1) {
+        const created = await payload.create({
+          collection: 'stats',
+          locale: 'ar',
+          data: {
+            value: `${String(i)}+`,
+            label: `إحصائية اختبار ${String(i)}`,
+            order: i,
+          },
+          overrideAccess: true,
+        })
+        createdStatIds.push(created.id)
+      }
+
+      const result = await cmsFindAllSmallCollection({
+        collection: 'stats',
+        locale: 'ar',
+        sort: 'order',
+      })
+
+      expect(result.docs).toHaveLength(MAX_CMS_QUERY_LIMIT)
+      expect(result.docs).toHaveLength(100)
+      expect(result.totalDocs).toBe(100)
+      expect(
+        warnSpy.mock.calls.some((args) =>
+          String(args[0]).includes('Collection "stats" has at least 101 documents'),
+        ),
+      ).toBe(true)
+    } finally {
+      warnSpy.mockRestore()
+      if (createdStatIds.length > 0) {
+        await payload.delete({
+          collection: 'stats',
+          where: { id: { in: createdStatIds } },
+          overrideAccess: true,
+        })
+      }
+    }
+  })
+
+  it('R-12: /robots.txt, /sitemap.xml, /favicon.ico, /.well-known/*, and public assets pass through proxy without rewriting to /__not_found__', () => {
+    const robotsCfg = robots()
+    expect(robotsCfg.rules).toEqual({
+      userAgent: '*',
+      allow: '/',
+      disallow: ['/admin', '/api'],
+    })
+
+    const sitemapEntries = sitemap()
+    expect(sitemapEntries.map((e) => e.url)).toEqual([
+      'http://localhost:3000/ar',
+      'http://localhost:3000/en',
+    ])
+
+    expect(fs.existsSync(path.resolve(process.cwd(), 'public/favicon.ico'))).toBe(true)
+    expect(fs.existsSync(path.resolve(process.cwd(), 'public/icon.svg'))).toBe(true)
+
+    for (const rootOrPublicPath of [
+      '/robots.txt',
+      '/sitemap.xml',
+      '/favicon.ico',
+      '/icon.svg',
+      '/.well-known/security.txt',
+      '/brand/full-primary.svg',
+      '/basis_transcoder.wasm',
+      '/draco/draco_decoder.wasm',
+    ]) {
+      const res = proxy(new NextRequest(`http://localhost:3000${rootOrPublicPath}`))
+      expect(res.headers.get('x-middleware-rewrite')).toBeNull()
+    }
   })
 })

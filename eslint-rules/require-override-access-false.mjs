@@ -1,28 +1,36 @@
 /**
- * Custom ESLint rule `local/require-override-access-false` (Z6, P2-T8 Scope 3, R-6, R-12, R-21, & R-22).
+ * Custom ESLint rule `local/require-override-access-false` (Z6, P2-T8 Scope 3, R-6, R-12, R-21, R-22, R-3, & R-13).
  *
- * Enforces four defense-in-depth layers for Z6:
- * 1. Repo-wide re-export ban (`R-21`): re-exporting `payload`, `payload/*`, `@payload-config`,
+ * Enforces defense-in-depth layers for Z6:
+ * 1. Repo-wide re-export ban (`R-21`, `R-3`, `R-13`): re-exporting `payload`, `payload/*`, `@payload-config`,
  *    `@/payload.config`, or any binding imported from them (such as `getPayload`) is banned in
  *    EVERY module across the repository except `src/payload.config.ts` and `src/lib/cms/client.ts`
  *    (`isAllowedPayloadReExportFile`).
- * 2. Tightened runtime import allow-list + type-import allowance (`R-12`, `R-21`, `R-22`):
+ * 2. Tightened runtime import allow-list + type-import allowance (`R-12`, `R-21`, `R-22`, `R-3`, `R-13`):
  *    - Runtime value imports of `payload` / `payload/*` are allowed only in `isAllowedPayloadServerFile`
  *      (where `src/fields/*` and `src/security/*` list only the 8 specific files that construct
- *      Payload runtime error classes, and `*.test.*` is exempt ONLY outside `src/app/**` and
- *      `src/components/**`).
+ *      Payload runtime error classes, `src/app/(payload)/*` lists only the 4 generated route files,
+ *      and `*.test.*` is exempt ONLY outside `src/app/**`, `src/components/**`, and `src/lib/**`).
  *    - Importing `getPayload`, `@payload-config`, or `@/payload.config` is restricted even further to
  *      `isAllowedGetPayloadEntryFile` (`src/payload.config.ts`, `src/instrumentation.ts`,
- *      `src/lib/cms/client.ts`, `src/app/(payload)/**`, `scripts/**`, `tests/**`, and non-app/non-component
- *      `*.test.*`).
+ *      `src/lib/cms/client.ts`, `scripts/**`, `tests/**`, and non-app/non-component/non-lib `*.test.*`).
  *    - Type-only imports (`import type { ... } from 'payload'` or `import { type ... } from 'payload'`)
  *      are allowed (`R-22`).
- * 3. Non-literal dynamic `import()` ban (`R-22`): in `src/app/**` and `src/components/**`, every
- *    `import(...)` expression must use a static string literal source (banning ``import(`payload`)``,
- *    `import(x)`, etc.).
- * 4. Call-site verification in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/cms/**`:
- *    every Payload Local API call must pass an un-overridden `{ overrideAccess: false }` (or carry
- *    `// z6-allow-override-access: <reason>`).
+ * 3. `scripts/**` and `tests/**` import ban in `src/**` (`R-13`): no file in `src/**` may import,
+ *    re-export, or `require()` from `scripts/**` or `tests/**`.
+ * 4. `src/lib/**` guard (`R-13`):
+ *    - `src/lib/**` (everything except `src/lib/cms/client.ts`, with pure modules explicitly listed in
+ *      `EXPLICIT_PURE_LIB_FILES`) is banned from importing `payload`, `@payload-config`, `getPayload`,
+ *      or any of the 8 server directories (`@/app/(payload)`, `@/collections`, `@/globals`, `@/hooks`,
+ *      `@/access`, `@/migrations`, `@/fields`, `@/security`), and from accessing `req.payload`.
+ *    - `src/app/(frontend)/**` and `src/components/**` may only import `src/lib/cms/client.ts` and
+ *      the listed pure modules in `EXPLICIT_PURE_LIB_FILES` from `src/lib/**`.
+ * 5. Non-literal dynamic `import()` ban (`R-22`, `R-13`): in `src/app/**`, `src/components/**`, and
+ *    `src/lib/**`, every `import(...)` expression must use a static string literal source.
+ * 6. Call-site verification in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**` (`Z6`, `R-13`):
+ *    - Every Payload Local API call must pass an un-overridden `{ overrideAccess: false }` (or carry
+ *      `// z6-allow-override-access: <reason>`).
+ *    - Any Local API call whose options contain a `user` key is flagged (`R-13`).
  */
 
 export const GUARDED_PAYLOAD_METHODS = new Set([
@@ -44,6 +52,14 @@ export const GUARDED_PAYLOAD_METHODS = new Set([
   'restoreVersion',
   'restoreGlobalVersion',
   'duplicate',
+])
+
+export const CMS_WRAPPER_METHODS = new Set([
+  'cmsFind',
+  'cmsFindAllSmallCollection',
+  'cmsFindByID',
+  'cmsFindGlobal',
+  'cmsCount',
 ])
 
 const JUSTIFICATION_COMMENT_REGEX = /z6-allow-override-access\s*:\s*\S+/
@@ -76,6 +92,45 @@ export const EXPLICIT_PAYLOAD_ADMIN_ROUTE_FILES = [
 ]
 
 /**
+ * Explicit list of pure/wrapper modules in `src/lib/**` (besides `src/lib/cms/client.ts`) (`R-13`).
+ */
+export const EXPLICIT_PURE_LIB_FILES = [
+  'src/lib/ipHash.ts',
+  'src/lib/link-safety.ts',
+  'src/lib/preview.ts',
+  'src/lib/quote/schema.ts',
+  'src/lib/cms/collections.ts',
+  'src/lib/cms/globals.ts',
+  'src/lib/cms/index.ts',
+]
+
+const ALLOWED_LIB_IMPORT_Specifiers = new Set([
+  '@/lib/cms',
+  '@/lib/cms/client',
+  '@/lib/cms/collections',
+  '@/lib/cms/globals',
+  '@/lib/cms/index',
+  '@/lib/ipHash',
+  '@/lib/link-safety',
+  '@/lib/preview',
+  '@/lib/quote/schema',
+])
+
+/**
+ * Returns true when `filename` is `src/lib/cms/client.ts` (`R-13`).
+ *
+ * @param {string} filename
+ * @returns {boolean}
+ */
+export function isCmsClientFile(filename) {
+  if (typeof filename !== 'string' || filename.length === 0) {
+    return false
+  }
+  const normalized = filename.replace(/\\/g, '/')
+  return /(?:^|\/)src\/lib\/cms\/client\.[cm]?[jt]s$/.test(normalized)
+}
+
+/**
  * Only `src/payload.config.ts` and `src/lib/cms/client.ts` may re-export anything from
  * `payload`, `@payload-config`, or `@/payload.config` (`R-21`, `R-3`).
  *
@@ -88,15 +143,14 @@ export function isAllowedPayloadReExportFile(filename) {
   }
   const normalized = filename.replace(/\\/g, '/')
   return (
-    /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) ||
-    /(?:^|\/)src\/lib\/cms\/client\.[cm]?[jt]s$/.test(normalized)
+    /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) || isCmsClientFile(normalized)
   )
 }
 
 /**
  * Only `src/payload.config.ts`, `src/instrumentation.ts`, `src/lib/cms/client.ts`,
- * `scripts/**`, `tests/**`, and non-app/non-component `*.test.*` may import, reference,
- * or call `getPayload` / `getPayloadClient` (`R-21`, `R-3`).
+ * `scripts/**`, `tests/**`, and non-app/non-component/non-lib `*.test.*` may import, reference,
+ * or call `getPayload` / `getPayloadClient` (`R-21`, `R-3`, `R-13`).
  *
  * @param {string} filename
  * @returns {boolean}
@@ -109,14 +163,15 @@ export function isAllowedGetPayloadEntryFile(filename) {
   if (
     /\.test\.[cm]?[jt]sx?$/.test(normalized) &&
     !/(?:^|\/)src\/app\//.test(normalized) &&
-    !/(?:^|\/)src\/components\//.test(normalized)
+    !/(?:^|\/)src\/components\//.test(normalized) &&
+    !/(?:^|\/)src\/lib\//.test(normalized)
   ) {
     return true
   }
   return (
     /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) ||
     /(?:^|\/)src\/instrumentation\.[cm]?[jt]s$/.test(normalized) ||
-    /(?:^|\/)src\/lib\/cms\/client\.[cm]?[jt]s$/.test(normalized) ||
+    isCmsClientFile(normalized) ||
     /(?:^|\/)scripts\//.test(normalized) ||
     /(?:^|\/)tests\//.test(normalized) ||
     /(?:^|\/)(?:next|vitest|playwright|eslint)\.config\.[cm]?[jt]s$/.test(normalized)
@@ -145,12 +200,7 @@ export function isAllowedPayloadConfigEntryFile(filename) {
 
 /**
  * Explicit allow-list of server/config/test/script modules permitted to import `payload`
- * at runtime (`R-12`, `R-21`, `R-3`).
- * - `src/fields/**` and `src/security/**` are NOT blanket-allowed; only the 8 specific files in
- *   `EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES` are permitted.
- * - `src/app/(payload)/**` is NOT blanket-allowed; only the 4 route files in
- *   `EXPLICIT_PAYLOAD_ADMIN_ROUTE_FILES` are permitted.
- * - `*.test.*` is exempt ONLY outside `src/app/**` and `src/components/**`.
+ * at runtime (`R-12`, `R-21`, `R-3`, `R-13`).
  *
  * @param {string} filename
  * @returns {boolean}
@@ -180,7 +230,39 @@ export function isAllowedPayloadServerFile(filename) {
 }
 
 /**
- * Returns true when `filename` is inside `src/app/**` or `src/components/**` (`R-22`).
+ * Returns true when `filename` is inside `src/**` (`R-13`).
+ *
+ * @param {string} filename
+ * @returns {boolean}
+ */
+export function isSrcFile(filename) {
+  if (typeof filename !== 'string' || filename.length === 0) {
+    return false
+  }
+  const normalized = filename.replace(/\\/g, '/')
+  return /(?:^|\/)src\//.test(normalized)
+}
+
+/**
+ * Returns true when `sourceValue` points to `scripts/**` or `tests/**` (`R-13`).
+ *
+ * @param {unknown} sourceValue
+ * @returns {boolean}
+ */
+export function isForbiddenScriptsOrTestsSource(sourceValue) {
+  if (typeof sourceValue !== 'string') {
+    return false
+  }
+  const trimmed = sourceValue.trim().replace(/\\/g, '/')
+  return (
+    /^@\/(?:\.\.\/)*(?:scripts|tests)(?:\/|$)/.test(trimmed) ||
+    /^(?:scripts|tests)(?:\/|$)/.test(trimmed) ||
+    (trimmed.startsWith('.') && /(?:^|\/)(?:scripts|tests)(?:\/|$)/.test(trimmed))
+  )
+}
+
+/**
+ * Returns true when `filename` is inside `src/app/**`, `src/components/**`, or `src/lib/**` (`R-22`, `R-13`).
  *
  * @param {string} filename
  * @returns {boolean}
@@ -190,11 +272,11 @@ export function isAppOrComponentFile(filename) {
     return false
   }
   const normalized = filename.replace(/\\/g, '/')
-  return /(?:^|\/)src\/(?:app|components)\//.test(normalized)
+  return /(?:^|\/)src\/(?:app|components|lib)\//.test(normalized)
 }
 
 /**
- * Returns true when `filename` is inside `src/app/(frontend)/**` or `src/components/**` (`R-3`).
+ * Returns true when `filename` is inside `src/app/(frontend)/**`, `src/components/**`, or `src/lib/**` (`R-3`, `R-13`).
  *
  * @param {string} filename
  * @returns {boolean}
@@ -206,20 +288,50 @@ export function isFrontendOrComponentFile(filename) {
   const normalized = filename.replace(/\\/g, '/')
   return (
     /(?:^|\/)src\/app\/\(frontend\)\//.test(normalized) ||
-    /(?:^|\/)src\/components\//.test(normalized)
+    /(?:^|\/)src\/components\//.test(normalized) ||
+    /(?:^|\/)src\/lib\//.test(normalized)
   )
 }
 
 /**
- * Returns true when `sourceValue` points to a server-only directory banned in
- * `src/app/(frontend)/**` and `src/components/**` (`R-3`):
- * `@/app/(payload)/**`, `@/collections/**`, `@/globals/**`, `@/hooks/**`,
- * `@/access/**`, `@/migrations/**`, `@/fields/**`, `@/security/**` (or relative equivalents).
+ * Returns true when `sourceValue` is an import of `src/lib/**` that is NOT `src/lib/cms/client.ts`
+ * and NOT one of the listed pure modules in `EXPLICIT_PURE_LIB_FILES` (`R-13`).
  *
  * @param {unknown} sourceValue
  * @returns {boolean}
  */
-export function isForbiddenFrontendServerDirSource(sourceValue) {
+export function isForbiddenUnlistedLibSource(sourceValue) {
+  if (typeof sourceValue !== 'string') {
+    return false
+  }
+  const trimmed = sourceValue
+    .trim()
+    .replace(/\\/g, '/')
+    .replace(/\.[cm]?[jt]sx?$/, '')
+
+  if (trimmed.startsWith('@/lib/')) {
+    return !ALLOWED_LIB_IMPORT_Specifiers.has(trimmed)
+  }
+
+  if (trimmed.startsWith('.') && /(?:^|\/)lib\//.test(trimmed)) {
+    const afterLib = trimmed.replace(/^.*?(?:^|\/)lib\//, '@/lib/')
+    return !ALLOWED_LIB_IMPORT_Specifiers.has(afterLib)
+  }
+
+  return false
+}
+
+/**
+ * Returns true when `sourceValue` points to a server-only directory banned in
+ * `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**` (`R-3`, `R-13`):
+ * `@/app/(payload)/**`, `@/collections/**`, `@/globals/**`, `@/hooks/**`,
+ * `@/access/**`, `@/migrations/**`, `@/fields/**`, `@/security/**` (or relative equivalents).
+ *
+ * @param {unknown} sourceValue
+ * @param {string} [filename]
+ * @returns {boolean}
+ */
+export function isForbiddenFrontendServerDirSource(sourceValue, filename = '') {
   if (typeof sourceValue !== 'string') {
     return false
   }
@@ -231,18 +343,29 @@ export function isForbiddenFrontendServerDirSource(sourceValue) {
   ) {
     return true
   }
-  if (
-    trimmed.startsWith('.') &&
-    /(?:^|\/)(?:\(payload\)|collections|globals|hooks|access|migrations|fields|security)(?:\/|$)/.test(
-      trimmed,
-    )
-  ) {
-    return true
+  if (trimmed.startsWith('.')) {
+    const normalizedFile = typeof filename === 'string' ? filename.replace(/\\/g, '/') : ''
+    // Sibling imports `./collections` and `./globals` inside `src/lib/cms/` refer to `src/lib/cms/{collections,globals}.ts`
+    if (
+      /(?:^|\/)src\/lib\/cms\//.test(normalizedFile) &&
+      /^\.\/(?:collections|globals)(?:\.[cm]?[jt]sx?)?$/.test(trimmed)
+    ) {
+      return false
+    }
+    if (
+      /(?:^|\/)(?:\(payload\)|collections|globals|hooks|access|migrations|fields|security)(?:\/|$)/.test(
+        trimmed,
+      )
+    ) {
+      return true
+    }
   }
   return false
 }
 
 /**
+ * Returns true when `filename` is inside `src/app/(frontend)/**`, `src/components/**`, or `src/lib/**` (`Z6`, `R-13`).
+ *
  * @param {string} filename
  * @returns {boolean}
  */
@@ -254,7 +377,7 @@ export function isFrontendOrCmsFile(filename) {
   return (
     /(?:^|\/)src\/app\/\(frontend\)\//.test(normalized) ||
     /(?:^|\/)src\/components\//.test(normalized) ||
-    /(?:^|\/)src\/lib\/cms(?:\/|$)/.test(normalized)
+    /(?:^|\/)src\/lib(?:\/|$)/.test(normalized)
   )
 }
 
@@ -422,25 +545,109 @@ function isPayloadLikeExpression(expr, trackedPayloadVars) {
 }
 
 /**
- * Checks whether an options ObjectExpression safely sets `overrideAccess: false`
- * without being clobbered by a subsequent spread (`...other`) or duplicate key.
+ * Unwraps TypeScript type assertions (`as any`, `<any>`, `satisfies`) and parentheses.
  *
- * @param {import('eslint').Rule.Node | undefined} optionsArg
- * @returns {{ hasUnclobberedLiteralFalse: boolean, overridePropNode: import('eslint').Rule.Node | null }}
+ * @param {import('eslint').Rule.Node | null | undefined} node
+ * @returns {import('eslint').Rule.Node | null | undefined}
  */
-function inspectOptionsObject(optionsArg) {
+function unwrapTypeAssertions(node) {
+  let curr = node
+  while (
+    curr &&
+    typeof curr === 'object' &&
+    (curr.type === 'TSAsExpression' ||
+      curr.type === 'TSTypeAssertion' ||
+      curr.type === 'TSSatisfiesExpression' ||
+      curr.type === 'ParenthesizedExpression')
+  ) {
+    curr = /** @type {any} */ (curr).expression
+  }
+  return curr
+}
+
+/**
+ * Checks whether an options ObjectExpression safely sets `overrideAccess: false`
+ * without being clobbered by a subsequent spread (`...other`) or duplicate key,
+ * and checks whether it contains a `user` key (`R-13`).
+ *
+ * @param {import('eslint').Rule.Node | undefined} rawOptionsArg
+ * @param {Map<string, import('eslint').Rule.Node>} trackedObjectExpressions
+ * @param {boolean} allowInternalDraftStaffUserSpread
+ * @returns {{
+ *   hasUnclobberedLiteralFalse: boolean,
+ *   overridePropNode: import('eslint').Rule.Node | null,
+ *   userPropNode: import('eslint').Rule.Node | null
+ * }}
+ */
+function inspectOptionsObject(
+  rawOptionsArg,
+  trackedObjectExpressions,
+  allowInternalDraftStaffUserSpread = false,
+) {
   /** @type {import('eslint').Rule.Node | null} */
   let overridePropNode = null
+  /** @type {import('eslint').Rule.Node | null} */
+  let userPropNode = null
   let hasUnclobberedLiteralFalse = false
 
+  const unwrappedRaw = unwrapTypeAssertions(rawOptionsArg)
+  const optionsArg = unwrapTypeAssertions(
+    unwrappedRaw?.type === 'Identifier'
+      ? trackedObjectExpressions.get(unwrappedRaw.name)
+      : unwrappedRaw,
+  )
+
   if (!optionsArg || optionsArg.type !== 'ObjectExpression') {
-    return { hasUnclobberedLiteralFalse: false, overridePropNode: null }
+    return { hasUnclobberedLiteralFalse: false, overridePropNode: null, userPropNode: null }
+  }
+
+  /**
+   * @param {import('eslint').Rule.Node | null | undefined} rawNode
+   */
+  function findUserPropertyInNode(rawNode) {
+    const node = unwrapTypeAssertions(rawNode)
+    if (!node || typeof node !== 'object') {
+      return null
+    }
+    if (node.type === 'Identifier' && trackedObjectExpressions.has(node.name)) {
+      return findUserPropertyInNode(trackedObjectExpressions.get(node.name))
+    }
+    if (node.type === 'ObjectExpression') {
+      for (const p of node.properties ?? []) {
+        if (p.type === 'Property') {
+          const k = !p.computed
+            ? getPropertyName(p.key)
+            : p.key.type === 'Literal' && typeof p.key.value === 'string'
+              ? p.key.value
+              : null
+          if (k === 'user') {
+            return p
+          }
+        } else if (p.type === 'SpreadElement') {
+          const hit = findUserPropertyInNode(p.argument)
+          if (hit) return hit
+        }
+      }
+    }
+    if (node.type === 'ConditionalExpression') {
+      return findUserPropertyInNode(node.consequent) || findUserPropertyInNode(node.alternate)
+    }
+    if (node.type === 'LogicalExpression') {
+      return findUserPropertyInNode(node.left) || findUserPropertyInNode(node.right)
+    }
+    return null
   }
 
   for (const prop of optionsArg.properties) {
     if (prop.type === 'SpreadElement') {
       if (hasUnclobberedLiteralFalse) {
         hasUnclobberedLiteralFalse = false
+      }
+      if (!allowInternalDraftStaffUserSpread) {
+        const spreadUserHit = findUserPropertyInNode(prop.argument)
+        if (spreadUserHit && !userPropNode) {
+          userPropNode = spreadUserHit
+        }
       }
       continue
     }
@@ -450,6 +657,10 @@ function inspectOptionsObject(optionsArg) {
         : prop.key.type === 'Literal' && typeof prop.key.value === 'string'
           ? prop.key.value
           : null
+
+      if (keyName === 'user') {
+        userPropNode = prop
+      }
 
       if (keyName === 'overrideAccess') {
         overridePropNode = prop
@@ -464,7 +675,7 @@ function inspectOptionsObject(optionsArg) {
     }
   }
 
-  return { hasUnclobberedLiteralFalse, overridePropNode }
+  return { hasUnclobberedLiteralFalse, overridePropNode, userPropNode }
 }
 
 /**
@@ -506,19 +717,25 @@ export const requireOverrideAccessFalseRule = {
     type: 'problem',
     docs: {
       description:
-        'Ban direct Payload imports and re-exports outside the server allow-list, ban non-literal import() in src/app/** and src/components/**, and require un-overridden `overrideAccess: false` on all Payload Local API calls in frontend/CMS code (Z6, R-6, R-12, R-21, R-22).',
+        'Ban direct Payload imports and re-exports outside the server allow-list, ban scripts/ and tests/ imports from src/, guard src/lib/**, ban non-literal import() in src/app/**, src/components/**, and src/lib/**, and require un-overridden `overrideAccess: false` without a `user` key on all Payload Local API calls in frontend/CMS code (Z6, R-6, R-12, R-21, R-22, R-3, R-13).',
     },
     messages: {
       forbiddenPayloadImport:
         'Importing "{{source}}" is forbidden outside the server allow-list (`src/lib/cms/client.ts` is the only allowed CMS wrapper). Use `cmsFind`, `cmsFindByID`, `cmsFindGlobal`, or `cmsCount` instead (Z6, R-6, R-12, R-21, R-3).',
       forbiddenFrontendServerDirImport:
-        'Importing server module "{{source}}" is forbidden in `src/app/(frontend)/**` and `src/components/**` (R-3).',
+        'Importing server module "{{source}}" is forbidden in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**` (R-3, R-13).',
+      forbiddenScriptsOrTestsImport:
+        'Importing "{{source}}" from `scripts/**` or `tests/**` is forbidden inside `src/**` (R-13).',
+      forbiddenUnlistedLibImport:
+        'Importing unlisted `src/lib` module "{{source}}" is forbidden. Only `src/lib/cms/client.ts` and listed pure modules (`EXPLICIT_PURE_LIB_FILES`) are allowed (R-13).',
       forbiddenGetPayloadValue:
-        'Referencing or calling "{{name}}" as a value is forbidden outside `src/lib/cms/client.ts` and `src/instrumentation.ts` (Z6, R-21, R-3).',
+        'Referencing or calling "{{name}}" as a value is forbidden outside `src/lib/cms/client.ts` and `src/instrumentation.ts` (Z6, R-21, R-3, R-13).',
       forbiddenPayloadReExport:
-        'Re-exporting "{{source}}" is forbidden everywhere except `src/payload.config.ts` and `src/lib/cms/client.ts` (Z6, R-21, R-3).',
+        'Re-exporting "{{source}}" is forbidden everywhere except `src/payload.config.ts` and `src/lib/cms/client.ts` (Z6, R-21, R-3, R-13).',
       forbiddenNonLiteralDynamicImport:
-        'Non-literal dynamic `import()` is forbidden in `src/app/**` and `src/components/**` (R-22).',
+        'Non-literal dynamic `import()` is forbidden in `src/app/**`, `src/components/**`, and `src/lib/**` (R-22, R-13).',
+      forbiddenUserOptionInLocalApi:
+        'Passing a "user" option to Payload Local API call "{{method}}()" is forbidden in frontend and `src/lib/**` code (Z6, R-13).',
       missingOverrideAccessFalse:
         'Payload Local API call "{{method}}()" in frontend/CMS code must pass an un-overridden "{ overrideAccess: false }" (or include a "// z6-allow-override-access: <reason>" comment) (Z6).',
     },
@@ -526,6 +743,8 @@ export const requireOverrideAccessFalseRule = {
   },
   create(context) {
     const filename = context.filename ?? context.getFilename()
+    const inSrc = isSrcFile(filename)
+    const isCmsClient = isCmsClientFile(filename)
     const forbidImports = isPayloadImportForbiddenFile(filename)
     const allowGetPayloadEntry = isAllowedGetPayloadEntryFile(filename)
     const allowPayloadConfigEntry = isAllowedPayloadConfigEntryFile(filename)
@@ -566,7 +785,11 @@ export const requireOverrideAccessFalseRule = {
       }
       if (expr.type === 'MemberExpression') {
         const propName = getMemberMethodName(expr)
-        if (propName === 'getPayload' || propName === 'getPayloadClient') {
+        if (
+          propName === 'getPayload' ||
+          propName === 'getPayloadClient' ||
+          propName === 'payload'
+        ) {
           return propName
         }
         if (
@@ -607,11 +830,31 @@ export const requireOverrideAccessFalseRule = {
       ImportDeclaration(node) {
         const sourceVal = node.source?.value
 
-        // R-3: Ban importing server directories in `src/app/(frontend)/**` and `src/components/**`
-        if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(sourceVal)) {
+        // R-13: Ban importing `scripts/**` or `tests/**` from any file in `src/**`
+        if (inSrc && isForbiddenScriptsOrTestsSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenScriptsOrTestsImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+
+        // R-3 & R-13: Ban importing server directories in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**`
+        if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(sourceVal, filename)) {
           context.report({
             node,
             messageId: 'forbiddenFrontendServerDirImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+
+        // R-13: Ban importing unlisted `src/lib/**` modules in frontend, components, and server files
+        if (inSrc && isForbiddenUnlistedLibSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenUnlistedLibImport',
             data: { source: String(sourceVal) },
           })
           return
@@ -694,27 +937,39 @@ export const requireOverrideAccessFalseRule = {
       },
 
       MemberExpression(node) {
-        if (allowGetPayloadEntry) {
-          return
-        }
         const propName = getMemberMethodName(node)
-        if (propName === 'getPayload' || propName === 'getPayloadClient') {
+        if (!allowGetPayloadEntry && (propName === 'getPayload' || propName === 'getPayloadClient')) {
           context.report({
             node,
             messageId: 'forbiddenGetPayloadValue',
             data: { name: propName },
           })
+          return
+        }
+        // R-13: Ban accessing `.payload` (e.g. `req.payload`) in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**` (outside `src/lib/cms/client.ts`)
+        if (inFrontendOrComponents && !isCmsClient && propName === 'payload') {
+          context.report({
+            node,
+            messageId: 'forbiddenGetPayloadValue',
+            data: { name: 'payload' },
+          })
         }
       },
 
       ObjectPattern(node) {
-        if (allowGetPayloadEntry) {
-          return
-        }
         for (const prop of node.properties) {
           if (prop.type === 'Property') {
             const origName = getPropertyName(prop.key)
-            if (origName === 'getPayload' || origName === 'getPayloadClient') {
+            if (
+              !allowGetPayloadEntry &&
+              (origName === 'getPayload' || origName === 'getPayloadClient')
+            ) {
+              context.report({
+                node: prop,
+                messageId: 'forbiddenGetPayloadValue',
+                data: { name: origName },
+              })
+            } else if (inFrontendOrComponents && !isCmsClient && origName === 'payload') {
               context.report({
                 node: prop,
                 messageId: 'forbiddenGetPayloadValue',
@@ -727,10 +982,26 @@ export const requireOverrideAccessFalseRule = {
 
       ExportNamedDeclaration(node) {
         const sourceVal = node.source?.value
-        if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(sourceVal)) {
+        if (inSrc && isForbiddenScriptsOrTestsSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenScriptsOrTestsImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+        if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(sourceVal, filename)) {
           context.report({
             node,
             messageId: 'forbiddenFrontendServerDirImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+        if (inSrc && isForbiddenUnlistedLibSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenUnlistedLibImport',
             data: { source: String(sourceVal) },
           })
           return
@@ -784,10 +1055,26 @@ export const requireOverrideAccessFalseRule = {
 
       ExportAllDeclaration(node) {
         const sourceVal = node.source?.value
-        if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(sourceVal)) {
+        if (inSrc && isForbiddenScriptsOrTestsSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenScriptsOrTestsImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+        if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(sourceVal, filename)) {
           context.report({
             node,
             messageId: 'forbiddenFrontendServerDirImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+        if (inSrc && isForbiddenUnlistedLibSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenUnlistedLibImport',
             data: { source: String(sourceVal) },
           })
           return
@@ -821,7 +1108,7 @@ export const requireOverrideAccessFalseRule = {
       },
 
       ImportExpression(node) {
-        // R-22: Ban non-literal dynamic `import()` in `src/app/**` and `src/components/**`
+        // R-22 & R-13: Ban non-literal dynamic `import()` in `src/app/**`, `src/components/**`, and `src/lib/**`
         if (
           inAppOrComponents &&
           (node.source?.type !== 'Literal' || typeof node.source.value !== 'string')
@@ -834,13 +1121,39 @@ export const requireOverrideAccessFalseRule = {
         }
 
         if (
+          inSrc &&
+          node.source?.type === 'Literal' &&
+          isForbiddenScriptsOrTestsSource(node.source.value)
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenScriptsOrTestsImport',
+            data: { source: String(node.source.value) },
+          })
+          return
+        }
+
+        if (
           inFrontendOrComponents &&
           node.source?.type === 'Literal' &&
-          isForbiddenFrontendServerDirSource(node.source.value)
+          isForbiddenFrontendServerDirSource(node.source.value, filename)
         ) {
           context.report({
             node,
             messageId: 'forbiddenFrontendServerDirImport',
+            data: { source: String(node.source.value) },
+          })
+          return
+        }
+
+        if (
+          inSrc &&
+          node.source?.type === 'Literal' &&
+          isForbiddenUnlistedLibSource(node.source.value)
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenUnlistedLibImport',
             data: { source: String(node.source.value) },
           })
           return
@@ -875,8 +1188,9 @@ export const requireOverrideAccessFalseRule = {
         if (!checkCalls || !node.init) {
           return
         }
-        if (node.id.type === 'Identifier' && node.init.type === 'ObjectExpression') {
-          trackedObjectExpressions.set(node.id.name, node.init)
+        const unwrappedInit = unwrapTypeAssertions(node.init)
+        if (node.id.type === 'Identifier' && unwrappedInit?.type === 'ObjectExpression') {
+          trackedObjectExpressions.set(node.id.name, unwrappedInit)
         }
         if (isPayloadLikeExpression(node.init, trackedPayloadVars)) {
           if (node.id.type === 'Identifier') {
@@ -934,10 +1248,26 @@ export const requireOverrideAccessFalseRule = {
           callee.name === 'require' &&
           node.arguments[0]?.type === 'Literal'
         ) {
-          if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(node.arguments[0].value)) {
+          if (inSrc && isForbiddenScriptsOrTestsSource(node.arguments[0].value)) {
+            context.report({
+              node,
+              messageId: 'forbiddenScriptsOrTestsImport',
+              data: { source: String(node.arguments[0].value) },
+            })
+            return
+          }
+          if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(node.arguments[0].value, filename)) {
             context.report({
               node,
               messageId: 'forbiddenFrontendServerDirImport',
+              data: { source: String(node.arguments[0].value) },
+            })
+            return
+          }
+          if (inSrc && isForbiddenUnlistedLibSource(node.arguments[0].value)) {
+            context.report({
+              node,
+              messageId: 'forbiddenUnlistedLibImport',
               data: { source: String(node.arguments[0].value) },
             })
             return
@@ -964,16 +1294,45 @@ export const requireOverrideAccessFalseRule = {
           return
         }
 
+        // R-13: Also check `user` key on CMS wrapper calls (`cmsFind`, `cmsFindByID`, `cmsFindGlobal`, `cmsCount`, `cmsFindAllSmallCollection`)
+        if (callee.type === 'Identifier' && CMS_WRAPPER_METHODS.has(callee.name)) {
+          const { userPropNode } = inspectOptionsObject(
+            node.arguments[0],
+            trackedObjectExpressions,
+            false,
+          )
+          if (userPropNode) {
+            context.report({
+              node: userPropNode,
+              messageId: 'forbiddenUserOptionInLocalApi',
+              data: { method: callee.name },
+            })
+          }
+          return
+        }
+
         /** @type {string | null} */
         let matchedMethodName = null
         /** @type {import('eslint').Rule.Node | undefined} */
         let optionsArg = undefined
         let requiresAutomaticFalse = true
 
-        // Case 1: Destructured / aliased method identifier `find({ ... })`
-        if (callee.type === 'Identifier' && destructuredPayloadMethods.has(callee.name)) {
-          matchedMethodName = destructuredPayloadMethods.get(callee.name) ?? callee.name
-          optionsArg = node.arguments[0]
+        // Case 1: Destructured, imported, or bare method identifier `find({ ... })`, `find(o)`, etc. (`R-6`, `R-13`)
+        if (callee.type === 'Identifier') {
+          if (destructuredPayloadMethods.has(callee.name)) {
+            matchedMethodName = destructuredPayloadMethods.get(callee.name) ?? callee.name
+            optionsArg = node.arguments[0]
+          } else if (GUARDED_PAYLOAD_METHODS.has(callee.name)) {
+            const firstArg = node.arguments[0]
+            if (
+              !firstArg ||
+              (firstArg.type !== 'ArrowFunctionExpression' &&
+                firstArg.type !== 'FunctionExpression')
+            ) {
+              matchedMethodName = callee.name
+              optionsArg = firstArg
+            }
+          }
         } else if (callee.type === 'MemberExpression') {
           const propName = getMemberMethodName(callee)
 
@@ -1000,29 +1359,22 @@ export const requireOverrideAccessFalseRule = {
               }
             }
           } else if (propName && GUARDED_PAYLOAD_METHODS.has(propName)) {
-            // Case 3: `payload.find(...)`, `(await db()).find(o)`, `client.find(...)`, `aliased.find(...)`
+            // Case 3: `payload.find(...)`, `(await db()).find(o)`, `p.find(o)`, `client.find(...)`
             const firstArg = node.arguments[0]
             const resolvedFirstArgObj =
               firstArg?.type === 'Identifier'
                 ? trackedObjectExpressions.get(firstArg.name)
                 : firstArg
 
-            if (
-              isPayloadLikeExpression(callee.object, trackedPayloadVars) ||
-              callee.object.type === 'AwaitExpression'
-            ) {
-              matchedMethodName = propName
-              optionsArg = firstArg
-            } else if (
-              resolvedFirstArgObj?.type === 'ObjectExpression' &&
-              resolvedFirstArgObj.properties.some(
-                (p) =>
-                  p.type === 'Property' &&
-                  (getPropertyName(p.key) === 'collection' ||
-                    getPropertyName(p.key) === 'slug' ||
-                    getPropertyName(p.key) === 'overrideAccess'),
-              )
-            ) {
+            const isNonPayloadArrayOrBuiltInCall =
+              (propName === 'find' &&
+                (firstArg?.type === 'ArrowFunctionExpression' ||
+                  firstArg?.type === 'FunctionExpression')) ||
+              ((propName === 'delete' || propName === 'update' || propName === 'create') &&
+                !isPayloadLikeExpression(callee.object, trackedPayloadVars) &&
+                resolvedFirstArgObj?.type !== 'ObjectExpression')
+
+            if (!isNonPayloadArrayOrBuiltInCall) {
               matchedMethodName = propName
               optionsArg = firstArg
             } else {
@@ -1035,7 +1387,17 @@ export const requireOverrideAccessFalseRule = {
           return
         }
 
-        const { hasUnclobberedLiteralFalse, overridePropNode } = inspectOptionsObject(optionsArg)
+        const { hasUnclobberedLiteralFalse, overridePropNode, userPropNode } =
+          inspectOptionsObject(optionsArg, trackedObjectExpressions, isCmsClient)
+
+        if (userPropNode) {
+          context.report({
+            node: userPropNode,
+            messageId: 'forbiddenUserOptionInLocalApi',
+            data: { method: matchedMethodName },
+          })
+          return
+        }
 
         if (hasUnclobberedLiteralFalse) {
           return

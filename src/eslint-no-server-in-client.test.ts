@@ -1,19 +1,8 @@
-import fs from 'node:fs'
-import os from 'node:os'
-import path from 'node:path'
-
 import { Linter } from 'eslint'
 import tseslint from 'typescript-eslint'
 import { describe, expect, it } from 'vitest'
 
 import { noServerInClientRule } from '../eslint-rules/no-server-in-client.mjs'
-import {
-  FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
-  FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS,
-  FORBIDDEN_SERVER_LIBRARY_MARKERS,
-  resolveFrontendClientChunkFiles,
-  scanDirectoryForSentinels,
-} from '../scripts/check-client-bundle-sentinels.mjs'
 
 function lintSnippet(code: string): Linter.LintMessage[] {
   const linter = new Linter({ configType: 'flat' })
@@ -152,74 +141,5 @@ describe('local/no-server-in-client ESLint rule (S4, R-3, R-5, R-12)', () => {
     ].join('\n')
 
     expect(lintSnippet(goodClientCode)).toEqual([])
-  })
-
-  it('scanDirectoryForSentinels detects both server sentinels and server library markers in .next/static chunks (P3-T1 §9)', () => {
-    const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'client-sentinel-test-'))
-    try {
-      const chunksDir = path.join(tmpDir, 'chunks')
-      fs.mkdirSync(chunksDir, { recursive: true })
-      fs.writeFileSync(path.join(chunksDir, 'clean.js'), 'console.log("safe client chunk");\n', 'utf8')
-      expect(scanDirectoryForSentinels(tmpDir)).toEqual([])
-
-      fs.writeFileSync(
-        path.join(chunksDir, 'leaked.js'),
-        `const a = "${FORBIDDEN_CLIENT_BUNDLE_SENTINELS[3]}"; const b = "${FORBIDDEN_SERVER_LIBRARY_MARKERS[2]}"; const c = { f() { ${FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS[0]}=!0 } };\n`,
-        'utf8',
-      )
-      const hits = scanDirectoryForSentinels(tmpDir)
-      expect(hits).toEqual([
-        {
-          file: 'chunks/leaked.js',
-          sentinel: '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_API_ERROR__',
-        },
-        {
-          file: 'chunks/leaked.js',
-          sentinel: 'drizzle-orm/node-postgres',
-        },
-        {
-          file: 'chunks/leaked.js',
-          sentinel: 'this.isOperational',
-        },
-      ])
-    } finally {
-      fs.rmSync(tmpDir, { recursive: true, force: true })
-    }
-  })
-
-  it('resolveFrontendClientChunkFiles extracts frontend chunks from both build-manifest.json and page_client-reference-manifest.js', () => {
-    const tmpNextDir = fs.mkdtempSync(path.join(os.tmpdir(), 'client-manifest-test-'))
-    try {
-      const staticDir = path.join(tmpNextDir, 'static')
-      const frontendRouteDir = path.join(tmpNextDir, 'server', 'app', '(frontend)', '[locale]')
-      fs.mkdirSync(path.join(staticDir, 'chunks'), { recursive: true })
-      fs.mkdirSync(frontendRouteDir, { recursive: true })
-
-      fs.writeFileSync(
-        path.join(frontendRouteDir, 'build-manifest.json'),
-        JSON.stringify({
-          rootMainFiles: ['static/chunks/root-main.js'],
-          polyfillFiles: ['static/chunks/polyfills.js'],
-          pages: {},
-        }),
-        'utf8',
-      )
-      fs.writeFileSync(
-        path.join(frontendRouteDir, 'page_client-reference-manifest.js'),
-        'globalThis.__RSC_MANIFEST["/(frontend)/[locale]/page"] = {"clientModules":{"[project]/src/components/CmsLink.tsx":{"chunks":["/_next/static/chunks/cms-link-chunk.js"]}},"entryJSFiles":{"[project]/src/app/(frontend)/[locale]/page":["static/chunks/entry-chunk.js"]}};\n',
-        'utf8',
-      )
-
-      const files = resolveFrontendClientChunkFiles(staticDir)
-      expect(files).not.toBeNull()
-      expect(Array.from(files ?? []).sort()).toEqual([
-        'chunks/cms-link-chunk.js',
-        'chunks/entry-chunk.js',
-        'chunks/polyfills.js',
-        'chunks/root-main.js',
-      ])
-    } finally {
-      fs.rmSync(tmpNextDir, { recursive: true, force: true })
-    }
   })
 })

@@ -1,7 +1,10 @@
 import 'server-only'
 
 export {
+  assertSmallCollectionNotTruncated,
   type AuthenticatedStaffPreviewUser,
+  buildCollectionTags,
+  buildGlobalTags,
   buildSafeCmsCountArgs,
   buildSafeCmsQueryArgs,
   buildSafeCmsSmallCollectionArgs,
@@ -30,6 +33,7 @@ export {
   SAFE_CMS_COUNT_WHITELIST_KEYS,
   SAFE_CMS_QUERY_WHITELIST_KEYS,
   SAFE_CMS_SMALL_COLLECTION_WHITELIST_KEYS,
+  SMALL_COLLECTION_FETCH_LIMIT,
   SMALL_UNPAGINATED_COLLECTION_SLUGS,
   type SmallUnpaginatedCollectionSlug,
   type SupportedCmsLocale,

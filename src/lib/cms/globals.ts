@@ -1,6 +1,5 @@
 import 'server-only'
 
-import { buildGlobalTags } from '@/hooks/revalidate'
 import type { SupportedLocale } from '@/i18n'
 import type {
   AboutPage,
@@ -14,7 +13,13 @@ import type {
   SiteSetting,
 } from '@/payload-types'
 
-import { cmsFindGlobal, getFallbackLocale, resolvePublicDraftFlag, withCmsCache } from './client'
+import {
+  buildGlobalTags,
+  cmsFindGlobal,
+  getFallbackLocale,
+  resolvePublicDraftFlag,
+  withCmsCache,
+} from './client'
 
 type GlobalSlug = keyof Config['globals']
 

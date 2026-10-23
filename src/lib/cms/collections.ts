@@ -2,11 +2,11 @@ import 'server-only'
 
 import type { Where } from 'payload'
 
-import { buildCollectionTags } from '@/hooks/revalidate'
 import type { SupportedLocale } from '@/i18n'
 import type { Brand, Material, Project, Service, Stat, Team } from '@/payload-types'
 
 import {
+  buildCollectionTags,
   cmsFind,
   cmsFindAllSmallCollection,
   getFallbackLocale,

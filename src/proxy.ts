@@ -1,3 +1,6 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 
@@ -8,6 +11,97 @@ const COOKIE_PREFIX = 'payload'
 const ADMIN_LANG_COOKIE = `${COOKIE_PREFIX}-lng`
 const DEFAULT_ADMIN_LANG = 'ar'
 const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365
+
+const PASSTHROUGH_EXACT_ROOT_PATHS = new Set([
+  '/robots.txt',
+  '/sitemap.xml',
+  '/favicon.ico',
+  '/icon.svg',
+  '/icon.png',
+  '/apple-icon.png',
+  '/apple-touch-icon.png',
+  '/manifest.webmanifest',
+  '/manifest.json',
+  '/site.webmanifest',
+  '/opengraph-image',
+  '/twitter-image',
+  '/basis_transcoder.js',
+  '/basis_transcoder.wasm',
+  '/draco_decoder.js',
+  '/draco_decoder.wasm',
+  '/draco_wasm_wrapper.js',
+  '/meshopt_decoder.js',
+  '/meshopt_decoder.wasm',
+])
+
+const PASSTHROUGH_ROOT_PREFIXES = [
+  '/.well-known/',
+  '/api/',
+  '/_next/',
+  '/brand/',
+  '/media/',
+  '/systems/',
+  '/3d/',
+  '/models/',
+  '/draco/',
+  '/basis/',
+  '/ktx2/',
+  '/meshopt/',
+  '/transcoders/',
+  '/decoders/',
+  '/textures/',
+  '/hdr/',
+  '/fonts/',
+  '/images/',
+  '/videos/',
+  '/assets/',
+]
+
+function hasMatchingPublicFile(pathname: string): boolean {
+  if (!pathname.startsWith('/') || pathname === '/' || pathname.includes('\0')) {
+    return false
+  }
+  try {
+    const publicRoot = path.resolve(process.cwd(), 'public')
+    const decodedRel = decodeURIComponent(pathname).replace(/^\/+/, '')
+    if (!decodedRel || decodedRel.includes('..') || decodedRel.includes('\\')) {
+      return false
+    }
+    const candidate = path.resolve(publicRoot, decodedRel)
+    if (!candidate.startsWith(`${publicRoot}${path.sep}`)) {
+      return false
+    }
+    return fs.existsSync(candidate) && fs.statSync(candidate).isFile()
+  } catch {
+    return false
+  }
+}
+
+/**
+ * Returns `true` when `pathname` matches a non-localized metadata route, `.well-known/**`,
+ * API / Next internal route, root-level 3D transcoder/decoder (`H3a`, `P3-T5`), or a public
+ * asset folder / file (`R-12`).
+ */
+export function isPassthroughRootOrPublicPath(pathname: string): boolean {
+  if (PASSTHROUGH_EXACT_ROOT_PATHS.has(pathname)) {
+    return true
+  }
+  if (pathname === '/.well-known' || pathname === '/api' || pathname === '/_next') {
+    return true
+  }
+  if (/^\/sitemap[^/]*\.xml$/i.test(pathname)) {
+    return true
+  }
+  if (/^\/(?:basis|draco|ktx2|meshopt)[^/]*\.(?:js|mjs|wasm)$/i.test(pathname)) {
+    return true
+  }
+  for (const prefix of PASSTHROUGH_ROOT_PREFIXES) {
+    if (pathname.startsWith(prefix)) {
+      return true
+    }
+  }
+  return hasMatchingPublicFile(pathname)
+}
 
 /**
  * Extracts the locale segment from a public pathname (`/ar/...` -> `'ar'`, `/en/...` -> `'en'`).
@@ -27,7 +121,7 @@ export function generateCspNonce(): string {
 
 /**
  * Next.js 16 proxy (`src/proxy.ts`, `docs/01-architecture.md` §3, `docs/03-security.md` H3 & H3a,
- * `handoff/tasks/P3-T1.md` §4 & §5):
+ * `handoff/tasks/P3-T1.md` §4 & §5, `R-12`):
  *
  * 1. Redirects `/` -> `308 Permanent Redirect` to `/ar` (preserving query parameters if any).
  * 2. Generates a fresh cryptographic nonce per request (`x-nonce`) and attaches the strict
@@ -37,6 +131,8 @@ export function generateCspNonce(): string {
  *    initialization from Phase 1 (`R-4`).
  * 4. Propagates `x-aljazira-locale` and `x-aljazira-pathname` on request headers so the
  *    `(frontend)` root layout renders `<html lang dir>` matching the active locale.
+ * 5. Rewrites non-locale paths to `/${resolvedLocale}/__not_found__` ONLY when no route and
+ *    no public file matches (`!isPassthroughRootOrPublicPath(pathname)`, `R-12`).
  */
 export function proxy(request: NextRequest): NextResponse {
   const { pathname, search } = request.nextUrl
@@ -112,7 +208,10 @@ export function proxy(request: NextRequest): NextResponse {
       pathname.endsWith('/%5fspecimen') ||
       pathname.endsWith('/styleguide'))
 
-  if (!hasSupportedLocalePrefix || isBlockedProdDevRoute) {
+  if (
+    (!hasSupportedLocalePrefix && !isPassthroughRootOrPublicPath(pathname)) ||
+    isBlockedProdDevRoute
+  ) {
     const notFoundRewriteUrl = new URL(`/${resolvedLocale}/__not_found__`, request.url)
     const rewriteResponse = NextResponse.rewrite(notFoundRewriteUrl, {
       request: {
@@ -140,10 +239,11 @@ export const config = {
      * - api (Payload & Next API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - favicon.ico, icon.svg, brand/, media/ (static assets)
+     * - robots.txt, sitemap*.xml, favicon.ico, icon.svg, .well-known/, and public asset folders (R-12)
      */
     {
-      source: '/((?!api|_next/static|_next/image|favicon\\.ico|icon\\.svg|brand/).*)',
+      source:
+        '/((?!api|_next/static|_next/image|robots\\.txt|sitemap[^/]*\\.xml|favicon\\.ico|icon\\.svg|apple-icon\\.png|manifest\\.webmanifest|\\.well-known/|brand/|media/|systems/|3d/|models/|draco/|basis/|ktx2/|meshopt/|transcoders/|decoders/|textures/|hdr/|fonts/|images/|videos/|assets/|(?:basis|draco|ktx2|meshopt)[^/]*\\.(?:js|mjs|wasm)$).*)',
       missing: [
         { type: 'header', key: 'next-router-prefetch' },
         { type: 'header', key: 'purpose', value: 'prefetch' },

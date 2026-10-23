@@ -8,20 +8,20 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('server-only', () => ({}))
 
 import {
+  EXPLICIT_PURE_LIB_FILES,
   EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES,
   requireOverrideAccessFalseRule,
 } from '../eslint-rules/require-override-access-false.mjs'
 import { RESTRICTED_PAYLOAD_IMPORTS_CONFIG } from '../eslint.config.mjs'
-import { FORBIDDEN_CLIENT_BUNDLE_SENTINELS } from '../scripts/check-client-bundle-sentinels.mjs'
 import {
   assertSmallCollectionNotTruncated,
   buildSafeCmsCountArgs,
   buildSafeCmsQueryArgs,
   buildSafeCmsSmallCollectionArgs,
   clampCmsQueryLimit,
-  CMS_CLIENT_SERVER_ONLY_SENTINEL,
   DEFAULT_CMS_QUERY_LIMIT,
   MAX_CMS_QUERY_LIMIT,
+  SMALL_COLLECTION_FETCH_LIMIT,
   SMALL_UNPAGINATED_COLLECTION_SLUGS,
 } from './lib/cms/client'
 
@@ -451,7 +451,8 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     const defaultLimitFind = buildSafeCmsQueryArgs({ collection: 'projects', locale: 'ar' }, false)
     expect(defaultLimitFind.limit).toBe(DEFAULT_CMS_QUERY_LIMIT)
 
-    // Small unpaginated collection helper (R-23): allowed for brands, stats, materials, services, team
+    // Small unpaginated collection helper (R-23, R-15): allowed for brands, stats, materials, services, team with limit: 101
+    expect(SMALL_COLLECTION_FETCH_LIMIT).toBe(101)
     for (const smallSlug of SMALL_UNPAGINATED_COLLECTION_SLUGS) {
       const smallArgs = buildSafeCmsSmallCollectionArgs(
         {
@@ -468,7 +469,7 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
         collection: smallSlug,
         locale: 'ar',
         sort: 'order',
-        limit: MAX_CMS_QUERY_LIMIT,
+        limit: SMALL_COLLECTION_FETCH_LIMIT,
         pagination: false,
         draft: false,
         overrideAccess: false,
@@ -489,18 +490,19 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       ).toThrow(/not an allowed small unpaginated collection/)
     }
 
-    // R-10: assertSmallCollectionNotTruncated logs and throws when totalDocs > MAX_CMS_QUERY_LIMIT (100)
+    // R-10 & R-15: assertSmallCollectionNotTruncated logs a warning and returns true WITHOUT throwing when docCount > MAX_CMS_QUERY_LIMIT (100)
     const warnings: string[] = []
-    expect(() => {
-      assertSmallCollectionNotTruncated('brands', 100, (msg) => warnings.push(msg))
-    }).not.toThrow()
+    expect(assertSmallCollectionNotTruncated('brands', 100, (msg) => warnings.push(msg))).toBe(
+      false,
+    )
     expect(warnings).toHaveLength(0)
 
-    expect(() => {
-      assertSmallCollectionNotTruncated('brands', 101, (msg) => warnings.push(msg))
-    }).toThrow(/exceeding MAX_CMS_QUERY_LIMIT \(100\)/)
+    expect(assertSmallCollectionNotTruncated('brands', 101, (msg) => warnings.push(msg))).toBe(
+      true,
+    )
     expect(warnings).toHaveLength(1)
-    expect(warnings[0]).toContain('Collection "brands" has 101 documents')
+    expect(warnings[0]).toContain('Collection "brands" has at least 101 documents')
+    expect(warnings[0]).toContain('Rendering the first 100 documents')
 
     const safeDraft = buildSafeCmsQueryArgs(
       {
@@ -532,8 +534,104 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     expect('req' in safeCount).toBe(false)
     expect('showHiddenFields' in safeCount).toBe(false)
     expect('draft' in safeCount).toBe(false)
+  })
 
-    expect(FORBIDDEN_CLIENT_BUNDLE_SENTINELS).toContain(CMS_CLIENT_SERVER_ONLY_SENTINEL)
+  it('enforces R-13: bans scripts/** and tests/** imports from src/**, guards src/lib/** against server-dir imports and req.payload capture/re-export, and flags any Local API call with a `user` key in options', () => {
+    expect(EXPLICIT_PURE_LIB_FILES).toEqual([
+      'src/lib/ipHash.ts',
+      'src/lib/link-safety.ts',
+      'src/lib/preview.ts',
+      'src/lib/quote/schema.ts',
+      'src/lib/cms/collections.ts',
+      'src/lib/cms/globals.ts',
+      'src/lib/cms/index.ts',
+    ])
+
+    // 1. Ban imports of `scripts/**` and `tests/**` from any file in `src/**`
+    for (const badImport of [
+      "import { find } from '../../../../scripts/x'\nexport const f = find",
+      "import { find } from '@/scripts/x'\nexport const f = find",
+      "import { helper } from '../../../tests/int/helper'\nexport const h = helper",
+      "import { helper } from '@/tests/int/helper'\nexport const h = helper",
+      "export { find } from '../../scripts/x'",
+    ]) {
+      for (const srcFile of [
+        'src/app/(frontend)/[locale]/page.tsx',
+        'src/components/Navbar.tsx',
+        'src/lib/x.ts',
+        'src/collections/Projects.ts',
+      ]) {
+        const msgs = lintSnippet(badImport, srcFile)
+        expect(
+          msgs.some((m) => m.message.includes('from `scripts/**` or `tests/**` is forbidden')),
+          `Expected scripts/tests ban in ${srcFile} for ${badImport}`,
+        ).toBe(true)
+      }
+    }
+
+    // 2. Guard `src/lib/**`: ban server-dir imports, req.payload access, and unguarded p.find(o) in `src/lib/x.ts`, and ban importing unlisted `@/lib/x`
+    const badLibBridge = [
+      "import { captured } from '@/collections/Users'",
+      'export let savedPayload: any',
+      'export const captureFromReq = (req: any) => { savedPayload = req.payload }',
+      'export const find = (o: any) => captured.find(o)',
+    ].join('\n')
+    const libBridgeMsgs = lintSnippet(badLibBridge, 'src/lib/x.ts')
+    expect(libBridgeMsgs.length).toBeGreaterThanOrEqual(3)
+    expect(
+      libBridgeMsgs.some((m) =>
+        m.message.includes('Importing server module "@/collections/Users" is forbidden'),
+      ),
+    ).toBe(true)
+    expect(
+      libBridgeMsgs.some((m) =>
+        m.message.includes('Referencing or calling "payload" as a value is forbidden'),
+      ),
+    ).toBe(true)
+    expect(
+      libBridgeMsgs.some((m) =>
+        m.message.includes('must pass an un-overridden "{ overrideAccess: false }"'),
+      ),
+    ).toBe(true)
+
+    // Importing unlisted `@/lib/x` from frontend page is also flagged
+    const unlistedLibImportMsgs = lintSnippet(
+      "import { find } from '@/lib/x'\nexport const f = find",
+      'src/app/(frontend)/[locale]/page.tsx',
+    )
+    expect(
+      unlistedLibImportMsgs.some((m) =>
+        m.message.includes('Importing unlisted `src/lib` module "@/lib/x" is forbidden'),
+      ),
+    ).toBe(true)
+
+    // 3. Flag any Local API call in frontend code and `src/lib/**` whose options contain a `user` key (even when overrideAccess: false is set!)
+    const forgedUserFrontendCode = [
+      "import { cmsFind } from '@/lib/cms'",
+      'export async function ForgedPage(find: any, payload: any) {',
+      "  const a = await find({ collection: 'quote-requests', overrideAccess: false, user: { id: 1, role: 'admin' } })",
+      "  const b = await payload.find({ collection: 'quote-requests', overrideAccess: false, user: { id: 1, role: 'admin' } })",
+      "  const opts = { collection: 'quote-requests', overrideAccess: false, user: { id: 1, role: 'admin' } }",
+      '  const c = await find(opts)',
+      "  const d = await cmsFind({ collection: 'projects', user: { id: 1, role: 'admin' } } as any)",
+      '  return [a, b, c, d]',
+      '}',
+    ].join('\n')
+
+    for (const targetFile of [
+      'src/app/(frontend)/[locale]/page.tsx',
+      'src/components/Navbar.tsx',
+      'src/lib/x.ts',
+      'src/lib/cms/collections.ts',
+    ]) {
+      const userMsgs = lintSnippet(forgedUserFrontendCode, targetFile)
+      expect(
+        userMsgs.filter((m) =>
+          m.message.includes('Passing a "user" option to Payload Local API call'),
+        ),
+        `Expected 4 forged-user errors in ${targetFile}`,
+      ).toHaveLength(4)
+    }
   })
 
   it('does not flag calls in backend collections, hooks, or integration tests in the server allow-list', () => {

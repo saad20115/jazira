@@ -7,21 +7,22 @@ import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 
 /**
- * Self-contained machine-captured evidence generator for `P3-T1` (`R-1`, `R-2`, `R-7`, `M-107`,
- * `handoff/README.md` §"Machine-captured evidence").
+ * Self-contained machine-captured evidence generator for `P3-T1` (`R-1`, `R-2`, `R-7`, `R-12`,
+ * `R-14`, `R-16`, `M-107`, `handoff/README.md` §"Machine-captured evidence").
  *
  * Usage:
  *   node scripts/evidence/p3-t1-evidence.mjs [baseUrl] [outDir]
  *
  * Example:
- *   node scripts/evidence/p3-t1-evidence.mjs http://localhost:3000 docs/reports/evidence/P3-T1/r2
+ *   node scripts/evidence/p3-t1-evidence.mjs http://localhost:3000 docs/reports/evidence/P3-T1/r3
  *
  * Captures:
- * 1. `curl-headers.log` & `http-checks.json`:
+ * 1. `curl-headers.log` & `http-checks.json` (with all secrets redacted as `<REDACTED_PREVIEW_SECRET>`, `R-14`):
  *    - `GET /` -> `308 Permanent Redirect` to `/ar` + `Content-Security-Policy`
  *    - `GET /ar` -> `200` + `H3` + `H3a` CSP (`'wasm-unsafe-eval'`, `worker-src 'self' blob:`) + `<html lang="ar" dir="rtl">`
  *    - `GET /en` -> `200` + `H3` + `H3a` CSP + `<html lang="en" dir="ltr">`
  *    - `GET /ar/projects` -> `H3` CSP WITHOUT `'wasm-unsafe-eval'` or `worker-src` + `<html lang="ar" dir="rtl">`
+ *    - `GET /robots.txt`, `GET /sitemap.xml`, `GET /favicon.ico`, `GET /.well-known/security.txt`, `GET /brand/full-primary.svg` (`R-12`)
  *    - `GET /admin/login` -> `/admin` relaxed CSP + `Set-Cookie: payload-lng=ar`
  *    - `GET /fr` -> `404` + `<html lang="ar" dir="rtl">` (`R-7`)
  *    - `GET /en/this-page-does-not-exist` -> `404` + `<html lang="en" dir="ltr">` + localized `<title>Page Not Found` (`R-7`)
@@ -31,11 +32,12 @@ import sharp from 'sharp'
  *    - Playwright headless Chromium visits `/ar` and `/en` (and `/ar/_specimen` + `/en/_specimen` when HTTP 200 in dev)
  *    - Collects `console`, `pageerror`, `securitypolicyviolation` DOM events, and all network requests
  *    - Verifies `0` console errors, `0` uncaught page errors, `0` CSP violations, `0` requests to `fonts.googleapis.com` / `fonts.gstatic.com`, and locale-specific `.woff2` font loading (`R-11`)
- * 3. Visual screenshots (`home-ar.png`, `home-en.png`, and `specimen-ar.png` / `specimen-en.png` when `/_specimen` returns 200):
+ * 3. Visual screenshots (`home-ar.png`, `home-en.png`, and `specimen-ar.png` / `specimen-en.png` / `specimen-comparison.png` when `/_specimen` returns 200):
+ *    - `specimen-comparison.png` places the Figma component sheets (`design/screenshots/components/`) next to `specimen-en.png` and `specimen-ar.png` (`R-16`).
  *    - Strictly visual `page.screenshot({ fullPage: true })` with zero injected DOM nodes or text overlays (`R-1`).
  */
 
-function resolvePreviewSecret() {
+function resolvePreviewSecrets() {
   let payloadSecret = process.env.PAYLOAD_SECRET ? process.env.PAYLOAD_SECRET.trim() : ''
   if (!payloadSecret) {
     const envPath = path.resolve(process.cwd(), '.env')
@@ -50,10 +52,44 @@ function resolvePreviewSecret() {
   if (!payloadSecret) {
     payloadSecret = 'dev-only-secret-change-me-in-production-32chars'
   }
-  return crypto
+  const previewSecret = crypto
     .createHmac('sha256', payloadSecret)
     .update('aljazira-live-preview-secret-v1')
     .digest('hex')
+
+  return {
+    previewSecret,
+    secretsToRedact: [
+      previewSecret,
+      encodeURIComponent(previewSecret),
+      payloadSecret,
+      encodeURIComponent(payloadSecret),
+    ].filter((s) => s.length >= 8),
+  }
+}
+
+/**
+ * Redacts live secrets from any logged path, URL, or header string (`R-14`).
+ *
+ * @param {string | null | undefined} text
+ * @param {string[]} secretsToRedact
+ * @returns {string | null}
+ */
+export function redactSecretValues(text, secretsToRedact = []) {
+  if (typeof text !== 'string') {
+    return null
+  }
+  let redacted = text
+  for (const secret of secretsToRedact) {
+    if (secret && redacted.includes(secret)) {
+      redacted = redacted.split(secret).join('<REDACTED_PREVIEW_SECRET>')
+    }
+  }
+  redacted = redacted.replace(
+    /([?&]secret=)(?!wrong-secret-00000000|<REDACTED_PREVIEW_SECRET>)[^&#\s]+/gi,
+    '$1<REDACTED_PREVIEW_SECRET>',
+  )
+  return redacted
 }
 
 function getRepoHeaderBlock() {
@@ -68,8 +104,9 @@ function getRepoHeaderBlock() {
 }
 
 /**
- * Stitches `specimen-ar.png` and `specimen-en.png` side-by-side into `specimen-comparison.png`
- * with zero text overlays (`handoff/README.md:180`).
+ * Stitches the Figma component reference sheets (`design/screenshots/components/`) on the left
+ * alongside `specimen-en.png` (middle) and `specimen-ar.png` (right) into `specimen-comparison.png`
+ * with zero text overlays (`R-16`, `handoff/README.md:180`).
  *
  * @param {string} outDir
  */
@@ -80,18 +117,78 @@ async function stitchSpecimenComparison(outDir) {
   if (!fs.existsSync(arPath) || !fs.existsSync(enPath)) {
     return
   }
-  const arBuf = fs.readFileSync(arPath)
-  const enBuf = fs.readFileSync(enPath)
-  const arMeta = await sharp(arBuf).metadata()
-  const enMeta = await sharp(enBuf).metadata()
-  const arW = arMeta.width ?? 1440
-  const arH = arMeta.height ?? 1800
-  const enW = enMeta.width ?? 1440
-  const enH = enMeta.height ?? 1800
+
+  const figmaComponentsDir = path.resolve(process.cwd(), 'design/screenshots/components')
+  const figmaSheetNames = [
+    'eyebrow.png',
+    'nav-link.png',
+    'button.png',
+    'accordion-item.png',
+    'service-card.png',
+    'navbar.png',
+    'footer.png',
+  ]
+
   const gap = 24
   const pad = 24
-  const totalW = pad + arW + gap + enW + pad
-  const totalH = pad + Math.max(arH, enH) + pad
+  const verticalGap = 16
+
+  /** @type {Array<{ buf: Buffer; width: number; height: number }>} */
+  const figmaSheets = []
+  let figmaColWidth = 0
+  let figmaColHeight = 0
+
+  for (const name of figmaSheetNames) {
+    const sheetPath = path.join(figmaComponentsDir, name)
+    if (fs.existsSync(sheetPath)) {
+      const buf = fs.readFileSync(sheetPath)
+      const meta = await sharp(buf).metadata()
+      const w = meta.width ?? 600
+      const h = meta.height ?? 200
+      figmaSheets.push({ buf, width: w, height: h })
+      if (w > figmaColWidth) {
+        figmaColWidth = w
+      }
+      figmaColHeight += h
+    }
+  }
+  if (figmaSheets.length > 1) {
+    figmaColHeight += verticalGap * (figmaSheets.length - 1)
+  }
+
+  const enBuf = fs.readFileSync(enPath)
+  const arBuf = fs.readFileSync(arPath)
+  const enMeta = await sharp(enBuf).metadata()
+  const arMeta = await sharp(arBuf).metadata()
+  const enW = enMeta.width ?? 1440
+  const enH = enMeta.height ?? 1800
+  const arW = arMeta.width ?? 1440
+  const arH = arMeta.height ?? 1800
+
+  const hasFigmaCol = figmaSheets.length > 0
+  const totalW = hasFigmaCol
+    ? pad + figmaColWidth + gap + enW + gap + arW + pad
+    : pad + enW + gap + arW + pad
+  const totalH = pad + Math.max(figmaColHeight, enH, arH) + pad
+
+  /** @type {Array<{ input: Buffer; left: number; top: number }>} */
+  const composites = []
+
+  let currentTop = pad
+  for (const sheet of figmaSheets) {
+    composites.push({
+      input: sheet.buf,
+      left: pad,
+      top: currentTop,
+    })
+    currentTop += sheet.height + verticalGap
+  }
+
+  const enLeft = hasFigmaCol ? pad + figmaColWidth + gap : pad
+  const arLeft = enLeft + enW + gap
+
+  composites.push({ input: enBuf, left: enLeft, top: pad })
+  composites.push({ input: arBuf, left: arLeft, top: pad })
 
   await sharp({
     create: {
@@ -101,10 +198,7 @@ async function stitchSpecimenComparison(outDir) {
       background: { r: 10, g: 22, b: 40, alpha: 1 },
     },
   })
-    .composite([
-      { input: arBuf, left: pad, top: pad },
-      { input: enBuf, left: pad + arW + gap, top: pad },
-    ])
+    .composite(composites)
     .png()
     .toFile(outPath)
 }
@@ -128,21 +222,31 @@ function extractHtmlOpeningTagAndTitle(html) {
 /**
  * @param {string} baseUrl
  * @param {string} reqPath
+ * @param {string[]} secretsToRedact
  */
-async function probeEndpoint(baseUrl, reqPath) {
+async function probeEndpoint(baseUrl, reqPath, secretsToRedact) {
   const url = `${baseUrl}${reqPath}`
   const res = await fetch(url, { redirect: 'manual' })
-  const body = await res.text()
+  const contentType = res.headers.get('content-type') ?? ''
+  const isTextOrHtml =
+    contentType.includes('text/') ||
+    contentType.includes('xml') ||
+    contentType.includes('json') ||
+    contentType === ''
+  const body = isTextOrHtml ? await res.text() : ''
   const { htmlTag, title, fontPreloadLinks } = extractHtmlOpeningTagAndTitle(body)
   return {
-    path: reqPath,
-    url,
+    path: redactSecretValues(reqPath, secretsToRedact) ?? reqPath,
+    url: redactSecretValues(url, secretsToRedact) ?? url,
     status: res.status,
     statusText: res.statusText,
     headers: {
-      location: res.headers.get('location'),
-      contentSecurityPolicy: res.headers.get('content-security-policy'),
-      setCookie: res.headers.get('set-cookie'),
+      location: redactSecretValues(res.headers.get('location'), secretsToRedact),
+      contentSecurityPolicy: redactSecretValues(
+        res.headers.get('content-security-policy'),
+        secretsToRedact,
+      ),
+      setCookie: redactSecretValues(res.headers.get('set-cookie'), secretsToRedact),
       contentType: res.headers.get('content-type'),
     },
     htmlTag,
@@ -294,12 +398,12 @@ async function main() {
   const args = process.argv.slice(2).filter((a) => !a.startsWith('--'))
   const flags = new Set(process.argv.slice(2).filter((a) => a.startsWith('--')))
   const baseUrl = (args[0] || process.env.BASE_URL || 'http://localhost:3000').replace(/\/+$/, '')
-  const outDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T1/r2')
+  const outDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T1/r3')
   const specimenOnly = flags.has('--specimen-only')
 
   fs.mkdirSync(outDir, { recursive: true })
   const headerBlock = getRepoHeaderBlock()
-  const previewSecret = resolvePreviewSecret()
+  const { previewSecret, secretsToRedact } = resolvePreviewSecrets()
 
   if (!specimenOnly) {
     const endpointsToProbe = [
@@ -307,6 +411,11 @@ async function main() {
       '/ar',
       '/en',
       '/ar/projects',
+      '/robots.txt',
+      '/sitemap.xml',
+      '/favicon.ico',
+      '/.well-known/security.txt',
+      '/brand/full-primary.svg',
       '/ar/_specimen',
       '/admin/login',
       '/fr',
@@ -321,7 +430,7 @@ async function main() {
     const curlLines = [headerBlock.trimEnd(), '']
 
     for (const ep of endpointsToProbe) {
-      const probe = await probeEndpoint(baseUrl, ep)
+      const probe = await probeEndpoint(baseUrl, ep, secretsToRedact)
       httpProbes.push(probe)
       curlLines.push(`=== GET ${probe.path} ===`)
       curlLines.push(`HTTPStatus: ${String(probe.status)} ${probe.statusText}`)
@@ -503,9 +612,11 @@ async function main() {
   }
 }
 
-main().catch((err) => {
-  process.stderr.write(
-    `[p3-t1-evidence] ERROR: ${err instanceof Error ? err.stack || err.message : String(err)}\n`,
-  )
-  process.exit(1)
-})
+if (process.argv[1] && path.resolve(process.argv[1]) === path.resolve(import.meta.filename)) {
+  main().catch((err) => {
+    process.stderr.write(
+      `[p3-t1-evidence] ERROR: ${err instanceof Error ? err.stack || err.message : String(err)}\n`,
+    )
+    process.exit(1)
+  })
+}

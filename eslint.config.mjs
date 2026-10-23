@@ -202,14 +202,19 @@ export default defineConfig([
   },
   {
     files: ['**/*.test.{ts,tsx,js,mjs}'],
-    ignores: ['src/app/**', 'src/components/**'],
+    ignores: ['src/app/**', 'src/components/**', 'src/lib/**'],
     rules: {
       'no-restricted-imports': 'off',
       '@typescript-eslint/no-restricted-imports': 'off',
     },
   },
   {
-    files: ['src/app/(frontend)/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
+    files: [
+      'src/app/(frontend)/**/*.{ts,tsx}',
+      'src/components/**/*.{ts,tsx}',
+      'src/lib/**/*.{ts,tsx}',
+    ],
+    ignores: ['src/lib/cms/client.ts'],
     rules: {
       '@typescript-eslint/no-restricted-imports': [
         'error',
@@ -221,7 +226,24 @@ export default defineConfig([
               group: FRONTEND_FORBIDDEN_SERVER_DIR_PATTERNS,
               allowTypeImports: false,
               message:
-                'Frontend and component modules must not import from server directories (@/app/(payload), @/collections, @/globals, @/hooks, @/access, @/migrations, @/fields, @/security) (R-3).',
+                'Frontend, component, and src/lib modules must not import from server directories (@/app/(payload), @/collections, @/globals, @/hooks, @/access, @/migrations, @/fields, @/security) (R-3, R-13).',
+            },
+            {
+              group: [
+                'scripts',
+                'scripts/*',
+                '**/scripts/*',
+                '@/scripts',
+                '@/scripts/*',
+                'tests',
+                'tests/*',
+                '**/tests/*',
+                '@/tests',
+                '@/tests/*',
+              ],
+              allowTypeImports: false,
+              message:
+                'Importing from scripts/** or tests/** inside src/** is forbidden (R-13).',
             },
           ],
         },

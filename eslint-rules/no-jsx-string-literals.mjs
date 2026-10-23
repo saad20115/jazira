@@ -30,6 +30,7 @@ export const USER_FACING_JSX_ATTRIBUTES = new Set([
   'aria-valuetext',
   'ariaLabel',
   'caption',
+  'content',
   'copyright',
   'ctaBody',
   'ctaButtonLabel',
@@ -230,6 +231,38 @@ export const noJsxStringLiteralsRule = {
             return
           }
 
+          case 'ObjectExpression': {
+            for (const prop of cur.properties ?? []) {
+              if (prop.type === 'Property') {
+                visit(prop.value)
+              } else if (prop.type === 'SpreadElement') {
+                visit(prop.argument)
+              }
+            }
+            return
+          }
+
+          case 'ArrowFunctionExpression':
+          case 'FunctionExpression': {
+            if (cur.body?.type === 'BlockStatement') {
+              for (const stmt of cur.body.body ?? []) {
+                if (stmt.type === 'ReturnStatement' && stmt.argument) {
+                  visit(stmt.argument)
+                }
+              }
+            } else if (cur.body) {
+              visit(cur.body)
+            }
+            return
+          }
+
+          case 'MemberExpression': {
+            if (cur.object?.type === 'Identifier') {
+              visit(cur.object)
+            }
+            return
+          }
+
           case 'CallExpression': {
             const callee = cur.callee
             if (callee?.type === 'MemberExpression' && !callee.computed && callee.property?.type === 'Identifier') {
@@ -252,6 +285,14 @@ export const noJsxStringLiteralsRule = {
               for (const arg of cur.arguments ?? []) {
                 visit(arg)
               }
+            } else if (callee?.type === 'Identifier') {
+              visit(callee)
+            } else if (
+              callee?.type === 'ArrowFunctionExpression' ||
+              callee?.type === 'FunctionExpression' ||
+              callee?.type === 'ParenthesizedExpression'
+            ) {
+              visit(callee)
             }
             return
           }
@@ -299,6 +340,20 @@ export const noJsxStringLiteralsRule = {
           const initHits = collectDisallowedLiteralsInExpression(node.init)
           if (initHits.length > 0) {
             taintedLiteralBindings.set(node.id.name, initHits[0].text)
+          }
+        }
+      },
+
+      FunctionDeclaration(node) {
+        if (node.id?.type === 'Identifier' && node.body?.type === 'BlockStatement') {
+          for (const stmt of node.body.body ?? []) {
+            if (stmt.type === 'ReturnStatement' && stmt.argument) {
+              const retHits = collectDisallowedLiteralsInExpression(stmt.argument)
+              if (retHits.length > 0) {
+                taintedLiteralBindings.set(node.id.name, retHits[0].text)
+                break
+              }
+            }
           }
         }
       },

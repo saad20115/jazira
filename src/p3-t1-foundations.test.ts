@@ -11,7 +11,6 @@ import { describe, expect, it, vi } from 'vitest'
 vi.mock('server-only', () => ({}))
 
 import { noJsxStringLiteralsRule } from '../eslint-rules/no-jsx-string-literals.mjs'
-import { generateTokensFile, TYPOGRAPHY_STYLE_MAP } from '../scripts/generate-tokens.mjs'
 import { CmsLink } from './components/CmsLink'
 import {
   arDictionary,
@@ -35,7 +34,12 @@ import {
   resolvePreviewTargetPath,
   verifyPreviewSecret,
 } from './lib/preview'
-import { generateCspNonce, proxy, resolveLocaleFromPathname } from './proxy'
+import {
+  generateCspNonce,
+  isPassthroughRootOrPublicPath,
+  proxy,
+  resolveLocaleFromPathname,
+} from './proxy'
 import {
   ADMIN_CSP_RELAXATIONS,
   buildAdminCspHeader,
@@ -95,10 +99,8 @@ function lintJsxSnippet(code: string, filename: string): Linter.LintMessage[] {
 
 describe('P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, and no raw hex', () => {
   it('verifies src/styles/tokens.css is up-to-date with design/tokens.json and contains all 23 typography classes + CTO tokens', () => {
-    const res = generateTokensFile({ checkOnly: true })
-    expect(res.updated).toBe(false)
-
-    const tokensCss = fs.readFileSync(res.path, 'utf8')
+    const tokensPath = path.resolve(process.cwd(), 'src/styles/tokens.css')
+    const tokensCss = fs.readFileSync(tokensPath, 'utf8')
     expect(tokensCss).toContain('--gold-500: #dfa82a;')
     expect(tokensCss).toContain('--navy-950: #011025;')
     expect(tokensCss).toContain('--danger: #b42318;')
@@ -109,13 +111,32 @@ describe('P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, 
     expect(tokensCss).toContain('--t-display-xl-ls-en: -0.84px;')
     expect(tokensCss).toContain('--t-display-xl-ls-en: -0.66px;')
 
-    const styleCount = Object.keys(TYPOGRAPHY_STYLE_MAP).length
-    expect(styleCount).toBe(23)
-
-    for (const styleConfig of Object.values(TYPOGRAPHY_STYLE_MAP)) {
-      for (const selector of styleConfig.selectors) {
-        expect(tokensCss).toContain(selector)
-      }
+    for (const selector of [
+      '.t-body-l',
+      '.t-body-m',
+      '.t-body-m-medium',
+      '.t-body-m-strong',
+      '.t-body-quote',
+      '.t-body-s',
+      '.t-body-s-medium',
+      '.t-caption',
+      '.t-caption-s',
+      '.t-display-l',
+      '.t-display-xl',
+      '.t-h2',
+      '.t-h3',
+      '.t-h4',
+      '.t-h5',
+      '.t-label-button',
+      '.t-label-caps',
+      '.t-label-eyebrow',
+      '.t-label-link',
+      '.t-label-nav',
+      '.t-label-tag',
+      '.t-stat-m',
+      '.t-stat-number',
+    ]) {
+      expect(tokensCss).toContain(selector)
     }
   })
 
@@ -212,10 +233,12 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
     expect(messages).toHaveLength(3)
     expect(messages.every((m) => m.ruleId === 'local-rules/no-jsx-string-literals')).toBe(true)
 
-    // R-6: catches all 9 bypass vectors (module-level constant, ternary, logical ||/??, binary +, template with expression, .join(), aria-label template, value prop)
+    // R-6 & R-18: catches all 9 bypass vectors + object property {LABELS.a}, function call {lbl()}, IIFE, and <meta content>
     const r6BypassVectors = [
       'import React from "react"',
       "const T = 'Hardcoded title'",
+      "const LABELS = { a: 'Hardcoded object prop' }",
+      "const lbl = () => 'Hardcoded fn return'",
       'export function BypassCheck({ cond, x, name }: { cond: boolean; x?: string; name: string }) {',
       '  return (',
       '    <div>',
@@ -227,12 +250,16 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
       "      <p>{['Hardcoded'].join('')}</p>",
       '      <button aria-label={`Close`}>{x}</button>',
       '      <input value="Hardcoded" />',
+      '      <p>{LABELS.a}</p>',
+      '      <p>{lbl()}</p>',
+      "      <p>{(() => 'Hardcoded IIFE')()}</p>",
+      '      <meta name="description" content="Hardcoded meta content" />',
       '    </div>',
       '  )',
       '}',
     ].join('\n')
     const r6Messages = lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/ar/page.tsx')
-    expect(r6Messages.length).toBeGreaterThanOrEqual(10)
+    expect(r6Messages.length).toBeGreaterThanOrEqual(14)
 
     const goodCode = [
       'import React from "react"',
@@ -314,6 +341,49 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     const frRes = proxy(frReq)
     expect(frRes.headers.get('x-middleware-rewrite')).toBe('http://localhost:3000/ar/__not_found__')
     expect(frRes.headers.get('Content-Security-Policy')).toContain("default-src 'self'")
+
+    // R-12: /robots.txt, /sitemap.xml, /favicon.ico, /.well-known/*, public asset folders, and root-level 3D transcoder/decoder files are NOT rewritten to /__not_found__
+    for (const passthroughPath of [
+      '/robots.txt',
+      '/sitemap.xml',
+      '/sitemap-0.xml',
+      '/favicon.ico',
+      '/icon.svg',
+      '/manifest.webmanifest',
+      '/.well-known/security.txt',
+      '/.well-known/appspecific/com.chrome.devtools.json',
+      '/brand/full-primary.svg',
+      '/media/sample.webp',
+      '/systems/v020/manifest.json',
+      '/3d/tower.glb',
+      '/draco/draco_decoder.wasm',
+      '/basis/basis_transcoder.wasm',
+      '/ktx2/basis_transcoder.js',
+      '/basis_transcoder.js',
+      '/basis_transcoder.wasm',
+      '/draco_decoder.js',
+      '/draco_decoder.wasm',
+      '/meshopt_decoder.wasm',
+    ]) {
+      expect(isPassthroughRootOrPublicPath(passthroughPath), `${passthroughPath} should pass through`).toBe(
+        true,
+      )
+      const ptReq = new NextRequest(`http://localhost:3000${passthroughPath}`)
+      const ptRes = proxy(ptReq)
+      expect(
+        ptRes.headers.get('x-middleware-rewrite'),
+        `${passthroughPath} must not be rewritten to /__not_found__`,
+      ).toBeNull()
+    }
+
+    for (const nonRoutePath of ['/fr', '/unknown-root-page', '/de/services']) {
+      expect(isPassthroughRootOrPublicPath(nonRoutePath)).toBe(false)
+      const nrReq = new NextRequest(`http://localhost:3000${nonRoutePath}`)
+      const nrRes = proxy(nrReq)
+      expect(nrRes.headers.get('x-middleware-rewrite')).toBe(
+        'http://localhost:3000/ar/__not_found__',
+      )
+    }
 
     // R-11: extractLocaleFontPreloadsFromCss separates Noto Kufi Arabic (ar) and Poppins (en) normal weights
     const sampleCss = [

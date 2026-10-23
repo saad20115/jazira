@@ -23,9 +23,50 @@ export type CmsGlobalSlug = keyof Config['globals']
 export const MAX_CMS_QUERY_LIMIT = 100
 
 /**
+ * Fetch limit used by `cmsFindAllSmallCollection` (`MAX_CMS_QUERY_LIMIT + 1 = 101`) so that
+ * `pagination: false` can detect when more than `MAX_CMS_QUERY_LIMIT` (`100`) documents exist,
+ * log a warning, and slice to the first `100` documents without throwing (`R-15`).
+ */
+export const SMALL_COLLECTION_FETCH_LIMIT = MAX_CMS_QUERY_LIMIT + 1
+
+/**
  * Default `limit` applied when `limit` is omitted or invalid on `cmsFind` (`R-23`).
  */
 export const DEFAULT_CMS_QUERY_LIMIT = 10
+
+export const CMS_REVALIDATE_LOCALES = ['ar', 'en'] as const
+
+export function buildCollectionTags(
+  collectionSlug: string,
+  docSlugs: readonly string[] = [],
+): string[] {
+  const tags = new Set<string>()
+  tags.add(`collection:${collectionSlug}`)
+  for (const locale of CMS_REVALIDATE_LOCALES) {
+    tags.add(`collection:${collectionSlug}:${locale}`)
+  }
+
+  for (const rawSlug of docSlugs) {
+    const slug = rawSlug.trim()
+    if (slug.length > 0) {
+      tags.add(`doc:${collectionSlug}:${slug}`)
+      for (const locale of CMS_REVALIDATE_LOCALES) {
+        tags.add(`doc:${collectionSlug}:${slug}:${locale}`)
+      }
+    }
+  }
+
+  return Array.from(tags)
+}
+
+export function buildGlobalTags(globalSlug: string): string[] {
+  const tags = new Set<string>()
+  tags.add(`global:${globalSlug}`)
+  for (const locale of CMS_REVALIDATE_LOCALES) {
+    tags.add(`global:${globalSlug}:${locale}`)
+  }
+  return Array.from(tags)
+}
 
 /**
  * Small, known collections permitted to use `pagination: false` through the dedicated
@@ -367,7 +408,7 @@ export function buildSafeCmsSmallCollectionArgs(
   }
   return {
     ...whitelisted,
-    limit: MAX_CMS_QUERY_LIMIT,
+    limit: SMALL_COLLECTION_FETCH_LIMIT,
     pagination: false,
     draft: draftFromDraftMode,
     overrideAccess: false,
@@ -417,26 +458,32 @@ export async function cmsFind<TSlug extends CmsCollectionSlug>(
 }
 
 /**
- * Verifies that a `cmsFindAllSmallCollection` result did not silently truncate documents beyond
- * `MAX_CMS_QUERY_LIMIT` (`R-10`, `R-23`). Logs a warning and throws if `totalDocs > MAX_CMS_QUERY_LIMIT`.
+ * Checks whether a `cmsFindAllSmallCollection` result exceeded `MAX_CMS_QUERY_LIMIT` (`100`)
+ * (`R-10`, `R-15`, `R-23`). When more than `100` documents are returned (`SMALL_COLLECTION_FETCH_LIMIT = 101`),
+ * logs a warning and returns `true` without throwing so public renders never crash (`R-15`).
  */
 export function assertSmallCollectionNotTruncated(
   collection: string,
-  totalDocs: number,
+  docCount: number,
   warnLogger?: (msg: string) => void,
-): void {
-  if (totalDocs > MAX_CMS_QUERY_LIMIT) {
-    const message = `[cmsFindAllSmallCollection] Collection "${collection}" has ${String(totalDocs)} documents, exceeding MAX_CMS_QUERY_LIMIT (${String(MAX_CMS_QUERY_LIMIT)}). Use paginated cmsFind() instead (R-10, R-23).`
+): boolean {
+  if (docCount > MAX_CMS_QUERY_LIMIT) {
+    const message = `[cmsFindAllSmallCollection] Collection "${collection}" has at least ${String(docCount)} documents, exceeding MAX_CMS_QUERY_LIMIT (${String(MAX_CMS_QUERY_LIMIT)}). Rendering the first ${String(MAX_CMS_QUERY_LIMIT)} documents (R-10, R-15, R-23).`
     if (warnLogger) {
       warnLogger(message)
+    } else {
+      console.warn(message)
     }
-    throw new Error(message)
+    return true
   }
+  return false
 }
 
 /**
  * Dedicated named helper for unpaginated (`pagination: false`) fetches of small, known
- * collections (`brands`, `stats`, `materials`, `services`, `team`) (`R-23`, `R-10`).
+ * collections (`brands`, `stats`, `materials`, `services`, `team`) (`R-23`, `R-10`, `R-15`).
+ * Queries `limit: SMALL_COLLECTION_FETCH_LIMIT` (`101`); when more than `100` docs exist,
+ * logs a warning and returns the first `100` docs without throwing (`R-15`).
  */
 export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCollectionSlug>(
   options: CmsFindAllSmallCollectionOptions<TSlug>,
@@ -453,13 +500,27 @@ export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCo
     ...(safeArgs as unknown as Parameters<Payload['find']>[0]),
     ...(draft && staffUser ? { user: staffUser } : {}),
     pagination: false,
-    limit: MAX_CMS_QUERY_LIMIT,
+    limit: SMALL_COLLECTION_FETCH_LIMIT,
     draft,
     overrideAccess: false,
   })
-  assertSmallCollectionNotTruncated(options.collection, result.totalDocs, (msg) => {
-    payload.logger.warn(msg)
-  })
+  const observedCount = Math.max(result.docs.length, result.totalDocs)
+  const wasCapped = assertSmallCollectionNotTruncated(
+    options.collection,
+    observedCount,
+    (msg) => {
+      payload.logger.warn(msg)
+      console.warn(msg)
+    },
+  )
+  if (wasCapped || result.docs.length > MAX_CMS_QUERY_LIMIT) {
+    const cappedDocs = result.docs.slice(0, MAX_CMS_QUERY_LIMIT)
+    return {
+      ...result,
+      docs: cappedDocs,
+      totalDocs: cappedDocs.length,
+    } as unknown as CmsPaginatedDocs<Config['collections'][TSlug]>
+  }
   return result as unknown as CmsPaginatedDocs<Config['collections'][TSlug]>
 }
 
