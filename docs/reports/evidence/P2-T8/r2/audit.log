@@ -1,0 +1,2 @@
+$ pnpm audit --prod
+No known vulnerabilities found

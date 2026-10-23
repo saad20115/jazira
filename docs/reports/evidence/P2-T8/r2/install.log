@@ -1,0 +1,115 @@
+$ pnpm install --frozen-lockfile
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +666
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 666, reused 101, downloaded 0, added 0
+Progress: resolved 666, reused 325, downloaded 0, added 0
+Progress: resolved 666, reused 665, downloaded 0, added 9
+Progress: resolved 666, reused 666, downloaded 0, added 22
+Progress: resolved 666, reused 666, downloaded 0, added 35
+Progress: resolved 666, reused 666, downloaded 0, added 50
+Progress: resolved 666, reused 666, downloaded 0, added 67
+Progress: resolved 666, reused 666, downloaded 0, added 103
+Progress: resolved 666, reused 666, downloaded 0, added 127
+Progress: resolved 666, reused 666, downloaded 0, added 137
+Progress: resolved 666, reused 666, downloaded 0, added 151
+Progress: resolved 666, reused 666, downloaded 0, added 155
+Progress: resolved 666, reused 666, downloaded 0, added 160
+Progress: resolved 666, reused 666, downloaded 0, added 172
+Progress: resolved 666, reused 666, downloaded 0, added 177
+Progress: resolved 666, reused 666, downloaded 0, added 179
+Progress: resolved 666, reused 666, downloaded 0, added 187
+Progress: resolved 666, reused 666, downloaded 0, added 208
+Progress: resolved 666, reused 666, downloaded 0, added 211
+Progress: resolved 666, reused 666, downloaded 0, added 219
+Progress: resolved 666, reused 666, downloaded 0, added 236
+Progress: resolved 666, reused 666, downloaded 0, added 267
+Progress: resolved 666, reused 666, downloaded 0, added 280
+Progress: resolved 666, reused 666, downloaded 0, added 281
+Progress: resolved 666, reused 666, downloaded 0, added 288
+Progress: resolved 666, reused 666, downloaded 0, added 293
+Progress: resolved 666, reused 666, downloaded 0, added 299
+Progress: resolved 666, reused 666, downloaded 0, added 304
+Progress: resolved 666, reused 666, downloaded 0, added 307
+Progress: resolved 666, reused 666, downloaded 0, added 311
+Progress: resolved 666, reused 666, downloaded 0, added 316
+Progress: resolved 666, reused 666, downloaded 0, added 323
+Progress: resolved 666, reused 666, downloaded 0, added 324
+Progress: resolved 666, reused 666, downloaded 0, added 325
+Progress: resolved 666, reused 666, downloaded 0, added 336
+Progress: resolved 666, reused 666, downloaded 0, added 346
+Progress: resolved 666, reused 666, downloaded 0, added 351
+Progress: resolved 666, reused 666, downloaded 0, added 372
+Progress: resolved 666, reused 666, downloaded 0, added 387
+Progress: resolved 666, reused 666, downloaded 0, added 405
+Progress: resolved 666, reused 666, downloaded 0, added 420
+Progress: resolved 666, reused 666, downloaded 0, added 444
+Progress: resolved 666, reused 666, downloaded 0, added 445
+Progress: resolved 666, reused 666, downloaded 0, added 447
+Progress: resolved 666, reused 666, downloaded 0, added 466
+Progress: resolved 666, reused 666, downloaded 0, added 471
+Progress: resolved 666, reused 666, downloaded 0, added 487
+Progress: resolved 666, reused 666, downloaded 0, added 496
+Progress: resolved 666, reused 666, downloaded 0, added 498
+Progress: resolved 666, reused 666, downloaded 0, added 499
+Progress: resolved 666, reused 666, downloaded 0, added 508
+Progress: resolved 666, reused 666, downloaded 0, added 516
+Progress: resolved 666, reused 666, downloaded 0, added 524
+Progress: resolved 666, reused 666, downloaded 0, added 531
+Progress: resolved 666, reused 666, downloaded 0, added 538
+Progress: resolved 666, reused 666, downloaded 0, added 544
+Progress: resolved 666, reused 666, downloaded 0, added 552
+Progress: resolved 666, reused 666, downloaded 0, added 563
+Progress: resolved 666, reused 666, downloaded 0, added 584
+Progress: resolved 666, reused 666, downloaded 0, added 601
+Progress: resolved 666, reused 666, downloaded 0, added 609
+Progress: resolved 666, reused 666, downloaded 0, added 613
+Progress: resolved 666, reused 666, downloaded 0, added 615
+Progress: resolved 666, reused 666, downloaded 0, added 616
+Progress: resolved 666, reused 666, downloaded 0, added 622
+Progress: resolved 666, reused 666, downloaded 0, added 630
+Progress: resolved 666, reused 666, downloaded 0, added 631
+Progress: resolved 666, reused 666, downloaded 0, added 632
+Progress: resolved 666, reused 666, downloaded 0, added 636
+Progress: resolved 666, reused 666, downloaded 0, added 644
+Progress: resolved 666, reused 666, downloaded 0, added 657
+Progress: resolved 666, reused 666, downloaded 0, added 660
+Progress: resolved 666, reused 666, downloaded 0, added 661
+Progress: resolved 666, reused 666, downloaded 0, added 662
+Progress: resolved 666, reused 666, downloaded 0, added 663
+Progress: resolved 666, reused 666, downloaded 0, added 664
+Progress: resolved 666, reused 666, downloaded 0, added 665
+Progress: resolved 666, reused 666, downloaded 0, added 666
+Progress: resolved 666, reused 666, downloaded 0, added 666, done
+
+dependencies:
++ @payloadcms/db-postgres 3.91.0
++ @payloadcms/email-nodemailer 3.91.0
++ @payloadcms/next 3.91.0
++ @payloadcms/plugin-seo 3.91.0
++ @payloadcms/richtext-lexical 3.91.0
++ @payloadcms/translations 3.91.0
++ @payloadcms/ui 3.91.0
++ graphql 16.14.2
++ next 16.4.2
++ payload 3.91.0
++ react 19.3.1
++ react-dom 19.3.1
++ sharp 0.35.5
++ zod 4.6.7
+
+devDependencies:
++ @playwright/test 1.64.1
++ @types/node 24.19.2
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ cross-env 10.1.0
++ eslint 10.13.0
++ eslint-config-next 16.4.2
++ prettier 3.9.10
++ typescript 5.9.3
++ typescript-eslint 8.72.0
++ vitest 5.0.5
+
+Done in 2m 40.9s using pnpm v10.34.7

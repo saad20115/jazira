@@ -1,3 +1,6 @@
+$ git grep -n -e 'screenshot' -- handoff/README.md
+handoff/README.md:158:- (added 2026-10-23) A screenshot is described in **one line naming what it proves**. Never list UI
+
 $ git grep -n -e 'lockedAdmin' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:779:    const lockedAdminEmail = 'locked-admin-p2t6@aljazira.co'
 tests/int/p2-t6.int.test.ts:780:    const lockedAdminPassword = 'Str0ng!Locked#Pass2026$XyZ'
@@ -17,6 +20,116 @@ tests/int/p2-t6.int.test.ts:878:          email: lockedAdminEmail,
 tests/int/p2-t6.int.test.ts:879:          password: lockedAdminPassword,
 tests/int/p2-t6.int.test.ts:908:        id: lockedAdmin.id,
 
+$ git grep -n -e 'expect' -- tests/int/p2-t6.int.test.ts
+tests/int/p2-t6.int.test.ts:5:import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+tests/int/p2-t6.int.test.ts:139:    expect(adminLogin.status).toBe(200)
+tests/int/p2-t6.int.test.ts:147:    expect(editorLogin.status).toBe(200)
+tests/int/p2-t6.int.test.ts:198:    expect(anonPost.status).toBe(403)
+tests/int/p2-t6.int.test.ts:207:    expect(editorPost.status).toBe(403)
+tests/int/p2-t6.int.test.ts:216:    expect(adminPost.status).toBe(403)
+tests/int/p2-t6.int.test.ts:219:    await expect(
+tests/int/p2-t6.int.test.ts:227:    await expect(
+tests/int/p2-t6.int.test.ts:236:    await expect(
+tests/int/p2-t6.int.test.ts:274:    expect(createdQuote.userAgent).toHaveLength(300)
+tests/int/p2-t6.int.test.ts:275:    expect(createdQuote.ipHash).toBe(clientIpHash)
+tests/int/p2-t6.int.test.ts:276:    expect(createdQuote.ipHash).not.toContain('203.0.113.88')
+tests/int/p2-t6.int.test.ts:283:    expect(anonList.status).toBe(403)
+tests/int/p2-t6.int.test.ts:289:    expect(anonGetById.status).toBe(403)
+tests/int/p2-t6.int.test.ts:297:    expect(editorList.status).toBe(200)
+tests/int/p2-t6.int.test.ts:298:    expect(editorList.body.totalDocs).toBe(1)
+tests/int/p2-t6.int.test.ts:311:    expect(editorPatchWorkflow.status).toBe(200)
+tests/int/p2-t6.int.test.ts:313:    expect(updatedDocFromWorkflow.status).toBe('contacted')
+tests/int/p2-t6.int.test.ts:314:    expect(updatedDocFromWorkflow.internalNotes).toBe(
+tests/int/p2-t6.int.test.ts:334:    expect(editorPatchTamper.status).toBe(200)
+tests/int/p2-t6.int.test.ts:350:    expect(adminPatchTamper.status).toBe(200)
+tests/int/p2-t6.int.test.ts:359:    expect(storedAfterTamper.status).toBe('quoted')
+tests/int/p2-t6.int.test.ts:360:    expect(storedAfterTamper.assignedTo).toBe(editorUser.id)
+tests/int/p2-t6.int.test.ts:361:    expect(storedAfterTamper.internalNotes).toBe(
+tests/int/p2-t6.int.test.ts:364:    expect(storedAfterTamper.email).toBe('fahad@modernbuild.example.sa')
+tests/int/p2-t6.int.test.ts:365:    expect(storedAfterTamper.message).toBe(
+tests/int/p2-t6.int.test.ts:368:    expect(storedAfterTamper.name).toBe('م. فهد السبيعي')
+tests/int/p2-t6.int.test.ts:369:    expect(storedAfterTamper.phone).toBe('+966573534185')
+tests/int/p2-t6.int.test.ts:370:    expect(storedAfterTamper.emailStatus).toBe('pending')
+tests/int/p2-t6.int.test.ts:371:    expect(storedAfterTamper.emailAttempts).toBe(1)
+tests/int/p2-t6.int.test.ts:372:    expect(storedAfterTamper.emailLastError).toBe('SMTP timeout after 10000ms (sanitized)')
+tests/int/p2-t6.int.test.ts:373:    expect(storedAfterTamper.ipHash).toBe(clientIpHash)
+tests/int/p2-t6.int.test.ts:381:    expect(editorDelete.status).toBe(403)
+tests/int/p2-t6.int.test.ts:389:    expect(adminDelete.status).toBe(200)
+tests/int/p2-t6.int.test.ts:396:    expect(remaining.totalDocs).toBe(0)
+tests/int/p2-t6.int.test.ts:401:    await expect(
+tests/int/p2-t6.int.test.ts:418:    await expect(
+tests/int/p2-t6.int.test.ts:435:    await expect(
+tests/int/p2-t6.int.test.ts:453:    await expect(
+tests/int/p2-t6.int.test.ts:495:    expect(badStatusPatch.status).toBe(400)
+tests/int/p2-t6.int.test.ts:505:    expect(badAssigneePatch.status).toBe(400)
+tests/int/p2-t6.int.test.ts:558:    expect(listAll.status).toBe(200)
+tests/int/p2-t6.int.test.ts:560:    expect(docs.map((d) => d.id)).toEqual([q2.id, q1.id])
+tests/int/p2-t6.int.test.ts:569:    expect(filterByStatus.status).toBe(200)
+tests/int/p2-t6.int.test.ts:570:    expect((filterByStatus.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
+tests/int/p2-t6.int.test.ts:579:    expect(filterByAssignee.status).toBe(200)
+tests/int/p2-t6.int.test.ts:580:    expect((filterByAssignee.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
+tests/int/p2-t6.int.test.ts:589:    expect(filterByDate.status).toBe(200)
+tests/int/p2-t6.int.test.ts:590:    expect((filterByDate.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
+tests/int/p2-t6.int.test.ts:596:      await expect(
+tests/int/p2-t6.int.test.ts:636:      expect(createdVariant.phone, `rawPhoneVariant=${rawPhoneVariant}`).toBe('+966573534185')
+tests/int/p2-t6.int.test.ts:679:    expect(quoteWith00966.phone).toBe('+966573534185')
+tests/int/p2-t6.int.test.ts:680:    expect(quoteWith00966.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
+tests/int/p2-t6.int.test.ts:689:    expect(quoteDepth1AsEditor.status).toBe(200)
+tests/int/p2-t6.int.test.ts:691:    expect(populatedAssignee).toEqual({
+tests/int/p2-t6.int.test.ts:695:    expect(populatedAssignee.email).toBeUndefined()
+tests/int/p2-t6.int.test.ts:696:    expect(populatedAssignee.role).toBeUndefined()
+tests/int/p2-t6.int.test.ts:697:    expect(populatedAssignee.sessions).toBeUndefined()
+tests/int/p2-t6.int.test.ts:705:    expect(otherUserAsEditor.status).toBe(200)
+tests/int/p2-t6.int.test.ts:706:    expect(otherUserAsEditor.body).toEqual({
+tests/int/p2-t6.int.test.ts:710:    expect(otherUserAsEditor.body.email).toBeUndefined()
+tests/int/p2-t6.int.test.ts:711:    expect(otherUserAsEditor.body.role).toBeUndefined()
+tests/int/p2-t6.int.test.ts:712:    expect(otherUserAsEditor.body.sessions).toBeUndefined()
+tests/int/p2-t6.int.test.ts:719:    expect(selfUserAsEditor.status).toBe(200)
+tests/int/p2-t6.int.test.ts:720:    expect(selfUserAsEditor.body.email).toBe('editor-p2t6@aljazira.co')
+tests/int/p2-t6.int.test.ts:721:    expect(selfUserAsEditor.body.role).toBe('editor')
+tests/int/p2-t6.int.test.ts:733:    expect(patchServiceTitle.status).toBe(200)
+tests/int/p2-t6.int.test.ts:748:    expect(afterServiceDeleted.service).toBeNull()
+tests/int/p2-t6.int.test.ts:749:    expect(afterServiceDeleted.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
+tests/int/p2-t6.int.test.ts:750:    expect(afterServiceDeleted.status).toBe('contacted')
+tests/int/p2-t6.int.test.ts:769:    expect(fallbackUser.name).toBe('fallback-title-p2t6@aljazira.co')
+tests/int/p2-t6.int.test.ts:793:    expect(lockedAdmin.role).toBe('admin')
+tests/int/p2-t6.int.test.ts:806:        expect(badLogin.status).toBe(401)
+tests/int/p2-t6.int.test.ts:818:      expect(loginWhileLocked.status).toBe(401)
+tests/int/p2-t6.int.test.ts:826:      expect(anonUnlock.status).toBe(403)
+tests/int/p2-t6.int.test.ts:841:      expect(editorUnlockExisting.status).toBe(403)
+tests/int/p2-t6.int.test.ts:842:      expect(editorUnlockUnknown.status).toBe(403)
+tests/int/p2-t6.int.test.ts:843:      expect(editorUnlockExisting.body).toEqual(editorUnlockUnknown.body)
+tests/int/p2-t6.int.test.ts:852:      expect(editorUnlockSelf.status).toBe(403)
+tests/int/p2-t6.int.test.ts:863:      expect(loginStillLocked.status).toBe(401)
+tests/int/p2-t6.int.test.ts:872:      expect(adminUnlock.status).toBe(200)
+tests/int/p2-t6.int.test.ts:882:      expect(loginAfterAdminUnlock.status).toBe(200)
+tests/int/p2-t6.int.test.ts:902:      expect(anonVerify.status).toBe(404)
+tests/int/p2-t6.int.test.ts:903:      expect(editorVerify.status).toBe(404)
+tests/int/p2-t6.int.test.ts:904:      expect(adminVerify.status).toBe(404)
+tests/int/p2-t6.int.test.ts:938:    expect(mediaDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:961:    expect(videoDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:974:    expect(brandCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:976:    expect(brandDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:989:    expect(statCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:991:    expect(statDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1005:    expect(materialCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:1007:    expect(materialDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1024:    expect(serviceCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:1026:    expect(r10ServiceDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1041:    expect(teamCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:1043:    expect(teamDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1064:    expect(projectCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:1066:    expect(projectDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1080:    expect(userCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:1082:    expect(r10UserDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1194:      expect(editorPatchRes.status, `editor REST PATCH on ${target.slug}`).toBe(200)
+tests/int/p2-t6.int.test.ts:1206:      expect(adminPatchRes.status, `admin REST PATCH on ${target.slug}`).toBe(200)
+tests/int/p2-t6.int.test.ts:1238:      expect(fetched.createdAt, `${target.slug} createdAt must remain immutable`).toBe(
+tests/int/p2-t6.int.test.ts:1241:      expect(fetched.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1255:    expect(bulkPatchRes.status).toBe(200)
+tests/int/p2-t6.int.test.ts:1262:    expect(quoteAfterBulk.createdAt).toBe(quoteDoc.createdAt)
+tests/int/p2-t6.int.test.ts:1263:    expect(quoteAfterBulk.status).toBe('quoted')
+
 $ git grep -n -e 'anonymous' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:177:  it('enforces Z4: nobody (anonymous, editor, or admin) can create quote-requests via REST POST or Local API with overrideAccess: false', async () => {
 tests/int/p2-t6.int.test.ts:218:    // 4. Local API with overrideAccess: false (anonymous, editor, admin) -> throws Forbidden
@@ -24,16 +137,53 @@ tests/int/p2-t6.int.test.ts:246:  it('executes all required REST probes: anonymo
 tests/int/p2-t6.int.test.ts:778:  it('enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19)', async () => {
 tests/int/p2-t6.int.test.ts:884:      // 6. POST /api/users/verify/:id returns 404 (4xx, never 500) for anonymous, editor, and admin callers (R-19)
 
-$ git grep -n -e 'adminUser' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:22:let adminUser: User
-tests/int/p2-t6.int.test.ts:112:    adminUser = await payload.create({
+$ git grep -n -e 'user' -- tests/int/p2-t6.int.test.ts
+tests/int/p2-t6.int.test.ts:113:      collection: 'users',
+tests/int/p2-t6.int.test.ts:124:      collection: 'users',
+tests/int/p2-t6.int.test.ts:136:      slugPath: ['users', 'login'],
+tests/int/p2-t6.int.test.ts:144:      slugPath: ['users', 'login'],
+tests/int/p2-t6.int.test.ts:231:        user: editorUser,
 tests/int/p2-t6.int.test.ts:240:        user: adminUser,
-tests/int/p2-t6.int.test.ts:644:    // R-4: Create a temporary service, create a quote request with 00966 phone assigned to adminUser, verify E.164 normalization and serviceTitle snapshot
-tests/int/p2-t6.int.test.ts:670:        assignedTo: adminUser.id,
-tests/int/p2-t6.int.test.ts:692:      id: adminUser.id,
+tests/int/p2-t6.int.test.ts:269:        userAgent: longUserAgent,
+tests/int/p2-t6.int.test.ts:273:    // Verify userAgent was truncated to 300 characters and ipHash is stored as 64-char SHA-256 hex
+tests/int/p2-t6.int.test.ts:274:    expect(createdQuote.userAgent).toHaveLength(300)
+tests/int/p2-t6.int.test.ts:593:  it('normalizes phone inputs (0573534185, 057 353 4185, 00966 57 353 4185, +966 57 353 4185) to canonical E.164 +966573534185 (R-3, R-12), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and allows editors to read only id + name of other users (R-5, R-11)', async () => {
+tests/int/p2-t6.int.test.ts:682:    // R-11: Editor reading the quote request at depth=1 sees the assignee's id and name, but never another user's email, role, or sessions
+tests/int/p2-t6.int.test.ts:699:    // R-11: Editor reading GET /api/users/:adminId directly sees ONLY { id, name }, whereas GET /api/users/:editorId (self) includes email and role
 tests/int/p2-t6.int.test.ts:702:      slugPath: ['users', String(adminUser.id)],
-tests/int/p2-t6.int.test.ts:707:      id: adminUser.id,
+tests/int/p2-t6.int.test.ts:716:      slugPath: ['users', String(editorUser.id)],
+tests/int/p2-t6.int.test.ts:760:      collection: 'users',
+tests/int/p2-t6.int.test.ts:772:      collection: 'users',
+tests/int/p2-t6.int.test.ts:778:  it('enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19)', async () => {
+tests/int/p2-t6.int.test.ts:783:      collection: 'users',
 tests/int/p2-t6.int.test.ts:785:      user: adminUser,
+tests/int/p2-t6.int.test.ts:800:          slugPath: ['users', 'login'],
+tests/int/p2-t6.int.test.ts:812:        slugPath: ['users', 'login'],
+tests/int/p2-t6.int.test.ts:820:      // 2. Anonymous POST /api/users/unlock -> 403
+tests/int/p2-t6.int.test.ts:823:        slugPath: ['users', 'unlock'],
+tests/int/p2-t6.int.test.ts:831:        slugPath: ['users', 'unlock'],
+tests/int/p2-t6.int.test.ts:837:        slugPath: ['users', 'unlock'],
+tests/int/p2-t6.int.test.ts:848:        slugPath: ['users', 'unlock'],
+tests/int/p2-t6.int.test.ts:857:        slugPath: ['users', 'login'],
+tests/int/p2-t6.int.test.ts:868:        slugPath: ['users', 'unlock'],
+tests/int/p2-t6.int.test.ts:876:        slugPath: ['users', 'login'],
+tests/int/p2-t6.int.test.ts:884:      // 6. POST /api/users/verify/:id returns 404 (4xx, never 500) for anonymous, editor, and admin callers (R-19)
+tests/int/p2-t6.int.test.ts:887:        slugPath: ['users', 'verify', 'fake-token-123'],
+tests/int/p2-t6.int.test.ts:892:        slugPath: ['users', 'verify', 'fake-token-123'],
+tests/int/p2-t6.int.test.ts:898:        slugPath: ['users', 'verify', 'fake-token-123'],
+tests/int/p2-t6.int.test.ts:907:        collection: 'users',
+tests/int/p2-t6.int.test.ts:925:      user: editorUser,
+tests/int/p2-t6.int.test.ts:948:      user: editorUser,
+tests/int/p2-t6.int.test.ts:963:    // Create via REST POST with forged createdAt on brands, stats, materials, services, team, projects (as editor) and users (as admin) (R-10)
+tests/int/p2-t6.int.test.ts:1068:    const userCreateRes = await callJsonApi({
+tests/int/p2-t6.int.test.ts:1070:      slugPath: ['users'],
+tests/int/p2-t6.int.test.ts:1080:    expect(userCreateRes.status).toBe(201)
+tests/int/p2-t6.int.test.ts:1081:    const r10UserDoc = userCreateRes.body.doc as { id: number; createdAt: string }
+tests/int/p2-t6.int.test.ts:1084:      collection: 'users',
+tests/int/p2-t6.int.test.ts:1105:        | 'users'
+tests/int/p2-t6.int.test.ts:1120:        slug: 'users',
+tests/int/p2-t6.int.test.ts:1184:      // 1. REST PATCH as editor (on users, editor updates self)
+tests/int/p2-t6.int.test.ts:1212:        user: editorUser,
 tests/int/p2-t6.int.test.ts:1223:        user: adminUser,
 
 $ git grep -n -e 'enforceRoleAndPasswordBeforeValidate' -- src/collections/Users.ts
@@ -45,15 +195,202 @@ src/collections/Users.ts:57:  const callerRole = (req.user as { role?: string } 
 src/collections/Users.ts:69:    } else if (callerRole !== 'admin') {
 src/collections/Users.ts:74:  } else if (originalDoc && callerRole !== 'admin') {
 
-$ git grep -n -e 'for (let i = 0; i < 5; i++) {' -- tests/int/p2-t6.int.test.ts
+$ git grep -n -e 'else' -- src/collections/Users.ts
+src/collections/Users.ts:35:  } else if (operation === 'update') {
+src/collections/Users.ts:69:    } else if (callerRole !== 'admin') {
+src/collections/Users.ts:71:    } else {
+src/collections/Users.ts:74:  } else if (originalDoc && callerRole !== 'admin') {
+
+$ git grep -n -e '}' -- src/collections/Users.ts
+src/collections/Users.ts:12:} from 'payload'
+src/collections/Users.ts:20:} from '../access/index'
+src/collections/Users.ts:21:import { createPublicAPIError } from '../security/apiError'
+src/collections/Users.ts:22:import { enforcePasswordPolicy } from '../security/passwordPolicy'
+src/collections/Users.ts:23:import { immutableCreatedAtField, withImmutableCreatedAt } from './_shared/immutableTimestamps'
+src/collections/Users.ts:27:  { operation: 'read' | 'readDistinct' }
+src/collections/Users.ts:31:  const { args, operation } = rawArg as ActiveBeforeOperationArg
+src/collections/Users.ts:32:  const data = (args as { data?: Record<string, unknown> }).data
+src/collections/Users.ts:35:  } else if (operation === 'update') {
+src/collections/Users.ts:38:    }
+src/collections/Users.ts:39:  }
+src/collections/Users.ts:41:}
+src/collections/Users.ts:48:}) => {
+src/collections/Users.ts:51:  }
+src/collections/Users.ts:55:  }
+src/collections/Users.ts:57:  const callerRole = (req.user as { role?: string } | null | undefined)?.role
+src/collections/Users.ts:63:      where: {},
+src/collections/Users.ts:64:    })
+src/collections/Users.ts:69:    } else if (callerRole !== 'admin') {
+src/collections/Users.ts:71:    } else {
+src/collections/Users.ts:73:    }
+src/collections/Users.ts:74:  } else if (originalDoc && callerRole !== 'admin') {
+src/collections/Users.ts:76:    const prevRole = (originalDoc as { role?: 'admin' | 'editor' }).role
+src/collections/Users.ts:78:  }
+src/collections/Users.ts:81:}
+src/collections/Users.ts:88:}) => {
+src/collections/Users.ts:90:    const previousRole = (originalDoc as { role?: string }).role
+src/collections/Users.ts:91:    const nextRole = (data as { role?: string }).role
+src/collections/Users.ts:93:      const docId = (originalDoc as { id?: number | string }).id
+src/collections/Users.ts:101:                and: [{ role: { equals: 'admin' } }, { id: { not_equals: docId } }],
+src/collections/Users.ts:102:              }
+src/collections/Users.ts:103:            : { role: { equals: 'admin' } },
+src/collections/Users.ts:104:      })
+src/collections/Users.ts:111:      }
+src/collections/Users.ts:112:    }
+src/collections/Users.ts:113:  }
+src/collections/Users.ts:116:}
+src/collections/Users.ts:118:const preventLastAdminBeforeDelete: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Users.ts:119:  const targetUser = await req.payload.db.findOne<{ id: number | string; role?: string }>({
+src/collections/Users.ts:125:      },
+src/collections/Users.ts:126:    },
+src/collections/Users.ts:127:  })
+src/collections/Users.ts:135:        and: [{ role: { equals: 'admin' } }, { id: { not_equals: id } }],
+src/collections/Users.ts:136:      },
+src/collections/Users.ts:137:    })
+src/collections/Users.ts:144:    }
+src/collections/Users.ts:145:  }
+src/collections/Users.ts:146:}
+src/collections/Users.ts:153:}) => {
+src/collections/Users.ts:156:  }
+src/collections/Users.ts:158:    (siblingData as { email?: unknown } | undefined)?.email ??
+src/collections/Users.ts:159:    (data as { email?: unknown } | undefined)?.email
+src/collections/Users.ts:162:  }
+src/collections/Users.ts:163:  const origName = (originalDoc as { name?: unknown } | undefined)?.name
+src/collections/Users.ts:166:  }
+src/collections/Users.ts:167:  const origEmail = (originalDoc as { email?: unknown } | undefined)?.email
+src/collections/Users.ts:170:  }
+src/collections/Users.ts:172:}
+src/collections/Users.ts:174:const isAdminOrEditorUserFieldAccess: FieldAccess = ({ req }) => {
+src/collections/Users.ts:175:  const user = req.user as { role?: string } | null | undefined
+src/collections/Users.ts:177:}
+src/collections/Users.ts:179:export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data, req }) => {
+src/collections/Users.ts:182:  }
+src/collections/Users.ts:186:  })
+src/collections/Users.ts:189:      (siblingData as { email?: unknown } | undefined)?.email ??
+src/collections/Users.ts:190:      (data as { email?: unknown } | undefined)?.email
+src/collections/Users.ts:193:    }
+src/collections/Users.ts:194:  }
+src/collections/Users.ts:196:}
+src/collections/Users.ts:206:}): Record<string, unknown> => {
+src/collections/Users.ts:209:  }
+src/collections/Users.ts:211:  const caller = req.user as { id?: number | string; role?: string } | null | undefined
+src/collections/Users.ts:214:  }
+src/collections/Users.ts:222:  }
+src/collections/Users.ts:226:  }
+src/collections/Users.ts:227:}
+src/collections/Users.ts:236:        },
+src/collections/Users.ts:238:    },
+src/collections/Users.ts:239:    { status: 404 },
+src/collections/Users.ts:247:  },
+src/collections/Users.ts:252:    },
+src/collections/Users.ts:256:    },
+src/collections/Users.ts:257:  },
+src/collections/Users.ts:264:    },
+src/collections/Users.ts:268:    },
+src/collections/Users.ts:269:  },
+src/collections/Users.ts:276:    admin: ({ req }) => {
+src/collections/Users.ts:277:      const user = req.user as { role?: string } | null | undefined
+src/collections/Users.ts:279:    },
+src/collections/Users.ts:280:  },
+src/collections/Users.ts:290:    },
+src/collections/Users.ts:293:    },
+src/collections/Users.ts:294:  },
+src/collections/Users.ts:300:    },
+src/collections/Users.ts:305:        if (!isAdmin({ req })) {
+src/collections/Users.ts:307:        }
+src/collections/Users.ts:318:        }
+src/collections/Users.ts:320:        const targetUser = await req.payload.db.findOne<{ id: number | string }>({
+src/collections/Users.ts:326:            },
+src/collections/Users.ts:327:          },
+src/collections/Users.ts:328:        })
+src/collections/Users.ts:331:          return Response.json({ errors: [{ message: 'User not found.' }] }, { status: 404 })
+src/collections/Users.ts:332:        }
+src/collections/Users.ts:339:          },
+src/collections/Users.ts:341:        })
+src/collections/Users.ts:347:          },
+src/collections/Users.ts:348:          { status: 200 },
+src/collections/Users.ts:350:      },
+src/collections/Users.ts:351:    },
+src/collections/Users.ts:359:  },
+src/collections/Users.ts:368:      },
+src/collections/Users.ts:371:      },
+src/collections/Users.ts:375:      },
+src/collections/Users.ts:376:    },
+src/collections/Users.ts:384:      },
+src/collections/Users.ts:385:    },
+src/collections/Users.ts:395:      },
+src/collections/Users.ts:401:          },
+src/collections/Users.ts:403:        },
+src/collections/Users.ts:408:          },
+src/collections/Users.ts:410:        },
+src/collections/Users.ts:416:      },
+src/collections/Users.ts:417:    },
+src/collections/Users.ts:425:      },
+src/collections/Users.ts:428:      },
+src/collections/Users.ts:429:      label: ({ t }) => t('general:updatedAt'),
+src/collections/Users.ts:430:    },
+src/collections/Users.ts:436:      },
+src/collections/Users.ts:437:    },
+src/collections/Users.ts:439:})
+
+$ git grep -n -e 'for' -- tests/int/p2-t6.int.test.ts
+tests/int/p2-t6.int.test.ts:5:import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+tests/int/p2-t6.int.test.ts:41:    for (const [k, v] of Object.entries(query)) {
+tests/int/p2-t6.int.test.ts:88:  beforeAll(async () => {
+tests/int/p2-t6.int.test.ts:107:    await payload.db.migrateFresh({ forceAcceptWarning: true })
+tests/int/p2-t6.int.test.ts:172:    await fs.rm(mediaDir, { recursive: true, force: true })
+tests/int/p2-t6.int.test.ts:173:    await fs.rm(videosDir, { recursive: true, force: true })
+tests/int/p2-t6.int.test.ts:174:    await fs.rm(tmpDir, { recursive: true, force: true })
+tests/int/p2-t6.int.test.ts:177:  it('enforces Z4: nobody (anonymous, editor, or admin) can create quote-requests via REST POST or Local API with overrideAccess: false', async () => {
+tests/int/p2-t6.int.test.ts:352:    // Verify stored values in PostgreSQL are completely unchanged for all customer & system fields, while workflow field `status` updated to 'quoted'
+tests/int/p2-t6.int.test.ts:417:    // 2. Rejects invalid phone format
+tests/int/p2-t6.int.test.ts:595:    for (const invalidPhone of ['009665735341', '966573534185', '+111111111111111']) {
+tests/int/p2-t6.int.test.ts:613:    // R-12 & R-16: All valid KSA local and international formats (including +966 05... and 00 966 ...) store canonical E.164 (+966573534185)
+tests/int/p2-t6.int.test.ts:614:    for (const rawPhoneVariant of [
+tests/int/p2-t6.int.test.ts:778:  it('enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19)', async () => {
 tests/int/p2-t6.int.test.ts:797:      for (let i = 0; i < 5; i++) {
+tests/int/p2-t6.int.test.ts:884:      // 6. POST /api/users/verify/:id returns 404 (4xx, never 500) for anonymous, editor, and admin callers (R-19)
+tests/int/p2-t6.int.test.ts:914:  it('prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8)', async () => {
+tests/int/p2-t6.int.test.ts:915:    const forgedCreatedAt = '2000-01-01T00:00:00.000Z'
+tests/int/p2-t6.int.test.ts:917:    // Create sample records and verify R-10 (forged createdAt on create via REST POST / Local API overrideAccess: false is ignored)
+tests/int/p2-t6.int.test.ts:929:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:938:    expect(mediaDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:952:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:961:    expect(videoDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:963:    // Create via REST POST with forged createdAt on brands, stats, materials, services, team, projects (as editor) and users (as admin) (R-10)
+tests/int/p2-t6.int.test.ts:971:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:976:    expect(brandDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:986:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:991:    expect(statDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1002:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1007:    expect(materialDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1021:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1026:    expect(r10ServiceDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1038:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1043:    expect(teamDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1061:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1066:    expect(projectDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1077:        createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1082:    expect(r10UserDoc.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1183:    for (const target of targets) {
+tests/int/p2-t6.int.test.ts:1191:          createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1203:          createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1216:          createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1227:          createdAt: forgedCreatedAt,
+tests/int/p2-t6.int.test.ts:1241:      expect(fetched.createdAt).not.toBe(forgedCreatedAt)
+tests/int/p2-t6.int.test.ts:1252:        createdAt: forgedCreatedAt,
 
 $ git grep -n -e 'disableVerifyEmailEndpointHandler' -- src/collections/Users.ts
 src/collections/Users.ts:229:export const disableVerifyEmailEndpointHandler: PayloadHandler = () =>
 src/collections/Users.ts:299:      handler: disableVerifyEmailEndpointHandler,
 
-$ git grep -n -e 'verify' -- src/collections/Users.ts
+$ git grep -n -e 'path' -- src/collections/Users.ts
 src/collections/Users.ts:297:      path: '/verify/:id',
+src/collections/Users.ts:302:      path: '/:id/revoke-sessions',
+
+$ git grep -n -e 'handler' -- src/collections/Users.ts
+src/collections/Users.ts:299:      handler: disableVerifyEmailEndpointHandler,
+src/collections/Users.ts:304:      handler: async (req) => {
 
 $ git grep -n -e 'isAdminOrEditor' -- src/collections/QuoteRequests.test.ts
 src/collections/QuoteRequests.test.ts:4:import { isAdmin, isAdminOrEditor, isAdminOrSelfFieldLevel } from '../access/index'
@@ -64,94 +401,122 @@ src/collections/QuoteRequests.test.ts:120:    expect(isAdminOrEditorFieldLevel(a
 src/collections/QuoteRequests.test.ts:219:  it('configures Users.admin.useAsTitle = name, Users.access.read = isAdminOrEditor, Users.access.unlock = isAdmin, disables POST /api/users/verify/:id (404), and restricts other users email/role/sessions to adminOrSelf (R-5, R-11, R-13, R-19)', async () => {
 src/collections/QuoteRequests.test.ts:221:    expect(Users.access?.read).toBe(isAdminOrEditor)
 
-$ git grep -n -e 'disableVerifyEmailEndpointHandler' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:32:  disableVerifyEmailEndpointHandler,
+$ git grep -n -e 'expect' -- src/collections/QuoteRequests.test.ts
+src/collections/QuoteRequests.test.ts:2:import { describe, expect, it } from 'vitest'
+src/collections/QuoteRequests.test.ts:41:    expect(QuoteRequests.slug).toBe('quote-requests')
+src/collections/QuoteRequests.test.ts:42:    expect(QuoteRequests.defaultSort).toBe('-createdAt')
+src/collections/QuoteRequests.test.ts:43:    expect(QuoteRequests.timestamps).toBe(true)
+src/collections/QuoteRequests.test.ts:44:    expect(QuoteRequests.admin?.useAsTitle).toBe('name')
+src/collections/QuoteRequests.test.ts:45:    expect(QuoteRequests.admin?.group).toEqual({
+src/collections/QuoteRequests.test.ts:49:    expect(QuoteRequests.admin?.defaultColumns).toEqual([
+src/collections/QuoteRequests.test.ts:58:    expect(QuoteRequests.admin?.components?.beforeListTable).toEqual([
+src/collections/QuoteRequests.test.ts:63:    expect(
+src/collections/QuoteRequests.test.ts:75:    expect(fieldNames).toEqual([
+src/collections/QuoteRequests.test.ts:97:    expect(fieldNames.some((n) => n.toLowerCase().includes('odoo'))).toBe(false)
+src/collections/QuoteRequests.test.ts:98:    expect(QUOTE_REQUEST_STATUS_VALUES).toEqual(['new', 'contacted', 'quoted', 'closed', 'spam'])
+src/collections/QuoteRequests.test.ts:99:    expect(QUOTE_EMAIL_STATUS_VALUES).toEqual(['pending', 'sent', 'failed'])
+src/collections/QuoteRequests.test.ts:100:    expect(QUOTE_LOCALE_VALUES).toEqual(['ar', 'en'])
+src/collections/QuoteRequests.test.ts:108:    expect(readOnlyFieldAccess.create()).toBe(false)
+src/collections/QuoteRequests.test.ts:109:    expect(readOnlyFieldAccess.update()).toBe(false)
+src/collections/QuoteRequests.test.ts:110:    expect(readOnlyFieldAccess.read(adminReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:111:    expect(readOnlyFieldAccess.read(editorReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:112:    expect(readOnlyFieldAccess.read(anonReq)).toBe(false)
+src/collections/QuoteRequests.test.ts:114:    expect(workflowFieldAccess.create()).toBe(false)
+src/collections/QuoteRequests.test.ts:115:    expect(workflowFieldAccess.update(adminReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:116:    expect(workflowFieldAccess.update(editorReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:117:    expect(workflowFieldAccess.update(anonReq)).toBe(false)
+src/collections/QuoteRequests.test.ts:118:    expect(isAdminOrEditorFieldLevel(adminReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:119:    expect(isAdminOrEditorFieldLevel(editorReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:120:    expect(isAdminOrEditorFieldLevel(anonReq)).toBe(false)
+src/collections/QuoteRequests.test.ts:125:    expect(normalizeQuotePhone('0573534185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:126:    expect(normalizeQuotePhone('057 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:127:    expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:128:    expect(normalizeQuotePhone('00 966 57 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:129:    expect(normalizeQuotePhone('+966 57 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:130:    expect(normalizeQuotePhone('+966 0573534185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:131:    expect(normalizeQuotePhone('  00966573534185  ')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:132:    expect(formatPhoneForDisplay('+966573534185')).toBe('+966 57 353 4185')
+src/collections/QuoteRequests.test.ts:135:    expect(isValidKsaOrInternationalPhone('+966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:136:    expect(isValidKsaOrInternationalPhone('+966 0573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:137:    expect(isValidKsaOrInternationalPhone('+966573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:138:    expect(isValidKsaOrInternationalPhone('00966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:139:    expect(isValidKsaOrInternationalPhone('00 966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:140:    expect(isValidKsaOrInternationalPhone('00966573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:141:    expect(isValidKsaOrInternationalPhone('0573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:142:    expect(isValidKsaOrInternationalPhone('0112345678')).toBe(true)
+src/collections/QuoteRequests.test.ts:143:    expect(isValidKsaOrInternationalPhone('+971 50 123 4567')).toBe(true)
+src/collections/QuoteRequests.test.ts:144:    expect(isValidKsaOrInternationalPhone('+1 (555) 234-5678')).toBe(true)
+src/collections/QuoteRequests.test.ts:145:    expect(validateQuotePhone('+966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:146:    expect(validateQuotePhone('+966 0573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:147:    expect(validateQuotePhone('00 966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:148:    expect(quotePhoneSchema.parse('00966 57 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:149:    expect(quotePhoneSchema.parse('00 966 57 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:150:    expect(quotePhoneSchema.parse('+966 0573534185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:151:    expect(quotePhoneSchema.parse('057 353 4185')).toBe('+966573534185')
+src/collections/QuoteRequests.test.ts:154:    expect(isValidKsaOrInternationalPhone('')).toBe(false)
+src/collections/QuoteRequests.test.ts:155:    expect(isValidKsaOrInternationalPhone('12345')).toBe(false)
+src/collections/QuoteRequests.test.ts:156:    expect(isValidKsaOrInternationalPhone('05123456')).toBe(false) // KSA 05 must be 10 digits
+src/collections/QuoteRequests.test.ts:157:    expect(isValidKsaOrInternationalPhone('+966 57 123')).toBe(false)
+src/collections/QuoteRequests.test.ts:158:    expect(isValidKsaOrInternationalPhone('00966 57 123')).toBe(false) // 00966 must also pass 9-digit national check
+src/collections/QuoteRequests.test.ts:159:    expect(isValidKsaOrInternationalPhone('009665735341')).toBe(false) // 8 national digits
+src/collections/QuoteRequests.test.ts:160:    expect(isValidKsaOrInternationalPhone('009665735341859')).toBe(false) // 10 national digits
+src/collections/QuoteRequests.test.ts:161:    expect(isValidKsaOrInternationalPhone('966573534185')).toBe(false) // missing + on international number
+src/collections/QuoteRequests.test.ts:162:    expect(isValidKsaOrInternationalPhone('+111111111111111')).toBe(false) // repeated-digit junk
+src/collections/QuoteRequests.test.ts:163:    expect(isValidKsaOrInternationalPhone('abc-def-ghij')).toBe(false)
+src/collections/QuoteRequests.test.ts:164:    expect(typeof validateQuotePhone('invalid')).toBe('string')
+src/collections/QuoteRequests.test.ts:165:    expect(quotePhoneSchema.safeParse('966573534185').success).toBe(false)
+src/collections/QuoteRequests.test.ts:166:    expect(quotePhoneSchema.safeParse('+111111111111111').success).toBe(false)
+src/collections/QuoteRequests.test.ts:169:    expect(isValidEmailAddress('client@aljazira.co')).toBe(true)
+src/collections/QuoteRequests.test.ts:170:    expect(isValidEmailAddress('bad-email')).toBe(false)
+src/collections/QuoteRequests.test.ts:171:    expect(validateQuoteEmail('client@aljazira.co')).toBe(true)
+src/collections/QuoteRequests.test.ts:172:    expect(typeof validateQuoteEmail('not-an-email')).toBe('string')
+src/collections/QuoteRequests.test.ts:175:    expect(validateQuoteConsent(true)).toBe(true)
+src/collections/QuoteRequests.test.ts:176:    expect(typeof validateQuoteConsent(false)).toBe('string')
+src/collections/QuoteRequests.test.ts:177:    expect(typeof validateQuoteConsent(undefined)).toBe('string')
+src/collections/QuoteRequests.test.ts:184:    expect(appCollections.length).toBeGreaterThanOrEqual(10)
+src/collections/QuoteRequests.test.ts:185:    expect(neverUpdateFieldAccess({ req: { user: { id: 1, role: 'admin' } } } as never)).toBe(false)
+src/collections/QuoteRequests.test.ts:192:      expect(createdAtField, `collection ${col.slug} must define createdAt`).toBeDefined()
+src/collections/QuoteRequests.test.ts:193:      expect(createdAtField?.type).toBe('date')
+src/collections/QuoteRequests.test.ts:204:      expect(typeof fieldAccess?.create, `collection ${col.slug} createdAt.access.create`).toBe(
+src/collections/QuoteRequests.test.ts:207:      expect(fieldAccess?.create?.()).toBe(false)
+src/collections/QuoteRequests.test.ts:208:      expect(typeof fieldAccess?.update, `collection ${col.slug} createdAt.access.update`).toBe(
+src/collections/QuoteRequests.test.ts:211:      expect(fieldAccess?.update?.()).toBe(false)
+src/collections/QuoteRequests.test.ts:213:      expect(col.hooks.beforeOperation).toContain(stripCreatedAtOnUpdateBeforeOperation)
+src/collections/QuoteRequests.test.ts:214:      expect(col.hooks.beforeValidate).toContain(preserveCreatedAtBeforeValidate)
+src/collections/QuoteRequests.test.ts:215:      expect(col.hooks.beforeChange).toContain(preserveCreatedAtBeforeChange)
+src/collections/QuoteRequests.test.ts:220:    expect(Users.admin?.useAsTitle).toBe('name')
+src/collections/QuoteRequests.test.ts:221:    expect(Users.access?.read).toBe(isAdminOrEditor)
+src/collections/QuoteRequests.test.ts:222:    expect(Users.access?.unlock).toBe(isAdmin)
+src/collections/QuoteRequests.test.ts:223:    expect(Users.forceSelect).toEqual({
 src/collections/QuoteRequests.test.ts:230:    expect(verifyEndpoint?.handler).toBe(disableVerifyEmailEndpointHandler)
-src/collections/QuoteRequests.test.ts:231:    const verifyRes = await disableVerifyEmailEndpointHandler({} as never)
-
-$ git grep -n -e 'verifyRes' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:231:    const verifyRes = await disableVerifyEmailEndpointHandler({} as never)
 src/collections/QuoteRequests.test.ts:232:    expect(verifyRes.status).toBe(404)
+src/collections/QuoteRequests.test.ts:239:      expect(field?.access?.read, `Users.${restrictedFieldName}.access.read`).toBe(
+src/collections/QuoteRequests.test.ts:244:    expect(
+src/collections/QuoteRequests.test.ts:252:    expect(
+src/collections/QuoteRequests.test.ts:261:    expect(
+src/collections/QuoteRequests.test.ts:271:    expect(
+src/collections/QuoteRequests.test.ts:294:    expect(strippedOtherUser).toEqual({
 
-$ git grep -n -e 'callJsonApi' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:34:async function callJsonApi(options: JsonApiCallOptions): Promise<{
-tests/int/p2-t6.int.test.ts:134:    const adminLogin = await callJsonApi({
-tests/int/p2-t6.int.test.ts:142:    const editorLogin = await callJsonApi({
-tests/int/p2-t6.int.test.ts:193:    const anonPost = await callJsonApi({
-tests/int/p2-t6.int.test.ts:201:    const editorPost = await callJsonApi({
-tests/int/p2-t6.int.test.ts:210:    const adminPost = await callJsonApi({
-tests/int/p2-t6.int.test.ts:279:    const anonList = await callJsonApi({
-tests/int/p2-t6.int.test.ts:285:    const anonGetById = await callJsonApi({
-tests/int/p2-t6.int.test.ts:292:    const editorList = await callJsonApi({
-tests/int/p2-t6.int.test.ts:301:    const editorPatchWorkflow = await callJsonApi({
-tests/int/p2-t6.int.test.ts:319:    const editorPatchTamper = await callJsonApi({
-tests/int/p2-t6.int.test.ts:337:    const adminPatchTamper = await callJsonApi({
-tests/int/p2-t6.int.test.ts:376:    const editorDelete = await callJsonApi({
-tests/int/p2-t6.int.test.ts:384:    const adminDelete = await callJsonApi({
-tests/int/p2-t6.int.test.ts:487:    const badStatusPatch = await callJsonApi({
-tests/int/p2-t6.int.test.ts:497:    const badAssigneePatch = await callJsonApi({
-tests/int/p2-t6.int.test.ts:553:    const listAll = await callJsonApi({
-tests/int/p2-t6.int.test.ts:563:    const filterByStatus = await callJsonApi({
-tests/int/p2-t6.int.test.ts:573:    const filterByAssignee = await callJsonApi({
-tests/int/p2-t6.int.test.ts:583:    const filterByDate = await callJsonApi({
-tests/int/p2-t6.int.test.ts:683:    const quoteDepth1AsEditor = await callJsonApi({
-tests/int/p2-t6.int.test.ts:700:    const otherUserAsEditor = await callJsonApi({
-tests/int/p2-t6.int.test.ts:714:    const selfUserAsEditor = await callJsonApi({
-tests/int/p2-t6.int.test.ts:724:    const patchServiceTitle = await callJsonApi({
-tests/int/p2-t6.int.test.ts:798:        const badLogin = await callJsonApi({
-tests/int/p2-t6.int.test.ts:810:      const loginWhileLocked = await callJsonApi({
-tests/int/p2-t6.int.test.ts:821:      const anonUnlock = await callJsonApi({
-tests/int/p2-t6.int.test.ts:829:      const editorUnlockExisting = await callJsonApi({
-tests/int/p2-t6.int.test.ts:835:      const editorUnlockUnknown = await callJsonApi({
-tests/int/p2-t6.int.test.ts:846:      const editorUnlockSelf = await callJsonApi({
-tests/int/p2-t6.int.test.ts:855:      const loginStillLocked = await callJsonApi({
-tests/int/p2-t6.int.test.ts:866:      const adminUnlock = await callJsonApi({
-tests/int/p2-t6.int.test.ts:874:      const loginAfterAdminUnlock = await callJsonApi({
+$ git grep -n -e 'anonVerify' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:885:      const anonVerify = await callJsonApi({
-tests/int/p2-t6.int.test.ts:890:      const editorVerify = await callJsonApi({
-tests/int/p2-t6.int.test.ts:896:      const adminVerify = await callJsonApi({
-tests/int/p2-t6.int.test.ts:964:    const brandCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:978:    const statCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:993:    const materialCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1009:    const serviceCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1028:    const teamCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1045:    const projectCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1068:    const userCreateRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1185:      const editorPatchRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1197:      const adminPatchRes = await callJsonApi({
-tests/int/p2-t6.int.test.ts:1245:    const bulkPatchRes = await callJsonApi({
+tests/int/p2-t6.int.test.ts:902:      expect(anonVerify.status).toBe(404)
 
-$ git grep -n -e 'adminVerify' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:896:      const adminVerify = await callJsonApi({
-tests/int/p2-t6.int.test.ts:904:      expect(adminVerify.status).toBe(404)
+$ git grep -n -e 'citations' -- handoff/README.md
+handoff/README.md:152:  without BOM. **Never type a file:line by hand:** generate `citations.log` with `git grep -n` for
+handoff/README.md:160:- (added 2026-10-23, P2-T8 R-3) `citations.log` contains **only** the lines returned by
 
-$ git grep -n -e 'isAdminOrSelfFieldLevel' -- src/collections/Users.ts
-src/collections/Users.ts:19:  isAdminOrSelfFieldLevel,
-src/collections/Users.ts:183:  const canReadEmail = isAdminOrSelfFieldLevel({
-src/collections/Users.ts:383:        read: isAdminOrSelfFieldLevel,
-src/collections/Users.ts:413:        read: isAdminOrSelfFieldLevel,
-src/collections/Users.ts:427:        read: isAdminOrSelfFieldLevel,
-src/collections/Users.ts:435:        read: isAdminOrSelfFieldLevel,
-
-$ git grep -n -e 'isAdmin' -- src/collections/Users.ts
-src/collections/Users.ts:16:  isAdmin,
-src/collections/Users.ts:17:  isAdminFieldLevel,
-src/collections/Users.ts:18:  isAdminOrEditor,
-src/collections/Users.ts:19:  isAdminOrSelfFieldLevel,
-src/collections/Users.ts:174:const isAdminOrEditorUserFieldAccess: FieldAccess = ({ req }) => {
-src/collections/Users.ts:183:  const canReadEmail = isAdminOrSelfFieldLevel({
+$ git grep -n -e 'read' -- src/collections/Users.ts
+src/collections/Users.ts:27:  { operation: 'read' | 'readDistinct' }
+src/collections/Users.ts:200: * reads another user's document (including via `depth=1` relationship population on
 src/collections/Users.ts:271:    read: isAdminOrEditor,
-src/collections/Users.ts:272:    create: isAdmin,
-src/collections/Users.ts:274:    delete: isAdmin,
-src/collections/Users.ts:275:    unlock: isAdmin,
-src/collections/Users.ts:305:        if (!isAdmin({ req })) {
 src/collections/Users.ts:370:        read: isAdminOrEditorUserFieldAccess,
 src/collections/Users.ts:383:        read: isAdminOrSelfFieldLevel,
 src/collections/Users.ts:413:        read: isAdminOrSelfFieldLevel,
-src/collections/Users.ts:414:        create: isAdminFieldLevel,
-src/collections/Users.ts:415:        update: isAdminFieldLevel,
 src/collections/Users.ts:427:        read: isAdminOrSelfFieldLevel,
 src/collections/Users.ts:435:        read: isAdminOrSelfFieldLevel,
+
+$ git grep -n -e 'unlock' -- src/collections/Users.ts
+src/collections/Users.ts:275:    unlock: isAdmin,
 
 $ git grep -n -e 'maxLoginAttempts' -- src/collections/Users.ts
 src/collections/Users.ts:282:    maxLoginAttempts: 5,
@@ -159,69 +524,165 @@ src/collections/Users.ts:282:    maxLoginAttempts: 5,
 $ git grep -n -e 'lockTime' -- src/collections/Users.ts
 src/collections/Users.ts:283:    lockTime: 15 * 60 * 1000, // 15 minutes (A1)
 
-$ git grep -n -e 'isAdmin' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:4:import { isAdmin, isAdminOrEditor, isAdminOrSelfFieldLevel } from '../access/index'
-src/collections/QuoteRequests.test.ts:19:  isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.test.ts:118:    expect(isAdminOrEditorFieldLevel(adminReq)).toBe(true)
-src/collections/QuoteRequests.test.ts:119:    expect(isAdminOrEditorFieldLevel(editorReq)).toBe(true)
-src/collections/QuoteRequests.test.ts:120:    expect(isAdminOrEditorFieldLevel(anonReq)).toBe(false)
-src/collections/QuoteRequests.test.ts:219:  it('configures Users.admin.useAsTitle = name, Users.access.read = isAdminOrEditor, Users.access.unlock = isAdmin, disables POST /api/users/verify/:id (404), and restricts other users email/role/sessions to adminOrSelf (R-5, R-11, R-13, R-19)', async () => {
-src/collections/QuoteRequests.test.ts:221:    expect(Users.access?.read).toBe(isAdminOrEditor)
-src/collections/QuoteRequests.test.ts:222:    expect(Users.access?.unlock).toBe(isAdmin)
-src/collections/QuoteRequests.test.ts:240:        isAdminOrSelfFieldLevel,
+$ git grep -n -e 'expect' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:2:import { describe, expect, it } from 'vitest'
+src/access/z1-config-enumeration.test.ts:46:  expect(
+src/access/z1-config-enumeration.test.ts:50:  expect(
+src/access/z1-config-enumeration.test.ts:69:    expect(RAW_APPLICATION_COLLECTIONS).toHaveLength(10)
+src/access/z1-config-enumeration.test.ts:71:      expect(col.access, `collection "${col.slug}" is missing access object`).toBeDefined()
+src/access/z1-config-enumeration.test.ts:80:    expect(ALL_GLOBALS).toHaveLength(8)
+src/access/z1-config-enumeration.test.ts:82:      expect(
+src/access/z1-config-enumeration.test.ts:98:    expect(appCollections.length).toBeGreaterThanOrEqual(10)
+src/access/z1-config-enumeration.test.ts:113:    expect(config.globals.length).toBeGreaterThanOrEqual(8)
+src/access/z1-config-enumeration.test.ts:129:    expect(() => {
+src/access/z1-config-enumeration.test.ts:132:    expect(() => {
+src/access/z1-config-enumeration.test.ts:157:    expect(await appCollections['users'].access.read(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:158:    expect(await appCollections['users'].access.read(editorOtherArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:159:    expect(await appCollections['users'].access.read(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:160:    expect(await appCollections['users'].access.create(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:161:    expect(await appCollections['users'].access.create(editorSelfArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:162:    expect(await appCollections['users'].access.create(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:163:    expect(await appCollections['users'].access.update(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:164:    expect(await appCollections['users'].access.update(editorOtherArgs)).toEqual({
+src/access/z1-config-enumeration.test.ts:167:    expect(await appCollections['users'].access.update(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:168:    expect(await appCollections['users'].access.delete(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:169:    expect(await appCollections['users'].access.delete(editorSelfArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:170:    expect(await appCollections['users'].access.delete(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:171:    expect(await appCollections['users'].access.unlock(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:172:    expect(await appCollections['users'].access.unlock(editorSelfArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:173:    expect(await appCollections['users'].access.unlock(editorOtherArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:174:    expect(await appCollections['users'].access.unlock(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:180:        expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toEqual({
+src/access/z1-config-enumeration.test.ts:184:        expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:186:      expect(await col.access.read(editorOtherArgs), `${slug}.read(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:187:      expect(await col.access.read(adminArgs), `${slug}.read(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:190:        expect(await col.access[writeOp](anonArgs), `${slug}.${writeOp}(anon)`).toBe(false)
+src/access/z1-config-enumeration.test.ts:191:        expect(await col.access[writeOp](editorOtherArgs), `${slug}.${writeOp}(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:192:        expect(await col.access[writeOp](adminArgs), `${slug}.${writeOp}(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:199:      expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toEqual({
+src/access/z1-config-enumeration.test.ts:202:      expect(await col.access.read(editorOtherArgs), `${slug}.read(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:203:      expect(await col.access.read(adminArgs), `${slug}.read(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:206:        expect(await col.access[writeOp](anonArgs), `${slug}.${writeOp}(anon)`).toBe(false)
+src/access/z1-config-enumeration.test.ts:207:        expect(await col.access[writeOp](editorOtherArgs), `${slug}.${writeOp}(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:208:        expect(await col.access[writeOp](adminArgs), `${slug}.${writeOp}(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:214:    expect(await qr.access.create(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:215:    expect(await qr.access.create(editorOtherArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:216:    expect(await qr.access.create(adminArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:217:    expect(await qr.access.read(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:218:    expect(await qr.access.read(editorOtherArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:219:    expect(await qr.access.read(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:220:    expect(await qr.access.update(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:221:    expect(await qr.access.update(editorOtherArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:222:    expect(await qr.access.update(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:223:    expect(await qr.access.delete(anonArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:224:    expect(await qr.access.delete(editorOtherArgs)).toBe(false)
+src/access/z1-config-enumeration.test.ts:225:    expect(await qr.access.delete(adminArgs)).toBe(true)
+src/access/z1-config-enumeration.test.ts:234:        expect(anonRead, `global:${g.slug}.read(anon)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:236:        expect(anonRead, `global:${g.slug}.read(anon)`).toEqual({
+src/access/z1-config-enumeration.test.ts:240:      expect(editorRead, `global:${g.slug}.read(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:241:      expect(adminRead, `global:${g.slug}.read(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:243:      expect(await g.access.update(anonArgs), `global:${g.slug}.update(anon)`).toBe(false)
+src/access/z1-config-enumeration.test.ts:245:        expect(await g.access.update(editorOtherArgs), `global:${g.slug}.update(editor)`).toBe(
+src/access/z1-config-enumeration.test.ts:249:        expect(await g.access.update(editorOtherArgs), `global:${g.slug}.update(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:251:      expect(await g.access.update(adminArgs), `global:${g.slug}.update(admin)`).toBe(true)
 
-$ git grep -n -e 'auth' -- src/access/z1-config-enumeration.test.ts
-src/access/z1-config-enumeration.test.ts:82:      if (col.auth) {
+$ git grep -n -e 'toThrow' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:131:    }).toThrow(/missing/)
+src/access/z1-config-enumeration.test.ts:134:    }).toThrow(/defaultAccess/)
 
-$ git grep -n -e 'users' -- src/access/z1-config-enumeration.test.ts
-src/access/z1-config-enumeration.test.ts:106:      'users',
-src/access/z1-config-enumeration.test.ts:131:      if (col.slug === 'users') {
-src/access/z1-config-enumeration.test.ts:194:    // 1. users: read staff (isAdminOrEditor, with email/role/sessions restricted to adminOrSelf per R-11); update admin or self; create/delete/unlock admin only (R-13)
-src/access/z1-config-enumeration.test.ts:195:    expect(await appCollections['users'].access.read(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:196:    expect(await appCollections['users'].access.read(editorOtherArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:197:    expect(await appCollections['users'].access.read(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:198:    expect(await appCollections['users'].access.create(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:199:    expect(await appCollections['users'].access.create(editorSelfArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:200:    expect(await appCollections['users'].access.create(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:201:    expect(await appCollections['users'].access.update(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:202:    expect(await appCollections['users'].access.update(editorOtherArgs)).toEqual({
-src/access/z1-config-enumeration.test.ts:205:    expect(await appCollections['users'].access.update(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:206:    expect(await appCollections['users'].access.delete(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:207:    expect(await appCollections['users'].access.delete(editorSelfArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:208:    expect(await appCollections['users'].access.delete(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:209:    expect(await appCollections['users'].access.unlock(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:210:    expect(await appCollections['users'].access.unlock(editorSelfArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:211:    expect(await appCollections['users'].access.unlock(editorOtherArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:212:    expect(await appCollections['users'].access.unlock(adminArgs)).toBe(true)
+$ git grep -n -e '}' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:1:import type { Access, AccessArgs } from 'payload'
+src/access/z1-config-enumeration.test.ts:2:import { describe, expect, it } from 'vitest'
+src/access/z1-config-enumeration.test.ts:4:import { Brands } from '../collections/Brands'
+src/access/z1-config-enumeration.test.ts:5:import { Materials } from '../collections/Materials'
+src/access/z1-config-enumeration.test.ts:6:import { Media } from '../collections/Media'
+src/access/z1-config-enumeration.test.ts:7:import { Projects } from '../collections/Projects'
+src/access/z1-config-enumeration.test.ts:8:import { QuoteRequests } from '../collections/QuoteRequests'
+src/access/z1-config-enumeration.test.ts:9:import { Services } from '../collections/Services'
+src/access/z1-config-enumeration.test.ts:10:import { Stats } from '../collections/Stats'
+src/access/z1-config-enumeration.test.ts:11:import { Team } from '../collections/Team'
+src/access/z1-config-enumeration.test.ts:12:import { Users } from '../collections/Users'
+src/access/z1-config-enumeration.test.ts:13:import { Videos } from '../collections/Videos'
+src/access/z1-config-enumeration.test.ts:14:import { ALL_GLOBALS } from '../globals/index'
+src/access/z1-config-enumeration.test.ts:48:    `${targetLabel}.access.${op} is missing (must be an explicit Access function per Z1)`,
+src/access/z1-config-enumeration.test.ts:52:    `${targetLabel}.access.${op} must not have function name 'defaultAccess' (Z1)`,
+src/access/z1-config-enumeration.test.ts:54:}
+src/access/z1-config-enumeration.test.ts:57:  user: { id: number; role: 'admin' | 'editor'; email: string } | null,
+src/access/z1-config-enumeration.test.ts:63:    },
+src/access/z1-config-enumeration.test.ts:65:  }) as unknown as AccessArgs
+src/access/z1-config-enumeration.test.ts:71:      expect(col.access, `collection "${col.slug}" is missing access object`).toBeDefined()
+src/access/z1-config-enumeration.test.ts:73:        assertExplicitAccessFunction(col.access?.[op], `collection:${col.slug}`, op)
+src/access/z1-config-enumeration.test.ts:74:      }
+src/access/z1-config-enumeration.test.ts:76:        assertExplicitAccessFunction(col.access?.unlock, `collection:${col.slug}`, 'unlock')
+src/access/z1-config-enumeration.test.ts:77:      }
+src/access/z1-config-enumeration.test.ts:78:    }
+src/access/z1-config-enumeration.test.ts:84:        `global "${globalConfig.slug}" is missing access object`,
+src/access/z1-config-enumeration.test.ts:87:        assertExplicitAccessFunction(globalConfig.access?.[op], `global:${globalConfig.slug}`, op)
+src/access/z1-config-enumeration.test.ts:88:      }
+src/access/z1-config-enumeration.test.ts:89:    }
+src/access/z1-config-enumeration.test.ts:90:  })
+src/access/z1-config-enumeration.test.ts:102:        assertExplicitAccessFunction(col.access[op], `sanitized collection:${col.slug}`, op)
+src/access/z1-config-enumeration.test.ts:103:      }
+src/access/z1-config-enumeration.test.ts:107:          `sanitized collection:${col.slug}`,
+src/access/z1-config-enumeration.test.ts:110:      }
+src/access/z1-config-enumeration.test.ts:111:    }
+src/access/z1-config-enumeration.test.ts:119:          `sanitized global:${globalConfig.slug}`,
+src/access/z1-config-enumeration.test.ts:122:      }
+src/access/z1-config-enumeration.test.ts:123:    }
+src/access/z1-config-enumeration.test.ts:126:    const simulatedDefaultAccess: Access = function defaultAccess({ req: { user } }) {
+src/access/z1-config-enumeration.test.ts:128:    }
+src/access/z1-config-enumeration.test.ts:131:    }).toThrow(/missing/)
+src/access/z1-config-enumeration.test.ts:134:    }).toThrow(/defaultAccess/)
+src/access/z1-config-enumeration.test.ts:135:  })
+src/access/z1-config-enumeration.test.ts:147:      { id: 10, role: 'editor', email: 'editor@aljazira.co' },
+src/access/z1-config-enumeration.test.ts:151:      { id: 10, role: 'editor', email: 'editor@aljazira.co' },
+src/access/z1-config-enumeration.test.ts:154:    const adminArgs = makeAccessArgs({ id: 1, role: 'admin', email: 'admin@aljazira.co' }, 99)
+src/access/z1-config-enumeration.test.ts:165:      id: { equals: 10 },
+src/access/z1-config-enumeration.test.ts:166:    })
+src/access/z1-config-enumeration.test.ts:180:        expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toEqual({
+src/access/z1-config-enumeration.test.ts:181:          active: { equals: true },
+src/access/z1-config-enumeration.test.ts:182:        })
+src/access/z1-config-enumeration.test.ts:183:      } else {
+src/access/z1-config-enumeration.test.ts:184:        expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:185:      }
+src/access/z1-config-enumeration.test.ts:186:      expect(await col.access.read(editorOtherArgs), `${slug}.read(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:187:      expect(await col.access.read(adminArgs), `${slug}.read(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:190:        expect(await col.access[writeOp](anonArgs), `${slug}.${writeOp}(anon)`).toBe(false)
+src/access/z1-config-enumeration.test.ts:191:        expect(await col.access[writeOp](editorOtherArgs), `${slug}.${writeOp}(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:192:        expect(await col.access[writeOp](adminArgs), `${slug}.${writeOp}(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:193:      }
+src/access/z1-config-enumeration.test.ts:194:    }
+src/access/z1-config-enumeration.test.ts:199:      expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toEqual({
+src/access/z1-config-enumeration.test.ts:200:        _status: { equals: 'published' },
+src/access/z1-config-enumeration.test.ts:201:      })
+src/access/z1-config-enumeration.test.ts:202:      expect(await col.access.read(editorOtherArgs), `${slug}.read(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:203:      expect(await col.access.read(adminArgs), `${slug}.read(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:206:        expect(await col.access[writeOp](anonArgs), `${slug}.${writeOp}(anon)`).toBe(false)
+src/access/z1-config-enumeration.test.ts:207:        expect(await col.access[writeOp](editorOtherArgs), `${slug}.${writeOp}(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:208:        expect(await col.access[writeOp](adminArgs), `${slug}.${writeOp}(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:209:      }
+src/access/z1-config-enumeration.test.ts:210:    }
+src/access/z1-config-enumeration.test.ts:234:        expect(anonRead, `global:${g.slug}.read(anon)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:235:      } else {
+src/access/z1-config-enumeration.test.ts:236:        expect(anonRead, `global:${g.slug}.read(anon)`).toEqual({
+src/access/z1-config-enumeration.test.ts:237:          _status: { equals: 'published' },
+src/access/z1-config-enumeration.test.ts:238:        })
+src/access/z1-config-enumeration.test.ts:239:      }
+src/access/z1-config-enumeration.test.ts:240:      expect(editorRead, `global:${g.slug}.read(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:241:      expect(adminRead, `global:${g.slug}.read(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:243:      expect(await g.access.update(anonArgs), `global:${g.slug}.update(anon)`).toBe(false)
+src/access/z1-config-enumeration.test.ts:245:        expect(await g.access.update(editorOtherArgs), `global:${g.slug}.update(editor)`).toBe(
+src/access/z1-config-enumeration.test.ts:248:      } else {
+src/access/z1-config-enumeration.test.ts:249:        expect(await g.access.update(editorOtherArgs), `global:${g.slug}.update(editor)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:250:      }
+src/access/z1-config-enumeration.test.ts:251:      expect(await g.access.update(adminArgs), `global:${g.slug}.update(admin)`).toBe(true)
+src/access/z1-config-enumeration.test.ts:252:    }
+src/access/z1-config-enumeration.test.ts:253:  })
+src/access/z1-config-enumeration.test.ts:254:})
 
-$ git grep -n -e 'appCollections' -- src/access/z1-config-enumeration.test.ts
-src/access/z1-config-enumeration.test.ts:102:    const appCollections = config.collections.filter(
-src/access/z1-config-enumeration.test.ts:105:    expect(appCollections.map((c) => c.slug)).toEqual([
-src/access/z1-config-enumeration.test.ts:122:    for (const col of appCollections) {
-src/access/z1-config-enumeration.test.ts:177:    const appCollections = Object.fromEntries(
-src/access/z1-config-enumeration.test.ts:195:    expect(await appCollections['users'].access.read(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:196:    expect(await appCollections['users'].access.read(editorOtherArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:197:    expect(await appCollections['users'].access.read(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:198:    expect(await appCollections['users'].access.create(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:199:    expect(await appCollections['users'].access.create(editorSelfArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:200:    expect(await appCollections['users'].access.create(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:201:    expect(await appCollections['users'].access.update(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:202:    expect(await appCollections['users'].access.update(editorOtherArgs)).toEqual({
-src/access/z1-config-enumeration.test.ts:205:    expect(await appCollections['users'].access.update(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:206:    expect(await appCollections['users'].access.delete(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:207:    expect(await appCollections['users'].access.delete(editorSelfArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:208:    expect(await appCollections['users'].access.delete(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:209:    expect(await appCollections['users'].access.unlock(anonArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:210:    expect(await appCollections['users'].access.unlock(editorSelfArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:211:    expect(await appCollections['users'].access.unlock(editorOtherArgs)).toBe(false)
-src/access/z1-config-enumeration.test.ts:212:    expect(await appCollections['users'].access.unlock(adminArgs)).toBe(true)
-src/access/z1-config-enumeration.test.ts:216:      const col = appCollections[slug]
-src/access/z1-config-enumeration.test.ts:236:      const col = appCollections[slug]
-src/access/z1-config-enumeration.test.ts:251:    const qr = appCollections['quote-requests']
-
-$ git grep -n -e 'loginWhileLocked' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:810:      const loginWhileLocked = await callJsonApi({
-tests/int/p2-t6.int.test.ts:818:      expect(loginWhileLocked.status).toBe(401)
+$ git grep -n -e 'requests' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:212:    // 4. quote-requests (Z4): create is false for all; read/update editor+admin; delete admin only
+src/access/z1-config-enumeration.test.ts:213:    const qr = appCollections['quote-requests']
 
 $ git grep -n -e 'anonUnlock' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:821:      const anonUnlock = await callJsonApi({
@@ -248,7 +709,7 @@ $ git grep -n -e 'loginAfterAdminUnlock' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:874:      const loginAfterAdminUnlock = await callJsonApi({
 tests/int/p2-t6.int.test.ts:882:      expect(loginAfterAdminUnlock.status).toBe(200)
 
-$ git grep -n -e 'milliseconds' -- src/collections/Users.ts
+$ git grep -n -e 'expiration' -- src/collections/Users.ts
 src/collections/Users.ts:292:      expiration: 60 * 60 * 1000, // 1 hour in milliseconds (A5)
 
 $ git grep -n -e 'enforcePasswordBeforeOperation' -- src/collections/Users.ts
@@ -260,6 +721,13 @@ src/collections/Users.ts:22:import { enforcePasswordPolicy } from '../security/p
 src/collections/Users.ts:34:    enforcePasswordPolicy(data?.password)
 src/collections/Users.ts:37:      enforcePasswordPolicy(data.password)
 src/collections/Users.ts:54:    enforcePasswordPolicy(data.password)
+
+$ git grep -n -e 'beforeOperation' -- src/collections/Users.ts
+src/collections/Users.ts:354:    beforeOperation: [enforcePasswordBeforeOperation],
+
+$ git grep -n -e 'beforeValidate' -- src/collections/Users.ts
+src/collections/Users.ts:355:    beforeValidate: [enforceRoleAndPasswordBeforeValidate],
+src/collections/Users.ts:373:        beforeValidate: [resolveUserDisplayNameBeforeValidate],
 
 $ git grep -n -e 'auth' -- src/collections/Users.ts
 src/collections/Users.ts:281:  auth: {
@@ -296,17 +764,17 @@ src/collections/Users.ts:278:      return user?.role === 'admin' || user?.role =
 src/collections/Users.ts:402:          value: 'admin',
 src/collections/Users.ts:422:      admin: {
 
-$ git grep -n -e 'sessions' -- src/collections/Users.ts
-src/collections/Users.ts:302:      path: '/:id/revoke-sessions',
-src/collections/Users.ts:338:            sessions: [],
-src/collections/Users.ts:345:            message: 'All sessions revoked for user.',
-
 $ git grep -n -e 'Forbidden' -- src/collections/Users.ts
 src/collections/Users.ts:2:  Forbidden,
 src/collections/Users.ts:306:          throw new Forbidden(req.t)
 
 $ git grep -n -e 'updateOne' -- src/collections/Users.ts
 src/collections/Users.ts:334:        await req.payload.db.updateOne({
+
+$ git grep -n -e 'sessions' -- src/collections/Users.ts
+src/collections/Users.ts:302:      path: '/:id/revoke-sessions',
+src/collections/Users.ts:338:            sessions: [],
+src/collections/Users.ts:345:            message: 'All sessions revoked for user.',
 
 $ git grep -n -e 'INTERNATIONAL_PHONE_CHARS_REGEX' -- src/lib/quote/schema.ts
 src/lib/quote/schema.ts:11:export const INTERNATIONAL_PHONE_CHARS_REGEX = /^(?:\+|00)\s*[1-9][0-9\s()-]{6,28}$/
@@ -341,8 +809,12 @@ src/lib/quote/schema.ts:97:    return E164_KSA_PHONE_REGEX.test(normalized)
 $ git grep -n -e 'international' -- src/lib/quote/schema.test.ts
 src/lib/quote/schema.test.ts:23:  it('normalizes KSA local (05/01) and international (00/+) phone inputs to canonical E.164, including +966 05... and 00 966 ... (R-12, R-16)', () => {
 
-$ git grep -n -e 'normalizeQuotePhone' -- src/lib/quote/schema.test.ts
-src/lib/quote/schema.test.ts:8:  normalizeQuotePhone,
+$ git grep -n -e 'expect' -- src/lib/quote/schema.test.ts
+src/lib/quote/schema.test.ts:3:import { describe, expect, it } from 'vitest'
+src/lib/quote/schema.test.ts:17:    expect(importLines).toEqual(["import { z } from 'zod'"])
+src/lib/quote/schema.test.ts:18:    expect(importLines.join('\n')).not.toContain('payload')
+src/lib/quote/schema.test.ts:19:    expect(importLines.join('\n')).not.toContain('ipHash')
+src/lib/quote/schema.test.ts:20:    expect(importLines.join('\n')).not.toContain('env')
 src/lib/quote/schema.test.ts:24:    expect(normalizeQuotePhone('0573534185')).toBe('+966573534185')
 src/lib/quote/schema.test.ts:25:    expect(normalizeQuotePhone('057 353 4185')).toBe('+966573534185')
 src/lib/quote/schema.test.ts:26:    expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966573534185')
@@ -355,10 +827,10 @@ src/lib/quote/schema.test.ts:32:    expect(normalizeQuotePhone('011 234 5678')).
 src/lib/quote/schema.test.ts:33:    expect(normalizeQuotePhone('+966 0112345678')).toBe('+966112345678')
 src/lib/quote/schema.test.ts:34:    expect(normalizeQuotePhone('+971 50 123 4567')).toBe('+971501234567')
 src/lib/quote/schema.test.ts:35:    expect(normalizeQuotePhone('00971-50-123-4567')).toBe('+971501234567')
-
-$ git grep -n -e 'quotePhoneSchema' -- src/lib/quote/schema.test.ts
-src/lib/quote/schema.test.ts:9:  quotePhoneSchema,
-src/lib/quote/schema.test.ts:45:  it('validates and transforms phones to E.164 via quotePhoneSchema while rejecting invalid inputs (R-3, R-6, R-12, R-16)', () => {
+src/lib/quote/schema.test.ts:39:    expect(formatPhoneForDisplay('+966573534185')).toBe('+966 57 353 4185')
+src/lib/quote/schema.test.ts:40:    expect(formatPhoneForDisplay('0573534185')).toBe('+966 57 353 4185')
+src/lib/quote/schema.test.ts:41:    expect(formatPhoneForDisplay('+966112345678')).toBe('+966 11 234 5678')
+src/lib/quote/schema.test.ts:42:    expect(formatPhoneForDisplay('+971501234567')).toBe('+971501234567')
 src/lib/quote/schema.test.ts:46:    expect(quotePhoneSchema.parse('0573534185')).toBe('+966573534185')
 src/lib/quote/schema.test.ts:47:    expect(quotePhoneSchema.parse('057 353 4185')).toBe('+966573534185')
 src/lib/quote/schema.test.ts:48:    expect(quotePhoneSchema.parse('00966 57 353 4185')).toBe('+966573534185')
@@ -366,6 +838,10 @@ src/lib/quote/schema.test.ts:49:    expect(quotePhoneSchema.parse('00 966 57 353
 src/lib/quote/schema.test.ts:50:    expect(quotePhoneSchema.parse('+966 57 353 4185')).toBe('+966573534185')
 src/lib/quote/schema.test.ts:51:    expect(quotePhoneSchema.parse('+966 0573534185')).toBe('+966573534185')
 src/lib/quote/schema.test.ts:52:    expect(quotePhoneSchema.parse('+971 50 123 4567')).toBe('+971501234567')
+src/lib/quote/schema.test.ts:54:    expect(isValidKsaOrInternationalPhone('966573534185')).toBe(false)
+src/lib/quote/schema.test.ts:55:    expect(isValidKsaOrInternationalPhone('009665735341')).toBe(false)
+src/lib/quote/schema.test.ts:56:    expect(isValidKsaOrInternationalPhone('009665735341859')).toBe(false)
+src/lib/quote/schema.test.ts:57:    expect(isValidKsaOrInternationalPhone('+111111111111111')).toBe(false)
 src/lib/quote/schema.test.ts:58:    expect(quotePhoneSchema.safeParse('966573534185').success).toBe(false)
 src/lib/quote/schema.test.ts:59:    expect(quotePhoneSchema.safeParse('009665735341').success).toBe(false)
 src/lib/quote/schema.test.ts:60:    expect(quotePhoneSchema.safeParse('+111111111111111').success).toBe(false)
@@ -374,60 +850,6 @@ $ git grep -n -e 'international' -- src/collections/QuoteRequests.test.ts
 src/collections/QuoteRequests.test.ts:123:  it('validates and normalizes KSA and international phone numbers to E.164 (including 00966, 00 966, +966 05, and 05XXXXXXXX, requiring + for international, rejecting repeated-digit junk), email addresses, and consent === true (R-3, R-6, R-12, R-16)', () => {
 src/collections/QuoteRequests.test.ts:134:    // Valid KSA & international phones
 src/collections/QuoteRequests.test.ts:161:    expect(isValidKsaOrInternationalPhone('966573534185')).toBe(false) // missing + on international number
-
-$ git grep -n -e 'normalizeQuotePhone' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:8:  normalizeQuotePhone,
-src/collections/QuoteRequests.test.ts:125:    expect(normalizeQuotePhone('0573534185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:126:    expect(normalizeQuotePhone('057 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:127:    expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:128:    expect(normalizeQuotePhone('00 966 57 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:129:    expect(normalizeQuotePhone('+966 57 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:130:    expect(normalizeQuotePhone('+966 0573534185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:131:    expect(normalizeQuotePhone('  00966573534185  ')).toBe('+966573534185')
-
-$ git grep -n -e 'isValidKsaOrInternationalPhone' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:7:  isValidKsaOrInternationalPhone,
-src/collections/QuoteRequests.test.ts:135:    expect(isValidKsaOrInternationalPhone('+966 57 353 4185')).toBe(true)
-src/collections/QuoteRequests.test.ts:136:    expect(isValidKsaOrInternationalPhone('+966 0573534185')).toBe(true)
-src/collections/QuoteRequests.test.ts:137:    expect(isValidKsaOrInternationalPhone('+966573534185')).toBe(true)
-src/collections/QuoteRequests.test.ts:138:    expect(isValidKsaOrInternationalPhone('00966 57 353 4185')).toBe(true)
-src/collections/QuoteRequests.test.ts:139:    expect(isValidKsaOrInternationalPhone('00 966 57 353 4185')).toBe(true)
-src/collections/QuoteRequests.test.ts:140:    expect(isValidKsaOrInternationalPhone('00966573534185')).toBe(true)
-src/collections/QuoteRequests.test.ts:141:    expect(isValidKsaOrInternationalPhone('0573534185')).toBe(true)
-src/collections/QuoteRequests.test.ts:142:    expect(isValidKsaOrInternationalPhone('0112345678')).toBe(true)
-src/collections/QuoteRequests.test.ts:143:    expect(isValidKsaOrInternationalPhone('+971 50 123 4567')).toBe(true)
-src/collections/QuoteRequests.test.ts:144:    expect(isValidKsaOrInternationalPhone('+1 (555) 234-5678')).toBe(true)
-src/collections/QuoteRequests.test.ts:154:    expect(isValidKsaOrInternationalPhone('')).toBe(false)
-src/collections/QuoteRequests.test.ts:155:    expect(isValidKsaOrInternationalPhone('12345')).toBe(false)
-src/collections/QuoteRequests.test.ts:156:    expect(isValidKsaOrInternationalPhone('05123456')).toBe(false) // KSA 05 must be 10 digits
-src/collections/QuoteRequests.test.ts:157:    expect(isValidKsaOrInternationalPhone('+966 57 123')).toBe(false)
-src/collections/QuoteRequests.test.ts:158:    expect(isValidKsaOrInternationalPhone('00966 57 123')).toBe(false) // 00966 must also pass 9-digit national check
-src/collections/QuoteRequests.test.ts:159:    expect(isValidKsaOrInternationalPhone('009665735341')).toBe(false) // 8 national digits
-src/collections/QuoteRequests.test.ts:160:    expect(isValidKsaOrInternationalPhone('009665735341859')).toBe(false) // 10 national digits
-src/collections/QuoteRequests.test.ts:161:    expect(isValidKsaOrInternationalPhone('966573534185')).toBe(false) // missing + on international number
-src/collections/QuoteRequests.test.ts:162:    expect(isValidKsaOrInternationalPhone('+111111111111111')).toBe(false) // repeated-digit junk
-src/collections/QuoteRequests.test.ts:163:    expect(isValidKsaOrInternationalPhone('abc-def-ghij')).toBe(false)
-
-$ git grep -n -e 'validateQuotePhone' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:28:  validateQuotePhone,
-src/collections/QuoteRequests.test.ts:145:    expect(validateQuotePhone('+966 57 353 4185')).toBe(true)
-src/collections/QuoteRequests.test.ts:146:    expect(validateQuotePhone('+966 0573534185')).toBe(true)
-src/collections/QuoteRequests.test.ts:147:    expect(validateQuotePhone('00 966 57 353 4185')).toBe(true)
-src/collections/QuoteRequests.test.ts:164:    expect(typeof validateQuotePhone('invalid')).toBe('string')
-
-$ git grep -n -e 'quotePhoneSchema' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:9:  quotePhoneSchema,
-src/collections/QuoteRequests.test.ts:148:    expect(quotePhoneSchema.parse('00966 57 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:149:    expect(quotePhoneSchema.parse('00 966 57 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:150:    expect(quotePhoneSchema.parse('+966 0573534185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:151:    expect(quotePhoneSchema.parse('057 353 4185')).toBe('+966573534185')
-src/collections/QuoteRequests.test.ts:165:    expect(quotePhoneSchema.safeParse('966573534185').success).toBe(false)
-src/collections/QuoteRequests.test.ts:166:    expect(quotePhoneSchema.safeParse('+111111111111111').success).toBe(false)
-
-$ git grep -n -e 'rawPhoneVariant' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:614:    for (const rawPhoneVariant of [
-tests/int/p2-t6.int.test.ts:629:          phone: rawPhoneVariant,
-tests/int/p2-t6.int.test.ts:636:      expect(createdVariant.phone, `rawPhoneVariant=${rawPhoneVariant}`).toBe('+966573534185')
 
 $ git grep -n -e ''00 966 57 353 4185',' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:618:      '00 966 57 353 4185',
@@ -444,12 +866,30 @@ src/collections/QuoteRequests.test.ts:182:    const appCollections = config.coll
 src/collections/QuoteRequests.test.ts:184:    expect(appCollections.length).toBeGreaterThanOrEqual(10)
 src/collections/QuoteRequests.test.ts:187:    for (const col of appCollections) {
 
-$ git grep -n -e 'toBeGreaterThanOrEqual' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:184:    expect(appCollections.length).toBeGreaterThanOrEqual(10)
+$ git grep -n -e 'for' -- src/collections/QuoteRequests.test.ts
+src/collections/QuoteRequests.test.ts:6:  formatPhoneForDisplay,
+src/collections/QuoteRequests.test.ts:14:  preserveCreatedAtBeforeChange,
+src/collections/QuoteRequests.test.ts:15:  preserveCreatedAtBeforeValidate,
+src/collections/QuoteRequests.test.ts:16:  stripCreatedAtOnUpdateBeforeOperation,
+src/collections/QuoteRequests.test.ts:34:  resolveUserDisplayNameBeforeValidate,
+src/collections/QuoteRequests.test.ts:58:    expect(QuoteRequests.admin?.components?.beforeListTable).toEqual([
+src/collections/QuoteRequests.test.ts:103:  it('enforces field-level readOnlyFieldAccess on customer/system fields and workflowFieldAccess on workflow fields', () => {
+src/collections/QuoteRequests.test.ts:123:  it('validates and normalizes KSA and international phone numbers to E.164 (including 00966, 00 966, +966 05, and 05XXXXXXXX, requiring + for international, rejecting repeated-digit junk), email addresses, and consent === true (R-3, R-6, R-12, R-16)', () => {
+src/collections/QuoteRequests.test.ts:132:    expect(formatPhoneForDisplay('+966573534185')).toBe('+966 57 353 4185')
+src/collections/QuoteRequests.test.ts:180:  it('iterates config.collections from the built Payload config and verifies that every application collection enforces immutable createdAt on create and update (R-2, R-8, R-10)', async () => {
+src/collections/QuoteRequests.test.ts:187:    for (const col of appCollections) {
+src/collections/QuoteRequests.test.ts:213:      expect(col.hooks.beforeOperation).toContain(stripCreatedAtOnUpdateBeforeOperation)
+src/collections/QuoteRequests.test.ts:214:      expect(col.hooks.beforeValidate).toContain(preserveCreatedAtBeforeValidate)
+src/collections/QuoteRequests.test.ts:215:      expect(col.hooks.beforeChange).toContain(preserveCreatedAtBeforeChange)
+src/collections/QuoteRequests.test.ts:223:    expect(Users.forceSelect).toEqual({
+src/collections/QuoteRequests.test.ts:234:    for (const restrictedFieldName of ['email', 'role', 'updatedAt', 'createdAt']) {
+src/collections/QuoteRequests.test.ts:245:      resolveUserDisplayNameBeforeValidate({
+src/collections/QuoteRequests.test.ts:253:      resolveUserDisplayNameBeforeValidate({
 
-$ git grep -n -e 'zod' -- src/lib/quote/schema.ts
+$ git grep -n -e 'import' -- src/lib/quote/schema.ts
 src/lib/quote/schema.ts:1:import { z } from 'zod'
 src/lib/quote/schema.ts:6: * IMPORTANT: This module must ONLY import `zod` (never `payload`, `src/env.ts`,
+src/lib/quote/schema.ts:7: * or `src/lib/ipHash.ts`) so it can be safely imported by both `'use client'`
 
 $ git grep -n -e 'KSA_LOCAL_PHONE_CHARS_REGEX' -- src/lib/quote/schema.ts
 src/lib/quote/schema.ts:12:export const KSA_LOCAL_PHONE_CHARS_REGEX = /^0[15][0-9\s()-]{7,14}$/
@@ -477,25 +917,33 @@ src/lib/quote/schema.ts:113:  .refine((val) => isValidKsaOrInternationalPhone(va
 $ git grep -n -e 'quotePhoneSchema' -- src/lib/quote/schema.ts
 src/lib/quote/schema.ts:108:export const quotePhoneSchema = z
 
-$ git grep -n -e 'export {' -- src/collections/QuoteRequests.ts
+$ git grep -n -e 'export' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:25:export {
+src/collections/QuoteRequests.ts:37:export const QUOTE_REQUEST_STATUS_VALUES = ['new', 'contacted', 'quoted', 'closed', 'spam'] as const
+src/collections/QuoteRequests.ts:38:export type QuoteRequestStatus = (typeof QUOTE_REQUEST_STATUS_VALUES)[number]
+src/collections/QuoteRequests.ts:40:export const QUOTE_EMAIL_STATUS_VALUES = ['pending', 'sent', 'failed'] as const
+src/collections/QuoteRequests.ts:41:export type QuoteEmailStatus = (typeof QUOTE_EMAIL_STATUS_VALUES)[number]
+src/collections/QuoteRequests.ts:43:export const QUOTE_LOCALE_VALUES = ['ar', 'en'] as const
+src/collections/QuoteRequests.ts:44:export type QuoteLocale = (typeof QUOTE_LOCALE_VALUES)[number]
+src/collections/QuoteRequests.ts:49:export const isAdminOrEditorFieldLevel: FieldAccess = ({ req }) => {
+src/collections/QuoteRequests.ts:59:export const readOnlyFieldAccess = {
+src/collections/QuoteRequests.ts:65:export const workflowFieldAccess = {
+src/collections/QuoteRequests.ts:71:export const validateQuotePhone = (value: unknown): true | string => {
+src/collections/QuoteRequests.ts:80:export function isValidEmailAddress(value: unknown): boolean {
+src/collections/QuoteRequests.ts:88:export const validateQuoteEmail = (value: unknown): true | string => {
+src/collections/QuoteRequests.ts:95:export const validateQuoteConsent = (value: unknown): true | string => {
+src/collections/QuoteRequests.ts:322:export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
 
 $ git grep -n -e 'quotePhoneSchema' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:21:  quotePhoneSchema,
 src/collections/QuoteRequests.ts:34:  quotePhoneSchema,
 
-$ git grep -n -e 'normalizer' -- src/lib/quote/schema.test.ts
+$ git grep -n -e 'src/lib/quote/schema.ts pure phone validator & E.164 normalizer (R-6, R-12)' -- src/lib/quote/schema.test.ts
 src/lib/quote/schema.test.ts:12:describe('src/lib/quote/schema.ts pure phone validator & E.164 normalizer (R-6, R-12)', () => {
-
-$ git grep -n -e '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__' -- src/env.ts
-src/env.ts:154:export const ENV_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__'
 
 $ git grep -n -e 'ENV_SERVER_ONLY_SENTINEL' -- src/env.ts
 src/env.ts:154:export const ENV_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__'
 src/env.ts:193:      `Invalid environment configuration (src/env.ts, ${ENV_SERVER_ONLY_SENTINEL}):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,
-
-$ git grep -n -e '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__' -- src/lib/ipHash.ts
-src/lib/ipHash.ts:15:export const IPHASH_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__'
 
 $ git grep -n -e 'IPHASH_SERVER_ONLY_SENTINEL' -- src/lib/ipHash.ts
 src/lib/ipHash.ts:15:export const IPHASH_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__'
@@ -509,12 +957,11 @@ $ git grep -n -e 'scanDirectoryForSentinels' -- scripts/check-client-bundle-sent
 scripts/check-client-bundle-sentinels.mjs:22:export function scanDirectoryForSentinels(rootDir) {
 scripts/check-client-bundle-sentinels.mjs:65:  const hits = scanDirectoryForSentinels(targetDir)
 
+$ git grep -n -e '"build":' -- package.json
+package.json:13:    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build && node scripts/check-client-bundle-sentinels.mjs",
+
 $ git grep -n -e '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_' -- .github/workflows/ci.yml
 .github/workflows/ci.yml:154:          if grep -Fq "__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_" -R .next/static; then
-
-$ git grep -n -e 'preserveCreatedAtBeforeChange' -- src/collections/QuoteRequests.test.ts
-src/collections/QuoteRequests.test.ts:14:  preserveCreatedAtBeforeChange,
-src/collections/QuoteRequests.test.ts:215:      expect(col.hooks.beforeChange).toContain(preserveCreatedAtBeforeChange)
 
 $ git grep -n -e 'overrideAccess' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:120:      overrideAccess: true,
@@ -561,11 +1008,6 @@ tests/int/p2-t6.int.test.ts:1213:        overrideAccess: false,
 tests/int/p2-t6.int.test.ts:1224:        overrideAccess: false,
 tests/int/p2-t6.int.test.ts:1235:        overrideAccess: true,
 tests/int/p2-t6.int.test.ts:1260:      overrideAccess: true,
-
-$ git grep -n -e 'quoteAfterBulk' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:1256:    const quoteAfterBulk = await payload.findByID({
-tests/int/p2-t6.int.test.ts:1262:    expect(quoteAfterBulk.createdAt).toBe(quoteDoc.createdAt)
-tests/int/p2-t6.int.test.ts:1263:    expect(quoteAfterBulk.status).toBe('quoted')
 
 $ git grep -n -e 'targets' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:1103:    const targets: Array<{
@@ -628,60 +1070,6 @@ tests/int/p2-t6.int.test.ts:1220:      await payload.update({
 tests/int/p2-t6.int.test.ts:1231:      const fetched = (await payload.findByID({
 tests/int/p2-t6.int.test.ts:1256:    const quoteAfterBulk = await payload.findByID({
 
-$ git grep -n -e 'createdAt' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:514:  it('orders quote-requests newest first (-createdAt) by default and supports filtering by status, assignedTo, and createdAt date', async () => {
-tests/int/p2-t6.int.test.ts:552:    // Default sort is -createdAt (newest first: q2 then q1)
-tests/int/p2-t6.int.test.ts:582:    // Filter by createdAt >= q2.createdAt
-tests/int/p2-t6.int.test.ts:586:      query: { 'where[createdAt][greater_than_equal]': q2.createdAt },
-tests/int/p2-t6.int.test.ts:914:  it('prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8)', async () => {
-tests/int/p2-t6.int.test.ts:917:    // Create sample records and verify R-10 (forged createdAt on create via REST POST / Local API overrideAccess: false is ignored)
-tests/int/p2-t6.int.test.ts:929:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:938:    expect(mediaDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:952:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:961:    expect(videoDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:963:    // Create via REST POST with forged createdAt on brands, stats, materials, services, team, projects (as editor) and users (as admin) (R-10)
-tests/int/p2-t6.int.test.ts:971:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:975:    const brandDoc = brandCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:976:    expect(brandDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:986:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:990:    const statDoc = statCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:991:    expect(statDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1002:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1006:    const materialDoc = materialCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:1007:    expect(materialDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1021:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1025:    const r10ServiceDoc = serviceCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:1026:    expect(r10ServiceDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1038:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1042:    const teamDoc = teamCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:1043:    expect(teamDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1061:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1065:    const projectDoc = projectCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:1066:    expect(projectDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1077:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1081:    const r10UserDoc = userCreateRes.body.doc as { id: number; createdAt: string }
-tests/int/p2-t6.int.test.ts:1082:    expect(r10UserDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1122:        originalCreatedAt: editorUser.createdAt,
-tests/int/p2-t6.int.test.ts:1128:        originalCreatedAt: mediaDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1134:        originalCreatedAt: videoDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1140:        originalCreatedAt: brandDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1146:        originalCreatedAt: statDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1152:        originalCreatedAt: materialDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1160:        ).createdAt,
-tests/int/p2-t6.int.test.ts:1166:        originalCreatedAt: teamDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1172:        originalCreatedAt: projectDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1178:        originalCreatedAt: quoteDoc.createdAt,
-tests/int/p2-t6.int.test.ts:1191:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1203:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1216:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1227:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1236:      })) as { createdAt: string }
-tests/int/p2-t6.int.test.ts:1238:      expect(fetched.createdAt, `${target.slug} createdAt must remain immutable`).toBe(
-tests/int/p2-t6.int.test.ts:1241:      expect(fetched.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1244:    // Also verify bulk REST PATCH on quote-requests cannot rewrite createdAt
-tests/int/p2-t6.int.test.ts:1252:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1262:    expect(quoteAfterBulk.createdAt).toBe(quoteDoc.createdAt)
-
 $ git grep -n -e 'imported' -- src/env.ts
 src/env.ts:8: * Note on S4 (`server-only`): `src/env.ts` is imported by `src/payload.config.ts`, which is
 
@@ -691,24 +1079,50 @@ src/env.ts:12: * by the in-repo ESLint rule `local/no-server-in-client` and veri
 $ git grep -n -e 'imports' -- src/lib/ipHash.ts
 src/lib/ipHash.ts:12: * Client-side imports of `@/lib/ipHash` are blocked at lint time by `local/no-server-in-client`
 
-$ git grep -n -e 'runtime' -- src/lib/ipHash.ts
+$ git grep -n -e 'guarded' -- src/lib/ipHash.ts
 src/lib/ipHash.ts:13: * (`eslint-rules/no-server-in-client.mjs`) and guarded at runtime below.
 
-$ git grep -n -e 'neverUpdateFieldAccess' -- src/collections/_shared/immutableTimestamps.ts
-src/collections/_shared/immutableTimestamps.ts:15:export const neverUpdateFieldAccess: FieldAccess = () => false
+$ git grep -n -e 'create' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:12: * Field-level access helper that unconditionally denies creating or updating `createdAt`
+src/collections/_shared/immutableTimestamps.ts:18: * Shared explicit `createdAt` timestamp field definition (`R-2`, `R-10`).
+src/collections/_shared/immutableTimestamps.ts:20: * Matches Payload's default `createdAt` field (`type: 'date'`, `index: true`,
 src/collections/_shared/immutableTimestamps.ts:22: * `access: { create: neverUpdateFieldAccess, update: neverUpdateFieldAccess }`
+src/collections/_shared/immutableTimestamps.ts:23: * and `admin.readOnly: true` so `createdAt` cannot be forged on `create` or
+src/collections/_shared/immutableTimestamps.ts:27: * - `payload.create({ ..., overrideAccess: true })` (e.g. seed scripts) may set `createdAt`.
+src/collections/_shared/immutableTimestamps.ts:28: * - `payload.update({ ..., overrideAccess: true })` CANNOT change `createdAt` because
+src/collections/_shared/immutableTimestamps.ts:31: *   or migration that needs to rewrite `createdAt` on an existing row must use the
+src/collections/_shared/immutableTimestamps.ts:35:  name: 'createdAt',
 src/collections/_shared/immutableTimestamps.ts:39:    create: neverUpdateFieldAccess,
-src/collections/_shared/immutableTimestamps.ts:40:    update: neverUpdateFieldAccess,
+src/collections/_shared/immutableTimestamps.ts:47:  label: ({ t }) => t('general:createdAt'),
+src/collections/_shared/immutableTimestamps.ts:56: * Collection `beforeOperation` hook that strips any incoming `createdAt` property
+src/collections/_shared/immutableTimestamps.ts:59: * - `create` operations when `overrideAccess === false` (REST `POST /api/<slug>`,
+src/collections/_shared/immutableTimestamps.ts:67:      delete dataRecord.createdAt
+src/collections/_shared/immutableTimestamps.ts:70:    operation === 'create' &&
+src/collections/_shared/immutableTimestamps.ts:77:      delete dataRecord.createdAt
+src/collections/_shared/immutableTimestamps.ts:84: * Collection `beforeValidate` hook that restores `originalDoc.createdAt` (or deletes
+src/collections/_shared/immutableTimestamps.ts:85: * `data.createdAt` if `originalDoc.createdAt` is absent) on `update` operations (`R-2`).
+src/collections/_shared/immutableTimestamps.ts:95:    const prevCreatedAt = origRecord?.createdAt
+src/collections/_shared/immutableTimestamps.ts:97:      mutable.createdAt = prevCreatedAt
+src/collections/_shared/immutableTimestamps.ts:99:      delete mutable.createdAt
+src/collections/_shared/immutableTimestamps.ts:106: * Collection `beforeChange` hook that restores `originalDoc.createdAt` (or deletes
+src/collections/_shared/immutableTimestamps.ts:107: * `data.createdAt` if `originalDoc.createdAt` is absent) on `update` operations (`R-2`).
+src/collections/_shared/immutableTimestamps.ts:117:    const prevCreatedAt = origRecord?.createdAt
+src/collections/_shared/immutableTimestamps.ts:119:      mutable.createdAt = prevCreatedAt
+src/collections/_shared/immutableTimestamps.ts:121:      delete mutable.createdAt
+src/collections/_shared/immutableTimestamps.ts:136: * Wraps a `CollectionConfig` so that `createdAt` cannot be forged on `create`
+src/collections/_shared/immutableTimestamps.ts:146:  const hasCreatedAt = existingFields.some((field) => 'name' in field && field.name === 'createdAt')
+src/collections/_shared/immutableTimestamps.ts:150:        if ('name' in field && field.name === 'createdAt' && field.type === 'date') {
 src/collections/_shared/immutableTimestamps.ts:155:              create: neverUpdateFieldAccess,
-src/collections/_shared/immutableTimestamps.ts:156:              update: neverUpdateFieldAccess,
 
 $ git grep -n -e 'stripCreatedAtOnUpdateBeforeOperation' -- src/collections/_shared/immutableTimestamps.ts
 src/collections/_shared/immutableTimestamps.ts:29: *   `stripCreatedAtOnUpdateBeforeOperation`, `preserveCreatedAtBeforeValidate`, and
 src/collections/_shared/immutableTimestamps.ts:62:export const stripCreatedAtOnUpdateBeforeOperation: CollectionBeforeOperationHook = (rawArg) => {
 src/collections/_shared/immutableTimestamps.ts:177:        stripCreatedAtOnUpdateBeforeOperation,
 
-$ git grep -n -e '} else if (' -- src/collections/_shared/immutableTimestamps.ts
+$ git grep -n -e 'else' -- src/collections/_shared/immutableTimestamps.ts
 src/collections/_shared/immutableTimestamps.ts:69:  } else if (
+src/collections/_shared/immutableTimestamps.ts:98:    } else {
+src/collections/_shared/immutableTimestamps.ts:120:    } else {
 
 $ git grep -n -e 'dataRecord' -- src/collections/_shared/immutableTimestamps.ts
 src/collections/_shared/immutableTimestamps.ts:65:    const dataRecord = args.data as Record<string, unknown> | undefined
@@ -725,52 +1139,24 @@ tests/int/p2-t6.int.test.ts:1056:        coverImage: mediaDoc.id,
 tests/int/p2-t6.int.test.ts:1127:        id: mediaDoc.id,
 tests/int/p2-t6.int.test.ts:1128:        originalCreatedAt: mediaDoc.createdAt,
 
-$ git grep -n -e 'forgedCreatedAt' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:915:    const forgedCreatedAt = '2000-01-01T00:00:00.000Z'
-tests/int/p2-t6.int.test.ts:929:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:938:    expect(mediaDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:952:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:961:    expect(videoDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:971:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:976:    expect(brandDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:986:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:991:    expect(statDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1002:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1007:    expect(materialDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1021:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1026:    expect(r10ServiceDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1038:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1043:    expect(teamDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1061:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1066:    expect(projectDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1077:        createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1082:    expect(r10UserDoc.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1191:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1203:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1216:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1227:          createdAt: forgedCreatedAt,
-tests/int/p2-t6.int.test.ts:1241:      expect(fetched.createdAt).not.toBe(forgedCreatedAt)
-tests/int/p2-t6.int.test.ts:1252:        createdAt: forgedCreatedAt,
-
 $ git grep -n -e 'isAdminOrSelfFieldLevel' -- src/access/adminOrSelf.ts
 src/access/adminOrSelf.ts:29:export const isAdminOrSelfFieldLevel: FieldAccess = ({ doc, id, req }) => {
 
 $ git grep -n -e 'isAdminOrSelfFieldLevel' -- src/access/index.ts
 src/access/index.ts:1:export { adminOrSelf, isAdminOrSelfFieldLevel } from './adminOrSelf'
 
-$ git grep -n -e 'isAdminOrSelfFieldLevel' -- src/access/adminOrSelf.test.ts
-src/access/adminOrSelf.test.ts:4:import { adminOrSelf, isAdminOrSelfFieldLevel } from './adminOrSelf'
+$ git grep -n -e 'adminOrSelf & isAdminOrSelfFieldLevel access helpers' -- src/access/adminOrSelf.test.ts
 src/access/adminOrSelf.test.ts:19:describe('adminOrSelf & isAdminOrSelfFieldLevel access helpers', () => {
+
+$ git grep -n -e 'expect' -- src/access/adminOrSelf.test.ts
+src/access/adminOrSelf.test.ts:2:import { describe, expect, it } from 'vitest'
+src/access/adminOrSelf.test.ts:21:    expect(adminOrSelf(makeArgs(null))).toBe(false)
 src/access/adminOrSelf.test.ts:22:    expect(isAdminOrSelfFieldLevel(makeFieldArgs(null, 42))).toBe(false)
+src/access/adminOrSelf.test.ts:26:    expect(adminOrSelf(makeArgs({ id: 42, role: 'editor' }))).toEqual({
 src/access/adminOrSelf.test.ts:31:    expect(isAdminOrSelfFieldLevel(makeFieldArgs({ id: 42, role: 'editor' }, 42))).toBe(true)
 src/access/adminOrSelf.test.ts:32:    expect(isAdminOrSelfFieldLevel(makeFieldArgs({ id: 42, role: 'editor' }, 99))).toBe(false)
+src/access/adminOrSelf.test.ts:36:    expect(adminOrSelf(makeArgs({ id: 1, role: 'admin' }))).toBe(true)
 src/access/adminOrSelf.test.ts:37:    expect(isAdminOrSelfFieldLevel(makeFieldArgs({ id: 1, role: 'admin' }, 42))).toBe(true)
-
-$ git grep -n -e 'isAdminOrEditor' -- src/collections/Users.ts
-src/collections/Users.ts:18:  isAdminOrEditor,
-src/collections/Users.ts:174:const isAdminOrEditorUserFieldAccess: FieldAccess = ({ req }) => {
-src/collections/Users.ts:271:    read: isAdminOrEditor,
-src/collections/Users.ts:370:        read: isAdminOrEditorUserFieldAccess,
 
 $ git grep -n -e 'forceSelect' -- src/collections/Users.ts
 src/collections/Users.ts:245:  forceSelect: {
@@ -778,6 +1164,11 @@ src/collections/Users.ts:245:  forceSelect: {
 $ git grep -n -e 'restrictOtherUserFieldsForEditorAfterRead' -- src/collections/Users.ts
 src/collections/Users.ts:203:export const restrictOtherUserFieldsForEditorAfterRead: CollectionAfterReadHook = ({
 src/collections/Users.ts:357:    afterRead: [restrictOtherUserFieldsForEditorAfterRead],
+
+$ git grep -n -e 'afterRead' -- src/collections/Users.ts
+src/collections/Users.ts:199: * Defense-in-depth `afterRead` hook (`R-11`): when a non-admin staff user (`editor`)
+src/collections/Users.ts:357:    afterRead: [restrictOtherUserFieldsForEditorAfterRead],
+src/collections/Users.ts:374:        afterRead: [resolveUserDisplayNameAfterRead],
 
 $ git grep -n -e 'isValidKsaOrInternationalPhone' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:17:  isValidKsaOrInternationalPhone,
@@ -792,8 +1183,17 @@ src/collections/QuoteRequests.ts:32:  normalizeQuotePhone,
 src/collections/QuoteRequests.ts:231:      mutable.phone = normalizeQuotePhone(mutable.phone)
 src/collections/QuoteRequests.ts:241:    mutable.phone = normalizeQuotePhone(mutable.phone)
 
-$ git grep -n -e 'window' -- src/lib/ipHash.ts
+$ git grep -n -e 'undefined' -- src/lib/ipHash.ts
 src/lib/ipHash.ts:17:if (typeof window !== 'undefined') {
+
+$ git grep -n -e 'noServerInClientRule' -- eslint.config.mjs
+eslint.config.mjs:5:import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
+eslint.config.mjs:38:          'no-server-in-client': noServerInClientRule,
+
+$ git grep -n -e 'server' -- eslint.config.mjs
+eslint.config.mjs:5:import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
+eslint.config.mjs:38:          'no-server-in-client': noServerInClientRule,
+eslint.config.mjs:44:      'local/no-server-in-client': 'error',
 
 $ git grep -n -e 'ipHash' -- eslint-rules/no-server-in-client.mjs
 eslint-rules/no-server-in-client.mjs:6: * `@/payload.config`, `payload`, `@/lib/odoo/**`, `@/lib/ipHash`, or any `*.server.ts(x)`)
@@ -819,227 +1219,68 @@ eslint-rules/no-server-in-client.mjs:52:  if (/\.server(?:\.[cm]?[jt]sx?)?$/.tes
 $ git grep -n -e 'noServerInClientRule' -- eslint-rules/no-server-in-client.mjs
 eslint-rules/no-server-in-client.mjs:119:export const noServerInClientRule = {
 
-$ git grep -n -e 'ESLint' -- src/eslint-no-server-in-client.test.ts
+$ git grep -n -e 'local/no-server-in-client ESLint rule (S4, R-3, R-5)' -- src/eslint-no-server-in-client.test.ts
 src/eslint-no-server-in-client.test.ts:35:describe('local/no-server-in-client ESLint rule (S4, R-3, R-5)', () => {
 
 $ git grep -n -e 'withImmutableCreatedAt' -- src/collections/_shared/immutableTimestamps.ts
 src/collections/_shared/immutableTimestamps.ts:140:export function withImmutableCreatedAt(collection: CollectionConfig): CollectionConfig {
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Users.ts
-src/collections/Users.ts:23:import { immutableCreatedAtField, withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Users' -- src/collections/Users.ts
 src/collections/Users.ts:242:export const Users: CollectionConfig = withImmutableCreatedAt({
+src/collections/Users.ts:255:      en: 'Users',
 
-$ git grep -n -e 'return' -- src/collections/Media.ts
-src/collections/Media.ts:39:  return args
-src/collections/Media.ts:44:    return false
+$ git grep -n -e 'Media' -- src/collections/Media.ts
+src/collections/Media.ts:25:  validateAndSanitizeMediaFile,
+src/collections/Media.ts:37:    await validateAndSanitizeMediaFile(req.file)
+src/collections/Media.ts:42:export function richTextReferencesMediaId(node: unknown, targetId: number | string): boolean {
 src/collections/Media.ts:47:    return node.some((child) => richTextReferencesMediaId(child, targetId))
-src/collections/Media.ts:60:      return true
-src/collections/Media.ts:66:        return true
-src/collections/Media.ts:70:  return false
-src/collections/Media.ts:110:    return
-src/collections/Media.ts:137:      return undefined
-src/collections/Media.ts:149:  return current
-src/collections/Media.ts:154:    return false
+src/collections/Media.ts:65:      if (richTextReferencesMediaId(val, targetId)) {
+src/collections/Media.ts:152:export const uploadValueMatchesMediaId = (raw: unknown, targetId: number | string): boolean => {
 src/collections/Media.ts:157:    return raw.some((item) => uploadValueMatchesMediaId(item, targetId))
-src/collections/Media.ts:160:  return (
-src/collections/Media.ts:228:  return out
-src/collections/Media.ts:256:  return specs
-src/collections/Media.ts:276:    return []
-src/collections/Media.ts:294:          return [`global:${slug}`]
-src/collections/Media.ts:300:          return [`global:${slug}`]
-src/collections/Media.ts:306:  return []
-src/collections/Media.ts:321:      return true
-src/collections/Media.ts:325:        return true
-src/collections/Media.ts:331:          return true
-src/collections/Media.ts:334:          return true
-src/collections/Media.ts:339:  return false
-src/collections/Media.ts:348:    return col.admin.useAsTitle.trim()
-src/collections/Media.ts:352:      return candidate
-src/collections/Media.ts:355:  return 'id'
-src/collections/Media.ts:389:  return specs
-src/collections/Media.ts:397:    return null
-src/collections/Media.ts:400:    return { [fieldPaths[0]]: { equals: targetId } }
-src/collections/Media.ts:402:  return {
-src/collections/Media.ts:419:    return
+src/collections/Media.ts:293:        if (uploadValueMatchesMediaId(getNestedValue(doc, path), targetId)) {
+src/collections/Media.ts:299:        if (richTextReferencesMediaId(getNestedValue(doc, rtPath), targetId)) {
+src/collections/Media.ts:447:const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Media.ts:485:export const Media: CollectionConfig = withImmutableCreatedAt({
+src/collections/Media.ts:491:      en: 'Media',
+src/collections/Media.ts:495:      en: 'Media',
+src/collections/Media.ts:503:      en: 'Media',
+src/collections/Media.ts:518:    beforeDelete: [preventMediaDeletionWhenReferenced],
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Videos.ts
-src/collections/Videos.ts:30:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Videos' -- src/collections/Videos.ts
 src/collections/Videos.ts:201:export const Videos: CollectionConfig = withImmutableCreatedAt({
+src/collections/Videos.ts:211:      en: 'Videos',
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Brands.ts
-src/collections/Brands.ts:11:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Brands' -- src/collections/Brands.ts
 src/collections/Brands.ts:42:export const Brands: CollectionConfig = withImmutableCreatedAt({
+src/collections/Brands.ts:53:      en: 'Brands',
 
-$ git grep -n -e 'req' -- src/collections/Stats.ts
-src/collections/Stats.ts:18:const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
-src/collections/Stats.ts:21:  const collectionsConfig = Object.values(req.payload.collections).map((c) => c.config)
+$ git grep -n -e 'req,' -- src/collections/Stats.ts
 src/collections/Stats.ts:28:      req,
-src/collections/Stats.ts:32:  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'stats')
 src/collections/Stats.ts:37:      req,
-src/collections/Stats.ts:104:      required: true,
-src/collections/Stats.ts:120:      required: true,
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Materials.ts
-src/collections/Materials.ts:8:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Materials' -- src/collections/Materials.ts
 src/collections/Materials.ts:63:export const Materials: CollectionConfig = withImmutableCreatedAt({
+src/collections/Materials.ts:74:      en: 'Approved Materials',
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Services.ts
-src/collections/Services.ts:15:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Services' -- src/collections/Services.ts
 src/collections/Services.ts:134:export const Services: CollectionConfig = withImmutableCreatedAt({
+src/collections/Services.ts:143:      en: 'Services',
+src/collections/Services.ts:157:      en: 'Main and specialist services displayed on the Home and Services pages.',
+src/collections/Services.ts:307:          en: 'Bullet highlights displayed on the Services page (up to 6 items).',
+src/collections/Services.ts:352:          en: 'Illustrative image for this service on the Home and Services pages.',
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Team.ts
-src/collections/Team.ts:16:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Team' -- src/collections/Team.ts
 src/collections/Team.ts:80:export const Team: CollectionConfig = withImmutableCreatedAt({
+src/collections/Team.ts:85:      en: 'Team Member',
+src/collections/Team.ts:89:      en: 'Team',
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/Projects.ts
-src/collections/Projects.ts:28:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'Projects' -- src/collections/Projects.ts
 src/collections/Projects.ts:568:export const Projects: CollectionConfig = withImmutableCreatedAt({
+src/collections/Projects.ts:580:      en: 'Projects',
 
-$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:23:import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+$ git grep -n -e 'QuoteRequests' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:322:export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
-
-$ git grep -n -e 'serviceTitle' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:195:  if (typeof mutable.serviceTitle === 'string') {
-src/collections/QuoteRequests.ts:196:    mutable.serviceTitle = mutable.serviceTitle.trim().slice(0, 200)
-src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
-src/collections/QuoteRequests.ts:310:        mutable.serviceTitle = resolvedTitle.trim().slice(0, 200)
-src/collections/QuoteRequests.ts:451:      name: 'serviceTitle',
-
-$ git grep -n -e 'isNonEmptyInput' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:102:const isNonEmptyInput = (val: unknown): boolean => val !== null && val !== undefined && val !== ''
-src/collections/QuoteRequests.ts:244:  if ('status' in mutable && isNonEmptyInput(mutable.status)) {
-src/collections/QuoteRequests.ts:256:  if ('emailStatus' in mutable && isNonEmptyInput(mutable.emailStatus)) {
-src/collections/QuoteRequests.ts:268:  if ('locale' in mutable && isNonEmptyInput(mutable.locale)) {
-src/collections/QuoteRequests.ts:280:  if ('ipHash' in mutable && isNonEmptyInput(mutable.ipHash)) {
-src/collections/QuoteRequests.ts:298:  if ('service' in mutable && isNonEmptyInput(mutable.service)) {
-src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
-src/collections/QuoteRequests.ts:315:  if ('assignedTo' in mutable && isNonEmptyInput(mutable.assignedTo)) {
-
-$ git grep -n -e 'resolvedTitle' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:308:      const resolvedTitle = serviceDoc.title
-src/collections/QuoteRequests.ts:309:      if (typeof resolvedTitle === 'string' && resolvedTitle.trim().length > 0) {
-src/collections/QuoteRequests.ts:310:        mutable.serviceTitle = resolvedTitle.trim().slice(0, 200)
-
-$ git grep -n -e 'MigrateUpArgs' -- src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts
-src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts:1:import { type MigrateDownArgs, type MigrateUpArgs, sql } from '@payloadcms/db-postgres'
-src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts:3:export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
-
-$ git grep -n -e '_005934_p2_t6_quote_requests_service_title' -- src/migrations/index.ts
-src/migrations/index.ts:7:import * as migration_20261023_005934_p2_t6_quote_requests_service_title from './20261023_005934_p2_t6_quote_requests_service_title'
-src/migrations/index.ts:41:    up: migration_20261023_005934_p2_t6_quote_requests_service_title.up,
-src/migrations/index.ts:42:    down: migration_20261023_005934_p2_t6_quote_requests_service_title.down,
-src/migrations/index.ts:43:    name: '20261023_005934_p2_t6_quote_requests_service_title',
-
-$ git grep -n -e 'useAsTitle' -- src/collections/Users.ts
-src/collections/Users.ts:259:    useAsTitle: 'name',
-
-$ git grep -n -e 'resolveUserDisplayNameBeforeValidate' -- src/collections/Users.ts
-src/collections/Users.ts:148:export const resolveUserDisplayNameBeforeValidate: FieldHook = ({
-src/collections/Users.ts:373:        beforeValidate: [resolveUserDisplayNameBeforeValidate],
-
-$ git grep -n -e 'resolveUserDisplayNameAfterRead' -- src/collections/Users.ts
-src/collections/Users.ts:179:export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data, req }) => {
-src/collections/Users.ts:374:        afterRead: [resolveUserDisplayNameAfterRead],
-
-$ git grep -n -e 'IP_HASH_HEX_REGEX' -- src/lib/ipHash.ts
-src/lib/ipHash.ts:23:export const IP_HASH_HEX_REGEX = /^[a-f0-9]{64}$/
-src/lib/ipHash.ts:59:  return typeof value === 'string' && IP_HASH_HEX_REGEX.test(value)
-
-$ git grep -n -e 'normalizeIpForHash' -- src/lib/ipHash.ts
-src/lib/ipHash.ts:30:export function normalizeIpForHash(rawIp: string): string {
-src/lib/ipHash.ts:54:  const normalizedIp = normalizeIpForHash(ip)
-
-$ git grep -n -e 'IP_HASH_SALT' -- src/lib/ipHash.ts
-src/lib/ipHash.ts:9: * Only the salted SHA-256 hex digest (`SHA-256(normalizedIp + IP_HASH_SALT)`) is persisted
-src/lib/ipHash.ts:46: * Defaults `salt` to `env.IP_HASH_SALT` (validated ≥ 48 chars at boot per S1/S2).
-src/lib/ipHash.ts:49:export function hashIp(ip: string, salt: string = env.IP_HASH_SALT): string {
-src/lib/ipHash.ts:52:    throw new Error('IP_HASH_SALT must be at least 16 characters long to hash client IPs.')
-
-$ git grep -n -e 'isValidIpHash' -- src/lib/ipHash.ts
-src/lib/ipHash.ts:58:export function isValidIpHash(value: unknown): value is string {
-
-$ git grep -n -e 'helper' -- src/lib/ipHash.test.ts
-src/lib/ipHash.test.ts:7:describe('ipHash server-only helper (P2-T6, D2, S2, S4)', () => {
-
-$ git grep -n -e 'QuoteRequests' -- src/payload.config.ts
-src/payload.config.ts:14:import { QuoteRequests } from './collections/QuoteRequests'
-src/payload.config.ts:86:    QuoteRequests,
-
-$ git grep -n -e 'buildConfig' -- src/payload.config.ts
-src/payload.config.ts:6:import { buildConfig } from 'payload'
-src/payload.config.ts:40:export default buildConfig({
-
-$ git grep -n -e 'requests' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:134:      collection: 'quote-requests',
-src/collections/QuoteRequests.ts:157:      collection: 'quote-requests',
-src/collections/QuoteRequests.ts:292:      collection: 'quote-requests',
-src/collections/QuoteRequests.ts:323:  slug: 'quote-requests',
-src/collections/QuoteRequests.ts:352:      en: 'Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).',
-
-$ git grep -n -e 'group' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:346:    group: {
-
-$ git grep -n -e 'defaultColumns' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:336:    defaultColumns: [
-
-$ git grep -n -e 'listSearchableFields' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:345:    listSearchableFields: ['name', 'company', 'email', 'phone'],
-
-$ git grep -n -e 'QuoteRequestsFilterBar' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:355:      beforeListTable: ['/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar'],
-
-$ git grep -n -e 'defaultSort' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:358:  defaultSort: '-createdAt',
-
-$ git grep -n -e 'create' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:61:  create: (): boolean => false,
-src/collections/QuoteRequests.ts:67:  create: (): boolean => false,
-src/collections/QuoteRequests.ts:207:  if (operation === 'create') {
-src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
-src/collections/QuoteRequests.ts:343:      'createdAt',
-src/collections/QuoteRequests.ts:352:      en: 'Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).',
-src/collections/QuoteRequests.ts:358:  defaultSort: '-createdAt',
-src/collections/QuoteRequests.ts:362:    // Only the server-side quote handler creates records via Local API after validation.
-src/collections/QuoteRequests.ts:363:    create: () => false,
-
-$ git grep -n -e 'isAdminOrEditor' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:10:import { isAdminOrEditor } from '../access/isAdminOrEditor'
-src/collections/QuoteRequests.ts:49:export const isAdminOrEditorFieldLevel: FieldAccess = ({ req }) => {
-src/collections/QuoteRequests.ts:60:  read: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:66:  read: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:68:  update: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:365:    read: isAdminOrEditor,
-src/collections/QuoteRequests.ts:366:    update: isAdminOrEditor,
-
-$ git grep -n -e 'isAdmin' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:9:import { isAdmin } from '../access/isAdmin'
-src/collections/QuoteRequests.ts:10:import { isAdminOrEditor } from '../access/isAdminOrEditor'
-src/collections/QuoteRequests.ts:49:export const isAdminOrEditorFieldLevel: FieldAccess = ({ req }) => {
-src/collections/QuoteRequests.ts:60:  read: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:66:  read: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:68:  update: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:365:    read: isAdminOrEditor,
-src/collections/QuoteRequests.ts:366:    update: isAdminOrEditor,
-src/collections/QuoteRequests.ts:367:    delete: isAdmin,
-
-$ git grep -n -e 'readOnlyFieldAccess' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:59:export const readOnlyFieldAccess = {
-src/collections/QuoteRequests.ts:385:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:398:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:411:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:426:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:445:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:458:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:475:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:505:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:519:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:534:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:644:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:685:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:699:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:713:      access: readOnlyFieldAccess,
-src/collections/QuoteRequests.ts:730:      access: readOnlyFieldAccess,
 
 $ git grep -n -e 'name' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:186:  if (typeof mutable.name === 'string') {
@@ -1070,130 +1311,171 @@ src/collections/QuoteRequests.ts:692:      name: 'emailLastError',
 src/collections/QuoteRequests.ts:705:      name: 'ipHash',
 src/collections/QuoteRequests.ts:723:      name: 'userAgent',
 
-$ git grep -n -e 'company' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:189:  if (typeof mutable.company === 'string') {
-src/collections/QuoteRequests.ts:190:    mutable.company = mutable.company.trim()
-src/collections/QuoteRequests.ts:338:      'company',
-src/collections/QuoteRequests.ts:345:    listSearchableFields: ['name', 'company', 'email', 'phone'],
-src/collections/QuoteRequests.ts:391:      name: 'company',
-
-$ git grep -n -e 'email' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:90:    return 'يرجى إدخال بريد إلكتروني صالح. / Please provide a valid email address.'
-src/collections/QuoteRequests.ts:192:  if (typeof mutable.email === 'string') {
-src/collections/QuoteRequests.ts:193:    mutable.email = mutable.email.trim().toLowerCase()
-src/collections/QuoteRequests.ts:201:  if (typeof mutable.emailLastError === 'string') {
-src/collections/QuoteRequests.ts:202:    mutable.emailLastError = mutable.emailLastError.trim().slice(0, 500)
-src/collections/QuoteRequests.ts:218:    if (!isValidEmailAddress(mutable.email)) {
-src/collections/QuoteRequests.ts:220:        path: 'email',
-src/collections/QuoteRequests.ts:221:        message: 'يرجى إدخال بريد إلكتروني صالح. / Please provide a valid email address.',
+$ git grep -n -e 'isNonEmptyInput' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:102:const isNonEmptyInput = (val: unknown): boolean => val !== null && val !== undefined && val !== ''
+src/collections/QuoteRequests.ts:244:  if ('status' in mutable && isNonEmptyInput(mutable.status)) {
 src/collections/QuoteRequests.ts:256:  if ('emailStatus' in mutable && isNonEmptyInput(mutable.emailStatus)) {
-src/collections/QuoteRequests.ts:258:      typeof mutable.emailStatus !== 'string' ||
-src/collections/QuoteRequests.ts:259:      !(QUOTE_EMAIL_STATUS_VALUES as readonly string[]).includes(mutable.emailStatus)
-src/collections/QuoteRequests.ts:262:        path: 'emailStatus',
-src/collections/QuoteRequests.ts:263:        message: 'قيمة حالة الإشعار البريدي غير صالحة. / Invalid email status value.',
-src/collections/QuoteRequests.ts:342:      'emailStatus',
-src/collections/QuoteRequests.ts:345:    listSearchableFields: ['name', 'company', 'email', 'phone'],
-src/collections/QuoteRequests.ts:404:      name: 'email',
-src/collections/QuoteRequests.ts:405:      type: 'email',
-src/collections/QuoteRequests.ts:635:      name: 'emailStatus',
-src/collections/QuoteRequests.ts:677:      name: 'emailAttempts',
-src/collections/QuoteRequests.ts:692:      name: 'emailLastError',
-
-$ git grep -n -e 'phone' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:224:    if (!isValidKsaOrInternationalPhone(mutable.phone)) {
-src/collections/QuoteRequests.ts:226:        path: 'phone',
-src/collections/QuoteRequests.ts:228:          'يرجى إدخال رقم هاتف سعودي أو دولي صالح. / Please provide a valid KSA or international phone number.',
-src/collections/QuoteRequests.ts:230:    } else if (typeof mutable.phone === 'string') {
-src/collections/QuoteRequests.ts:231:      mutable.phone = normalizeQuotePhone(mutable.phone)
-src/collections/QuoteRequests.ts:240:  } else if (typeof mutable.phone === 'string' && isValidKsaOrInternationalPhone(mutable.phone)) {
-src/collections/QuoteRequests.ts:241:    mutable.phone = normalizeQuotePhone(mutable.phone)
-src/collections/QuoteRequests.ts:345:    listSearchableFields: ['name', 'company', 'email', 'phone'],
-src/collections/QuoteRequests.ts:418:      name: 'phone',
-src/collections/QuoteRequests.ts:432:          en: 'KSA or international phone number (e.g. +966 57 353 4185).',
-
-$ git grep -n -e 'service' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:125:  collection: 'services' | 'users',
-src/collections/QuoteRequests.ts:195:  if (typeof mutable.serviceTitle === 'string') {
-src/collections/QuoteRequests.ts:196:    mutable.serviceTitle = mutable.serviceTitle.trim().slice(0, 200)
-src/collections/QuoteRequests.ts:298:  if ('service' in mutable && isNonEmptyInput(mutable.service)) {
-src/collections/QuoteRequests.ts:300:    const serviceDoc = await verifyRelatedDocExists(
-src/collections/QuoteRequests.ts:301:      'services',
-src/collections/QuoteRequests.ts:302:      mutable.service,
-src/collections/QuoteRequests.ts:303:      'service',
-src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
-src/collections/QuoteRequests.ts:308:      const resolvedTitle = serviceDoc.title
-src/collections/QuoteRequests.ts:310:        mutable.serviceTitle = resolvedTitle.trim().slice(0, 200)
-src/collections/QuoteRequests.ts:339:      'service',
-src/collections/QuoteRequests.ts:437:      name: 'service',
-src/collections/QuoteRequests.ts:439:      relationTo: 'services',
-src/collections/QuoteRequests.ts:451:      name: 'serviceTitle',
-src/collections/QuoteRequests.ts:463:          en: 'Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).',
-
-$ git grep -n -e 'message' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:138:          message: 'معرّف السجل المرتبط غير صالح. / Invalid related record ID.',
-src/collections/QuoteRequests.ts:161:          message: 'السجل المرتبط غير موجود. / Referenced record does not exist.',
-src/collections/QuoteRequests.ts:205:  const errors: Array<{ path: string; message: string }> = []
-src/collections/QuoteRequests.ts:215:        message: 'الاسم الكامل مطلوب وبحد أقصى 120 حرفاً. / Name is required (max 120 chars).',
-src/collections/QuoteRequests.ts:221:        message: 'يرجى إدخال بريد إلكتروني صالح. / Please provide a valid email address.',
-src/collections/QuoteRequests.ts:227:        message:
-src/collections/QuoteRequests.ts:236:        message:
-src/collections/QuoteRequests.ts:251:        message: 'قيمة حالة الطلب غير صالحة. / Invalid quote request status value.',
-src/collections/QuoteRequests.ts:263:        message: 'قيمة حالة الإشعار البريدي غير صالحة. / Invalid email status value.',
-src/collections/QuoteRequests.ts:275:        message: 'قيمة اللغة غير صالحة (ar أو en). / Invalid locale value (ar or en).',
-src/collections/QuoteRequests.ts:284:        message:
-src/collections/QuoteRequests.ts:468:      name: 'message',
-
-$ git grep -n -e 'locale' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:129:  locale?: QuoteLocale,
-src/collections/QuoteRequests.ts:150:    locale: locale ?? 'ar',
 src/collections/QuoteRequests.ts:268:  if ('locale' in mutable && isNonEmptyInput(mutable.locale)) {
-src/collections/QuoteRequests.ts:270:      typeof mutable.locale !== 'string' ||
-src/collections/QuoteRequests.ts:271:      !(QUOTE_LOCALE_VALUES as readonly string[]).includes(mutable.locale)
-src/collections/QuoteRequests.ts:274:        path: 'locale',
-src/collections/QuoteRequests.ts:275:        message: 'قيمة اللغة غير صالحة (ar أو en). / Invalid locale value (ar or en).',
-src/collections/QuoteRequests.ts:299:    const requestLocale: QuoteLocale = mutable.locale === 'en' ? 'en' : 'ar'
-src/collections/QuoteRequests.ts:463:          en: 'Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).',
-src/collections/QuoteRequests.ts:481:      name: 'locale',
-
-$ git grep -n -e 'sourcePage' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:198:  if (typeof mutable.sourcePage === 'string') {
-src/collections/QuoteRequests.ts:199:    mutable.sourcePage = mutable.sourcePage.trim()
-src/collections/QuoteRequests.ts:512:      name: 'sourcePage',
-
-$ git grep -n -e 'consent' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:233:    if (mutable.consent !== true) {
-src/collections/QuoteRequests.ts:235:        path: 'consent',
-src/collections/QuoteRequests.ts:526:      name: 'consent',
-
-$ git grep -n -e 'emailStatus' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:256:  if ('emailStatus' in mutable && isNonEmptyInput(mutable.emailStatus)) {
-src/collections/QuoteRequests.ts:258:      typeof mutable.emailStatus !== 'string' ||
-src/collections/QuoteRequests.ts:259:      !(QUOTE_EMAIL_STATUS_VALUES as readonly string[]).includes(mutable.emailStatus)
-src/collections/QuoteRequests.ts:262:        path: 'emailStatus',
-src/collections/QuoteRequests.ts:342:      'emailStatus',
-src/collections/QuoteRequests.ts:635:      name: 'emailStatus',
-
-$ git grep -n -e 'emailAttempts' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:677:      name: 'emailAttempts',
-
-$ git grep -n -e 'emailLastError' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:201:  if (typeof mutable.emailLastError === 'string') {
-src/collections/QuoteRequests.ts:202:    mutable.emailLastError = mutable.emailLastError.trim().slice(0, 500)
-src/collections/QuoteRequests.ts:692:      name: 'emailLastError',
-
-$ git grep -n -e 'ipHash' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:11:import { isValidIpHash } from '../lib/ipHash'
 src/collections/QuoteRequests.ts:280:  if ('ipHash' in mutable && isNonEmptyInput(mutable.ipHash)) {
-src/collections/QuoteRequests.ts:281:    if (!isValidIpHash(mutable.ipHash)) {
-src/collections/QuoteRequests.ts:283:        path: 'ipHash',
-src/collections/QuoteRequests.ts:285:          'يجب أن يكون ipHash تجزئة SHA-256 سداسية عشرية بطول 64 حرفاً (يُمنع تخزين عنوان IP الخام — D2). / ipHash must be a 64-character SHA-256 hex digest (raw IP storage is prohibited — D2).',
-src/collections/QuoteRequests.ts:705:      name: 'ipHash',
+src/collections/QuoteRequests.ts:298:  if ('service' in mutable && isNonEmptyInput(mutable.service)) {
+src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
+src/collections/QuoteRequests.ts:315:  if ('assignedTo' in mutable && isNonEmptyInput(mutable.assignedTo)) {
 
-$ git grep -n -e 'userAgent' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:181:  // Truncate userAgent to 300 characters per docs/02-content-model.md line 104
-src/collections/QuoteRequests.ts:182:  if (typeof mutable.userAgent === 'string') {
-src/collections/QuoteRequests.ts:183:    mutable.userAgent = mutable.userAgent.trim().slice(0, 300)
-src/collections/QuoteRequests.ts:723:      name: 'userAgent',
+$ git grep -n -e 'resolvedTitle' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:308:      const resolvedTitle = serviceDoc.title
+src/collections/QuoteRequests.ts:309:      if (typeof resolvedTitle === 'string' && resolvedTitle.trim().length > 0) {
+src/collections/QuoteRequests.ts:310:        mutable.serviceTitle = resolvedTitle.trim().slice(0, 200)
+
+$ git grep -n -e 'up' -- src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts
+src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts:3:export async function up({ db, payload: _payload, req: _req }: MigrateUpArgs): Promise<void> {
+
+$ git grep -n -e 'name' -- src/migrations/index.ts
+src/migrations/index.ts:13:    name: '20261021_074848_initial_users_media',
+src/migrations/index.ts:18:    name: '20261022_120943_p2_t2_videos_brands_stats_materials',
+src/migrations/index.ts:23:    name: '20261022_140011_p2_t3_services_team',
+src/migrations/index.ts:28:    name: '20261022_160652_p2_t4_projects',
+src/migrations/index.ts:33:    name: '20261022_221250_p2_t5_globals',
+src/migrations/index.ts:38:    name: '20261022_231435_p2_t6_quote_requests',
+src/migrations/index.ts:43:    name: '20261023_005934_p2_t6_quote_requests_service_title',
+
+$ git grep -n -e 'useAsTitle' -- src/collections/Users.ts
+src/collections/Users.ts:259:    useAsTitle: 'name',
+
+$ git grep -n -e 'resolveUserDisplayNameBeforeValidate' -- src/collections/Users.ts
+src/collections/Users.ts:148:export const resolveUserDisplayNameBeforeValidate: FieldHook = ({
+src/collections/Users.ts:373:        beforeValidate: [resolveUserDisplayNameBeforeValidate],
+
+$ git grep -n -e 'resolveUserDisplayNameAfterRead' -- src/collections/Users.ts
+src/collections/Users.ts:179:export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data, req }) => {
+src/collections/Users.ts:374:        afterRead: [resolveUserDisplayNameAfterRead],
+
+$ git grep -n -e 'IP_HASH_HEX_REGEX' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:23:export const IP_HASH_HEX_REGEX = /^[a-f0-9]{64}$/
+src/lib/ipHash.ts:59:  return typeof value === 'string' && IP_HASH_HEX_REGEX.test(value)
+
+$ git grep -n -e 'normalizeIpForHash' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:30:export function normalizeIpForHash(rawIp: string): string {
+src/lib/ipHash.ts:54:  const normalizedIp = normalizeIpForHash(ip)
+
+$ git grep -n -e 'hashIp' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:49:export function hashIp(ip: string, salt: string = env.IP_HASH_SALT): string {
+
+$ git grep -n -e 'isValidIpHash' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:58:export function isValidIpHash(value: unknown): value is string {
+
+$ git grep -n -e 'ipHash server-only helper (P2-T6, D2, S2, S4)' -- src/lib/ipHash.test.ts
+src/lib/ipHash.test.ts:7:describe('ipHash server-only helper (P2-T6, D2, S2, S4)', () => {
+
+$ git grep -n -e 'QuoteRequests' -- src/payload.config.ts
+src/payload.config.ts:14:import { QuoteRequests } from './collections/QuoteRequests'
+src/payload.config.ts:86:    QuoteRequests,
+
+$ git grep -n -e 'buildConfig' -- src/payload.config.ts
+src/payload.config.ts:6:import { buildConfig } from 'payload'
+src/payload.config.ts:40:export default buildConfig({
+
+$ git grep -n -e 'slug' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:323:  slug: 'quote-requests',
+
+$ git grep -n -e 'group' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:346:    group: {
+
+$ git grep -n -e 'defaultColumns' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:336:    defaultColumns: [
+
+$ git grep -n -e 'listSearchableFields' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:345:    listSearchableFields: ['name', 'company', 'email', 'phone'],
+
+$ git grep -n -e 'beforeListTable' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:355:      beforeListTable: ['/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar'],
+
+$ git grep -n -e 'defaultSort' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:358:  defaultSort: '-createdAt',
+
+$ git grep -n -e 'create' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:61:  create: (): boolean => false,
+src/collections/QuoteRequests.ts:67:  create: (): boolean => false,
+src/collections/QuoteRequests.ts:207:  if (operation === 'create') {
+src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
+src/collections/QuoteRequests.ts:343:      'createdAt',
+src/collections/QuoteRequests.ts:352:      en: 'Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).',
+src/collections/QuoteRequests.ts:358:  defaultSort: '-createdAt',
+src/collections/QuoteRequests.ts:362:    // Only the server-side quote handler creates records via Local API after validation.
+src/collections/QuoteRequests.ts:363:    create: () => false,
+
+$ git grep -n -e 'read' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:56: * readable by `admin` and `editor`, never writable via public/authenticated REST or
+src/collections/QuoteRequests.ts:59:export const readOnlyFieldAccess = {
+src/collections/QuoteRequests.ts:60:  read: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:66:  read: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:247:      !(QUOTE_REQUEST_STATUS_VALUES as readonly string[]).includes(mutable.status)
+src/collections/QuoteRequests.ts:259:      !(QUOTE_EMAIL_STATUS_VALUES as readonly string[]).includes(mutable.emailStatus)
+src/collections/QuoteRequests.ts:271:      !(QUOTE_LOCALE_VALUES as readonly string[]).includes(mutable.locale)
+src/collections/QuoteRequests.ts:364:    // Z1: Staff (admin + editor) can read and update workflow fields; only admin can delete.
+src/collections/QuoteRequests.ts:365:    read: isAdminOrEditor,
+src/collections/QuoteRequests.ts:374:    // 1. Customer Submission Fields (read-only in admin and via API — Scope 1 & 3)
+src/collections/QuoteRequests.ts:385:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:387:        readOnly: true,
+src/collections/QuoteRequests.ts:398:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:400:        readOnly: true,
+src/collections/QuoteRequests.ts:411:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:414:        readOnly: true,
+src/collections/QuoteRequests.ts:426:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:429:        readOnly: true,
+src/collections/QuoteRequests.ts:445:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:447:        readOnly: true,
+src/collections/QuoteRequests.ts:458:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:460:        readOnly: true,
+src/collections/QuoteRequests.ts:463:          en: 'Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).',
+src/collections/QuoteRequests.ts:475:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:477:        readOnly: true,
+src/collections/QuoteRequests.ts:505:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:507:        readOnly: true,
+src/collections/QuoteRequests.ts:519:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:521:        readOnly: true,
+src/collections/QuoteRequests.ts:534:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:537:        readOnly: true,
+src/collections/QuoteRequests.ts:632:    // 3. System / Pipeline Fields (read-only in admin & via API — Scope 2 & 3)
+src/collections/QuoteRequests.ts:644:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:669:        readOnly: true,
+src/collections/QuoteRequests.ts:685:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:687:        readOnly: true,
+src/collections/QuoteRequests.ts:699:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:701:        readOnly: true,
+src/collections/QuoteRequests.ts:713:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:715:        readOnly: true,
+src/collections/QuoteRequests.ts:730:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:732:        readOnly: true,
+
+$ git grep -n -e 'update' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:62:  update: (): boolean => false,
+src/collections/QuoteRequests.ts:68:  update: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:352:      en: 'Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).',
+src/collections/QuoteRequests.ts:364:    // Z1: Staff (admin + editor) can read and update workflow fields; only admin can delete.
+src/collections/QuoteRequests.ts:366:    update: isAdminOrEditor,
+
+$ git grep -n -e 'delete' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:364:    // Z1: Staff (admin + editor) can read and update workflow fields; only admin can delete.
+src/collections/QuoteRequests.ts:367:    delete: isAdmin,
+src/collections/QuoteRequests.ts:463:          en: 'Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).',
+
+$ git grep -n -e 'readOnlyFieldAccess' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:59:export const readOnlyFieldAccess = {
+src/collections/QuoteRequests.ts:385:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:398:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:411:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:426:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:445:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:458:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:475:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:505:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:519:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:534:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:644:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:685:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:699:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:713:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:730:      access: readOnlyFieldAccess,
 
 $ git grep -n -e 'workflowFieldAccess' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:65:export const workflowFieldAccess = {
@@ -1201,30 +1483,7 @@ src/collections/QuoteRequests.ts:555:      access: workflowFieldAccess,
 src/collections/QuoteRequests.ts:609:      access: workflowFieldAccess,
 src/collections/QuoteRequests.ts:622:      access: workflowFieldAccess,
 
-$ git grep -n -e 'status' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:47: * Field-level access helper for staff workflow fields (`status`, `assignedTo`, `internalNotes`).
-src/collections/QuoteRequests.ts:244:  if ('status' in mutable && isNonEmptyInput(mutable.status)) {
-src/collections/QuoteRequests.ts:246:      typeof mutable.status !== 'string' ||
-src/collections/QuoteRequests.ts:247:      !(QUOTE_REQUEST_STATUS_VALUES as readonly string[]).includes(mutable.status)
-src/collections/QuoteRequests.ts:250:        path: 'status',
-src/collections/QuoteRequests.ts:251:        message: 'قيمة حالة الطلب غير صالحة. / Invalid quote request status value.',
-src/collections/QuoteRequests.ts:263:        message: 'قيمة حالة الإشعار البريدي غير صالحة. / Invalid email status value.',
-src/collections/QuoteRequests.ts:340:      'status',
-src/collections/QuoteRequests.ts:352:      en: 'Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).',
-src/collections/QuoteRequests.ts:546:      name: 'status',
-
-$ git grep -n -e 'assignedTo' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:47: * Field-level access helper for staff workflow fields (`status`, `assignedTo`, `internalNotes`).
-src/collections/QuoteRequests.ts:315:  if ('assignedTo' in mutable && isNonEmptyInput(mutable.assignedTo)) {
-src/collections/QuoteRequests.ts:316:    await verifyRelatedDocExists('users', mutable.assignedTo, 'assignedTo', req)
-src/collections/QuoteRequests.ts:341:      'assignedTo',
-src/collections/QuoteRequests.ts:601:      name: 'assignedTo',
-
-$ git grep -n -e 'internalNotes' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:47: * Field-level access helper for staff workflow fields (`status`, `assignedTo`, `internalNotes`).
-src/collections/QuoteRequests.ts:615:      name: 'internalNotes',
-
-$ git grep -n -e 'configuration' -- src/collections/QuoteRequests.test.ts
+$ git grep -n -e 'QuoteRequests collection configuration & validators (P2-T6)' -- src/collections/QuoteRequests.test.ts
 src/collections/QuoteRequests.test.ts:39:describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
 
 $ git grep -n -e 'defaultColumns' -- src/collections/QuoteRequests.test.ts
@@ -1244,40 +1503,43 @@ src/collections/QuoteRequests.test.ts:110:    expect(readOnlyFieldAccess.read(ad
 src/collections/QuoteRequests.test.ts:111:    expect(readOnlyFieldAccess.read(editorReq)).toBe(true)
 src/collections/QuoteRequests.test.ts:112:    expect(readOnlyFieldAccess.read(anonReq)).toBe(false)
 
-$ git grep -n -e 'DefaultCellComponentProps' -- src/components/admin/QuoteStatusPillCell.tsx
-src/components/admin/QuoteStatusPillCell.tsx:4:import type { DefaultCellComponentProps } from 'payload'
-src/components/admin/QuoteStatusPillCell.tsx:72:export const QuoteStatusPillCell: React.FC<DefaultCellComponentProps> = ({ cellData }) => {
+$ git grep -n -e '},' -- src/components/admin/QuoteStatusPillCell.tsx
+src/components/admin/QuoteStatusPillCell.tsx:27:    },
+src/components/admin/QuoteStatusPillCell.tsx:32:  },
+src/components/admin/QuoteStatusPillCell.tsx:37:    },
+src/components/admin/QuoteStatusPillCell.tsx:42:  },
+src/components/admin/QuoteStatusPillCell.tsx:47:    },
+src/components/admin/QuoteStatusPillCell.tsx:52:  },
+src/components/admin/QuoteStatusPillCell.tsx:57:    },
+src/components/admin/QuoteStatusPillCell.tsx:62:  },
+src/components/admin/QuoteStatusPillCell.tsx:67:    },
+src/components/admin/QuoteStatusPillCell.tsx:72:  },
 
-$ git grep -n -e 'DefaultCellComponentProps' -- src/components/admin/EmailStatusPillCell.tsx
-src/components/admin/EmailStatusPillCell.tsx:4:import type { DefaultCellComponentProps } from 'payload'
-src/components/admin/EmailStatusPillCell.tsx:52:export const EmailStatusPillCell: React.FC<DefaultCellComponentProps> = ({ cellData }) => {
+$ git grep -n -e '},' -- src/components/admin/EmailStatusPillCell.tsx
+src/components/admin/EmailStatusPillCell.tsx:27:    },
+src/components/admin/EmailStatusPillCell.tsx:32:  },
+src/components/admin/EmailStatusPillCell.tsx:37:    },
+src/components/admin/EmailStatusPillCell.tsx:42:  },
+src/components/admin/EmailStatusPillCell.tsx:47:    },
+src/components/admin/EmailStatusPillCell.tsx:52:  },
 
 $ git grep -n -e 'QuoteRequestsFilterBar' -- src/components/admin/QuoteRequestsFilterBar.tsx
 src/components/admin/QuoteRequestsFilterBar.tsx:17:export const QuoteRequestsFilterBar: React.FC = () => {
 src/components/admin/QuoteRequestsFilterBar.tsx:276:export default QuoteRequestsFilterBar
 
-$ git grep -n -e 'QuoteStatusPillCell' -- src/collections/QuoteRequests.ts
+$ git grep -n -e 'Cell' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:596:          Cell: '/components/admin/QuoteStatusPillCell#QuoteStatusPillCell',
-
-$ git grep -n -e 'EmailStatusPillCell' -- src/collections/QuoteRequests.ts
 src/collections/QuoteRequests.ts:672:          Cell: '/components/admin/EmailStatusPillCell#EmailStatusPillCell',
 
-$ git grep -n -e 'MigrateUpArgs' -- src/migrations/20261022_231435_p2_t6_quote_requests.ts
-src/migrations/20261022_231435_p2_t6_quote_requests.ts:1:import { type MigrateDownArgs, type MigrateUpArgs, sql } from '@payloadcms/db-postgres'
+$ git grep -n -e 'up' -- src/migrations/20261022_231435_p2_t6_quote_requests.ts
 src/migrations/20261022_231435_p2_t6_quote_requests.ts:3:export async function up({ db }: MigrateUpArgs): Promise<void> {
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:27:  	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:39:  CREATE INDEX "quote_requests_updated_at_idx" ON "quote_requests" USING btree ("updated_at");
 
-$ git grep -n -e 'MigrateDownArgs' -- src/migrations/20261022_231435_p2_t6_quote_requests.ts
-src/migrations/20261022_231435_p2_t6_quote_requests.ts:1:import { type MigrateDownArgs, type MigrateUpArgs, sql } from '@payloadcms/db-postgres'
+$ git grep -n -e 'down' -- src/migrations/20261022_231435_p2_t6_quote_requests.ts
 src/migrations/20261022_231435_p2_t6_quote_requests.ts:45:export async function down({ db }: MigrateDownArgs): Promise<void> {
 
-$ git grep -n -e '_231435_p2_t6_quote_requests' -- src/migrations/index.ts
-src/migrations/index.ts:6:import * as migration_20261022_231435_p2_t6_quote_requests from './20261022_231435_p2_t6_quote_requests'
-src/migrations/index.ts:36:    up: migration_20261022_231435_p2_t6_quote_requests.up,
-src/migrations/index.ts:37:    down: migration_20261022_231435_p2_t6_quote_requests.down,
-src/migrations/index.ts:38:    name: '20261022_231435_p2_t6_quote_requests',
-
-$ git grep -n -e 'MigrateDownArgs' -- src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts
-src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts:1:import { type MigrateDownArgs, type MigrateUpArgs, sql } from '@payloadcms/db-postgres'
+$ git grep -n -e 'down' -- src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts
 src/migrations/20261023_005934_p2_t6_quote_requests_service_title.ts:8:export async function down({ db, payload: _payload, req: _req }: MigrateDownArgs): Promise<void> {
 
 $ git grep -n -e 'serviceTitle' -- tests/int/p2-t6.int.test.ts
@@ -1289,117 +1551,6 @@ tests/int/p2-t6.int.test.ts:723:    // Editor and admin cannot tamper with servi
 tests/int/p2-t6.int.test.ts:729:        serviceTitle: 'عنوان خدمة مزور',
 tests/int/p2-t6.int.test.ts:735:    // Delete the referenced service -> service becomes null (ON DELETE SET NULL), serviceTitle remains intact
 tests/int/p2-t6.int.test.ts:749:    expect(afterServiceDeleted.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
-
-$ git grep -n -e 'anonPost' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:193:    const anonPost = await callJsonApi({
-tests/int/p2-t6.int.test.ts:198:    expect(anonPost.status).toBe(403)
-
-$ git grep -n -e 'editorPost' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:201:    const editorPost = await callJsonApi({
-tests/int/p2-t6.int.test.ts:207:    expect(editorPost.status).toBe(403)
-
-$ git grep -n -e 'adminPost' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:210:    const adminPost = await callJsonApi({
-tests/int/p2-t6.int.test.ts:216:    expect(adminPost.status).toBe(403)
-
-$ git grep -n -e 'await expect(' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:219:    await expect(
-tests/int/p2-t6.int.test.ts:227:    await expect(
-tests/int/p2-t6.int.test.ts:236:    await expect(
-tests/int/p2-t6.int.test.ts:401:    await expect(
-tests/int/p2-t6.int.test.ts:418:    await expect(
-tests/int/p2-t6.int.test.ts:435:    await expect(
-tests/int/p2-t6.int.test.ts:453:    await expect(
-tests/int/p2-t6.int.test.ts:596:      await expect(
-
-$ git grep -n -e 'anonList' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:279:    const anonList = await callJsonApi({
-tests/int/p2-t6.int.test.ts:283:    expect(anonList.status).toBe(403)
-
-$ git grep -n -e 'anonGetById' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:285:    const anonGetById = await callJsonApi({
-tests/int/p2-t6.int.test.ts:289:    expect(anonGetById.status).toBe(403)
-
-$ git grep -n -e 'editorList' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:292:    const editorList = await callJsonApi({
-tests/int/p2-t6.int.test.ts:297:    expect(editorList.status).toBe(200)
-tests/int/p2-t6.int.test.ts:298:    expect(editorList.body.totalDocs).toBe(1)
-
-$ git grep -n -e 'editorPatchWorkflow' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:301:    const editorPatchWorkflow = await callJsonApi({
-tests/int/p2-t6.int.test.ts:311:    expect(editorPatchWorkflow.status).toBe(200)
-tests/int/p2-t6.int.test.ts:312:    const updatedDocFromWorkflow = editorPatchWorkflow.body.doc as Record<string, unknown>
-
-$ git grep -n -e 'updatedDocFromWorkflow' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:312:    const updatedDocFromWorkflow = editorPatchWorkflow.body.doc as Record<string, unknown>
-tests/int/p2-t6.int.test.ts:313:    expect(updatedDocFromWorkflow.status).toBe('contacted')
-tests/int/p2-t6.int.test.ts:314:    expect(updatedDocFromWorkflow.internalNotes).toBe(
-
-$ git grep -n -e 'editorPatchTamper' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:319:    const editorPatchTamper = await callJsonApi({
-tests/int/p2-t6.int.test.ts:334:    expect(editorPatchTamper.status).toBe(200)
-
-$ git grep -n -e 'storedAfterTamper' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:353:    const storedAfterTamper = await payload.findByID({
-tests/int/p2-t6.int.test.ts:359:    expect(storedAfterTamper.status).toBe('quoted')
-tests/int/p2-t6.int.test.ts:360:    expect(storedAfterTamper.assignedTo).toBe(editorUser.id)
-tests/int/p2-t6.int.test.ts:361:    expect(storedAfterTamper.internalNotes).toBe(
-tests/int/p2-t6.int.test.ts:364:    expect(storedAfterTamper.email).toBe('fahad@modernbuild.example.sa')
-tests/int/p2-t6.int.test.ts:365:    expect(storedAfterTamper.message).toBe(
-tests/int/p2-t6.int.test.ts:368:    expect(storedAfterTamper.name).toBe('م. فهد السبيعي')
-tests/int/p2-t6.int.test.ts:369:    expect(storedAfterTamper.phone).toBe('+966573534185')
-tests/int/p2-t6.int.test.ts:370:    expect(storedAfterTamper.emailStatus).toBe('pending')
-tests/int/p2-t6.int.test.ts:371:    expect(storedAfterTamper.emailAttempts).toBe(1)
-tests/int/p2-t6.int.test.ts:372:    expect(storedAfterTamper.emailLastError).toBe('SMTP timeout after 10000ms (sanitized)')
-tests/int/p2-t6.int.test.ts:373:    expect(storedAfterTamper.ipHash).toBe(clientIpHash)
-
-$ git grep -n -e 'adminPatchTamper' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:337:    const adminPatchTamper = await callJsonApi({
-tests/int/p2-t6.int.test.ts:350:    expect(adminPatchTamper.status).toBe(200)
-
-$ git grep -n -e 'editorDelete' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:376:    const editorDelete = await callJsonApi({
-tests/int/p2-t6.int.test.ts:381:    expect(editorDelete.status).toBe(403)
-
-$ git grep -n -e 'adminDelete' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:384:    const adminDelete = await callJsonApi({
-tests/int/p2-t6.int.test.ts:389:    expect(adminDelete.status).toBe(200)
-
-$ git grep -n -e 'totalDocs' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:298:    expect(editorList.body.totalDocs).toBe(1)
-tests/int/p2-t6.int.test.ts:396:    expect(remaining.totalDocs).toBe(0)
-
-$ git grep -n -e 'quoteWith00966' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:661:    const quoteWith00966 = await payload.create({
-tests/int/p2-t6.int.test.ts:679:    expect(quoteWith00966.phone).toBe('+966573534185')
-tests/int/p2-t6.int.test.ts:680:    expect(quoteWith00966.serviceTitle).toBe('أنظمة التيار الخفيف والتحكم الذكي (ELV)')
-tests/int/p2-t6.int.test.ts:685:      slugPath: ['quote-requests', String(quoteWith00966.id)],
-tests/int/p2-t6.int.test.ts:726:      slugPath: ['quote-requests', String(quoteWith00966.id)],
-tests/int/p2-t6.int.test.ts:744:      id: quoteWith00966.id,
-tests/int/p2-t6.int.test.ts:754:      id: quoteWith00966.id,
-
-$ git grep -n -e 'populatedAssignee' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:690:    const populatedAssignee = quoteDepth1AsEditor.body.assignedTo as Record<string, unknown>
-tests/int/p2-t6.int.test.ts:691:    expect(populatedAssignee).toEqual({
-tests/int/p2-t6.int.test.ts:695:    expect(populatedAssignee.email).toBeUndefined()
-tests/int/p2-t6.int.test.ts:696:    expect(populatedAssignee.role).toBeUndefined()
-tests/int/p2-t6.int.test.ts:697:    expect(populatedAssignee.sessions).toBeUndefined()
-
-$ git grep -n -e 'otherUserAsEditor' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:700:    const otherUserAsEditor = await callJsonApi({
-tests/int/p2-t6.int.test.ts:705:    expect(otherUserAsEditor.status).toBe(200)
-tests/int/p2-t6.int.test.ts:706:    expect(otherUserAsEditor.body).toEqual({
-tests/int/p2-t6.int.test.ts:710:    expect(otherUserAsEditor.body.email).toBeUndefined()
-tests/int/p2-t6.int.test.ts:711:    expect(otherUserAsEditor.body.role).toBeUndefined()
-tests/int/p2-t6.int.test.ts:712:    expect(otherUserAsEditor.body.sessions).toBeUndefined()
-
-$ git grep -n -e 'badLogin' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:798:        const badLogin = await callJsonApi({
-tests/int/p2-t6.int.test.ts:806:        expect(badLogin.status).toBe(401)
-
-$ git grep -n -e 'anonVerify' -- tests/int/p2-t6.int.test.ts
-tests/int/p2-t6.int.test.ts:885:      const anonVerify = await callJsonApi({
-tests/int/p2-t6.int.test.ts:902:      expect(anonVerify.status).toBe(404)
 
 $ git grep -n -e 'QuoteRequests' -- src/collections/QuoteRequests.test.ts
 src/collections/QuoteRequests.test.ts:24:  QuoteRequests,
@@ -1415,19 +1566,6 @@ src/collections/QuoteRequests.test.ts:58:    expect(QuoteRequests.admin?.compone
 src/collections/QuoteRequests.test.ts:59:      '/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar',
 src/collections/QuoteRequests.test.ts:64:      QuoteRequests.access?.create?.({
 src/collections/QuoteRequests.test.ts:71:    const fieldNames = QuoteRequests.fields
-
-$ git grep -n -e 'update' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:62:  update: (): boolean => false,
-src/collections/QuoteRequests.ts:68:  update: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:352:      en: 'Quote requests submitted via the website form (created server-side only; staff may update workflow status, assignee, and internal notes).',
-src/collections/QuoteRequests.ts:364:    // Z1: Staff (admin + editor) can read and update workflow fields; only admin can delete.
-src/collections/QuoteRequests.ts:366:    update: isAdminOrEditor,
-
-$ git grep -n -e 'isAdminOrEditorFieldLevel' -- src/collections/QuoteRequests.ts
-src/collections/QuoteRequests.ts:49:export const isAdminOrEditorFieldLevel: FieldAccess = ({ req }) => {
-src/collections/QuoteRequests.ts:60:  read: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:66:  read: isAdminOrEditorFieldLevel,
-src/collections/QuoteRequests.ts:68:  update: isAdminOrEditorFieldLevel,
 
 $ git grep -n -e 'patchServiceTitle' -- tests/int/p2-t6.int.test.ts
 tests/int/p2-t6.int.test.ts:724:    const patchServiceTitle = await callJsonApi({
@@ -1457,6 +1595,22 @@ src/collections/_shared/immutableTimestamps.ts:38:  access: {
 src/collections/_shared/immutableTimestamps.ts:153:            access: {
 src/collections/_shared/immutableTimestamps.ts:154:              ...field.access,
 
+$ git grep -n -e 'update' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:22: * `access: { create: neverUpdateFieldAccess, update: neverUpdateFieldAccess }`
+src/collections/_shared/immutableTimestamps.ts:24: * rewritten on `update` via REST, GraphQL, or Local API (`overrideAccess: false`).
+src/collections/_shared/immutableTimestamps.ts:28: * - `payload.update({ ..., overrideAccess: true })` CANNOT change `createdAt` because
+src/collections/_shared/immutableTimestamps.ts:30: *   `preserveCreatedAtBeforeChange` run unconditionally on `update`. Any future backfill
+src/collections/_shared/immutableTimestamps.ts:32: *   database adapter directly (`payload.db.updateOne` / SQL).
+src/collections/_shared/immutableTimestamps.ts:40:    update: neverUpdateFieldAccess,
+src/collections/_shared/immutableTimestamps.ts:58: * - all `update` operations (single-document `updateByID` and bulk `update`), and
+src/collections/_shared/immutableTimestamps.ts:64:  if (operation === 'update' && 'data' in args) {
+src/collections/_shared/immutableTimestamps.ts:85: * `data.createdAt` if `originalDoc.createdAt` is absent) on `update` operations (`R-2`).
+src/collections/_shared/immutableTimestamps.ts:92:  if (operation === 'update' && data && typeof data === 'object') {
+src/collections/_shared/immutableTimestamps.ts:107: * `data.createdAt` if `originalDoc.createdAt` is absent) on `update` operations (`R-2`).
+src/collections/_shared/immutableTimestamps.ts:114:  if (operation === 'update') {
+src/collections/_shared/immutableTimestamps.ts:138: * and bulk `PATCH /api/<slug>?where=...`), Admin UI, and Local API `update` calls (`R-2`, `R-10`).
+src/collections/_shared/immutableTimestamps.ts:156:              update: neverUpdateFieldAccess,
+
 $ git grep -n -e 'preserveCreatedAtBeforeValidate' -- src/collections/_shared/immutableTimestamps.ts
 src/collections/_shared/immutableTimestamps.ts:29: *   `stripCreatedAtOnUpdateBeforeOperation`, `preserveCreatedAtBeforeValidate`, and
 src/collections/_shared/immutableTimestamps.ts:87:export const preserveCreatedAtBeforeValidate: CollectionBeforeValidateHook = ({
@@ -1469,4 +1623,3 @@ src/collections/_shared/immutableTimestamps.ts:185:        preserveCreatedAtBefo
 
 $ git grep -n -e '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__' -- scripts/check-client-bundle-sentinels.mjs
 scripts/check-client-bundle-sentinels.mjs:13:  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__',
-

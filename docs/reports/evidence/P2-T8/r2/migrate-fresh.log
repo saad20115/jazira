@@ -1,0 +1,23 @@
+$ echo y| pnpm payload migrate:fresh
+
+> aljazira-website@0.1.0 payload D:\jazira
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:fresh"
+
+? WARNING: This will drop your database and run all migrations. Are you sure you want to proceed? » (y/N)√ WARNING: This will drop your database and run all migrations. Are you sure you want to proceed? ... yes
+[11:23:30] INFO: Dropping database.
+[11:23:30] INFO: Reading migration files from D:\jazira\src\migrations
+[11:23:30] INFO: Migrating: 20261021_074848_initial_users_media
+[11:23:30] INFO: Migrated:  20261021_074848_initial_users_media (98ms)
+[11:23:30] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:23:30] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (52ms)
+[11:23:30] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:23:30] INFO: Migrated:  20261022_140011_p2_t3_services_team (68ms)
+[11:23:30] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:23:30] INFO: Migrated:  20261022_160652_p2_t4_projects (93ms)
+[11:23:30] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:23:31] INFO: Migrated:  20261022_221250_p2_t5_globals (348ms)
+[11:23:31] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:23:31] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (24ms)
+[11:23:31] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:23:31] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (11ms)
+[11:23:31] INFO: Done.
