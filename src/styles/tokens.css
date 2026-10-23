@@ -121,7 +121,7 @@
   --hero-height: 864px;
 
   /* === 8. Font Family & Typography Scale (`design/tokens.json` -> `typography`, CTO §1 & §2) === */
-  --font-sans: var(--font-poppins, 'Poppins'), 'Poppins', sans-serif;
+  --font-sans: var(--font-poppins), sans-serif;
   --font-lh-multiplier: 1;
   --t-body-l-weight: 400;
   --t-body-l-style: normal;
@@ -312,8 +312,8 @@
 /* === Arabic (`ar`, RTL) Typography Rules (`docs/05-design.md` §"CTO decisions" #2) === */
 /* Noto Kufi Arabic for all text, letter-spacing 0, line-height +10%. */
 :root[lang='ar'],
-[lang='ar'] {
-  --font-sans: var(--font-noto-kufi-arabic, 'Noto Kufi Arabic'), 'Noto Kufi Arabic', sans-serif;
+[dir='rtl'] {
+  --font-sans: var(--font-noto-kufi-arabic), sans-serif;
   --font-lh-multiplier: 1.1;
   --t-body-l-lh: var(--t-body-l-lh-ar);
   --t-body-l-ls: 0px;
@@ -366,8 +366,8 @@
 
 /* === English (`en`, LTR) Typography Rules === */
 :root[lang='en'],
-[lang='en'] {
-  --font-sans: var(--font-poppins, 'Poppins'), 'Poppins', sans-serif;
+[dir='ltr'] {
+  --font-sans: var(--font-poppins), sans-serif;
   --font-lh-multiplier: 1;
   --t-body-l-lh: var(--t-body-l-lh-en);
   --t-body-l-ls: var(--t-body-l-ls-en);

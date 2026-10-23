@@ -115,9 +115,9 @@ async function stitchSpecimenComparison(outDir) {
 function extractHtmlOpeningTagAndTitle(html) {
   const htmlTagMatch = html.match(/<html[^>]*>/i)
   const titleMatch = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i)
-  const preloadMatches = [...html.matchAll(/<link[^>]*rel=["']preload["'][^>]*as=["']font["'][^>]*>/gi)].map(
-    (m) => m[0],
-  )
+  const preloadMatches = [
+    ...html.matchAll(/<link(?=[^>]*\brel=["']preload["'])(?=[^>]*\bas=["']font["'])[^>]*>/gi),
+  ].map((m) => m[0])
   return {
     htmlTag: htmlTagMatch ? htmlTagMatch[0] : null,
     title: titleMatch ? titleMatch[1].trim() : null,

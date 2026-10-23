@@ -74,7 +74,7 @@ export function CmsLink({
   }
 
   return (
-    <Link {...rest} href={resolved.href} className={className}>
+    <Link {...rest} href={resolved.href} prefetch={false} className={className}>
       {content}
     </Link>
   )

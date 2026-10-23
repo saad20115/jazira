@@ -311,7 +311,7 @@ export function buildTokensCss(tokens) {
   lines.push(
     '  /* === 8. Font Family & Typography Scale (`design/tokens.json` -> `typography`, CTO §1 & §2) === */',
   )
-  lines.push("  --font-sans: var(--font-poppins, 'Poppins'), 'Poppins', sans-serif;")
+  lines.push('  --font-sans: var(--font-poppins), sans-serif;')
   lines.push('  --font-lh-multiplier: 1;')
 
   const typography =
@@ -344,9 +344,9 @@ export function buildTokensCss(tokens) {
   )
   lines.push('/* Noto Kufi Arabic for all text, letter-spacing 0, line-height +10%. */')
   lines.push(":root[lang='ar'],")
-  lines.push("[lang='ar'] {")
+  lines.push("[dir='rtl'] {")
   lines.push(
-    "  --font-sans: var(--font-noto-kufi-arabic, 'Noto Kufi Arabic'), 'Noto Kufi Arabic', sans-serif;",
+    '  --font-sans: var(--font-noto-kufi-arabic), sans-serif;',
   )
   lines.push('  --font-lh-multiplier: 1.1;')
   for (const [styleName, styleDef] of Object.entries(typography)) {
@@ -362,8 +362,8 @@ export function buildTokensCss(tokens) {
   lines.push('')
   lines.push('/* === English (`en`, LTR) Typography Rules === */')
   lines.push(":root[lang='en'],")
-  lines.push("[lang='en'] {")
-  lines.push("  --font-sans: var(--font-poppins, 'Poppins'), 'Poppins', sans-serif;")
+  lines.push("[dir='ltr'] {")
+  lines.push('  --font-sans: var(--font-poppins), sans-serif;')
   lines.push('  --font-lh-multiplier: 1;')
   for (const [styleName, styleDef] of Object.entries(typography)) {
     const { slug } = TYPOGRAPHY_STYLE_MAP[styleName]

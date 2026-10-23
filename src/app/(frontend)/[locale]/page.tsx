@@ -79,7 +79,11 @@ export default async function LocaleHomePage({
         <header className={styles.topBar}>
           {companyName || tagline ? (
             <div className={styles.brandBlock}>
-              {companyName ? <p className={`${styles.companyName} t-h4`}>{companyName}</p> : null}
+              {companyName ? (
+                <p className={`${styles.companyName} t-h4`} dir="auto">
+                  {companyName}
+                </p>
+              ) : null}
               {tagline ? <p className={`${styles.tagline} t-caption`}>{tagline}</p> : null}
             </div>
           ) : null}

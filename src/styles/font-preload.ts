@@ -64,8 +64,8 @@ function getLocaleFontPreloadMap(): LocaleFontPreloadMap {
   const enSet = new Set<string>()
 
   const candidateDirs = [
-    path.join(process.cwd(), '.next', 'static', 'chunks'),
-    path.join(process.cwd(), '.next', 'dev', 'static', 'chunks'),
+    path.resolve('.next/static/chunks'),
+    path.resolve('.next/dev/static/chunks'),
   ]
 
   for (const dirPath of candidateDirs) {
@@ -106,7 +106,7 @@ function getLocaleFontPreloadMap(): LocaleFontPreloadMap {
  * Emits `<link rel="preload" as="font" type="font/woff2" crossorigin="anonymous">` tags
  * only for the active locale's font weights (`R-11`).
  */
-export function preloadLocaleFonts(locale: SupportedLocale): void {
+export function preloadLocaleFonts(locale: SupportedLocale): string[] {
   const map = getLocaleFontPreloadMap()
   const urls = map[locale]
   for (const href of urls) {
@@ -116,4 +116,5 @@ export function preloadLocaleFonts(locale: SupportedLocale): void {
       crossOrigin: 'anonymous',
     })
   }
+  return urls
 }
