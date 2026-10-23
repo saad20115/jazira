@@ -26,8 +26,8 @@ import {
 } from '@/components/Logo'
 import {
   Navbar,
-  NAVBAR_PAGES,
-  NAVBAR_THEMES,
+  type NavbarPage,
+  type NavbarTheme,
 } from '@/components/Navbar'
 import {
   NAV_LINK_STATES,
@@ -61,6 +61,14 @@ const NODE_IDS = {
   icons: 'Figma Icons (10 Service + 5 Social + Directional)',
 } as const
 
+const STYLEGUIDE_NAVBAR_THEMES: readonly NavbarTheme[] = ['Light', 'Dark']
+const STYLEGUIDE_NAVBAR_PAGES: readonly NavbarPage[] = [
+  'Home',
+  'Services',
+  'About',
+  'Projects',
+  'Contact',
+]
 const BADGE_ONE = '01'
 const BADGE_TWO = '02'
 const DIRECTIONAL_KEY = 'ArrowRightIcon (RTL scaleX(-1))'
@@ -262,8 +270,8 @@ export default async function StyleguidePage({
           </div>
 
           <div className={styles.fullBleedStack}>
-            {NAVBAR_THEMES.flatMap((navTheme) =>
-              NAVBAR_PAGES.map((navPage) => {
+            {STYLEGUIDE_NAVBAR_THEMES.flatMap((navTheme) =>
+              STYLEGUIDE_NAVBAR_PAGES.map((navPage) => {
                 const isDarkNav = navTheme === 'Dark'
                 const variantCaption = `Theme=${navTheme}, Page=${navPage}`
                 return (

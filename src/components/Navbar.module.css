@@ -32,19 +32,21 @@
 }
 
 .themeDark {
-  background-color: var(--overlay-navy-90);
+  background-color: var(--navy-950);
   border-block-end-color: var(--glass-border-white-8);
   color: var(--white);
 }
 
 .themeDark.transparentHero:not(.scrolled) {
-  background-color: var(--overlay-navy-55);
+  background-color: var(--navy-900);
+  background-image: linear-gradient(var(--overlay-navy-55), var(--overlay-navy-55));
   border-block-end-color: var(--glass-border-white-8);
   box-shadow: none;
 }
 
 .themeDark.scrolled {
   background-color: var(--navy-950);
+  background-image: none;
   border-block-end-color: var(--glass-border-white-14);
   box-shadow: var(--shadow-card-rest);
 }
