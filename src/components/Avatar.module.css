@@ -1,0 +1,42 @@
+.avatar {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-pill);
+  background-image: var(--gradient-navy-panel);
+  color: var(--white);
+  overflow: hidden;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.size52 {
+  inline-size: 52px;
+  block-size: 52px;
+  border: 1.5px solid var(--border);
+}
+
+.size120 {
+  inline-size: 120px;
+  block-size: 120px;
+}
+
+.photo {
+  object-fit: cover;
+  object-position: center;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.initials {
+  color: var(--white);
+  user-select: none;
+}
+
+.silhouetteSvg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--white);
+}

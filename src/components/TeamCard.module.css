@@ -1,0 +1,226 @@
+.card {
+  position: relative;
+  inline-size: 264px;
+  max-inline-size: 100%;
+  block-size: 340px;
+  border-radius: var(--radius-3xl);
+  background-color: var(--navy-950);
+  box-shadow: var(--shadow-card-hover);
+  overflow: hidden;
+  box-sizing: border-box;
+  isolation: isolate;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 520ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-team-card-hover);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 5;
+  transition: opacity 320ms ease;
+}
+
+.card:hover::after,
+.card:focus-within::after,
+.stateHover::after {
+  opacity: 1;
+}
+
+/* Entrance states matching Figma `150:596` (`Enter 1` .. `Enter 5`) */
+.stateEnter1,
+.scrollPending {
+  opacity: 0;
+  transform: translateY(28px);
+}
+
+.stateEnter2 {
+  opacity: 0.25;
+  transform: translateY(21px);
+}
+
+.stateEnter3 {
+  opacity: 0.55;
+  transform: translateY(12px);
+}
+
+.stateEnter4 {
+  opacity: 0.85;
+  transform: translateY(4px);
+}
+
+.stateEnter5,
+.scrollEntered {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.portraitLayer {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  z-index: 0;
+  transform: scale(1);
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .portraitLayer,
+.card:focus-within .portraitLayer,
+.stateHover .portraitLayer {
+  transform: scale(1.04);
+}
+
+.bottomOverlay {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 168px;
+  background-image: var(--gradient-team-card-overlay);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.cornerBracket {
+  position: absolute;
+  inset-block-start: var(--space-16);
+  inset-inline-start: var(--space-16);
+  inline-size: var(--space-16);
+  block-size: var(--space-16);
+  opacity: 0.55;
+  pointer-events: none;
+  z-index: 3;
+  transition: opacity 240ms ease;
+}
+
+.card:hover .cornerBracket,
+.card:focus-within .cornerBracket,
+.stateHover .cornerBracket {
+  opacity: 1;
+}
+
+.bracketHorizontal {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--space-16);
+  block-size: var(--space-2);
+  background-color: var(--gold-500);
+}
+
+.bracketVertical {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: var(--space-2);
+  block-size: var(--space-16);
+  background-color: var(--gold-500);
+}
+
+.linkedinBadge {
+  position: absolute;
+  inset-block-start: var(--space-14);
+  inset-inline-end: var(--space-14);
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 36px;
+  block-size: 36px;
+  border-radius: var(--radius-pill);
+  background-color: var(--glass-white-14);
+  border: 1px solid var(--glass-border-white-28);
+  color: var(--white);
+  text-decoration: none;
+  box-sizing: border-box;
+  opacity: 0;
+  transform: translateY(-6px);
+  transition:
+    opacity 260ms ease,
+    transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .linkedinBadge,
+.card:focus-within .linkedinBadge,
+.stateHover .linkedinBadge {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.caption {
+  position: absolute;
+  inset-inline: var(--space-24);
+  inset-block-end: var(--space-20);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  transform: translateY(0);
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .caption,
+.card:focus-within .caption,
+.stateHover .caption {
+  transform: translateY(-4px);
+}
+
+.name {
+  margin: 0;
+  color: var(--white);
+  inline-size: 100%;
+}
+
+.role {
+  margin: 0;
+  color: var(--gold-500);
+  inline-size: 100%;
+}
+
+.accentLine {
+  inline-size: 216px;
+  max-inline-size: 100%;
+  block-size: var(--space-2);
+  margin-block-start: var(--space-4);
+  background-color: var(--gold-500);
+  transform-origin: inline-start;
+  transform: scaleX(0.14815);
+  transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.card:hover .accentLine,
+.card:focus-within .accentLine,
+.stateHover .accentLine {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card::after,
+  .portraitLayer,
+  .cornerBracket,
+  .linkedinBadge,
+  .caption,
+  .accentLine {
+    transition: none;
+  }
+
+  .scrollPending {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .card:hover .portraitLayer,
+  .card:focus-within .portraitLayer,
+  .stateHover .portraitLayer {
+    transform: none;
+  }
+}

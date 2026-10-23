@@ -1,0 +1,36 @@
+.portrait {
+  position: relative;
+  inline-size: 264px;
+  max-inline-size: 100%;
+  block-size: 340px;
+  background-image: var(--gradient-navy-panel);
+  color: var(--white);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.photo {
+  object-fit: cover;
+  object-position: center top;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.cornerGlow {
+  position: absolute;
+  inset-block-start: -40px;
+  inset-inline-end: -40px;
+  inline-size: 200px;
+  block-size: 200px;
+  border-radius: var(--radius-pill);
+  background-image: var(--gradient-portrait-glow);
+  pointer-events: none;
+}
+
+.silhouetteSvg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  color: var(--white);
+  pointer-events: none;
+}

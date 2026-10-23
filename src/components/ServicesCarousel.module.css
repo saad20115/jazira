@@ -1,0 +1,163 @@
+.carousel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-28);
+  inline-size: var(--container-width);
+  max-inline-size: 100%;
+  box-sizing: border-box;
+  outline: none;
+}
+
+.carousel:focus-visible {
+  outline: 2px solid var(--navy-900);
+  outline-offset: var(--space-4);
+  border-radius: var(--radius-2xl);
+}
+
+.viewport {
+  position: relative;
+  inline-size: 100%;
+  block-size: 300px;
+  overflow: hidden;
+  touch-action: pan-y;
+  cursor: grab;
+  user-select: none;
+}
+
+.viewportDragging {
+  cursor: grabbing;
+}
+
+.track {
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-20);
+  inline-size: max-content;
+  block-size: 300px;
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.trackDragging {
+  transition: none;
+}
+
+.slide {
+  flex-shrink: 0;
+  inline-size: 290px;
+  block-size: 300px;
+}
+
+.controlsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-24);
+  inline-size: 100%;
+  flex-wrap: wrap;
+}
+
+.progressTrack {
+  position: relative;
+  flex: 1 1 280px;
+  block-size: var(--space-4);
+  border-radius: var(--radius-pill);
+  background-color: var(--border);
+  overflow: hidden;
+}
+
+.progressThumb {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 290px;
+  max-inline-size: 45%;
+  block-size: var(--space-4);
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  will-change: transform;
+  transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.actionsGroup {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  flex-shrink: 0;
+}
+
+.arrowPair {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+.arrowButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  box-sizing: border-box;
+  transition:
+    transform 200ms ease,
+    opacity 200ms ease;
+}
+
+.arrowButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.arrowButton:focus-visible {
+  outline: 2px solid var(--navy-900);
+  outline-offset: var(--space-2);
+}
+
+.arrowButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.prevButton {
+  background-color: var(--white);
+  border: 1.5px solid var(--border);
+  color: var(--navy-950);
+}
+
+.nextButton {
+  background-color: var(--navy-950);
+  border: 1.5px solid var(--navy-950);
+  color: var(--white);
+}
+
+@media (max-width: 767.98px) {
+  .controlsRow {
+    gap: var(--space-16);
+  }
+
+  .progressTrack {
+    flex-basis: 100%;
+    order: 2;
+  }
+
+  .actionsGroup {
+    inline-size: 100%;
+    justify-content: space-between;
+    order: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .progressThumb,
+  .arrowButton {
+    transition: none;
+  }
+
+  .arrowButton:hover:not(:disabled) {
+    transform: none;
+  }
+}

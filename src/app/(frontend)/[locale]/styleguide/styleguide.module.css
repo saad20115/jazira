@@ -8,13 +8,14 @@
 .heroBanner {
   background-color: var(--navy-950);
   color: var(--white);
-  padding-block: 48px;
+  padding-block-start: calc(var(--navbar-height) + 48px);
+  padding-block-end: 48px;
   border-block-end: 1px solid var(--glass-border-white-10);
 }
 
 .container {
   inline-size: 100%;
-  max-inline-size: calc(var(--container-width) + (var(--space-32) * 2));
+  max-inline-size: var(--frame-width);
   margin-inline: auto;
   padding-inline: var(--space-32);
 }
@@ -101,7 +102,7 @@
   font-weight: var(--t-label-eyebrow-weight);
   font-size: var(--t-caption-s-size);
   line-height: var(--t-caption-s-lh);
-  color: var(--gold-600);
+  color: var(--gold-700);
   background-color: var(--gold-50);
   border: 1px solid var(--border-gold-light);
   border-radius: var(--radius-pill);
@@ -251,6 +252,14 @@
   border: 1px solid var(--border);
 }
 
+@media (min-width: 1440px) {
+  .navbarFrame {
+    margin-inline: -65px;
+    border-inline: none;
+    border-radius: 0;
+  }
+}
+
 .navbarFrameDark {
   background-color: var(--navy-900);
   border-color: var(--navy-800);
@@ -302,7 +311,7 @@
   line-height: var(--t-label-eyebrow-lh);
   letter-spacing: var(--t-label-eyebrow-ls);
   text-transform: uppercase;
-  color: var(--gold-600);
+  color: var(--gold-700);
 }
 
 .iconsGrid {
@@ -371,3 +380,59 @@
   font-size: var(--t-caption-s-size);
   color: var(--text-body);
 }
+
+/* P3-T3 cards & motion showcases */
+.cardsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 24px;
+  padding-block: 24px;
+  padding-inline: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+}
+
+.cardStateCol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.marqueeStack {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.marqueeFrame {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-block: 20px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  overflow: hidden;
+}
+
+.carouselStack {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.carouselFrame {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-block: 24px;
+  padding-inline: 24px;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  background-color: var(--surface);
+  overflow: hidden;
+}
+

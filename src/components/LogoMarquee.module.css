@@ -1,0 +1,182 @@
+@keyframes logoMarqueeStartLtr {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@keyframes logoMarqueeEndLtr {
+  0% {
+    transform: translate3d(-50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes logoMarqueeStartRtl {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(50%, 0, 0);
+  }
+}
+
+@keyframes logoMarqueeEndRtl {
+  0% {
+    transform: translate3d(50%, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.marquee {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-18);
+  inline-size: var(--frame-width);
+  max-inline-size: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.rowViewport {
+  position: relative;
+  inline-size: 100%;
+  overflow: hidden;
+}
+
+.track {
+  display: flex;
+  align-items: center;
+  inline-size: max-content;
+  will-change: transform;
+}
+
+.trackRow1Live {
+  animation: logoMarqueeStartLtr 38s linear infinite;
+}
+
+.trackRow2Live {
+  animation: logoMarqueeEndLtr 42s linear infinite;
+}
+
+:global([dir='rtl']) .trackRow1Live {
+  animation-name: logoMarqueeStartRtl;
+}
+
+:global([dir='rtl']) .trackRow2Live {
+  animation-name: logoMarqueeEndRtl;
+}
+
+.marquee:hover .track,
+.marquee:focus-within .track,
+.marquee[data-offscreen='true'] .track {
+  animation-play-state: paused;
+}
+
+.group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-18);
+  padding-inline-end: var(--space-18);
+  flex-shrink: 0;
+}
+
+/* Static preview positions matching Figma `18:576` (`Position=A` and `Position=B`) */
+.posARow1 {
+  animation: none;
+  transform: translate3d(-40px, 0, 0);
+}
+
+.posARow2 {
+  animation: none;
+  transform: translate3d(-140px, 0, 0);
+}
+
+.posBRow1 {
+  animation: none;
+  transform: translate3d(-260px, 0, 0);
+}
+
+.posBRow2 {
+  animation: none;
+  transform: translate3d(-30px, 0, 0);
+}
+
+:global([dir='rtl']) .posARow1 {
+  transform: translate3d(40px, 0, 0);
+}
+
+:global([dir='rtl']) .posARow2 {
+  transform: translate3d(140px, 0, 0);
+}
+
+:global([dir='rtl']) .posBRow1 {
+  transform: translate3d(260px, 0, 0);
+}
+
+:global([dir='rtl']) .posBRow2 {
+  transform: translate3d(30px, 0, 0);
+}
+
+.edgeFadeStart,
+.edgeFadeEnd {
+  position: absolute;
+  inset-block: 0;
+  inline-size: 120px;
+  background-image: var(--gradient-marquee-edge-fade);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.edgeFadeStart {
+  inset-inline-start: 0;
+}
+
+.edgeFadeEnd {
+  inset-inline-end: 0;
+  transform: scaleX(-1);
+}
+
+:global([dir='rtl']) .edgeFadeStart {
+  transform: scaleX(-1);
+}
+
+:global([dir='rtl']) .edgeFadeEnd {
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackRow1Live,
+  .trackRow2Live,
+  :global([dir='rtl']) .trackRow1Live,
+  :global([dir='rtl']) .trackRow2Live {
+    animation: none;
+    transform: none;
+    inline-size: 100%;
+  }
+
+  .trackRow1Live .group,
+  .trackRow2Live .group {
+    flex-wrap: wrap;
+    justify-content: center;
+    padding-inline-end: 0;
+    inline-size: 100%;
+  }
+
+  .trackRow1Live .duplicateGroup,
+  .trackRow2Live .duplicateGroup {
+    display: none;
+  }
+
+  .edgeFadeStart,
+  .edgeFadeEnd {
+    display: none;
+  }
+}
