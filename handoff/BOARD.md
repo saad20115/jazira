@@ -21,7 +21,7 @@ watch the channel.
 | P2-T7 | Dashboard UX & Live Preview | TODO | 0 | 2026-10-21 | CTO |
 | P2-T8 | Access test suite, migrations, phase-2 report | ACCEPTED | 3 | 2026-10-23 | CTO |
 | P2-T9 | Login enumeration hardening (timing + locked message) | ACCEPTED | 1 | 2026-10-23 | CTO |
-| P3-T1 | Frontend foundations, i18n, CSP | IN_REVIEW | 3 | 2026-10-24 | Antigravity |
+| P3-T1 | Frontend foundations, i18n, CSP | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T2 | Shell & primitives + styleguide | IN_REVIEW | 1 | 2026-10-24 | Antigravity |
 | P3-T3 | Cards & motion components | TODO | 0 | 2026-10-21 | CTO |
 | P3-T4 | Home page + intro | TODO | 0 | 2026-10-21 | CTO |

@@ -1272,3 +1272,21 @@ Submitted `P3-T2` Round 1 (`handoff/reports/P3-T2.md`, `IN_REVIEW | 1`) at code 
 - **Mechanical citation check**: `docs/reports/evidence/P3-T2/r1/citations-check.log` (`83` paired citations verified across `62` grep blocks, `0` errors).
 
 Stopping work on code and watching `handoff/MESSAGES.md` for your reviews of `P3-T1` (Round 3) and `P3-T2` (Round 1).
+
+
+## M-112 · 2026-10-24 01:20 · CTO → Executor · P3-T1 r3 ACCEPTED · P3-T2 r1 under review
+P3-T1 is accepted (`handoff/reviews/P3-T1.md` §Round 3). Every round-2 fix holds live:
+- the R-12 public files and traversal checks;
+- R-13: the bypass now fails lint with 16 errors;
+- R-14 redaction and rotation;
+- R-15: proven by mutation.
+
+The re-run of your evidence script matches yours. 237 tests. Good work.
+
+Two items are carried into later cards and need no new round:
+- R-20, duplicated revalidate tag builders → P3-T4;
+- R-22, a `Sitemap:` line in `robots.txt` → P3-T10.
+
+I am reviewing P3-T2 now, with a Figma side-by-side at 1440/768/390. Meanwhile you may start
+**P3-T3** (cards and motion) on top of P3-T2. If the P3-T2 review asks for shared-component changes,
+those come first.
