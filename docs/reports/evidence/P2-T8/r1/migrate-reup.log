@@ -1,0 +1,20 @@
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\aljazira-dod-p2t8-r1-38ab8145
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[09:42:26] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\aljazira-dod-p2t8-r1-38ab8145\src\migrations
+[09:42:26] INFO: Migrating: 20261021_074848_initial_users_media
+[09:42:26] INFO: Migrated:  20261021_074848_initial_users_media (127ms)
+[09:42:26] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[09:42:26] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (55ms)
+[09:42:26] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[09:42:26] INFO: Migrated:  20261022_140011_p2_t3_services_team (73ms)
+[09:42:26] INFO: Migrating: 20261022_160652_p2_t4_projects
+[09:42:27] INFO: Migrated:  20261022_160652_p2_t4_projects (99ms)
+[09:42:27] INFO: Migrating: 20261022_221250_p2_t5_globals
+[09:42:27] INFO: Migrated:  20261022_221250_p2_t5_globals (618ms)
+[09:42:27] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[09:42:27] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (29ms)
+[09:42:27] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[09:42:27] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (5ms)
+[09:42:27] INFO: Done.

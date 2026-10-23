@@ -1,0 +1,3 @@
+$ git rev-parse HEAD 
+10e87f4f11df744690995cce29ce4eac2c03bc80
+$ git status --porcelain 
