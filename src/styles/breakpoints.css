@@ -1,0 +1,21 @@
+/*
+ * Breakpoints (`docs/05-design.md` §"CTO decisions" #1, `handoff/tasks/P3-T1.md` §2):
+ * - Desktop: >= 1280px (container 1160px, 140px side gutters at 1440px)
+ * - Tablet: 768px - 1279.98px (32px side gutters)
+ * - Nav drawer threshold: < 1024px
+ * - Mobile: < 768px (16px side gutters at 390px)
+ */
+
+@custom-media --bp-desktop (min-width: 1280px);
+@custom-media --bp-tablet (min-width: 768px) and (max-width: 1279.98px);
+@custom-media --bp-below-desktop (max-width: 1279.98px);
+@custom-media --bp-nav-drawer (max-width: 1023.98px);
+@custom-media --bp-mobile (max-width: 767.98px);
+
+:root {
+  --bp-desktop-min: 1280px;
+  --bp-tablet-min: 768px;
+  --bp-tablet-max: 1279.98px;
+  --bp-nav-drawer-max: 1023.98px;
+  --bp-mobile-max: 767.98px;
+}

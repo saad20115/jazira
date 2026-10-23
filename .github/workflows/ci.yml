@@ -107,6 +107,9 @@ jobs:
       - name: Check formatting
         run: pnpm format:check
 
+      - name: Verify generated design tokens are up to date (P3-T1)
+        run: pnpm tokens:check
+
       - name: Verify generated Payload types are up to date
         run: |
           set -euo pipefail

@@ -2,6 +2,7 @@ import { defineConfig } from 'eslint/config'
 import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 import tseslint from 'typescript-eslint'
 
+import { noJsxStringLiteralsRule } from './eslint-rules/no-jsx-string-literals.mjs'
 import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
 import { requireOverrideAccessFalseRule } from './eslint-rules/require-override-access-false.mjs'
 
@@ -106,12 +107,14 @@ export default defineConfig([
     plugins: {
       local: {
         rules: {
+          'no-jsx-string-literals': noJsxStringLiteralsRule,
           'no-server-in-client': noServerInClientRule,
           'require-override-access-false': requireOverrideAccessFalseRule,
         },
       },
     },
     rules: {
+      'local/no-jsx-string-literals': 'error',
       'local/no-server-in-client': 'error',
       'local/require-override-access-false': 'error',
       'no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],

@@ -1,0 +1,95 @@
+/*
+ * Layout Grid & Container Utilities (`docs/05-design.md` §"CTO decisions" #1, `handoff/tasks/P3-T1.md` §1-2).
+ * Uses CSS logical properties only (`inline-size`, `margin-inline`, `padding-inline`, `padding-block`, `inset-inline-start`).
+ */
+
+.container {
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-width) + (var(--container-gutter) * 2));
+  margin-inline: auto;
+  padding-inline: var(--container-gutter);
+}
+
+.section {
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+}
+
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-24);
+}
+
+.grid3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-24);
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-32);
+}
+
+@media (min-width: 768px) and (max-width: 1279.98px) {
+  .grid4,
+  .grid3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-20);
+  }
+
+  .grid2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-24);
+  }
+}
+
+@media (max-width: 767.98px) {
+  .grid4,
+  .grid3,
+  .grid2 {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-16);
+  }
+}
+
+.skipLink {
+  position: fixed;
+  inset-block-start: var(--space-12);
+  inset-inline-start: var(--space-16);
+  z-index: 1000;
+  padding-block: var(--space-10);
+  padding-inline: var(--space-16);
+  background-color: var(--navy-950);
+  color: var(--white);
+  border: 2px solid var(--gold-500);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card-raised);
+  transform: translateY(-200%);
+  transition: transform 0.15s ease-in-out;
+}
+
+.skipLink:focus,
+.skipLink:focus-visible {
+  transform: translateY(0);
+}
+
+.draftBanner {
+  inline-size: 100%;
+  padding-block: var(--space-8);
+  padding-inline: var(--container-gutter);
+  background-color: var(--navy-900);
+  border-block-end: 1px solid var(--gold-500);
+  color: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.draftExitLink {
+  color: var(--gold-300);
+  text-decoration: underline;
+}
