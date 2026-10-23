@@ -217,6 +217,13 @@ being confirmed directly with the owner; see `handoff/reviews/A-1.md`.
 - **Any change** becomes a new version, needs owner approval, and gets a new hash table here.
 
 ## 12. v020 in progress (owner, 2026-10-23): "the HVAC fans need to rotate and spin"
+**v020 is the final delivery** (owner, direct, 2026-10-23: "I approve v019c, but fix the four notes
+before the final delivery"). It must include the fan spin below **and** the façade notes N-1..N-4 from
+`handoff/reviews/A-1.md`:
+- soft, continuous lit floor bands;
+- the stepped notch readable from CAM_hero;
+- the lobby as the brightest element;
+- live light trails without the wide bloom.
 This is not released. v019c (§11) stays the pinned release until the owner approves v020 in the live
 preview and a new hash table is added here.
 - **Naming contract (§10) additions:**
