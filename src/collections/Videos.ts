@@ -3,6 +3,7 @@ import fsSync from 'fs'
 import fs from 'fs/promises'
 import path from 'path'
 import {
+  type CollectionBeforeDeleteHook,
   type CollectionBeforeOperationHook,
   type CollectionConfig,
   type Endpoint,
@@ -17,6 +18,7 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
+import { createPublicAPIError } from '../security/apiError'
 import {
   ALLOWED_VIDEO_MIME_TYPES,
   collectRequestTempFilePaths,
@@ -25,6 +27,11 @@ import {
   MAX_VIDEO_REQUEST_SIZE_BYTES,
   validateAndSanitizeVideoFile,
 } from '../security/uploadValidation'
+import {
+  deriveGlobalTargetReferences,
+  findGlobalTargetReferences,
+  findReferencingLabels,
+} from './Media'
 
 export const VIDEO_UPLOAD_INSTANCE_ID = crypto.randomBytes(6).toString('hex')
 
@@ -154,6 +161,42 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
   }
 }
 
+const preventVideoDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  const referencesByKey = new Map<string, string>()
+
+  for (const draft of [false, true] as const) {
+    await findReferencingLabels({
+      collection: 'projects',
+      where: { video: { equals: id } },
+      labelField: 'title',
+      draft,
+      localized: true,
+      referencesByKey,
+      req,
+    })
+  }
+
+  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'videos')
+  for (const gCheck of globalChecks) {
+    const found = await findGlobalTargetReferences({
+      ...gCheck,
+      targetId: id,
+      req,
+    })
+    for (const ref of found) {
+      referencesByKey.set(ref, ref)
+    }
+  }
+
+  if (referencesByKey.size > 0) {
+    const refList = [...referencesByKey.values()].join(', ')
+    throw createPublicAPIError(
+      `لا يمكن حذف هذا الفيديو لأنه مستخدم في: ${refList}. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: ${refList}. Remove those references first.`,
+      400,
+    )
+  }
+}
+
 export const Videos: CollectionConfig = {
   slug: 'videos',
   timestamps: true,
@@ -192,6 +235,7 @@ export const Videos: CollectionConfig = {
   ],
   hooks: {
     beforeOperation: [validateVideoUploadBeforeOperation],
+    beforeDelete: [preventVideoDeletionWhenReferenced],
     afterChange: [createRevalidateAfterChangeHook({ collection: 'videos' })],
     afterDelete: [createRevalidateAfterDeleteHook({ collection: 'videos' })],
   },

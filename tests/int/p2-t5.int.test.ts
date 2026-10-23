@@ -772,7 +772,7 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
     })
     expect(bothHeroBgAndVideo.status).toBe(400)
 
-    // 2. Duplicate shot in interactiveSystems.systems fails validation
+    // 2. Duplicate shot in interactiveSystems.systems (5 rows with duplicate 'hvac') fails validation
     const duplicateShot = await callJsonApi({
       method: 'POST',
       slugPath: ['globals', 'home-page'],
@@ -785,11 +785,57 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
           systems: [
             { title: 'نظام 1', text: 'وصف 1', shot: 'hvac', disciplines: ['hvac'] },
             { title: 'نظام 2', text: 'وصف 2', shot: 'hvac', disciplines: ['fire-fighting'] },
+            { title: 'نظام 3', text: 'وصف 3', shot: 'plumbing', disciplines: ['plumbing'] },
+            { title: 'نظام 4', text: 'وصف 4', shot: 'power', disciplines: ['electrical'] },
+            { title: 'نظام 5', text: 'وصف 5', shot: 'smart', disciplines: ['low-current'] },
           ],
         },
       },
     })
     expect(duplicateShot.status).toBe(400)
+
+    // 2b. Fewer than 5 systems (4 rows) or more than 5 systems (6 rows) fails validation (R-2)
+    const fourSystems = await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'home-page'],
+      query: { locale: 'ar' },
+      token: editorToken,
+      body: {
+        _status: 'published',
+        interactiveSystems: {
+          title: '4 أنظمة فقط',
+          systems: [
+            { title: 'نظام 1', text: 'وصف 1', shot: 'hvac', disciplines: ['hvac'] },
+            { title: 'نظام 2', text: 'وصف 2', shot: 'fire', disciplines: ['fire-fighting'] },
+            { title: 'نظام 3', text: 'وصف 3', shot: 'plumbing', disciplines: ['plumbing'] },
+            { title: 'نظام 4', text: 'وصف 4', shot: 'power', disciplines: ['electrical'] },
+          ],
+        },
+      },
+    })
+    expect(fourSystems.status).toBe(400)
+
+    const sixSystems = await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'home-page'],
+      query: { locale: 'ar' },
+      token: editorToken,
+      body: {
+        _status: 'published',
+        interactiveSystems: {
+          title: '6 أنظمة',
+          systems: [
+            { title: 'نظام 1', text: 'وصف 1', shot: 'hvac', disciplines: ['hvac'] },
+            { title: 'نظام 2', text: 'وصف 2', shot: 'fire', disciplines: ['fire-fighting'] },
+            { title: 'نظام 3', text: 'وصف 3', shot: 'plumbing', disciplines: ['plumbing'] },
+            { title: 'نظام 4', text: 'وصف 4', shot: 'power', disciplines: ['electrical'] },
+            { title: 'نظام 5', text: 'وصف 5', shot: 'smart', disciplines: ['low-current'] },
+            { title: 'نظام 6', text: 'وصف 6', shot: 'hvac', disciplines: ['data-center'] },
+          ],
+        },
+      },
+    })
+    expect(sixSystems.status).toBe(400)
 
     // 3. More than 4 stats in statsSection.stats fails validation
     const fiveStats = await callJsonApi({
@@ -841,6 +887,37 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
       },
     })
     expect(headingInWhoWeAre.status).toBe(400)
+
+    // 5. More than 2 paragraphs inside whoWeAre.text is rejected on both draft and publish (R-3)
+    const threeParagraphsDraft = await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'home-page'],
+      query: { locale: 'ar', draft: 'true' },
+      token: editorToken,
+      body: {
+        _status: 'draft',
+        whoWeAre: {
+          title: 'من نحن',
+          text: buildParagraphLexical(['فقرة 1', 'فقرة 2', 'فقرة 3 زائدة']),
+        },
+      },
+    })
+    expect(threeParagraphsDraft.status).toBe(400)
+
+    const fiveParagraphsPublish = await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'home-page'],
+      query: { locale: 'ar' },
+      token: editorToken,
+      body: {
+        _status: 'published',
+        whoWeAre: {
+          title: 'من نحن',
+          text: buildParagraphLexical(['فقرة 1', 'فقرة 2', 'فقرة 3', 'فقرة 4', 'فقرة 5']),
+        },
+      },
+    })
+    expect(fiveParagraphsPublish.status).toBe(400)
   })
 
   it('verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks', async () => {
@@ -1476,5 +1553,257 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
     const dedupErrMsg = JSON.stringify(delDedupMediaBlocked.body)
     expect(dedupErrMsg).toContain('projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)')
     expect(dedupErrMsg).not.toContain(`projects(#${String(dedupProject.id)})`)
+  })
+
+  it('rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals and collections (R-1)', async () => {
+    const unsafeExternalUrls = [
+      'javascript:alert(document.cookie)',
+      '  JaVaScRiPt:alert(1)',
+      'data:text/html,<script>alert(1)</script>',
+      'vbscript:msgbox(1)',
+    ]
+
+    for (const badUrl of unsafeExternalUrls) {
+      // 1. Draft save (?draft=true) on services-page
+      const draftRes = await callJsonApi({
+        method: 'POST',
+        slugPath: ['globals', 'services-page'],
+        query: { locale: 'ar', draft: 'true' },
+        token: editorToken,
+        body: {
+          _status: 'draft',
+          cta: {
+            enabled: true,
+            title: 'اختبار رابط غير آمن',
+            text: 'نص',
+            button: {
+              label: 'اضغط هنا',
+              link: {
+                type: 'external',
+                url: badUrl,
+              },
+            },
+          },
+        },
+      })
+      expect(draftRes.status, `Expected draft save with "${badUrl}" to fail with 400`).toBe(400)
+
+      // 2. Autosave (?draft=true&autosave=true) on home-page
+      const autosaveRes = await callJsonApi({
+        method: 'POST',
+        slugPath: ['globals', 'home-page'],
+        query: { locale: 'ar', draft: 'true', autosave: 'true' },
+        token: editorToken,
+        body: {
+          _status: 'draft',
+          hero: {
+            primaryCta: {
+              label: 'تواصل معنا',
+              link: {
+                type: 'external',
+                url: badUrl,
+              },
+            },
+          },
+        },
+      })
+      expect(autosaveRes.status, `Expected autosave with "${badUrl}" to fail with 400`).toBe(400)
+
+      // 3. Publish save on navigation
+      const navRes = await callJsonApi({
+        method: 'POST',
+        slugPath: ['globals', 'navigation'],
+        query: { locale: 'ar' },
+        token: editorToken,
+        body: {
+          headerCta: {
+            label: 'زر الهيدر',
+            link: {
+              type: 'external',
+              url: badUrl,
+            },
+          },
+        },
+      })
+      expect(navRes.status, `Expected navigation save with "${badUrl}" to fail with 400`).toBe(400)
+    }
+
+    // 4. Internal path with //evil.com rejected on draft and publish
+    for (const isDraft of [true, false]) {
+      const badInternalRes = await callJsonApi({
+        method: 'POST',
+        slugPath: ['globals', 'services-page'],
+        query: isDraft ? { locale: 'ar', draft: 'true' } : { locale: 'ar' },
+        token: editorToken,
+        body: {
+          _status: isDraft ? 'draft' : 'published',
+          cta: {
+            enabled: true,
+            title: 'مسار داخلي خبيث',
+            text: 'نص',
+            button: {
+              label: 'رابط',
+              link: {
+                type: 'internal',
+                internalRoute: 'custom',
+                internalPath: '//evil.com/phish',
+              },
+            },
+          },
+        },
+      })
+      expect(badInternalRes.status).toBe(400)
+    }
+  })
+
+  it('prevents deleting stats and videos referenced by globals or collections across published and draft versions and locales (R-4)', async () => {
+    // 1. Stat referenced in published home-page (whoWeAre.badgeStat = statIds[0]) cannot be deleted
+    const delReferencedStat = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['stats', String(statIds[0])],
+      token: adminToken,
+    })
+    expect(delReferencedStat.status).toBe(400)
+    expect(JSON.stringify(delReferencedStat.body)).toContain('global:home-page')
+
+    // 2. Create a fresh stat referenced ONLY in an unpublished draft of about-page.story.badgeStat
+    const draftOnlyStat = await payload.create({
+      collection: 'stats',
+      locale: 'ar',
+      data: {
+        value: '99+',
+        label: 'إحصائية مسودة فقط',
+        order: 99,
+      },
+      overrideAccess: true,
+    })
+
+    const saveAboutDraftStat = await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'about-page'],
+      query: { locale: 'ar', draft: 'true' },
+      token: editorToken,
+      body: {
+        _status: 'draft',
+        story: {
+          enabled: true,
+          badgeStat: draftOnlyStat.id,
+          title: 'مسودة تستخدم الإحصائية',
+        },
+      },
+    })
+    expect(saveAboutDraftStat.status).toBe(200)
+
+    const delDraftStatBlocked = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['stats', String(draftOnlyStat.id)],
+      token: adminToken,
+    })
+    expect(delDraftStatBlocked.status).toBe(400)
+    expect(JSON.stringify(delDraftStatBlocked.body)).toContain('global:about-page')
+
+    // Clear the draft reference and verify the stat deletes cleanly (200)
+    await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'about-page'],
+      query: { locale: 'ar', draft: 'true' },
+      token: editorToken,
+      body: {
+        _status: 'draft',
+        story: {
+          enabled: true,
+          badgeStat: statIds[0],
+          title: 'مسودة بدون الإحصائية المؤقتة',
+        },
+      },
+    })
+
+    const delDraftStatAllowed = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['stats', String(draftOnlyStat.id)],
+      token: adminToken,
+    })
+    expect(delDraftStatAllowed.status).toBe(200)
+
+    // 3. Video referenced in home-page.hero.backgroundVideo (draft) or projects.video cannot be deleted
+    const saveHomeHeroVideoDraft = await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'home-page'],
+      query: { locale: 'ar', draft: 'true' },
+      token: editorToken,
+      body: {
+        _status: 'draft',
+        hero: {
+          title: 'هيرو بفيديو خلفية',
+          background: null,
+          backgroundVideo: videoId,
+        },
+      },
+    })
+    expect(saveHomeHeroVideoDraft.status).toBe(200)
+
+    const delHeroVideoBlocked = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['videos', String(videoId)],
+      token: adminToken,
+    })
+    expect(delHeroVideoBlocked.status).toBe(400)
+    expect(JSON.stringify(delHeroVideoBlocked.body)).toContain('global:home-page')
+
+    // Restore hero.background = mediaId and backgroundVideo = null, then attach videoId to a draft project
+    await callJsonApi({
+      method: 'POST',
+      slugPath: ['globals', 'home-page'],
+      query: { locale: 'ar', draft: 'true' },
+      token: editorToken,
+      body: {
+        _status: 'draft',
+        hero: {
+          title: 'هيرو بصورة خلفية',
+          background: mediaId,
+          backgroundVideo: null,
+        },
+      },
+    })
+
+    const projectWithVideo = await payload.create({
+      collection: 'projects',
+      draft: true,
+      locale: 'ar',
+      data: {
+        title: 'مشروع مرتبط بفيديو مرفوع',
+        category: 'mep',
+        location: 'مكة المكرمة',
+        status: 'completed',
+        coverImage: Number(mediaId),
+        video: Number(videoId),
+        _status: 'draft',
+      },
+      overrideAccess: true,
+    })
+
+    const delProjectVideoBlocked = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['videos', String(videoId)],
+      token: adminToken,
+    })
+    expect(delProjectVideoBlocked.status).toBe(400)
+    expect(JSON.stringify(delProjectVideoBlocked.body)).toContain(
+      'projects(مشروع مرتبط بفيديو مرفوع)',
+    )
+
+    // Delete the draft project and verify the unreferenced video can now be deleted (200)
+    await payload.delete({
+      collection: 'projects',
+      id: projectWithVideo.id,
+      overrideAccess: true,
+    })
+
+    const delVideoAllowed = await callJsonApi({
+      method: 'DELETE',
+      slugPath: ['videos', String(videoId)],
+      token: adminToken,
+    })
+    expect(delVideoAllowed.status).toBe(200)
   })
 })

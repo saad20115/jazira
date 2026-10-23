@@ -1,9 +1,11 @@
-import type {
-  CollectionSlug,
-  Condition,
-  Field,
-  NamedGroupField,
-  TextFieldSingleValidation,
+import {
+  type CollectionSlug,
+  type Condition,
+  type Field,
+  type FieldHook,
+  type NamedGroupField,
+  type TextFieldSingleValidation,
+  ValidationError,
 } from 'payload'
 
 import { MAX_SLUG_LENGTH, SLUG_REGEX } from './slug'
@@ -366,6 +368,79 @@ export function buildExternalUrlValidator(required = false): TextFieldSingleVali
   }
 }
 
+/**
+ * Field-level `beforeValidate` hook attached to every `linkField` group (`P2-T5 R-1`, security `I3`):
+ * Because Payload skips field-level `validate` callbacks on draft (`?draft=true`) and autosave saves,
+ * this `beforeValidate` hook runs on every save (draft, autosave, and publish) across all collections
+ * and globals, rejecting unsafe external schemes (`javascript:`, `data:`, `vbscript:`, mixed-case or
+ * whitespace-prefixed schemes, `//host`) and unsafe internal paths (`//host`, backslashes, `%2f`, etc.)
+ * with HTTP `400` (`ValidationError`).
+ */
+export const validateLinkGroupBeforeValidate: FieldHook = ({
+  collection,
+  global,
+  path,
+  req,
+  value,
+}): unknown => {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) {
+    return value as unknown
+  }
+
+  const linkObj = value as Record<string, unknown>
+  const pathPrefix = Array.isArray(path) && path.length > 0 ? path.map(String).join('.') : 'link'
+  const errors: Array<{ message: string; path: string }> = []
+
+  const hasNonEmptyUrl =
+    linkObj.type === 'external'
+      ? linkObj.url !== null && linkObj.url !== undefined && linkObj.url !== ''
+      : typeof linkObj.url === 'string' && linkObj.url.trim().length > 0
+
+  if (hasNonEmptyUrl) {
+    const urlVerdict = validateExternalUrl(linkObj.url, { required: true })
+    if (urlVerdict !== true) {
+      errors.push({
+        path: `${pathPrefix}.url`,
+        message: urlVerdict,
+      })
+    } else if (typeof linkObj.url === 'string') {
+      linkObj.url = linkObj.url.trim()
+    }
+  }
+
+  const hasNonEmptyInternalPath =
+    linkObj.type !== 'external' &&
+    (linkObj.internalRoute === 'custom'
+      ? linkObj.internalPath !== null &&
+        linkObj.internalPath !== undefined &&
+        linkObj.internalPath !== ''
+      : typeof linkObj.internalPath === 'string' && linkObj.internalPath.trim().length > 0)
+
+  if (hasNonEmptyInternalPath) {
+    const pathVerdict = validateInternalPath(linkObj.internalPath, { required: true })
+    if (pathVerdict !== true) {
+      errors.push({
+        path: `${pathPrefix}.internalPath`,
+        message: pathVerdict,
+      })
+    } else if (typeof linkObj.internalPath === 'string') {
+      linkObj.internalPath = linkObj.internalPath.trim()
+    }
+  }
+
+  if (errors.length > 0) {
+    const globalSlug = (global as { slug?: string } | undefined)?.slug
+    throw new ValidationError({
+      collection: collection?.slug,
+      errors,
+      global: globalSlug,
+      req,
+    })
+  }
+
+  return linkObj
+}
+
 export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
   const {
     name = 'link',
@@ -489,17 +564,15 @@ export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
     fields,
     ...restOverrides,
     ...(adminOverrides ? { admin: { ...adminOverrides } } : {}),
-    ...(hookOverrides
-      ? {
-          hooks: {
-            ...hookOverrides,
-            beforeValidate: [...(hookOverrides.beforeValidate ?? [])],
-            beforeChange: [...(hookOverrides.beforeChange ?? [])],
-            afterChange: [...(hookOverrides.afterChange ?? [])],
-            afterRead: [...(hookOverrides.afterRead ?? [])],
-            beforeDuplicate: [...(hookOverrides.beforeDuplicate ?? [])],
-          },
-        }
-      : {}),
+    hooks: {
+      ...hookOverrides,
+      beforeValidate: [validateLinkGroupBeforeValidate, ...(hookOverrides?.beforeValidate ?? [])],
+      ...(hookOverrides?.beforeChange ? { beforeChange: [...hookOverrides.beforeChange] } : {}),
+      ...(hookOverrides?.afterChange ? { afterChange: [...hookOverrides.afterChange] } : {}),
+      ...(hookOverrides?.afterRead ? { afterRead: [...hookOverrides.afterRead] } : {}),
+      ...(hookOverrides?.beforeDuplicate
+        ? { beforeDuplicate: [...hookOverrides.beforeDuplicate] }
+        : {}),
+    },
   }
 }

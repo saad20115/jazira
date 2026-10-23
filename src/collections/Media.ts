@@ -3,7 +3,10 @@ import {
   type CollectionBeforeOperationHook,
   type CollectionConfig,
   type CollectionSlug,
+  type Field,
+  type GlobalConfig,
   type GlobalSlug,
+  type SanitizedGlobalConfig,
   type Where,
 } from 'payload'
 
@@ -84,7 +87,7 @@ const recordReferencingDoc = (
   }
 }
 
-const findReferencingLabels = async ({
+export const findReferencingLabels = async ({
   collection,
   where,
   labelField,
@@ -131,12 +134,20 @@ const getNestedValue = (obj: unknown, dotPath: string): unknown => {
     if (!current || typeof current !== 'object') {
       return undefined
     }
+    if (Array.isArray(current)) {
+      current = current
+        .map((item) =>
+          item && typeof item === 'object' ? (item as Record<string, unknown>)[part] : undefined,
+        )
+        .filter((v) => v !== undefined)
+      continue
+    }
     current = (current as Record<string, unknown>)[part]
   }
   return current
 }
 
-const uploadValueMatchesMediaId = (raw: unknown, targetId: number | string): boolean => {
+export const uploadValueMatchesMediaId = (raw: unknown, targetId: number | string): boolean => {
   if (raw === null || raw === undefined) {
     return false
   }
@@ -150,19 +161,112 @@ const uploadValueMatchesMediaId = (raw: unknown, targetId: number | string): boo
   )
 }
 
-const findGlobalMediaReferences = async ({
+export interface DerivedFieldTargetPaths {
+  fieldPaths: string[]
+  richTextPaths: string[]
+}
+
+const joinPath = (prefix: string, name: string): string =>
+  prefix.length > 0 ? `${prefix}.${name}` : name
+
+/**
+ * Walks a collection or global `fields` tree and extracts all `upload`/`relationship`
+ * field paths targeting `targetCollection` (`'media'`, `'stats'`, `'videos'`, etc.),
+ * plus `richText` field paths when `targetCollection === 'media'` (`P2-T5 R-4`).
+ */
+export function deriveFieldTargetPaths(
+  fields: readonly Field[],
+  targetCollection: CollectionSlug,
+  prefix = '',
+  out: DerivedFieldTargetPaths = { fieldPaths: [], richTextPaths: [] },
+): DerivedFieldTargetPaths {
+  for (const field of fields) {
+    if (field.type === 'collapsible' || field.type === 'row') {
+      deriveFieldTargetPaths(field.fields, targetCollection, prefix, out)
+      continue
+    }
+
+    if (field.type === 'tabs') {
+      for (const tab of field.tabs) {
+        const tabPrefix =
+          'name' in tab && typeof tab.name === 'string' ? joinPath(prefix, tab.name) : prefix
+        deriveFieldTargetPaths(tab.fields, targetCollection, tabPrefix, out)
+      }
+      continue
+    }
+
+    if (!('name' in field) || typeof field.name !== 'string') {
+      continue
+    }
+
+    const currentPath = joinPath(prefix, field.name)
+
+    if (field.type === 'group' || field.type === 'array') {
+      deriveFieldTargetPaths(field.fields, targetCollection, currentPath, out)
+      continue
+    }
+
+    if (field.type === 'upload' || field.type === 'relationship') {
+      const matchesTarget =
+        field.relationTo === targetCollection ||
+        (Array.isArray(field.relationTo) && field.relationTo.includes(targetCollection))
+      if (matchesTarget && !out.fieldPaths.includes(currentPath)) {
+        out.fieldPaths.push(currentPath)
+      }
+      continue
+    }
+
+    if (field.type === 'richText' && targetCollection === 'media') {
+      if (!out.richTextPaths.includes(currentPath)) {
+        out.richTextPaths.push(currentPath)
+      }
+    }
+  }
+
+  return out
+}
+
+export interface GlobalTargetReferenceSpec {
+  slug: GlobalSlug
+  fieldPaths: readonly string[]
+  richTextPaths: readonly string[]
+  versioned: boolean
+}
+
+export function deriveGlobalTargetReferences(
+  globalsConfig: ReadonlyArray<GlobalConfig | SanitizedGlobalConfig>,
+  targetCollection: CollectionSlug,
+): GlobalTargetReferenceSpec[] {
+  const specs: GlobalTargetReferenceSpec[] = []
+  for (const g of globalsConfig) {
+    const { fieldPaths, richTextPaths } = deriveFieldTargetPaths(g.fields, targetCollection)
+    if (fieldPaths.length === 0 && richTextPaths.length === 0) {
+      continue
+    }
+    const versioned = Boolean(g.versions && typeof g.versions === 'object' && g.versions.drafts)
+    specs.push({
+      slug: g.slug as GlobalSlug,
+      fieldPaths,
+      richTextPaths,
+      versioned,
+    })
+  }
+  return specs
+}
+
+export const findGlobalTargetReferences = async ({
   slug,
-  uploadPaths,
+  fieldPaths,
+  richTextPaths = [],
   versioned,
-  richTextBody,
-  mediaId,
+  targetId,
   req,
 }: {
   slug: GlobalSlug
-  uploadPaths: readonly string[]
+  fieldPaths: readonly string[]
+  richTextPaths?: readonly string[]
   versioned?: boolean
-  richTextBody?: boolean
-  mediaId: number | string
+  targetId: number | string
   req: Parameters<CollectionBeforeDeleteHook>[0]['req']
 }): Promise<string[]> => {
   const registeredGlobals = req.payload.globals.config
@@ -183,18 +287,16 @@ const findGlobalMediaReferences = async ({
         req,
       })) as unknown as Record<string, unknown>
 
-      for (const path of uploadPaths) {
-        if (uploadValueMatchesMediaId(getNestedValue(doc, path), mediaId)) {
+      for (const path of fieldPaths) {
+        if (uploadValueMatchesMediaId(getNestedValue(doc, path), targetId)) {
           return [`global:${slug}`]
         }
       }
 
-      if (
-        richTextBody &&
-        (uploadValueMatchesMediaId(doc.bodyMedia, mediaId) ||
-          richTextReferencesMediaId(doc.body, mediaId))
-      ) {
-        return [`global:${slug}`]
+      for (const rtPath of richTextPaths) {
+        if (richTextReferencesMediaId(getNestedValue(doc, rtPath), targetId)) {
+          return [`global:${slug}`]
+        }
       }
     }
   }
@@ -254,61 +356,7 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
     },
   ]
 
-  const globalChecks: Array<{
-    slug: GlobalSlug
-    uploadPaths: readonly string[]
-    versioned?: boolean
-    richTextBody?: boolean
-  }> = [
-    {
-      slug: 'site-settings',
-      uploadPaths: ['office.mapImage', 'defaultSeo.image'],
-    },
-    {
-      slug: 'home-page',
-      uploadPaths: [
-        'hero.background',
-        'whoWeAre.image',
-        'interactiveSystems.heroImage',
-        'cta.backgroundImage',
-        'meta.image',
-      ],
-      versioned: true,
-    },
-    {
-      slug: 'services-page',
-      uploadPaths: ['pageHeader.image', 'cta.backgroundImage', 'meta.image'],
-      versioned: true,
-    },
-    {
-      slug: 'about-page',
-      uploadPaths: [
-        'pageHeader.image',
-        'story.image',
-        'missionVision.mission.image',
-        'missionVision.vision.image',
-        'missionVision.image',
-        'meta.image',
-      ],
-      versioned: true,
-    },
-    {
-      slug: 'projects-page',
-      uploadPaths: ['pageHeader.image', 'portfolio.image', 'cta.backgroundImage', 'meta.image'],
-      versioned: true,
-    },
-    {
-      slug: 'contact-page',
-      uploadPaths: ['pageHeader.image', 'meta.image'],
-      versioned: true,
-    },
-    {
-      slug: 'privacy-page',
-      uploadPaths: ['pageHeader.image', 'meta.image'],
-      versioned: true,
-      richTextBody: true,
-    },
-  ]
+  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'media')
 
   const referencesByKey = new Map<string, string>()
   for (const check of checks) {
@@ -336,12 +384,12 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
   }
 
   for (const globalCheck of globalChecks) {
-    const globalRefs = await findGlobalMediaReferences({
+    const globalRefs = await findGlobalTargetReferences({
       slug: globalCheck.slug,
-      uploadPaths: globalCheck.uploadPaths,
+      fieldPaths: globalCheck.fieldPaths,
+      richTextPaths: globalCheck.richTextPaths,
       versioned: globalCheck.versioned,
-      richTextBody: globalCheck.richTextBody,
-      mediaId: id,
+      targetId: id,
       req,
     })
     for (const item of globalRefs) {

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeDeleteHook, CollectionConfig } from 'payload'
 
 import { isAdminOrEditor } from '../access/index'
 import { orderField } from '../fields/order'
@@ -6,6 +6,32 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
 } from '../hooks/revalidate'
+import { createPublicAPIError } from '../security/apiError'
+import { deriveGlobalTargetReferences, findGlobalTargetReferences } from './Media'
+
+const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'stats')
+  const references = new Set<string>()
+
+  for (const gCheck of globalChecks) {
+    const found = await findGlobalTargetReferences({
+      ...gCheck,
+      targetId: id,
+      req,
+    })
+    for (const ref of found) {
+      references.add(ref)
+    }
+  }
+
+  if (references.size > 0) {
+    const refList = [...references].join(', ')
+    throw createPublicAPIError(
+      `لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: ${refList}. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: ${refList}. Remove those references first.`,
+      400,
+    )
+  }
+}
 
 export const Stats: CollectionConfig = {
   slug: 'stats',
@@ -40,6 +66,7 @@ export const Stats: CollectionConfig = {
     delete: isAdminOrEditor,
   },
   hooks: {
+    beforeDelete: [preventStatDeletionWhenReferenced],
     afterChange: [
       createRevalidateAfterChangeHook({
         collection: 'stats',

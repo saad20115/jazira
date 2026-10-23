@@ -1,8 +1,16 @@
+import type { ArrayField, CollapsibleField, NamedGroupField, SelectField } from 'payload'
 import { describe, expect, it } from 'vitest'
 
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
+import { Brands } from '../collections/Brands'
+import { deriveFieldTargetPaths, deriveGlobalTargetReferences } from '../collections/Media'
+import { Projects, PROJECT_SCOPE_OPTIONS } from '../collections/Projects'
+import { Services } from '../collections/Services'
+import { Team } from '../collections/Team'
+import { Videos } from '../collections/Videos'
+import { getDefaultInteractiveSystems } from './HomePage'
 import {
   AboutPage,
   ALL_GLOBALS,
@@ -155,5 +163,149 @@ describe('P2-T5 Globals unit suite', () => {
     ])
 
     expect(getCollapsibleGroupNames(PrivacyPage.fields)).toEqual(['pageHeader', 'enabled', 'meta'])
+  })
+
+  it('configures interactiveSystems.systems with exact minRows: 5, maxRows: 5, default 5 discipline mappings, and localized PROJECT_SCOPE_OPTIONS labels (R-2)', () => {
+    const interactiveCollapsible = HomePage.fields[3] as CollapsibleField
+    const interactiveGroup = interactiveCollapsible.fields[0] as NamedGroupField
+    expect(interactiveGroup.name).toBe('interactiveSystems')
+
+    const systemsField = interactiveGroup.fields.find(
+      (f): f is ArrayField => 'name' in f && f.name === 'systems' && f.type === 'array',
+    )
+    expect(systemsField).toBeDefined()
+    expect(systemsField?.minRows).toBe(5)
+    expect(systemsField?.maxRows).toBe(5)
+
+    const arDefaults = getDefaultInteractiveSystems('ar')
+    const enDefaults = getDefaultInteractiveSystems('en')
+    expect(arDefaults).toHaveLength(5)
+    expect(enDefaults).toHaveLength(5)
+    expect(arDefaults.map((row) => ({ shot: row.shot, disciplines: row.disciplines }))).toEqual([
+      { shot: 'hvac', disciplines: ['hvac'] },
+      { shot: 'fire', disciplines: ['fire-fighting'] },
+      { shot: 'plumbing', disciplines: ['plumbing'] },
+      { shot: 'power', disciplines: ['electrical'] },
+      { shot: 'smart', disciplines: ['low-current', 'data-center'] },
+    ])
+
+    const disciplinesField = systemsField?.fields.find(
+      (f): f is SelectField => 'name' in f && f.name === 'disciplines' && f.type === 'select',
+    )
+    expect(disciplinesField?.options).toEqual([...PROJECT_SCOPE_OPTIONS])
+    for (const opt of PROJECT_SCOPE_OPTIONS) {
+      expect(typeof opt.label.ar).toBe('string')
+      expect(typeof opt.label.en).toBe('string')
+    }
+  })
+
+  it('derives all global and collection upload/relationship paths for media, stats, and videos directly from config (R-4)', () => {
+    const mediaGlobals = deriveGlobalTargetReferences(ALL_GLOBALS, 'media')
+    expect(mediaGlobals).toEqual([
+      {
+        slug: 'site-settings',
+        fieldPaths: ['office.mapImage', 'defaultSeo.image'],
+        richTextPaths: [],
+        versioned: false,
+      },
+      {
+        slug: 'home-page',
+        fieldPaths: [
+          'hero.background',
+          'whoWeAre.image',
+          'interactiveSystems.heroImage',
+          'cta.backgroundImage',
+          'meta.image',
+        ],
+        richTextPaths: ['whoWeAre.text'],
+        versioned: true,
+      },
+      {
+        slug: 'services-page',
+        fieldPaths: ['pageHeader.image', 'cta.backgroundImage', 'meta.image'],
+        richTextPaths: [],
+        versioned: true,
+      },
+      {
+        slug: 'about-page',
+        fieldPaths: [
+          'pageHeader.image',
+          'story.image',
+          'missionVision.mission.image',
+          'missionVision.vision.image',
+          'missionVision.image',
+          'meta.image',
+        ],
+        richTextPaths: ['story.text'],
+        versioned: true,
+      },
+      {
+        slug: 'projects-page',
+        fieldPaths: ['pageHeader.image', 'portfolio.image', 'cta.backgroundImage', 'meta.image'],
+        richTextPaths: ['portfolio.text'],
+        versioned: true,
+      },
+      {
+        slug: 'contact-page',
+        fieldPaths: ['pageHeader.image', 'meta.image'],
+        richTextPaths: [],
+        versioned: true,
+      },
+      {
+        slug: 'privacy-page',
+        fieldPaths: ['pageHeader.image', 'bodyMedia', 'meta.image'],
+        richTextPaths: ['body'],
+        versioned: true,
+      },
+    ])
+
+    const statsGlobals = deriveGlobalTargetReferences(ALL_GLOBALS, 'stats')
+    expect(statsGlobals).toEqual([
+      {
+        slug: 'home-page',
+        fieldPaths: ['whoWeAre.badgeStat', 'statsSection.stats'],
+        richTextPaths: [],
+        versioned: true,
+      },
+      {
+        slug: 'about-page',
+        fieldPaths: ['story.badgeStat'],
+        richTextPaths: [],
+        versioned: true,
+      },
+      {
+        slug: 'projects-page',
+        fieldPaths: ['impact.stats', 'portfolio.badgeStat'],
+        richTextPaths: [],
+        versioned: true,
+      },
+    ])
+
+    const videosGlobals = deriveGlobalTargetReferences(ALL_GLOBALS, 'videos')
+    expect(videosGlobals).toEqual([
+      {
+        slug: 'home-page',
+        fieldPaths: ['hero.backgroundVideo'],
+        richTextPaths: [],
+        versioned: true,
+      },
+    ])
+
+    // Also verify collection field paths targeting media match our Media.ts collection checks
+    expect(deriveFieldTargetPaths(Team.fields, 'media').fieldPaths).toEqual(['photo'])
+    expect(deriveFieldTargetPaths(Services.fields, 'media').fieldPaths).toEqual([
+      'image',
+      'meta.image',
+      'bodyMedia',
+    ])
+    expect(deriveFieldTargetPaths(Projects.fields, 'media').fieldPaths).toEqual([
+      'coverImage',
+      'gallery',
+      'meta.image',
+      'bodyMedia',
+    ])
+    expect(deriveFieldTargetPaths(Brands.fields, 'media').fieldPaths).toEqual(['logo'])
+    expect(deriveFieldTargetPaths(Videos.fields, 'media').fieldPaths).toEqual(['poster'])
+    expect(deriveFieldTargetPaths(Projects.fields, 'videos').fieldPaths).toEqual(['video'])
   })
 })

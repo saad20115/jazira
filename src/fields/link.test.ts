@@ -1,4 +1,4 @@
-import type { TextField, TextFieldSingleValidation } from 'payload'
+import { type TextField, type TextFieldSingleValidation, ValidationError } from 'payload'
 import { describe, expect, it } from 'vitest'
 
 import {
@@ -8,6 +8,7 @@ import {
   resolveLinkHref,
   validateExternalUrl,
   validateInternalPath,
+  validateLinkGroupBeforeValidate,
 } from './link'
 
 type SingleValidateOpts = Parameters<TextFieldSingleValidation>[1]
@@ -250,6 +251,68 @@ describe('linkField & URL validation (I3)', () => {
           },
         }),
       ).toBeNull()
+    })
+
+    it('rejects javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host paths in validateLinkGroupBeforeValidate on draft/autosave (R-1)', () => {
+      const group = linkField({ required: true })
+      expect(group.hooks?.beforeValidate).toContain(validateLinkGroupBeforeValidate)
+
+      const runHook = (
+        value: Record<string, unknown>,
+        path: Array<number | string> = ['cta', 'primaryButton', 'link'],
+      ): unknown =>
+        validateLinkGroupBeforeValidate({
+          value,
+          path,
+          req: {} as never,
+          data: {},
+          siblingData: {},
+          field: group as never,
+          operation: 'update',
+          overrideAccess: false,
+          context: {},
+        } as never)
+
+      for (const badUrl of [
+        'javascript:alert(document.cookie)',
+        '  JaVaScRiPt:alert(1)',
+        'data:text/html,<script>alert(1)</script>',
+        'vbscript:msgbox(1)',
+      ]) {
+        expect(() => {
+          runHook({
+            label: 'Click',
+            type: 'external',
+            url: badUrl,
+          })
+        }).toThrow(ValidationError)
+      }
+
+      for (const badPath of ['//evil.com', '  //evil.com/path', '/%2f%2fevil.com']) {
+        expect(() => {
+          runHook({
+            label: 'Click',
+            type: 'internal',
+            internalRoute: 'custom',
+            internalPath: badPath,
+          })
+        }).toThrow(ValidationError)
+      }
+
+      const validExternal = runHook({
+        label: 'Visit',
+        type: 'external',
+        url: '  https://aljazira.co/brochure.pdf  ',
+      }) as Record<string, unknown>
+      expect(validExternal.url).toBe('https://aljazira.co/brochure.pdf')
+
+      const validInternal = runHook({
+        label: 'Services',
+        type: 'internal',
+        internalRoute: 'custom',
+        internalPath: '  /services#hvac  ',
+      }) as Record<string, unknown>
+      expect(validInternal.internalPath).toBe('/services#hvac')
     })
   })
 })

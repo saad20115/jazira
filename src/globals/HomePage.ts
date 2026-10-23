@@ -1,6 +1,6 @@
 import { type GlobalBeforeValidateHook, type GlobalConfig, ValidationError } from 'payload'
 
-import { PROJECT_SCOPE_VALUES } from '../collections/Projects'
+import { PROJECT_SCOPE_OPTIONS, type ProjectScope } from '../collections/Projects'
 import { buttonGroup } from '../fields/groups/button'
 import { collapsibleSection } from '../fields/groups/collapsibleSection'
 import { ctaGroup } from '../fields/groups/cta'
@@ -19,6 +19,89 @@ export const INTERACTIVE_SYSTEM_SHOT_VALUES = [
 ] as const
 
 export type InteractiveSystemShot = (typeof INTERACTIVE_SYSTEM_SHOT_VALUES)[number]
+
+export interface DefaultInteractiveSystemItem {
+  title: string
+  text: string
+  shot: InteractiveSystemShot
+  disciplines: ProjectScope[]
+}
+
+export const DEFAULT_INTERACTIVE_SYSTEMS_AR: readonly DefaultInteractiveSystemItem[] = [
+  {
+    title: 'التكييف والمياه المبردة (HVAC)',
+    text: 'المبردات (Chillers)، وحدات مناولة الهواء (AHUs)، وحدات ملف ومروحة (FCUs)، أنظمة VRF، مجاري الهواء، سحب الدخان، تضغيط السلالم وغرف التبريد — مع الفحص والضبط والموازنة (TAB) قبل التسليم.',
+    shot: 'hvac',
+    disciplines: ['hvac'],
+  },
+  {
+    title: 'مكافحة الحريق والإنذار المبكر',
+    text: 'مضخات الحريق، أنظمة الرش الآلي وصناديق الإطفاء، الإطفاء بالغازات النظيفة، وأنظمة الكشف والإنذار المبكر — وفق اشتراطات NFPA والدفاع المدني.',
+    shot: 'fire',
+    disciplines: ['fire-fighting'],
+  },
+  {
+    title: 'السباكة والصرف وتغذية المياه',
+    text: 'مضخات الرفع، خزانات المياه، شبكات التغذية، شبكات الصرف والتهوية، وكافة التركيبات الصحية المتكاملة.',
+    shot: 'plumbing',
+    disciplines: ['plumbing'],
+  },
+  {
+    title: 'توزيع الطاقة والإنارة',
+    text: 'لوحات الجهد المتوسط والمنخفض (MV/LV)، قضبان التوزيع (Busways)، القوى الكهربائية، الإنارة، وتوزيع مولدات الطوارئ.',
+    shot: 'power',
+    disciplines: ['electrical'],
+  },
+  {
+    title: 'الأنظمة الذكية والتيار الخفيف (ELV & BMS)',
+    text: 'الشبكات الهيكلية، كاميرات المراقبة (CCTV)، التحكم في الدخول، الأنظمة الصوتية والمرئية، غرف البيانات وربط أنظمة إدارة المباني (BMS).',
+    shot: 'smart',
+    disciplines: ['low-current', 'data-center'],
+  },
+] as const
+
+export const DEFAULT_INTERACTIVE_SYSTEMS_EN: readonly DefaultInteractiveSystemItem[] = [
+  {
+    title: 'HVAC & Chilled Water',
+    text: 'Chillers, AHUs, FCUs, VRF, ductwork, smoke management, staircase pressurization and cold rooms — tested, adjusted and balanced (TAB) before handover.',
+    shot: 'hvac',
+    disciplines: ['hvac'],
+  },
+  {
+    title: 'Fire Fighting & Fire Alarm',
+    text: 'Fire pumps, sprinkler and hose systems, clean-agent suppression, detection and alarm — to NFPA and Civil Defense requirements.',
+    shot: 'fire',
+    disciplines: ['fire-fighting'],
+  },
+  {
+    title: 'Plumbing, Drainage & Water Supply',
+    text: 'Booster sets, water tanks, domestic water, drainage and vent networks, and complete sanitary installations.',
+    shot: 'plumbing',
+    disciplines: ['plumbing'],
+  },
+  {
+    title: 'Power Distribution & Lighting',
+    text: 'MV/LV panels, busways, small power, lighting and emergency generator distribution.',
+    shot: 'power',
+    disciplines: ['electrical'],
+  },
+  {
+    title: 'Smart Systems, ELV & BMS',
+    text: 'Structured cabling, CCTV, access control, sound & AV, data rooms and BMS integration.',
+    shot: 'smart',
+    disciplines: ['low-current', 'data-center'],
+  },
+] as const
+
+export function getDefaultInteractiveSystems(locale?: string): DefaultInteractiveSystemItem[] {
+  const source = locale === 'en' ? DEFAULT_INTERACTIVE_SYSTEMS_EN : DEFAULT_INTERACTIVE_SYSTEMS_AR
+  return source.map((item) => ({
+    title: item.title,
+    text: item.text,
+    shot: item.shot,
+    disciplines: [...item.disciplines],
+  }))
+}
 
 const extractRelId = (raw: unknown): number | string | null => {
   if (typeof raw === 'number' && Number.isFinite(raw)) {
@@ -84,10 +167,39 @@ const validateHomePageBeforeValidate: GlobalBeforeValidateHook = ({ data, origin
     typeof mutable.interactiveSystems === 'object' && mutable.interactiveSystems !== null
       ? (mutable.interactiveSystems as Record<string, unknown>)
       : undefined
+  const origInteractive =
+    typeof orig.interactiveSystems === 'object' && orig.interactiveSystems !== null
+      ? (orig.interactiveSystems as Record<string, unknown>)
+      : undefined
 
-  if (interactiveData && Array.isArray(interactiveData.systems)) {
+  // Seed default 5 interactive systems when interactiveSystems.systems has not been set yet
+  if (
+    (!interactiveData ||
+      !('systems' in interactiveData) ||
+      interactiveData.systems === undefined) &&
+    (!origInteractive ||
+      !Array.isArray(origInteractive.systems) ||
+      origInteractive.systems.length === 0)
+  ) {
+    const reqLocale = typeof req.locale === 'string' ? req.locale : 'ar'
+    if (interactiveData) {
+      interactiveData.systems = getDefaultInteractiveSystems(reqLocale)
+    } else {
+      mutable.interactiveSystems = {
+        ...(origInteractive ?? {}),
+        systems: getDefaultInteractiveSystems(reqLocale),
+      }
+    }
+  }
+
+  const effectiveInteractiveData =
+    typeof mutable.interactiveSystems === 'object' && mutable.interactiveSystems !== null
+      ? (mutable.interactiveSystems as Record<string, unknown>)
+      : undefined
+
+  if (effectiveInteractiveData && Array.isArray(effectiveInteractiveData.systems)) {
     const seenShots = new Set<string>()
-    for (const item of interactiveData.systems) {
+    for (const item of effectiveInteractiveData.systems) {
       if (typeof item === 'object' && item !== null && 'shot' in item) {
         const shot = (item as { shot?: unknown }).shot
         if (typeof shot === 'string' && shot.trim().length > 0) {
@@ -294,9 +406,10 @@ export const HomePage: GlobalConfig = withPublishableGlobal({
           name: 'text',
           localized: true,
           required: false,
+          maxParagraphs: 2,
           label: {
-            ar: 'النص التعريفي (فقرات نصية فقط)',
-            en: 'Description Text (Paragraphs Only)',
+            ar: 'النص التعريفي (فقرات نصية فقط — بحد أقصى فقرتين)',
+            en: 'Description Text (Paragraphs Only — Max 2 Paragraphs)',
           },
         }),
         buttonGroup({
@@ -355,10 +468,12 @@ export const HomePage: GlobalConfig = withPublishableGlobal({
             name: 'systems',
             type: 'array',
             dbName: 'hp_int_sys',
+            minRows: 5,
             maxRows: 5,
+            defaultValue: ({ locale }: { locale?: string }) => getDefaultInteractiveSystems(locale),
             label: {
-              ar: 'الأنظمة الهندسية التفاعلية (5 أنظمة)',
-              en: 'Interactive Systems (5 Design Items)',
+              ar: 'الأنظمة الهندسية التفاعلية (5 أنظمة بالضبط)',
+              en: 'Interactive Systems (Exactly 5 Design Items)',
             },
             labels: {
               singular: {
@@ -371,11 +486,8 @@ export const HomePage: GlobalConfig = withPublishableGlobal({
               },
             },
             validate: (val: unknown) => {
-              if (!Array.isArray(val)) {
-                return true
-              }
-              if (val.length > 5) {
-                return 'الحد الأقصى للأنظمة التفاعلية هو 5 عناصر. / Maximum 5 interactive systems allowed.'
+              if (!Array.isArray(val) || val.length !== 5) {
+                return 'يجب أن يحتوي قسم الأنظمة التفاعلية على 5 أنظمة بالضبط. / Interactive systems must contain exactly 5 items.'
               }
               const seen = new Set<string>()
               for (const row of val) {
@@ -460,10 +572,7 @@ export const HomePage: GlobalConfig = withPublishableGlobal({
                   ar: 'التخصصات المرتبطة من المشاريع (Disciplines -> Related Projects)',
                   en: 'Linked Project Scope Disciplines',
                 },
-                options: PROJECT_SCOPE_VALUES.map((val) => ({
-                  label: val,
-                  value: val,
-                })),
+                options: [...PROJECT_SCOPE_OPTIONS],
               },
             ],
           },

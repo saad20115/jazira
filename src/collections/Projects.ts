@@ -50,6 +50,65 @@ export const PROJECT_SCOPE_VALUES = [
 
 export type ProjectScope = (typeof PROJECT_SCOPE_VALUES)[number]
 
+export const PROJECT_SCOPE_OPTIONS = [
+  {
+    label: {
+      ar: 'الأعمال الكهروميكانيكية (MEP)',
+      en: 'MEP Works',
+    },
+    value: 'mep',
+  },
+  {
+    label: {
+      ar: 'التكييف والتهوية (HVAC)',
+      en: 'HVAC & Ventilation',
+    },
+    value: 'hvac',
+  },
+  {
+    label: {
+      ar: 'مكافحة الحريق (Fire-Fighting)',
+      en: 'Fire-Fighting',
+    },
+    value: 'fire-fighting',
+  },
+  {
+    label: {
+      ar: 'الأعمال الصحية والسباكة (Plumbing)',
+      en: 'Plumbing & Sanitary',
+    },
+    value: 'plumbing',
+  },
+  {
+    label: {
+      ar: 'الأعمال الكهربائية (Electrical)',
+      en: 'Electrical Works',
+    },
+    value: 'electrical',
+  },
+  {
+    label: {
+      ar: 'التيار الخفيف (Low-Current / ELV)',
+      en: 'Low-Current (ELV)',
+    },
+    value: 'low-current',
+  },
+  {
+    label: {
+      ar: 'مراكز البيانات (Data Center)',
+      en: 'Data Center',
+    },
+    value: 'data-center',
+  },
+  {
+    label: {
+      ar: 'الأعمال المدنية (Civil)',
+      en: 'Civil Works',
+    },
+    value: 'civil',
+  },
+] as const
+
 export const PROJECT_STATUS_VALUES = ['completed', 'in-progress'] as const
 
 export type ProjectStatus = (typeof PROJECT_STATUS_VALUES)[number]
@@ -713,64 +772,7 @@ export const Projects: CollectionConfig = {
               type: 'select',
               hasMany: true,
               required: false,
-              options: [
-                {
-                  label: {
-                    ar: 'الأعمال الكهروميكانيكية (MEP)',
-                    en: 'MEP Works',
-                  },
-                  value: 'mep',
-                },
-                {
-                  label: {
-                    ar: 'التكييف والتهوية (HVAC)',
-                    en: 'HVAC & Ventilation',
-                  },
-                  value: 'hvac',
-                },
-                {
-                  label: {
-                    ar: 'مكافحة الحريق (Fire-Fighting)',
-                    en: 'Fire-Fighting',
-                  },
-                  value: 'fire-fighting',
-                },
-                {
-                  label: {
-                    ar: 'الأعمال الصحية والسباكة (Plumbing)',
-                    en: 'Plumbing & Sanitary',
-                  },
-                  value: 'plumbing',
-                },
-                {
-                  label: {
-                    ar: 'الأعمال الكهربائية (Electrical)',
-                    en: 'Electrical Works',
-                  },
-                  value: 'electrical',
-                },
-                {
-                  label: {
-                    ar: 'التيار الخفيف (Low-Current / ELV)',
-                    en: 'Low-Current (ELV)',
-                  },
-                  value: 'low-current',
-                },
-                {
-                  label: {
-                    ar: 'مراكز البيانات (Data Center)',
-                    en: 'Data Center',
-                  },
-                  value: 'data-center',
-                },
-                {
-                  label: {
-                    ar: 'الأعمال المدنية (Civil)',
-                    en: 'Civil Works',
-                  },
-                  value: 'civil',
-                },
-              ],
+              options: [...PROJECT_SCOPE_OPTIONS],
               label: {
                 ar: 'نطاق الأعمال الهندسية (وسوم)',
                 en: 'Engineering Scope Tags',

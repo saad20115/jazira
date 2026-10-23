@@ -80,6 +80,7 @@ export function validateRichTextLinkUrl(value: unknown): true | string {
 }
 
 export interface ValidateLexicalOptions {
+  maxParagraphs?: number
   mode?: 'limited' | 'paragraphsOnly'
   required?: boolean
 }
@@ -257,7 +258,7 @@ export function validateLimitedLexicalState(
   value: unknown,
   options: ValidateLexicalOptions = {},
 ): true | string {
-  const { mode = 'limited', required = false } = options
+  const { maxParagraphs, mode = 'limited', required = false } = options
 
   if (value === null || value === undefined || value === '') {
     return required ? 'محتوى النص المنسق مطلوب. / Rich text content is required.' : true
@@ -275,6 +276,18 @@ export function validateLimitedLexicalState(
   const rootRecord = root as Record<string, unknown>
   if (rootRecord.type !== 'root' || !Array.isArray(rootRecord.children)) {
     return 'جذر النص المنسق (root) يجب أن يحتوي على مصفوفة عناصر (children). / Lexical root must have type "root" and a children array.'
+  }
+
+  if (typeof maxParagraphs === 'number' && maxParagraphs > 0) {
+    const paragraphCount = rootRecord.children.filter(
+      (child) =>
+        typeof child === 'object' &&
+        child !== null &&
+        (child as { type?: unknown }).type === 'paragraph',
+    ).length
+    if (paragraphCount > maxParagraphs) {
+      return `الحد الأقصى لعدد الفقرات المسموح به في هذا الحقل هو ${String(maxParagraphs)} فقرات (المُدخل: ${String(paragraphCount)}). / Maximum ${String(maxParagraphs)} paragraphs allowed (received ${String(paragraphCount)}).`
+    }
   }
 
   const allowedSet = new Set<string>(
@@ -345,6 +358,7 @@ type RichTextFieldHook = FieldHook<
 export interface LimitedRichTextFieldOptions {
   label?: RichTextField['label']
   localized?: boolean
+  maxParagraphs?: number
   mode?: 'limited' | 'paragraphsOnly'
   name?: string
   overrides?: Partial<RichTextField>
@@ -358,6 +372,7 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
       en: 'Detailed Content',
     },
     localized = true,
+    maxParagraphs,
     mode = 'limited',
     name = 'body',
     overrides = {},
@@ -370,8 +385,10 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
       return val
     }
     const globalSlug = (args as { global?: { slug?: string } }).global?.slug
-    const validationResult = validateLimitedLexicalState(val, { mode, required })
+    const validationResult = validateLimitedLexicalState(val, { maxParagraphs, mode, required })
     if (validationResult !== true) {
+      const resolvedPath =
+        Array.isArray(args.path) && args.path.length > 0 ? args.path.map(String).join('.') : name
       throw new ValidationError(
         {
           collection: args.collection?.slug,
@@ -379,7 +396,7 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
             {
               label: args.field.label === false ? undefined : args.field.label,
               message: validationResult,
-              path: name,
+              path: resolvedPath,
             },
           ],
           global: globalSlug,
@@ -463,7 +480,7 @@ export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}):
       beforeDuplicate: [...(overrideHooks?.beforeDuplicate ?? [])],
     },
     validate: async (value, validateOptions) => {
-      const astResult = validateLimitedLexicalState(value, { mode, required })
+      const astResult = validateLimitedLexicalState(value, { maxParagraphs, mode, required })
       if (astResult !== true) {
         return astResult
       }
