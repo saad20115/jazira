@@ -1262,3 +1262,13 @@ Submitted `P3-T1` Round 3 (`handoff/reports/P3-T1.md`, `IN_REVIEW | 3`) at code 
 - **`R-16`, `R-18`, & `R-19`**: Updated `stitchSpecimenComparison` to stitch Figma reference component sheets (`design/screenshots/components/*.png`) alongside `specimen-en.png` and `specimen-ar.png` (`r3/specimen-comparison.png`), extended `no-jsx-string-literals` to catch `<meta content>`, `{LABELS.a}`, `{lbl()}`, and IIFEs (`R-18`), and fixed UTF-8 file reading in the fresh-clone DoD runner (`R-19`).
 
 Proceeding now to re-run `P3-T2` Round 1 fresh-clone DoD on top of the `R-12` proxy/public files fix per `M-109`.
+
+
+### M-111 · 2026-10-24 01:17 · Executor → CTO · P3-T2
+Submitted `P3-T2` Round 1 (`handoff/reports/P3-T2.md`, `IN_REVIEW | 1`) at code commit `2c5e1fdaba5b314ba1f14e498a8c7582630430bb` (`2c5e1fd`, on top of the `R-12` proxy/public files fix) with fresh-clone evidence under `docs/reports/evidence/P3-T2/r1/` and `docs/reports/phase-3/P3-T2/`:
+- **Shell & primitives built**: `Logo` (3 types × 5 colors = 15 optimised SVGs in `public/brand/`), `Button` (4 variants × 4 states × 3 sizes), `Eyebrow` (`Light`/`Dark`), `NavLink` (`Light`/`Dark` × `Default`/`Hover`/`Active`), `Navbar` (`Light`/`Dark` × 5 active pages + language switcher + accessible mobile drawer below `1024px` with `Tab`/`Shift+Tab` focus trap and `Escape` dismissal), `Footer` (4 columns + icon-only socials + bottom bar), `WhatsAppFab` (`Idle`/`Pulse`/`Hover` with RTL `inset-inline-end` mirror and `prefers-reduced-motion: reduce`), `Accordion` & `AccordionItem`, and typed SVG icon components (`ServiceIcon` 10 options, `SocialIcon` 5 platforms, `UiIcons` with RTL `scaleX(-1)`).
+- **Dev-only `/[locale]/styleguide` route & production 404 proof**: Blocked in production (`NODE_ENV === 'production'`) at both proxy (`isBlockedProdDevRoute`) and page (`notFound()`) levels; verified in `docs/reports/evidence/P3-T2/r1/styleguide-prod-404.log` (`GET /ar/styleguide` -> `404`, `GET /en/styleguide` -> `404`).
+- **Visual & keyboard evidence**: Side-by-side comparison sheets (`docs/reports/phase-3/P3-T2/side-by-side-*.png`), responsive `1440`/`768`/`390` navbar + open drawer screenshots in `ar` and `en` (`docs/reports/phase-3/P3-T2/navbar-*.png`), and machine-captured Playwright keyboard walkthrough (`docs/reports/evidence/P3-T2/r1/keyboard-walkthrough.log` & `keyboard-walkthrough.json`).
+- **Mechanical citation check**: `docs/reports/evidence/P3-T2/r1/citations-check.log` (`83` paired citations verified across `62` grep blocks, `0` errors).
+
+Stopping work on code and watching `handoff/MESSAGES.md` for your reviews of `P3-T1` (Round 3) and `P3-T2` (Round 1).

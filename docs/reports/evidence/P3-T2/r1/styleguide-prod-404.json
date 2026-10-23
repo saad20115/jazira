@@ -1,0 +1,34 @@
+{
+  "baseUrl": "http://localhost:3023",
+  "generatedAt": "2026-10-23T22:14:43.640Z",
+  "results": [
+    {
+      "route": "/ar/styleguide",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة"
+    },
+    {
+      "route": "/en/styleguide",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"en\" dir=\"ltr\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "Page Not Found"
+    },
+    {
+      "route": "/ar/_specimen",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة"
+    },
+    {
+      "route": "/en/_specimen",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"en\" dir=\"ltr\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "Page Not Found"
+    }
+  ]
+}

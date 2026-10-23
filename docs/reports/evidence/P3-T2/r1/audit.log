@@ -1,0 +1,8 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r1-dod-20261024-010315
+$ git rev-parse HEAD
+2c5e1fdaba5b314ba1f14e498a8c7582630430bb
+$ pnpm audit --prod
+No known vulnerabilities found
+
+[exit_code=0 elapsed=4.87s]

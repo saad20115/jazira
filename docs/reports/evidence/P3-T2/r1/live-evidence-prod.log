@@ -1,0 +1,8 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r1-dod-20261024-010315
+$ git rev-parse HEAD
+2c5e1fdaba5b314ba1f14e498a8c7582630430bb
+$ node scripts/evidence/p3-t2-evidence.mjs --prod http://localhost:3023 docs\reports\evidence\P3-T2\r1
+[p3-t2-evidence] Verified /ar/styleguide and /en/styleguide return HTTP 404 on production server.
+
+[exit_code=0 elapsed=1.28s]

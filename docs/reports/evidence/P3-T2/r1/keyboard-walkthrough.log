@@ -1,0 +1,32 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r1-dod-20261024-010315
+$ git rev-parse HEAD
+2c5e1fdaba5b314ba1f14e498a8c7582630430bb
+BaseURL: http://localhost:3024
+
+=== 1. Desktop Navbar Keyboard Walkthrough (/ar at 1440x900) ===
+- Tab 1 (skip link): <a> text="انتقل إلى المحتوى الرئيسي" aria-label="" aria-current="" href="#main-content" outline="2px solid rgb(223, 168, 42)"
+- Tab 2 (brand logo): <a> text="" aria-label="Al Jazira for Imdad Smart Co." aria-current="" href="/ar" outline="2px solid rgb(239, 203, 118)"
+- Tab 3 (NavLink: Home - active): <a> text="الرئيسية" aria-label="" aria-current="page" href="/ar" outline="2px solid rgb(239, 203, 118)"
+- Tab 4 (NavLink: Services): <a> text="خدماتنا" aria-label="" aria-current="" href="/ar/services" outline="2px solid rgb(239, 203, 118)"
+- Tab 5 (NavLink: About Us): <a> text="من نحن" aria-label="" aria-current="" href="/ar/about" outline="2px solid rgb(239, 203, 118)"
+- Tab 6 (NavLink: Projects): <a> text="مشاريعنا" aria-label="" aria-current="" href="/ar/projects" outline="2px solid rgb(239, 203, 118)"
+- Tab 7 (NavLink: Contact Us): <a> text="تواصل معنا" aria-label="" aria-current="" href="/ar/contact" outline="2px solid rgb(239, 203, 118)"
+- Tab 8 (Desktop language switcher): <a> text="EN" aria-label="التبديل إلى اللغة الإنجليزية (Switch to English)" aria-current="" href="/en" outline="2px solid rgb(239, 203, 118)"
+- Tab 9 (Desktop Request a Quote CTA): <a> text="اطلب عرض سعر" aria-label="" aria-current="" href="/ar/contact#quote" outline="2px solid rgb(239, 203, 118)"
+
+=== 2. Mobile Drawer Keyboard Walkthrough (/ar at 390x844) ===
+- Tab 1 (skip link): <a> text="انتقل إلى المحتوى الرئيسي" aria-label="" aria-expanded="" href="#main-content" outline="2px solid rgb(223, 168, 42)"
+- Tab 2 (brand logo): <a> text="" aria-label="Al Jazira for Imdad Smart Co." aria-expanded="" href="/ar" outline="2px solid rgb(239, 203, 118)"
+- Tab 3 (hamburger button closed): <button> text="" aria-label="فتح قائمة التنقل" aria-expanded="false" href="" outline="2px solid rgb(239, 203, 118)"
+- Enter on hamburger -> drawer opens & focuses close button: <button> text="" aria-label="إغلاق قائمة التنقل" aria-expanded="" href="" outline="2px solid rgb(239, 203, 118)"
+- Shift+Tab 1 -> moves to first drawer element (drawer brand logo): <a> text="" aria-label="Al Jazira for Imdad Smart Co." aria-expanded="" href="/ar" outline="2px solid rgb(239, 203, 118)"
+- Shift+Tab 2 from first drawer element -> wraps to last drawer element (focus trap): <a> text="اطلب عرض سعر" aria-label="" aria-expanded="" href="/ar/contact#quote" outline="2px solid rgb(223, 168, 42)"
+- Tab from last drawer element -> wraps back to first drawer element (focus trap): <a> text="" aria-label="Al Jazira for Imdad Smart Co." aria-expanded="" href="/ar" outline="2px solid rgb(239, 203, 118)"
+- Escape closes drawer and restores focus to hamburger trigger (aria-expanded="false"): <button> text="" aria-label="فتح قائمة التنقل" aria-expanded="false" href="" outline="2px solid rgb(239, 203, 118)"
+
+=== 3. Accordion Keyboard Walkthrough (/ar/styleguide#interactive-acc-1-trigger) ===
+- Focused before Enter: aria-expanded="false" outline="2px solid"
+- After Enter key: aria-expanded="true"
+- After Space key: aria-expanded="false"
+

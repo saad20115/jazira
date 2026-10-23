@@ -1,0 +1,389 @@
+$ git grep -n -e 'LOGO_TYPES' -- src/components/Logo.tsx
+src/components/Logo.tsx:5:export const LOGO_TYPES = ['Full', 'Compact', 'Icon'] as const
+src/components/Logo.tsx:6:export type LogoType = (typeof LOGO_TYPES)[number]
+
+$ git grep -n -e 'LOGO_COLORS' -- src/components/Logo.tsx
+src/components/Logo.tsx:8:export const LOGO_COLORS = ['Primary', 'Reversed', 'Dark', 'Navy', 'White'] as const
+src/components/Logo.tsx:9:export type LogoColor = (typeof LOGO_COLORS)[number]
+
+$ git grep -n -e 'getLogoAssetSrc' -- src/components/Logo.tsx
+src/components/Logo.tsx:41:export function getLogoAssetSrc(type: LogoType = 'Full', color: LogoColor = 'Primary'): string {
+src/components/Logo.tsx:53:  const src = getLogoAssetSrc(type, color)
+
+$ git grep -n -e 'Logo' -- src/components/Logo.tsx
+src/components/Logo.tsx:3:import styles from './Logo.module.css'
+src/components/Logo.tsx:6:export type LogoType = (typeof LOGO_TYPES)[number]
+src/components/Logo.tsx:9:export type LogoColor = (typeof LOGO_COLORS)[number]
+src/components/Logo.tsx:11:export interface LogoProps {
+src/components/Logo.tsx:14:  color?: LogoColor
+src/components/Logo.tsx:16:  type?: LogoType
+src/components/Logo.tsx:21:  Record<LogoType, { height: number; width: number }>
+src/components/Logo.tsx:35:const TYPE_CLASS_MAP: Record<LogoType, string> = {
+src/components/Logo.tsx:41:export function getLogoAssetSrc(type: LogoType = 'Full', color: LogoColor = 'Primary'): string {
+src/components/Logo.tsx:45:export function Logo({
+src/components/Logo.tsx:51:}: LogoProps): ReactElement {
+src/components/Logo.tsx:53:  const src = getLogoAssetSrc(type, color)
+
+$ git grep -n -e 'isPassthroughRootOrPublicPath' -- src/proxy.ts
+src/proxy.ts:85:export function isPassthroughRootOrPublicPath(pathname: string): boolean {
+src/proxy.ts:135: *    no public file matches (`!isPassthroughRootOrPublicPath(pathname)`, `R-12`).
+src/proxy.ts:212:    (!hasSupportedLocalePrefix && !isPassthroughRootOrPublicPath(pathname)) ||
+
+$ git grep -n -e 'typeFull' -- src/components/Logo.module.css
+src/components/Logo.module.css:8:.typeFull {
+src/components/Logo.module.css:23:.sizeShell.typeFull {
+
+$ git grep -n -e 'sizeShell' -- src/components/Logo.module.css
+src/components/Logo.module.css:23:.sizeShell.typeFull {
+src/components/Logo.module.css:28:.sizeShell.typeCompact {
+src/components/Logo.module.css:33:.sizeShell.typeIcon {
+
+$ git grep -n -e 'BUTTON_VARIANTS' -- src/components/Button.tsx
+src/components/Button.tsx:10:export const BUTTON_VARIANTS = ['Gold', 'Dark', 'Glass', 'Outline'] as const
+src/components/Button.tsx:11:export type ButtonVariant = (typeof BUTTON_VARIANTS)[number]
+
+$ git grep -n -e 'BUTTON_STATES' -- src/components/Button.tsx
+src/components/Button.tsx:13:export const BUTTON_STATES = ['Default', 'Hover', 'FocusVisible', 'Disabled'] as const
+src/components/Button.tsx:14:export type ButtonState = (typeof BUTTON_STATES)[number]
+
+$ git grep -n -e 'BUTTON_SIZES' -- src/components/Button.tsx
+src/components/Button.tsx:16:export const BUTTON_SIZES = ['sm', 'md', 'lg'] as const
+src/components/Button.tsx:17:export type ButtonSize = (typeof BUTTON_SIZES)[number]
+
+$ git grep -n -e 'Button' -- src/components/Button.tsx
+src/components/Button.tsx:1:import type { ButtonHTMLAttributes, ReactElement, ReactNode } from 'react'
+src/components/Button.tsx:8:import styles from './Button.module.css'
+src/components/Button.tsx:11:export type ButtonVariant = (typeof BUTTON_VARIANTS)[number]
+src/components/Button.tsx:14:export type ButtonState = (typeof BUTTON_STATES)[number]
+src/components/Button.tsx:17:export type ButtonSize = (typeof BUTTON_SIZES)[number]
+src/components/Button.tsx:19:export interface ButtonProps
+src/components/Button.tsx:20:  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+src/components/Button.tsx:31:  size?: ButtonSize
+src/components/Button.tsx:32:  state?: ButtonState
+src/components/Button.tsx:33:  variant?: ButtonVariant
+src/components/Button.tsx:36:const VARIANT_CLASS_MAP: Record<ButtonVariant, string> = {
+src/components/Button.tsx:43:const SIZE_CLASS_MAP: Record<ButtonSize, string> = {
+src/components/Button.tsx:49:const STATE_CLASS_MAP: Record<ButtonState, string> = {
+src/components/Button.tsx:56:export function Button({
+src/components/Button.tsx:72:}: ButtonProps): ReactElement {
+
+$ git grep -n -e 'variantGold' -- src/components/Button.module.css
+src/components/Button.module.css:74:.variantGold {
+src/components/Button.module.css:80:.variantGold:hover:not(:disabled):not([aria-disabled='true']),
+src/components/Button.module.css:81:.variantGold.stateHover {
+
+$ git grep -n -e 'variantDark' -- src/components/Button.module.css
+src/components/Button.module.css:86:.variantDark {
+src/components/Button.module.css:91:.variantDark:hover:not(:disabled):not([aria-disabled='true']),
+src/components/Button.module.css:92:.variantDark.stateHover {
+
+$ git grep -n -e 'variantGlass' -- src/components/Button.module.css
+src/components/Button.module.css:97:.variantGlass {
+src/components/Button.module.css:104:.variantGlass:hover:not(:disabled):not([aria-disabled='true']),
+src/components/Button.module.css:105:.variantGlass.stateHover {
+src/components/Button.module.css:129:.variantGlass:focus-visible,
+src/components/Button.module.css:130:.variantGlass.stateFocusVisible {
+
+$ git grep -n -e 'variantOutline' -- src/components/Button.module.css
+src/components/Button.module.css:110:.variantOutline {
+src/components/Button.module.css:116:.variantOutline:hover:not(:disabled):not([aria-disabled='true']),
+src/components/Button.module.css:117:.variantOutline.stateHover {
+
+$ git grep -n -e 'stateFocusVisible' -- src/components/Button.module.css
+src/components/Button.module.css:124:.stateFocusVisible {
+src/components/Button.module.css:130:.variantGlass.stateFocusVisible {
+
+$ git grep -n -e 'stateDisabled' -- src/components/Button.module.css
+src/components/Button.module.css:137:.stateDisabled {
+
+$ git grep -n -e 'ArrowRightIcon' -- src/components/icons/UiIcons.tsx
+src/components/icons/UiIcons.tsx:7:export function ArrowRightIcon({ size = 18, ...svgProps }: UiIconProps): ReactElement {
+
+$ git grep -n -e 'EYEBROW_TONES' -- src/components/Eyebrow.tsx
+src/components/Eyebrow.tsx:5:export const EYEBROW_TONES = ['Light', 'Dark'] as const
+src/components/Eyebrow.tsx:6:export type EyebrowTone = (typeof EYEBROW_TONES)[number]
+
+$ git grep -n -e 'Eyebrow' -- src/components/Eyebrow.tsx
+src/components/Eyebrow.tsx:3:import styles from './Eyebrow.module.css'
+src/components/Eyebrow.tsx:6:export type EyebrowTone = (typeof EYEBROW_TONES)[number]
+src/components/Eyebrow.tsx:8:export interface EyebrowProps {
+src/components/Eyebrow.tsx:12:  tone?: EyebrowTone
+src/components/Eyebrow.tsx:15:export function Eyebrow({
+src/components/Eyebrow.tsx:20:}: EyebrowProps): ReactElement {
+
+$ git grep -n -e 'toneLight' -- src/components/Eyebrow.module.css
+src/components/Eyebrow.module.css:19:.toneLight {
+
+$ git grep -n -e 'toneDark' -- src/components/Eyebrow.module.css
+src/components/Eyebrow.module.css:25:.toneDark {
+
+$ git grep -n -e 'NAV_LINK_THEMES' -- src/components/NavLink.tsx
+src/components/NavLink.tsx:9:export const NAV_LINK_THEMES = ['Light', 'Dark'] as const
+src/components/NavLink.tsx:10:export type NavLinkTheme = (typeof NAV_LINK_THEMES)[number]
+
+$ git grep -n -e 'NAV_LINK_STATES' -- src/components/NavLink.tsx
+src/components/NavLink.tsx:12:export const NAV_LINK_STATES = ['Default', 'Hover', 'Active'] as const
+src/components/NavLink.tsx:13:export type NavLinkState = (typeof NAV_LINK_STATES)[number]
+
+$ git grep -n -e 'NavLink' -- src/components/NavLink.tsx
+src/components/NavLink.tsx:7:import styles from './NavLink.module.css'
+src/components/NavLink.tsx:10:export type NavLinkTheme = (typeof NAV_LINK_THEMES)[number]
+src/components/NavLink.tsx:13:export type NavLinkState = (typeof NAV_LINK_STATES)[number]
+src/components/NavLink.tsx:15:export interface NavLinkProps
+src/components/NavLink.tsx:25:  state?: NavLinkState
+src/components/NavLink.tsx:26:  theme?: NavLinkTheme
+src/components/NavLink.tsx:29:export function NavLink({
+src/components/NavLink.tsx:41:}: NavLinkProps): ReactElement {
+src/components/NavLink.tsx:42:  const effectiveState: NavLinkState = active ? 'Active' : state
+
+$ git grep -n -e 'isCurrentPage' -- src/components/NavLink.tsx
+src/components/NavLink.tsx:43:  const isCurrentPage = effectiveState === 'Active'
+src/components/NavLink.tsx:59:      aria-current={isCurrentPage ? 'page' : anchorProps['aria-current']}
+
+$ git grep -n -e 'underline' -- src/components/NavLink.module.css
+src/components/NavLink.module.css:48:.underline {
+src/components/NavLink.module.css:60:.navLink:hover .underline,
+src/components/NavLink.module.css:61:.navLink:focus-visible .underline,
+src/components/NavLink.module.css:62:.stateHover .underline,
+src/components/NavLink.module.css:63:.stateActive .underline {
+
+$ git grep -n -e 'NAVBAR_THEMES' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:28:export const NAVBAR_THEMES = ['Light', 'Dark'] as const
+src/components/Navbar.tsx:29:export type NavbarTheme = (typeof NAVBAR_THEMES)[number]
+
+$ git grep -n -e 'NAVBAR_PAGES' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:31:export const NAVBAR_PAGES = [
+src/components/Navbar.tsx:38:export type NavbarPage = (typeof NAVBAR_PAGES)[number]
+src/components/Navbar.tsx:108:    const pageIndex = NAVBAR_PAGES.indexOf(overridePage)
+
+$ git grep -n -e 'buildDefaultNavbarItems' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:66:export function buildDefaultNavbarItems(locale: SupportedLocale): NavbarNavItem[] {
+src/components/Navbar.tsx:170:  const navItems = items && items.length > 0 ? items : buildDefaultNavbarItems(locale)
+
+$ git grep -n -e 'isNavItemActive' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:97:function isNavItemActive(
+src/components/Navbar.tsx:294:            const active = isNavItemActive(item, idx, locale, pathname, page)
+src/components/Navbar.tsx:402:                    const active = isNavItemActive(item, idx, locale, pathname, page)
+
+$ git grep -n -e 'Navbar' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:26:import styles from './Navbar.module.css'
+src/components/Navbar.tsx:29:export type NavbarTheme = (typeof NAVBAR_THEMES)[number]
+src/components/Navbar.tsx:38:export type NavbarPage = (typeof NAVBAR_PAGES)[number]
+src/components/Navbar.tsx:40:export interface NavbarNavItem {
+src/components/Navbar.tsx:45:  pageKey?: NavbarPage
+src/components/Navbar.tsx:48:export interface NavbarProps {
+src/components/Navbar.tsx:54:  items?: readonly NavbarNavItem[]
+src/components/Navbar.tsx:56:  page?: NavbarPage
+src/components/Navbar.tsx:59:  theme?: NavbarTheme
+src/components/Navbar.tsx:66:export function buildDefaultNavbarItems(locale: SupportedLocale): NavbarNavItem[] {
+src/components/Navbar.tsx:98:  item: NavbarNavItem,
+src/components/Navbar.tsx:102:  overridePage?: NavbarPage,
+src/components/Navbar.tsx:138:export function Navbar({
+src/components/Navbar.tsx:151:}: NavbarProps): ReactElement {
+src/components/Navbar.tsx:166:  const resolvedTheme: NavbarTheme = theme ?? (isHomeRoute ? 'Dark' : 'Light')
+src/components/Navbar.tsx:170:  const navItems = items && items.length > 0 ? items : buildDefaultNavbarItems(locale)
+
+$ git grep -n -e 'transparentHero' -- src/components/Navbar.module.css
+src/components/Navbar.module.css:40:.themeDark.transparentHero:not(.scrolled) {
+
+$ git grep -n -e 'languageSwitchHref' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:177:  const languageSwitchHref = switchLocaleInPathname(pathname, targetLocale)
+src/components/Navbar.tsx:314:            href={languageSwitchHref}
+src/components/Navbar.tsx:432:                href={languageSwitchHref}
+
+$ git grep -n -e 'drawerPanel' -- src/components/Navbar.module.css
+src/components/Navbar.module.css:156:.drawerPanel {
+
+$ git grep -n -e 'handleDrawerKeyDown' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:224:  const handleDrawerKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>): void => {
+src/components/Navbar.tsx:370:            onKeyDown={handleDrawerKeyDown}
+
+$ git grep -n -e 'closeDrawerAndRestoreFocus' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:193:  const closeDrawerAndRestoreFocus = useCallback((): void => {
+src/components/Navbar.tsx:213:        closeDrawerAndRestoreFocus()
+src/components/Navbar.tsx:222:  }, [isDrawerOpen, staticPreview, closeDrawerAndRestoreFocus])
+src/components/Navbar.tsx:227:      closeDrawerAndRestoreFocus()
+src/components/Navbar.tsx:340:                closeDrawerAndRestoreFocus()
+src/components/Navbar.tsx:359:              closeDrawerAndRestoreFocus()
+src/components/Navbar.tsx:391:                  onClick={closeDrawerAndRestoreFocus}
+
+$ git grep -n -e 'normalizeWhatsappDigits' -- src/components/Footer.tsx
+src/components/Footer.tsx:54:export function normalizeWhatsappDigits(raw: string): string {
+src/components/Footer.tsx:128:  const cleanWaDigits = whatsapp ? normalizeWhatsappDigits(whatsapp) : ''
+
+$ git grep -n -e 'buildDefaultFooterQuickLinks' -- src/components/Footer.tsx
+src/components/Footer.tsx:65:export function buildDefaultFooterQuickLinks(locale: SupportedLocale): FooterQuickLinkItem[] {
+src/components/Footer.tsx:121:      : buildDefaultFooterQuickLinks(locale)
+
+$ git grep -n -e 'getSocialAriaLabel' -- src/components/Footer.tsx
+src/components/Footer.tsx:76:export function getSocialAriaLabel(
+src/components/Footer.tsx:169:                    social.label || getSocialAriaLabel(locale, iconKey)
+
+$ git grep -n -e 'Footer' -- src/components/Footer.tsx
+src/components/Footer.tsx:18:import styles from './Footer.module.css'
+src/components/Footer.tsx:20:export interface FooterQuickLinkItem {
+src/components/Footer.tsx:27:export interface FooterSocialItem {
+src/components/Footer.tsx:34:export interface FooterProps {
+src/components/Footer.tsx:48:  quickLinks?: readonly FooterQuickLinkItem[] | undefined
+src/components/Footer.tsx:50:  socialLinks?: readonly FooterSocialItem[] | undefined
+src/components/Footer.tsx:65:export function buildDefaultFooterQuickLinks(locale: SupportedLocale): FooterQuickLinkItem[] {
+src/components/Footer.tsx:96:export function Footer({
+src/components/Footer.tsx:114:}: FooterProps): ReactElement {
+src/components/Footer.tsx:121:      : buildDefaultFooterQuickLinks(locale)
+
+$ git grep -n -e 'socialButton' -- src/components/Footer.module.css
+src/components/Footer.module.css:83:.socialButton {
+src/components/Footer.module.css:100:.socialButton:hover {
+src/components/Footer.module.css:107:.socialButton:focus-visible {
+
+$ git grep -n -e 'ctaCard' -- src/components/Footer.module.css
+src/components/Footer.module.css:203:.ctaCard {
+
+$ git grep -n -e 'WHATSAPP_FAB_STATES' -- src/components/WhatsAppFab.tsx
+src/components/WhatsAppFab.tsx:10:export const WHATSAPP_FAB_STATES = ['Idle', 'Pulse', 'Hover'] as const
+src/components/WhatsAppFab.tsx:11:export type WhatsAppFabState = (typeof WHATSAPP_FAB_STATES)[number]
+
+$ git grep -n -e 'WhatsAppFab' -- src/components/WhatsAppFab.tsx
+src/components/WhatsAppFab.tsx:8:import styles from './WhatsAppFab.module.css'
+src/components/WhatsAppFab.tsx:11:export type WhatsAppFabState = (typeof WHATSAPP_FAB_STATES)[number]
+src/components/WhatsAppFab.tsx:13:export interface WhatsAppFabProps {
+src/components/WhatsAppFab.tsx:18:  state?: WhatsAppFabState
+src/components/WhatsAppFab.tsx:23:export function WhatsAppFab({
+src/components/WhatsAppFab.tsx:31:}: WhatsAppFabProps): ReactElement | null {
+
+$ git grep -n -e 'fixed' -- src/components/WhatsAppFab.module.css
+src/components/WhatsAppFab.module.css:7:.fixed {
+src/components/WhatsAppFab.module.css:8:  position: fixed;
+src/components/WhatsAppFab.module.css:102:.fixed.statePulse .pulseRing {
+src/components/WhatsAppFab.module.css:107:  .fixed.statePulse .pulseRing {
+
+$ git grep -n -e 'whatsappPulseRing' -- src/components/WhatsAppFab.module.css
+src/components/WhatsAppFab.module.css:84:@keyframes whatsappPulseRing {
+src/components/WhatsAppFab.module.css:103:  animation: whatsappPulseRing 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+
+$ git grep -n -e 'prefers-reduced-motion' -- src/components/WhatsAppFab.module.css
+src/components/WhatsAppFab.module.css:106:@media (prefers-reduced-motion: reduce) {
+
+$ git grep -n -e 'ACCORDION_ITEM_STATES' -- src/components/Accordion.tsx
+src/components/Accordion.tsx:10:export const ACCORDION_ITEM_STATES = ['Collapsed', 'Expanded'] as const
+src/components/Accordion.tsx:11:export type AccordionItemState = (typeof ACCORDION_ITEM_STATES)[number]
+
+$ git grep -n -e 'AccordionItem' -- src/components/Accordion.tsx
+src/components/Accordion.tsx:11:export type AccordionItemState = (typeof ACCORDION_ITEM_STATES)[number]
+src/components/Accordion.tsx:13:export interface AccordionItemProps {
+src/components/Accordion.tsx:23:  state?: AccordionItemState
+src/components/Accordion.tsx:27:export function AccordionItem({
+src/components/Accordion.tsx:39:}: AccordionItemProps): ReactElement {
+src/components/Accordion.tsx:51:  const effectiveState: AccordionItemState = isExpanded ? 'Expanded' : 'Collapsed'
+src/components/Accordion.tsx:140:          <AccordionItem
+
+$ git grep -n -e 'Accordion' -- src/components/Accordion.tsx
+src/components/Accordion.tsx:8:import styles from './Accordion.module.css'
+src/components/Accordion.tsx:11:export type AccordionItemState = (typeof ACCORDION_ITEM_STATES)[number]
+src/components/Accordion.tsx:13:export interface AccordionItemProps {
+src/components/Accordion.tsx:23:  state?: AccordionItemState
+src/components/Accordion.tsx:27:export function AccordionItem({
+src/components/Accordion.tsx:39:}: AccordionItemProps): ReactElement {
+src/components/Accordion.tsx:51:  const effectiveState: AccordionItemState = isExpanded ? 'Expanded' : 'Collapsed'
+src/components/Accordion.tsx:115:export interface AccordionEntry {
+src/components/Accordion.tsx:123:export interface AccordionProps {
+src/components/Accordion.tsx:125:  items: readonly AccordionEntry[]
+src/components/Accordion.tsx:129:export function Accordion({
+src/components/Accordion.tsx:133:}: AccordionProps): ReactElement {
+src/components/Accordion.tsx:140:          <AccordionItem
+
+$ git grep -n -e 'headerButton' -- src/components/Accordion.module.css
+src/components/Accordion.module.css:26:.headerButton {
+src/components/Accordion.module.css:39:.headerButton:focus-visible {
+
+$ git grep -n -e 'SERVICE_ICON_KEYS' -- src/components/icons/ServiceIcon.tsx
+src/components/icons/ServiceIcon.tsx:3:export const SERVICE_ICON_KEYS = [
+src/components/icons/ServiceIcon.tsx:16:export type ServiceIconKey = (typeof SERVICE_ICON_KEYS)[number]
+src/components/icons/ServiceIcon.tsx:107:  return typeof value === 'string' && (SERVICE_ICON_KEYS as readonly string[]).includes(value)
+
+$ git grep -n -e 'SERVICE_ICON_OPTIONS' -- src/components/icons/ServiceIcon.tsx
+src/components/icons/ServiceIcon.tsx:26:export const SERVICE_ICON_OPTIONS: readonly ServiceIconOptionMeta[] = [
+
+$ git grep -n -e 'ServiceIcon' -- src/components/icons/ServiceIcon.tsx
+src/components/icons/ServiceIcon.tsx:16:export type ServiceIconKey = (typeof SERVICE_ICON_KEYS)[number]
+src/components/icons/ServiceIcon.tsx:18:export interface ServiceIconOptionMeta {
+src/components/icons/ServiceIcon.tsx:23:  value: ServiceIconKey
+src/components/icons/ServiceIcon.tsx:26:export const SERVICE_ICON_OPTIONS: readonly ServiceIconOptionMeta[] = [
+src/components/icons/ServiceIcon.tsx:99:export interface ServiceIconProps extends SVGProps<SVGSVGElement> {
+src/components/icons/ServiceIcon.tsx:100:  name: ServiceIconKey | (string & {})
+src/components/icons/ServiceIcon.tsx:104:export type SingleIconProps = Omit<ServiceIconProps, 'name'>
+src/components/icons/ServiceIcon.tsx:106:export function isServiceIconKey(value: unknown): value is ServiceIconKey {
+src/components/icons/ServiceIcon.tsx:110:export function ServiceIcon({ name, size = 20, ...svgProps }: ServiceIconProps): ReactElement {
+src/components/icons/ServiceIcon.tsx:194:  return <ServiceIcon {...props} name="contracting" />
+src/components/icons/ServiceIcon.tsx:198:  return <ServiceIcon {...props} name="mep" />
+src/components/icons/ServiceIcon.tsx:202:  return <ServiceIcon {...props} name="fire" />
+src/components/icons/ServiceIcon.tsx:206:  return <ServiceIcon {...props} name="smart" />
+src/components/icons/ServiceIcon.tsx:210:  return <ServiceIcon {...props} name="hvac" />
+src/components/icons/ServiceIcon.tsx:214:  return <ServiceIcon {...props} name="plumbing" />
+src/components/icons/ServiceIcon.tsx:218:  return <ServiceIcon {...props} name="electrical" />
+src/components/icons/ServiceIcon.tsx:222:  return <ServiceIcon {...props} name="supply" />
+src/components/icons/ServiceIcon.tsx:226:  return <ServiceIcon {...props} name="testing" />
+src/components/icons/ServiceIcon.tsx:230:  return <ServiceIcon {...props} name="maintenance" />
+
+$ git grep -n -e 'SOCIAL_ICON_KEYS' -- src/components/icons/SocialIcon.tsx
+src/components/icons/SocialIcon.tsx:3:export const SOCIAL_ICON_KEYS = ['linkedin', 'x', 'instagram', 'facebook', 'whatsapp'] as const
+src/components/icons/SocialIcon.tsx:5:export type SocialIconKey = (typeof SOCIAL_ICON_KEYS)[number]
+src/components/icons/SocialIcon.tsx:15:  return typeof value === 'string' && (SOCIAL_ICON_KEYS as readonly string[]).includes(value)
+
+$ git grep -n -e 'SocialIcon' -- src/components/icons/SocialIcon.tsx
+src/components/icons/SocialIcon.tsx:5:export type SocialIconKey = (typeof SOCIAL_ICON_KEYS)[number]
+src/components/icons/SocialIcon.tsx:7:export interface SocialIconProps extends SVGProps<SVGSVGElement> {
+src/components/icons/SocialIcon.tsx:8:  name: SocialIconKey | (string & {})
+src/components/icons/SocialIcon.tsx:12:export type SingleSocialIconProps = Omit<SocialIconProps, 'name'>
+src/components/icons/SocialIcon.tsx:14:export function isSocialIconKey(value: unknown): value is SocialIconKey {
+src/components/icons/SocialIcon.tsx:18:export function SocialIcon({ name, size = 20, ...svgProps }: SocialIconProps): ReactElement {
+src/components/icons/SocialIcon.tsx:75:export function SocialLinkedinIcon(props: SingleSocialIconProps): ReactElement {
+src/components/icons/SocialIcon.tsx:76:  return <SocialIcon {...props} name="linkedin" />
+src/components/icons/SocialIcon.tsx:79:export function SocialXIcon(props: SingleSocialIconProps): ReactElement {
+src/components/icons/SocialIcon.tsx:80:  return <SocialIcon {...props} name="x" />
+src/components/icons/SocialIcon.tsx:83:export function SocialInstagramIcon(props: SingleSocialIconProps): ReactElement {
+src/components/icons/SocialIcon.tsx:84:  return <SocialIcon {...props} name="instagram" />
+src/components/icons/SocialIcon.tsx:87:export function SocialFacebookIcon(props: SingleSocialIconProps): ReactElement {
+src/components/icons/SocialIcon.tsx:88:  return <SocialIcon {...props} name="facebook" />
+src/components/icons/SocialIcon.tsx:91:export function SocialWhatsappIcon(props: SingleSocialIconProps): ReactElement {
+src/components/icons/SocialIcon.tsx:92:  return <SocialIcon {...props} name="whatsapp" />
+
+$ git grep -n -e 'data-directional-icon' -- src/styles/globals.css
+src/styles/globals.css:77::root[dir='rtl'] [data-directional-icon='true'],
+src/styles/globals.css:78:[dir='rtl'] [data-directional-icon='true'] {
+
+$ git grep -n -e 'isBlockedProdDevRoute' -- src/proxy.ts
+src/proxy.ts:204:  const isBlockedProdDevRoute =
+src/proxy.ts:213:    isBlockedProdDevRoute
+
+$ git grep -n -e 'runProd404Check' -- scripts/evidence/p3-t2-evidence.mjs
+scripts/evidence/p3-t2-evidence.mjs:93:async function runProd404Check(baseUrl, evidenceDir) {
+scripts/evidence/p3-t2-evidence.mjs:475:    await runProd404Check(baseUrl, evidenceDir)
+
+$ git grep -n -e 'runDevCapture' -- scripts/evidence/p3-t2-evidence.mjs
+scripts/evidence/p3-t2-evidence.mjs:142:async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
+scripts/evidence/p3-t2-evidence.mjs:477:    await runDevCapture(baseUrl, evidenceDir, phase3Dir)
+
+$ git grep -n -e 'renderToStaticMarkup' -- src/p3-t2-components.test.ts
+src/p3-t2-components.test.ts:5:import { renderToStaticMarkup } from 'react-dom/server'
+src/p3-t2-components.test.ts:77:          const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:92:          const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:110:        const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:123:      const disabledLinkButtonHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:138:        const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:151:          const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:186:      const arHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:199:      const enDarkHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:212:      const drawerOpenHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:236:      const arFooterHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:250:      const enFooterHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:260:      const emptyFooterHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:276:        renderToStaticMarkup(React.createElement(WhatsAppFab, { locale: 'ar' })),
+src/p3-t2-components.test.ts:280:        const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:303:      const collapsedHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:320:      const expandedHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:336:      const listHtml = renderToStaticMarkup(
+src/p3-t2-components.test.ts:357:        const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:365:        const html = renderToStaticMarkup(
+src/p3-t2-components.test.ts:372:      const arrowHtml = renderToStaticMarkup(React.createElement(ArrowRightIcon))
+src/p3-t2-components.test.ts:383:      const html = renderToStaticMarkup(element)

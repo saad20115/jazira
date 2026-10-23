@@ -1,0 +1,16 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r1-dod-20261024-010315
+$ git rev-parse HEAD
+2c5e1fdaba5b314ba1f14e498a8c7582630430bb
+$ DoD Wall-Clock Timing Summary
+
+01-install                         exit=0   time=239.69s
+02-lint                            exit=0   time=49.64s
+03-typecheck                       exit=0   time=18.28s
+04-test                            exit=0   time=237.85s
+05-build                           exit=0   time=112.45s
+06-audit                           exit=0   time=4.87s
+07a-live-evidence-prod             exit=0   time=1.28s
+07b-live-evidence-dev              exit=0   time=32.68s
+08-citations-check                 exit=0   time=5.11s
+TOTAL_WALL_TIME=701.85s
