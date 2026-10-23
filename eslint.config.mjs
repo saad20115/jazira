@@ -228,4 +228,11 @@ export default defineConfig([
       ],
     },
   },
+  {
+    files: ['src/components/Logo.tsx'],
+    rules: {
+      // next/image injects inline style="color:transparent" which violates strict H3 nonce-only style-src CSP on SVG brand assets
+      '@next/next/no-img-element': 'off',
+    },
+  },
 ])

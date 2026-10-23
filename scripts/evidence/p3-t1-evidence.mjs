@@ -311,7 +311,7 @@ async function main() {
       '/admin/login',
       '/fr',
       '/en/this-page-does-not-exist',
-      '/api/preview?secret=wrong-secret&locale=ar&path=/ar',
+      '/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar',
       `/api/preview?secret=${encodeURIComponent(previewSecret)}&locale=ar&path=//evil.example.com`,
       `/api/preview?secret=${encodeURIComponent(previewSecret)}&locale=ar&path=/ar`,
       '/api/preview/exit?returnTo=/ar',

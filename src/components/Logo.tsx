@@ -68,7 +68,6 @@ export function Logo({
       data-logo-size={size}
       data-logo-type={type}
     >
-      {/* eslint-disable-next-line @next/next/no-img-element -- next/image injects inline style="color:transparent" which violates strict H3 nonce-only style-src CSP on SVG brand assets */}
       <img
         alt={alt}
         className={styles.image}
