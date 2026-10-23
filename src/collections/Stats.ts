@@ -8,12 +8,28 @@ import {
 } from '../hooks/revalidate'
 import { createPublicAPIError } from '../security/apiError'
 import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
-import { deriveGlobalTargetReferences, findGlobalTargetReferences } from './Media'
+import {
+  deriveCollectionTargetReferences,
+  deriveGlobalTargetReferences,
+  findCollectionTargetReferences,
+  findGlobalTargetReferences,
+} from './Media'
 
 const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
-  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'stats')
-  const references = new Set<string>()
+  const referencesByKey = new Map<string, string>()
 
+  const collectionsConfig = Object.values(req.payload.collections).map((c) => c.config)
+  const collectionChecks = deriveCollectionTargetReferences(collectionsConfig, 'stats')
+  for (const check of collectionChecks) {
+    await findCollectionTargetReferences({
+      check,
+      targetId: id,
+      referencesByKey,
+      req,
+    })
+  }
+
+  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'stats')
   for (const gCheck of globalChecks) {
     const found = await findGlobalTargetReferences({
       ...gCheck,
@@ -21,12 +37,12 @@ const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ i
       req,
     })
     for (const ref of found) {
-      references.add(ref)
+      referencesByKey.set(ref, ref)
     }
   }
 
-  if (references.size > 0) {
-    const refList = [...references].join(', ')
+  if (referencesByKey.size > 0) {
+    const refList = [...referencesByKey.values()].join(', ')
     throw createPublicAPIError(
       `لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: ${refList}. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: ${refList}. Remove those references first.`,
       400,

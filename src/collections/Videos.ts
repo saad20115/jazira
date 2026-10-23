@@ -29,9 +29,10 @@ import {
 } from '../security/uploadValidation'
 import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
 import {
+  deriveCollectionTargetReferences,
   deriveGlobalTargetReferences,
+  findCollectionTargetReferences,
   findGlobalTargetReferences,
-  findReferencingLabels,
 } from './Media'
 
 export const VIDEO_UPLOAD_INSTANCE_ID = crypto.randomBytes(6).toString('hex')
@@ -165,13 +166,12 @@ function createVideoUploadEndpoint(method: 'patch' | 'post', endpointPath: '/' |
 const preventVideoDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
   const referencesByKey = new Map<string, string>()
 
-  for (const draft of [false, true] as const) {
-    await findReferencingLabels({
-      collection: 'projects',
-      where: { video: { equals: id } },
-      labelField: 'title',
-      draft,
-      localized: true,
+  const collectionsConfig = Object.values(req.payload.collections).map((c) => c.config)
+  const collectionChecks = deriveCollectionTargetReferences(collectionsConfig, 'videos')
+  for (const check of collectionChecks) {
+    await findCollectionTargetReferences({
+      check,
+      targetId: id,
       referencesByKey,
       req,
     })

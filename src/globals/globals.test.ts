@@ -5,10 +5,20 @@ import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { Brands } from '../collections/Brands'
-import { deriveFieldTargetPaths, deriveGlobalTargetReferences } from '../collections/Media'
+import { Materials } from '../collections/Materials'
+import {
+  buildCollectionTargetWhere,
+  deriveCollectionTargetReferences,
+  deriveFieldTargetPaths,
+  deriveGlobalTargetReferences,
+  Media,
+} from '../collections/Media'
 import { Projects, PROJECT_SCOPE_OPTIONS } from '../collections/Projects'
+import { QuoteRequests } from '../collections/QuoteRequests'
 import { Services } from '../collections/Services'
+import { Stats } from '../collections/Stats'
 import { Team } from '../collections/Team'
+import { Users } from '../collections/Users'
 import { Videos } from '../collections/Videos'
 import { getDefaultInteractiveSystems } from './HomePage'
 import {
@@ -291,7 +301,103 @@ describe('P2-T5 Globals unit suite', () => {
       },
     ])
 
-    // Also verify collection field paths targeting media match our Media.ts collection checks
+    // Also verify collection field paths targeting media and videos are derived directly from config (R-8)
+    const allCollections = [
+      Users,
+      Media,
+      Videos,
+      Brands,
+      Stats,
+      Materials,
+      Services,
+      Team,
+      Projects,
+      QuoteRequests,
+    ]
+    const mediaCollections = deriveCollectionTargetReferences(allCollections, 'media')
+    expect(mediaCollections).toEqual([
+      {
+        slug: 'videos',
+        fieldPaths: ['poster'],
+        richTextPaths: [],
+        labelField: 'title',
+        versioned: false,
+        localized: true,
+      },
+      {
+        slug: 'brands',
+        fieldPaths: ['logo'],
+        richTextPaths: [],
+        labelField: 'name',
+        versioned: false,
+        localized: true,
+      },
+      {
+        slug: 'services',
+        fieldPaths: ['image', 'meta.image', 'bodyMedia'],
+        richTextPaths: ['body'],
+        labelField: 'title',
+        versioned: true,
+        localized: true,
+      },
+      {
+        slug: 'team',
+        fieldPaths: ['photo'],
+        richTextPaths: [],
+        labelField: 'name',
+        versioned: false,
+        localized: true,
+      },
+      {
+        slug: 'projects',
+        fieldPaths: ['coverImage', 'gallery', 'meta.image', 'bodyMedia'],
+        richTextPaths: ['body'],
+        labelField: 'title',
+        versioned: true,
+        localized: true,
+      },
+    ])
+
+    const videosCollections = deriveCollectionTargetReferences(allCollections, 'videos')
+    expect(videosCollections).toEqual([
+      {
+        slug: 'projects',
+        fieldPaths: ['video'],
+        richTextPaths: [],
+        labelField: 'title',
+        versioned: true,
+        localized: true,
+      },
+    ])
+
+    // Verify a synthetic collection with nested upload field inside an array is derived automatically (R-8)
+    const syntheticCollection = {
+      slug: 'brands' as const,
+      admin: { useAsTitle: 'name' },
+      fields: [
+        { name: 'name', type: 'text' as const, localized: true },
+        {
+          name: 'slides',
+          type: 'array' as const,
+          fields: [{ name: 'banner', type: 'upload' as const, relationTo: 'media' as const }],
+        },
+      ],
+    }
+    const syntheticDerived = deriveCollectionTargetReferences([syntheticCollection], 'media')
+    expect(syntheticDerived).toEqual([
+      {
+        slug: 'brands',
+        fieldPaths: ['slides.banner'],
+        richTextPaths: [],
+        labelField: 'name',
+        versioned: false,
+        localized: true,
+      },
+    ])
+    expect(buildCollectionTargetWhere(['slides.banner'], 42)).toEqual({
+      'slides.banner': { equals: 42 },
+    })
+
     expect(deriveFieldTargetPaths(Team.fields, 'media').fieldPaths).toEqual(['photo'])
     expect(deriveFieldTargetPaths(Services.fields, 'media').fieldPaths).toEqual([
       'image',

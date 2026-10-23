@@ -11,6 +11,23 @@ import {
 import { MAX_SLUG_LENGTH, SLUG_REGEX } from './slug'
 
 export const ALLOWED_LINK_PROTOCOLS = ['http:', 'https:', 'mailto:', 'tel:'] as const
+export const PRODUCTION_ALLOWED_LINK_PROTOCOLS = ['https:', 'mailto:', 'tel:'] as const
+
+/**
+ * Returns the effective allowed URL protocols (`P2-T8 R-9` CTO decision):
+ * `http:` is permitted only when `NODE_ENV !== 'production'`. In production,
+ * only `https:`, `mailto:`, and `tel:` (intersected with `configured`) are allowed.
+ */
+export function getEffectiveAllowedProtocols(
+  configured: readonly string[] = ALLOWED_LINK_PROTOCOLS,
+  nodeEnv: string | undefined = process.env.NODE_ENV,
+): string[] {
+  const lower = configured.map((p) => p.toLowerCase())
+  if (nodeEnv === 'production') {
+    return lower.filter((p) => p !== 'http:')
+  }
+  return lower
+}
 
 export const INTERNAL_ROUTE_OPTIONS = [
   { value: '/', label: { en: 'Home (/)', ar: 'الرئيسية (/)' } },
@@ -32,11 +49,13 @@ export interface ValidateUrlOptions {
   allowedProtocols?: readonly string[]
   allowedSchemes?: readonly string[]
   allowedHosts?: readonly string[]
+  nodeEnv?: string
 }
 
 /**
- * Security baseline I3 validator:
- * Allows only `http:`, `https:`, `mailto:`, `tel:` (unless restricted further via `allowedProtocols`).
+ * Security baseline I3 & R-9 validator:
+ * Allows `https:`, `mailto:`, `tel:` (plus `http:` only when `NODE_ENV !== 'production'`,
+ * unless restricted further via `allowedProtocols`).
  * Strictly rejects `javascript:` (any casing or control-char obfuscation), `data:`, `vbscript:`,
  * `file:`, `blob:`, protocol-relative URLs (`//...`), and embedded credentials.
  */
@@ -48,6 +67,7 @@ export function validateExternalUrl(
     required = false,
     allowedProtocols = options.allowedSchemes ?? ALLOWED_LINK_PROTOCOLS,
     allowedHosts,
+    nodeEnv = process.env.NODE_ENV,
   } = options
 
   if (value === null || value === undefined || value === '') {
@@ -80,7 +100,7 @@ export function validateExternalUrl(
   }
 
   const protocol = parsed.protocol.toLowerCase()
-  const normalizedAllowedProtocols = allowedProtocols.map((p) => p.toLowerCase())
+  const normalizedAllowedProtocols = getEffectiveAllowedProtocols(allowedProtocols, nodeEnv)
   if (!normalizedAllowedProtocols.includes(protocol)) {
     return `البروتوكول "${protocol}" غير مسموح. البروتوكولات المسموحة: ${normalizedAllowedProtocols.join(', ')}. / Disallowed URL scheme "${protocol}".`
   }

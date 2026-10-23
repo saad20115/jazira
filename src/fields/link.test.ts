@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest'
 import {
   buildExternalUrlValidator,
   buildInternalPathValidator,
+  getEffectiveAllowedProtocols,
   linkField,
+  PRODUCTION_ALLOWED_LINK_PROTOCOLS,
   resolveLinkHref,
   validateExternalUrl,
   validateInternalPath,
@@ -313,6 +315,90 @@ describe('linkField & URL validation (I3)', () => {
         internalPath: '  /services#hvac  ',
       }) as Record<string, unknown>
       expect(validInternal.internalPath).toBe('/services#hvac')
+    })
+
+    it('allows http: only when NODE_ENV !== production and rejects http: in production while allowing https:, mailto:, tel:, and single-slash internal paths (R-9)', () => {
+      expect(getEffectiveAllowedProtocols(undefined, 'development')).toEqual([
+        'http:',
+        'https:',
+        'mailto:',
+        'tel:',
+      ])
+      expect(getEffectiveAllowedProtocols(undefined, 'test')).toEqual([
+        'http:',
+        'https:',
+        'mailto:',
+        'tel:',
+      ])
+      expect(getEffectiveAllowedProtocols(undefined, 'production')).toEqual([
+        ...PRODUCTION_ALLOWED_LINK_PROTOCOLS,
+      ])
+
+      // Non-production accepts http:
+      expect(validateExternalUrl('http://aljazira.co', { nodeEnv: 'development' })).toBe(true)
+      expect(validateExternalUrl('http://aljazira.co', { nodeEnv: 'test' })).toBe(true)
+
+      // Production rejects http: (even if caller passed allowedProtocols: ['http:', 'https:'])
+      const prodHttp = validateExternalUrl('http://aljazira.co', {
+        allowedProtocols: ['http:', 'https:'],
+        nodeEnv: 'production',
+      })
+      expect(typeof prodHttp).toBe('string')
+      expect(String(prodHttp)).toContain('http:')
+
+      // Production accepts https:, mailto:, tel:
+      expect(validateExternalUrl('https://aljazira.co', { nodeEnv: 'production' })).toBe(true)
+      expect(validateExternalUrl('mailto:info@aljazira.co', { nodeEnv: 'production' })).toBe(true)
+      expect(validateExternalUrl('tel:+966573534185', { nodeEnv: 'production' })).toBe(true)
+
+      // Temporarily simulate NODE_ENV='production' for linkField hook and resolveLinkHref
+      const originalNodeEnv = process.env.NODE_ENV
+      const envRecord = process.env as Record<string, string | undefined>
+      try {
+        envRecord.NODE_ENV = 'production'
+        const group = linkField({ required: true })
+        expect(() => {
+          validateLinkGroupBeforeValidate({
+            value: {
+              label: 'Insecure',
+              type: 'external',
+              url: 'http://aljazira.co',
+            },
+            path: ['cta', 'button', 'link'],
+            req: {} as never,
+            data: {},
+            siblingData: {},
+            field: group as never,
+            operation: 'update',
+            overrideAccess: false,
+            context: {},
+          } as never)
+        }).toThrow(ValidationError)
+
+        expect(
+          resolveLinkHref({
+            type: 'external',
+            url: 'http://aljazira.co',
+          }),
+        ).toBeNull()
+
+        expect(
+          resolveLinkHref({
+            type: 'external',
+            url: 'https://aljazira.co',
+          }),
+        ).toBe('https://aljazira.co')
+
+        expect(
+          resolveLinkHref({
+            type: 'internal',
+            internalRoute: 'custom',
+            internalPath: '/projects/king-salman-park',
+          }),
+        ).toBe('/projects/king-salman-park')
+      } finally {
+        envRecord.NODE_ENV = originalNodeEnv
+      }
     })
   })
 })

@@ -6,6 +6,7 @@ import {
   type Field,
   type GlobalConfig,
   type GlobalSlug,
+  type SanitizedCollectionConfig,
   type SanitizedGlobalConfig,
   type Where,
 } from 'payload'
@@ -305,83 +306,184 @@ export const findGlobalTargetReferences = async ({
   return []
 }
 
-const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
-  const checks: Array<{
-    collection: CollectionSlug
-    where: Where
-    labelField: string
-    versioned?: boolean
-    localized?: boolean
-  }> = [
-    {
-      collection: 'team',
-      where: { photo: { equals: id } },
-      labelField: 'name',
-    },
-    {
-      collection: 'services',
-      where: {
-        or: [
-          { image: { equals: id } },
-          { 'meta.image': { equals: id } },
-          { bodyMedia: { equals: id } },
-        ],
-      },
-      labelField: 'title',
-      versioned: true,
-      localized: true,
-    },
-    {
-      collection: 'projects',
-      where: {
-        or: [
-          { coverImage: { equals: id } },
-          { gallery: { equals: id } },
-          { 'meta.image': { equals: id } },
-          { bodyMedia: { equals: id } },
-        ],
-      },
-      labelField: 'title',
-      versioned: true,
-      localized: true,
-    },
-    {
-      collection: 'brands',
-      where: { logo: { equals: id } },
-      labelField: 'name',
-    },
-    {
-      collection: 'videos',
-      where: { poster: { equals: id } },
-      labelField: 'title',
-    },
-  ]
+export interface CollectionTargetReferenceSpec {
+  slug: CollectionSlug
+  fieldPaths: readonly string[]
+  richTextPaths: readonly string[]
+  labelField: string
+  versioned: boolean
+  localized: boolean
+}
 
+const fieldsHaveLocalizedProp = (fields: readonly Field[]): boolean => {
+  for (const field of fields) {
+    if ('localized' in field && field.localized === true) {
+      return true
+    }
+    if ('fields' in field && Array.isArray(field.fields)) {
+      if (fieldsHaveLocalizedProp(field.fields)) {
+        return true
+      }
+    }
+    if (field.type === 'tabs') {
+      for (const tab of field.tabs) {
+        if ('localized' in tab && tab.localized === true) {
+          return true
+        }
+        if (fieldsHaveLocalizedProp(tab.fields)) {
+          return true
+        }
+      }
+    }
+  }
+  return false
+}
+
+const inferCollectionLabelField = (col: CollectionConfig | SanitizedCollectionConfig): string => {
+  if (
+    col.admin &&
+    typeof col.admin.useAsTitle === 'string' &&
+    col.admin.useAsTitle.trim().length > 0
+  ) {
+    return col.admin.useAsTitle.trim()
+  }
+  for (const candidate of ['title', 'name', 'label']) {
+    if (col.fields.some((f) => 'name' in f && f.name === candidate)) {
+      return candidate
+    }
+  }
+  return 'id'
+}
+
+/**
+ * Derives all collection upload/relationship/richText reference specs targeting `targetCollection`
+ * directly from the Payload collections config (`P2-T5 R-4`, `P2-T8 R-8`).
+ */
+export function deriveCollectionTargetReferences(
+  collectionsConfig: ReadonlyArray<CollectionConfig | SanitizedCollectionConfig>,
+  targetCollection: CollectionSlug,
+): CollectionTargetReferenceSpec[] {
+  const specs: CollectionTargetReferenceSpec[] = []
+  for (const col of collectionsConfig) {
+    if (col.slug === targetCollection) {
+      continue
+    }
+    const { fieldPaths, richTextPaths } = deriveFieldTargetPaths(col.fields, targetCollection)
+    if (fieldPaths.length === 0 && richTextPaths.length === 0) {
+      continue
+    }
+    const versioned = Boolean(
+      col.versions &&
+      (col.versions === true || (typeof col.versions === 'object' && col.versions.drafts)),
+    )
+    const localized = fieldsHaveLocalizedProp(col.fields)
+    specs.push({
+      slug: col.slug as CollectionSlug,
+      fieldPaths,
+      richTextPaths,
+      labelField: inferCollectionLabelField(col),
+      versioned,
+      localized,
+    })
+  }
+  return specs
+}
+
+export function buildCollectionTargetWhere(
+  fieldPaths: readonly string[],
+  targetId: number | string,
+): Where | null {
+  if (fieldPaths.length === 0) {
+    return null
+  }
+  if (fieldPaths.length === 1) {
+    return { [fieldPaths[0]]: { equals: targetId } }
+  }
+  return {
+    or: fieldPaths.map((p) => ({ [p]: { equals: targetId } })),
+  }
+}
+
+export const findCollectionTargetReferences = async ({
+  check,
+  targetId,
+  referencesByKey,
+  req,
+}: {
+  check: CollectionTargetReferenceSpec
+  targetId: number | string
+  referencesByKey: Map<string, string>
+  req: Parameters<CollectionBeforeDeleteHook>[0]['req']
+}): Promise<void> => {
+  if (!(check.slug in req.payload.collections)) {
+    return
+  }
+
+  const draftStates = check.versioned ? ([false, true] as const) : ([false] as const)
+  const where = buildCollectionTargetWhere(check.fieldPaths, targetId)
+  const needsInMemoryPathScan =
+    check.fieldPaths.some((p) => p.includes('.')) ||
+    (check.richTextPaths.length > 0 && !check.fieldPaths.includes('bodyMedia'))
+
+  for (const draft of draftStates) {
+    let whereFailed = false
+    if (where !== null) {
+      try {
+        await findReferencingLabels({
+          collection: check.slug,
+          where,
+          labelField: check.labelField,
+          draft,
+          localized: check.localized,
+          referencesByKey,
+          req,
+        })
+      } catch {
+        whereFailed = true
+      }
+    }
+
+    if (needsInMemoryPathScan || whereFailed) {
+      const localesToQuery = check.localized ? REVALIDATE_LOCALES : ([undefined] as const)
+      for (const locale of localesToQuery) {
+        const result = await req.payload.find({
+          collection: check.slug,
+          ...(locale ? { locale, fallbackLocale: false as const } : {}),
+          limit: 100,
+          depth: 0,
+          draft,
+          overrideAccess: true,
+          req,
+        })
+        for (const doc of result.docs) {
+          const matchedField = check.fieldPaths.some((path) =>
+            uploadValueMatchesMediaId(getNestedValue(doc, path), targetId),
+          )
+          const matchedRichText = check.richTextPaths.some((rtPath) =>
+            richTextReferencesMediaId(getNestedValue(doc, rtPath), targetId),
+          )
+          if (matchedField || matchedRichText) {
+            recordReferencingDoc(referencesByKey, check.slug, doc, check.labelField)
+          }
+        }
+      }
+    }
+  }
+}
+
+const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+  const collectionsConfig = Object.values(req.payload.collections).map((c) => c.config)
+  const collectionChecks = deriveCollectionTargetReferences(collectionsConfig, 'media')
   const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'media')
 
   const referencesByKey = new Map<string, string>()
-  for (const check of checks) {
-    await findReferencingLabels({
-      collection: check.collection,
-      where: check.where,
-      labelField: check.labelField,
-      draft: false,
-      localized: check.localized,
+  for (const check of collectionChecks) {
+    await findCollectionTargetReferences({
+      check,
+      targetId: id,
       referencesByKey,
       req,
     })
-
-    if (check.versioned) {
-      await findReferencingLabels({
-        collection: check.collection,
-        where: check.where,
-        labelField: check.labelField,
-        draft: true,
-        localized: check.localized,
-        referencesByKey,
-        req,
-      })
-    }
   }
 
   for (const globalCheck of globalChecks) {

@@ -3,6 +3,7 @@ import nextCoreWebVitals from 'eslint-config-next/core-web-vitals'
 import tseslint from 'typescript-eslint'
 
 import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
+import { requireOverrideAccessFalseRule } from './eslint-rules/require-override-access-false.mjs'
 
 export default defineConfig([
   {
@@ -35,11 +36,13 @@ export default defineConfig([
       local: {
         rules: {
           'no-server-in-client': noServerInClientRule,
+          'require-override-access-false': requireOverrideAccessFalseRule,
         },
       },
     },
     rules: {
       'local/no-server-in-client': 'error',
+      'local/require-override-access-false': 'error',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {

@@ -1555,7 +1555,7 @@ describe('P2-T5 integration suite (Globals: site-settings, navigation, home-page
     expect(dedupErrMsg).not.toContain(`projects(#${String(dedupProject.id)})`)
   })
 
-  it('rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals and collections (R-1)', async () => {
+  it('rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals (R-1, R-6)', async () => {
     const unsafeExternalUrls = [
       'javascript:alert(document.cookie)',
       '  JaVaScRiPt:alert(1)',
