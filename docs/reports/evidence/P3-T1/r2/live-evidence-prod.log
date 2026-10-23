@@ -1,0 +1,8 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+$ git rev-parse HEAD
+a57bfbf2adc416c292a3cc0613b1239f122aa37e
+$ node scripts/evidence/p3-t1-evidence.mjs http://localhost:3021 docs\reports\evidence\P3-T1\r2
+[p3-t1-evidence] Completed machine-captured evidence in C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723\docs\reports\evidence\P3-T1\r2 (0 console errors, 0 page errors, 0 CSP violations, 0 external font requests).
+
+[exit_code=0 elapsed=5.06s]

@@ -1,0 +1,49 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+$ git rev-parse HEAD
+a57bfbf2adc416c292a3cc0613b1239f122aa37e
+$ pnpm build
+
+> aljazira-website@0.1.0 build C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+â–² Next.js 16.4.2 (Turbopack)
+- Environments: .env
+âœ“ Running next.config.ts took 101ms
+- Experiments (use with caution):
+  âœ“ globalNotFound
+  â¨¯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+âœ“ Compiled successfully in 9.3s
+  Running TypeScript ...
+  Finished TypeScript in 9.9s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/6) ...
+  Generating static pages using 7 workers (1/6) 
+  Generating static pages using 7 workers (2/6) 
+  Generating static pages using 7 workers (4/6) 
+âœ“ Generating static pages using 7 workers (6/6) in 614ms
+  Finalizing page optimization ...
+
+Route (app)
+â”Œ ئ’ /_not-found
+â”œ ئ’ /[locale]
+â”œ ئ’ /[locale]/_specimen
+â”œ ئ’ /[locale]/styleguide
+â”œ ئ’ /admin/[[...segments]]
+â”œ ئ’ /api/[...slug]
+â”œ ئ’ /api/exit-preview
+â”œ ئ’ /api/preview
+â”œ ئ’ /api/preview/exit
+â”” â—‹ /robots.txt
+
+
+ئ’ Proxy (Middleware)
+
+â—‹  (Static)   prerendered as static content
+ئ’  (Dynamic)  server-rendered on demand
+
+[check-client-bundle-sentinels] Verified zero server-only sentinels or server library markers in .next/static
+
+[exit_code=0 elapsed=30.59s]

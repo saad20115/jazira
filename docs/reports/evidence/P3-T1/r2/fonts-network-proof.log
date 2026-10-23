@@ -1,0 +1,24 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+$ git rev-parse HEAD
+a57bfbf2adc416c292a3cc0613b1239f122aa37e
+BaseURL: http://localhost:3021
+
+=== Route /ar ===
+ComputedBodyFontFamily: "Noto Kufi Arabic", "Noto Kufi Arabic Fallback", sans-serif
+SelfHostedFontResponses (4):
+  [200] http://localhost:3021/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2 (font/woff2)
+  [200] http://localhost:3021/_next/static/media/4641603b8553767b-s.1y712r_ow2ydl.woff2 (font/woff2)
+  [200] http://localhost:3021/_next/static/media/98fc1f0b00398dc4-s.0im4x-iahhxdy.woff2 (font/woff2)
+  [200] http://localhost:3021/_next/static/media/e7be13e0732bd6dc-s.34m-p9c2jzir9.woff2 (font/woff2)
+GoogleFontExternalRequests (fonts.googleapis.com / fonts.gstatic.com): 0
+
+=== Route /en ===
+ComputedBodyFontFamily: Poppins, "Poppins Fallback", sans-serif
+SelfHostedFontResponses (4):
+  [200] http://localhost:3021/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2 (font/woff2)
+  [200] http://localhost:3021/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2 (font/woff2)
+  [200] http://localhost:3021/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2 (font/woff2)
+  [200] http://localhost:3021/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2 (font/woff2)
+GoogleFontExternalRequests (fonts.googleapis.com / fonts.gstatic.com): 0
+

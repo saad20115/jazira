@@ -1203,3 +1203,23 @@ One more rule, from your R-2 explanation:
 For R-1, I will re-run `scripts/evidence/p3-t1-evidence.mjs` myself during the review. Make it
 self-contained: it takes the base URL as an argument, writes its output files, and needs no manual
 steps.
+
+
+## M-108 · 2026-10-23 23:20 · Executor → CTO · `P3-T1` submitted for review (Round 2)
+`P3-T1` ("Frontend foundations, i18n, CSP") Round 2 is complete and ready for CTO review (`IN_REVIEW | 2`).
+
+- **Branch**: `phase-3-frontend`
+- **Code Commit (tested in fresh clone)**: `a57bfbf2adc416c292a3cc0613b1239f122aa37e` (`a57bfbf`)
+- **Report**: `handoff/reports/P3-T1.md`
+- **Evidence**: `docs/reports/evidence/P3-T1/r2/` (regenerated from scratch in a brand-new empty clone `C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723`, preserved for inspection)
+- **Summary of Round 2 Fixes (`R-1`..`R-11`)**:
+  - **`R-1`**: Committed self-contained `scripts/evidence/p3-t1-evidence.mjs` (`node scripts/evidence/p3-t1-evidence.mjs [baseUrl] [outDir]` and `--specimen-only`). Captures HTTP headers, `<html lang dir>`, `<title>`, font preloads, Playwright `console`/`pageerror`/`securitypolicyviolation`, and network font responses into `curl-headers.log`, `http-checks.json`, `console-csp-network.json`, `console-csp.log`, and `fonts-network-proof.log`. Removed `console-*.png`; all screenshots (`home-ar.png`, `home-en.png`, `specimen-ar.png`, `specimen-en.png`, `specimen-comparison.png`) have zero overlays or injected DOM banners.
+  - **`R-2`**: Executed full DoD from step 1 in an empty fresh clone (`Packages: +666` in `install.log`), real `pnpm lint` + real `pnpm build` for client-bundle guard cases `A1`, `A2`, and `B` (`client-bundle-guard.log`), and `pnpm check:citations` inside the fresh clone (`citations-check.log`, `113/113` paired citations, `0` errors).
+  - **`R-3`**: Restricted `src/app/(payload)/` allow-list to the 4 explicit Payload route files, banned `src/app/(frontend)` and `src/components` from importing any of the 8 server directories, and flagged `getPayload` / `getPayloadClient` referenced as a value in any form (including `P.getPayload` on a namespace import).
+  - **`R-4`**: Added `FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS` (`this.isOperational`, `UNAVAILABLE_FOR_LEGAL_REASONS`, `followingFieldsInvalid`, `the payload config is required for getPayload to work`) and `*_client-reference-manifest.js` + `build-manifest.json` chunk resolution in `scripts/check-client-bundle-sentinels.mjs`, proven by a real `pnpm build` failure in `client-bundle-guard.log` (`Case A2`).
+  - **`R-5`**: Removed all fallback marketing copy and invented numbers from `src/i18n/{ar,en}.ts`, `LocaleHomePage`, `Footer`, and `WhatsAppFab`, and moved specimen sample text to `src/app/(frontend)/[locale]/%5Fspecimen/specimen-data.ts`.
+  - **`R-6`**: Hardened `eslint-rules/no-jsx-string-literals.mjs` to catch ternaries, `||`/`??`, `+`, template expressions, module/local string constants, `.join()`, `aria-label` templates, and text-bearing props.
+  - **`R-7`**: Enabled `experimental.globalNotFound` (`src/app/global-not-found.tsx` + `src/proxy.ts` rewrites) so 404 responses render `<html lang="ar" dir="rtl">` / `<html lang="en" dir="ltr">` directly in SSR with localized `<title>`.
+  - **`R-8`..`R-11`**: Replaced remaining `rgb()`/`rgba()` in `src/components/admin/*` with `var(--theme-*)` (`grep-no-raw-hex.log` = 0 matches), removed `https://www.youtube.com` from `frame-src` (`R-9`), added `assertSmallCollectionNotTruncated` in `src/lib/cms/client.ts` (`R-10`), and fixed Arabic `.t-body-quote` `font-style: normal`, responsive letter-spacing scaling, locale-specific `.woff2` preloading & loading (`Noto Kufi Arabic` only on `/ar`, `Poppins` only on `/en`), and staff-verified draft mode banner (`R-11`).
+- Proceeding now to run the fresh-clone DoD and submit `P3-T2` (`IN_PROGRESS | 1` -> `IN_REVIEW | 1`).
+

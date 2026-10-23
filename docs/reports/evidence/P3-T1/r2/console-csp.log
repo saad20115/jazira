@@ -1,0 +1,26 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+$ git rev-parse HEAD
+a57bfbf2adc416c292a3cc0613b1239f122aa37e
+BaseURL: http://localhost:3021
+
+=== Route /ar (HTTP 200) ===
+DOM: <html lang="ar" dir="rtl">
+CSP: default-src 'self'; script-src 'self' 'nonce-N2JiMTk5Y2MtYWE4NC00N2I5LTk1ZjQtZjY5YzU1NjM2ZjRl' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-N2JiMTk5Y2MtYWE4NC00N2I5LTk1ZjQtZjY5YzU1NjM2ZjRl'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+ConsoleErrors: 0
+HydrationWarnings: 0
+PageErrors: 0
+CSPViolations: 0
+ConsoleMessages (0):
+  (none)
+
+=== Route /en (HTTP 200) ===
+DOM: <html lang="en" dir="ltr">
+CSP: default-src 'self'; script-src 'self' 'nonce-MTk2YzFkMTEtNDU2Ny00NzVmLTgzZTQtZjViZjg4MjE3MzBh' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-MTk2YzFkMTEtNDU2Ny00NzVmLTgzZTQtZjViZjg4MjE3MzBh'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+ConsoleErrors: 0
+HydrationWarnings: 0
+PageErrors: 0
+CSPViolations: 0
+ConsoleMessages (0):
+  (none)
+

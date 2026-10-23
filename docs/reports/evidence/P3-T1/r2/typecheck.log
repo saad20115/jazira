@@ -1,0 +1,11 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+$ git rev-parse HEAD
+a57bfbf2adc416c292a3cc0613b1239f122aa37e
+$ pnpm typecheck
+
+> aljazira-website@0.1.0 typecheck C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r2-dod-20261023-230723
+> tsc --noEmit
+
+
+[exit_code=0 elapsed=10.85s]
