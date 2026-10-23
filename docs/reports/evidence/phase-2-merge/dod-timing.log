@@ -1,0 +1,14 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2merge-1792763552
+HEAD: ede3a1f134f428bd1d354115a88ec85bcf2ab05b
+total_wall_time_ms: 430578
+total_wall_time_s: 430.58
+---
+| Step | Duration (ms) | Duration (s) | Exit Code |
+|------|---------------|--------------|-----------|
+| git-clone | 8141 | 8.14 | 0 |
+| pnpm-install | 168805 | 168.81 | 0 |
+| pnpm-lint | 30828 | 30.83 | 0 |
+| pnpm-typecheck | 10730 | 10.73 | 0 |
+| pnpm-test | 157888 | 157.89 | 0 |
+| pnpm-build | 52537 | 52.54 | 0 |
+| git-rev-parse-head | 206 | 0.21 | 0 |

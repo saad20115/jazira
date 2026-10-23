@@ -1,0 +1,9 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2merge-1792763552
+HEAD: ede3a1f134f428bd1d354115a88ec85bcf2ab05b
+cmd: pnpm typecheck
+duration_ms: 10730
+---
+
+> aljazira-website@0.1.0 typecheck C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2merge-1792763552
+> tsc --noEmit
+
