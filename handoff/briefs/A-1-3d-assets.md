@@ -88,3 +88,35 @@ Supersedes §6 item 2. Priority is now **look and motion** over further compress
    exact reverse back to `CAM_hero`.
 5. **Hero still without city — confirmed by the owner (2026-10-22):** same dusk sky as the live
    model; the Figma city backdrop is an approved deviation.
+
+## 8. Revision 2026-10-23 (owner) — the tower faces the camera with a corner, not a façade
+Supersedes §7 item 3 wherever they disagree (e.g. "the dark east face" in `CAM_hero`).
+The owner compared the current model with `design/assets/images/tower-render.png`. The model does not match.
+
+**What the reference shows:**
+- The camera looks at the tower **at a corner**, not straight at one façade.
+- The **two faces that meet at the corner nearest the camera are both glass curtain walls**, with
+  dense thin mullions and reflective glass on both.
+- The **stepped setback** (the cascading glass recess) appears on **both** sides of that corner,
+  mirrored.
+
+**Required:**
+1. **Orientation and plan.** Rework the plan and massing so the reference reads the same way from
+   `CAM_hero`:
+   - the camera-facing corner sits near the vertical centre line of the frame;
+   - both adjacent faces are visible at a similar angle, about 45° each;
+   - do not just orbit the camera around the old model.
+2. **Glazing.** Both camera-facing faces are glass, with the same mullion rhythm, reflections and
+   lit floors. There is no dark or blank face in the hero view.
+3. **Stepped setback.** Build it on both faces at the camera corner, mirrored, with the same step
+   count and depth as the reference. The open crown frame and the gold pilasters follow the
+   reference.
+4. **Base.** The lobby, canopies and forecourt line up with the new orientation (the lobby faces
+   the camera as in the reference).
+5. **Proof** (before any further motion or compression work):
+   - a side-by-side of `tower-render.png` and the new Cycles still from `CAM_hero`, with an
+     overlay at 50 % opacity;
+   - the same frame from the GLB in the viewer;
+   - a top (plan) view with the camera position marked.
+
+   Budgets, no city, sky and camera-limit rules from §6–§7 are unchanged.
