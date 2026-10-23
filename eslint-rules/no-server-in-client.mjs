@@ -15,12 +15,28 @@ const FORBIDDEN_EXACT = new Set([
   '@/payload.config',
   '@/payload.config.ts',
   'payload',
+  '@payloadcms/db-postgres',
+  '@payloadcms/email-nodemailer',
+  'drizzle-orm',
+  'pg',
+  'nodemailer',
+  'sharp',
   '@/lib/cms',
   '@/lib/cms/client',
   '@/lib/cms/client.ts',
   '@/lib/ipHash',
   '@/lib/ipHash.ts',
   '@/lib/odoo',
+  '@/security/apiError',
+  '@/security/apiError.ts',
+  '@/security/emailAdapter',
+  '@/security/emailAdapter.ts',
+  '@/security/loginEnumeration',
+  '@/security/loginEnumeration.ts',
+  '@/security/passwordPolicy',
+  '@/security/passwordPolicy.ts',
+  '@/security/uploadValidation',
+  '@/security/uploadValidation.ts',
 ])
 
 /**
@@ -36,6 +52,12 @@ export function isForbiddenServerImport(source) {
 
   if (
     normalized.startsWith('payload/') ||
+    normalized.startsWith('@payloadcms/db-postgres/') ||
+    normalized.startsWith('@payloadcms/email-nodemailer/') ||
+    normalized.startsWith('drizzle-orm/') ||
+    normalized.startsWith('pg/') ||
+    normalized.startsWith('nodemailer/') ||
+    normalized.startsWith('sharp/') ||
     normalized.startsWith('@/lib/cms/') ||
     normalized.startsWith('@/lib/odoo/') ||
     normalized.startsWith('@/lib/ipHash/')
@@ -43,13 +65,16 @@ export function isForbiddenServerImport(source) {
     return true
   }
 
-  // Relative imports to env, payload.config, lib/cms, lib/odoo, lib/ipHash
+  // Relative imports to env, payload.config, lib/cms, lib/odoo, lib/ipHash, or server security modules
   if (
     /(?:^|\/)env(?:\.[jt]sx?)?$/.test(normalized) ||
     /(?:^|\/)payload\.config(?:\.[jt]sx?)?$/.test(normalized) ||
     /(?:^|\/)lib\/cms(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
     /(?:^|\/)lib\/odoo(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
-    /(?:^|\/)lib\/ipHash(?:\.[jt]sx?)?$/.test(normalized)
+    /(?:^|\/)lib\/ipHash(?:\.[jt]sx?)?$/.test(normalized) ||
+    /(?:^|\/)security\/(?:apiError|emailAdapter|loginEnumeration|passwordPolicy|uploadValidation)(?:\.[jt]sx?)?$/.test(
+      normalized,
+    )
   ) {
     return true
   }

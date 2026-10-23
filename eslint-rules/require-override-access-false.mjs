@@ -1,25 +1,28 @@
 /**
- * Custom ESLint rule `local/require-override-access-false` (Z6, P2-T8 Scope 3, R-6, & R-12).
+ * Custom ESLint rule `local/require-override-access-false` (Z6, P2-T8 Scope 3, R-6, R-12, R-21, & R-22).
  *
- * Enforces three defense-in-depth layers for Z6:
- * 1. Repo-wide import and re-export ban (`ImportDeclaration`, `ExportNamedDeclaration`,
- *    `ExportAllDeclaration`, `ImportExpression`, and `require(...)`): importing or re-exporting
- *    `payload`, `payload/*`, `@payload-config`, `@/payload.config`, or `getPayload` is a lint
- *    error everywhere in the repository except the explicit allow-list of server modules
- *    (`isAllowedPayloadServerFile`).
- * 2. Call-site verification in `src/app/(frontend)/**`, `src/components/**`, and
- *    `src/lib/cms/**`: every Payload Local API call (`find`, `findByID`, `findGlobal`,
- *    `count`, `findDistinct`, `findVersions`, `findVersionByID`, `findGlobalVersions`,
- *    `findGlobalVersionByID`, `countVersions`, `countGlobalVersions`, `create`, `update`,
- *    `delete`, `updateGlobal`, `restoreVersion`, `restoreGlobalVersion`, `duplicate`) —
- *    whether invoked via `payload.<method>(...)`, an aliased receiver (`client.<method>`),
- *    computed member access (`payload['find']`), `.call()`/`.apply()`/`.bind()`, or a
- *    destructured method (`const { find } = payload; find(...)`) — must pass an
- *    un-overridden `{ overrideAccess: false }` in its options object (no trailing spread
- *    or duplicate key that could overwrite it).
- * 3. Only the single documented justification comment form
- *    (`// z6-allow-override-access: <reason>`) is accepted when an intentional
- *    exception is required.
+ * Enforces four defense-in-depth layers for Z6:
+ * 1. Repo-wide re-export ban (`R-21`): re-exporting `payload`, `payload/*`, `@payload-config`,
+ *    `@/payload.config`, or any binding imported from them (such as `getPayload`) is banned in
+ *    EVERY module across the repository except `src/payload.config.ts` and `src/lib/cms/client.ts`
+ *    (`isAllowedPayloadReExportFile`).
+ * 2. Tightened runtime import allow-list + type-import allowance (`R-12`, `R-21`, `R-22`):
+ *    - Runtime value imports of `payload` / `payload/*` are allowed only in `isAllowedPayloadServerFile`
+ *      (where `src/fields/*` and `src/security/*` list only the 8 specific files that construct
+ *      Payload runtime error classes, and `*.test.*` is exempt ONLY outside `src/app/**` and
+ *      `src/components/**`).
+ *    - Importing `getPayload`, `@payload-config`, or `@/payload.config` is restricted even further to
+ *      `isAllowedGetPayloadEntryFile` (`src/payload.config.ts`, `src/instrumentation.ts`,
+ *      `src/lib/cms/client.ts`, `src/app/(payload)/**`, `scripts/**`, `tests/**`, and non-app/non-component
+ *      `*.test.*`).
+ *    - Type-only imports (`import type { ... } from 'payload'` or `import { type ... } from 'payload'`)
+ *      are allowed (`R-22`).
+ * 3. Non-literal dynamic `import()` ban (`R-22`): in `src/app/**` and `src/components/**`, every
+ *    `import(...)` expression must use a static string literal source (banning ``import(`payload`)``,
+ *    `import(x)`, etc.).
+ * 4. Call-site verification in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/cms/**`:
+ *    every Payload Local API call must pass an un-overridden `{ overrideAccess: false }` (or carry
+ *    `// z6-allow-override-access: <reason>`).
  */
 
 export const GUARDED_PAYLOAD_METHODS = new Set([
@@ -46,8 +49,74 @@ export const GUARDED_PAYLOAD_METHODS = new Set([
 const JUSTIFICATION_COMMENT_REGEX = /z6-allow-override-access\s*:\s*\S+/
 
 /**
- * Explicit allow-list of server/config/test/script modules permitted to import or
- * re-export `payload`, `payload/*`, `@payload-config`, or `@/payload.config` (`R-12`).
+ * Explicit list of files in `src/fields/` and `src/security/` that require `payload` at runtime
+ * for `ValidationError`, `APIError`, `AuthenticationError`, or `LockedAuth` (`R-21`).
+ */
+export const EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES = [
+  'src/fields/link.ts',
+  'src/fields/richText.ts',
+  'src/fields/seo.ts',
+  'src/fields/slug.ts',
+  'src/security/apiError.ts',
+  'src/security/loginEnumeration.ts',
+  'src/security/passwordPolicy.ts',
+  'src/security/uploadValidation.ts',
+]
+
+/**
+ * Only `src/payload.config.ts` and `src/lib/cms/client.ts` may re-export anything from
+ * `payload`, `@payload-config`, or `@/payload.config` (`R-21`).
+ *
+ * @param {string} filename
+ * @returns {boolean}
+ */
+export function isAllowedPayloadReExportFile(filename) {
+  if (typeof filename !== 'string' || filename.length === 0) {
+    return false
+  }
+  const normalized = filename.replace(/\\/g, '/')
+  return (
+    /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) ||
+    /(?:^|\/)src\/lib\/cms\/client\.[cm]?[jt]s$/.test(normalized)
+  )
+}
+
+/**
+ * Only server entry points, admin routes, scripts, and non-app/non-component tests may import
+ * `getPayload`, `@payload-config`, or `@/payload.config` (`R-21`).
+ *
+ * @param {string} filename
+ * @returns {boolean}
+ */
+export function isAllowedGetPayloadEntryFile(filename) {
+  if (typeof filename !== 'string' || filename.length === 0) {
+    return false
+  }
+  const normalized = filename.replace(/\\/g, '/')
+  if (
+    /\.test\.[cm]?[jt]sx?$/.test(normalized) &&
+    !/(?:^|\/)src\/app\//.test(normalized) &&
+    !/(?:^|\/)src\/components\//.test(normalized)
+  ) {
+    return true
+  }
+  return (
+    /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) ||
+    /(?:^|\/)src\/instrumentation\.[cm]?[jt]s$/.test(normalized) ||
+    /(?:^|\/)src\/lib\/cms\/client\.[cm]?[jt]s$/.test(normalized) ||
+    /(?:^|\/)src\/app\/\(payload\)\//.test(normalized) ||
+    /(?:^|\/)scripts\//.test(normalized) ||
+    /(?:^|\/)tests\//.test(normalized) ||
+    /(?:^|\/)(?:next|vitest|playwright|eslint)\.config\.[cm]?[jt]s$/.test(normalized)
+  )
+}
+
+/**
+ * Explicit allow-list of server/config/test/script modules permitted to import `payload`
+ * at runtime (`R-12`, `R-21`).
+ * - `src/fields/**` and `src/security/**` are NOT blanket-allowed; only the 8 specific files in
+ *   `EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES` are permitted.
+ * - `*.test.*` is exempt ONLY outside `src/app/**` and `src/components/**`.
  *
  * @param {string} filename
  * @returns {boolean}
@@ -56,26 +125,38 @@ export function isAllowedPayloadServerFile(filename) {
   if (typeof filename !== 'string' || filename.length === 0) {
     return false
   }
+  if (isAllowedGetPayloadEntryFile(filename)) {
+    return true
+  }
   const normalized = filename.replace(/\\/g, '/')
-  if (/\.test\.[cm]?[jt]sx?$/.test(normalized)) {
+  if (
+    EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES.some((relPath) =>
+      normalized.endsWith('/' + relPath) || normalized === relPath,
+    )
+  ) {
     return true
   }
   return (
-    /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) ||
-    /(?:^|\/)src\/instrumentation\.[cm]?[jt]s$/.test(normalized) ||
-    /(?:^|\/)src\/lib\/cms\/client\.[cm]?[jt]s$/.test(normalized) ||
     /(?:^|\/)src\/collections\//.test(normalized) ||
     /(?:^|\/)src\/globals\//.test(normalized) ||
-    /(?:^|\/)src\/fields\//.test(normalized) ||
     /(?:^|\/)src\/hooks\//.test(normalized) ||
     /(?:^|\/)src\/access\//.test(normalized) ||
-    /(?:^|\/)src\/security\//.test(normalized) ||
-    /(?:^|\/)src\/migrations\//.test(normalized) ||
-    /(?:^|\/)src\/app\/\(payload\)\//.test(normalized) ||
-    /(?:^|\/)scripts\//.test(normalized) ||
-    /(?:^|\/)tests\//.test(normalized) ||
-    /(?:^|\/)(?:next|vitest|playwright|eslint)\.config\.[cm]?[jt]s$/.test(normalized)
+    /(?:^|\/)src\/migrations\//.test(normalized)
   )
+}
+
+/**
+ * Returns true when `filename` is inside `src/app/**` or `src/components/**` (`R-22`).
+ *
+ * @param {string} filename
+ * @returns {boolean}
+ */
+export function isAppOrComponentFile(filename) {
+  if (typeof filename !== 'string' || filename.length === 0) {
+    return false
+  }
+  const normalized = filename.replace(/\\/g, '/')
+  return /(?:^|\/)src\/(?:app|components)\//.test(normalized)
 }
 
 /**
@@ -95,8 +176,7 @@ export function isFrontendOrCmsFile(filename) {
 }
 
 /**
- * Returns true when `filename` is NOT in the explicit server allow-list (`R-12`),
- * meaning importing or re-exporting `payload` or `@payload-config` is forbidden.
+ * Returns true when `filename` is NOT in the explicit server allow-list (`R-12`, `R-21`).
  *
  * @param {string} filename
  * @returns {boolean}
@@ -125,6 +205,53 @@ export function isForbiddenPayloadModuleSource(sourceValue) {
     trimmed === '@/payload.config.ts' ||
     /(?:^|\/)payload\.config(?:\.[cm]?[jt]s)?$/.test(trimmed)
   )
+}
+
+/**
+ * Returns true when `sourceValue` points to `@payload-config` or `payload.config`.
+ *
+ * @param {unknown} sourceValue
+ * @returns {boolean}
+ */
+export function isPayloadConfigModuleSource(sourceValue) {
+  if (typeof sourceValue !== 'string') {
+    return false
+  }
+  const trimmed = sourceValue.trim().replace(/\\/g, '/')
+  return (
+    trimmed === '@payload-config' ||
+    trimmed === '@/payload.config' ||
+    trimmed === '@/payload.config.ts' ||
+    /(?:^|\/)payload\.config(?:\.[cm]?[jt]s)?$/.test(trimmed)
+  )
+}
+
+/**
+ * Returns true if an `ImportDeclaration` only imports TypeScript types from `payload` or `payload/*` (`R-22`).
+ *
+ * @param {import('eslint').Rule.Node} node
+ * @returns {boolean}
+ */
+function isTypeOnlyPayloadImportDeclaration(node) {
+  if (!node || node.type !== 'ImportDeclaration') {
+    return false
+  }
+  const sourceVal = node.source?.value
+  if (typeof sourceVal !== 'string') {
+    return false
+  }
+  const trimmed = sourceVal.trim()
+  if (trimmed !== 'payload' && !trimmed.startsWith('payload/')) {
+    return false
+  }
+  if (node.importKind === 'type') {
+    return true
+  }
+  const specifiers = node.specifiers ?? []
+  if (specifiers.length === 0) {
+    return false
+  }
+  return specifiers.every((spec) => spec.type === 'ImportSpecifier' && spec.importKind === 'type')
 }
 
 /**
@@ -296,11 +423,15 @@ export const requireOverrideAccessFalseRule = {
     type: 'problem',
     docs: {
       description:
-        'Ban direct Payload imports and re-exports outside the server allow-list, and require un-overridden `overrideAccess: false` (or `// z6-allow-override-access: <reason>`) on all Payload Local API calls in frontend/CMS code (Z6, R-6, R-12).',
+        'Ban direct Payload imports and re-exports outside the server allow-list, ban non-literal import() in src/app/** and src/components/**, and require un-overridden `overrideAccess: false` on all Payload Local API calls in frontend/CMS code (Z6, R-6, R-12, R-21, R-22).',
     },
     messages: {
       forbiddenPayloadImport:
-        'Importing or re-exporting "{{source}}" is forbidden outside the server allow-list (`src/lib/cms/client.ts` is the only allowed CMS wrapper). Use `cmsFind`, `cmsFindByID`, `cmsFindGlobal`, or `cmsCount` instead (Z6, R-6, R-12).',
+        'Importing "{{source}}" is forbidden outside the server allow-list (`src/lib/cms/client.ts` is the only allowed CMS wrapper). Use `cmsFind`, `cmsFindByID`, `cmsFindGlobal`, or `cmsCount` instead (Z6, R-6, R-12, R-21).',
+      forbiddenPayloadReExport:
+        'Re-exporting "{{source}}" is forbidden everywhere except `src/payload.config.ts` and `src/lib/cms/client.ts` (Z6, R-21).',
+      forbiddenNonLiteralDynamicImport:
+        'Non-literal dynamic `import()` is forbidden in `src/app/**` and `src/components/**` (R-22).',
       missingOverrideAccessFalse:
         'Payload Local API call "{{method}}()" in frontend/CMS code must pass an un-overridden "{ overrideAccess: false }" (or include a "// z6-allow-override-access: <reason>" comment) (Z6).',
     },
@@ -309,10 +440,10 @@ export const requireOverrideAccessFalseRule = {
   create(context) {
     const filename = context.filename ?? context.getFilename()
     const forbidImports = isPayloadImportForbiddenFile(filename)
+    const allowGetPayloadEntry = isAllowedGetPayloadEntryFile(filename)
+    const allowReExport = isAllowedPayloadReExportFile(filename)
+    const inAppOrComponents = isAppOrComponentFile(filename)
     const checkCalls = isFrontendOrCmsFile(filename)
-    if (!forbidImports && !checkCalls) {
-      return {}
-    }
 
     const sourceCode = context.sourceCode ?? context.getSourceCode()
 
@@ -320,6 +451,8 @@ export const requireOverrideAccessFalseRule = {
     const trackedPayloadVars = new Set(['payload', 'client'])
     /** @type {Map<string, string>} localVarName -> guardedMethodName */
     const destructuredPayloadMethods = new Map()
+    /** @type {Map<string, string>} localBindingName -> sourceName */
+    const importedPayloadValueBindings = new Map()
 
     /**
      * @param {import('eslint').Rule.Node | null | undefined} pattern
@@ -345,67 +478,200 @@ export const requireOverrideAccessFalseRule = {
       }
     }
 
-    /**
-     * @param {import('eslint').Rule.Node} node
-     * @param {unknown} sourceVal
-     * @param {Array<import('eslint').Rule.Node>} [specifiers]
-     */
-    function checkModuleSourceAndSpecifiers(node, sourceVal, specifiers) {
-      if (!forbidImports) {
-        return
-      }
-      if (isForbiddenPayloadModuleSource(sourceVal)) {
-        context.report({
-          node,
-          messageId: 'forbiddenPayloadImport',
-          data: { source: String(sourceVal) },
-        })
-        return
-      }
-      for (const spec of specifiers ?? []) {
-        if (
-          spec.type === 'ImportSpecifier' &&
-          spec.imported.type === 'Identifier' &&
-          (spec.imported.name === 'getPayload' || spec.imported.name === 'getPayloadClient')
-        ) {
+    return {
+      ImportDeclaration(node) {
+        const sourceVal = node.source?.value
+        const isPayloadSource = isForbiddenPayloadModuleSource(sourceVal)
+
+        if (isPayloadSource && node.importKind !== 'type') {
+          for (const spec of node.specifiers ?? []) {
+            if (spec.type === 'ImportSpecifier' && spec.importKind === 'type') {
+              continue
+            }
+            if (spec.local?.type === 'Identifier') {
+              importedPayloadValueBindings.set(spec.local.name, String(sourceVal))
+            }
+          }
+        }
+
+        // R-21: Importing @payload-config / @/payload.config or `getPayload` is restricted to `isAllowedGetPayloadEntryFile`
+        if (!allowGetPayloadEntry) {
+          if (isPayloadConfigModuleSource(sourceVal)) {
+            context.report({
+              node,
+              messageId: 'forbiddenPayloadImport',
+              data: { source: String(sourceVal) },
+            })
+            return
+          }
+          for (const spec of node.specifiers ?? []) {
+            if (
+              spec.type === 'ImportSpecifier' &&
+              spec.importKind !== 'type' &&
+              spec.imported.type === 'Identifier' &&
+              (spec.imported.name === 'getPayload' || spec.imported.name === 'getPayloadClient')
+            ) {
+              context.report({
+                node: spec,
+                messageId: 'forbiddenPayloadImport',
+                data: { source: spec.imported.name },
+              })
+              return
+            }
+          }
+        }
+
+        if (!forbidImports) {
+          return
+        }
+
+        // R-22: Allow type-only imports from 'payload' or 'payload/*'
+        if (isTypeOnlyPayloadImportDeclaration(node)) {
+          return
+        }
+
+        if (isPayloadSource) {
           context.report({
-            node: spec,
+            node,
             messageId: 'forbiddenPayloadImport',
-            data: { source: spec.imported.name },
+            data: { source: String(sourceVal) },
           })
-        } else if (spec.type === 'ExportSpecifier') {
-          const localName = spec.local.type === 'Identifier' ? spec.local.name : ''
-          const exportedName = spec.exported.type === 'Identifier' ? spec.exported.name : ''
+          return
+        }
+
+        for (const spec of node.specifiers ?? []) {
           if (
-            localName === 'getPayload' ||
-            localName === 'getPayloadClient' ||
-            exportedName === 'getPayload' ||
-            exportedName === 'getPayloadClient'
+            spec.type === 'ImportSpecifier' &&
+            spec.importKind !== 'type' &&
+            spec.imported.type === 'Identifier' &&
+            (spec.imported.name === 'getPayload' || spec.imported.name === 'getPayloadClient')
           ) {
             context.report({
               node: spec,
               messageId: 'forbiddenPayloadImport',
-              data: { source: exportedName || localName },
+              data: { source: spec.imported.name },
             })
           }
         }
-      }
-    }
-
-    return {
-      ImportDeclaration(node) {
-        checkModuleSourceAndSpecifiers(node, node.source?.value, node.specifiers)
       },
 
       ExportNamedDeclaration(node) {
-        checkModuleSourceAndSpecifiers(node, node.source?.value, node.specifiers)
+        if (allowReExport) {
+          return
+        }
+        const sourceVal = node.source?.value
+        if (isForbiddenPayloadModuleSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadReExport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
+        for (const spec of node.specifiers ?? []) {
+          if (spec.type === 'ExportSpecifier') {
+            const localName = spec.local.type === 'Identifier' ? spec.local.name : ''
+            const exportedName = spec.exported.type === 'Identifier' ? spec.exported.name : ''
+            if (
+              localName === 'getPayload' ||
+              localName === 'getPayloadClient' ||
+              exportedName === 'getPayload' ||
+              exportedName === 'getPayloadClient' ||
+              importedPayloadValueBindings.has(localName)
+            ) {
+              context.report({
+                node: spec,
+                messageId: 'forbiddenPayloadReExport',
+                data: {
+                  source:
+                    importedPayloadValueBindings.get(localName) || exportedName || localName,
+                },
+              })
+            }
+          }
+        }
+        if (node.declaration?.type === 'VariableDeclaration') {
+          for (const decl of node.declaration.declarations) {
+            if (
+              decl.init?.type === 'Identifier' &&
+              (decl.init.name === 'getPayload' ||
+                decl.init.name === 'getPayloadClient' ||
+                importedPayloadValueBindings.has(decl.init.name))
+            ) {
+              context.report({
+                node: decl,
+                messageId: 'forbiddenPayloadReExport',
+                data: {
+                  source:
+                    importedPayloadValueBindings.get(decl.init.name) || decl.init.name,
+                },
+              })
+            }
+          }
+        }
       },
 
       ExportAllDeclaration(node) {
-        checkModuleSourceAndSpecifiers(node, node.source?.value, [])
+        if (allowReExport) {
+          return
+        }
+        const sourceVal = node.source?.value
+        if (isForbiddenPayloadModuleSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadReExport',
+            data: { source: String(sourceVal) },
+          })
+        }
+      },
+
+      ExportDefaultDeclaration(node) {
+        if (allowReExport) {
+          return
+        }
+        if (
+          node.declaration?.type === 'Identifier' &&
+          (node.declaration.name === 'getPayload' ||
+            node.declaration.name === 'getPayloadClient' ||
+            importedPayloadValueBindings.has(node.declaration.name))
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadReExport',
+            data: {
+              source:
+                importedPayloadValueBindings.get(node.declaration.name) || node.declaration.name,
+            },
+          })
+        }
       },
 
       ImportExpression(node) {
+        // R-22: Ban non-literal dynamic `import()` in `src/app/**` and `src/components/**`
+        if (
+          inAppOrComponents &&
+          (node.source?.type !== 'Literal' || typeof node.source.value !== 'string')
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenNonLiteralDynamicImport',
+          })
+          return
+        }
+
+        if (
+          !allowGetPayloadEntry &&
+          node.source?.type === 'Literal' &&
+          isPayloadConfigModuleSource(node.source.value)
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenPayloadImport',
+            data: { source: String(node.source.value) },
+          })
+          return
+        }
+
         if (!forbidImports) {
           return
         }
@@ -460,18 +726,26 @@ export const requireOverrideAccessFalseRule = {
 
         // Check `require('payload')` in any non-allowlisted file
         if (
-          forbidImports &&
           callee.type === 'Identifier' &&
           callee.name === 'require' &&
-          node.arguments[0]?.type === 'Literal' &&
-          isForbiddenPayloadModuleSource(node.arguments[0].value)
+          node.arguments[0]?.type === 'Literal'
         ) {
-          context.report({
-            node,
-            messageId: 'forbiddenPayloadImport',
-            data: { source: String(node.arguments[0].value) },
-          })
-          return
+          if (!allowGetPayloadEntry && isPayloadConfigModuleSource(node.arguments[0].value)) {
+            context.report({
+              node,
+              messageId: 'forbiddenPayloadImport',
+              data: { source: String(node.arguments[0].value) },
+            })
+            return
+          }
+          if (forbidImports && isForbiddenPayloadModuleSource(node.arguments[0].value)) {
+            context.report({
+              node,
+              messageId: 'forbiddenPayloadImport',
+              data: { source: String(node.arguments[0].value) },
+            })
+            return
+          }
         }
 
         if (!checkCalls) {

@@ -14,32 +14,22 @@ import type {
   SiteSetting,
 } from '@/payload-types'
 
-import {
-  getFallbackLocale,
-  getPayloadClient,
-  resolveDraftAccess,
-  withCmsCache,
-} from './client'
+import { cmsFindGlobal, getFallbackLocale, resolvePublicDraftFlag, withCmsCache } from './client'
 
 type GlobalSlug = keyof Config['globals']
 
 async function fetchGlobalDirect<TSlug extends GlobalSlug>(
   slug: TSlug,
   locale: SupportedLocale,
-  options: { depth?: number; draft?: boolean; user?: Config['collections']['users'] } = {},
+  depth = 2,
 ): Promise<Config['globals'][TSlug]> {
-  const payload = await getPayloadClient()
   const fallbackLocale = getFallbackLocale(locale)
-  const doc = await payload.findGlobal({
+  return cmsFindGlobal({
     slug,
     locale,
     fallbackLocale,
-    depth: options.depth ?? 2,
-    draft: Boolean(options.draft),
-    user: options.user,
-    overrideAccess: false,
+    depth,
   })
-  return doc
 }
 
 async function getCachedOrDraftGlobal<TSlug extends GlobalSlug>(
@@ -48,16 +38,16 @@ async function getCachedOrDraftGlobal<TSlug extends GlobalSlug>(
   extraTags: string[] = [],
   depth = 2,
 ): Promise<Config['globals'][TSlug]> {
-  const { draft, user } = await resolveDraftAccess()
-  if (draft && user) {
-    return fetchGlobalDirect(slug, locale, { depth, draft: true, user })
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return fetchGlobalDirect(slug, locale, depth)
   }
 
   const tags = Array.from(
     new Set([...buildGlobalTags(slug), `global:${slug}:${locale}`, ...extraTags]),
   )
   const cachedGetter = withCmsCache(
-    async () => fetchGlobalDirect(slug, locale, { depth, draft: false }),
+    () => fetchGlobalDirect(slug, locale, depth),
     ['cms-global', slug, locale, `depth-${String(depth)}`],
     tags,
   )

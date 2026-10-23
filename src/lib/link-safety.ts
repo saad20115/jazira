@@ -44,6 +44,15 @@ export function isValidInternalCmsPath(rawPath: string): boolean {
     return false
   }
 
+  const nonEmptySegments = segments.filter(Boolean).map((s) => s.toLowerCase())
+  const firstNonLocaleSeg =
+    nonEmptySegments[0] === 'ar' || nonEmptySegments[0] === 'en'
+      ? nonEmptySegments[1]
+      : nonEmptySegments[0]
+  if (firstNonLocaleSeg === 'admin' || firstNonLocaleSeg === 'api' || firstNonLocaleSeg === '_next') {
+    return false
+  }
+
   try {
     const decoded = decodeURIComponent(pathPart)
     if (
@@ -197,21 +206,24 @@ export function resolveSafeCmsLinkData(
 
   // 1. Reference to `services` or `projects` takes precedence when populated with a valid slug
   const ref = link.reference
-  if (
-    ref &&
-    typeof ref === 'object' &&
-    (ref.relationTo === 'services' || ref.relationTo === 'projects') &&
-    typeof ref.value === 'object' &&
-    ref.value !== null &&
-    typeof ref.value.slug === 'string'
-  ) {
-    const slug = ref.value.slug.trim()
-    if (SLUG_SAFE_REGEX.test(slug)) {
-      const safeRef = sanitizeCmsHref(`/${ref.relationTo}/${slug}`, options)
-      if (safeRef) {
-        return {
-          ...safeRef,
-          newTab,
+  if (ref && typeof ref === 'object') {
+    const rel = ref.relationTo as string | undefined
+    const val = ref.value as unknown
+    if (
+      (rel === 'services' || rel === 'projects') &&
+      typeof val === 'object' &&
+      val !== null &&
+      'slug' in val &&
+      typeof (val as { slug?: unknown }).slug === 'string'
+    ) {
+      const slug = (val as { slug: string }).slug.trim()
+      if (SLUG_SAFE_REGEX.test(slug)) {
+        const safeRef = sanitizeCmsHref(`/${rel}/${slug}`, options)
+        if (safeRef) {
+          return {
+            ...safeRef,
+            newTab,
+          }
         }
       }
     }

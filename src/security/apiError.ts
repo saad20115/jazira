@@ -1,5 +1,8 @@
 import { APIError, type Config, type ErrorResult } from 'payload'
 
+export const API_ERROR_SERVER_ONLY_SENTINEL =
+  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_API_ERROR__'
+
 type RootAfterErrorHook = NonNullable<NonNullable<Config['hooks']>['afterError']>[number]
 
 /**
@@ -17,6 +20,9 @@ export function createPublicAPIError(
   status = 400,
   data?: Record<string, unknown>,
 ): APIError {
+  if (typeof window !== 'undefined') {
+    throw new Error(API_ERROR_SERVER_ONLY_SENTINEL)
+  }
   const err = new APIError(message, status, data, true)
   err.name = 'APIError'
   return err

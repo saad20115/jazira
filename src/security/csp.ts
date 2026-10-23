@@ -11,7 +11,6 @@ export const I4_VIDEO_FRAME_SOURCES = [
 export interface PublicCspOptions {
   nonce: string
   pathname: string
-  nodeEnv?: string | undefined
 }
 
 /**
@@ -35,9 +34,8 @@ export function isAdminRoutePath(pathname: string): boolean {
  *
  * - `default-src 'self'`
  * - `script-src 'self' 'nonce-<nonce>' 'strict-dynamic'` (+ `'wasm-unsafe-eval'` ONLY on `/ar` & `/en` home per `H3a`;
- *   in `NODE_ENV === 'development'` only, Next.js dev server requires `'unsafe-eval'` for server stack reconstruction;
- *   in production, never `'unsafe-eval'` and never `'unsafe-inline'`)
- * - `style-src 'self' 'nonce-<nonce>'` (in `NODE_ENV === 'development'`, `'unsafe-inline'` for Next dev style injection)
+ *   never `'unsafe-eval'` and never `'unsafe-inline'`)
+ * - `style-src 'self' 'nonce-<nonce>'` (never `'unsafe-inline'`)
  * - `img-src 'self' data: blob:`
  * - `font-src 'self'` (all fonts self-hosted via `next/font/google`, zero Google runtime requests)
  * - `media-src 'self' blob:`
@@ -46,12 +44,7 @@ export function isAdminRoutePath(pathname: string): boolean {
  * - `worker-src 'self' blob:` ONLY on `/ar` & `/en` home (`H3a`)
  * - `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`; `frame-ancestors 'self'`
  */
-export function buildPublicCspHeader({
-  nonce,
-  pathname,
-  nodeEnv = process.env.NODE_ENV,
-}: PublicCspOptions): string {
-  const isDev = nodeEnv === 'development'
+export function buildPublicCspHeader({ nonce, pathname }: PublicCspOptions): string {
   const isHome = isHomePagePath(pathname)
 
   const scriptTokens = [
@@ -59,10 +52,9 @@ export function buildPublicCspHeader({
     `'nonce-${nonce}'`,
     "'strict-dynamic'",
     ...(isHome ? ["'wasm-unsafe-eval'"] : []),
-    ...(isDev ? ["'unsafe-eval'"] : []),
   ]
 
-  const styleTokens = ["'self'", isDev ? "'unsafe-inline'" : `'nonce-${nonce}'`]
+  const styleTokens = ["'self'", `'nonce-${nonce}'`]
 
   const directives = [
     "default-src 'self'",

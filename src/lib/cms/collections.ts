@@ -4,12 +4,13 @@ import type { Where } from 'payload'
 
 import { buildCollectionTags } from '@/hooks/revalidate'
 import type { SupportedLocale } from '@/i18n'
-import type { Brand, Material, Project, Service, Stat, Team, User } from '@/payload-types'
+import type { Brand, Material, Project, Service, Stat, Team } from '@/payload-types'
 
 import {
+  cmsFind,
+  cmsFindAllSmallCollection,
   getFallbackLocale,
-  getPayloadClient,
-  resolveDraftAccess,
+  resolvePublicDraftFlag,
   withCmsCache,
 } from './client'
 
@@ -22,9 +23,7 @@ export interface GetServicesOptions {
 async function queryServicesDirect(
   locale: SupportedLocale,
   options: GetServicesOptions,
-  draftCtx: { draft: boolean; user?: User },
 ): Promise<Service[]> {
-  const payload = await getPayloadClient()
   const fallbackLocale = getFallbackLocale(locale)
   const clauses: Where[] = []
 
@@ -38,17 +37,26 @@ async function queryServicesDirect(
   const where: Where | undefined =
     clauses.length === 1 ? clauses[0] : clauses.length > 1 ? { and: clauses } : undefined
 
-  const result = await payload.find({
+  if (options.limit !== undefined) {
+    const result = await cmsFind({
+      collection: 'services',
+      locale,
+      fallbackLocale,
+      where,
+      sort: 'order',
+      limit: options.limit,
+      depth: 2,
+    })
+    return result.docs
+  }
+
+  const result = await cmsFindAllSmallCollection({
     collection: 'services',
     locale,
     fallbackLocale,
     where,
     sort: 'order',
-    limit: options.limit ?? 100,
     depth: 2,
-    draft: draftCtx.draft,
-    user: draftCtx.user,
-    overrideAccess: false,
   })
   return result.docs
 }
@@ -57,13 +65,13 @@ export async function getServices(
   locale: SupportedLocale,
   options: GetServicesOptions = {},
 ): Promise<Service[]> {
-  const { draft, user } = await resolveDraftAccess()
-  if (draft && user) {
-    return queryServicesDirect(locale, options, { draft: true, user })
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return queryServicesDirect(locale, options)
   }
 
   const tags = [
-    ...buildCollectionTags({ collection: 'services' }),
+    ...buildCollectionTags('services'),
     `collection:services:${locale}`,
   ]
   const keyParts = [
@@ -71,24 +79,18 @@ export async function getServices(
     locale,
     options.tier ?? 'all',
     options.featuredOnly ? 'featured' : 'all',
-    String(options.limit ?? 100),
+    String(options.limit ?? 'all'),
   ]
-  const cachedGetter = withCmsCache(
-    async () => queryServicesDirect(locale, options, { draft: false }),
-    keyParts,
-    tags,
-  )
+  const cachedGetter = withCmsCache(() => queryServicesDirect(locale, options), keyParts, tags)
   return cachedGetter()
 }
 
 async function queryServiceBySlugDirect(
   locale: SupportedLocale,
   slug: string,
-  draftCtx: { draft: boolean; user?: User },
 ): Promise<Service | null> {
-  const payload = await getPayloadClient()
   const fallbackLocale = getFallbackLocale(locale)
-  const result = await payload.find({
+  const result = await cmsFind({
     collection: 'services',
     locale,
     fallbackLocale,
@@ -97,9 +99,6 @@ async function queryServiceBySlugDirect(
     },
     limit: 1,
     depth: 2,
-    draft: draftCtx.draft,
-    user: draftCtx.user,
-    overrideAccess: false,
   })
   return result.docs[0] ?? null
 }
@@ -111,17 +110,17 @@ export async function getServiceBySlug(
   const normalizedSlug = slug.trim()
   if (!normalizedSlug) return null
 
-  const { draft, user } = await resolveDraftAccess()
-  if (draft && user) {
-    return queryServiceBySlugDirect(locale, normalizedSlug, { draft: true, user })
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return queryServiceBySlugDirect(locale, normalizedSlug)
   }
 
   const tags = [
-    ...buildCollectionTags({ collection: 'services', slug: normalizedSlug }),
+    ...buildCollectionTags('services', [normalizedSlug]),
     `collection:services:${locale}`,
   ]
   const cachedGetter = withCmsCache(
-    async () => queryServiceBySlugDirect(locale, normalizedSlug, { draft: false }),
+    () => queryServiceBySlugDirect(locale, normalizedSlug),
     ['cms-service-by-slug', locale, normalizedSlug],
     tags,
   )
@@ -147,9 +146,7 @@ export interface PaginatedProjectsResult {
 async function queryProjectsDirect(
   locale: SupportedLocale,
   options: GetProjectsOptions,
-  draftCtx: { draft: boolean; user?: User },
 ): Promise<PaginatedProjectsResult> {
-  const payload = await getPayloadClient()
   const fallbackLocale = getFallbackLocale(locale)
   const clauses: Where[] = []
 
@@ -169,7 +166,7 @@ async function queryProjectsDirect(
   const where: Where | undefined =
     clauses.length === 1 ? clauses[0] : clauses.length > 1 ? { and: clauses } : undefined
 
-  const result = await payload.find({
+  const result = await cmsFind({
     collection: 'projects',
     locale,
     fallbackLocale,
@@ -178,9 +175,6 @@ async function queryProjectsDirect(
     limit: options.limit ?? 24,
     page: options.page ?? 1,
     depth: 2,
-    draft: draftCtx.draft,
-    user: draftCtx.user,
-    overrideAccess: false,
   })
 
   return {
@@ -195,13 +189,13 @@ export async function getProjects(
   locale: SupportedLocale,
   options: GetProjectsOptions = {},
 ): Promise<PaginatedProjectsResult> {
-  const { draft, user } = await resolveDraftAccess()
-  if (draft && user) {
-    return queryProjectsDirect(locale, options, { draft: true, user })
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return queryProjectsDirect(locale, options)
   }
 
   const tags = [
-    ...buildCollectionTags({ collection: 'projects' }),
+    ...buildCollectionTags('projects'),
     `collection:projects:${locale}`,
   ]
   const keyParts = [
@@ -214,22 +208,16 @@ export async function getProjects(
     String(options.limit ?? 24),
     String(options.page ?? 1),
   ]
-  const cachedGetter = withCmsCache(
-    async () => queryProjectsDirect(locale, options, { draft: false }),
-    keyParts,
-    tags,
-  )
+  const cachedGetter = withCmsCache(() => queryProjectsDirect(locale, options), keyParts, tags)
   return cachedGetter()
 }
 
 async function queryProjectBySlugDirect(
   locale: SupportedLocale,
   slug: string,
-  draftCtx: { draft: boolean; user?: User },
 ): Promise<Project | null> {
-  const payload = await getPayloadClient()
   const fallbackLocale = getFallbackLocale(locale)
-  const result = await payload.find({
+  const result = await cmsFind({
     collection: 'projects',
     locale,
     fallbackLocale,
@@ -238,9 +226,6 @@ async function queryProjectBySlugDirect(
     },
     limit: 1,
     depth: 2,
-    draft: draftCtx.draft,
-    user: draftCtx.user,
-    overrideAccess: false,
   })
   return result.docs[0] ?? null
 }
@@ -252,17 +237,17 @@ export async function getProjectBySlug(
   const normalizedSlug = slug.trim()
   if (!normalizedSlug) return null
 
-  const { draft, user } = await resolveDraftAccess()
-  if (draft && user) {
-    return queryProjectBySlugDirect(locale, normalizedSlug, { draft: true, user })
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return queryProjectBySlugDirect(locale, normalizedSlug)
   }
 
   const tags = [
-    ...buildCollectionTags({ collection: 'projects', slug: normalizedSlug }),
+    ...buildCollectionTags('projects', [normalizedSlug]),
     `collection:projects:${locale}`,
   ]
   const cachedGetter = withCmsCache(
-    async () => queryProjectBySlugDirect(locale, normalizedSlug, { draft: false }),
+    () => queryProjectBySlugDirect(locale, normalizedSlug),
     ['cms-project-by-slug', locale, normalizedSlug],
     tags,
   )
@@ -278,30 +263,27 @@ export async function getBrands(
   options: GetBrandsOptions = {},
 ): Promise<Brand[]> {
   const fetchDirect = async (): Promise<Brand[]> => {
-    const payload = await getPayloadClient()
     const fallbackLocale = getFallbackLocale(locale)
     const where: Where | undefined = options.marqueeOnly
       ? { showInMarquee: { equals: true } }
       : undefined
-    const result = await payload.find({
+    const result = await cmsFindAllSmallCollection({
       collection: 'brands',
       locale,
       fallbackLocale,
       where,
       sort: 'order',
-      limit: 200,
       depth: 1,
-      overrideAccess: false,
     })
     return result.docs
   }
 
-  const { draft } = await resolveDraftAccess()
-  if (draft) {
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
     return fetchDirect()
   }
 
-  const tags = [...buildCollectionTags({ collection: 'brands' }), `collection:brands:${locale}`]
+  const tags = [...buildCollectionTags('brands'), `collection:brands:${locale}`]
   const cachedGetter = withCmsCache(
     fetchDirect,
     ['cms-brands', locale, options.marqueeOnly ? 'marquee' : 'all'],
@@ -312,27 +294,24 @@ export async function getBrands(
 
 export async function getMaterials(locale: SupportedLocale): Promise<Material[]> {
   const fetchDirect = async (): Promise<Material[]> => {
-    const payload = await getPayloadClient()
     const fallbackLocale = getFallbackLocale(locale)
-    const result = await payload.find({
+    const result = await cmsFindAllSmallCollection({
       collection: 'materials',
       locale,
       fallbackLocale,
       sort: 'order',
-      limit: 200,
       depth: 2,
-      overrideAccess: false,
     })
     return result.docs
   }
 
-  const { draft } = await resolveDraftAccess()
-  if (draft) {
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
     return fetchDirect()
   }
 
   const tags = [
-    ...buildCollectionTags({ collection: 'materials' }),
+    ...buildCollectionTags('materials'),
     `collection:materials:${locale}`,
     'collection:brands',
   ]
@@ -342,26 +321,23 @@ export async function getMaterials(locale: SupportedLocale): Promise<Material[]>
 
 export async function getStats(locale: SupportedLocale): Promise<Stat[]> {
   const fetchDirect = async (): Promise<Stat[]> => {
-    const payload = await getPayloadClient()
     const fallbackLocale = getFallbackLocale(locale)
-    const result = await payload.find({
+    const result = await cmsFindAllSmallCollection({
       collection: 'stats',
       locale,
       fallbackLocale,
       sort: 'order',
-      limit: 50,
       depth: 1,
-      overrideAccess: false,
     })
     return result.docs
   }
 
-  const { draft } = await resolveDraftAccess()
-  if (draft) {
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
     return fetchDirect()
   }
 
-  const tags = [...buildCollectionTags({ collection: 'stats' }), `collection:stats:${locale}`]
+  const tags = [...buildCollectionTags('stats'), `collection:stats:${locale}`]
   const cachedGetter = withCmsCache(fetchDirect, ['cms-stats', locale], tags)
   return cachedGetter()
 }
@@ -375,32 +351,29 @@ export async function getTeamMembers(
   options: GetTeamOptions = {},
 ): Promise<Team[]> {
   const fetchDirect = async (): Promise<Team[]> => {
-    const payload = await getPayloadClient()
     const fallbackLocale = getFallbackLocale(locale)
     const clauses: Where[] = [{ active: { equals: true } }]
     if (options.tier) {
       clauses.push({ tier: { equals: options.tier } })
     }
     const where: Where = clauses.length === 1 ? clauses[0] : { and: clauses }
-    const result = await payload.find({
+    const result = await cmsFindAllSmallCollection({
       collection: 'team',
       locale,
       fallbackLocale,
       where,
       sort: 'order',
-      limit: 200,
       depth: 1,
-      overrideAccess: false,
     })
     return result.docs
   }
 
-  const { draft } = await resolveDraftAccess()
-  if (draft) {
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
     return fetchDirect()
   }
 
-  const tags = [...buildCollectionTags({ collection: 'team' }), `collection:team:${locale}`]
+  const tags = [...buildCollectionTags('team'), `collection:team:${locale}`]
   const cachedGetter = withCmsCache(
     fetchDirect,
     ['cms-team', locale, options.tier ?? 'all'],
