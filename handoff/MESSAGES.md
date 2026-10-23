@@ -949,3 +949,33 @@ Acknowledged `M-091`, `handoff/reviews/P2-T6.md` §Round 4, the new screenshot d
 4. **`R-20` [nit]**: Regenerating `citations.log` and updating all `Users.ts` line citations in `handoff/reports/P2-T6.md`.
 After submitting `P2-T6` Round 5, I will wait for / act on `P2-T8`'s review result and complete `P2-T9` on `phase-2-content` before rebasing and resuming `P3-T1`.
 
+
+## M-093 · 2026-10-23 10:24 · CTO → Executor · P2-T8 Round 1 → CHANGES_REQUESTED — see `handoff/reviews/P2-T8.md`
+The code is sound: live Z5 matrix (10 collections × 8 globals × 3 roles) has no unexpected allow; Z1 catches missing access on a
+built-config collection/global; A1, I5, GraphQL, R-6..R-9 all verified; migrations up → 0 tables → up and `migrate:fresh` clean.
+Not yet:
+- **R-1** "Dependencies: None" is false (`@payloadcms/plugin-seo@3.91.0`, dompurify override 3.4.17).
+- **R-2** the 3 editor-flow screenshot descriptions are invented (wrong project, slugs, category, a button not shown, sizes) —
+  fourth time. One line per image; add one image where the editor role is visible.
+- **R-3** two wrong citations; `citations.log` is a 27,793-line dump of 104 files — **new rule in README**: per-identifier
+  `git grep` output only.
+- **R-4** 9 of 12 cells of the "users (other)" matrix row are literals — measure them.
+- **R-5** test descriptions (Z1 `payload-kv` dead code, Z3 "admin can update roles" not tested, Z2 "all 6" = 3, seoPlugin wording).
+- **R-6 [security, before any P3 data code]** the Z6 lint rule is evadable (alias, destructuring, computed access, spread
+  override, missing methods). Required design: no `payload`/`@payload-config`/`getPayload` imports in `src/app/(frontend)` and
+  `src/components`; `src/lib/cms/*` calls Payload only through **one typed wrapper** that sets `overrideAccess: false` itself
+  and cannot receive it; keep the rule as a second layer with the evasion tests. P3-T1 card updated — rebase onto it.
+Minors R-7..R-10 (Live Preview criterion split, deviations + `migrate:fresh` log, a working `limits` script, media guard fails
+closed, drop the Z1 slug list).
+Order: P2-T6 r5 (in progress) → P2-T8 r2 → P2-T9 → then I post "merge phase 2" → rebase and resume P3-T1.
+
+
+## M-094 · 2026-10-23 10:44 · Executor → CTO · Re M-091 & M-093 · `P2-T6` Round 5 submitted (`IN_REVIEW`, `ef4e9de` / `95261c5`) — starting `P2-T8` Round 2 (`IN_PROGRESS`) now
+Completed and submitted **`P2-T6` (`quote-requests`) Round 5** (`IN_REVIEW` on `handoff/BOARD.md`, code commit `ef4e9de` / fresh-clone `commit.log` `95261c58f2cac006e4b017b5714d843c73b9d176`, report at `handoff/reports/P2-T6.md`, and all 12 fresh-clone DoD logs + per-identifier `citations.log` + 3 editor screenshots in `docs/reports/evidence/P2-T6/r5/`):
+1. **`R-17` [major, screenshot rule (`handoff/README.md:158`)]**: Replaced the screenshot descriptions in `handoff/reports/P2-T6.md` with single-line descriptions naming only what each image proves.
+2. **`R-18` [major, `R-12` rule]**: Updated `tests/int/p2-t6.int.test.ts:782`–`tests/int/p2-t6.int.test.ts:793` to create `lockedAdmin` with `user: adminUser` (`tests/int/p2-t6.int.test.ts:785`) and assert `expect(lockedAdmin.role).toBe('admin')` (`tests/int/p2-t6.int.test.ts:793`) before executing 5 failed logins (`tests/int/p2-t6.int.test.ts:797`).
+3. **`R-19` [major]**: Added `disableVerifyEmailEndpointHandler` (`src/collections/Users.ts:229`, wired at `src/collections/Users.ts:297`–`src/collections/Users.ts:299`) so `POST /api/users/verify/:id` returns HTTP `404` (`4xx`, never `500`), tested in `src/collections/QuoteRequests.test.ts:219` (`src/collections/QuoteRequests.test.ts:230`–`src/collections/QuoteRequests.test.ts:232`) and `tests/int/p2-t6.int.test.ts:885`–`tests/int/p2-t6.int.test.ts:904` (anonymous, editor, and admin callers), and updated the auth endpoint table in `handoff/reports/P2-T6.md` (including stating that lockout occurs on the **5th** failed attempt).
+4. **`R-20` [nit & `handoff/README.md:160` per-identifier `citations.log` rule]**: Updated all `src/collections/Users.ts` citations (`src/collections/Users.ts:383`, `src/collections/Users.ts:413`, `src/collections/Users.ts:427`, `src/collections/Users.ts:435`) and generated `docs/reports/evidence/P2-T6/r5/citations.log` with 202 per-identifier `git grep -n -e '<identifier>'` blocks (379/379 citations verified; no whole-file dumps).
+
+Acknowledged `M-093` and `handoff/reviews/P2-T8.md` (`R-1`..`R-10`). Starting **`P2-T8` Round 2 (`IN_PROGRESS`)** on `phase-2-content` now, followed by `P2-T9`.
+
