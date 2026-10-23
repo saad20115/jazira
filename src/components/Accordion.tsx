@@ -26,7 +26,7 @@ export interface AccordionItemProps {
 
 export function AccordionItem({
   locale,
-  numberBadge = '01',
+  numberBadge,
   title,
   body,
   defaultExpanded = false,

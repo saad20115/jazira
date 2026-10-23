@@ -28,16 +28,87 @@ export const FORBIDDEN_SERVER_LIBRARY_MARKERS = [
   'drizzle-orm/node-postgres',
   'drizzle-orm/pg-core',
   'pg-protocol',
+  'SASL: SCRAM-SERVER-FIRST-MESSAGE',
   'nodemailer/lib/mailer',
   'sharp/lib/sharp',
+  'the payload config is required for getPayload to work',
+  'missing secret key. A secret key is needed to secure Payload',
   'createPublicAPIError',
   'ensurePublicErrorMessageAfterError',
+]
+
+/**
+ * Runtime markers from `payload` (`APIError`, `ValidationError`, `getPayload`) that survive
+ * Turbopack minification and must never appear in any public `(frontend)` client chunk (`R-4`).
+ * Note: Payload's `/admin` client bundle (`(payload)`) legitimately uses `payload/shared` & client UI,
+ * so these markers are checked against the `(frontend)` route client chunks resolved from
+ * `.next/server/app/(frontend)` `build-manifest.json` files (or all files when scanning a standalone test dir).
+ */
+export const FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS = [
+  'this.isOperational',
+  'UNAVAILABLE_FOR_LEGAL_REASONS',
+  'followingFieldsInvalid',
+  'the payload config is required for getPayload to work',
 ]
 
 export const ALL_FORBIDDEN_CLIENT_BUNDLE_MARKERS = [
   ...FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
   ...FORBIDDEN_SERVER_LIBRARY_MARKERS,
 ]
+
+/**
+ * Collects the relative paths (inside `.next/static`) of all JS chunks loaded by `(frontend)` routes
+ * by reading `.next/server/app/(frontend)` `build-manifest.json` files.
+ *
+ * @param {string} staticRootDir
+ * @returns {Set<string> | null} Set of relative paths inside `staticRootDir`, or `null` if no `.next/server` exists.
+ */
+export function resolveFrontendClientChunkFiles(staticRootDir) {
+  const dotNextDir = path.dirname(staticRootDir)
+  const frontendServerAppDir = path.join(dotNextDir, 'server', 'app', '(frontend)')
+  const payloadServerAppDir = path.join(dotNextDir, 'server', 'app', '(payload)')
+  if (!fs.existsSync(frontendServerAppDir) && !fs.existsSync(payloadServerAppDir)) {
+    return null
+  }
+
+  /** @type {Set<string>} */
+  const frontendRelativeFiles = new Set()
+  if (!fs.existsSync(frontendServerAppDir)) {
+    return frontendRelativeFiles
+  }
+
+  /**
+   * @param {string} dir
+   */
+  function walkServerFrontend(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name)
+      if (entry.isDirectory()) {
+        walkServerFrontend(full)
+      } else if (entry.isFile() && entry.name === 'build-manifest.json') {
+        try {
+          const manifest = JSON.parse(fs.readFileSync(full, 'utf8'))
+          const fileLists = [
+            ...(Array.isArray(manifest.rootMainFiles) ? manifest.rootMainFiles : []),
+            ...(Array.isArray(manifest.polyfillFiles) ? manifest.polyfillFiles : []),
+            ...Object.values(manifest.pages ?? {}).flat(),
+          ]
+          for (const item of fileLists) {
+            if (typeof item === 'string') {
+              const normalized = item.replace(/\\/g, '/').replace(/^\/+/, '').replace(/^static\//, '')
+              frontendRelativeFiles.add(normalized)
+            }
+          }
+        } catch {
+          // Ignore malformed JSON
+        }
+      }
+    }
+  }
+
+  walkServerFrontend(frontendServerAppDir)
+  return frontendRelativeFiles
+}
 
 /**
  * @param {string} rootDir
@@ -47,6 +118,8 @@ export function scanDirectoryForSentinels(rootDir) {
   if (!fs.existsSync(rootDir)) {
     throw new Error(`Client bundle directory not found: ${rootDir}`)
   }
+
+  const frontendChunks = resolveFrontendClientChunkFiles(rootDir)
 
   /** @type {Array<{ file: string; sentinel: string }>} */
   const hits = []
@@ -60,13 +133,28 @@ export function scanDirectoryForSentinels(rootDir) {
       if (entry.isDirectory()) {
         walk(fullPath)
       } else if (entry.isFile()) {
+        const relFile = path.relative(rootDir, fullPath).replace(/\\/g, '/')
         const content = fs.readFileSync(fullPath, 'utf8')
         for (const marker of ALL_FORBIDDEN_CLIENT_BUNDLE_MARKERS) {
           if (content.includes(marker)) {
             hits.push({
-              file: path.relative(rootDir, fullPath).replace(/\\/g, '/'),
+              file: relFile,
               sentinel: marker,
             })
+          }
+        }
+        const isFrontendChunk = frontendChunks === null || frontendChunks.has(relFile)
+        if (isFrontendChunk) {
+          for (const runtimeMarker of FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS) {
+            if (
+              !ALL_FORBIDDEN_CLIENT_BUNDLE_MARKERS.includes(runtimeMarker) &&
+              content.includes(runtimeMarker)
+            ) {
+              hits.push({
+                file: relFile,
+                sentinel: runtimeMarker,
+              })
+            }
           }
         }
       }

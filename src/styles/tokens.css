@@ -323,6 +323,7 @@
   --t-body-m-medium-ls: 0px;
   --t-body-m-strong-lh: var(--t-body-m-strong-lh-ar);
   --t-body-m-strong-ls: 0px;
+  --t-body-quote-style: normal;
   --t-body-quote-lh: var(--t-body-quote-lh-ar);
   --t-body-quote-ls: 0px;
   --t-body-s-lh: var(--t-body-s-lh-ar);
@@ -376,6 +377,7 @@
   --t-body-m-medium-ls: var(--t-body-m-medium-ls-en);
   --t-body-m-strong-lh: var(--t-body-m-strong-lh-en);
   --t-body-m-strong-ls: var(--t-body-m-strong-ls-en);
+  --t-body-quote-style: italic;
   --t-body-quote-lh: var(--t-body-quote-lh-en);
   --t-body-quote-ls: var(--t-body-quote-ls-en);
   --t-body-s-lh: var(--t-body-s-lh-en);
@@ -427,15 +429,19 @@
     --t-display-l-size: 44px;
     --t-display-l-lh-en: 52px;
     --t-display-l-lh-ar: 57.2px;
+    --t-display-l-ls-en: -0.528px;
     --t-display-xl-size: 56px;
     --t-display-xl-lh-en: 64px;
     --t-display-xl-lh-ar: 70.4px;
+    --t-display-xl-ls-en: -0.84px;
     --t-h2-size: 36px;
     --t-h2-lh-en: 44px;
     --t-h2-lh-ar: 48.4px;
+    --t-h2-ls-en: -0.36px;
     --t-h3-size: 24px;
     --t-h3-lh-en: 32px;
     --t-h3-lh-ar: 35.2px;
+    --t-h3-ls-en: -0.096px;
     --t-h4-size: 19px;
     --t-h4-lh-en: 27px;
     --t-h4-lh-ar: 29.7px;
@@ -445,9 +451,11 @@
     --t-stat-m-size: 36px;
     --t-stat-m-lh-en: 44px;
     --t-stat-m-lh-ar: 48.4px;
+    --t-stat-m-ls-en: -0.36px;
     --t-stat-number-size: 48px;
     --t-stat-number-lh-en: 54px;
     --t-stat-number-lh-ar: 59.4px;
+    --t-stat-number-ls-en: -0.48px;
   }
 }
 
@@ -474,15 +482,19 @@
     --t-display-l-size: 36px;
     --t-display-l-lh-en: 44px;
     --t-display-l-lh-ar: 48.4px;
+    --t-display-l-ls-en: -0.432px;
     --t-display-xl-size: 44px;
     --t-display-xl-lh-en: 52px;
     --t-display-xl-lh-ar: 57.2px;
+    --t-display-xl-ls-en: -0.66px;
     --t-h2-size: 30px;
     --t-h2-lh-en: 38px;
     --t-h2-lh-ar: 41.8px;
+    --t-h2-ls-en: -0.3px;
     --t-h3-size: 22px;
     --t-h3-lh-en: 30px;
     --t-h3-lh-ar: 33px;
+    --t-h3-ls-en: -0.088px;
     --t-h4-size: 18px;
     --t-h4-lh-en: 26px;
     --t-h4-lh-ar: 28.6px;
@@ -492,9 +504,11 @@
     --t-stat-m-size: 32px;
     --t-stat-m-lh-en: 40px;
     --t-stat-m-lh-ar: 44px;
+    --t-stat-m-ls-en: -0.32px;
     --t-stat-number-size: 40px;
     --t-stat-number-lh-en: 46px;
     --t-stat-number-lh-ar: 50.6px;
+    --t-stat-number-ls-en: -0.4px;
   }
 }
 

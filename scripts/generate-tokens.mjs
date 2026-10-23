@@ -349,8 +349,11 @@ export function buildTokensCss(tokens) {
     "  --font-sans: var(--font-noto-kufi-arabic, 'Noto Kufi Arabic'), 'Noto Kufi Arabic', sans-serif;",
   )
   lines.push('  --font-lh-multiplier: 1.1;')
-  for (const [styleName] of Object.entries(typography)) {
+  for (const [styleName, styleDef] of Object.entries(typography)) {
     const { slug } = TYPOGRAPHY_STYLE_MAP[styleName]
+    if (styleDef.fontStyle.toLowerCase() === 'italic') {
+      lines.push(`  --t-${slug}-style: normal;`)
+    }
     lines.push(`  --t-${slug}-lh: var(--t-${slug}-lh-ar);`)
     lines.push(`  --t-${slug}-ls: 0px;`)
   }
@@ -362,8 +365,11 @@ export function buildTokensCss(tokens) {
   lines.push("[lang='en'] {")
   lines.push("  --font-sans: var(--font-poppins, 'Poppins'), 'Poppins', sans-serif;")
   lines.push('  --font-lh-multiplier: 1;')
-  for (const [styleName] of Object.entries(typography)) {
+  for (const [styleName, styleDef] of Object.entries(typography)) {
     const { slug } = TYPOGRAPHY_STYLE_MAP[styleName]
+    if (styleDef.fontStyle.toLowerCase() === 'italic') {
+      lines.push(`  --t-${slug}-style: italic;`)
+    }
     lines.push(`  --t-${slug}-lh: var(--t-${slug}-lh-en);`)
     lines.push(`  --t-${slug}-ls: var(--t-${slug}-ls-en);`)
   }
@@ -381,6 +387,10 @@ export function buildTokensCss(tokens) {
       lines.push(`    --t-${slug}-size: ${formatPx(tablet.fontSize)};`)
       lines.push(`    --t-${slug}-lh-en: ${formatPx(tablet.lineHeight)};`)
       lines.push(`    --t-${slug}-lh-ar: ${formatPx(tablet.lineHeight * 1.1)};`)
+      if (styleDef.letterSpacingPx !== 0 && tablet.fontSize !== styleDef.fontSize) {
+        const scaledTabletLs = (styleDef.letterSpacingPx / styleDef.fontSize) * tablet.fontSize
+        lines.push(`    --t-${slug}-ls-en: ${formatPx(scaledTabletLs)};`)
+      }
     }
   }
   lines.push('  }')
@@ -398,6 +408,10 @@ export function buildTokensCss(tokens) {
       lines.push(`    --t-${slug}-size: ${formatPx(mobile.fontSize)};`)
       lines.push(`    --t-${slug}-lh-en: ${formatPx(mobile.lineHeight)};`)
       lines.push(`    --t-${slug}-lh-ar: ${formatPx(mobile.lineHeight * 1.1)};`)
+      if (styleDef.letterSpacingPx !== 0 && mobile.fontSize !== styleDef.fontSize) {
+        const scaledMobileLs = (styleDef.letterSpacingPx / styleDef.fontSize) * mobile.fontSize
+        lines.push(`    --t-${slug}-ls-en: ${formatPx(scaledMobileLs)};`)
+      }
     }
   }
   lines.push('  }')

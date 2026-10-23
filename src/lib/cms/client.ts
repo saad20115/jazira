@@ -417,8 +417,26 @@ export async function cmsFind<TSlug extends CmsCollectionSlug>(
 }
 
 /**
+ * Verifies that a `cmsFindAllSmallCollection` result did not silently truncate documents beyond
+ * `MAX_CMS_QUERY_LIMIT` (`R-10`, `R-23`). Logs a warning and throws if `totalDocs > MAX_CMS_QUERY_LIMIT`.
+ */
+export function assertSmallCollectionNotTruncated(
+  collection: string,
+  totalDocs: number,
+  warnLogger?: (msg: string) => void,
+): void {
+  if (totalDocs > MAX_CMS_QUERY_LIMIT) {
+    const message = `[cmsFindAllSmallCollection] Collection "${collection}" has ${String(totalDocs)} documents, exceeding MAX_CMS_QUERY_LIMIT (${String(MAX_CMS_QUERY_LIMIT)}). Use paginated cmsFind() instead (R-10, R-23).`
+    if (warnLogger) {
+      warnLogger(message)
+    }
+    throw new Error(message)
+  }
+}
+
+/**
  * Dedicated named helper for unpaginated (`pagination: false`) fetches of small, known
- * collections (`brands`, `stats`, `materials`, `services`, `team`) (`R-23`).
+ * collections (`brands`, `stats`, `materials`, `services`, `team`) (`R-23`, `R-10`).
  */
 export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCollectionSlug>(
   options: CmsFindAllSmallCollectionOptions<TSlug>,
@@ -438,6 +456,9 @@ export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCo
     limit: MAX_CMS_QUERY_LIMIT,
     draft,
     overrideAccess: false,
+  })
+  assertSmallCollectionNotTruncated(options.collection, result.totalDocs, (msg) => {
+    payload.logger.warn(msg)
   })
   return result as unknown as CmsPaginatedDocs<Config['collections'][TSlug]>
 }

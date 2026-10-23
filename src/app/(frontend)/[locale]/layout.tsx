@@ -14,9 +14,9 @@ import {
   isSupportedLocale,
   type SupportedLocale,
 } from '@/i18n'
-import { getNavigation, getSiteSettings } from '@/lib/cms'
+import { getNavigation, getSiteSettings, resolveAuthenticatedStaffUser } from '@/lib/cms'
 import type { Navigation, SiteSetting } from '@/payload-types'
-import { fontVariablesClassName } from '@/styles/fonts'
+import { getLocaleFontClassName } from '@/styles/fonts'
 import gridStyles from '@/styles/grid.module.css'
 
 interface LocaleLayoutProps {
@@ -82,8 +82,8 @@ export async function generateMetadata({
             default: defaultTitle,
             template: `%s | ${companyName}`,
           }
-        : defaultTitle,
-      description: defaultDescription,
+        : defaultTitle || undefined,
+      description: defaultDescription || undefined,
       icons: {
         icon: '/icon.svg',
       },
@@ -95,9 +95,9 @@ export async function generateMetadata({
         },
       },
       openGraph: {
-        title: defaultTitle,
-        description: defaultDescription,
-        siteName: companyName,
+        title: defaultTitle || undefined,
+        description: defaultDescription || undefined,
+        siteName: companyName || undefined,
         locale: locale === 'ar' ? 'ar_SA' : 'en_US',
         type: 'website',
       },
@@ -119,28 +119,28 @@ export async function generateMetadata({
   }
 }
 
-export default async function LocaleRootLayout({
-  children,
-  params,
-}: LocaleLayoutProps): Promise<React.JSX.Element> {
-  const { locale } = await params
-  const resolvedLocale: SupportedLocale = isSupportedLocale(locale) ? locale : DEFAULT_LOCALE
-  const dir = getLocaleDirection(resolvedLocale)
-  const dict = getDictionary(resolvedLocale)
+async function LocaleShellHeader({
+  locale,
+  activePathname,
+  isDevSpecimenOrStyleguide,
+}: {
+  locale: SupportedLocale
+  activePathname: string
+  isDevSpecimenOrStyleguide: boolean
+}): Promise<React.JSX.Element | null> {
+  const dict = getDictionary(locale)
+  const [{ isEnabled: isDraftMode }, requestHeaders, shellGlobals] = await Promise.all([
+    draftMode(),
+    headers(),
+    isDevSpecimenOrStyleguide
+      ? Promise.resolve({ siteSettings: null, navigation: null })
+      : loadShellGlobals(locale),
+  ])
 
-  // Reading incoming request headers opts the layout into dynamic rendering so Next.js
-  // extracts the per-request CSP nonce (`x-nonce` / `Content-Security-Policy`) and attaches
-  // `nonce` to all framework hydration scripts (`docs/03-security.md` H3).
-  const requestHeaders = await headers()
-  const activePathname = requestHeaders.get('x-aljazira-pathname') || `/${resolvedLocale}`
-  const { isEnabled: isDraftMode } = await draftMode()
+  const isStaffDraftPreview =
+    isDraftMode && Boolean(await resolveAuthenticatedStaffUser(requestHeaders))
 
-  const isDevSpecimenOrStyleguide =
-    activePathname.endsWith('/_specimen') || activePathname.endsWith('/styleguide')
-
-  const { siteSettings, navigation } = isDevSpecimenOrStyleguide
-    ? { siteSettings: null, navigation: null }
-    : await loadShellGlobals(resolvedLocale)
+  const { siteSettings, navigation } = shellGlobals
 
   const headerNavItems: NavbarNavItem[] | undefined =
     navigation?.header && navigation.header.length > 0
@@ -150,6 +150,45 @@ export default async function LocaleRootLayout({
           link: row.link,
         }))
       : undefined
+
+  return (
+    <>
+      {isStaffDraftPreview ? (
+        <aside className={`${gridStyles.draftBanner} t-body-s-medium`}>
+          <span>{dict.draftMode.bannerText}</span>
+          <a
+            href={`/api/preview/exit?returnTo=${encodeURIComponent(activePathname)}`}
+            className={`${gridStyles.draftExitLink} t-label-link`}
+          >
+            {dict.draftMode.exitPreviewLabel}
+          </a>
+        </aside>
+      ) : null}
+      {!isDevSpecimenOrStyleguide ? (
+        <Navbar
+          ctaLabel={navigation?.headerCta?.label}
+          ctaLink={navigation?.headerCta?.label ? navigation.headerCta.link : undefined}
+          items={headerNavItems}
+          locale={locale}
+          siteName={siteSettings?.companyName}
+        />
+      ) : null}
+    </>
+  )
+}
+
+async function LocaleShellFooter({
+  locale,
+  isDevSpecimenOrStyleguide,
+}: {
+  locale: SupportedLocale
+  isDevSpecimenOrStyleguide: boolean
+}): Promise<React.JSX.Element | null> {
+  if (isDevSpecimenOrStyleguide) {
+    return null
+  }
+
+  const { siteSettings, navigation } = await loadShellGlobals(locale)
 
   const footerQuickLinks: FooterQuickLinkItem[] | undefined =
     navigation?.footer && navigation.footer[0]?.links && navigation.footer[0].links.length > 0
@@ -170,59 +209,70 @@ export default async function LocaleRootLayout({
       : undefined
 
   return (
-    <html lang={resolvedLocale} dir={dir} className={fontVariablesClassName}>
+    <>
+      <Footer
+        address={siteSettings?.address || siteSettings?.office?.address}
+        copyright={siteSettings?.copyright}
+        ctaBody={navigation?.footerCta?.text}
+        ctaButtonLabel={navigation?.footerCta?.button?.label}
+        ctaButtonLink={
+          navigation?.footerCta?.button?.label ? navigation.footerCta.button.link : undefined
+        }
+        ctaTitle={navigation?.footerCta?.title}
+        description={siteSettings?.footerText}
+        emails={siteSettings?.email ? [siteSettings.email] : undefined}
+        locale={locale}
+        phones={siteSettings?.phone ? [siteSettings.phone] : undefined}
+        quickLinks={footerQuickLinks}
+        siteName={siteSettings?.companyName}
+        socialLinks={socialLinks}
+        whatsapp={siteSettings?.whatsapp}
+      />
+      <WhatsAppFab
+        locale={locale}
+        tooltipLabel={siteSettings?.whatsappLabel || undefined}
+        whatsapp={siteSettings?.whatsapp}
+      />
+    </>
+  )
+}
+
+export default async function LocaleRootLayout({
+  children,
+  params,
+}: LocaleLayoutProps): Promise<React.JSX.Element> {
+  const { locale } = await params
+  const resolvedLocale: SupportedLocale = isSupportedLocale(locale) ? locale : DEFAULT_LOCALE
+  const dir = getLocaleDirection(resolvedLocale)
+  const dict = getDictionary(resolvedLocale)
+
+  // Reading incoming request headers opts the layout into dynamic rendering so Next.js
+  // extracts the per-request CSP nonce (`x-nonce` / `Content-Security-Policy`) and attaches
+  // `nonce` to all framework hydration scripts (`docs/03-security.md` H3).
+  // Async DB shell queries run inside `<LocaleShellHeader>` and `<LocaleShellFooter>` so synchronous
+  // `notFound()` throws in child pages never abort `<html lang={resolvedLocale} dir={dir}>` (`R-7`).
+  const requestHeaders = await headers()
+  const activePathname = requestHeaders.get('x-aljazira-pathname') || `/${resolvedLocale}`
+
+  const isDevSpecimenOrStyleguide =
+    activePathname.endsWith('/_specimen') || activePathname.endsWith('/styleguide')
+
+  return (
+    <html lang={resolvedLocale} dir={dir} className={getLocaleFontClassName(resolvedLocale)}>
       <body>
         <a href="#main-content" className={`${gridStyles.skipLink} t-label-button`}>
           {dict.a11y.skipToMainContent}
         </a>
-        {isDraftMode ? (
-          <aside className={`${gridStyles.draftBanner} t-body-s-medium`}>
-            <span>{dict.draftMode.bannerText}</span>
-            <a
-              href={`/api/preview/exit?returnTo=${encodeURIComponent(activePathname)}`}
-              className={`${gridStyles.draftExitLink} t-label-link`}
-            >
-              {dict.draftMode.exitPreviewLabel}
-            </a>
-          </aside>
-        ) : null}
-        {!isDevSpecimenOrStyleguide ? (
-          <Navbar
-            ctaLabel={navigation?.headerCta?.label}
-            ctaLink={navigation?.headerCta?.label ? navigation.headerCta.link : undefined}
-            items={headerNavItems}
-            locale={resolvedLocale}
-            siteName={siteSettings?.companyName}
-          />
-        ) : null}
+        <LocaleShellHeader
+          locale={resolvedLocale}
+          activePathname={activePathname}
+          isDevSpecimenOrStyleguide={isDevSpecimenOrStyleguide}
+        />
         <main id="main-content">{children}</main>
-        {!isDevSpecimenOrStyleguide ? (
-          <>
-            <Footer
-              address={siteSettings?.address || siteSettings?.office?.address}
-              copyright={siteSettings?.copyright}
-              ctaBody={navigation?.footerCta?.text}
-              ctaButtonLabel={navigation?.footerCta?.button?.label}
-              ctaButtonLink={
-                navigation?.footerCta?.button?.label ? navigation.footerCta.button.link : undefined
-              }
-              ctaTitle={navigation?.footerCta?.title}
-              description={siteSettings?.footerText}
-              emails={siteSettings?.email ? [siteSettings.email] : undefined}
-              locale={resolvedLocale}
-              phones={siteSettings?.phone ? [siteSettings.phone] : undefined}
-              quickLinks={footerQuickLinks}
-              siteName={siteSettings?.companyName}
-              socialLinks={socialLinks}
-              whatsapp={siteSettings?.whatsapp}
-            />
-            <WhatsAppFab
-              locale={resolvedLocale}
-              tooltipLabel={siteSettings?.whatsappLabel || undefined}
-              whatsapp={siteSettings?.whatsapp}
-            />
-          </>
-        ) : null}
+        <LocaleShellFooter
+          locale={resolvedLocale}
+          isDevSpecimenOrStyleguide={isDevSpecimenOrStyleguide}
+        />
       </body>
     </html>
   )

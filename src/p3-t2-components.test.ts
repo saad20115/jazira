@@ -225,30 +225,56 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
   })
 
   describe('6. Footer', () => {
-    it('renders Footer with icon-only social links having explicit aria-labels in ar and en', () => {
+    it('renders Footer with icon-only social links having explicit aria-labels in ar and en, and hides unpopulated CMS sections when omitted (R-5)', () => {
+      const sampleSocials = [
+        { platform: 'linkedin' as const, url: 'https://www.linkedin.com' },
+        { platform: 'x' as const, url: 'https://x.com' },
+        { platform: 'instagram' as const, url: 'https://www.instagram.com' },
+        { platform: 'facebook' as const, url: 'https://www.facebook.com' },
+        { platform: 'whatsapp' as const, url: 'https://wa.me/966500000000' },
+      ]
       const arFooterHtml = renderToStaticMarkup(
-        React.createElement(Footer, { locale: 'ar' }),
+        React.createElement(Footer, {
+          locale: 'ar',
+          phones: ['+966 50 000 0000'],
+          socialLinks: sampleSocials,
+        }),
       )
       expect(arFooterHtml).toContain('data-component="footer"')
       for (const platform of SOCIAL_ICON_KEYS) {
         expect(arFooterHtml).toContain(`data-social-platform="${platform}"`)
       }
-      expect(arFooterHtml).toContain('aria-label="تابع الجزيرة على لينكدإن"')
+      expect(arFooterHtml).toContain('aria-label="لينكدإن"')
       expect(arFooterHtml).toContain('dir="ltr"')
 
       const enFooterHtml = renderToStaticMarkup(
+        React.createElement(Footer, {
+          locale: 'en',
+          socialLinks: sampleSocials,
+        }),
+      )
+      expect(enFooterHtml).toContain('aria-label="LinkedIn"')
+      expect(enFooterHtml).toContain('aria-label="WhatsApp"')
+
+      // R-5: Empty CMS props hide unpopulated description, socials, contact info, CTA card, and copyright
+      const emptyFooterHtml = renderToStaticMarkup(
         React.createElement(Footer, { locale: 'en' }),
       )
-      expect(enFooterHtml).toContain('aria-label="Follow Al Jazira on LinkedIn"')
-      expect(enFooterHtml).toContain('aria-label="Chat with Al Jazira on WhatsApp"')
+      expect(emptyFooterHtml).not.toContain('data-social-platform=')
+      expect(emptyFooterHtml).not.toContain('mailto:')
     })
   })
 
   describe('7. WhatsAppFab', () => {
-    it('renders Idle, Pulse, and Hover states with normalized wa.me URL and RTL/reduced-motion CSS rules', () => {
+    it('renders Idle, Pulse, and Hover states with normalized wa.me URL, returns null when whatsapp is omitted (R-5), and has RTL/reduced-motion CSS rules', () => {
       expect(normalizeWhatsappDigits('+966 57 353 4185')).toBe('966573534185')
       expect(normalizeWhatsappDigits('0573534185')).toBe('966573534185')
       expect(normalizeWhatsappDigits('00966502255688')).toBe('966502255688')
+      expect(normalizeWhatsappDigits('')).toBe('')
+
+      expect(
+        renderToStaticMarkup(React.createElement(WhatsAppFab, { locale: 'ar' })),
+      ).toBe('')
 
       for (const state of WHATSAPP_FAB_STATES) {
         const html = renderToStaticMarkup(

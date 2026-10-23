@@ -2,9 +2,10 @@ import { notFound } from 'next/navigation'
 import type React from 'react'
 
 import { CmsLink } from '@/components/CmsLink'
-import { getAlternateLocale, getDictionary, isSupportedLocale, type UiDictionary } from '@/i18n'
+import { getAlternateLocale, getDictionary, isSupportedLocale } from '@/i18n'
 import gridStyles from '@/styles/grid.module.css'
 
+import { getSpecimenStrings, type SpecimenStrings } from './specimen-data'
 import styles from './specimen.module.css'
 
 interface SpecimenPageProps {
@@ -47,7 +48,7 @@ interface TypographyRow {
   figmaStyle: string
   specEn: string
   specAr: string
-  sampleKey: keyof UiDictionary['specimen']
+  sampleKey: keyof SpecimenStrings
 }
 
 const TYPOGRAPHY_ROWS: readonly TypographyRow[] = [
@@ -248,6 +249,7 @@ export default async function DesignTokenSpecimenPage({
   }
 
   const dict = getDictionary(locale)
+  const specimen = getSpecimenStrings(locale)
   const alternateLocale = getAlternateLocale(locale)
 
   return (
@@ -255,7 +257,7 @@ export default async function DesignTokenSpecimenPage({
       <div className={gridStyles.container}>
         <header className={styles.headerBanner} data-theme="dark">
           <div className={styles.headerTop}>
-            <span className={`${styles.badge} t-label-eyebrow`}>{dict.specimen.badge}</span>
+            <span className={`${styles.badge} t-label-eyebrow`}>{specimen.badge}</span>
             <CmsLink
               href={`/${alternateLocale}/_specimen`}
               aria-label={dict.a11y.languageSwitcherLabel}
@@ -265,14 +267,14 @@ export default async function DesignTokenSpecimenPage({
               <span>{dict.localeSwitcher.targetName}</span>
             </CmsLink>
           </div>
-          <h1 className={`${styles.headerTitle} t-h2`}>{dict.specimen.title}</h1>
-          <p className={`${styles.headerSubtitle} t-body-l`}>{dict.specimen.subtitle}</p>
+          <h1 className={`${styles.headerTitle} t-h2`}>{specimen.title}</h1>
+          <p className={`${styles.headerSubtitle} t-body-l`}>{specimen.subtitle}</p>
         </header>
       </div>
 
       <div className={gridStyles.container}>
         <section className={styles.sectionCard}>
-          <h2 className={`${styles.sectionTitle} t-h3`}>{dict.specimen.colorsHeading}</h2>
+          <h2 className={`${styles.sectionTitle} t-h3`}>{specimen.colorsHeading}</h2>
           <div className={styles.swatchGrid}>
             {BRAND_SWATCHES.map((item) => (
               <div key={item.token} className={styles.swatchCard}>
@@ -293,7 +295,7 @@ export default async function DesignTokenSpecimenPage({
 
       <div className={gridStyles.container}>
         <section className={styles.sectionCard}>
-          <h2 className={`${styles.sectionTitle} t-h3`}>{dict.specimen.extraColorsHeading}</h2>
+          <h2 className={`${styles.sectionTitle} t-h3`}>{specimen.extraColorsHeading}</h2>
           <div className={styles.swatchGrid}>
             {EXTRA_SWATCHES.map((item) => (
               <div key={item.token} className={styles.swatchCard}>
@@ -314,7 +316,7 @@ export default async function DesignTokenSpecimenPage({
 
       <div className={gridStyles.container}>
         <section className={styles.sectionCard}>
-          <h2 className={`${styles.sectionTitle} t-h3`}>{dict.specimen.typographyHeading}</h2>
+          <h2 className={`${styles.sectionTitle} t-h3`}>{specimen.typographyHeading}</h2>
           <div className={styles.typeList}>
             {TYPOGRAPHY_ROWS.map((row) => (
               <div key={row.className} className={styles.typeRow}>
@@ -330,7 +332,7 @@ export default async function DesignTokenSpecimenPage({
                   {locale === 'ar' ? row.specAr : row.specEn}
                 </p>
                 <p className={`${styles.typeSample} ${row.className}`}>
-                  {dict.specimen[row.sampleKey]}
+                  {specimen[row.sampleKey]}
                 </p>
               </div>
             ))}
@@ -340,7 +342,7 @@ export default async function DesignTokenSpecimenPage({
 
       <div className={gridStyles.container}>
         <section className={styles.sectionCard}>
-          <h2 className={`${styles.sectionTitle} t-h3`}>{dict.specimen.shadowsHeading}</h2>
+          <h2 className={`${styles.sectionTitle} t-h3`}>{specimen.shadowsHeading}</h2>
           <div className={styles.tokenDemoGrid}>
             {SHADOW_ITEMS.map((item) => (
               <div key={item.token} className={`${styles.shadowBox} ${item.boxClass}`}>
@@ -355,7 +357,7 @@ export default async function DesignTokenSpecimenPage({
 
       <div className={gridStyles.container}>
         <section className={styles.sectionCard}>
-          <h2 className={`${styles.sectionTitle} t-h3`}>{dict.specimen.radiiHeading}</h2>
+          <h2 className={`${styles.sectionTitle} t-h3`}>{specimen.radiiHeading}</h2>
           <div className={styles.tokenDemoGrid}>
             {RADIUS_ITEMS.map((item) => (
               <div key={item.token} className={`${styles.radiusBox} ${item.boxClass}`}>
@@ -370,7 +372,7 @@ export default async function DesignTokenSpecimenPage({
 
       <div className={gridStyles.container}>
         <section className={styles.sectionCard}>
-          <h2 className={`${styles.sectionTitle} t-h3`}>{dict.specimen.gridHeading}</h2>
+          <h2 className={`${styles.sectionTitle} t-h3`}>{specimen.gridHeading}</h2>
           <div className={gridStyles.grid4}>
             {GRID_CELL_LABELS.map((label) => (
               <div key={label} className={`${styles.gridCell} t-label-button`}>

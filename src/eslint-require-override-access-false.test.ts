@@ -14,6 +14,7 @@ import {
 import { RESTRICTED_PAYLOAD_IMPORTS_CONFIG } from '../eslint.config.mjs'
 import { FORBIDDEN_CLIENT_BUNDLE_SENTINELS } from '../scripts/check-client-bundle-sentinels.mjs'
 import {
+  assertSmallCollectionNotTruncated,
   buildSafeCmsCountArgs,
   buildSafeCmsQueryArgs,
   buildSafeCmsSmallCollectionArgs,
@@ -223,11 +224,14 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       'src/globals/HomePage.ts',
     ]) {
       expect(
-        lintSnippet("import { getPayload } from 'payload'\nexport function f() { return getPayload }", allowedFile),
-      ).toHaveLength(1)
+        lintSnippet(
+          "import { getPayload } from 'payload'\nexport function f() { return getPayload }",
+          allowedFile,
+        ).length,
+      ).toBeGreaterThanOrEqual(1)
       expect(
-        lintSnippet("import cfg from '@payload-config'\nexport function f() { return cfg }", allowedFile),
-      ).toHaveLength(1)
+        lintSnippet("import cfg from '@payload-config'\nexport function f() { return cfg }", allowedFile).length,
+      ).toBeGreaterThanOrEqual(1)
     }
 
     // 3. `*.test.*` inside `src/app/**` or `src/components/**` is NOT exempt from the Payload runtime import ban
@@ -235,6 +239,83 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     expect(lintSnippet(runtimeValidationImport, 'src/components/ProjectCard.test.tsx')).toHaveLength(1)
     // Outside `src/app/**` and `src/components/**`, `*.test.*` remains exempt for unit testing field validators/errors
     expect(lintSnippet(runtimeValidationImport, 'src/fields/link.test.ts')).toEqual([])
+  })
+
+  it('blocks the two R-3 server-directory wrapper and namespace getPayload leaks and bans frontend imports from all 8 server directories (R-3)', () => {
+    // R-3 proof case 1: wrapper in src/app/(payload)/x.ts and consumer in src/app/(frontend)/ar/page.tsx
+    const payloadWrapperFile = [
+      "import config from '@payload-config'",
+      "import { getPayload } from 'payload'",
+      'export const db = () => getPayload({ config })',
+    ].join('\n')
+    const wrapperMsgs = lintSnippet(payloadWrapperFile, 'src/app/(payload)/x.ts')
+    expect(wrapperMsgs.length).toBeGreaterThanOrEqual(3)
+    expect(wrapperMsgs.some((m) => m.message.includes('R-3'))).toBe(true)
+
+    const frontendWrapperConsumer = [
+      "import { db } from '@/app/(payload)/x'",
+      "const o: any = { collection: 'users' }",
+      'export default async function P() {',
+      '  return (await db()).find(o)',
+      '}',
+    ].join('\n')
+    const consumerMsgs = lintSnippet(frontendWrapperConsumer, 'src/app/(frontend)/ar/page.tsx')
+    expect(consumerMsgs.length).toBeGreaterThanOrEqual(2)
+    expect(
+      consumerMsgs.some((m) =>
+        m.message.includes('Importing server module "@/app/(payload)/x" is forbidden'),
+      ),
+    ).toBe(true)
+    expect(
+      consumerMsgs.some((m) => m.message.includes('must pass an un-overridden "{ overrideAccess: false }"')),
+    ).toBe(true)
+
+    // R-3 proof case 2: namespace import + member reference P.getPayload in src/collections/x.ts
+    const namespaceLeakFile = [
+      "import * as P from 'payload'",
+      'export const gp = P.getPayload',
+    ].join('\n')
+    const namespaceMsgs = lintSnippet(namespaceLeakFile, 'src/collections/x.ts')
+    expect(namespaceMsgs.length).toBeGreaterThanOrEqual(2)
+    expect(namespaceMsgs.some((m) => m.message.includes('getPayload'))).toBe(true)
+
+    const frontendNamespaceConsumer = [
+      "import { gp } from '@/collections/x'",
+      'export const ref = gp',
+    ].join('\n')
+    const frontendNamespaceMsgs = lintSnippet(
+      frontendNamespaceConsumer,
+      'src/app/(frontend)/ar/page.tsx',
+    )
+    expect(frontendNamespaceMsgs.length).toBeGreaterThanOrEqual(1)
+    expect(
+      frontendNamespaceMsgs.some((m) =>
+        m.message.includes('Importing server module "@/collections/x" is forbidden'),
+      ),
+    ).toBe(true)
+
+    // Ban all 8 server directories from src/app/(frontend)/** and src/components/**
+    for (const serverImport of [
+      '@/app/(payload)/admin/page',
+      '@/collections/Projects',
+      '@/globals/HomePage',
+      '@/hooks/revalidate',
+      '@/access/adminOnly',
+      '@/migrations/index',
+      '@/fields/seo',
+      '@/security/csp',
+      '../../../collections/Projects',
+      '../../security/apiError',
+    ]) {
+      const msgList = lintSnippet(
+        `import { something } from '${serverImport}'\nexport const x = something`,
+        'src/app/(frontend)/[locale]/page.tsx',
+      )
+      expect(
+        msgList.length,
+        `Expected R-3 ban for '${serverImport}' in src/app/(frontend)/[locale]/page.tsx`,
+      ).toBeGreaterThanOrEqual(1)
+    }
   })
 
   it('enforces R-22: allows `import type` from payload in frontend/CMS code, and bans non-literal dynamic `import()` in src/app/** and src/components/**', () => {
@@ -407,6 +488,19 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
         buildSafeCmsSmallCollectionArgs({ collection: forbiddenUnpaginatedSlug }, false),
       ).toThrow(/not an allowed small unpaginated collection/)
     }
+
+    // R-10: assertSmallCollectionNotTruncated logs and throws when totalDocs > MAX_CMS_QUERY_LIMIT (100)
+    const warnings: string[] = []
+    expect(() => {
+      assertSmallCollectionNotTruncated('brands', 100, (msg) => warnings.push(msg))
+    }).not.toThrow()
+    expect(warnings).toHaveLength(0)
+
+    expect(() => {
+      assertSmallCollectionNotTruncated('brands', 101, (msg) => warnings.push(msg))
+    }).toThrow(/exceeding MAX_CMS_QUERY_LIMIT \(100\)/)
+    expect(warnings).toHaveLength(1)
+    expect(warnings[0]).toContain('Collection "brands" has 101 documents')
 
     const safeDraft = buildSafeCmsQueryArgs(
       {

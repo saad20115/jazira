@@ -102,6 +102,11 @@ describe('P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, 
     expect(tokensCss).toContain('--navy-950: #011025;')
     expect(tokensCss).toContain('--danger: #b42318;')
     expect(tokensCss).toContain('--font-lh-multiplier: 1.1;')
+    // R-11: Arabic quote style is normal (upright), English quote style is italic, and mobile/tablet ls scales
+    expect(tokensCss).toContain('--t-body-quote-style: normal;')
+    expect(tokensCss).toContain('--t-body-quote-style: italic;')
+    expect(tokensCss).toContain('--t-display-xl-ls-en: -0.84px;')
+    expect(tokensCss).toContain('--t-display-xl-ls-en: -0.66px;')
 
     const styleCount = Object.keys(TYPOGRAPHY_STYLE_MAP).length
     expect(styleCount).toBe(23)
@@ -206,6 +211,28 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
     expect(messages).toHaveLength(3)
     expect(messages.every((m) => m.ruleId === 'local-rules/no-jsx-string-literals')).toBe(true)
 
+    // R-6: catches all 9 bypass vectors (module-level constant, ternary, logical ||/??, binary +, template with expression, .join(), aria-label template, value prop)
+    const r6BypassVectors = [
+      'import React from "react"',
+      "const T = 'Hardcoded title'",
+      'export function BypassCheck({ cond, x, name }: { cond: boolean; x?: string; name: string }) {',
+      '  return (',
+      '    <div>',
+      '      <p>{T}</p>',
+      "      <p>{cond ? 'Yes' : 'No'}</p>",
+      "      <p>{x || 'Fallback copy'}</p>",
+      "      <p>{'a' + 'b'}</p>",
+      '      <p>{`Hello ${name}`}</p>',
+      "      <p>{['Hardcoded'].join('')}</p>",
+      '      <button aria-label={`Close`}>{x}</button>',
+      '      <input value="Hardcoded" />',
+      '    </div>',
+      '  )',
+      '}',
+    ].join('\n')
+    const r6Messages = lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/ar/page.tsx')
+    expect(r6Messages.length).toBeGreaterThanOrEqual(10)
+
     const goodCode = [
       'import React from "react"',
       'export function Hero({ dict, title }: { dict: { label: string }; title: string }) {',
@@ -220,6 +247,8 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
 
     expect(lintJsxSnippet(goodCode, 'src/app/(frontend)/[locale]/page.tsx')).toEqual([])
     expect(lintJsxSnippet(badCode, 'src/components/admin/Logo.tsx')).toEqual([])
+    expect(lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/[locale]/_specimen/page.tsx')).toEqual([])
+    expect(lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/[locale]/styleguide/page.tsx')).toEqual([])
   })
 })
 

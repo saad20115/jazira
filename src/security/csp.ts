@@ -4,7 +4,6 @@
 
 export const I4_VIDEO_FRAME_SOURCES = [
   'https://www.youtube-nocookie.com',
-  'https://www.youtube.com',
   'https://player.vimeo.com',
 ] as const
 

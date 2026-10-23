@@ -59,7 +59,7 @@ export function normalizeWhatsappDigits(raw: string): string {
   if (digits.startsWith('05') && digits.length === 10) {
     return `966${digits.slice(1)}`
   }
-  return digits || '966573534185'
+  return digits
 }
 
 export function buildDefaultFooterQuickLinks(locale: SupportedLocale): FooterQuickLinkItem[] {
@@ -70,19 +70,6 @@ export function buildDefaultFooterQuickLinks(locale: SupportedLocale): FooterQui
     { label: dict.nav.aboutUs, href: `/${locale}/about` },
     { label: dict.nav.projects, href: `/${locale}/projects` },
     { label: dict.nav.contactUs, href: `/${locale}/contact` },
-  ]
-}
-
-export function buildDefaultFooterSocialLinks(
-  whatsappNumber: string,
-): FooterSocialItem[] {
-  const cleanWa = normalizeWhatsappDigits(whatsappNumber)
-  return [
-    { platform: 'linkedin', url: 'https://www.linkedin.com' },
-    { platform: 'x', url: 'https://x.com' },
-    { platform: 'instagram', url: 'https://www.instagram.com' },
-    { platform: 'facebook', url: 'https://www.facebook.com' },
-    { platform: 'whatsapp', url: `https://wa.me/${cleanWa}` },
   ]
 }
 
@@ -127,24 +114,25 @@ export function Footer({
 }: FooterProps): ReactElement {
   const dict = getDictionary(locale)
   const resolvedSiteName = siteName || dict.nav.brandName
-  const resolvedDescription = description || dict.footer.brandDescription
+  const resolvedDescription = description || null
   const resolvedQuickLinks =
     quickLinks && quickLinks.length > 0
       ? quickLinks
       : buildDefaultFooterQuickLinks(locale)
 
   const resolvedPhones =
-    phones && phones.length > 0 ? phones.join('  |  ') : dict.footer.defaultPhone
+    phones && phones.length > 0 ? phones.filter(Boolean).join('  |  ') : null
   const resolvedEmail =
-    emails && emails.length > 0 ? emails[0] : dict.footer.defaultEmail
-  const resolvedAddress = address || dict.footer.defaultLocation
-  const resolvedWhatsapp = whatsapp || '+966573534185'
-  const whatsappUrl = `https://wa.me/${normalizeWhatsappDigits(resolvedWhatsapp)}`
+    emails && emails.length > 0 && emails[0] ? emails[0] : null
+  const resolvedAddress = address || null
+  const cleanWaDigits = whatsapp ? normalizeWhatsappDigits(whatsapp) : ''
+  const whatsappUrl = cleanWaDigits ? `https://wa.me/${cleanWaDigits}` : null
 
   const resolvedSocialLinks =
-    socialLinks && socialLinks.length > 0
-      ? socialLinks
-      : buildDefaultFooterSocialLinks(resolvedWhatsapp)
+    socialLinks && socialLinks.length > 0 ? socialLinks : []
+
+  const hasContactInfo = Boolean(resolvedPhones || resolvedEmail || resolvedAddress)
+  const hasCtaContent = Boolean(ctaEyebrow || ctaTitle || ctaBody || ctaButtonLabel || whatsappUrl)
 
   const targetLocale: SupportedLocale = locale === 'ar' ? 'en' : 'ar'
 
@@ -168,29 +156,33 @@ export function Footer({
             >
               <Logo alt={resolvedSiteName} color="Reversed" size="shell" type="Full" />
             </CmsLink>
-            <p className={styles.brandDescription}>{resolvedDescription}</p>
-            <div className={styles.socialRow}>
-              {resolvedSocialLinks.map((social, idx) => {
-                const iconKey: SocialIconKey = isSocialIconKey(social.platform)
-                  ? social.platform
-                  : SOCIAL_ICON_KEYS[idx % SOCIAL_ICON_KEYS.length]
-                const ariaLabel =
-                  social.label || getSocialAriaLabel(locale, iconKey)
-                return (
-                  <CmsLink
-                    aria-label={ariaLabel}
-                    className={styles.socialButton}
-                    data-social-platform={iconKey}
-                    href={social.url}
-                    key={social.id ?? `${iconKey}-${String(idx)}`}
-                    locale={locale}
-                    newTab
-                  >
-                    <SocialIcon name={iconKey} size={20} />
-                  </CmsLink>
-                )
-              })}
-            </div>
+            {resolvedDescription ? (
+              <p className={styles.brandDescription}>{resolvedDescription}</p>
+            ) : null}
+            {resolvedSocialLinks.length > 0 ? (
+              <div className={styles.socialRow}>
+                {resolvedSocialLinks.map((social, idx) => {
+                  const iconKey: SocialIconKey = isSocialIconKey(social.platform)
+                    ? social.platform
+                    : SOCIAL_ICON_KEYS[idx % SOCIAL_ICON_KEYS.length]
+                  const ariaLabel =
+                    social.label || getSocialAriaLabel(locale, iconKey)
+                  return (
+                    <CmsLink
+                      aria-label={ariaLabel}
+                      className={styles.socialButton}
+                      data-social-platform={iconKey}
+                      href={social.url}
+                      key={social.id ?? `${iconKey}-${String(idx)}`}
+                      locale={locale}
+                      newTab
+                    >
+                      <SocialIcon name={iconKey} size={20} />
+                    </CmsLink>
+                  )
+                })}
+              </div>
+            ) : null}
           </div>
 
           {/* 2. Quick Links Column */}
@@ -217,64 +209,74 @@ export function Footer({
           </div>
 
           {/* 3. Contact Info Column */}
-          <div className={styles.linkColumn}>
-            <h2 className={styles.columnHeading}>{dict.footer.contactInfoTitle}</h2>
-            <ul className={styles.contactList}>
-              <li className={styles.contactRow}>
-                <PhoneIcon className={styles.contactIcon} size={18} />
-                <span className={styles.contactText} dir="ltr">
-                  {resolvedPhones}
-                </span>
-              </li>
-              <li className={styles.contactRow}>
-                <MailIcon className={styles.contactIcon} size={18} />
-                <CmsLink
-                  className={styles.contactText}
-                  dir="ltr"
-                  href={`mailto:${resolvedEmail}`}
-                  locale={locale}
-                >
-                  {resolvedEmail}
-                </CmsLink>
-              </li>
-              <li className={styles.contactRow}>
-                <MapPinIcon className={styles.contactIcon} size={18} />
-                <span className={styles.contactText}>{resolvedAddress}</span>
-              </li>
-            </ul>
-          </div>
+          {hasContactInfo ? (
+            <div className={styles.linkColumn}>
+              <h2 className={styles.columnHeading}>{dict.footer.contactInfoTitle}</h2>
+              <ul className={styles.contactList}>
+                {resolvedPhones ? (
+                  <li className={styles.contactRow}>
+                    <PhoneIcon className={styles.contactIcon} size={18} />
+                    <span className={styles.contactText} dir="ltr">
+                      {resolvedPhones}
+                    </span>
+                  </li>
+                ) : null}
+                {resolvedEmail ? (
+                  <li className={styles.contactRow}>
+                    <MailIcon className={styles.contactIcon} size={18} />
+                    <CmsLink
+                      className={styles.contactText}
+                      dir="ltr"
+                      href={`mailto:${resolvedEmail}`}
+                      locale={locale}
+                    >
+                      {resolvedEmail}
+                    </CmsLink>
+                  </li>
+                ) : null}
+                {resolvedAddress ? (
+                  <li className={styles.contactRow}>
+                    <MapPinIcon className={styles.contactIcon} size={18} />
+                    <span className={styles.contactText}>{resolvedAddress}</span>
+                  </li>
+                ) : null}
+              </ul>
+            </div>
+          ) : null}
 
           {/* 4. CTA Card Column */}
-          <div className={styles.ctaCard}>
-            <span className={styles.columnHeading}>
-              {ctaEyebrow || dict.footer.ctaEyebrow}
-            </span>
-            <p className={styles.ctaTitle}>{ctaTitle || dict.footer.ctaTitle}</p>
-            <p className={styles.ctaBody}>{ctaBody || dict.footer.ctaBody}</p>
-            <Button
-              fullWidth
-              href={ctaButtonHref ?? (ctaButtonLink ? undefined : `/${locale}/contact#quote`)}
-              label={ctaButtonLabel || dict.footer.ctaButton}
-              link={ctaButtonLink}
-              locale={locale}
-              size="md"
-              variant="Gold"
-            />
-            <CmsLink
-              className={styles.ctaWhatsappLink}
-              href={whatsappUrl}
-              locale={locale}
-              newTab
-            >
-              {dict.footer.ctaWhatsappLink}
-            </CmsLink>
-          </div>
+          {hasCtaContent ? (
+            <div className={styles.ctaCard}>
+              {ctaEyebrow ? <span className={styles.columnHeading}>{ctaEyebrow}</span> : null}
+              {ctaTitle ? <p className={styles.ctaTitle}>{ctaTitle}</p> : null}
+              {ctaBody ? <p className={styles.ctaBody}>{ctaBody}</p> : null}
+              <Button
+                fullWidth
+                href={ctaButtonHref ?? (ctaButtonLink ? undefined : `/${locale}/contact#quote`)}
+                label={ctaButtonLabel || dict.footer.ctaButton}
+                link={ctaButtonLink}
+                locale={locale}
+                size="md"
+                variant="Gold"
+              />
+              {whatsappUrl ? (
+                <CmsLink
+                  className={styles.ctaWhatsappLink}
+                  href={whatsappUrl}
+                  locale={locale}
+                  newTab
+                >
+                  {dict.footer.ctaWhatsappLink}
+                </CmsLink>
+              ) : null}
+            </div>
+          ) : null}
         </div>
 
         <div aria-hidden="true" className={styles.divider} />
 
         <div className={styles.bottomBar}>
-          <p className={styles.copyright}>{copyright || dict.footer.copyright}</p>
+          {copyright ? <p className={styles.copyright}>{copyright}</p> : <span />}
           <div className={styles.bottomLinks}>
             <CmsLink
               aria-label={dict.nav.languageSwitcherAriaLabel}

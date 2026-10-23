@@ -1,8 +1,10 @@
 import { Noto_Kufi_Arabic, Poppins } from 'next/font/google'
 
+import type { SupportedLocale } from '@/i18n'
+
 /**
- * Self-hosted Google Fonts (`handoff/tasks/P3-T1.md` §3, `docs/05-design.md` §Typography):
- * - `Poppins`: weights 400, 500, 600, 700 + 400 italic (`latin`), `display: 'swap'`
+ * Self-hosted Google Fonts (`handoff/tasks/P3-T1.md` §3, `docs/05-design.md` §Typography, `R-11`):
+ * - `Poppins`: weights 400, 500, 600, 700 + italic (`latin`), `display: 'swap'`
  * - `Noto Kufi Arabic`: weights 400, 500, 600, 700 (`arabic`), `display: 'swap'`
  * Downloaded at build time by `next/font/google` so zero runtime requests are made to Google.
  */
@@ -23,5 +25,13 @@ export const notoKufiArabic = Noto_Kufi_Arabic({
   variable: '--font-noto-kufi-arabic',
   preload: true,
 })
+
+/**
+ * Returns only the active locale's font CSS variable class so Next.js preloads only the active
+ * locale's `.woff2` files on each request (`R-11`).
+ */
+export function getLocaleFontClassName(locale: SupportedLocale): string {
+  return locale === 'ar' ? notoKufiArabic.variable : poppins.variable
+}
 
 export const fontVariablesClassName = `${poppins.variable} ${notoKufiArabic.variable}`

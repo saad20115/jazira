@@ -1,32 +1,62 @@
 /**
- * Custom ESLint rule `local/no-jsx-string-literals` (`handoff/PLAN.md` §"Phase 3 rules").
+ * Custom ESLint rule `local/no-jsx-string-literals` (`handoff/PLAN.md` §"Phase 3 rules", `R-6`).
  *
  * Enforces that every visible text, number, or user-facing label in `src/app/(frontend)` and
- * `src/components` (excluding `src/components/admin`, `src/i18n`, and test files) comes from
- * the CMS (`src/lib/cms/*`) or the typed UI chrome dictionaries (`src/i18n/{ar,en}.ts`).
+ * `src/components` (excluding `src/components/admin`, `src/i18n`, dev-only `_specimen` / `styleguide`
+ * routes, and test files) comes from the CMS (`src/lib/cms/*`) or the typed UI chrome dictionaries
+ * (`src/i18n/{ar,en}.ts`).
  *
- * Allow-list:
- * - Pure punctuation / whitespace (`•`, `/`, `—`, `–`, `:`, `|`, `·`, `(`, `)`, `,`, `.`, `+`, `-`, etc.)
- * - Files in `src/i18n/`, `src/components/admin/` (Payload Admin UI), and `*.test.*` / `*.spec.*`
+ * Catches (`R-6`):
+ * - Direct `JSXText`
+ * - `JSXExpressionContainer` & user-facing `JSXAttribute` values containing:
+ *   - String / number `Literal`s
+ *   - `TemplateLiteral`s (checking both quasis even when `expressions.length > 0`, and template expressions)
+ *   - `ConditionalExpression` (`cond ? 'Yes' : 'No'`)
+ *   - `LogicalExpression` (`x || 'Fallback'`, `x ?? 'Fallback'`, `x && 'Text'`)
+ *   - `BinaryExpression` (`'a' + 'b'`)
+ *   - `ArrayExpression` and `.join()` / `.concat()` / `String()` calls (`['Hardcoded'].join('')`)
+ *   - `Identifier` references to local or module-level variables initialized with hardcoded literals (`const T = 'Hardcoded'; <p>{T}</p>`)
+ *   - `SequenceExpression`, `ParenthesizedExpression`, `TSAsExpression`, `TSSatisfiesExpression`
  */
 
 const LETTER_OR_DIGIT_REGEX = /[\p{L}\p{N}]/u
 
-const USER_FACING_JSX_ATTRIBUTES = new Set([
+export const USER_FACING_JSX_ATTRIBUTES = new Set([
   'alt',
   'aria-description',
   'aria-label',
   'aria-placeholder',
   'aria-roledescription',
   'aria-valuetext',
+  'ariaLabel',
+  'caption',
+  'copyright',
+  'ctaBody',
+  'ctaButtonLabel',
+  'ctaEyebrow',
+  'ctaLabel',
+  'ctaTitle',
+  'defaultValue',
+  'description',
+  'eyebrow',
+  'heading',
+  'hideLabel',
   'label',
   'placeholder',
+  'showLabel',
+  'siteName',
+  'subtitle',
+  'text',
   'title',
+  'tooltipLabel',
+  'value',
 ])
 
 /**
  * Checks whether a file path is inside `src/app/(frontend)` or public `src/components`
- * (excluding `src/components/admin`, `src/i18n`, and tests).
+ * (excluding `src/components/admin`, `src/components/icons`, `src/i18n`, dev-only `_specimen`
+ * and `styleguide` routes, and tests).
+ *
  * @param {string} filename
  * @returns {boolean}
  */
@@ -37,7 +67,14 @@ export function isGuardedPublicJsxFile(filename) {
   if (/\.(test|spec)\.[cm]?[jt]sx?$/.test(normalized)) {
     return false
   }
-  if (normalized.includes('/src/i18n/') || normalized.includes('/src/components/admin/')) {
+  if (
+    normalized.includes('/src/i18n/') ||
+    normalized.includes('/src/components/admin/') ||
+    normalized.includes('/src/components/icons/') ||
+    normalized.includes('/_specimen/') ||
+    normalized.includes('/%5Fspecimen/') ||
+    normalized.includes('/styleguide/')
+  ) {
     return false
   }
 
@@ -55,6 +92,41 @@ export function hasDisallowedLiteralContent(text) {
   const trimmed = text.trim()
   if (!trimmed) return false
   return LETTER_OR_DIGIT_REGEX.test(trimmed)
+}
+
+/**
+ * Checks if a JSXOpeningElement is `<option>` or `<input type="hidden">`.
+ * @param {import('eslint').Rule.Node | null | undefined} jsxAttributeNode
+ * @param {string} attrName
+ * @returns {boolean}
+ */
+function isExemptValueAttributeOnElement(jsxAttributeNode, attrName) {
+  if (attrName !== 'value' && attrName !== 'defaultValue') {
+    return false
+  }
+  const openingEl = jsxAttributeNode?.parent
+  if (!openingEl || openingEl.type !== 'JSXOpeningElement') {
+    return false
+  }
+  const elName =
+    openingEl.name?.type === 'JSXIdentifier' ? openingEl.name.name : ''
+  if (elName === 'option') {
+    return true
+  }
+  if (elName === 'input') {
+    const hasHiddenType = (openingEl.attributes ?? []).some(
+      (attr) =>
+        attr.type === 'JSXAttribute' &&
+        attr.name?.type === 'JSXIdentifier' &&
+        attr.name.name === 'type' &&
+        attr.value?.type === 'Literal' &&
+        attr.value.value === 'hidden',
+    )
+    if (hasHiddenType) {
+      return true
+    }
+  }
+  return false
 }
 
 /** @type {import('eslint').Rule.RuleModule} */
@@ -81,7 +153,156 @@ export const noJsxStringLiteralsRule = {
       return {}
     }
 
+    /** @type {Map<string, string>} varName -> first hardcoded literal text */
+    const taintedLiteralBindings = new Map()
+
+    /**
+     * Extracts the first disallowed literal string/number from an arbitrary AST expression,
+     * recursing into ternaries, logical/binary expressions, template literals, arrays,
+     * `.join()`/`.concat()`/`String()` calls, and tainted variable bindings (`R-6`).
+     *
+     * @param {import('eslint').Rule.Node | null | undefined} expr
+     * @param {Set<string>} [seenVars]
+     * @returns {Array<{ node: import('eslint').Rule.Node; text: string }>}
+     */
+    function collectDisallowedLiteralsInExpression(expr, seenVars = new Set()) {
+      /** @type {Array<{ node: import('eslint').Rule.Node; text: string }>} */
+      const hits = []
+
+      /**
+       * @param {import('eslint').Rule.Node | null | undefined} cur
+       */
+      function visit(cur) {
+        if (!cur || typeof cur !== 'object') {
+          return
+        }
+
+        switch (cur.type) {
+          case 'Literal': {
+            if (typeof cur.value === 'string' || typeof cur.value === 'number') {
+              const text = String(cur.value)
+              if (hasDisallowedLiteralContent(text)) {
+                hits.push({ node: cur, text: text.trim().slice(0, 48) })
+              }
+            }
+            return
+          }
+
+          case 'TemplateLiteral': {
+            for (const quasi of cur.quasis ?? []) {
+              const rawQuasi = quasi.value?.cooked ?? quasi.value?.raw ?? ''
+              if (hasDisallowedLiteralContent(rawQuasi)) {
+                hits.push({ node: quasi, text: rawQuasi.trim().slice(0, 48) })
+              }
+            }
+            for (const subExpr of cur.expressions ?? []) {
+              visit(subExpr)
+            }
+            return
+          }
+
+          case 'ConditionalExpression': {
+            visit(cur.consequent)
+            visit(cur.alternate)
+            return
+          }
+
+          case 'LogicalExpression': {
+            visit(cur.left)
+            visit(cur.right)
+            return
+          }
+
+          case 'BinaryExpression': {
+            if (cur.operator === '+') {
+              visit(cur.left)
+              visit(cur.right)
+            }
+            return
+          }
+
+          case 'ArrayExpression': {
+            for (const el of cur.elements ?? []) {
+              if (el) {
+                visit(el.type === 'SpreadElement' ? el.argument : el)
+              }
+            }
+            return
+          }
+
+          case 'CallExpression': {
+            const callee = cur.callee
+            if (callee?.type === 'MemberExpression' && !callee.computed && callee.property?.type === 'Identifier') {
+              const method = callee.property.name
+              if (
+                method === 'join' ||
+                method === 'concat' ||
+                method === 'trim' ||
+                method === 'toUpperCase' ||
+                method === 'toLowerCase' ||
+                method === 'slice' ||
+                method === 'replace'
+              ) {
+                visit(callee.object)
+                for (const arg of cur.arguments ?? []) {
+                  visit(arg)
+                }
+              }
+            } else if (callee?.type === 'Identifier' && callee.name === 'String') {
+              for (const arg of cur.arguments ?? []) {
+                visit(arg)
+              }
+            }
+            return
+          }
+
+          case 'Identifier': {
+            if (!seenVars.has(cur.name) && taintedLiteralBindings.has(cur.name)) {
+              seenVars.add(cur.name)
+              const taintedText = taintedLiteralBindings.get(cur.name)
+              if (taintedText) {
+                hits.push({ node: cur, text: taintedText })
+              }
+            }
+            return
+          }
+
+          case 'SequenceExpression': {
+            for (const sub of cur.expressions ?? []) {
+              visit(sub)
+            }
+            return
+          }
+
+          case 'ParenthesizedExpression':
+          case 'TSAsExpression':
+          case 'TSSatisfiesExpression':
+          case 'TSTypeAssertion':
+          case 'TSNonNullExpression':
+          case 'ChainExpression': {
+            visit(cur.expression)
+            return
+          }
+
+          default:
+            return
+        }
+      }
+
+      visit(expr)
+      return hits
+    }
+
     return {
+      VariableDeclarator(node) {
+        if (node.id?.type === 'Identifier' && node.init) {
+          const initHits = collectDisallowedLiteralsInExpression(node.init)
+          if (initHits.length > 0) {
+            taintedLiteralBindings.set(node.id.name, initHits[0].text)
+          }
+        }
+      },
+
       JSXText(node) {
         const raw = typeof node.value === 'string' ? node.value : ''
         if (hasDisallowedLiteralContent(raw)) {
@@ -102,28 +323,15 @@ export const noJsxStringLiteralsRule = {
         const expr = node.expression
         if (!expr) return
 
-        if (expr.type === 'Literal' && (typeof expr.value === 'string' || typeof expr.value === 'number')) {
-          const text = String(expr.value)
-          if (hasDisallowedLiteralContent(text)) {
-            context.report({
-              node: expr,
-              messageId: 'noJsxExpressionLiteral',
-              data: {
-                text: text.trim().slice(0, 48),
-              },
-            })
-          }
-        } else if (expr.type === 'TemplateLiteral' && expr.expressions.length === 0) {
-          const text = expr.quasis.map((q) => q.value.cooked ?? q.value.raw).join('')
-          if (hasDisallowedLiteralContent(text)) {
-            context.report({
-              node: expr,
-              messageId: 'noJsxExpressionLiteral',
-              data: {
-                text: text.trim().slice(0, 48),
-              },
-            })
-          }
+        const hits = collectDisallowedLiteralsInExpression(expr)
+        for (const hit of hits) {
+          context.report({
+            node: hit.node,
+            messageId: 'noJsxExpressionLiteral',
+            data: {
+              text: hit.text,
+            },
+          })
         }
       },
 
@@ -134,7 +342,11 @@ export const noJsxStringLiteralsRule = {
             : node.name?.type === 'JSXNamespacedName'
               ? `${node.name.namespace.name}:${node.name.name.name}`
               : ''
-        if (!USER_FACING_JSX_ATTRIBUTES.has(attrName) || !node.value) {
+        if (
+          !USER_FACING_JSX_ATTRIBUTES.has(attrName) ||
+          !node.value ||
+          isExemptValueAttributeOnElement(node, attrName)
+        ) {
           return
         }
 
@@ -150,18 +362,16 @@ export const noJsxStringLiteralsRule = {
             })
           }
         } else if (node.value.type === 'JSXExpressionContainer') {
-          const expr = node.value.expression
-          if (expr.type === 'Literal' && typeof expr.value === 'string') {
-            if (hasDisallowedLiteralContent(expr.value)) {
-              context.report({
-                node: expr,
-                messageId: 'noJsxAttributeLiteral',
-                data: {
-                  attr: attrName,
-                  text: expr.value.trim().slice(0, 48),
-                },
-              })
-            }
+          const hits = collectDisallowedLiteralsInExpression(node.value.expression)
+          for (const hit of hits) {
+            context.report({
+              node: hit.node,
+              messageId: 'noJsxAttributeLiteral',
+              data: {
+                attr: attrName,
+                text: hit.text,
+              },
+            })
           }
         }
       },

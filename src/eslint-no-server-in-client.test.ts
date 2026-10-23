@@ -9,6 +9,7 @@ import { describe, expect, it } from 'vitest'
 import { noServerInClientRule } from '../eslint-rules/no-server-in-client.mjs'
 import {
   FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
+  FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS,
   FORBIDDEN_SERVER_LIBRARY_MARKERS,
   scanDirectoryForSentinels,
 } from '../scripts/check-client-bundle-sentinels.mjs'
@@ -162,7 +163,7 @@ describe('local/no-server-in-client ESLint rule (S4, R-3, R-5, R-12)', () => {
 
       fs.writeFileSync(
         path.join(chunksDir, 'leaked.js'),
-        `const a = "${FORBIDDEN_CLIENT_BUNDLE_SENTINELS[3]}"; const b = "${FORBIDDEN_SERVER_LIBRARY_MARKERS[2]}";\n`,
+        `const a = "${FORBIDDEN_CLIENT_BUNDLE_SENTINELS[3]}"; const b = "${FORBIDDEN_SERVER_LIBRARY_MARKERS[2]}"; const c = { f() { ${FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS[0]}=!0 } };\n`,
         'utf8',
       )
       const hits = scanDirectoryForSentinels(tmpDir)
@@ -174,6 +175,10 @@ describe('local/no-server-in-client ESLint rule (S4, R-3, R-5, R-12)', () => {
         {
           file: 'chunks/leaked.js',
           sentinel: 'drizzle-orm/node-postgres',
+        },
+        {
+          file: 'chunks/leaked.js',
+          sentinel: 'this.isOperational',
         },
       ])
     } finally {

@@ -5,6 +5,7 @@ import tseslint from 'typescript-eslint'
 import { noJsxStringLiteralsRule } from './eslint-rules/no-jsx-string-literals.mjs'
 import { noServerInClientRule } from './eslint-rules/no-server-in-client.mjs'
 import {
+  EXPLICIT_PAYLOAD_ADMIN_ROUTE_FILES,
   EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES,
   requireOverrideAccessFalseRule,
 } from './eslint-rules/require-override-access-false.mjs'
@@ -16,16 +17,39 @@ export const SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS = [
   'src/collections/**/*.{ts,tsx,js,mjs}',
   'src/globals/**/*.{ts,tsx,js,mjs}',
   ...EXPLICIT_RUNTIME_PAYLOAD_FIELD_AND_SECURITY_FILES,
+  ...EXPLICIT_PAYLOAD_ADMIN_ROUTE_FILES,
+  'src/app/(payload)/admin/**/not-found.tsx',
+  'src/app/(payload)/admin/**/page.tsx',
+  'src/app/(payload)/api/**/route.ts',
+  'src/app/(payload)/layout.tsx',
   'src/hooks/**/*.{ts,tsx,js,mjs}',
   'src/access/**/*.{ts,tsx,js,mjs}',
   'src/migrations/**/*.{ts,tsx,js,mjs}',
-  'src/app/(payload)/**/*.{ts,tsx,js,mjs}',
   'scripts/**/*.{ts,tsx,js,mjs}',
   'tests/**/*.{ts,tsx,js,mjs}',
   'next.config.ts',
   'vitest.config.ts',
   'playwright.config.ts',
   'eslint.config.mjs',
+]
+
+export const FRONTEND_FORBIDDEN_SERVER_DIR_PATTERNS = [
+  '@/app/(payload)',
+  '@/app/(payload)/*',
+  '@/collections',
+  '@/collections/*',
+  '@/globals',
+  '@/globals/*',
+  '@/hooks',
+  '@/hooks/*',
+  '@/access',
+  '@/access/*',
+  '@/migrations',
+  '@/migrations/*',
+  '@/fields',
+  '@/fields/*',
+  '@/security',
+  '@/security/*',
 ]
 
 export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
@@ -182,6 +206,26 @@ export default defineConfig([
     rules: {
       'no-restricted-imports': 'off',
       '@typescript-eslint/no-restricted-imports': 'off',
+    },
+  },
+  {
+    files: ['src/app/(frontend)/**/*.{ts,tsx}', 'src/components/**/*.{ts,tsx}'],
+    rules: {
+      '@typescript-eslint/no-restricted-imports': [
+        'error',
+        {
+          paths: RESTRICTED_PAYLOAD_IMPORTS_CONFIG.paths,
+          patterns: [
+            ...RESTRICTED_PAYLOAD_IMPORTS_CONFIG.patterns,
+            {
+              group: FRONTEND_FORBIDDEN_SERVER_DIR_PATTERNS,
+              allowTypeImports: false,
+              message:
+                'Frontend and component modules must not import from server directories (@/app/(payload), @/collections, @/globals, @/hooks, @/access, @/migrations, @/fields, @/security) (R-3).',
+            },
+          ],
+        },
+      ],
     },
   },
 ])

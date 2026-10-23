@@ -59,8 +59,8 @@ export const QuoteRequestsFilterBar: React.FC = () => {
         padding: '0.75rem 1rem',
         marginBottom: '1rem',
         borderRadius: '0.5rem',
-        border: '1px solid var(--theme-elevation-150, rgba(128,128,128,0.2))',
-        background: 'var(--theme-elevation-50, rgba(128,128,128,0.05))',
+        border: '1px solid var(--theme-elevation-150)',
+        background: 'var(--theme-elevation-50)',
       }}
     >
       {/* Status quick filters */}
@@ -80,9 +80,9 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeStatus === '' ? 700 : 500,
             border:
               activeStatus === ''
-                ? '1px solid rgb(80, 144, 224)'
-                : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
-            background: activeStatus === '' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
+            background: activeStatus === '' ? 'var(--theme-elevation-150)' : 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',
           }}
@@ -147,9 +147,9 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeAssignedExists === '' ? 700 : 500,
             border:
               activeAssignedExists === ''
-                ? '1px solid rgb(80, 144, 224)'
-                : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
-            background: activeAssignedExists === '' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
+            background: activeAssignedExists === '' ? 'var(--theme-elevation-150)' : 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',
           }}
@@ -170,10 +170,10 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeAssignedExists === 'true' ? 700 : 500,
             border:
               activeAssignedExists === 'true'
-                ? '1px solid rgb(80, 144, 224)'
-                : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
             background:
-              activeAssignedExists === 'true' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
+              activeAssignedExists === 'true' ? 'var(--theme-elevation-150)' : 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',
           }}
@@ -194,10 +194,10 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeAssignedExists === 'false' ? 700 : 500,
             border:
               activeAssignedExists === 'false'
-                ? '1px solid rgb(80, 144, 224)'
-                : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
             background:
-              activeAssignedExists === 'false' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
+              activeAssignedExists === 'false' ? 'var(--theme-elevation-150)' : 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',
           }}
@@ -223,9 +223,9 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             fontWeight: activeDateGte === '' ? 700 : 500,
             border:
               activeDateGte === ''
-                ? '1px solid rgb(80, 144, 224)'
-                : '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
-            background: activeDateGte === '' ? 'rgba(80, 144, 224, 0.18)' : 'transparent',
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
+            background: activeDateGte === '' ? 'var(--theme-elevation-150)' : 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',
           }}
@@ -242,7 +242,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             borderRadius: '9999px',
             fontSize: '0.75rem',
             fontWeight: 500,
-            border: '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
+            border: '1px solid var(--theme-elevation-200)',
             background: 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',
@@ -260,7 +260,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
             borderRadius: '9999px',
             fontSize: '0.75rem',
             fontWeight: 500,
-            border: '1px solid var(--theme-elevation-200, rgba(128,128,128,0.25))',
+            border: '1px solid var(--theme-elevation-200)',
             background: 'transparent',
             color: 'var(--theme-text, inherit)',
             cursor: 'pointer',

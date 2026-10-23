@@ -43,6 +43,7 @@ import {
   type SupportedLocale,
 } from '@/i18n'
 
+import { getStyleguideStrings } from './styleguide-data'
 import styles from './styleguide.module.css'
 
 interface StyleguidePageProps {
@@ -65,9 +66,9 @@ const STYLEGUIDE_NAVBAR_THEMES: readonly NavbarTheme[] = ['Light', 'Dark']
 const STYLEGUIDE_NAVBAR_PAGES: readonly NavbarPage[] = [
   'Home',
   'Services',
-  'About',
+  'About Us',
   'Projects',
-  'Contact',
+  'Contact Us',
 ]
 const BADGE_ONE = '01'
 const BADGE_TWO = '02'
@@ -88,6 +89,7 @@ export default async function StyleguidePage({
 
   const resolvedLocale: SupportedLocale = locale
   const dict = getDictionary(resolvedLocale)
+  const sg = getStyleguideStrings(resolvedLocale)
 
   return (
     <div className={styles.page} data-page="styleguide" data-locale={resolvedLocale}>
@@ -95,9 +97,9 @@ export default async function StyleguidePage({
         <div className={styles.container}>
           <div className={styles.heroHeader}>
             <div className={styles.heroTitleGroup}>
-              <Eyebrow label={dict.styleguide.eyebrow} tone="Dark" />
-              <h1 className={styles.heroTitle}>{dict.styleguide.title}</h1>
-              <p className={styles.heroSubtitle}>{dict.styleguide.subtitle}</p>
+              <Eyebrow label={sg.eyebrow} tone="Dark" />
+              <h1 className={styles.heroTitle}>{sg.title}</h1>
+              <p className={styles.heroSubtitle}>{sg.subtitle}</p>
             </div>
             <Button
               href={`/${resolvedLocale === 'ar' ? 'en' : 'ar'}/styleguide`}
@@ -118,7 +120,7 @@ export default async function StyleguidePage({
           id="styleguide-logo"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionLogo}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionLogo}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.logo}
             </span>
@@ -156,7 +158,7 @@ export default async function StyleguidePage({
           id="styleguide-button"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionButton}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionButton}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.button}
             </span>
@@ -199,7 +201,7 @@ export default async function StyleguidePage({
           id="styleguide-eyebrow"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionEyebrow}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionEyebrow}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.eyebrow}
             </span>
@@ -207,10 +209,10 @@ export default async function StyleguidePage({
 
           <div className={styles.dualGrid}>
             <div className={styles.lightShowcase}>
-              <Eyebrow label={dict.styleguide.sampleEyebrow} tone="Light" />
+              <Eyebrow label={sg.sampleEyebrow} tone="Light" />
             </div>
             <div className={styles.darkShowcase}>
-              <Eyebrow label={dict.styleguide.sampleEyebrow} tone="Dark" />
+              <Eyebrow label={sg.sampleEyebrow} tone="Dark" />
             </div>
           </div>
         </section>
@@ -222,7 +224,7 @@ export default async function StyleguidePage({
           id="styleguide-nav-link"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionNavLink}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionNavLink}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.navLink}
             </span>
@@ -263,7 +265,7 @@ export default async function StyleguidePage({
           id="styleguide-navbar"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionNavbar}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionNavbar}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.navbar}
             </span>
@@ -302,14 +304,14 @@ export default async function StyleguidePage({
           id="styleguide-footer"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionFooter}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionFooter}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.footer}
             </span>
           </div>
 
           <div className={styles.navbarFrame}>
-            <Footer locale={resolvedLocale} />
+            <Footer locale={resolvedLocale} {...sg.footerPreview} />
           </div>
         </section>
 
@@ -320,7 +322,7 @@ export default async function StyleguidePage({
           id="styleguide-whatsapp-fab"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionWhatsappFab}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionWhatsappFab}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.whatsappFab}
             </span>
@@ -333,6 +335,7 @@ export default async function StyleguidePage({
                   inline
                   locale={resolvedLocale}
                   state={fabState}
+                  whatsapp={sg.whatsappPreviewNumber}
                 />
                 <span className={styles.cellCaption} dir="ltr">
                   {fabState}
@@ -349,7 +352,7 @@ export default async function StyleguidePage({
           id="styleguide-accordion-item"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionAccordion}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionAccordion}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.accordionItem}
             </span>
@@ -357,20 +360,20 @@ export default async function StyleguidePage({
 
           <div className={styles.accordionShowcase}>
             <AccordionItem
-              body={dict.accordion.sampleCollapsedBody}
+              body={sg.accordionSampleBody1}
               id="styleguide-acc-collapsed"
               locale={resolvedLocale}
               numberBadge={BADGE_ONE}
               state="Collapsed"
-              title={dict.accordion.sampleCollapsedTitle}
+              title={sg.accordionSampleTitle1}
             />
             <AccordionItem
-              body={dict.accordion.sampleExpandedBody}
+              body={sg.accordionSampleBody2}
               id="styleguide-acc-expanded"
               locale={resolvedLocale}
               numberBadge={BADGE_TWO}
               state="Expanded"
-              title={dict.accordion.sampleExpandedTitle}
+              title={sg.accordionSampleTitle2}
             />
           </div>
 
@@ -380,15 +383,15 @@ export default async function StyleguidePage({
               {
                 id: 'interactive-acc-1',
                 numberBadge: BADGE_ONE,
-                title: dict.accordion.sampleCollapsedTitle,
-                body: dict.accordion.sampleCollapsedBody,
+                title: sg.accordionSampleTitle1,
+                body: sg.accordionSampleBody1,
                 defaultExpanded: false,
               },
               {
                 id: 'interactive-acc-2',
                 numberBadge: BADGE_TWO,
-                title: dict.accordion.sampleExpandedTitle,
-                body: dict.accordion.sampleExpandedBody,
+                title: sg.accordionSampleTitle2,
+                body: sg.accordionSampleBody2,
                 defaultExpanded: true,
               },
             ]}
@@ -403,13 +406,13 @@ export default async function StyleguidePage({
           id="styleguide-icons"
         >
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>{dict.styleguide.sectionIcons}</h2>
+            <h2 className={styles.sectionTitle}>{sg.sectionIcons}</h2>
             <span className={styles.nodeBadge} dir="ltr">
               {NODE_IDS.icons}
             </span>
           </div>
 
-          <h3 className={styles.iconsSubheading}>{dict.styleguide.serviceIconsTitle}</h3>
+          <h3 className={styles.iconsSubheading}>{sg.serviceIconsTitle}</h3>
           <div className={styles.iconsGrid}>
             {SERVICE_ICON_OPTIONS.map((opt) => (
               <div className={styles.iconTile} key={opt.value}>
@@ -426,7 +429,7 @@ export default async function StyleguidePage({
             ))}
           </div>
 
-          <h3 className={styles.iconsSubheading}>{dict.styleguide.socialIconsTitle}</h3>
+          <h3 className={styles.iconsSubheading}>{sg.socialIconsTitle}</h3>
           <div className={styles.iconsGrid}>
             {SOCIAL_ICON_KEYS.map((socialKey) => (
               <div className={styles.iconTile} key={socialKey}>
@@ -445,7 +448,7 @@ export default async function StyleguidePage({
             ))}
           </div>
 
-          <h3 className={styles.iconsSubheading}>{dict.styleguide.directionalIconsTitle}</h3>
+          <h3 className={styles.iconsSubheading}>{sg.directionalIconsTitle}</h3>
           <div className={styles.iconsGrid}>
             <div className={styles.iconTile}>
               <span className={styles.iconBox}>

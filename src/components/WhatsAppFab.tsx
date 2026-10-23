@@ -28,10 +28,13 @@ export function WhatsAppFab({
   tooltipLabel,
   ariaLabel,
   className,
-}: WhatsAppFabProps): ReactElement {
+}: WhatsAppFabProps): ReactElement | null {
   const dict = getDictionary(locale)
-  const resolvedWhatsapp = whatsapp || '+966573534185'
-  const href = `https://wa.me/${normalizeWhatsappDigits(resolvedWhatsapp)}`
+  const cleanDigits = whatsapp ? normalizeWhatsappDigits(whatsapp) : ''
+  if (!cleanDigits) {
+    return null
+  }
+  const href = `https://wa.me/${cleanDigits}`
   const resolvedTooltip = tooltipLabel || dict.nav.whatsappChatTooltip
   const resolvedAriaLabel = ariaLabel || dict.nav.whatsappFabAriaLabel
 
