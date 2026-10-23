@@ -1,0 +1,22 @@
+$ echo y| pnpm payload migrate:down
+
+> aljazira-website@0.1.0 payload D:\jazira
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[11:23:15] INFO: Reading migration files from D:\jazira\src\migrations
+[11:23:15] INFO: Rolling back batch 1 consisting of 7 migration(s).
+[11:23:15] INFO: Migrating down: 20261023_005934_p2_t6_quote_requests_service_title
+[11:23:15] INFO: Migrated down:  20261023_005934_p2_t6_quote_requests_service_title (7ms)
+[11:23:15] INFO: Migrating down: 20261022_231435_p2_t6_quote_requests
+[11:23:15] INFO: Migrated down:  20261022_231435_p2_t6_quote_requests (9ms)
+[11:23:15] INFO: Migrating down: 20261022_221250_p2_t5_globals
+[11:23:15] INFO: Migrated down:  20261022_221250_p2_t5_globals (157ms)
+[11:23:15] INFO: Migrating down: 20261022_160652_p2_t4_projects
+[11:23:15] INFO: Migrated down:  20261022_160652_p2_t4_projects (40ms)
+[11:23:15] INFO: Migrating down: 20261022_140011_p2_t3_services_team
+[11:23:15] INFO: Migrated down:  20261022_140011_p2_t3_services_team (32ms)
+[11:23:15] INFO: Migrating down: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:23:15] INFO: Migrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (17ms)
+[11:23:15] INFO: Migrating down: 20261021_074848_initial_users_media
+[11:23:15] INFO: Migrated down:  20261021_074848_initial_users_media (22ms)
+[11:23:15] INFO: Done.

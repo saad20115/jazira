@@ -1,5 +1,5 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { seoPlugin } from '@payloadcms/plugin-seo'
 import { ar } from '@payloadcms/translations/languages/ar'
 import { en } from '@payloadcms/translations/languages/en'
 import path from 'path'
@@ -7,9 +7,30 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { Brands } from './collections/Brands'
+import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
+import { Projects } from './collections/Projects'
+import { QuoteRequests } from './collections/QuoteRequests'
+import { Services } from './collections/Services'
+import { Stats } from './collections/Stats'
+import { Team } from './collections/Team'
 import { Users } from './collections/Users'
+import { Videos } from './collections/Videos'
 import { env } from './env'
+import { createLimitedLexicalEditor } from './fields/richText'
+import {
+  AboutPage,
+  ContactPage,
+  HomePage,
+  Navigation,
+  PrivacyPage,
+  ProjectsPage,
+  ServicesPage,
+  SiteSettings,
+} from './globals'
+import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
+import { ensurePublicErrorMessageAfterError } from './security/apiError'
 import { buildNonBlockingEmailAdapter } from './security/emailAdapter'
 import { MAX_MEDIA_FILE_SIZE_BYTES } from './security/uploadValidation'
 
@@ -52,8 +73,32 @@ export default buildConfig({
     defaultLocale: 'ar',
     fallback: true,
   },
-  collections: [Users, Media],
-  editor: lexicalEditor(),
+  collections: [
+    Users,
+    Media,
+    Videos,
+    Brands,
+    Stats,
+    Materials,
+    Services,
+    Team,
+    Projects,
+    QuoteRequests,
+  ],
+  globals: [
+    SiteSettings,
+    Navigation,
+    HomePage,
+    ServicesPage,
+    AboutPage,
+    ProjectsPage,
+    ContactPage,
+    PrivacyPage,
+  ],
+  hooks: {
+    afterError: [ensurePublicErrorMessageAfterError],
+  },
+  editor: createLimitedLexicalEditor(),
   secret: env.PAYLOAD_SECRET,
   graphQL: {
     disable: true,
@@ -69,11 +114,49 @@ export default buildConfig({
     },
   }),
   email: buildNonBlockingEmailAdapter(),
+  jobs: {
+    autoRun: [
+      {
+        cron: '* * * * *',
+        limit: 10,
+        queue: 'default',
+      },
+    ],
+    shouldAutoRun: () => shouldAutoRunJobs(),
+  },
   upload: {
     limits: {
-      fileSize: MAX_MEDIA_FILE_SIZE_BYTES,
+      files: 1,
+      fileSize: MAX_MEDIA_FILE_SIZE_BYTES + 1,
     },
   },
   sharp,
-  plugins: [],
+  plugins: [
+    seoPlugin({
+      collections: [],
+      uploadsCollection: 'media',
+      generateTitle: ({ doc, locale }) => {
+        const title =
+          doc && typeof doc === 'object' && typeof (doc as { title?: unknown }).title === 'string'
+            ? (doc as { title: string }).title
+            : ''
+        const suffix =
+          locale === 'en' ? 'Al Jazira for Imdad Smart Co.' : 'شركة الجزيرة الإمداد الذكي'
+        return title ? `${title} | ${suffix}` : suffix
+      },
+      generateDescription: ({ doc }) => {
+        if (doc && typeof doc === 'object') {
+          const shortDesc = (doc as { shortDescription?: unknown }).shortDescription
+          if (typeof shortDesc === 'string') {
+            return shortDesc
+          }
+          const summary = (doc as { summary?: unknown }).summary
+          if (typeof summary === 'string') {
+            return summary
+          }
+        }
+        return ''
+      },
+    }),
+  ],
 })

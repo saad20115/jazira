@@ -1,0 +1,65 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t4-r3
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate" "--no-color"
+
+[00:53:53] INFO: Reading migration files from D:\jazira-dod-p2t4-r3\src\migrations
+[00:53:54] INFO: Migrating: 20261021_074848_initial_users_media
+[00:53:54] INFO: Migrated:  20261021_074848_initial_users_media (84ms)
+[00:53:54] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[00:53:54] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (56ms)
+[00:53:54] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[00:53:54] INFO: Migrated:  20261022_140011_p2_t3_services_team (79ms)
+[00:53:54] INFO: Migrating: 20261022_160652_p2_t4_projects
+[00:53:54] INFO: Migrated:  20261022_160652_p2_t4_projects (79ms)
+[00:53:54] INFO: Done.
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t4-r3
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down" "--no-color"
+
+[00:54:01] INFO: Reading migration files from D:\jazira-dod-p2t4-r3\src\migrations
+[00:54:01] INFO: Rolling back batch 1 consisting of 4 migration(s).
+[00:54:01] INFO: Migrating down: 20261022_160652_p2_t4_projects
+[00:54:01] INFO: Migrated down:  20261022_160652_p2_t4_projects (36ms)
+[00:54:01] INFO: Migrating down: 20261022_140011_p2_t3_services_team
+[00:54:01] INFO: Migrated down:  20261022_140011_p2_t3_services_team (26ms)
+[00:54:01] INFO: Migrating down: 20261022_120943_p2_t2_videos_brands_stats_materials
+[00:54:01] INFO: Migrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (18ms)
+[00:54:01] INFO: Migrating down: 20261021_074848_initial_users_media
+[00:54:01] INFO: Migrated down:  20261021_074848_initial_users_media (20ms)
+[00:54:01] INFO: Done.
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t4-r3
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate" "--no-color"
+
+[00:54:07] INFO: Reading migration files from D:\jazira-dod-p2t4-r3\src\migrations
+[00:54:07] INFO: Migrating: 20261021_074848_initial_users_media
+[00:54:07] INFO: Migrated:  20261021_074848_initial_users_media (71ms)
+[00:54:07] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[00:54:07] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (39ms)
+[00:54:07] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[00:54:07] INFO: Migrated:  20261022_140011_p2_t3_services_team (53ms)
+[00:54:07] INFO: Migrating: 20261022_160652_p2_t4_projects
+[00:54:07] INFO: Migrated:  20261022_160652_p2_t4_projects (80ms)
+[00:54:07] INFO: Done.
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t4-r3
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status" "--no-color"
+
+[00:54:14] INFO: Reading migration files from D:\jazira-dod-p2t4-r3\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     1 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     1 │ Yes │
+│                      20261022_160652_p2_t4_projects │     1 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[00:54:14] INFO: Done.
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t4-r3
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:create" "noop_check" "--no-color"
+
+[00:54:20] INFO: Starting migration: generating UP statements...
+? No schema changes detected. Would you like to create a blank migration file? » (y/N)[00:54:20] INFO: Migration UP complete. Generating DOWN statements...
+[00:54:20] INFO: Migration DOWN statements generation complete.
+√ No schema changes detected. Would you like to create a blank migration file? ... no

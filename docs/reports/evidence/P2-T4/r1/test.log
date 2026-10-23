@@ -1,0 +1,597 @@
+
+> aljazira-website@0.1.0 test D:\jazira-dod-p2t4-r1
+> vitest run "--reporter=verbose"
+
+
+ RUN  v5.0.5 D:/jazira-dod-p2t4-r1
+
+[21:21:37] INFO: Dropping database.
+[21:21:37] INFO: Reading migration files from D:\jazira-dod-p2t4-r1\src\migrations
+[21:21:38] INFO: Migrating: 20261021_074848_initial_users_media
+[21:21:38] INFO: Migrated:  20261021_074848_initial_users_media (74ms)
+[21:21:38] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:21:38] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (62ms)
+[21:21:38] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:21:38] INFO: Migrated:  20261022_140011_p2_t3_services_team (79ms)
+[21:21:38] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:21:38] INFO: Migrated:  20261022_160652_p2_t4_projects (91ms)
+[21:21:39] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:21:40] INFO: غير موجود
+[21:21:40] INFO: غير موجود
+ ✓ tests/int/p2-t4.int.test.ts > P2-T4 integration suite (projects) > enforces Z1 & Z2 on projects: anonymous never sees draft projects (REST or Local API overrideAccess:false), sees published projects, and newer draft edits remain hidden until published 457ms
+[21:21:40] INFO: غير موجود
+[21:21:40] INFO: Running 1 jobs.
+    new: 1
+    retrying: 0
+ ✓ tests/int/p2-t4.int.test.ts > P2-T4 integration suite (projects) > supports scheduled publishing via Payload jobs queue (schedulePublish: true): transitions a draft project to published when the scheduled time arrives 695ms
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+[21:21:41] INFO: The following field is invalid: videoUrl
+ ✓ tests/int/p2-t4.int.test.ts > P2-T4 integration suite (projects) > enforces mutual exclusion between video and videoUrl (video xor videoUrl) and validates YouTube/Vimeo https:// hosts on both draft and published saves 513ms
+[21:21:41] INFO: الحقل التالي غير صالح: المعرّف النصي (Slug)
+[21:21:41] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[21:21:41] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[21:21:41] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[21:21:41] INFO: الحقل التالي غير صالح: المحتوى (Content) > نبذة مختصرة عن المشروع
+[21:21:41] INFO: الحقل التالي غير صالح: التفاصيل والمخرجات (Details) > الركائز والتفاصيل الفنية للمشروع
+[21:21:41] INFO: الحقل التالي غير صالح: التفاصيل والمخرجات (Details) > المخرجات والبنود المسلمة
+[21:21:41] INFO: الحقل التالي غير صالح: الوسائط (Media) > معرض صور المشروع
+[21:21:41] INFO: The following field is invalid: coverImage
+[21:21:41] INFO: The following field is invalid: video
+[21:21:41] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(#4), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(#4), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(#4), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(#4), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(#4), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(#4), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t4-r1/src/collections/Media.ts:150:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/jazira-dod-p2t4-r1/tests/int/p2-t4.int.test.ts:733:33
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t4.int.test.ts > P2-T4 integration suite (projects) > enforces slug uniqueness, field constraints (year, summary, details max 8, deliverables max 10, gallery max 30), foreign-key checks, and media deletion guard 381ms
+ ✓ tests/int/p2-t4.int.test.ts > P2-T4 integration suite (projects) > wires revalidation hooks for project page, projects list, related projects by category, and home when featured is true 149ms
+[21:21:48] INFO: Dropping database.
+[21:21:48] INFO: Reading migration files from D:\jazira-dod-p2t4-r1\src\migrations
+[21:21:48] INFO: Migrating: 20261021_074848_initial_users_media
+[21:21:49] INFO: Migrated:  20261021_074848_initial_users_media (73ms)
+[21:21:49] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:21:49] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (51ms)
+[21:21:49] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:21:49] INFO: Migrated:  20261022_140011_p2_t3_services_team (69ms)
+[21:21:49] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:21:49] INFO: Migrated:  20261022_160652_p2_t4_projects (82ms)
+[21:21:50] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:21:50] INFO: غير موجود
+[21:21:50] INFO: غير موجود
+ ✓ tests/int/p2-t3.int.test.ts > P2-T3 integration suite (services & team) > enforces Z1 & Z2 on services: anonymous never sees draft services (even with ?draft=true), sees published services, and newer draft edits remain hidden until published 298ms
+[21:21:51] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[21:21:51] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[21:21:51] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[21:21:51] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[21:21:51] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[21:21:51] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[21:21:51] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[21:21:51] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+ ✓ tests/int/p2-t3.int.test.ts > P2-T3 integration suite (services & team) > enforces limited Lexical feature set on services.body (I2): accepts h2-h4, bold, italic, lists, blockquote, safe link, and media upload; rejects raw HTML, iframe, h1, check list, and javascript: links 130ms
+[21:21:51] INFO: غير موجود
+ ✓ tests/int/p2-t3.int.test.ts > P2-T3 integration suite (services & team) > enforces team conditional validation, LinkedIn URL rules, and public active-only read access 119ms
+[21:21:51] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[21:21:51] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[21:21:51] INFO: الحقل التالي غير صالح: أيقونة الخدمة
+[21:21:51] INFO: الحقل التالي غير صالح: تصنيف الخدمة
+[21:21:51] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (team(م. عبد الله الشمري), services(الأعمال الكهروميكانيكية المتكاملة)). Remove the reference first.
+              at preventMediaDeletionWhenReferenced (D:/jazira-dod-p2t4-r1/src/collections/Media.ts:150:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p2-t3.int.test.ts:74:11)
+              at D:/jazira-dod-p2t4-r1/tests/int/p2-t3.int.test.ts:808:38
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t3.int.test.ts > P2-T3 integration suite (services & team) > verifies P2-T3 R-1..R-6 fixes: staff bio cleared across all locales (R-1), LinkedIn https + path (R-2), LinkFeature enabledCollections (R-3), no silent icon/tier defaults on services (R-4), Arabic SEO field labels (R-5), and media beforeDelete guard (R-6) 226ms
+[21:21:57] INFO: Dropping database.
+[21:21:58] INFO: Reading migration files from D:\jazira-dod-p2t4-r1\src\migrations
+[21:21:58] INFO: Migrating: 20261021_074848_initial_users_media
+[21:21:58] INFO: Migrated:  20261021_074848_initial_users_media (78ms)
+[21:21:58] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:21:58] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (59ms)
+[21:21:58] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:21:58] INFO: Migrated:  20261022_140011_p2_t3_services_team (70ms)
+[21:21:58] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:21:58] INFO: Migrated:  20261022_160652_p2_t4_projects (81ms)
+[21:21:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > registers the first user as admin via /api/users/first-register and blocks any second first-register attempt (A6) 703ms
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > allows admin to create an editor user (defaulting to editor) and prevents editor from escalating role via REST or Local API (Z1, Z3) 704ms
+[21:21:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:21:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:21:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:21:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:21:59] INFO: The following field is invalid: password
+[21:21:59] INFO: The following field is invalid: password
+[21:21:59] INFO: The following field is invalid: password
+[21:21:59] INFO: The following field is invalid: password
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > blocks editor from creating/deleting users and blocks anonymous from listing/creating users (Z1, A6) 45ms
+[21:22:00] INFO: The following field is invalid: password
+[21:22:00] INFO: The following field is invalid: password
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > enforces the password policy (min 12 chars + common password blocklist) on create, update, and reset-password (A4) 960ms
+[21:22:01] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:22:01] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:22:02] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:22:02] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:22:02] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:391:24
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:22:02] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:401:24
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+[21:22:02] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:410:32
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > locks the account after 5 failed login attempts for 15 minutes and refuses the correct password while locked (A1) 1882ms
+[21:22:03] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:03] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:03] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:03] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:03] INFO: لا يسمح لك القيام بهذه العمليّة.
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > revokes JWT access immediately on user logout and on admin-forced session removal (A2) 1017ms
+[21:22:03] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at preventLastAdminDemotionBeforeChange (D:/jazira-dod-p2t4-r1/src/collections/Users.ts:96:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:561:23
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:22:03] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at preventLastAdminBeforeDelete (D:/jazira-dod-p2t4-r1/src/collections/Users.ts:131:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-dod-p2t4-r1/tests/int/p1-t3.int.test.ts:571:23
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > refuses deleting or demoting the last admin user, while allowing deleting a second admin (R-2) 386ms
+stdout | tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+[A5/R-1 Timing 20+20] known(median=20.65ms, max=41.12ms) vs unknown(median=4.56ms, max=7.48ms) | diff=16.09ms
+
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1) 5279ms
+[21:22:09] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:09] INFO: The following field is invalid: file
+[21:22:09] INFO: The following field is invalid: file
+ ✓ tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > rejects anonymous uploads, rejects .svg and disguised HTML renamed .jpg by magic bytes, and accepts a real JPEG generating all 4 webp sizes (I5, Z1) 509ms
+[21:22:16] INFO: Dropping database.
+[21:22:16] INFO: Reading migration files from D:\jazira-dod-p2t4-r1\src\migrations
+[21:22:16] INFO: Migrating: 20261021_074848_initial_users_media
+[21:22:16] INFO: Migrated:  20261021_074848_initial_users_media (70ms)
+[21:22:16] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:22:16] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (44ms)
+[21:22:16] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:22:16] INFO: Migrated:  20261022_140011_p2_t3_services_team (58ms)
+[21:22:16] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:22:16] INFO: Migrated:  20261022_160652_p2_t4_projects (80ms)
+[21:22:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[21:22:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+ ✓ tests/int/p2-t2.int.test.ts > P2-T2 integration suite (videos, brands, stats, materials) > allows anonymous public GET on videos, brands, stats, and materials, and blocks anonymous writes with 403 without buffering large bodies (Z1, R-2) 61ms
+[21:22:18] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[21:22:19] INFO: The following field is invalid: file
+[21:22:19] INFO: The following field is invalid: file
+ ✓ tests/int/p2-t2.int.test.ts > P2-T2 integration suite (videos, brands, stats, materials) > enforces per-collection upload limits, randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> (R-1), isolates VIDEOS_DIR from MEDIA_DIR (R-6), rejects 101 MB MP4, and rejects disguised HTML (I5, R-9) 1062ms
+[21:22:19] INFO: الحقل التالي غير صالح: الموقع الإلكتروني
+[21:22:19] INFO: الحقل التالي غير صالح: العلامات التجارية المعتمدة
+[21:22:19] INFO: الحقل التالي غير صالح: رقم البند
+[21:22:19] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+              at preventBrandDeletionWhenUsedByMaterials (D:/jazira-dod-p2t4-r1/src/collections/Brands.ts:33:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-dod-p2t4-r1/tests/int/p2-t2.int.test.ts:65:20)
+              at D:/jazira-dod-p2t4-r1/tests/int/p2-t2.int.test.ts:473:27
+              at async file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t2.int.test.ts > P2-T2 integration suite (videos, brands, stats, materials) > allows editor CRUD on stats, brands, and materials, validates brand website scheme, and blocks deleting a brand referenced by materials 271ms
+[21:22:19] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[21:22:19] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[21:22:21] INFO: The following field is invalid: file
+[21:22:21] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\jazira-dod-p2t4-r1\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///D:/jazira-dod-p2t4-r1/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t2.int.test.ts > P2-T2 integration suite (videos, brands, stats, materials) > isolates video upload temp dir outside staticDir (R-11), rejects multi-file requests without leaking temp files (R-12), and accepts exact 100 MiB inclusive while rejecting 100 MiB + 1 (R-13) 1734ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > configures unique, indexed, required sidebar text field and companion hidden slugLockedField 3ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > deep-merges admin and concatenates hooks when overrides are passed (R-1) 3ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "General Contracting" -> "general-contracting" 1ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "MEP Works" -> "mep-works" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Firefighting Systems" -> "firefighting-systems" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Smart Systems" -> "smart-systems" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "HVAC, Ventilation & Refrigeration" -> "hvac-ventilation-refrigeration" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Testing, Commissioning & TAB" -> "testing-commissioning-tab" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Princess Noura University (PNU)" -> "princess-noura-university-pnu" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Sofitel Makkah Hotel" -> "sofitel-makkah-hotel" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Al Maqam Towers (A, B, C, D)" -> "al-maqam-towers-a-b-c-d" 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > 10 real English titles from design/copy/ (02-services.md & 04-projects.md) > slugifies "Medical Science College — Taif University" -> "medical-science-college-taif-university" 1ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > Arabic -> Latin transliteration fallback > transliterates Arabic project and service titles with diacritics and Eastern Arabic digits 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > Length cap at 80 chars & word-boundary truncation (R-8) > caps long titles at 80 characters and cuts cleanly at a hyphen word boundary 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > Length cap at 80 chars & word-boundary truncation (R-8) > truncates single uninterrupted 100-char token at 80 characters 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > prefers English title when both English and Arabic exist 1ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > falls back to transliterated Arabic when English title is absent 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > regenerates slug from English title when saving in en while slugLocked is false, and reads en via findByID when saving in ar (R-2) 2ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > normalizes manual slug via slugify and locks slugLocked immediately (R-6 & R-2) 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > queries base and base-<n> without pagination limit and takes maxSuffix + 1 (R-9) 1ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > resolveUniqueSlug returns baseSlug when free and maxSuffix + 1 when taken (R-9) 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > resolves unique suffixes near the 80-char cap by querying shortened candidate bases (R-15) 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > does not revert or lock slug when an ar update resends a stale ar-transliterated slug (R-14) 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > beforeValidate hook behaviour (R-2, R-6, R-9) > throws ValidationError in beforeValidate when a manual slug collides during draft/autosave save (R-13) 1ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > validateSlug pattern, length, and uniqueness validation (R-7, R-8) > accepts valid slugs matching ^[a-z0-9]+(?:-[a-z0-9]+)*$ 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > validateSlug pattern, length, and uniqueness validation (R-7, R-8) > rejects empty, >80 chars, uppercase, underscore, leading/trailing/double dashes, and non-ASCII slugs 0ms
+ ✓ src/fields/slug.test.ts > slugField & slugify > validateSlug pattern, length, and uniqueness validation (R-7, R-8) > returns a friendly localized validation message when a manual slug collides with an existing document (R-7) 1ms
+ ✓ tests/int/p2-t1-slug.int.test.ts > P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) > real per-locale flow: create in ar -> transliterated; add en title -> English slug; publish; change English title -> slug unchanged (R-2) 276ms
+ ✓ tests/int/p2-t1-slug.int.test.ts > P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) > normalizes manual slug on create/update, locks slugLocked, and returns a friendly validation error on manual slug collision (R-6, R-7) 128ms
+ ✓ tests/int/p2-t1-slug.int.test.ts > P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) > stale-payload sequences: resending stale auto-slugs in ar or en saves does not revert or lock the slug (R-14, R-17) 345ms
+ ✓ tests/int/p2-t1-slug.int.test.ts > P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) > resolves unique suffixes without collision when an 80-char title is used 3 times (R-15) 88ms
+ ✓ src/hooks/revalidate.test.ts > revalidate hooks & tag builders > builds collection tags per collection, per doc slug, and per locale (ar, en) 3ms
+ ✓ src/hooks/revalidate.test.ts > revalidate hooks & tag builders > builds global tags per global and per locale (ar, en) 0ms
+ ✓ src/hooks/revalidate.test.ts > revalidate hooks & tag builders > skips revalidation on draft creation and draft-to-draft autosave, and revalidates on publish, unpublish, and delete (R-3, R-5) 2ms
+ ✓ src/hooks/revalidate.test.ts > revalidate hooks & tag builders > skips global revalidation on draft-to-draft autosave and revalidates when published (R-3, R-5) 1ms
+ ✓ src/hooks/revalidate.test.ts > revalidate hooks & tag builders > silently ignores "static generation store missing" outside Next runtime, but logs unexpected Invariant errors without throwing (R-4, R-5) 1ms
+ ✓ src/hooks/revalidate.test.ts > revalidate hooks & tag builders > skips revalidation when context.disableRevalidate is true (R-5) 0ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > creates a group field with localized label, internal/external type, and route/url subfields 5ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > validateExternalUrl (I3 scheme allowlist) > accepts safe http:, https:, mailto:, and tel: URLs 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > validateExternalUrl (I3 scheme allowlist) > rejects javascript: (including mixed case JaVaScRiPt: and control-char obfuscation), data:, vbscript:, file:, and protocol-relative URLs 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > validateExternalUrl (I3 scheme allowlist) > enforces optional host allowlist (e.g. linkedin.com) 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > validateInternalPath (R-11) > accepts safe internal paths starting with a single / 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > validateInternalPath (R-11) > rejects protocol-relative //, backslashes \, percent-encoded slashes %2F/%5C, path traversal .., schemes, and missing leading / (R-11) 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > linkField embedded validators & precedence (R-11) > validates external URL when type === "external" and skips when type === "internal" 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > linkField embedded validators & precedence (R-11) > validates internalPath only when type !== "external" and internalRoute === "custom" (R-11) 1ms
+ ✓ src/fields/link.test.ts > linkField & URL validation (I3) > linkField embedded validators & precedence (R-11) > gives reference precedence over internalRoute and internalPath when both are set (R-11) 1ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > validates startup env singleton and accepts a valid environment configuration 4ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > validates MEDIA_DIR, VIDEOS_DIR, and UPLOAD_TMP_DIR as separate absolute paths outside public/ (R-4, R-6, R-18) 4ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > rejects missing PAYLOAD_SECRET and names the variable + openssl command without leaking values 1ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > rejects a PAYLOAD_SECRET shorter than 48 characters and never prints the secret value 1ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > rejects placeholder values from .env.example even when >= 48 characters 0ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > rejects identical PAYLOAD_SECRET and IP_HASH_SALT 0ms
+ ✓ src/env.test.ts > parseEnv (S1, S2) > rejects invalid SERVER_URL or placeholder DATABASE_URL 1ms
+ ✓ src/fields/richText.test.ts > limitedRichTextField & validateLimitedLexicalState (I2) > accepts valid Lexical AST nodes within the allowed feature set (h2-h4, paragraph, bold, italic, bullet/number lists, quote, safe link, media upload) 3ms
+ ✓ src/fields/richText.test.ts > limitedRichTextField & validateLimitedLexicalState (I2) > rejects disallowed node types (iframe, rawHtml, script, code, block, horizontalrule) and raw HTML properties (I2) 1ms
+ ✓ src/fields/richText.test.ts > limitedRichTextField & validateLimitedLexicalState (I2) > rejects headings outside h2-h4 (e.g. h1, h5, h6), checklist lists, disallowed text format bitmasks, non-media uploads, and unsafe link URLs (I2, I3) 1ms
+ ✓ src/fields/richText.test.ts > limitedRichTextField & validateLimitedLexicalState (I2) > preserves factory beforeValidate hook and admin config when overrides are passed to limitedRichTextField 41ms
+ ✓ src/fields/videoUrl.test.ts > videoUrlField, parseVideoUrl & toEmbedUrl (I4) > exposes the exact 6 allowlisted video hosts (including m.youtube.com per R-10) 2ms
+ ✓ src/fields/videoUrl.test.ts > videoUrlField, parseVideoUrl & toEmbedUrl (I4) > accepts, normalizes, and generates embed URLs for all allowlisted hosts, preserving YouTube t/start and Vimeo h hash (R-10) 4ms
+ ✓ src/fields/videoUrl.test.ts > videoUrlField, parseVideoUrl & toEmbedUrl (I4) > rejects spoofed hosts (https://youtube.com.evil.com), non-HTTPS schemes, credentials, and malformed IDs/params 1ms
+ ✓ src/fields/videoUrl.test.ts > videoUrlField, parseVideoUrl & toEmbedUrl (I4) > allows empty value when optional and rejects empty when required 0ms
+ ✓ src/fields/videoUrl.test.ts > videoUrlField, parseVideoUrl & toEmbedUrl (I4) > deep-merges admin overrides and concatenates hooks without losing normalizeVideoUrlBeforeValidate (R-1) 1ms
+ ✓ src/security/uploadValidation.test.ts > uploadValidation (I5) > detects JPEG, PNG, WebP, and AVIF from magic bytes and rejects SVG/HTML 2ms
+ ✓ src/security/uploadValidation.test.ts > uploadValidation (I5) > detects MP4 and WebM from magic bytes and rejects AVIF, Matroska MKV, SVG, and HTML 1ms
+ ✓ src/security/uploadValidation.test.ts > uploadValidation (I5) > sanitizes filenames by stripping paths, control chars, and leading dots 0ms
+ ✓ src/security/uploadValidation.test.ts > uploadValidation (I5) > rejects disguised HTML renamed .jpg in validateAndSanitizeMediaFile 2ms
+ ✓ src/security/uploadValidation.test.ts > uploadValidation (I5) > randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> derived strictly from detected magic bytes, ignoring .html/.svg/no-ext client names (R-1) 2ms
+ ✓ src/eslint-no-server-in-client.test.ts > local/no-server-in-client ESLint rule (S4, R-3, R-5) > flags forbidden server imports inside a "use client" module 138ms
+ ✓ src/eslint-no-server-in-client.test.ts > local/no-server-in-client ESLint rule (S4, R-3, R-5) > allows type-only imports and exports inside a "use client" module (R-5) 6ms
+ ✓ src/eslint-no-server-in-client.test.ts > local/no-server-in-client ESLint rule (S4, R-3, R-5) > flags mixed value + type specifiers inside a "use client" module (R-5) 4ms
+ ✓ src/eslint-no-server-in-client.test.ts > local/no-server-in-client ESLint rule (S4, R-3, R-5) > does not fire on a server module (without "use client") importing the same server modules 4ms
+ ✓ src/access/publishedOrLoggedIn.test.ts > publishedOrLoggedIn access helper (Z2) > returns published filter for anonymous requests 3ms
+ ✓ src/access/publishedOrLoggedIn.test.ts > publishedOrLoggedIn access helper (Z2) > returns true for editor users 0ms
+ ✓ src/access/publishedOrLoggedIn.test.ts > publishedOrLoggedIn access helper (Z2) > returns true for admin users 0ms
+ ✓ src/access/publishedOrLoggedIn.test.ts > publishedOrLoggedIn access helper (Z2) > enforces Z2 on a publishable collection: anonymous sees only published docs, while editor/admin sees drafts too 1ms
+ ✓ src/fields/groups/pillar.test.ts > pillar reusable field group > returns localized required title and text fields with default bilingual labels 4ms
+ ✓ src/fields/groups/pillar.test.ts > pillar reusable field group > builds a named group field with custom label and maxLength overrides 1ms
+ ✓ src/fields/order.test.ts > orderField > returns a number field with defaultValue 0, index true, and sidebar position 2ms
+ ✓ src/fields/order.test.ts > orderField > deep-merges admin overrides and preserves hook arrays without losing sidebar or description (R-1) 2ms
+ ✓ src/security/passwordPolicy.test.ts > passwordPolicy (A4) > rejects passwords shorter than 12 characters 5ms
+ ✓ src/security/passwordPolicy.test.ts > passwordPolicy (A4) > rejects passwords in the bundled common-password blocklist (including >= 12 chars) 1ms
+ ✓ src/security/passwordPolicy.test.ts > passwordPolicy (A4) > accepts a strong password of >= 12 characters not in the blocklist 1ms
+ ✓ src/collections/_shared/publishable.test.ts > publishable versions config > matches the exact content model specification (autosave 800ms, schedulePublish true, maxPerDoc 25) 3ms
+ ✓ src/collections/_shared/publishable.test.ts > publishable versions config > attaches publishable versions config to a CollectionConfig 0ms
+ ✓ src/access/isAdminFieldLevel.test.ts > isAdminFieldLevel access helper > returns false for anonymous requests 2ms
+ ✓ src/access/isAdminFieldLevel.test.ts > isAdminFieldLevel access helper > returns false for editor users 0ms
+ ✓ src/access/isAdminFieldLevel.test.ts > isAdminFieldLevel access helper > returns true for admin users 0ms
+ ✓ src/access/adminOrSelf.test.ts > adminOrSelf access helper > returns false for anonymous requests 2ms
+ ✓ src/access/adminOrSelf.test.ts > adminOrSelf access helper > returns self-id constraint for editor users 1ms
+ ✓ src/access/adminOrSelf.test.ts > adminOrSelf access helper > returns true for admin users 0ms
+ ✓ src/access/isAdminOrEditor.test.ts > isAdminOrEditor access helper > returns false for anonymous requests 2ms
+ ✓ src/access/isAdminOrEditor.test.ts > isAdminOrEditor access helper > returns true for editor users 0ms
+ ✓ src/access/isAdminOrEditor.test.ts > isAdminOrEditor access helper > returns true for admin users 0ms
+ ✓ src/access/isAdmin.test.ts > isAdmin access helper > returns false for anonymous requests 2ms
+ ✓ src/access/isAdmin.test.ts > isAdmin access helper > returns false for editor users 0ms
+ ✓ src/access/isAdmin.test.ts > isAdmin access helper > returns true for admin users 0ms
+
+ Test Files  22 passed (22)
+      Tests  118 passed (118)
+   Start at  21:21:29
+   Duration  71.84s (tests 61%, import 38%, transform 1%)
+
+    Isolate  22 workers spawned · ~225ms startup each (spawn + environment, per file)
+             at least ~4.72s faster with isolate: false — reuses workers across files instead of one per file
+

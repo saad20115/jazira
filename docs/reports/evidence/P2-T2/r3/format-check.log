@@ -1,0 +1,6 @@
+
+> aljazira-website@0.1.0 format:check D:\jazira-dod-p2t2-r3
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!

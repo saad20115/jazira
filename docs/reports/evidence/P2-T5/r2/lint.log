@@ -1,0 +1,4 @@
+
+> aljazira-website@0.1.0 lint D:\jazira-dod-p2t5-r2
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+

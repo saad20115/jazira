@@ -1,0 +1,9 @@
+$ echo n| pnpm payload migrate:create noop_check
+
+> aljazira-website@0.1.0 payload D:\jazira
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:create" "noop_check"
+
+[11:23:37] INFO: Starting migration: generating UP statements...
+? No schema changes detected. Would you like to create a blank migration file? » (y/N)[11:23:37] INFO: Migration UP complete. Generating DOWN statements...
+[11:23:37] INFO: Migration DOWN statements generation complete.
+√ No schema changes detected. Would you like to create a blank migration file? ... no

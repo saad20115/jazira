@@ -1,4 +1,4 @@
-export { adminOrSelf } from './adminOrSelf'
+export { adminOrSelf, isAdminOrSelfFieldLevel } from './adminOrSelf'
 export { isAdmin } from './isAdmin'
 export { isAdminFieldLevel } from './isAdminFieldLevel'
 export { isAdminOrEditor } from './isAdminOrEditor'

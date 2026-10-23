@@ -1,3 +1,4 @@
+import os from 'os'
 import path from 'path'
 import { describe, expect, it } from 'vitest'
 import { env, parseEnv } from './env'
@@ -16,23 +17,79 @@ function createValidRawEnv(): Record<string, string> {
 
 describe('parseEnv (S1, S2)', () => {
   it('validates startup env singleton and accepts a valid environment configuration', () => {
-    expect(env.SERVER_URL).toBe('http://localhost:3000')
-    expect(env.MEDIA_DIR).toBe(path.resolve(process.cwd(), 'media'))
+    expect(env).toEqual(parseEnv(process.env))
+    expect(path.isAbsolute(env.MEDIA_DIR)).toBe(true)
+    expect(path.isAbsolute(env.VIDEOS_DIR)).toBe(true)
+    expect(path.isAbsolute(env.UPLOAD_TMP_DIR)).toBe(true)
+
+    const envWithoutDirs: NodeJS.ProcessEnv = { ...process.env }
+    delete envWithoutDirs.MEDIA_DIR
+    delete envWithoutDirs.VIDEOS_DIR
+    delete envWithoutDirs.UPLOAD_TMP_DIR
+    const parsedFromProcessDefaults = parseEnv(envWithoutDirs)
+    expect(parsedFromProcessDefaults.MEDIA_DIR).toBe(path.resolve(process.cwd(), 'media'))
+    expect(parsedFromProcessDefaults.VIDEOS_DIR).toBe(path.resolve(process.cwd(), 'videos'))
+    expect(parsedFromProcessDefaults.UPLOAD_TMP_DIR).toBe(
+      path.resolve(os.tmpdir(), 'aljazira-uploads'),
+    )
+
     const raw = createValidRawEnv()
     const parsed = parseEnv(raw)
     expect(parsed).toEqual({
       ...raw,
       MEDIA_DIR: path.resolve(process.cwd(), 'media'),
+      VIDEOS_DIR: path.resolve(process.cwd(), 'videos'),
+      UPLOAD_TMP_DIR: path.resolve(os.tmpdir(), 'aljazira-uploads'),
+      PAYLOAD_JOBS_AUTORUN: true,
     })
   })
 
-  it('validates MEDIA_DIR as an absolute path outside public/ (R-4)', () => {
+  it('requires PAYLOAD_JOBS_AUTORUN to be explicitly set in production while defaulting to true in dev/test (P2-T4 R-14)', () => {
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+      }),
+    ).toThrow(/PAYLOAD_JOBS_AUTORUN.*production/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'invalid',
+      }),
+    ).toThrow(/PAYLOAD_JOBS_AUTORUN/i)
+
+    expect(
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'true',
+      }).PAYLOAD_JOBS_AUTORUN,
+    ).toBe(true)
+
+    expect(
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'false',
+      }).PAYLOAD_JOBS_AUTORUN,
+    ).toBe(false)
+  })
+
+  it('validates MEDIA_DIR, VIDEOS_DIR, and UPLOAD_TMP_DIR as separate absolute paths outside public/ (R-4, R-6, R-18)', () => {
     const customAbsDir = path.resolve(process.cwd(), 'custom-media-storage')
+    const customVideosDir = path.resolve(process.cwd(), 'custom-videos-storage')
+    const customTmpDir = path.resolve(process.cwd(), 'custom-upload-tmp')
     const parsed = parseEnv({
       ...createValidRawEnv(),
       MEDIA_DIR: customAbsDir,
+      VIDEOS_DIR: customVideosDir,
+      UPLOAD_TMP_DIR: customTmpDir,
     })
     expect(parsed.MEDIA_DIR).toBe(customAbsDir)
+    expect(parsed.VIDEOS_DIR).toBe(customVideosDir)
+    expect(parsed.UPLOAD_TMP_DIR).toBe(customTmpDir)
 
     expect(() =>
       parseEnv({
@@ -44,9 +101,53 @@ describe('parseEnv (S1, S2)', () => {
     expect(() =>
       parseEnv({
         ...createValidRawEnv(),
+        VIDEOS_DIR: 'relative/videos',
+      }),
+    ).toThrow(/VIDEOS_DIR.*absolute/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        UPLOAD_TMP_DIR: 'relative/tmp',
+      }),
+    ).toThrow(/UPLOAD_TMP_DIR.*absolute/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
         MEDIA_DIR: path.resolve(process.cwd(), 'public/uploads'),
       }),
     ).toThrow(/MEDIA_DIR.*public/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        VIDEOS_DIR: path.resolve(process.cwd(), 'public/videos'),
+      }),
+    ).toThrow(/VIDEOS_DIR.*public/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        UPLOAD_TMP_DIR: path.resolve(process.cwd(), 'public/tmp'),
+      }),
+    ).toThrow(/UPLOAD_TMP_DIR.*public/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        MEDIA_DIR: path.resolve(process.cwd(), 'media'),
+        VIDEOS_DIR: path.resolve(process.cwd(), 'media/videos'),
+      }),
+    ).toThrow(/VIDEOS_DIR.*sibling/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        VIDEOS_DIR: path.resolve(process.cwd(), 'videos'),
+        UPLOAD_TMP_DIR: path.resolve(process.cwd(), 'videos/.tmp'),
+      }),
+    ).toThrow(/UPLOAD_TMP_DIR.*outside MEDIA_DIR and VIDEOS_DIR/i)
   })
 
   it('rejects missing PAYLOAD_SECRET and names the variable + openssl command without leaking values', () => {

@@ -1,0 +1,13 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t3-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status" "--no-color"
+
+[18:19:15] [32mINFO[39m: [36mReading migration files from D:\jazira-dod-p2t3-r1\src\migrations[39m
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│[37m [0m[01m                                               Name[0m │[37m [0m[01mBatch[0m │[37m [0m[01mRan[0m │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│[37m [0m[32m                20261021_074848_initial_users_media[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m20261022_120943_p2_t2_videos_brands_stats_materials[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                20261022_140011_p2_t3_services_team[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[18:19:15] [32mINFO[39m: [36mDone.[39m

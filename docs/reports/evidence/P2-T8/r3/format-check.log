@@ -1,0 +1,11 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+cmd: pnpm format:check
+duration_ms: 5041
+---
+
+> aljazira-website@0.1.0 format:check C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!

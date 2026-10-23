@@ -1,0 +1,63 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t3-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down" "--no-color"
+
+[18:18:42] [32mINFO[39m: [36mReading migration files from D:\jazira-dod-p2t3-r1\src\migrations[39m
+[18:18:42] [32mINFO[39m: [36mRolling back batch 1 consisting of 3 migration(s).[39m
+[18:18:42] [32mINFO[39m: [36mMigrating down: 20261022_140011_p2_t3_services_team[39m
+[18:18:43] [32mINFO[39m: [36mMigrated down:  20261022_140011_p2_t3_services_team (29ms)[39m
+[18:18:43] [32mINFO[39m: [36mMigrating down: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[18:18:43] [32mINFO[39m: [36mMigrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (18ms)[39m
+[18:18:43] [32mINFO[39m: [36mMigrating down: 20261021_074848_initial_users_media[39m
+[18:18:43] [32mINFO[39m: [36mMigrated down:  20261021_074848_initial_users_media (18ms)[39m
+[18:18:43] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t3-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate" "--no-color"
+
+[18:18:49] [32mINFO[39m: [36mReading migration files from D:\jazira-dod-p2t3-r1\src\migrations[39m
+[18:18:49] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[18:18:50] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (96ms)[39m
+[18:18:50] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[18:18:50] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (51ms)[39m
+[18:18:50] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[18:18:50] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (57ms)[39m
+[18:18:50] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t3-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down" "--no-color"
+
+[18:18:56] [32mINFO[39m: [36mReading migration files from D:\jazira-dod-p2t3-r1\src\migrations[39m
+[18:18:56] [32mINFO[39m: [36mRolling back batch 1 consisting of 3 migration(s).[39m
+[18:18:56] [32mINFO[39m: [36mMigrating down: 20261022_140011_p2_t3_services_team[39m
+[18:18:56] [32mINFO[39m: [36mMigrated down:  20261022_140011_p2_t3_services_team (25ms)[39m
+[18:18:56] [32mINFO[39m: [36mMigrating down: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[18:18:56] [32mINFO[39m: [36mMigrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (19ms)[39m
+[18:18:56] [32mINFO[39m: [36mMigrating down: 20261021_074848_initial_users_media[39m
+[18:18:56] [32mINFO[39m: [36mMigrated down:  20261021_074848_initial_users_media (13ms)[39m
+[18:18:56] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t3-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate" "--no-color"
+
+[18:19:02] [32mINFO[39m: [36mReading migration files from D:\jazira-dod-p2t3-r1\src\migrations[39m
+[18:19:02] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[18:19:02] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (84ms)[39m
+[18:19:02] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[18:19:02] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (49ms)[39m
+[18:19:02] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[18:19:02] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (55ms)[39m
+[18:19:02] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload D:\jazira-dod-p2t3-r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status" "--no-color"
+
+[18:19:08] [32mINFO[39m: [36mReading migration files from D:\jazira-dod-p2t3-r1\src\migrations[39m
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│[37m [0m[01m                                               Name[0m │[37m [0m[01mBatch[0m │[37m [0m[01mRan[0m │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│[37m [0m[32m                20261021_074848_initial_users_media[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m20261022_120943_p2_t2_videos_brands_stats_materials[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                20261022_140011_p2_t3_services_team[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[18:19:08] [32mINFO[39m: [36mDone.[39m

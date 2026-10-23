@@ -1,3 +1,4 @@
+import os from 'os'
 import path from 'path'
 import { z } from 'zod'
 
@@ -50,6 +51,44 @@ function secretFieldSchema(varName: 'PAYLOAD_SECRET' | 'IP_HASH_SALT') {
     )
 }
 
+function storageDirSchema(varName: 'MEDIA_DIR' | 'VIDEOS_DIR' | 'UPLOAD_TMP_DIR') {
+  const exampleSubdir =
+    varName === 'MEDIA_DIR' ? 'media' : varName === 'VIDEOS_DIR' ? 'videos' : 'tmp'
+  return z
+    .string()
+    .trim()
+    .min(1, `${varName} must not be empty.`)
+    .refine(
+      (val) => path.isAbsolute(val),
+      `${varName} must be an absolute filesystem path (e.g. /var/lib/aljazira/${exampleSubdir} or D:\\jazira\\${exampleSubdir}).`,
+    )
+    .refine((val) => {
+      const resolvedDir = path.resolve(val)
+      const publicDir = path.resolve(process.cwd(), 'public')
+      const rel = path.relative(publicDir, resolvedDir)
+      return rel !== '' && (rel.startsWith('..') || path.isAbsolute(rel))
+    }, `${varName} must not be inside public/ (uploads must be served through Payload access control).`)
+    .transform((val) => path.resolve(val))
+}
+
+function isSameOrSubdirectory(parentDir: string, candidateDir: string): boolean {
+  const rel = path.relative(parentDir, candidateDir)
+  return rel === '' || (!rel.startsWith('..') && !path.isAbsolute(rel))
+}
+
+const jobsAutoRunSchema = z
+  .string({
+    error:
+      'PAYLOAD_JOBS_AUTORUN must be explicitly set to "true" or "false" in production so at most one instance runs the Payload jobs queue.',
+  })
+  .trim()
+  .toLowerCase()
+  .refine(
+    (val) => val === 'true' || val === 'false' || val === '1' || val === '0',
+    'PAYLOAD_JOBS_AUTORUN must be "true", "false", "1", or "0".',
+  )
+  .transform((val) => val === 'true' || val === '1')
+
 const envSchema = z
   .object({
     DATABASE_URL: z
@@ -77,38 +116,69 @@ const envSchema = z
       }, 'SERVER_URL must be an absolute http(s) URL (e.g. http://localhost:3000).'),
     PAYLOAD_SECRET: secretFieldSchema('PAYLOAD_SECRET'),
     IP_HASH_SALT: secretFieldSchema('IP_HASH_SALT'),
-    MEDIA_DIR: z
-      .string()
-      .trim()
-      .min(1, 'MEDIA_DIR must not be empty.')
-      .refine(
-        (val) => path.isAbsolute(val),
-        'MEDIA_DIR must be an absolute filesystem path (e.g. /var/lib/aljazira/media or D:\\jazira\\media).',
-      )
-      .refine((val) => {
-        const resolvedMedia = path.resolve(val)
-        const publicDir = path.resolve(process.cwd(), 'public')
-        const rel = path.relative(publicDir, resolvedMedia)
-        return rel !== '' && (rel.startsWith('..') || path.isAbsolute(rel))
-      }, 'MEDIA_DIR must not be inside public/ (uploads must be served through Payload access control).')
-      .transform((val) => path.resolve(val)),
+    MEDIA_DIR: storageDirSchema('MEDIA_DIR'),
+    VIDEOS_DIR: storageDirSchema('VIDEOS_DIR'),
+    UPLOAD_TMP_DIR: storageDirSchema('UPLOAD_TMP_DIR'),
+    PAYLOAD_JOBS_AUTORUN: jobsAutoRunSchema,
   })
   .refine((data) => data.PAYLOAD_SECRET !== data.IP_HASH_SALT, {
     path: ['IP_HASH_SALT'],
     message:
       'IP_HASH_SALT and PAYLOAD_SECRET must differ from each other. Generate a separate secret with: openssl rand -base64 48',
   })
+  .refine(
+    (data) =>
+      !isSameOrSubdirectory(data.MEDIA_DIR, data.VIDEOS_DIR) &&
+      !isSameOrSubdirectory(data.VIDEOS_DIR, data.MEDIA_DIR),
+    {
+      path: ['VIDEOS_DIR'],
+      message:
+        'VIDEOS_DIR and MEDIA_DIR must be separate sibling directories (neither may be equal to or nested inside the other).',
+    },
+  )
+  .refine(
+    (data) =>
+      !isSameOrSubdirectory(data.MEDIA_DIR, data.UPLOAD_TMP_DIR) &&
+      !isSameOrSubdirectory(data.UPLOAD_TMP_DIR, data.MEDIA_DIR) &&
+      !isSameOrSubdirectory(data.VIDEOS_DIR, data.UPLOAD_TMP_DIR) &&
+      !isSameOrSubdirectory(data.UPLOAD_TMP_DIR, data.VIDEOS_DIR),
+    {
+      path: ['UPLOAD_TMP_DIR'],
+      message:
+        'UPLOAD_TMP_DIR must be outside MEDIA_DIR and VIDEOS_DIR (neither equal to nor nested inside either served directory).',
+    },
+  )
 
 export type Env = z.infer<typeof envSchema>
 
+export const ENV_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__'
+
 export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
   const rawMediaDir = rawEnv.MEDIA_DIR?.trim()
+  const rawVideosDir = rawEnv.VIDEOS_DIR?.trim()
+  const rawUploadTmpDir = rawEnv.UPLOAD_TMP_DIR?.trim()
+  const rawJobsAutoRun = rawEnv.PAYLOAD_JOBS_AUTORUN?.trim()
+  const isProductionRuntime =
+    rawEnv.NODE_ENV === 'production' &&
+    rawEnv.NEXT_PHASE !== 'phase-production-build' &&
+    rawEnv.NEXT_PHASE !== 'phase-export' &&
+    rawEnv.NEXT_PHASE !== 'phase-production-compile'
+
   const result = envSchema.safeParse({
     DATABASE_URL: rawEnv.DATABASE_URL,
     SERVER_URL: rawEnv.SERVER_URL,
     PAYLOAD_SECRET: rawEnv.PAYLOAD_SECRET,
     IP_HASH_SALT: rawEnv.IP_HASH_SALT,
     MEDIA_DIR: rawMediaDir ? rawMediaDir : path.resolve(process.cwd(), 'media'),
+    VIDEOS_DIR: rawVideosDir ? rawVideosDir : path.resolve(process.cwd(), 'videos'),
+    UPLOAD_TMP_DIR: rawUploadTmpDir
+      ? rawUploadTmpDir
+      : path.resolve(os.tmpdir(), 'aljazira-uploads'),
+    PAYLOAD_JOBS_AUTORUN: rawJobsAutoRun
+      ? rawJobsAutoRun
+      : isProductionRuntime
+        ? undefined
+        : 'true',
   })
 
   if (!result.success) {
@@ -120,7 +190,7 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
       .join('\n')
 
     throw new Error(
-      `Invalid environment configuration (src/env.ts):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,
+      `Invalid environment configuration (src/env.ts, ${ENV_SERVER_ONLY_SENTINEL}):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,
     )
   }
 
@@ -132,16 +202,23 @@ const BUILD_PHASE_FALLBACK_ENV: Record<string, string> = {
   SERVER_URL: 'http://localhost:3000',
   PAYLOAD_SECRET: 'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-0001',
   IP_HASH_SALT: 'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-00002',
+  PAYLOAD_JOBS_AUTORUN: 'false',
 }
 
 function loadEnv(): Env {
   if (process.env.NEXT_PHASE === 'phase-production-build') {
     return parseEnv({
+      NODE_ENV: process.env.NODE_ENV,
+      NEXT_PHASE: process.env.NEXT_PHASE,
       DATABASE_URL: process.env.DATABASE_URL || BUILD_PHASE_FALLBACK_ENV.DATABASE_URL,
       SERVER_URL: process.env.SERVER_URL || BUILD_PHASE_FALLBACK_ENV.SERVER_URL,
       PAYLOAD_SECRET: process.env.PAYLOAD_SECRET || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_SECRET,
       IP_HASH_SALT: process.env.IP_HASH_SALT || BUILD_PHASE_FALLBACK_ENV.IP_HASH_SALT,
       MEDIA_DIR: process.env.MEDIA_DIR || path.resolve(process.cwd(), 'media'),
+      VIDEOS_DIR: process.env.VIDEOS_DIR || path.resolve(process.cwd(), 'videos'),
+      UPLOAD_TMP_DIR: process.env.UPLOAD_TMP_DIR || path.resolve(os.tmpdir(), 'aljazira-uploads'),
+      PAYLOAD_JOBS_AUTORUN:
+        process.env.PAYLOAD_JOBS_AUTORUN || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_JOBS_AUTORUN,
     })
   }
 

@@ -138,3 +138,41 @@ says so in the review.
   you can. Never wait silently on a stuck command.
 - Integration tests must have timeouts (Vitest `testTimeout`/`hookTimeout`) and close every DB
   connection in `afterAll`, so a test run can never hang.
+
+### Evidence files (added 2026-10-22 after invented test output in a report)
+- Run every command you cite with its output saved **unedited** to
+  `docs/reports/evidence/<ID>/r<round>/<name>.log` (e.g. `pnpm lint 2>&1 | tee …/lint.log`),
+  from a **fresh clone of the commit you submit**, and commit those logs with the report.
+- The report quotes **only** from those files (copy, never retype or summarise inside a quote).
+  Test titles, error messages and counts must match the log byte for byte.
+- If something was not run, write "not run" — never reconstruct output.
+- Every evidence set starts with `commit.log` (`git rev-parse HEAD` and `git status --porcelain`
+  of the fresh clone), and `migrate-up-down-up.log` starts from an **empty** database.
+- (added 2026-10-22, P2-T4 R-12) Record logs with `NO_COLOR=1 FORCE_COLOR=0` (no ANSI codes), UTF-8
+  without BOM. **Never type a file:line by hand:** generate `citations.log` with `git grep -n` for
+  every identifier you cite and cite only from it. A behaviour claim cites a test title that
+  appears in `test.log`. A wrong citation or an invented identifier is a major finding.
+- (added 2026-10-23) A test is described from **its code** (locale, nesting, data), not from intent.
+  Never mention a file that is not in the submitted commit. If logs are post-processed (e.g. ANSI
+  colour stripped because Payload forces colour), say exactly how; any other edit is forbidden.
+- (added 2026-10-23) A screenshot is described in **one line naming what it proves**. Never list UI
+  text, controls or nav items you did not read in the image itself.
+- (added 2026-10-23, P2-T8 R-3) `citations.log` contains **only** the lines returned by
+  `git grep -n -e '<identifier>'` for each cited identifier (one block per identifier, with the
+  command line). A dump of whole files is rejected.
+- (added 2026-10-23, P2-T8 R-13..R-16 — evidence integrity)
+  - **Citation checker (mandatory from now on):** `pnpm check:citations <report.md> <citations.log>`
+    (a script in `scripts/`, run in CI on every `handoff/reports/*.md` and `docs/reports/*.md` changed
+    in a PR). Every citation must be written as `` `identifier` (`path:line`) `` and the checker fails
+    unless the identifier text occurs on that exact line at the submitted commit. `git grep` patterns
+    in `citations.log` must be identifiers (≥ 3 chars, letters/digits/`_$.-` only) — no empty,
+    punctuation-only or common-word patterns. Its output goes into `citations-check.log`.
+  - **Evidence of a reviewed round is immutable.** Never edit files under `docs/reports/evidence/<ID>/r<n>/`
+    after that round was submitted; corrections go in the next round's folder.
+  - **Every log shows where it ran:** each DoD script step prints `pwd` and `git rev-parse HEAD` first;
+    logs from the working tree instead of the fresh clone are rejected.
+  - Numbers you quote (downloads, sizes, timings) come from a command whose output is in a log.
+
+### Migrations (added 2026-10-23)
+- Never edit a committed migration, merged or not. Every schema change is a new migration; add a
+  backfill step when existing rows need the new data.

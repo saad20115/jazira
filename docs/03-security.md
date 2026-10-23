@@ -6,7 +6,7 @@ CTO review checks them one by one. "N/A" must be justified.
 ## 1. Secrets & configuration
 - **S1** All secrets via environment variables, validated at boot with zod (`src/env.ts`); the app
   refuses to start if any is missing or weak. Required: `DATABASE_URL`, `PAYLOAD_SECRET`,
-  `SERVER_URL`, `IP_HASH_SALT`; Phase 5: `ODOO_URL`, `ODOO_DB`, `ODOO_API_KEY`, `ODOO_LOGIN`, SMTP vars.
+  `SERVER_URL`, `IP_HASH_SALT`; Phase 5: SMTP vars + `SALES_INBOX` (no Odoo vars — integration removed 2026-10-23).
 - **S2** `PAYLOAD_SECRET` and `IP_HASH_SALT`: ≥ 48 random bytes (`openssl rand -base64 48`),
   different per environment. Never reused, never logged.
 - **S3** `.env*` git-ignored (except `.env.example` with placeholders). CI runs **gitleaks** on
@@ -70,6 +70,11 @@ CTO review checks them one by one. "N/A" must be justified.
   scripts `'self' 'nonce-…' 'strict-dynamic'`; images `'self' data: blob:`; frames only the video
   hosts in I4; `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`. Admin routes may need a
   relaxed policy — scope it to `/admin` only and document every relaxation.
+  - **H3a (CTO decision 2026-10-22, 3D viewer)** The live 3D tower (P3-T5) decodes KTX2 textures and
+    meshopt geometry with WebAssembly in blob-URL workers. Only on the pages that render that section
+    (`/ar`, `/en` home), the policy adds `'wasm-unsafe-eval'` to `script-src` and `worker-src 'self' blob:`
+    — nothing else (never `'unsafe-eval'`, never `'unsafe-inline'`). The transcoder (`basis_transcoder.js`
+    / `.wasm`) and decoders are self-hosted under `public/`, same version as `three`; no CDN.
 - **H4** `poweredByHeader: false`; production error pages show no stack traces or versions.
 - **H5** HTTPS only (HTTP → 301), TLS 1.2+ (prefer 1.3), Let's Encrypt auto-renew tested.
 - **H6** Nginx rate limits: `/api/users/login`, `/api/users/forgot-password` 5 req/min/IP;
@@ -104,7 +109,18 @@ CTO review checks them one by one. "N/A" must be justified.
 - **R5** Backups (website DB + media) nightly, off-server copy, **restore tested** and documented.
 - **R6** Uptime/health monitoring and log rotation.
 
-## 9. Odoo integration (Phase 5)
+## 9. Odoo integration (Phase 5) — REMOVED 2026-10-23 (owner decision; O1–O4 no longer apply)
+Replacement rules for the quote pipeline:
+- **Q1** Notification email to the fixed `SALES_INBOX` only — **never** an automatic email to the
+  address the visitor typed (no auto-reply; prevents the form being used to spam third parties).
+- **Q2** Email job is idempotent (never sends twice for one request), retries with backoff, stores
+  only a sanitized error (max 500 chars, no credentials).
+- **Q3** CSV export (admin only) neutralises spreadsheet formulas: any cell starting with
+  `=`, `+`, `-`, `@`, a tab or a CR is prefixed with a single quote. Export is logged (who, when,
+  how many rows; no PII).
+- **Q4** Staff-only fields (`internalNotes`, `assignedTo`) are never exposed by any public route.
+
+### (superseded) Odoo rules
 - **O1** Dedicated Odoo integration user, least privilege (create `crm.lead` only), API key, never
   an admin account; key rotatable without code change.
 - **O2** Calls server-side only, HTTPS, timeout 10 s, retries with backoff in a Jobs queue task,

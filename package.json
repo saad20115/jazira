@@ -10,7 +10,7 @@
   },
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build",
+    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build && node scripts/check-client-bundle-sentinels.mjs",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint .",
     "typecheck": "tsc --noEmit",
@@ -20,12 +20,15 @@
     "format:check": "prettier --check .",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "cross-env NODE_OPTIONS=--no-deprecation payload generate:types",
-    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap"
+    "generate:importmap": "cross-env NODE_OPTIONS=--no-deprecation payload generate:importmap",
+    "limits": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/print-limits.ts",
+    "check:citations": "node scripts/check-citations.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.91.0",
     "@payloadcms/email-nodemailer": "3.91.0",
     "@payloadcms/next": "3.91.0",
+    "@payloadcms/plugin-seo": "3.91.0",
     "@payloadcms/richtext-lexical": "3.91.0",
     "@payloadcms/translations": "3.91.0",
     "@payloadcms/ui": "3.91.0",
@@ -53,7 +56,7 @@
   "pnpm": {
     "overrides": {
       "chokidar@^3.0.0": "4.0.3",
-      "dompurify": "3.4.16",
+      "dompurify": "3.4.17",
       "esbuild@<=0.24.2": "0.28.2"
     },
     "onlyBuiltDependencies": [

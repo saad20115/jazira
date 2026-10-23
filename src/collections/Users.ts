@@ -1,15 +1,30 @@
 import {
-  APIError,
   Forbidden,
+  type CollectionAfterReadHook,
   type CollectionBeforeChangeHook,
   type CollectionBeforeDeleteHook,
   type CollectionBeforeOperationHook,
   type CollectionBeforeValidateHook,
   type CollectionConfig,
+  type FieldAccess,
+  type FieldHook,
+  type PayloadHandler,
 } from 'payload'
 
-import { adminOrSelf, isAdmin, isAdminFieldLevel } from '../access/index'
+import {
+  adminOrSelf,
+  isAdmin,
+  isAdminFieldLevel,
+  isAdminOrEditor,
+  isAdminOrSelfFieldLevel,
+} from '../access/index'
+import { createPublicAPIError } from '../security/apiError'
+import {
+  hardenLoginEnumerationBeforeOperation,
+  maskLockedAuthAfterError,
+} from '../security/loginEnumeration'
 import { enforcePasswordPolicy } from '../security/passwordPolicy'
+import { immutableCreatedAtField, withImmutableCreatedAt } from './_shared/immutableTimestamps'
 
 type ActiveBeforeOperationArg = Exclude<
   Parameters<CollectionBeforeOperationHook>[0],
@@ -93,11 +108,9 @@ const preventLastAdminDemotionBeforeChange: CollectionBeforeChangeHook = async (
       })
 
       if (otherAdmins.totalDocs === 0) {
-        throw new APIError(
+        throw createPublicAPIError(
           'لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.',
           400,
-          undefined,
-          true,
         )
       }
     }
@@ -128,19 +141,114 @@ const preventLastAdminBeforeDelete: CollectionBeforeDeleteHook = async ({ id, re
     })
 
     if (otherAdmins.totalDocs === 0) {
-      throw new APIError(
+      throw createPublicAPIError(
         'لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.',
         400,
-        undefined,
-        true,
       )
     }
   }
 }
 
-export const Users: CollectionConfig = {
+export const resolveUserDisplayNameBeforeValidate: FieldHook = ({
+  value,
+  siblingData,
+  data,
+  originalDoc,
+}) => {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value.trim()
+  }
+  const siblingEmail =
+    (siblingData as { email?: unknown } | undefined)?.email ??
+    (data as { email?: unknown } | undefined)?.email
+  if (typeof siblingEmail === 'string' && siblingEmail.trim().length > 0) {
+    return siblingEmail.trim().toLowerCase()
+  }
+  const origName = (originalDoc as { name?: unknown } | undefined)?.name
+  if (typeof origName === 'string' && origName.trim().length > 0) {
+    return origName.trim()
+  }
+  const origEmail = (originalDoc as { email?: unknown } | undefined)?.email
+  if (typeof origEmail === 'string' && origEmail.trim().length > 0) {
+    return origEmail.trim().toLowerCase()
+  }
+  return value as unknown
+}
+
+const isAdminOrEditorUserFieldAccess: FieldAccess = ({ req }) => {
+  const user = req.user as { role?: string } | null | undefined
+  return user?.role === 'admin' || user?.role === 'editor'
+}
+
+export const resolveUserDisplayNameAfterRead: FieldHook = ({ value, siblingData, data, req }) => {
+  if (typeof value === 'string' && value.trim().length > 0) {
+    return value.trim()
+  }
+  const canReadEmail = isAdminOrSelfFieldLevel({
+    doc: (data ?? siblingData) as Record<string, unknown>,
+    req,
+  })
+  if (canReadEmail) {
+    const fallbackEmail =
+      (siblingData as { email?: unknown } | undefined)?.email ??
+      (data as { email?: unknown } | undefined)?.email
+    if (typeof fallbackEmail === 'string' && fallbackEmail.trim().length > 0) {
+      return fallbackEmail.trim()
+    }
+  }
+  return value as unknown
+}
+
+/**
+ * Defense-in-depth `afterRead` hook (`R-11`): when a non-admin staff user (`editor`)
+ * reads another user's document (including via `depth=1` relationship population on
+ * `quote-requests.assignedTo`), strip every field except `id` and `name`.
+ */
+export const restrictOtherUserFieldsForEditorAfterRead: CollectionAfterReadHook = ({
+  doc,
+  req,
+}): Record<string, unknown> => {
+  if (!doc || typeof doc !== 'object') {
+    return doc as Record<string, unknown>
+  }
+  const record = doc as Record<string, unknown>
+  const caller = req.user as { id?: number | string; role?: string } | null | undefined
+  if (!caller || caller.role === 'admin') {
+    return record
+  }
+  const recordId = record.id
+  if (
+    caller.id !== undefined &&
+    (typeof recordId === 'number' || typeof recordId === 'string') &&
+    String(caller.id) === String(recordId)
+  ) {
+    return record
+  }
+  return {
+    id: record.id,
+    name: record.name,
+  }
+}
+
+export const disableVerifyEmailEndpointHandler: PayloadHandler = () =>
+  Response.json(
+    {
+      errors: [
+        {
+          message:
+            'التحقق من البريد الإلكتروني غير مفعّل لحسابات الموظفين. / Email verification is disabled for staff accounts.',
+        },
+      ],
+    },
+    { status: 404 },
+  )
+
+export const Users: CollectionConfig = withImmutableCreatedAt({
   slug: 'users',
   timestamps: true,
+  forceSelect: {
+    name: true,
+  },
   labels: {
     singular: {
       ar: 'مستخدم',
@@ -152,18 +260,23 @@ export const Users: CollectionConfig = {
     },
   },
   admin: {
-    useAsTitle: 'email',
+    useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'role', 'updatedAt'],
     group: {
       ar: 'النظام',
       en: 'System',
     },
+    description: {
+      ar: 'حسابات مستخدمي لوحة التحكم وصلاحياتهم (مدير النظام أو محرر المحتوى).',
+      en: 'Dashboard user accounts and role assignments (Admin or Content Editor).',
+    },
   },
   access: {
-    read: adminOrSelf,
+    read: isAdminOrEditor,
     create: isAdmin,
     update: adminOrSelf,
     delete: isAdmin,
+    unlock: isAdmin,
     admin: ({ req }) => {
       const user = req.user as { role?: string } | null | undefined
       return user?.role === 'admin' || user?.role === 'editor'
@@ -185,6 +298,11 @@ export const Users: CollectionConfig = {
   },
   endpoints: [
     {
+      path: '/verify/:id',
+      method: 'post',
+      handler: disableVerifyEmailEndpointHandler,
+    },
+    {
       path: '/:id/revoke-sessions',
       method: 'post',
       handler: async (req) => {
@@ -193,9 +311,14 @@ export const Users: CollectionConfig = {
         }
 
         const rawId = req.routeParams?.id
-        const id = typeof rawId === 'string' && /^\d+$/.test(rawId) ? Number(rawId) : rawId
-        if (typeof id !== 'string' && typeof id !== 'number') {
-          throw new APIError('Invalid user ID.', 400, undefined, true)
+        const id =
+          typeof rawId === 'number' && Number.isInteger(rawId) && rawId > 0
+            ? rawId
+            : typeof rawId === 'string' && /^[1-9]\d*$/.test(rawId.trim())
+              ? Number.parseInt(rawId.trim(), 10)
+              : null
+        if (id === null) {
+          throw createPublicAPIError('معرّف المستخدم غير صالح. / Invalid user ID.', 400)
         }
 
         const targetUser = await req.payload.db.findOne<{ id: number | string }>({
@@ -232,10 +355,12 @@ export const Users: CollectionConfig = {
     },
   ],
   hooks: {
-    beforeOperation: [enforcePasswordBeforeOperation],
+    beforeOperation: [enforcePasswordBeforeOperation, hardenLoginEnumerationBeforeOperation],
     beforeValidate: [enforceRoleAndPasswordBeforeValidate],
     beforeChange: [preventLastAdminDemotionBeforeChange],
+    afterRead: [restrictOtherUserFieldsForEditorAfterRead],
     beforeDelete: [preventLastAdminBeforeDelete],
+    afterError: [maskLockedAuthAfterError],
   },
   fields: [
     {
@@ -245,6 +370,22 @@ export const Users: CollectionConfig = {
       label: {
         ar: 'الاسم',
         en: 'Name',
+      },
+      access: {
+        read: isAdminOrEditorUserFieldAccess,
+      },
+      hooks: {
+        beforeValidate: [resolveUserDisplayNameBeforeValidate],
+        afterRead: [resolveUserDisplayNameAfterRead],
+      },
+    },
+    {
+      name: 'email',
+      type: 'email',
+      required: true,
+      unique: true,
+      access: {
+        read: isAdminOrSelfFieldLevel,
       },
     },
     {
@@ -274,9 +415,30 @@ export const Users: CollectionConfig = {
         },
       ],
       access: {
+        read: isAdminOrSelfFieldLevel,
         create: isAdminFieldLevel,
         update: isAdminFieldLevel,
       },
     },
+    {
+      name: 'updatedAt',
+      type: 'date',
+      index: true,
+      admin: {
+        disableBulkEdit: true,
+        hidden: true,
+      },
+      access: {
+        read: isAdminOrSelfFieldLevel,
+      },
+      label: ({ t }) => t('general:updatedAt'),
+    },
+    {
+      ...immutableCreatedAtField,
+      access: {
+        ...immutableCreatedAtField.access,
+        read: isAdminOrSelfFieldLevel,
+      },
+    },
   ],
-}
+})

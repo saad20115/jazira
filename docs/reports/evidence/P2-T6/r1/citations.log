@@ -1,0 +1,252 @@
+src/collections/QuoteRequests.test.ts:11:  QuoteRequests,
+src/collections/QuoteRequests.test.ts:17:} from './QuoteRequests'
+src/collections/QuoteRequests.test.ts:19:describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
+src/collections/QuoteRequests.test.ts:20:  it('configures slug, Sales admin group, defaultColumns, defaultSort -createdAt, and Z1/Z4 collection access', () => {
+src/collections/QuoteRequests.test.ts:21:    expect(QuoteRequests.slug).toBe('quote-requests')
+src/collections/QuoteRequests.test.ts:22:    expect(QuoteRequests.defaultSort).toBe('-createdAt')
+src/collections/QuoteRequests.test.ts:23:    expect(QuoteRequests.timestamps).toBe(true)
+src/collections/QuoteRequests.test.ts:24:    expect(QuoteRequests.admin?.useAsTitle).toBe('name')
+src/collections/QuoteRequests.test.ts:25:    expect(QuoteRequests.admin?.group).toEqual({
+src/collections/QuoteRequests.test.ts:29:    expect(QuoteRequests.admin?.defaultColumns).toEqual([
+src/collections/QuoteRequests.test.ts:38:    expect(QuoteRequests.admin?.components?.beforeListTable).toEqual([
+src/collections/QuoteRequests.test.ts:39:      '/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar',
+src/collections/QuoteRequests.test.ts:43:    expect(
+src/collections/QuoteRequests.test.ts:44:      QuoteRequests.access?.create?.({
+src/collections/QuoteRequests.test.ts:50:  it('contains all customer, staff workflow, and system fields and has zero odoo* fields (M-066)', () => {
+src/collections/QuoteRequests.test.ts:51:    const fieldNames = QuoteRequests.fields
+src/collections/QuoteRequests.test.ts:52:      .filter((f): f is Field & { name: string } => 'name' in f && typeof f.name === 'string')
+src/collections/QuoteRequests.test.ts:55:    expect(fieldNames).toEqual([
+src/collections/QuoteRequests.test.ts:74:    expect(fieldNames.some((n) => n.toLowerCase().includes('odoo'))).toBe(false)
+src/collections/QuoteRequests.test.ts:75:    expect(QUOTE_REQUEST_STATUS_VALUES).toEqual(['new', 'contacted', 'quoted', 'closed', 'spam'])
+src/collections/QuoteRequests.test.ts:76:    expect(QUOTE_EMAIL_STATUS_VALUES).toEqual(['pending', 'sent', 'failed'])
+src/collections/QuoteRequests.test.ts:77:    expect(QUOTE_LOCALE_VALUES).toEqual(['ar', 'en'])
+src/collections/QuoteRequests.test.ts:80:  it('enforces field-level readOnlyFieldAccess on customer/system fields and workflowFieldAccess on workflow fields', () => {
+src/collections/QuoteRequests.test.ts:85:    expect(readOnlyFieldAccess.create()).toBe(false)
+src/collections/QuoteRequests.test.ts:86:    expect(readOnlyFieldAccess.update()).toBe(false)
+src/collections/QuoteRequests.test.ts:87:    expect(readOnlyFieldAccess.read(adminReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:88:    expect(readOnlyFieldAccess.read(editorReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:89:    expect(readOnlyFieldAccess.read(anonReq)).toBe(false)
+src/collections/QuoteRequests.test.ts:91:    expect(workflowFieldAccess.create()).toBe(false)
+src/collections/QuoteRequests.test.ts:92:    expect(workflowFieldAccess.update(adminReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:93:    expect(workflowFieldAccess.update(editorReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:94:    expect(workflowFieldAccess.update(anonReq)).toBe(false)
+src/collections/QuoteRequests.test.ts:95:    expect(isAdminOrEditorFieldLevel(adminReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:96:    expect(isAdminOrEditorFieldLevel(editorReq)).toBe(true)
+src/collections/QuoteRequests.test.ts:97:    expect(isAdminOrEditorFieldLevel(anonReq)).toBe(false)
+src/collections/QuoteRequests.test.ts:100:  it('validates KSA and international phone numbers, email addresses, and consent === true', () => {
+src/collections/QuoteRequests.test.ts:102:    expect(isValidKsaOrInternationalPhone('+966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:103:    expect(isValidKsaOrInternationalPhone('+966573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:104:    expect(isValidKsaOrInternationalPhone('0573534185')).toBe(true)
+src/collections/QuoteRequests.test.ts:105:    expect(isValidKsaOrInternationalPhone('+971 50 123 4567')).toBe(true)
+src/collections/QuoteRequests.test.ts:106:    expect(isValidKsaOrInternationalPhone('+1 (555) 234-5678')).toBe(true)
+src/collections/QuoteRequests.test.ts:107:    expect(validateQuotePhone('+966 57 353 4185')).toBe(true)
+src/collections/QuoteRequests.test.ts:110:    expect(isValidKsaOrInternationalPhone('')).toBe(false)
+src/collections/QuoteRequests.test.ts:111:    expect(isValidKsaOrInternationalPhone('12345')).toBe(false)
+src/collections/QuoteRequests.test.ts:112:    expect(isValidKsaOrInternationalPhone('05123456')).toBe(false) // KSA 05 must be 10 digits
+src/collections/QuoteRequests.test.ts:113:    expect(isValidKsaOrInternationalPhone('+966 57 123')).toBe(false)
+src/collections/QuoteRequests.test.ts:114:    expect(isValidKsaOrInternationalPhone('abc-def-ghij')).toBe(false)
+src/collections/QuoteRequests.test.ts:115:    expect(typeof validateQuotePhone('invalid')).toBe('string')
+src/collections/QuoteRequests.test.ts:118:    expect(isValidEmailAddress('client@aljazira.co')).toBe(true)
+src/collections/QuoteRequests.test.ts:119:    expect(isValidEmailAddress('bad-email')).toBe(false)
+src/collections/QuoteRequests.test.ts:120:    expect(validateQuoteEmail('client@aljazira.co')).toBe(true)
+src/collections/QuoteRequests.test.ts:121:    expect(typeof validateQuoteEmail('not-an-email')).toBe('string')
+src/collections/QuoteRequests.test.ts:124:    expect(validateQuoteConsent(true)).toBe(true)
+src/collections/QuoteRequests.test.ts:125:    expect(typeof validateQuoteConsent(false)).toBe('string')
+src/collections/QuoteRequests.test.ts:126:    expect(typeof validateQuoteConsent(undefined)).toBe('string')
+src/collections/QuoteRequests.ts:13:export const QUOTE_REQUEST_STATUS_VALUES = ['new', 'contacted', 'quoted', 'closed', 'spam'] as const
+src/collections/QuoteRequests.ts:14:export type QuoteRequestStatus = (typeof QUOTE_REQUEST_STATUS_VALUES)[number]
+src/collections/QuoteRequests.ts:16:export const QUOTE_EMAIL_STATUS_VALUES = ['pending', 'sent', 'failed'] as const
+src/collections/QuoteRequests.ts:17:export type QuoteEmailStatus = (typeof QUOTE_EMAIL_STATUS_VALUES)[number]
+src/collections/QuoteRequests.ts:19:export const QUOTE_LOCALE_VALUES = ['ar', 'en'] as const
+src/collections/QuoteRequests.ts:20:export type QuoteLocale = (typeof QUOTE_LOCALE_VALUES)[number]
+src/collections/QuoteRequests.ts:25:export const isAdminOrEditorFieldLevel: FieldAccess = ({ req }) => {
+src/collections/QuoteRequests.ts:35:export const readOnlyFieldAccess = {
+src/collections/QuoteRequests.ts:36:  read: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:37:  create: (): boolean => false,
+src/collections/QuoteRequests.ts:38:  update: (): boolean => false,
+src/collections/QuoteRequests.ts:41:export const workflowFieldAccess = {
+src/collections/QuoteRequests.ts:42:  read: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:43:  create: (): boolean => false,
+src/collections/QuoteRequests.ts:44:  update: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:54:export const PHONE_ALLOWED_CHARS_REGEX = /^\+?[0-9][0-9\s()-]{6,28}$/
+src/collections/QuoteRequests.ts:56:export function isValidKsaOrInternationalPhone(value: unknown): boolean {
+src/collections/QuoteRequests.ts:85:export const validateQuotePhone = (value: unknown): true | string => {
+src/collections/QuoteRequests.ts:94:export function isValidEmailAddress(value: unknown): boolean {
+src/collections/QuoteRequests.ts:102:export const validateQuoteEmail = (value: unknown): true | string => {
+src/collections/QuoteRequests.ts:109:export const validateQuoteConsent = (value: unknown): true | string => {
+src/collections/QuoteRequests.ts:192:    mutable.userAgent = mutable.userAgent.trim().slice(0, 300)
+src/collections/QuoteRequests.ts:211:    mutable.emailLastError = mutable.emailLastError.trim().slice(0, 500)
+src/collections/QuoteRequests.ts:314:export const QuoteRequests: CollectionConfig = {
+src/collections/QuoteRequests.ts:315:  slug: 'quote-requests',
+src/collections/QuoteRequests.ts:328:    defaultColumns: [
+src/collections/QuoteRequests.ts:337:    listSearchableFields: ['name', 'company', 'email', 'phone'],
+src/collections/QuoteRequests.ts:347:      beforeListTable: ['/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar'],
+src/collections/QuoteRequests.ts:350:  defaultSort: '-createdAt',
+src/collections/QuoteRequests.ts:352:  access: {
+src/collections/QuoteRequests.ts:355:    create: () => false,
+src/collections/QuoteRequests.ts:357:    read: isAdminOrEditor,
+src/collections/QuoteRequests.ts:358:    update: isAdminOrEditor,
+src/collections/QuoteRequests.ts:359:    delete: isAdmin,
+src/collections/QuoteRequests.ts:361:  hooks: {
+src/collections/QuoteRequests.ts:362:    beforeValidate: [validateQuoteRequestBeforeValidate],
+src/collections/QuoteRequests.ts:369:      name: 'name',
+src/collections/QuoteRequests.ts:377:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:383:      name: 'company',
+src/collections/QuoteRequests.ts:390:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:396:      name: 'email',
+src/collections/QuoteRequests.ts:403:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:410:      name: 'phone',
+src/collections/QuoteRequests.ts:418:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:429:      name: 'service',
+src/collections/QuoteRequests.ts:437:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:443:      name: 'message',
+src/collections/QuoteRequests.ts:450:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:456:      name: 'locale',
+src/collections/QuoteRequests.ts:480:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:487:      name: 'sourcePage',
+src/collections/QuoteRequests.ts:494:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:501:      name: 'consent',
+src/collections/QuoteRequests.ts:509:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:521:      name: 'status',
+src/collections/QuoteRequests.ts:530:      access: workflowFieldAccess,
+src/collections/QuoteRequests.ts:571:          Cell: '/components/admin/QuoteStatusPillCell#QuoteStatusPillCell',
+src/collections/QuoteRequests.ts:576:      name: 'assignedTo',
+src/collections/QuoteRequests.ts:584:      access: workflowFieldAccess,
+src/collections/QuoteRequests.ts:590:      name: 'internalNotes',
+src/collections/QuoteRequests.ts:597:      access: workflowFieldAccess,
+src/collections/QuoteRequests.ts:610:      name: 'emailStatus',
+src/collections/QuoteRequests.ts:619:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:647:          Cell: '/components/admin/EmailStatusPillCell#EmailStatusPillCell',
+src/collections/QuoteRequests.ts:652:      name: 'emailAttempts',
+src/collections/QuoteRequests.ts:660:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:667:      name: 'emailLastError',
+src/collections/QuoteRequests.ts:674:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:680:      name: 'ipHash',
+src/collections/QuoteRequests.ts:688:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:698:      name: 'userAgent',
+src/collections/QuoteRequests.ts:705:      access: readOnlyFieldAccess,
+src/components/admin/EmailStatusPillCell.tsx:6:export type QuoteEmailStatusValue = 'pending' | 'sent' | 'failed'
+src/components/admin/EmailStatusPillCell.tsx:19:export const EMAIL_STATUS_PILL_STYLES: Record<QuoteEmailStatusValue, EmailStatusStyleConfig> = {
+src/components/admin/EmailStatusPillCell.tsx:52:export const EmailStatusPillCell: React.FC<DefaultCellComponentProps> = ({ cellData }) => {
+src/components/admin/EmailStatusPillCell.tsx:96:export default EmailStatusPillCell
+src/components/admin/QuoteRequestsFilterBar.tsx:17:export const QuoteRequestsFilterBar: React.FC = () => {
+src/components/admin/QuoteRequestsFilterBar.tsx:276:export default QuoteRequestsFilterBar
+src/components/admin/QuoteStatusPillCell.tsx:6:export type QuoteRequestStatusValue = 'new' | 'contacted' | 'quoted' | 'closed' | 'spam'
+src/components/admin/QuoteStatusPillCell.tsx:19:export const QUOTE_STATUS_PILL_STYLES: Record<QuoteRequestStatusValue, StatusStyleConfig> = {
+src/components/admin/QuoteStatusPillCell.tsx:72:export const QuoteStatusPillCell: React.FC<DefaultCellComponentProps> = ({ cellData }) => {
+src/components/admin/QuoteStatusPillCell.tsx:116:export default QuoteStatusPillCell
+src/lib/ipHash.test.ts:7:describe('ipHash server-only helper (P2-T6, D2, S2, S4)', () => {
+src/lib/ipHash.test.ts:8:  it('computes deterministic SHA-256(normalizedIp + IP_HASH_SALT) 64-char hex digest using env.IP_HASH_SALT by default', () => {
+src/lib/ipHash.test.ts:17:    expect(digest).toBe(expected)
+src/lib/ipHash.test.ts:18:    expect(digest).toMatch(IP_HASH_HEX_REGEX)
+src/lib/ipHash.test.ts:19:    expect(isValidIpHash(digest)).toBe(true)
+src/lib/ipHash.test.ts:20:    expect(digest).not.toContain(sampleIp)
+src/lib/ipHash.test.ts:23:  it('normalizes IPv4-mapped IPv6 addresses, casing, and whitespace before hashing', () => {
+src/lib/ipHash.test.ts:25:    expect(normalizeIpForHash('  ::FFFF:198.51.100.7  ')).toBe('198.51.100.7')
+src/lib/ipHash.test.ts:26:    expect(normalizeIpForHash('2001:DB8::1A2B')).toBe('2001:db8::1a2b')
+src/lib/ipHash.test.ts:27:    expect(normalizeIpForHash('   ')).toBe('unknown')
+src/lib/ipHash.test.ts:29:    expect(hashIp('::ffff:198.51.100.7', salt)).toBe(hashIp('198.51.100.7', salt))
+src/lib/ipHash.test.ts:30:    expect(hashIp('2001:DB8::1A2B', salt)).toBe(hashIp('2001:db8::1a2b', salt))
+src/lib/ipHash.test.ts:33:  it('produces different digests for different IPs or different salts and rejects weak salts', () => {
+src/lib/ipHash.test.ts:37:    expect(hashIp('203.0.113.1', saltA)).not.toBe(hashIp('203.0.113.2', saltA))
+src/lib/ipHash.test.ts:38:    expect(hashIp('203.0.113.1', saltA)).not.toBe(hashIp('203.0.113.1', saltB))
+src/lib/ipHash.test.ts:39:    expect(() => hashIp('203.0.113.1', 'short')).toThrow(/at least 16 characters/)
+src/lib/ipHash.test.ts:40:    expect(isValidIpHash('not-a-sha256-hash')).toBe(false)
+src/lib/ipHash.test.ts:41:    expect(isValidIpHash('203.0.113.1')).toBe(false)
+src/lib/ipHash.ts:17:    'src/lib/ipHash.ts is a server-only module and must never be imported in client code (S4, D2).',
+src/lib/ipHash.ts:21:export const IP_HASH_HEX_REGEX = /^[a-f0-9]{64}$/
+src/lib/ipHash.ts:28:export function normalizeIpForHash(rawIp: string): string {
+src/lib/ipHash.ts:47:export function hashIp(ip: string, salt: string = env.IP_HASH_SALT): string {
+src/lib/ipHash.ts:56:export function isValidIpHash(value: unknown): value is string {
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:3:export async function up({ db }: MigrateUpArgs): Promise<void> {
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:8:  CREATE TABLE "quote_requests" (
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:34:  CREATE INDEX "quote_requests_service_idx" ON "quote_requests" USING btree ("service_id");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:35:  CREATE INDEX "quote_requests_status_idx" ON "quote_requests" USING btree ("status");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:36:  CREATE INDEX "quote_requests_assigned_to_idx" ON "quote_requests" USING btree ("assigned_to_id");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:37:  CREATE INDEX "quote_requests_email_status_idx" ON "quote_requests" USING btree ("email_status");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:38:  CREATE INDEX "quote_requests_ip_hash_idx" ON "quote_requests" USING btree ("ip_hash");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:39:  CREATE INDEX "quote_requests_updated_at_idx" ON "quote_requests" USING btree ("updated_at");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:40:  CREATE INDEX "quote_requests_created_at_idx" ON "quote_requests" USING btree ("created_at");
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:42:  CREATE INDEX "payload_locked_documents_rels_quote_requests_id_idx" ON "payload_locked_documents_rels" USING btree ("quote_requests_id");`)
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:45:export async function down({ db }: MigrateDownArgs): Promise<void> {
+src/migrations/20261022_231435_p2_t6_quote_requests.ts:51:  DROP TABLE "quote_requests" CASCADE;
+src/migrations/index.ts:8:export const migrations = [
+src/migrations/index.ts:12:    name: '20261021_074848_initial_users_media',
+src/migrations/index.ts:17:    name: '20261022_120943_p2_t2_videos_brands_stats_materials',
+src/migrations/index.ts:22:    name: '20261022_140011_p2_t3_services_team',
+src/migrations/index.ts:27:    name: '20261022_160652_p2_t4_projects',
+src/migrations/index.ts:32:    name: '20261022_221250_p2_t5_globals',
+src/migrations/index.ts:37:    name: '20261022_231435_p2_t6_quote_requests',
+src/payload.config.ts:14:import { QuoteRequests } from './collections/QuoteRequests'
+src/payload.config.ts:40:export default buildConfig({
+src/payload.config.ts:86:    QuoteRequests,
+src/payload.config.ts:98:  hooks: {
+tests/int/p2-t6.int.test.ts:12:  context: { params: Promise<{ slug: string[] }> },
+tests/int/p2-t6.int.test.ts:66:    params: Promise.resolve({ slug: slugPath }),
+tests/int/p2-t6.int.test.ts:87:describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', () => {
+tests/int/p2-t6.int.test.ts:115:        name: 'مدير المبيعات والنظام',
+tests/int/p2-t6.int.test.ts:126:        name: 'مهندس متابعة العروض',
+tests/int/p2-t6.int.test.ts:139:    expect(adminLogin.status).toBe(200)
+tests/int/p2-t6.int.test.ts:147:    expect(editorLogin.status).toBe(200)
+tests/int/p2-t6.int.test.ts:156:        slug: 'integrated-mep-works',
+tests/int/p2-t6.int.test.ts:177:  it('enforces Z4: nobody (anonymous, editor, or admin) can create quote-requests via REST POST or Local API with overrideAccess: false', async () => {
+tests/int/p2-t6.int.test.ts:179:      name: 'م. عبدالله القحطاني',
+tests/int/p2-t6.int.test.ts:198:    expect(anonPost.status).toBe(403)
+tests/int/p2-t6.int.test.ts:207:    expect(editorPost.status).toBe(403)
+tests/int/p2-t6.int.test.ts:216:    expect(adminPost.status).toBe(403)
+tests/int/p2-t6.int.test.ts:219:    await expect(
+tests/int/p2-t6.int.test.ts:227:    await expect(
+tests/int/p2-t6.int.test.ts:236:    await expect(
+tests/int/p2-t6.int.test.ts:246:  it('executes all required REST probes: anonymous GET -> 403, editor GET -> 200, editor PATCH workflow fields -> 200, editor/admin PATCH customer or system fields -> ignored (stored value unchanged), editor DELETE -> 403, admin DELETE -> 200', async () => {
+tests/int/p2-t6.int.test.ts:255:        name: 'م. فهد السبيعي',
+tests/int/p2-t6.int.test.ts:274:    expect(createdQuote.userAgent).toHaveLength(300)
+tests/int/p2-t6.int.test.ts:275:    expect(createdQuote.ipHash).toBe(clientIpHash)
+tests/int/p2-t6.int.test.ts:276:    expect(createdQuote.ipHash).not.toContain('203.0.113.88')
+tests/int/p2-t6.int.test.ts:283:    expect(anonList.status).toBe(403)
+tests/int/p2-t6.int.test.ts:289:    expect(anonGetById.status).toBe(403)
+tests/int/p2-t6.int.test.ts:297:    expect(editorList.status).toBe(200)
+tests/int/p2-t6.int.test.ts:298:    expect(editorList.body.totalDocs).toBe(1)
+tests/int/p2-t6.int.test.ts:311:    expect(editorPatchWorkflow.status).toBe(200)
+tests/int/p2-t6.int.test.ts:313:    expect(updatedDocFromWorkflow.status).toBe('contacted')
+tests/int/p2-t6.int.test.ts:314:    expect(updatedDocFromWorkflow.internalNotes).toBe(
+tests/int/p2-t6.int.test.ts:326:        name: 'اسم مزور',
+tests/int/p2-t6.int.test.ts:334:    expect(editorPatchTamper.status).toBe(200)
+tests/int/p2-t6.int.test.ts:350:    expect(adminPatchTamper.status).toBe(200)
+tests/int/p2-t6.int.test.ts:359:    expect(storedAfterTamper.status).toBe('quoted')
+tests/int/p2-t6.int.test.ts:360:    expect(storedAfterTamper.assignedTo).toBe(editorUser.id)
+tests/int/p2-t6.int.test.ts:361:    expect(storedAfterTamper.internalNotes).toBe(
+tests/int/p2-t6.int.test.ts:364:    expect(storedAfterTamper.email).toBe('fahad@modernbuild.example.sa')
+tests/int/p2-t6.int.test.ts:365:    expect(storedAfterTamper.message).toBe(
+tests/int/p2-t6.int.test.ts:368:    expect(storedAfterTamper.name).toBe('م. فهد السبيعي')
+tests/int/p2-t6.int.test.ts:369:    expect(storedAfterTamper.phone).toBe('+966 57 353 4185')
+tests/int/p2-t6.int.test.ts:370:    expect(storedAfterTamper.emailStatus).toBe('pending')
+tests/int/p2-t6.int.test.ts:371:    expect(storedAfterTamper.emailAttempts).toBe(1)
+tests/int/p2-t6.int.test.ts:372:    expect(storedAfterTamper.emailLastError).toBe('SMTP timeout after 10000ms (sanitized)')
+tests/int/p2-t6.int.test.ts:373:    expect(storedAfterTamper.ipHash).toBe(clientIpHash)
+tests/int/p2-t6.int.test.ts:381:    expect(editorDelete.status).toBe(403)
+tests/int/p2-t6.int.test.ts:389:    expect(adminDelete.status).toBe(200)
+tests/int/p2-t6.int.test.ts:396:    expect(remaining.totalDocs).toBe(0)
+tests/int/p2-t6.int.test.ts:399:  it('validates customer fields, consent, relationship IDs, enums, and rejects raw IP in ipHash (D2, I1)', async () => {
+tests/int/p2-t6.int.test.ts:401:    await expect(
+tests/int/p2-t6.int.test.ts:406:          name: 'عميل بدون موافقة',
+tests/int/p2-t6.int.test.ts:418:    await expect(
+tests/int/p2-t6.int.test.ts:423:          name: 'عميل برقم خاطئ',
+tests/int/p2-t6.int.test.ts:435:    await expect(
+tests/int/p2-t6.int.test.ts:440:          name: 'عميل بعنوان IP خام',
+tests/int/p2-t6.int.test.ts:453:    await expect(
+tests/int/p2-t6.int.test.ts:458:          name: 'عميل بخدمة غير موجودة',
+tests/int/p2-t6.int.test.ts:475:        name: 'م. سلطان الحربي',
+tests/int/p2-t6.int.test.ts:495:    expect(badStatusPatch.status).toBe(400)
+tests/int/p2-t6.int.test.ts:505:    expect(badAssigneePatch.status).toBe(400)
+tests/int/p2-t6.int.test.ts:514:  it('orders quote-requests newest first (-createdAt) by default and supports filtering by status, assignedTo, and createdAt date', async () => {
+tests/int/p2-t6.int.test.ts:519:        name: 'طلب رقم 1 (الأقدم)',
+tests/int/p2-t6.int.test.ts:538:        name: 'طلب رقم 2 (الأحدث)',
+tests/int/p2-t6.int.test.ts:558:    expect(listAll.status).toBe(200)
+tests/int/p2-t6.int.test.ts:559:    const docs = listAll.body.docs as Array<{ id: number; name: string }>
+tests/int/p2-t6.int.test.ts:560:    expect(docs.map((d) => d.id)).toEqual([q2.id, q1.id])
+tests/int/p2-t6.int.test.ts:569:    expect(filterByStatus.status).toBe(200)
+tests/int/p2-t6.int.test.ts:570:    expect((filterByStatus.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
+tests/int/p2-t6.int.test.ts:579:    expect(filterByAssignee.status).toBe(200)
+tests/int/p2-t6.int.test.ts:580:    expect((filterByAssignee.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])
+tests/int/p2-t6.int.test.ts:589:    expect(filterByDate.status).toBe(200)
+tests/int/p2-t6.int.test.ts:590:    expect((filterByDate.body.docs as Array<{ id: number }>).map((d) => d.id)).toEqual([q2.id])

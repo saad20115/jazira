@@ -1,0 +1,16 @@
+
+> aljazira-website@0.1.0 payload D:\jazira
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status" "--no-color"
+
+[03:24:29] INFO: Reading migration files from D:\jazira\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     1 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     1 │ Yes │
+│                      20261022_160652_p2_t4_projects │     1 │ Yes │
+│                       20261022_221250_p2_t5_globals │     1 │ Yes │
+│                20261022_231435_p2_t6_quote_requests │     1 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[03:24:29] INFO: Done.

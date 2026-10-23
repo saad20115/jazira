@@ -1,0 +1,26 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+cmd: node "C:\Users\User21.CSE\AppData\Local\Temp\fetch-npm-meta-r3.mjs"
+duration_ms: 2473
+---
+{
+  "fetchedAt": "2026-10-23T13:17:19.132Z",
+  "packages": {
+    "@payloadcms/plugin-seo": {
+      "weeklyDownloads": 169689,
+      "downloadsRange": "2026-10-12 to 2026-10-18",
+      "latestVersion": "3.92.0",
+      "latestVersionPublishedAt": "2026-10-22T16:22:45.099Z",
+      "pinnedVersion_3_91_0_PublishedAt": "2026-10-15T20:21:08.442Z",
+      "registryModifiedAt": "2026-10-22T22:46:14.879Z"
+    },
+    "dompurify": {
+      "weeklyDownloads": 42123483,
+      "downloadsRange": "2026-10-12 to 2026-10-18",
+      "latestVersion": "3.4.17",
+      "latestVersionPublishedAt": "2026-10-12T12:41:28.880Z",
+      "pinnedVersion_3_3_3_PublishedAt": "2026-03-11T08:31:17.200Z",
+      "registryModifiedAt": "2026-10-12T12:41:29.148Z"
+    }
+  }
+}

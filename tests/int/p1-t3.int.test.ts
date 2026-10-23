@@ -266,14 +266,23 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     })
     expect(editorDeleteRest.status).toBe(403)
 
-    // Editor listing users only sees self
+    // Editor listing users sees own full record and only { id, name } for other users (R-11)
     const editorListRest = await callJsonApi('GET', '/api/users', {
       token: editorToken,
     })
     expect(editorListRest.status).toBe(200)
-    const docs = editorListRest.json.docs as Array<{ id: number | string }>
-    expect(docs).toHaveLength(1)
-    expect(docs[0]?.id).toBe(editorId)
+    const docs = editorListRest.json.docs as Array<Record<string, unknown>>
+    expect(docs).toHaveLength(2)
+    const selfRow = docs.find((d) => d.id === editorId)
+    const otherRow = docs.find((d) => d.id === adminId)
+    expect(selfRow?.email).toBe('editor@aljazira.co')
+    expect(otherRow).toEqual({
+      id: adminId,
+      name: 'First Admin',
+    })
+    expect(otherRow?.email).toBeUndefined()
+    expect(otherRow?.role).toBeUndefined()
+    expect(otherRow?.sessions).toBeUndefined()
 
     // Anonymous cannot list or create users
     const anonListRest = await callJsonApi('GET', '/api/users')

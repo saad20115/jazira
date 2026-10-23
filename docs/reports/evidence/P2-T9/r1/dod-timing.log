@@ -1,0 +1,23 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+total_wall_time_ms: 612598
+total_wall_time_s: 612.6
+---
+| Step | Duration (ms) | Duration (s) | Exit Code |
+|------|---------------|--------------|-----------|
+| git-clone | 4524 | 4.52 | 0 |
+| pnpm-install | 161862 | 161.86 | 0 |
+| pnpm-lint | 37354 | 37.35 | 0 |
+| pnpm-typecheck | 15850 | 15.85 | 0 |
+| pnpm-format-check | 5041 | 5.04 | 0 |
+| pnpm-audit | 1757 | 1.76 | 0 |
+| pnpm-limits | 15537 | 15.54 | 0 |
+| npm-metadata | 2473 | 2.47 | 0 |
+| migrate-up | 18088 | 18.09 | 0 |
+| migrate-down-x7 | 55447 | 55.45 | 0 |
+| migrate-reup-and-fresh | 25779 | 25.78 | 0 |
+| migrate-create-noop | 5973 | 5.97 | 0 |
+| pnpm-test | 168121 | 168.12 | 0 |
+| pnpm-build | 64351 | 64.35 | 0 |
+| login-timing | 27101 | 27.1 | 0 |
+| git-rev-parse-head | 188 | 0.19 | 0 |

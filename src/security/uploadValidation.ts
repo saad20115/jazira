@@ -1,5 +1,8 @@
+import crypto from 'crypto'
+import fsSync from 'fs'
 import fs from 'fs/promises'
-import { ValidationError } from 'payload'
+import path from 'path'
+import { type UploadConfig, ValidationError } from 'payload'
 
 export const ALLOWED_IMAGE_MIME_TYPES = [
   'image/jpeg',
@@ -10,7 +13,44 @@ export const ALLOWED_IMAGE_MIME_TYPES = [
 
 export type AllowedImageMimeType = (typeof ALLOWED_IMAGE_MIME_TYPES)[number]
 
+export const ALLOWED_VIDEO_MIME_TYPES = ['video/mp4', 'video/webm'] as const
+
+export type AllowedVideoMimeType = (typeof ALLOWED_VIDEO_MIME_TYPES)[number]
+
 export const MAX_MEDIA_FILE_SIZE_BYTES = 10 * 1024 * 1024 // 10 MB
+export const MAX_VIDEO_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB
+export const MAX_VIDEO_REQUEST_SIZE_BYTES = 105 * 1024 * 1024 // 105 MB (100 MB video + multipart form fields overhead; matches planned Phase 6 Nginx client_max_body_size 105m for /api/videos)
+
+const VIDEO_EXTENSION_BY_MIME: Record<AllowedVideoMimeType, 'mp4' | 'webm'> = {
+  'video/mp4': 'mp4',
+  'video/webm': 'webm',
+}
+
+/**
+ * Generates a randomized video filename whose extension is derived exclusively
+ * from the magic-byte-verified MIME type (`<timestamp>-<16hex>.<mp4|webm>`).
+ */
+export function generateRandomizedVideoFilename(detectedMime: AllowedVideoMimeType): string {
+  const ext = VIDEO_EXTENSION_BY_MIME[detectedMime]
+  const randomHex = crypto.randomBytes(8).toString('hex')
+  return `${String(Date.now())}-${randomHex}.${ext}`
+}
+
+const ALLOWED_MP4_FTYP_BRANDS = new Set([
+  'isom',
+  'iso2',
+  'iso3',
+  'iso4',
+  'iso5',
+  'iso6',
+  'mp41',
+  'mp42',
+  'avc1',
+  'dash',
+  'M4V ',
+  'MSNV',
+  'mmp4',
+])
 
 /**
  * Inspects the magic bytes of a file buffer to determine its true image MIME type.
@@ -68,6 +108,46 @@ export function detectImageMimeFromMagicBytes(buffer: Uint8Array): AllowedImageM
 }
 
 /**
+ * Inspects the magic bytes of a file buffer to determine its true video MIME type.
+ * Supports MP4 (ISO BMFF 'ftyp' with MP4 major/compatible brand) and WebM (EBML header with 'webm' DocType).
+ */
+export function detectVideoMimeFromMagicBytes(buffer: Uint8Array): AllowedVideoMimeType | null {
+  if (buffer.length < 12) {
+    return null
+  }
+
+  // MP4: ISO Base Media File Format ('ftyp' at bytes 4..7)
+  if (buffer[4] === 0x66 && buffer[5] === 0x74 && buffer[6] === 0x79 && buffer[7] === 0x70) {
+    const majorBrand = Buffer.from(buffer.subarray(8, 12)).toString('ascii')
+    if (ALLOWED_MP4_FTYP_BRANDS.has(majorBrand)) {
+      return 'video/mp4'
+    }
+
+    const boxSize = (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3]
+    const maxOffset = Math.min(buffer.length, boxSize >= 16 ? boxSize : buffer.length, 64)
+
+    for (let offset = 16; offset + 4 <= maxOffset; offset += 4) {
+      const compatibleBrand = Buffer.from(buffer.subarray(offset, offset + 4)).toString('ascii')
+      if (ALLOWED_MP4_FTYP_BRANDS.has(compatibleBrand)) {
+        return 'video/mp4'
+      }
+    }
+  }
+
+  // WebM: EBML header (1A 45 DF A3 at bytes 0..3) containing 'webm' DocType
+  if (buffer[0] === 0x1a && buffer[1] === 0x45 && buffer[2] === 0xdf && buffer[3] === 0xa3) {
+    const headerSlice = Buffer.from(buffer.subarray(4, Math.min(buffer.length, 64))).toString(
+      'ascii',
+    )
+    if (headerSlice.includes('webm')) {
+      return 'video/webm'
+    }
+  }
+
+  return null
+}
+
+/**
  * Sanitizes an upload filename:
  * - strips directory path segments (/ and \)
  * - removes control characters (0x00-0x1f, 0x7f-0x9f)
@@ -109,12 +189,44 @@ export interface IncomingUploadFile {
   name: string
   size: number
   tempFilePath?: string
+  truncated?: boolean
+}
+
+async function readHeaderAndActualSize(
+  file: IncomingUploadFile,
+): Promise<{ actualSize: number; headerBuffer: Uint8Array }> {
+  if (file.data && file.data.length > 0) {
+    return {
+      actualSize: Math.max(file.size, file.data.length),
+      headerBuffer: file.data.subarray(0, 64),
+    }
+  }
+
+  if (file.tempFilePath) {
+    const stat = await fs.stat(file.tempFilePath)
+    const handle = await fs.open(file.tempFilePath, 'r')
+    try {
+      const headerBuffer = Buffer.alloc(64)
+      const { bytesRead } = await handle.read(headerBuffer, 0, 64, 0)
+      return {
+        actualSize: Math.max(file.size, stat.size),
+        headerBuffer: headerBuffer.subarray(0, bytesRead),
+      }
+    } finally {
+      await handle.close()
+    }
+  }
+
+  return {
+    actualSize: file.size,
+    headerBuffer: Buffer.alloc(0),
+  }
 }
 
 export async function validateAndSanitizeMediaFile(
   file: IncomingUploadFile,
 ): Promise<AllowedImageMimeType> {
-  if (file.size > MAX_MEDIA_FILE_SIZE_BYTES) {
+  if (file.truncated || file.size > MAX_MEDIA_FILE_SIZE_BYTES) {
     throw new ValidationError({
       errors: [
         {
@@ -125,14 +237,9 @@ export async function validateAndSanitizeMediaFile(
     })
   }
 
-  const buffer =
-    file.data && file.data.length > 0
-      ? file.data
-      : file.tempFilePath
-        ? await fs.readFile(file.tempFilePath)
-        : Buffer.alloc(0)
+  const { actualSize, headerBuffer } = await readHeaderAndActualSize(file)
 
-  if (buffer.length > MAX_MEDIA_FILE_SIZE_BYTES) {
+  if (actualSize > MAX_MEDIA_FILE_SIZE_BYTES) {
     throw new ValidationError({
       errors: [
         {
@@ -143,7 +250,7 @@ export async function validateAndSanitizeMediaFile(
     })
   }
 
-  const detectedMime = detectImageMimeFromMagicBytes(buffer)
+  const detectedMime = detectImageMimeFromMagicBytes(headerBuffer)
   if (!detectedMime) {
     throw new ValidationError({
       errors: [
@@ -159,4 +266,113 @@ export async function validateAndSanitizeMediaFile(
   file.name = sanitizeUploadFilename(file.name)
   file.mimetype = detectedMime
   return detectedMime
+}
+
+export async function validateAndSanitizeVideoFile(
+  file: IncomingUploadFile,
+): Promise<AllowedVideoMimeType> {
+  if (file.truncated || file.size > MAX_VIDEO_FILE_SIZE_BYTES) {
+    throw new ValidationError({
+      errors: [
+        {
+          path: 'file',
+          message: `Video file exceeds the maximum allowed size of 100 MB (${String(MAX_VIDEO_FILE_SIZE_BYTES)} bytes).`,
+        },
+      ],
+    })
+  }
+
+  const { actualSize, headerBuffer } = await readHeaderAndActualSize(file)
+
+  if (actualSize > MAX_VIDEO_FILE_SIZE_BYTES) {
+    throw new ValidationError({
+      errors: [
+        {
+          path: 'file',
+          message: `Video file exceeds the maximum allowed size of 100 MB (${String(MAX_VIDEO_FILE_SIZE_BYTES)} bytes).`,
+        },
+      ],
+    })
+  }
+
+  const detectedMime = detectVideoMimeFromMagicBytes(headerBuffer)
+  if (!detectedMime) {
+    throw new ValidationError({
+      errors: [
+        {
+          path: 'file',
+          message:
+            'Invalid video content: magic bytes do not match an allowed video format (video/mp4, video/webm). Disguised HTML/SVG and other containers are forbidden.',
+        },
+      ],
+    })
+  }
+
+  file.name = generateRandomizedVideoFilename(detectedMime)
+  file.mimetype = detectedMime
+  return detectedMime
+}
+
+/**
+ * Custom upload `handlers` guard that runs before Payload's local filesystem fallback in `getFileHandler`.
+ * - Rejects dot-files, subdirectory paths (`videos/foo.mp4`, `.tmp/...`), and non-regular files with HTTP 404.
+ * - Returns HTTP 404 (instead of Payload's default 500 or EISDIR reset) when a file does not exist on disk (R-11, R-14).
+ */
+export function createSafeUploadFileHandler(
+  staticDir: string,
+): NonNullable<UploadConfig['handlers']>[number] {
+  const resolvedDir = path.resolve(staticDir)
+  return (_req, args) => {
+    const filename = args.params.filename
+    if (
+      !filename ||
+      filename.includes('/') ||
+      filename.includes('\\') ||
+      filename.startsWith('.')
+    ) {
+      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+    }
+
+    const filePath = path.resolve(resolvedDir, filename)
+    if (path.dirname(filePath) !== resolvedDir) {
+      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+    }
+
+    try {
+      const stats = fsSync.statSync(filePath)
+      if (!stats.isFile()) {
+        return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+      }
+    } catch {
+      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+    }
+  }
+}
+
+export function collectRequestTempFilePaths(req: { file?: unknown; files?: unknown }): string[] {
+  const paths = new Set<string>()
+  const addFromCandidate = (candidate: unknown) => {
+    if (!candidate || typeof candidate !== 'object') {
+      return
+    }
+    if (Array.isArray(candidate)) {
+      for (const item of candidate) {
+        addFromCandidate(item)
+      }
+      return
+    }
+    const tempFilePath = (candidate as { tempFilePath?: unknown }).tempFilePath
+    if (typeof tempFilePath === 'string' && tempFilePath.length > 0) {
+      paths.add(tempFilePath)
+    }
+  }
+
+  addFromCandidate(req.file)
+  if (req.files && typeof req.files === 'object') {
+    for (const val of Object.values(req.files as Record<string, unknown>)) {
+      addFromCandidate(val)
+    }
+  }
+
+  return Array.from(paths)
 }

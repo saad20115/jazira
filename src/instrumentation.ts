@@ -12,5 +12,14 @@ export async function register(): Promise<void> {
       process.stderr.write(`${message}\n`)
       process.exit(1)
     }
+
+    const { shouldAutoRunJobs } = await import('./jobs/shouldAutoRun')
+    if (shouldAutoRunJobs()) {
+      const [{ getPayload }, { default: config }] = await Promise.all([
+        import('payload'),
+        import('@payload-config'),
+      ])
+      await getPayload({ config, cron: true })
+    }
   }
 }

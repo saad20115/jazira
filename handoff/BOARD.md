@@ -12,31 +12,32 @@ watch the channel.
 | P1-T2 | Env validation, Payload & Next config, dev DB | ACCEPTED | 2 | 2026-10-21 | CTO |
 | P1-T3 | Access helpers, `users` (auth hardening), `media` (upload safety) | ACCEPTED | 2 | 2026-10-21 | CTO |
 | P1-T4 | Migration, e2e smoke, CI, phase-1 report | ACCEPTED | 2 | 2026-10-22 | CTO |
-| P2-T1 | Shared field factories & hooks | IN_PROGRESS | 1 | 2026-10-22 | Antigravity |
-| P2-T2 | `videos`, `brands`, `stats`, `materials` | TODO | 0 | 2026-10-21 | CTO |
-| P2-T3 | `services`, `team` | TODO | 0 | 2026-10-21 | CTO |
-| P2-T4 | `projects` | TODO | 0 | 2026-10-21 | CTO |
-| P2-T5 | Globals | TODO | 0 | 2026-10-21 | CTO |
-| P2-T6 | `quote-requests` | TODO | 0 | 2026-10-21 | CTO |
+| P2-T1 | Shared field factories & hooks | ACCEPTED | 3 | 2026-10-22 | CTO |
+| P2-T2 | `videos`, `brands`, `stats`, `materials` | ACCEPTED | 4 | 2026-10-22 | CTO |
+| P2-T3 | `services`, `team` | ACCEPTED | 1 | 2026-10-22 | CTO |
+| P2-T4 | `projects` | ACCEPTED | 4 | 2026-10-23 | CTO |
+| P2-T5 | Globals | ACCEPTED | 2 | 2026-10-23 | CTO |
+| P2-T6 | `quote-requests` | ACCEPTED | 5 | 2026-10-23 | CTO |
 | P2-T7 | Dashboard UX & Live Preview | TODO | 0 | 2026-10-21 | CTO |
-| P2-T8 | Access test suite, migrations, phase-2 report | TODO | 0 | 2026-10-21 | CTO |
-| P3-T1 | Frontend foundations, i18n, CSP | TODO | 0 | 2026-10-21 | CTO |
+| P2-T8 | Access test suite, migrations, phase-2 report | ACCEPTED | 3 | 2026-10-23 | CTO |
+| P2-T9 | Login enumeration hardening (timing + locked message) | ACCEPTED | 1 | 2026-10-23 | CTO |
+| P3-T1 | Frontend foundations, i18n, CSP | IN_PROGRESS | 1 | 2026-10-23 | Antigravity |
 | P3-T2 | Shell & primitives + styleguide | TODO | 0 | 2026-10-21 | CTO |
 | P3-T3 | Cards & motion components | TODO | 0 | 2026-10-21 | CTO |
 | P3-T4 | Home page + intro | TODO | 0 | 2026-10-21 | CTO |
-| P3-T5 | Cinematic systems explorer | TODO | 0 | 2026-10-21 | CTO |
+| P3-T5 | Live 3D tower in the card | TODO | 0 | 2026-10-21 | CTO |
 | P3-T6 | Services page | TODO | 0 | 2026-10-21 | CTO |
 | P3-T7 | About page | TODO | 0 | 2026-10-21 | CTO |
 | P3-T8 | Projects + Project detail | TODO | 0 | 2026-10-21 | CTO |
 | P3-T9 | Contact + Quote Form UI | TODO | 0 | 2026-10-21 | CTO |
 | P3-T10 | SEO, a11y, performance, phase-3 report | TODO | 0 | 2026-10-21 | CTO |
-| P3-T11 | Live 3D viewer (blocked on A-1) | TODO | 0 | 2026-10-22 | CTO |
+| P3-T11 | (merged into P3-T5) | DEFERRED | 0 | 2026-10-22 | CTO |
 | A-1 | 3D asset production (external) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P4-T1 | Materials + brands seed | TODO | 0 | 2026-10-21 | CTO |
 | P4-T2 | Settings, services, copy, placeholders seed | TODO | 0 | 2026-10-21 | CTO |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |
-| P5-T2 | Odoo client, jobs, retries, mock | TODO | 0 | 2026-10-21 | CTO |
-| P5-T3 | HARD STOP — real Odoo test lead | DEFERRED | 0 | 2026-10-21 | CTO |
+| P5-T2 | Email job, staff workflow, CSV export, retention | TODO | 0 | 2026-10-21 | CTO |
+| P5-T3 | CANCELLED — Odoo integration removed (owner 2026-10-23) | DEFERRED | 0 | 2026-10-21 | CTO |
 | P6-T1 | Production packaging (local only) | TODO | 0 | 2026-10-21 | CTO |
 | P6-T2 | HARD STOP — VPS deployment | DEFERRED | 0 | 2026-10-21 | CTO |
 | P7-T1 | Arabic editor guide | TODO | 0 | 2026-10-21 | CTO |

@@ -1,0 +1,1298 @@
+$ pnpm test -- --reporter=verbose --no-color
+
+> aljazira-website@0.1.0 test C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a
+> vitest run "--" "--reporter=verbose" "--no-color"
+
+
+ RUN  v5.0.5 C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a
+
+[11:16:56] INFO: Dropping database.
+[11:16:57] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:16:57] INFO: Migrating: 20261021_074848_initial_users_media
+[11:16:57] INFO: Migrated:  20261021_074848_initial_users_media (112ms)
+[11:16:57] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:16:57] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (53ms)
+[11:16:57] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:16:57] INFO: Migrated:  20261022_140011_p2_t3_services_team (83ms)
+[11:16:57] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:16:57] INFO: Migrated:  20261022_160652_p2_t4_projects (105ms)
+[11:16:57] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:16:58] INFO: Migrated:  20261022_221250_p2_t5_globals (666ms)
+[11:16:58] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:16:58] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (38ms)
+[11:16:58] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:16:58] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (14ms)
+[11:17:00] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:00] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:00] INFO: الحقل التالي غير صالح: روابط الشبكات الاجتماعية 1 > رابط الحساب
+[11:17:00] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:01] INFO: The following field is invalid: header.0.link.url
+[11:17:01] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:01] INFO: The following field is invalid: hero.backgroundVideo
+[11:17:02] INFO: The following field is invalid: interactiveSystems.systems
+[11:17:02] INFO: الحقل التالي غير صالح: قسم الأنظمة الهندسية التفاعلية والمجسم ثلاثي الأبعاد (Interactive Systems) > الأنظمة الهندسية التفاعلية (5 أنظمة بالضبط)
+[11:17:02] INFO: The following field is invalid: interactiveSystems.systems
+[11:17:02] INFO: الحقل التالي غير صالح: قسم أرقامنا وإنجازاتنا — ثقة رواد الصناعة (Stats Section) > الأرقام والإحصائيات المعروضة (حتى 4 أرقام من مجموعة الأرقام)
+[11:17:02] INFO: الحقل التالي غير صالح: النص التعريفي (فقرات نصية فقط — بحد أقصى فقرتين)
+[11:17:02] INFO: الحقل التالي غير صالح: النص التعريفي (فقرات نصية فقط — بحد أقصى فقرتين)
+[11:17:02] INFO: الحقل التالي غير صالح: النص التعريفي (فقرات نصية فقط — بحد أقصى فقرتين)
+[11:17:03] INFO: The following field is invalid: hero.background
+[11:17:03] INFO: The following field is invalid: statsSection.stats
+[11:17:03] INFO: The following field is invalid: meta.image
+[11:17:03] INFO: The following fields are invalid: interactiveSystems.systems.0.shot, interactiveSystems.systems.0.disciplines
+[11:17:03] INFO: The following fields are invalid: office.mapImage, socials.0.platform
+[11:17:04] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1416:36
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:05] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1490:40
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:06] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1547:34
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:06] INFO: The following field is invalid: cta.button.link.url
+[11:17:06] INFO: The following field is invalid: hero.primaryCta.link.url
+[11:17:06] INFO: The following field is invalid: headerCta.link.url
+[11:17:06] INFO: The following field is invalid: cta.button.link.url
+[11:17:06] INFO: The following field is invalid: hero.primaryCta.link.url
+[11:17:06] INFO: The following field is invalid: headerCta.link.url
+[11:17:06] INFO: The following field is invalid: cta.button.link.url
+[11:17:06] INFO: The following field is invalid: hero.primaryCta.link.url
+[11:17:06] INFO: The following field is invalid: headerCta.link.url
+[11:17:06] INFO: The following field is invalid: cta.button.link.url
+[11:17:06] INFO: The following field is invalid: hero.primaryCta.link.url
+[11:17:06] INFO: The following field is invalid: headerCta.link.url
+[11:17:06] INFO: The following field is invalid: cta.button.link.internalPath
+[11:17:06] INFO: The following field is invalid: cta.button.link.internalPath
+[11:17:06] ERROR: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:home-page, global:about-page, global:projects-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:home-page, global:about-page, global:projects-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.",
+      "stack":
+          APIError: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:home-page, global:about-page, global:projects-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventStatDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Stats.ts:46:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1661:31
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:07] ERROR: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:about-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:about-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.",
+      "stack":
+          APIError: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:about-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventStatDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Stats.ts:46:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1697:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:08] ERROR: لا يمكن حذف هذا الفيديو لأنه مستخدم في: global:home-page. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذا الفيديو لأنه مستخدم في: global:home-page. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.",
+      "stack":
+          APIError: لا يمكن حذف هذا الفيديو لأنه مستخدم في: global:home-page. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventVideoDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Videos.ts:194:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1745:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:08] ERROR: لا يمكن حذف هذا الفيديو لأنه مستخدم في: projects(مشروع مرتبط بفيديو مرفوع). يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: projects(مشروع مرتبط بفيديو مرفوع). Remove those references first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذا الفيديو لأنه مستخدم في: projects(مشروع مرتبط بفيديو مرفوع). يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: projects(مشروع مرتبط بفيديو مرفوع). Remove those references first.",
+      "stack":
+          APIError: لا يمكن حذف هذا الفيديو لأنه مستخدم في: projects(مشروع مرتبط بفيديو مرفوع). يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: projects(مشروع مرتبط بفيديو مرفوع). Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventVideoDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Videos.ts:194:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t5.int.test.ts:1785:36
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t5.int.test.ts (9 tests) 18473ms
+   ✓ P2-T5 integration suite (Globals: site-settings, navigation, home-page, services-page, about-page, projects-page, contact-page, privacy-page) (9)
+     ✓ enforces Z2 on home-page (and all publishable page globals): anonymous REST GET /api/globals/home-page returns published version only while a newer draft exists 679ms
+     ✓ enforces home-page invariants (hero.background xor hero.backgroundVideo, unique interactiveSystems.systems[].shot, statsSection max 4, and paragraphRichTextField AST limits) 538ms
+     ✓ verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks 679ms
+     ✓ prevents deleting media referenced by globals in localized meta.image or richText body upload nodes (R-7) 3093ms
+     ✓ rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals (R-1, R-6) 450ms
+     ✓ prevents deleting stats and videos referenced by globals or collections across published and draft versions and locales (R-4) 2351ms
+[11:17:15] INFO: Dropping database.
+[11:17:15] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:17:16] INFO: Migrating: 20261021_074848_initial_users_media
+[11:17:16] INFO: Migrated:  20261021_074848_initial_users_media (81ms)
+[11:17:16] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:17:16] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (80ms)
+[11:17:16] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:17:16] INFO: Migrated:  20261022_140011_p2_t3_services_team (75ms)
+[11:17:16] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:17:16] INFO: Migrated:  20261022_160652_p2_t4_projects (84ms)
+[11:17:16] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:17:16] INFO: Migrated:  20261022_221250_p2_t5_globals (424ms)
+[11:17:16] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:17:16] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (31ms)
+[11:17:16] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:17:16] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (14ms)
+[11:17:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:20] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:20] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:20] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:21] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:21] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:21] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:21] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:22] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:23] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:25] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:25] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:25] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:26] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:26] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:26] INFO: لا يسمح لك القيام بهذه العمليّة.
+stdout | tests/int/p2-t8.int.test.ts > P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6..R-9) > executes the complete REST Role Matrix across all 8 globals (anonymous / editor / admin × read/update) (Z1, Z5)
+=== Z5 COLLECTION ROLE MATRIX ===
+| Target | Anon Read | Anon Create | Anon Update | Anon Delete | Editor Read | Editor Create | Editor Update | Editor Delete | Admin Read | Admin Create | Admin Update | Admin Delete |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `users (self)` | 403 | 403 | 403 | 403 | 200 | 403 | 200 | 403 | 200 | 201 | 200 | 200 |
+| `users (other — id & name only for editor per R-11)` | 403 | 403 | 403 | 403 | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 |
+| `media` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `videos` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `brands` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `stats` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `materials` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `services` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `team` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `projects` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `quote-requests` | 403 | 403 | 403 | 403 | 200 | 403 | 200 | 403 | 200 | 403 | 200 | 200 |
+=== Z5 GLOBAL ROLE MATRIX ===
+| Global | Anon Read | Anon Update | Editor Read | Editor Update | Admin Read | Admin Update |
+|---|---|---|---|---|---|---|
+| `site-settings` | 200 | 403 | 200 | 403 | 200 | 200 |
+| `navigation` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `home-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `services-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `about-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `projects-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `contact-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `privacy-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+
+[11:17:26] INFO: غير موجود
+[11:17:26] INFO: غير موجود
+[11:17:26] INFO: غير موجود
+[11:17:28] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t8.int.test.ts:90:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t8.int.test.ts:1620:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:28] INFO: The following field is invalid: headerCta.link.url
+[11:17:28] INFO: الحقل التالي غير صالح: الموقع الإلكتروني
+ ✓ tests/int/p2-t8.int.test.ts (5 tests) 17459ms
+   ✓ P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6..R-9) (5)
+     ✓ executes the complete REST Role Matrix (anonymous / editor / admin × every collection × read/create/update/delete) with real sessions (Z1, Z3, Z4, Z5) 5678ms
+     ✓ executes the complete REST Role Matrix across all 8 globals (anonymous / editor / admin × read/update) (Z1, Z5) 2273ms
+     ✓ enforces Z2 (draft isolation) across all versioned collections (services, projects) and versioned globals in both REST (?draft=true) and Local API (overrideAccess: false) (Z2, Z5) 1042ms
+     ✓ verifies R-8 (config-driven collection media guard) and R-9 (http: external links rejected when NODE_ENV === production) over REST 1265ms
+[11:17:35] INFO: Dropping database.
+[11:17:35] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:17:35] INFO: Migrating: 20261021_074848_initial_users_media
+[11:17:35] INFO: Migrated:  20261021_074848_initial_users_media (79ms)
+[11:17:35] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:17:35] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (54ms)
+[11:17:35] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:17:35] INFO: Migrated:  20261022_140011_p2_t3_services_team (63ms)
+[11:17:35] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:17:35] INFO: Migrated:  20261022_160652_p2_t4_projects (87ms)
+[11:17:35] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:17:36] INFO: Migrated:  20261022_221250_p2_t5_globals (323ms)
+[11:17:36] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:17:36] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (27ms)
+[11:17:36] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:17:36] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (14ms)
+[11:17:37] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:38] INFO: غير موجود
+[11:17:38] INFO: غير موجود
+[11:17:38] INFO: غير موجود
+[11:17:39] INFO: Running 1 jobs.
+    new: 1
+    retrying: 0
+[11:17:39] INFO: The following field is invalid: videoUrl
+[11:17:39] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: The following field is invalid: videoUrl
+[11:17:40] INFO: الحقل التالي غير صالح: حالة تنفيذ المشروع
+[11:17:40] INFO: الحقل التالي غير صالح: المعرّف النصي (Slug)
+[11:17:40] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[11:17:40] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[11:17:40] INFO: الحقل التالي غير صالح: المحتوى (Content) > سنة الإنجاز
+[11:17:40] INFO: الحقل التالي غير صالح: المحتوى (Content) > نبذة مختصرة عن المشروع
+[11:17:40] INFO: الحقل التالي غير صالح: التفاصيل والمخرجات (Details) > الركائز والتفاصيل الفنية للمشروع
+[11:17:40] INFO: الحقل التالي غير صالح: التفاصيل والمخرجات (Details) > المخرجات والبنود المسلمة
+[11:17:40] INFO: الحقل التالي غير صالح: الوسائط (Media) > معرض صور المشروع
+[11:17:40] INFO: The following field is invalid: coverImage
+[11:17:40] INFO: The following field is invalid: gallery
+[11:17:40] INFO: The following field is invalid: meta.image
+[11:17:41] INFO: The following field is invalid: video
+[11:17:41] INFO: The following field is invalid: category
+[11:17:41] INFO: The following field is invalid: status
+[11:17:41] INFO: The following field is invalid: scope
+[11:17:41] INFO: الحقل التالي غير صالح: meta
+[11:17:41] INFO: الحقل التالي غير صالح: meta
+[11:17:41] INFO: الحقل التالي غير صالح: تفاصيل المشروع ودراسة الحالة
+[11:17:41] INFO: الحقل التالي غير صالح: تفاصيل المشروع ودراسة الحالة
+[11:17:41] INFO: The following field is invalid: gallery
+[11:17:41] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:875:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:42] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:979:29
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:43] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:985:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:43] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:995:40
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:44] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:1040:39
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:49] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:1099:40
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:50] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventBrandDeletionWhenUsedByMaterials (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Brands.ts:35:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:1329:28
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:50] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventLastAdminBeforeDelete (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Users.ts:140:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:1340:32
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:50] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventLastAdminDemotionBeforeChange (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Users.ts:107:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:96:11)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:17:50] ERROR: معرّف المستخدم غير صالح. / Invalid user ID.
+    err: {
+      "type": "APIError",
+      "message": "معرّف المستخدم غير صالح. / Invalid user ID.",
+      "stack":
+          APIError: معرّف المستخدم غير صالح. / Invalid user ID.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at handler (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Users.ts:317:17)
+              at handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:32)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:94:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t4.int.test.ts:1362:30
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t4.int.test.ts (6 tests) 19404ms
+   ✓ P2-T4 integration suite (projects) (6)
+     ✓ enforces Z1 & Z2 on projects: anonymous never sees draft projects (REST or Local API overrideAccess:false), sees published projects, and newer draft edits remain hidden until published 856ms
+     ✓ supports scheduled publishing via Payload jobs queue (schedulePublish: true): transitions a draft project to published when the scheduled time arrives 1185ms
+     ✓ enforces mutual exclusion between video and videoUrl (video xor videoUrl), trims videoUrl whitespace, and rejects non-default ports and non-allowlisted hosts on draft and published saves (R-8) 680ms
+     ✓ enforces slug uniqueness, required status with no default (R-9), field constraints, draft relationship/enum validation returning 400 (R-6), and media deletion guard across locales and richText upload nodes (R-7) 9066ms
+     ✓ wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4) 450ms
+[11:17:56] INFO: Dropping database.
+[11:17:56] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:17:57] INFO: Migrating: 20261021_074848_initial_users_media
+[11:17:57] INFO: Migrated:  20261021_074848_initial_users_media (107ms)
+[11:17:57] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:17:57] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (53ms)
+[11:17:57] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:17:57] INFO: Migrated:  20261022_140011_p2_t3_services_team (65ms)
+[11:17:57] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:17:57] INFO: Migrated:  20261022_160652_p2_t4_projects (91ms)
+[11:17:57] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:17:57] INFO: Migrated:  20261022_221250_p2_t5_globals (439ms)
+[11:17:57] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:17:57] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (27ms)
+[11:17:57] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:17:57] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (14ms)
+[11:17:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:59] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:17:59] INFO: The following field is invalid: status
+[11:17:59] INFO: The following field is invalid: assignedTo
+[11:18:01] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:01] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:01] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:02] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:02] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:02] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:810:32
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+[11:18:02] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:02] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:02] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:02] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:02] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t6.int.test.ts:855:32
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+ ✓ tests/int/p2-t6.int.test.ts (7 tests) 12977ms
+   ✓ P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1) (7)
+     ✓ normalizes phone inputs (0573534185, 057 353 4185, 00966 57 353 4185, +966 57 353 4185) to canonical E.164 +966573534185 (R-3, R-12), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and allows editors to read only id + name of other users (R-5, R-11) 761ms
+     ✓ enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19) 2326ms
+     ✓ prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8) 2281ms
+[11:18:11] INFO: Dropping database.
+[11:18:11] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:18:11] INFO: Migrating: 20261021_074848_initial_users_media
+[11:18:12] INFO: Migrated:  20261021_074848_initial_users_media (90ms)
+[11:18:12] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:18:12] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (60ms)
+[11:18:12] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:18:12] INFO: Migrated:  20261022_140011_p2_t3_services_team (91ms)
+[11:18:12] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:18:12] INFO: Migrated:  20261022_160652_p2_t4_projects (98ms)
+[11:18:12] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:18:12] INFO: Migrated:  20261022_221250_p2_t5_globals (548ms)
+[11:18:12] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:18:12] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (29ms)
+[11:18:12] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:18:12] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (14ms)
+[11:18:13] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:14] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:14] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:14] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:14] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:14] INFO: The following field is invalid: password
+[11:18:14] INFO: The following field is invalid: password
+[11:18:14] INFO: The following field is invalid: password
+[11:18:14] INFO: The following field is invalid: password
+[11:18:14] INFO: The following field is invalid: password
+[11:18:14] INFO: The following field is invalid: password
+[11:18:16] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:16] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:17] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:17] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:17] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[11:18:17] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:410:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+[11:18:17] ERROR: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+    err: {
+      "type": "LockedAuth",
+      "message": "تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.",
+      "stack":
+          LockedAuth: تمّ قفل هذا المستخدم نظرًا لوجود عدد كبير من محاولات تسجيل الدّخول الغير ناجحة.
+              at checkLoginPermission (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:27:15)
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:156:5)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:419:32
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "LockedAuth"
+    }
+[11:18:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:18] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:19] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:19] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventLastAdminDemotionBeforeChange (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Users.ts:107:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:18:19] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventLastAdminBeforeDelete (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Users.ts:140:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p1-t3.int.test.ts:580:23
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+stdout | tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+[A5/R-1 Timing 20+20] known(median=22.85ms, max=41.74ms) vs unknown(median=5.22ms, max=6.89ms) | diff=17.63ms
+
+[11:18:24] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:24] INFO: The following field is invalid: file
+[11:18:24] INFO: The following field is invalid: file
+ ✓ tests/int/p1-t3.int.test.ts (9 tests) 14046ms
+   ✓ P1-T3 integration suite (Postgres test DB via migrations) (9)
+     ✓ registers the first user as admin via /api/users/first-register and blocks any second first-register attempt (A6) 755ms
+     ✓ allows admin to create an editor user (defaulting to editor) and prevents editor from escalating role via REST or Local API (Z1, Z3) 799ms
+     ✓ enforces the password policy (min 12 chars + common password blocklist) on create, update, and reset-password (A4) 1114ms
+     ✓ locks the account after 5 failed login attempts for 15 minutes and refuses the correct password while locked (A1) 2136ms
+     ✓ revokes JWT access immediately on user logout and on admin-forced session removal (A2) 1368ms
+     ✓ refuses deleting or demoting the last admin user, while allowing deleting a second admin (R-2) 386ms
+     ✓ returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1) 5237ms
+     ✓ rejects anonymous uploads, rejects .svg and disguised HTML renamed .jpg by magic bytes, and accepts a real JPEG generating all 4 webp sizes (I5, Z1) 501ms
+[11:18:31] INFO: Dropping database.
+[11:18:31] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:18:31] INFO: Migrating: 20261021_074848_initial_users_media
+[11:18:31] INFO: Migrated:  20261021_074848_initial_users_media (78ms)
+[11:18:31] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:18:31] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (49ms)
+[11:18:31] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:18:32] INFO: Migrated:  20261022_140011_p2_t3_services_team (65ms)
+[11:18:32] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:18:32] INFO: Migrated:  20261022_160652_p2_t4_projects (111ms)
+[11:18:32] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:18:32] INFO: Migrated:  20261022_221250_p2_t5_globals (430ms)
+[11:18:32] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:18:32] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (27ms)
+[11:18:32] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:18:32] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (12ms)
+[11:18:34] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:34] INFO: غير موجود
+[11:18:34] INFO: غير موجود
+[11:18:34] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[11:18:34] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[11:18:34] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[11:18:34] INFO: الحقل التالي غير صالح: الوصف التفصيلي للخدمة
+[11:18:34] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[11:18:34] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[11:18:34] INFO: الحقل التالي غير صالح: الصورة الشخصية
+[11:18:34] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[11:18:34] INFO: غير موجود
+[11:18:35] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[11:18:35] INFO: الحقل التالي غير صالح: رابط لينكدإن (LinkedIn)
+[11:18:35] INFO: الحقل التالي غير صالح: أيقونة الخدمة
+[11:18:35] INFO: الحقل التالي غير صالح: تصنيف الخدمة
+[11:18:35] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Media.ts:478:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t3.int.test.ts:74:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t3.int.test.ts:808:38
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t3.int.test.ts (4 tests) 8708ms
+   ✓ P2-T3 integration suite (services & team) (4)
+     ✓ enforces Z1 & Z2 on services: anonymous never sees draft services (even with ?draft=true), sees published services, and newer draft edits remain hidden until published 456ms
+     ✓ verifies P2-T3 R-1..R-6 fixes: staff bio cleared across all locales (R-1), LinkedIn https + path (R-2), LinkFeature enabledCollections (R-3), no silent icon/tier defaults on services (R-4), Arabic SEO field labels (R-5), and media beforeDelete guard (R-6) 731ms
+[11:18:42] INFO: Dropping database.
+[11:18:42] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\src\migrations
+[11:18:42] INFO: Migrating: 20261021_074848_initial_users_media
+[11:18:42] INFO: Migrated:  20261021_074848_initial_users_media (87ms)
+[11:18:42] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[11:18:42] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (48ms)
+[11:18:42] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[11:18:42] INFO: Migrated:  20261022_140011_p2_t3_services_team (66ms)
+[11:18:42] INFO: Migrating: 20261022_160652_p2_t4_projects
+[11:18:43] INFO: Migrated:  20261022_160652_p2_t4_projects (107ms)
+[11:18:43] INFO: Migrating: 20261022_221250_p2_t5_globals
+[11:18:43] INFO: Migrated:  20261022_221250_p2_t5_globals (746ms)
+[11:18:43] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[11:18:43] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (47ms)
+[11:18:43] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[11:18:43] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (12ms)
+[11:18:45] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:45] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:45] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:45] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:45] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:45] INFO: لا يسمح لك القيام بهذه العمليّة.
+[11:18:45] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[11:18:47] INFO: The following field is invalid: file
+[11:18:47] INFO: The following field is invalid: file
+[11:18:47] INFO: الحقل التالي غير صالح: الموقع الإلكتروني
+[11:18:47] INFO: الحقل التالي غير صالح: العلامات التجارية المعتمدة
+[11:18:47] INFO: الحقل التالي غير صالح: رقم البند
+[11:18:47] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/security/apiError.ts:20:15)
+              at preventBrandDeletionWhenUsedByMaterials (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/src/collections/Brands.ts:35:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t2.int.test.ts:65:20)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/tests/int/p2-t2.int.test.ts:473:27
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/vitest@5.0.5_@types+node@24_fc912f0c23fe1e4545475d0ecf069f67/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[11:18:47] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[11:18:47] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[11:18:49] INFO: The following field is invalid: file
+[11:18:49] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p2t8-r2-dod-16e46d9a\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p2t8-r2-dod-16e46d9a/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t2.int.test.ts (4 tests) 12111ms
+   ✓ P2-T2 integration suite (videos, brands, stats, materials) (4)
+     ✓ enforces per-collection upload limits, randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> (R-1), isolates VIDEOS_DIR from MEDIA_DIR (R-6), rejects 101 MB MP4, and rejects disguised HTML (I5, R-9) 1821ms
+     ✓ allows editor CRUD on stats, brands, and materials, validates brand website scheme, and blocks deleting a brand referenced by materials 606ms
+     ✓ isolates video upload temp dir outside staticDir (R-11), rejects multi-file requests without leaking temp files (R-12), and accepts exact 100 MiB inclusive while rejecting 100 MiB + 1 (R-13) 2000ms
+ ✓ src/fields/slug.test.ts (27 tests) 18ms
+ ✓ tests/int/p2-t1-slug.int.test.ts (4 tests) 1321ms
+   ✓ P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) (4)
+     ✓ stale-payload sequences: resending stale auto-slugs in ar or en saves does not revert or lock the slug (R-14, R-17) 317ms
+ ✓ src/hooks/revalidate.test.ts (8 tests) 15ms
+ ✓ src/fields/link.test.ts (11 tests) 13ms
+ ✓ src/globals/globals.test.ts (6 tests) 14ms
+ ✓ src/collections/QuoteRequests.test.ts (6 tests) 14ms
+ ✓ src/access/z1-config-enumeration.test.ts (3 tests) 16ms
+ ✓ src/eslint-require-override-access-false.test.ts (7 tests) 290ms
+ ✓ src/env.test.ts (8 tests) 19ms
+ ✓ src/fields/richText.test.ts (4 tests) 41ms
+ ✓ src/fields/videoUrl.test.ts (5 tests) 10ms
+ ✓ src/security/uploadValidation.test.ts (5 tests) 12ms
+ ✓ src/fields/groups/groups.test.ts (5 tests) 9ms
+ ✓ src/eslint-no-server-in-client.test.ts (4 tests) 169ms
+ ✓ src/lib/quote/schema.test.ts (4 tests) 8ms
+ ✓ src/jobs/shouldAutoRun.test.ts (5 tests) 6ms
+ ✓ src/access/publishedOrLoggedIn.test.ts (4 tests) 7ms
+ ✓ src/lib/ipHash.test.ts (3 tests) 7ms
+ ✓ src/fields/groups/pillar.test.ts (2 tests) 7ms
+ ✓ src/security/apiError.test.ts (2 tests) 7ms
+ ✓ src/access/adminOrSelf.test.ts (3 tests) 6ms
+ ✓ src/fields/order.test.ts (2 tests) 6ms
+ ✓ src/security/passwordPolicy.test.ts (3 tests) 5ms
+ ✓ src/collections/_shared/publishable.test.ts (2 tests) 4ms
+ ✓ src/access/isAdminFieldLevel.test.ts (3 tests) 4ms
+ ✓ src/access/isAdminOrEditor.test.ts (3 tests) 4ms
+ ✓ src/access/isAdmin.test.ts (3 tests) 4ms
+
+ Test Files  34 passed (34)
+      Tests  186 passed (186)
+   Start at  11:16:48
+   Duration  161.13s (tests 69%, import 31%, transform 1%)
+
+     Import  106 modules were evaluated 164 times · 47.26s total, 31% of tracked time
+             ~16.71s faster with isolate: false — shared modules are evaluated once per worker instead of once per file
+             learn more: https://vitest.dev/guide/improving-performance#test-isolation
+
+
+(node:11120) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

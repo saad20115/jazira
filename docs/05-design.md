@@ -160,3 +160,20 @@ Binding for Phase 3. They fill what the Figma file does not specify.
     (P3-T5); a **real-time viewer** of the same model with baked lighting behind "Open the live 3D
     model" (P3-T11). The procedural `reference/3d/scene.js` is retired for this section. Assets
     come from task A-1 (external); the code runs on placeholder clips until then.
+17. **Interactive systems — revised (2026-10-22, client).** Supersedes the "pre-rendered clips" part
+    of §16. Everything happens **inside the card**: the photo-real hero still is the first paint;
+    the live Three.js model of the same tower (baked lighting, starts at the exact hero camera)
+    replaces it in place on intent; the visitor rotates, zooms, enters and exits each system
+    there; no full-screen viewer. The card never hijacks page scroll (click/tap/focus to
+    activate). The **city is reduced** to a soft dusk backdrop (low-poly silhouettes + fog or a
+    blurred plate) — focus on the tower and its MEP systems. Weak devices keep stills.
+18. **Interactive systems — city removed (2026-10-22, client, via the 3D QA session).** Supersedes
+    the "city reduced" part of §17. No city at all: only the tower and its plot (plaza ring,
+    forecourt, palms, lamps at the base) on a clean dusk sky gradient with a ground fade. The
+    camera cannot zoom out to city scale: distance, polar and pan limits come from the GLB scene
+    `extras` (tower ≥ ~55 % of the card height at max distance). The tower itself must match
+    `design/assets/images/tower-render.png` (mullions, glass, gold pilasters, crown, lobby).
+    **Confirmed by the owner (2026-10-22, relayed by the 3D QA session):** the hero still has no city
+    either and uses the same dusk sky as the live model, so still and live match exactly (no jump on
+    the crossfade). **Approved deviation** from the Figma card image `04-interactive-systems.png`,
+    which shows a city behind the tower — reviews must not flag the missing city.

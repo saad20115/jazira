@@ -27,8 +27,11 @@ Each one gets a unit test.
 - `auth`: see `docs/03-security.md` §2 (lockout, cookie flags, token expiry).
 - Fields: `name` (text, required), `role` (select `admin|editor`, required, default `editor`,
   `saveToJWT: true`, **field-level update: admin only**).
-- Access: read — admin all, editor self only; create/delete — admin; update — admin or self
-  (but not `role`). First user created via the initial admin flow becomes `admin`.
+- Access: read — admin all; editor may read **only `id` and `name`** of other users (field-level
+  read admin-or-self on every other field, incl. `email`, `role`, `sessions`; such fields cannot be
+  queried or sorted by editors) and their own full record (CTO decision 2026-10-23, P2-T6 R-11);
+  create/delete — admin; update — admin or self (but not `role`); **`unlock` — admin only**.
+  First user created via the initial admin flow becomes `admin`.
 
 ### `media` — group: Media
 - Upload: images only. `mimeTypes: ['image/jpeg','image/png','image/webp','image/avif']`
@@ -96,12 +99,16 @@ Created only by the server-side quote form handler (Phase 5). Never writable thr
   KSA/international format validation), `service` (relationship → services, optional),
   `message` (textarea, max 3000), `locale` (`ar|en`), `sourcePage` (text),
   `consent` (checkbox, required true)
-- System fields (read-only in admin): `odooStatus` (`pending|sent|failed`), `odooLeadId`,
-  `odooLastError` (max 500, sanitized), `odooAttempts`, `ipHash` (SHA-256 of IP + secret salt —
-  never store raw IP), `userAgent` (truncated 300)
+- **Staff workflow** (revised 2026-10-23 — no Odoo): `status` (`new|contacted|quoted|closed|spam`,
+  default `new`, bilingual labels), `assignedTo` (relationship → users, optional), `internalNotes`
+  (textarea, max 3000, staff only).
+- System fields (read-only in admin, written only by the handler/job): `emailStatus`
+  (`pending|sent|failed`), `emailAttempts`, `emailLastError` (max 500, sanitized), `ipHash` (SHA-256
+  of IP + secret salt — never store raw IP), `userAgent` (truncated 300)
 - Access: create — **nobody via API** (`() => false`; the handler uses Local API with
-  `overrideAccess: true` after its own validation); read — admin+editor; update — admin only
-  (status fields); delete — admin only.
+  `overrideAccess: true` after its own validation); read — admin+editor; update — admin+editor,
+  **only** the workflow fields (customer and system fields are read-only for everyone); delete —
+  admin only.
 - Retention: auto-delete after 24 months (scheduled job) — confirm with client.
 
 ## Globals
@@ -231,6 +238,11 @@ relationship fields (written below as "stat" / "stats").
 hasMany, max 4); `portfolio` — `eyebrow`, `title`, `text` (L rich text, paragraphs), `quote`,
 `quoteAuthor` (L), `badgeStat` (relationship → stats), `image`; `cta` (also used on project detail);
 `detailLabels` are i18n; `meta`.
+
+Approved additions (P2-T5 review, 2026-10-23 — design-backed): `home-page.whoWeAre.eyebrow`,
+`home-page.coreServices.button`, `cta.secondaryButton` + `cta.backgroundImage`, `mission/vision`
+`eyebrow`/`title`/`image`, `navigation.headerCta`/`footerCta`, `site-settings.copyright`, socials
+platform `whatsapp`, `home-page.meta`.
 
 `contact-page` (publishable): `pageHeader`; `getInTouch` (`sectionIntro`);
 `findOffice` (`sectionIntro`); `meta`. Contact details come from `site-settings`.

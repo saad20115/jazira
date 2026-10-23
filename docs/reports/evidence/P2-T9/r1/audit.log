@@ -1,0 +1,6 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+cmd: pnpm audit --prod
+duration_ms: 1757
+---
+No known vulnerabilities found

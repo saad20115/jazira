@@ -1,10 +1,11 @@
 /**
- * Custom ESLint rule `local/no-server-in-client` (S4, R-3, R-5).
+ * Custom ESLint rule `local/no-server-in-client` (S4, R-3, R-5, R-12).
  *
  * In any module whose first statement is the `'use client'` directive,
  * importing runtime values from server-only modules (`@/env`, `@payload-config`,
- * `@/payload.config`, `payload`, `@/lib/odoo/**`, `@/lib/ipHash`, or any `*.server.ts(x)`)
- * is an error. Type-only imports/exports are erased at compile time and are allowed (R-5).
+ * `@/payload.config`, `payload`, `@/lib/cms/**`, `@/lib/odoo/**`, `@/lib/ipHash`,
+ * or any `*.server.ts(x)`) is an error. Type-only imports/exports are erased at
+ * compile time and are allowed (R-5).
  */
 
 const FORBIDDEN_EXACT = new Set([
@@ -14,6 +15,9 @@ const FORBIDDEN_EXACT = new Set([
   '@/payload.config',
   '@/payload.config.ts',
   'payload',
+  '@/lib/cms',
+  '@/lib/cms/client',
+  '@/lib/cms/client.ts',
   '@/lib/ipHash',
   '@/lib/ipHash.ts',
   '@/lib/odoo',
@@ -32,16 +36,18 @@ export function isForbiddenServerImport(source) {
 
   if (
     normalized.startsWith('payload/') ||
+    normalized.startsWith('@/lib/cms/') ||
     normalized.startsWith('@/lib/odoo/') ||
     normalized.startsWith('@/lib/ipHash/')
   ) {
     return true
   }
 
-  // Relative imports to env, payload.config, lib/odoo, lib/ipHash
+  // Relative imports to env, payload.config, lib/cms, lib/odoo, lib/ipHash
   if (
     /(?:^|\/)env(?:\.[jt]sx?)?$/.test(normalized) ||
     /(?:^|\/)payload\.config(?:\.[jt]sx?)?$/.test(normalized) ||
+    /(?:^|\/)lib\/cms(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
     /(?:^|\/)lib\/odoo(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
     /(?:^|\/)lib\/ipHash(?:\.[jt]sx?)?$/.test(normalized)
   ) {
@@ -121,11 +127,11 @@ export const noServerInClientRule = {
     type: 'problem',
     docs: {
       description:
-        'Disallow importing server-only modules (@/env, @payload-config, payload, @/lib/odoo/**, @/lib/ipHash, *.server.ts(x)) inside "use client" modules (S4).',
+        'Disallow importing server-only modules (@/env, @payload-config, payload, @/lib/cms/**, @/lib/odoo/**, @/lib/ipHash, *.server.ts(x)) inside "use client" modules (S4, R-12).',
     },
     messages: {
       forbiddenServerImport:
-        'Server-only module "{{source}}" must not be imported in a "use client" component (S4).',
+        'Server-only module "{{source}}" must not be imported in a "use client" component (S4, R-12).',
     },
     schema: [],
   },
