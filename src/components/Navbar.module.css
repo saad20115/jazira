@@ -1,0 +1,255 @@
+.navbar {
+  inline-size: 100%;
+  block-size: 80px;
+  backdrop-filter: blur(10px);
+  border-block-end-style: solid;
+  border-block-end-width: 1px;
+  transition:
+    background-color 220ms ease,
+    border-color 220ms ease,
+    box-shadow 220ms ease;
+}
+
+.sticky {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 40;
+}
+
+.staticPreview {
+  position: relative;
+}
+
+.themeLight {
+  background-color: var(--surface-navbar-light);
+  border-block-end-color: var(--border);
+  box-shadow: var(--shadow-navbar-light);
+  color: var(--navy-950);
+}
+
+.themeLight.scrolled {
+  background-color: var(--white);
+}
+
+.themeDark {
+  background-color: var(--glass-navy-82);
+  border-block-end-color: var(--glass-border-white-8);
+  color: var(--white);
+}
+
+.themeDark.transparentHero:not(.scrolled) {
+  background-color: var(--glass-navy-55);
+  border-block-end-color: var(--glass-border-white-8);
+  box-shadow: none;
+}
+
+.themeDark.scrolled {
+  background-color: var(--navy-950);
+  border-block-end-color: var(--glass-border-white-14);
+  box-shadow: var(--shadow-card);
+}
+
+.inner {
+  max-inline-size: var(--container-max);
+  block-size: 100%;
+  margin-inline: auto;
+  padding-inline: var(--container-pad);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.brandLink {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: var(--radius-xs);
+}
+
+.desktopNav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.desktopActions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.mobileControls {
+  display: none;
+  align-items: center;
+  gap: 12px;
+}
+
+.menuButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease;
+}
+
+.themeLight .menuButton {
+  border-color: var(--border);
+  color: var(--navy-950);
+}
+
+.themeLight .menuButton:hover {
+  background-color: var(--surface);
+}
+
+.themeDark .menuButton {
+  border-color: var(--glass-border-white-16);
+  color: var(--white);
+}
+
+.themeDark .menuButton:hover {
+  background-color: var(--glass-white-8);
+}
+
+/* Mobile & Tablet (< 1024px per CTO decision §3) */
+@media (max-width: 1023px) {
+  .desktopNav,
+  .desktopActions {
+    display: none;
+  }
+
+  .mobileControls {
+    display: flex;
+  }
+}
+
+/* Mobile Slide-Over Drawer */
+.drawerBackdrop {
+  position: fixed;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: 50;
+  background-color: var(--overlay-scrim);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: flex-end;
+}
+
+.drawerPanel {
+  position: relative;
+  inline-size: min(100vw, 380px);
+  block-size: 100dvh;
+  background-color: var(--navy-950);
+  color: var(--white);
+  border-inline-start: 1px solid var(--glass-border-white-10);
+  padding-block: 20px 32px;
+  padding-inline: var(--container-pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 32px;
+  overflow-y: auto;
+  box-shadow: var(--shadow-card-hover);
+}
+
+.drawerHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding-block-end: 16px;
+  border-block-end: 1px solid var(--glass-border-white-10);
+}
+
+.drawerCloseButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border-white-16);
+  background-color: var(--glass-white-6);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.drawerCloseButton:hover {
+  background-color: var(--glass-white-14);
+}
+
+.drawerCloseButton:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 2px;
+}
+
+.drawerNavList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding-block: 8px;
+}
+
+.drawerNavItem {
+  display: flex;
+  align-items: center;
+}
+
+.drawerFooter {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-block-start: 20px;
+  border-block-start: 1px solid var(--glass-border-white-10);
+}
+
+.drawerLangSwitcher {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  padding-block: 12px;
+  padding-inline: 16px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--glass-border-white-16);
+  background-color: var(--glass-white-6);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-weight: var(--t-label-button-weight);
+  font-size: var(--t-label-button-size);
+  line-height: var(--t-label-button-lh);
+  text-decoration: none;
+}
+
+.drawerLangSwitcher:hover {
+  background-color: var(--glass-white-12);
+  border-color: var(--gold-300);
+}
+
+.drawerLangSwitcher:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 2px;
+}
+
+.drawerLangBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: 2px;
+  padding-inline: 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  color: var(--navy-950);
+  font-size: var(--t-body-xs-size);
+  font-weight: var(--t-label-eyebrow-weight);
+}

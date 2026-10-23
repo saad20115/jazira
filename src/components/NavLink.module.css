@@ -1,0 +1,76 @@
+.navLink {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding-block-start: 6px;
+  font-family: var(--font-sans);
+  font-weight: var(--t-label-nav-weight);
+  font-size: var(--t-label-nav-size);
+  line-height: var(--t-label-nav-lh);
+  letter-spacing: var(--t-label-nav-ls);
+  white-space: nowrap;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    opacity 160ms ease;
+}
+
+.themeLight {
+  color: var(--navy-950);
+}
+
+.themeDark {
+  color: var(--white);
+  opacity: 0.82;
+}
+
+.themeDark:hover,
+.themeDark:focus-visible,
+.themeDark.stateHover,
+.themeDark.stateActive {
+  opacity: 1;
+}
+
+.stateActive {
+  font-weight: var(--t-label-button-weight);
+  font-size: var(--t-label-button-size);
+  line-height: var(--t-label-button-lh);
+  letter-spacing: var(--t-label-button-ls);
+}
+
+.label {
+  display: inline-block;
+}
+
+.underline {
+  display: block;
+  inline-size: 0;
+  block-size: 2px;
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  opacity: 0;
+  transition:
+    inline-size 180ms ease,
+    opacity 180ms ease;
+}
+
+.navLink:hover .underline,
+.navLink:focus-visible .underline,
+.stateHover .underline,
+.stateActive .underline {
+  inline-size: 100%;
+  opacity: 1;
+}
+
+.navLink:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 4px;
+  border-radius: var(--radius-xs);
+}
+
+.themeDark:focus-visible {
+  outline-color: var(--gold-300);
+}

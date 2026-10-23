@@ -1,0 +1,138 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fixed {
+  position: fixed;
+  inset-block-end: 24px;
+  inset-inline-end: 24px;
+  z-index: 35;
+}
+
+.inline {
+  position: relative;
+}
+
+.tooltip {
+  background-color: var(--navy-950);
+  color: var(--white);
+  font-family: var(--font-sans);
+  font-weight: var(--t-label-link-weight);
+  font-size: var(--t-label-link-size);
+  line-height: var(--t-label-link-lh);
+  letter-spacing: var(--t-label-link-ls);
+  padding-block: 8px;
+  padding-inline: 14px;
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card);
+  white-space: nowrap;
+  opacity: 0;
+  transform: translateY(2px);
+  pointer-events: none;
+  transition:
+    opacity 180ms ease,
+    transform 180ms ease;
+}
+
+.wrapper:hover .tooltip,
+.wrapper:focus-within .tooltip,
+.stateHover .tooltip {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.inline:not(.stateHover) .tooltip {
+  display: none;
+}
+
+.fabBox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 64px;
+  block-size: 64px;
+  flex-shrink: 0;
+}
+
+.inline.statePulse .fabBox {
+  inline-size: 100px;
+  block-size: 100px;
+}
+
+.pulseRing {
+  position: absolute;
+  inset-block-start: 50%;
+  inset-inline-start: 50%;
+  transform: translate(-50%, -50%);
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--whatsapp);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.inline.statePulse .pulseRing {
+  inline-size: 100px;
+  block-size: 100px;
+  opacity: 0.2;
+}
+
+@keyframes whatsappPulseRing {
+  0% {
+    inline-size: 64px;
+    block-size: 64px;
+    opacity: 0.45;
+  }
+  70% {
+    inline-size: 100px;
+    block-size: 100px;
+    opacity: 0.12;
+  }
+  100% {
+    inline-size: 104px;
+    block-size: 104px;
+    opacity: 0;
+  }
+}
+
+.fixed.statePulse .pulseRing {
+  animation: whatsappPulseRing 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fixed.statePulse .pulseRing {
+    animation: none;
+    inline-size: 64px;
+    block-size: 64px;
+    opacity: 0.45;
+  }
+}
+
+.fabButton {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 60px;
+  block-size: 60px;
+  border-radius: var(--radius-pill);
+  background-color: var(--whatsapp);
+  color: var(--white);
+  box-shadow: var(--shadow-fab-whatsapp);
+  text-decoration: none;
+  transition: transform 180ms ease;
+}
+
+.fabButton:hover,
+.stateHover .fabButton {
+  transform: scale(1.04);
+}
+
+.fabButton:focus-visible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 3px;
+}

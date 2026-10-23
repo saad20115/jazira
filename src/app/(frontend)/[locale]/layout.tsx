@@ -4,6 +4,9 @@ import type { Metadata } from 'next'
 import { draftMode, headers } from 'next/headers'
 import type React from 'react'
 
+import { Footer, type FooterQuickLinkItem, type FooterSocialItem } from '@/components/Footer'
+import { Navbar, type NavbarNavItem } from '@/components/Navbar'
+import { WhatsAppFab } from '@/components/WhatsAppFab'
 import {
   DEFAULT_LOCALE,
   getDictionary,
@@ -11,7 +14,8 @@ import {
   isSupportedLocale,
   type SupportedLocale,
 } from '@/i18n'
-import { getSiteSettings } from '@/lib/cms'
+import { getNavigation, getSiteSettings } from '@/lib/cms'
+import type { Navigation, SiteSetting } from '@/payload-types'
 import { fontVariablesClassName } from '@/styles/fonts'
 import gridStyles from '@/styles/grid.module.css'
 
@@ -21,11 +25,26 @@ interface LocaleLayoutProps {
 }
 
 function resolveMetadataBaseUrl(): URL {
-  const rawUrl = process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || 'http://localhost:3000'
+  const rawUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || 'http://localhost:3000'
   try {
     return new URL(rawUrl)
   } catch {
     return new URL('http://localhost:3000')
+  }
+}
+
+async function loadShellGlobals(
+  locale: SupportedLocale,
+): Promise<{ navigation: Navigation | null; siteSettings: SiteSetting | null }> {
+  try {
+    const [siteSettings, navigation] = await Promise.all([
+      getSiteSettings(locale),
+      getNavigation(locale),
+    ])
+    return { siteSettings, navigation }
+  } catch {
+    return { siteSettings: null, navigation: null }
   }
 }
 
@@ -116,6 +135,40 @@ export default async function LocaleRootLayout({
   const activePathname = requestHeaders.get('x-aljazira-pathname') || `/${resolvedLocale}`
   const { isEnabled: isDraftMode } = await draftMode()
 
+  const isDevSpecimenOrStyleguide =
+    activePathname.endsWith('/_specimen') || activePathname.endsWith('/styleguide')
+
+  const { siteSettings, navigation } = isDevSpecimenOrStyleguide
+    ? { siteSettings: null, navigation: null }
+    : await loadShellGlobals(resolvedLocale)
+
+  const headerNavItems: NavbarNavItem[] | undefined =
+    navigation?.header && navigation.header.length > 0
+      ? navigation.header.map((row) => ({
+          id: row.id,
+          label: row.label,
+          link: row.link,
+        }))
+      : undefined
+
+  const footerQuickLinks: FooterQuickLinkItem[] | undefined =
+    navigation?.footer && navigation.footer[0]?.links && navigation.footer[0].links.length > 0
+      ? navigation.footer[0].links.map((row) => ({
+          id: row.id,
+          label: row.label,
+          link: row.link,
+        }))
+      : undefined
+
+  const socialLinks: FooterSocialItem[] | undefined =
+    siteSettings?.socials && siteSettings.socials.length > 0
+      ? siteSettings.socials.map((row) => ({
+          id: row.id,
+          platform: row.platform,
+          url: row.url,
+        }))
+      : undefined
+
   return (
     <html lang={resolvedLocale} dir={dir} className={fontVariablesClassName}>
       <body>
@@ -133,7 +186,41 @@ export default async function LocaleRootLayout({
             </a>
           </aside>
         ) : null}
+        {!isDevSpecimenOrStyleguide ? (
+          <Navbar
+            ctaLabel={navigation?.headerCta?.label}
+            ctaLink={navigation?.headerCta?.link}
+            items={headerNavItems}
+            locale={resolvedLocale}
+            siteName={siteSettings?.companyName}
+          />
+        ) : null}
         <main id="main-content">{children}</main>
+        {!isDevSpecimenOrStyleguide ? (
+          <>
+            <Footer
+              address={siteSettings?.address || siteSettings?.office?.address}
+              copyright={siteSettings?.copyright}
+              ctaBody={navigation?.footerCta?.text}
+              ctaButtonLabel={navigation?.footerCta?.button?.label}
+              ctaButtonLink={navigation?.footerCta?.button?.link}
+              ctaTitle={navigation?.footerCta?.title}
+              description={siteSettings?.footerText}
+              emails={siteSettings?.email ? [siteSettings.email] : undefined}
+              locale={resolvedLocale}
+              phones={siteSettings?.phone ? [siteSettings.phone] : undefined}
+              quickLinks={footerQuickLinks}
+              siteName={siteSettings?.companyName}
+              socialLinks={socialLinks}
+              whatsapp={siteSettings?.whatsapp}
+            />
+            <WhatsAppFab
+              locale={resolvedLocale}
+              tooltipLabel={siteSettings?.whatsappLabel || undefined}
+              whatsapp={siteSettings?.whatsapp}
+            />
+          </>
+        ) : null}
       </body>
     </html>
   )

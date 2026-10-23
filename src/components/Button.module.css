@@ -1,0 +1,151 @@
+.button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  border-style: solid;
+  border-width: 1.5px;
+  border-color: transparent;
+  font-family: var(--font-sans);
+  font-weight: var(--t-label-button-weight);
+  font-size: var(--t-label-button-size);
+  line-height: var(--t-label-button-lh);
+  letter-spacing: var(--t-label-button-ls);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    gap 180ms ease,
+    padding-inline-end 180ms ease,
+    opacity 180ms ease;
+}
+
+/* Sizes */
+.sizeMd {
+  padding-block: 14px;
+  padding-inline-start: 26px;
+  padding-inline-end: 24px;
+  gap: 10px;
+}
+
+.sizeMd:hover:not(:disabled):not([aria-disabled='true']),
+.sizeMd.stateHover {
+  gap: 14px;
+  padding-inline-end: 20px;
+}
+
+.sizeSm {
+  padding-block: 11px;
+  padding-inline-start: 20px;
+  padding-inline-end: 18px;
+  gap: 8px;
+}
+
+.sizeSm:hover:not(:disabled):not([aria-disabled='true']),
+.sizeSm.stateHover {
+  gap: 11px;
+  padding-inline-end: 15px;
+}
+
+.sizeLg {
+  padding-block: 16px;
+  padding-inline-start: 30px;
+  padding-inline-end: 28px;
+  gap: 12px;
+}
+
+.sizeLg:hover:not(:disabled):not([aria-disabled='true']),
+.sizeLg.stateHover {
+  gap: 16px;
+  padding-inline-end: 24px;
+}
+
+.fullWidth {
+  inline-size: 100%;
+}
+
+/* Variants */
+.variantGold {
+  background-color: var(--gold-500);
+  color: var(--navy-950);
+  box-shadow: var(--shadow-button-gold);
+}
+
+.variantGold:hover:not(:disabled):not([aria-disabled='true']),
+.variantGold.stateHover {
+  background-color: var(--gold-600);
+  box-shadow: var(--shadow-button-gold-hover);
+}
+
+.variantDark {
+  background-color: var(--navy-950);
+  color: var(--white);
+}
+
+.variantDark:hover:not(:disabled):not([aria-disabled='true']),
+.variantDark.stateHover {
+  background-color: var(--navy-800);
+  box-shadow: var(--shadow-button-dark-hover);
+}
+
+.variantGlass {
+  background-color: var(--glass-white-8);
+  border-color: var(--glass-border-white-28);
+  color: var(--white);
+  backdrop-filter: blur(8px);
+}
+
+.variantGlass:hover:not(:disabled):not([aria-disabled='true']),
+.variantGlass.stateHover {
+  background-color: var(--glass-white-18);
+  border-color: var(--glass-border-white-50);
+}
+
+.variantOutline {
+  background-color: transparent;
+  border-color: var(--navy-950);
+  color: var(--navy-950);
+}
+
+.variantOutline:hover:not(:disabled):not([aria-disabled='true']),
+.variantOutline.stateHover {
+  background-color: var(--navy-950);
+  color: var(--white);
+}
+
+/* Focus-visible state (CTO decisions §10) */
+.button:focus-visible,
+.stateFocusVisible {
+  outline: 2px solid var(--gold-500);
+  outline-offset: 2px;
+}
+
+.variantGlass:focus-visible,
+.variantGlass.stateFocusVisible {
+  outline-color: var(--gold-300);
+}
+
+/* Disabled state (CTO decisions §10) */
+.button:disabled,
+.button[aria-disabled='true'],
+.stateDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.label {
+  display: inline-block;
+}
+
+.icon {
+  flex-shrink: 0;
+  inline-size: 18px;
+  block-size: 18px;
+}

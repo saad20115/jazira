@@ -1,0 +1,41 @@
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding-block: 6px;
+  padding-inline: 14px;
+  border-radius: var(--radius-pill);
+  border-style: solid;
+  border-width: 1px;
+  font-family: var(--font-sans);
+  font-weight: var(--t-label-eyebrow-weight);
+  font-size: var(--t-label-eyebrow-size);
+  line-height: var(--t-label-eyebrow-lh);
+  letter-spacing: var(--t-label-eyebrow-ls);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.toneLight {
+  background-color: var(--gold-50);
+  border-color: var(--border-gold-light);
+  color: var(--gold-600);
+}
+
+.toneDark {
+  background-color: var(--glass-white-8);
+  border-color: var(--glass-border-white-16);
+  color: var(--gold-300);
+}
+
+.dot {
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.text {
+  display: inline-block;
+}

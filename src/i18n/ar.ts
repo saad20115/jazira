@@ -25,6 +25,93 @@ export interface UiDictionary {
     targetCode: string
     targetName: string
   }
+  nav: {
+    brandName: string
+    home: string
+    services: string
+    about: string
+    aboutUs: string
+    projects: string
+    contact: string
+    contactUs: string
+    privacy: string
+    getAQuote: string
+    requestQuote: string
+    languageSwitcherShort: string
+    languageSwitcherLabel: string
+    languageSwitcherAriaLabel: string
+    openMenu: string
+    closeMenu: string
+    mainNavAriaLabel: string
+    mobileDrawerAriaLabel: string
+    whatsappChatTooltip: string
+    whatsappFabAriaLabel: string
+  }
+  footer: {
+    quickLinksHeading: string
+    quickLinksTitle: string
+    contactInfoHeading: string
+    contactInfoTitle: string
+    ctaEyebrow: string
+    ctaTitle: string
+    ctaBody: string
+    ctaButton: string
+    chatOnWhatsapp: string
+    ctaWhatsappLink: string
+    socialLinkedin: string
+    socialX: string
+    socialInstagram: string
+    socialFacebook: string
+    socialWhatsapp: string
+    socialAriaLinkedin: string
+    socialAriaX: string
+    socialAriaInstagram: string
+    socialAriaFacebook: string
+    socialAriaWhatsapp: string
+    defaultDescription: string
+    brandDescription: string
+    defaultPhone: string
+    defaultEmail: string
+    defaultLocation: string
+    defaultCopyright: string
+    copyright: string
+    privacyPolicy: string
+    languageToggle: string
+  }
+  accordion: {
+    showDetails: string
+    hideDetails: string
+    sampleCollapsedTitle: string
+    sampleCollapsedBody: string
+    sampleExpandedTitle: string
+    sampleExpandedBody: string
+  }
+  styleguide: {
+    badge: string
+    eyebrow: string
+    title: string
+    subtitle: string
+    sectionLogo: string
+    sectionButton: string
+    sectionEyebrow: string
+    sectionNavLink: string
+    sectionNavbar: string
+    sectionFooter: string
+    sectionWhatsappFab: string
+    sectionAccordion: string
+    sectionIcons: string
+    eyebrowSample: string
+    sampleEyebrow: string
+    serviceIconsTitle: string
+    socialIconsTitle: string
+    directionalIconsTitle: string
+    accordionSampleNumber1: string
+    accordionSampleTitle1: string
+    accordionSampleBody1: string
+    accordionSampleNumber2: string
+    accordionSampleTitle2: string
+    accordionSampleBody2: string
+  }
   draftMode: {
     bannerText: string
     exitPreviewLabel: string
@@ -128,6 +215,102 @@ export const arDictionary = {
   localeSwitcher: {
     targetCode: 'EN',
     targetName: 'English',
+  },
+  nav: {
+    brandName: 'شركة الجزيرة للإمداد الذكي',
+    home: 'الرئيسية',
+    services: 'خدماتنا',
+    about: 'من نحن',
+    aboutUs: 'من نحن',
+    projects: 'مشاريعنا',
+    contact: 'تواصل معنا',
+    contactUs: 'تواصل معنا',
+    privacy: 'سياسة الخصوصية',
+    getAQuote: 'اطلب عرض سعر',
+    requestQuote: 'اطلب عرض سعر',
+    languageSwitcherShort: 'EN',
+    languageSwitcherLabel: 'English (EN)',
+    languageSwitcherAriaLabel: 'التبديل إلى اللغة الإنجليزية (Switch to English)',
+    openMenu: 'فتح قائمة التنقل',
+    closeMenu: 'إغلاق قائمة التنقل',
+    mainNavAriaLabel: 'القائمة الرئيسية',
+    mobileDrawerAriaLabel: 'قائمة التنقل للأجهزة المحمولة',
+    whatsappChatTooltip: 'تحدث مع مهندس مختص',
+    whatsappFabAriaLabel: 'تواصل معنا عبر واتساب',
+  },
+  footer: {
+    quickLinksHeading: 'روابط سريعة',
+    quickLinksTitle: 'روابط سريعة',
+    contactInfoHeading: 'معلومات التواصل',
+    contactInfoTitle: 'معلومات التواصل',
+    ctaEyebrow: 'اطلب عرض سعر',
+    ctaTitle: 'هل لديك مشروع قادم؟',
+    ctaBody: 'أرسل لنا المخططات أو جداول الكميات وسيقوم مهندسونا بالرد عليك خلال يوم عمل واحد.',
+    ctaButton: 'اطلب عرض سعر',
+    chatOnWhatsapp: 'تحدث عبر واتساب',
+    ctaWhatsappLink: 'أو تحدث عبر واتساب ←',
+    socialLinkedin: 'لينكد إن',
+    socialX: 'منصة إكس',
+    socialInstagram: 'إنستغرام',
+    socialFacebook: 'فيسبوك',
+    socialWhatsapp: 'واتساب',
+    socialAriaLinkedin: 'تابع الجزيرة على لينكدإن',
+    socialAriaX: 'تابع الجزيرة على منصة إكس',
+    socialAriaInstagram: 'تابع الجزيرة على إنستغرام',
+    socialAriaFacebook: 'تابع الجزيرة على فيسبوك',
+    socialAriaWhatsapp: 'تواصل مع الجزيرة عبر واتساب',
+    defaultDescription:
+      'شركة رائدة في مقاولات الأنظمة الكهروميكانيكية والأنظمة الذكية في منطقة الخليج، نقدم حلول الميكانيكا والكهرباء والسباكة بمعايير عالمية وخبرة تمتد لأكثر من 45 عاماً.',
+    brandDescription:
+      'شركة رائدة في مقاولات الأنظمة الكهروميكانيكية والأنظمة الذكية في منطقة الخليج، نقدم حلول الميكانيكا والكهرباء والسباكة بمعايير عالمية وخبرة تمتد لأكثر من 45 عاماً.',
+    defaultPhone: '+966 57 353 4185  |  +966 50 225 5688',
+    defaultEmail: 'info@aljazira.co',
+    defaultLocation: 'مكة المكرمة — حي بطحاء قريش، المملكة العربية السعودية',
+    defaultCopyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
+    copyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
+    privacyPolicy: 'سياسة الخصوصية',
+    languageToggle: 'عربي | EN',
+  },
+  accordion: {
+    showDetails: 'عرض التفاصيل',
+    hideDetails: 'إخفاء التفاصيل',
+    sampleCollapsedTitle: 'الدراسات الهندسية والمخططات التنفيذية (Shop Drawings)',
+    sampleCollapsedBody:
+      'إعداد المخططات التنفيذية المتكاملة ونماذج التنسيق ثلاثي الأبعاد (BIM) وحسابات الأحمال وفق الكود السعودي للمباني.',
+    sampleExpandedTitle: 'الاختبار والتشغيل التجريبي والتسليم (Testing & Commissioning)',
+    sampleExpandedBody:
+      'فحص واختبار وموازنة جميع الأنظمة الكهروميكانيكية وأنظمة مكافحة الحريق والتحكم الذكي وإصدار شهادات الضمان المعتمدة.',
+  },
+  styleguide: {
+    badge: 'P3-T2 · دليل المكونات والأنماط التفاعلية (خاص ببيئة التطوير)',
+    eyebrow: 'مكتبة المكونات الأساسية · P3-T2',
+    title: 'مكونات الواجهة الأساسية وهيكل التصفح',
+    subtitle:
+      'جميع المتغيرات والحالات التفاعلية مطابقة لملفات Figma المرجعية مع دعم كامل للغة العربية (RTL) والخصائص المنطقية.',
+    sectionLogo: '1. الشعار (Logo — Full / Compact / Icon × Primary / Reversed / Dark / Navy / White)',
+    sectionButton:
+      '2. الأزرار (Button — Gold / Dark / Glass / Outline × Default / Hover / Focus-Visible / Disabled)',
+    sectionEyebrow: '3. شارة القسم (Eyebrow — Light / Dark)',
+    sectionNavLink: '4. روابط التنقل (NavLink — Light / Dark × Default / Hover / Active)',
+    sectionNavbar:
+      '5. شريط التنقل العلوي (Navbar — Light & Dark × 5 Active Pages + Mobile Drawer)',
+    sectionFooter: '6. تذييل الصفحة (Footer — 4 Columns + Icon-Only Socials + Bottom Bar)',
+    sectionWhatsappFab: '7. زر واتساب العائم (WhatsAppFab — Idle / Pulse / Hover)',
+    sectionAccordion: '8. الأكورديون (Accordion — Collapsed & Expanded)',
+    sectionIcons: '9. الأيقونات (Service Icons 10 + Social Icons 5 + Directional RTL Flip)',
+    eyebrowSample: 'ما نقدمه',
+    sampleEyebrow: 'مقاولات الأنظمة الكهروميكانيكية',
+    serviceIconsTitle: 'أيقونات الخدمات الهندسية (10)',
+    socialIconsTitle: 'أيقونات التواصل الاجتماعي (5)',
+    directionalIconsTitle: 'أيقونات الاتجاه (تنعكس تلقائياً في RTL)',
+    accordionSampleNumber1: '01',
+    accordionSampleTitle1: 'نظرة عامة على المشروع',
+    accordionSampleBody1:
+      'تفصيل نطاق الأعمال الهندسية الكهروميكانيكية والأنظمة الذكية المنفذة في المشروع.',
+    accordionSampleNumber2: '02',
+    accordionSampleTitle2: 'الأنظمة الكهروميكانيكية المنفذة',
+    accordionSampleBody2:
+      'يشمل نطاق التنفيذ وحدات التبريد المركزي، شبكات مكافحة الحريق، ولوحات التوزيع الكهربائية.',
   },
   draftMode: {
     bannerText: 'وضع المعاينة المباشرة (مسودة غير منشورة للزوار)',

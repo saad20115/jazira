@@ -1,0 +1,44 @@
+.logo {
+  position: relative;
+  display: inline-block;
+  overflow: clip;
+  flex-shrink: 0;
+}
+
+.typeFull {
+  inline-size: 199px;
+  block-size: 58px;
+}
+
+.typeCompact {
+  inline-size: 199px;
+  block-size: 56px;
+}
+
+.typeIcon {
+  inline-size: 57px;
+  block-size: 56px;
+}
+
+.sizeShell.typeFull {
+  inline-size: 172px;
+  block-size: 50px;
+}
+
+.sizeShell.typeCompact {
+  inline-size: 172px;
+  block-size: 48px;
+}
+
+.sizeShell.typeIcon {
+  inline-size: 48px;
+  block-size: 48px;
+}
+
+.image {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  max-inline-size: none;
+  object-fit: contain;
+}

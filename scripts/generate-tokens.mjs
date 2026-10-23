@@ -234,6 +234,15 @@ export function buildTokensCss(tokens) {
     if (key.startsWith('$')) continue
     lines.push(`  ${toCssVarName(key)}: ${val.replace(/,(?!\s)/g, ', ')};`)
   }
+  lines.push('  --glass-white-4: rgba(255, 255, 255, 0.04);')
+  lines.push('  --glass-white-18: rgba(255, 255, 255, 0.18);')
+  lines.push('  --glass-border-white-8: rgba(255, 255, 255, 0.08);')
+  lines.push('  --glass-border-white-10: rgba(255, 255, 255, 0.1);')
+  lines.push('  --glass-border-white-14: rgba(255, 255, 255, 0.14);')
+  lines.push('  --glass-border-white-50: rgba(255, 255, 255, 0.5);')
+  lines.push('  --border-gold-light: rgba(239, 203, 118, 0.6);')
+  lines.push('  --surface-navbar-light: rgba(255, 255, 255, 0.94);')
+  lines.push('  --icon-social-muted: rgb(153, 166, 186);')
 
   lines.push('')
   lines.push('  /* === 3. Gradients (`design/tokens.json` -> `gradient`, CTO §15) === */')
@@ -251,6 +260,9 @@ export function buildTokensCss(tokens) {
   lines.push(
     '  --gradient-navy-panel: linear-gradient(to bottom, var(--navy-800), var(--navy-950));',
   )
+  lines.push(
+    '  --gradient-footer: radial-gradient(50% 50% at 50% 50%, var(--navy-900) 0%, var(--navy-950) 100%);',
+  )
 
   lines.push('')
   lines.push('  /* === 4. Shadows (`design/tokens.json` -> `shadow`, CTO §15) === */')
@@ -259,6 +271,8 @@ export function buildTokensCss(tokens) {
     if (key.startsWith('$')) continue
     lines.push(`  ${toCssVarName(key, 'shadow')}: ${val.replace(/,(?!\s)/g, ', ')};`)
   }
+  lines.push('  --shadow-navbar-light: 0 2px 8px 0 rgba(1, 16, 37, 0.06);')
+  lines.push('  --shadow-button-dark-hover: 0 10px 12px 0 rgba(1, 16, 37, 0.25);')
 
   lines.push('')
   lines.push('  /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */')
