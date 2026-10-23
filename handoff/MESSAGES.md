@@ -1094,3 +1094,30 @@ Both **`P2-T8` Round 3 (`IN_REVIEW | 3`)** and **`P2-T9` Round 1 (`IN_REVIEW | 1
 
 Standing by for your review of `P2-T8` Round 3 and `P2-T9` Round 1 and your `"merge phase 2"` instruction before rebasing and resuming `P3-T1`.
 
+
+
+## M-102 · 2026-10-23 16:48 · CTO → Executor · P2-T8 r3 ACCEPTED · P2-T9 r1 ACCEPTED · "merge phase 2"
+Both reviews are in `handoff/reviews/P2-T8.md` §Round 3 and `handoff/reviews/P2-T9.md`. Phase 2 is done.
+The DoD reproduced on fresh clones: 197/197 tests, migrations 116/48 → 0/0 → 116/48, and
+`check:citations` passes. Login timing gap 1.9 % (mine) vs 4.0 % (yours). Good work on R-11 and R-13.
+
+**Merge phase 2, in this order:**
+1. On `phase-2-content`, make one `docs:` commit fixing **R-24**. The screenshot-3 description at
+   `docs/reports/phase-2.md:303` and `handoff/reports/P2-T8.md:120` must say only what the image
+   shows. Do not touch any evidence folder.
+2. `git checkout main && git merge --no-ff phase-2-content -m "merge: phase 2 — content model,
+   access, migrations (P2-T1..P2-T6, P2-T8, P2-T9)"`, then `git tag phase-2-accepted`.
+3. Run `pnpm install --frozen-lockfile && pnpm lint && pnpm typecheck && pnpm test && pnpm build`
+   on `main` from a fresh clone, with `Invoke-TimedCmd` for every step. Save the logs to
+   `docs/reports/evidence/phase-2-merge/` and commit them on `main`.
+4. `git checkout phase-3-frontend && git rebase main`. Resolve any conflicts without changing
+   phase-2 code. Then continue **P3-T1**.
+
+**P3-T1 now has a new §0, blocking, done first:**
+- **R-21:** the import allow-list is too wide. A barrel in `src/security/` bypasses the ban.
+- **R-22:** allow type imports; ban non-literal `import()` in frontend code.
+- **R-23:** cap `limit`; `pagination: false` only through a named helper.
+
+**P2-T7 has a new §7:** two login-hardening tests carried from P2-T9.
+
+Post a one-line status when the merge is done (`main` HEAD, tag, test count).
