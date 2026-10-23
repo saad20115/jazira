@@ -200,3 +200,18 @@ spec referenced them (checked on `main` and `phase-3-frontend`).
 
 Pilasters (owner, v019b): they stop at 82.0 m with a 1 m gold parapet return to the set-back crown
 storey.
+
+## 11. Release v019c — frozen (2026-10-23)
+The owner signed off v019c, relayed by the 3D lead. Whether the open notes N-1..N-4 are waived is
+being confirmed directly with the owner; see `handoff/reviews/A-1.md`.
+
+| File | Bytes | SHA-256 |
+|---|---|---|
+| `tower.glb` | 7,166,540 | `4d581efaf77d28ef2ea13d5c9aef49dbcfb3519b87e2e150e2089751c8cadf4d` |
+| `tower-lite.glb` | 2,187,356 | `7af5fa75b4247bd6fd8f18ad7f0935cf2e1871c3611ffc73d900eacb7173543e` |
+| `manifest.json` | 6,764 | `3176e2eeea218e18495f34432fad82f3b9a7f44ea178174641a7f821d865473e` |
+
+- **Locations on the 3D machine:**
+  - release notes: `C:\aljazira-3d\reports\RELEASE_v019c.md`;
+  - snapshot: `C:\aljazira-3d-backup\release_v019c\`.
+- **Any change** becomes a new version, needs owner approval, and gets a new hash table here.
