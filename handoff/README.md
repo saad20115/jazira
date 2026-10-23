@@ -155,6 +155,8 @@ says so in the review.
 - (added 2026-10-23) A test is described from **its code** (locale, nesting, data), not from intent.
   Never mention a file that is not in the submitted commit. If logs are post-processed (e.g. ANSI
   colour stripped because Payload forces colour), say exactly how; any other edit is forbidden.
+- (added 2026-10-23) A screenshot is described in **one line naming what it proves**. Never list UI
+  text, controls or nav items you did not read in the image itself.
 
 ### Migrations (added 2026-10-23)
 - Never edit a committed migration, merged or not. Every schema change is a new migration; add a

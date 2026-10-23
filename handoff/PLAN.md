@@ -10,7 +10,7 @@ Design source: Figma `tD3pU1vtvSr8akTMJPFLkA`, exported offline in `design/` (se
 
 ## Execution order — revised 2026-10-23 (owner: "build the whole site design and wire it to the dashboard")
 The site is now the priority. Work **in this order** (it overrides the table order below):
-1. P2-T4 (round 3 fixes) → P2-T5 → P2-T6 → P2-T8 → CTO posts "merge phase 2".
+1. P2-T4 (round 3 fixes) → P2-T5 → P2-T6 → P2-T8 → **P2-T9** → CTO posts "merge phase 2".
 2. `phase-3-frontend`: **P3-T1 → P3-T2 → P4-T1 → P4-T2** (real content seeded on the phase-3 branch,
    so every page is built and reviewed with the client's real data, not dev fixtures) → **P3-T3 →
    P3-T4 → P2-T7** (dashboard UX + Live Preview, now that real pages exist) → **P3-T6 → P3-T7 →
@@ -53,6 +53,7 @@ The site is now the priority. Work **in this order** (it overrides the table ord
 | P2-T6 | `quote-requests` (no API create) | P2-T3 |
 | P2-T7 | Dashboard UX: Arabic admin, groups, columns, Live Preview, dashboard home, branding — **runs in Phase 3 after P3-T4** (see Execution order) | P3-T4 |
 | P2-T8 | Access test suite (Z1–Z6), migrations up/down, phase-2 report | P2-T6 |
+| P2-T9 | Login enumeration hardening: constant-time unknown-email login, generic locked message (from the P2-T6 r4 review) | P2-T8 |
 
 ## Phase 3 — Public site from Figma · branch `phase-3-frontend`
 | ID | Task | Depends on |
