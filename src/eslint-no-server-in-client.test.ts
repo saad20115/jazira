@@ -11,6 +11,7 @@ import {
   FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
   FORBIDDEN_FRONTEND_PAYLOAD_RUNTIME_MARKERS,
   FORBIDDEN_SERVER_LIBRARY_MARKERS,
+  resolveFrontendClientChunkFiles,
   scanDirectoryForSentinels,
 } from '../scripts/check-client-bundle-sentinels.mjs'
 
@@ -183,6 +184,42 @@ describe('local/no-server-in-client ESLint rule (S4, R-3, R-5, R-12)', () => {
       ])
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true })
+    }
+  })
+
+  it('resolveFrontendClientChunkFiles extracts frontend chunks from both build-manifest.json and page_client-reference-manifest.js', () => {
+    const tmpNextDir = fs.mkdtempSync(path.join(os.tmpdir(), 'client-manifest-test-'))
+    try {
+      const staticDir = path.join(tmpNextDir, 'static')
+      const frontendRouteDir = path.join(tmpNextDir, 'server', 'app', '(frontend)', '[locale]')
+      fs.mkdirSync(path.join(staticDir, 'chunks'), { recursive: true })
+      fs.mkdirSync(frontendRouteDir, { recursive: true })
+
+      fs.writeFileSync(
+        path.join(frontendRouteDir, 'build-manifest.json'),
+        JSON.stringify({
+          rootMainFiles: ['static/chunks/root-main.js'],
+          polyfillFiles: ['static/chunks/polyfills.js'],
+          pages: {},
+        }),
+        'utf8',
+      )
+      fs.writeFileSync(
+        path.join(frontendRouteDir, 'page_client-reference-manifest.js'),
+        'globalThis.__RSC_MANIFEST["/(frontend)/[locale]/page"] = {"clientModules":{"[project]/src/components/CmsLink.tsx":{"chunks":["/_next/static/chunks/cms-link-chunk.js"]}},"entryJSFiles":{"[project]/src/app/(frontend)/[locale]/page":["static/chunks/entry-chunk.js"]}};\n',
+        'utf8',
+      )
+
+      const files = resolveFrontendClientChunkFiles(staticDir)
+      expect(files).not.toBeNull()
+      expect(Array.from(files ?? []).sort()).toEqual([
+        'chunks/cms-link-chunk.js',
+        'chunks/entry-chunk.js',
+        'chunks/polyfills.js',
+        'chunks/root-main.js',
+      ])
+    } finally {
+      fs.rmSync(tmpNextDir, { recursive: true, force: true })
     }
   })
 })

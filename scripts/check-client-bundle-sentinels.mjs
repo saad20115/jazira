@@ -95,12 +95,31 @@ export function resolveFrontendClientChunkFiles(staticRootDir) {
           ]
           for (const item of fileLists) {
             if (typeof item === 'string') {
-              const normalized = item.replace(/\\/g, '/').replace(/^\/+/, '').replace(/^static\//, '')
+              const normalized = item
+                .replace(/\\/g, '/')
+                .replace(/^\/+/, '')
+                .replace(/^_next\//, '')
+                .replace(/^static\//, '')
               frontendRelativeFiles.add(normalized)
             }
           }
         } catch {
           // Ignore malformed JSON
+        }
+      } else if (entry.isFile() && entry.name.endsWith('_client-reference-manifest.js')) {
+        try {
+          const content = fs.readFileSync(full, 'utf8')
+          const matches = content.matchAll(/(?:\/_next\/)?static\/chunks\/[^"'\s\\]+\.js/g)
+          for (const match of matches) {
+            const normalized = match[0]
+              .replace(/\\/g, '/')
+              .replace(/^\/+/, '')
+              .replace(/^_next\//, '')
+              .replace(/^static\//, '')
+            frontendRelativeFiles.add(normalized)
+          }
+        } catch {
+          // Ignore unreadable manifest
         }
       }
     }
