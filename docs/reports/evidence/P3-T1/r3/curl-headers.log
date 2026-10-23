@@ -1,0 +1,104 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+
+=== GET / ===
+HTTPStatus: 308 Permanent Redirect
+Location: /ar
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-ZWRhMTk5MzQtOTg1Ni00NjkzLThhZDUtZTY4MGExNTViZGZi' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-ZWRhMTk5MzQtOTg1Ni00NjkzLThhZDUtZTY4MGExNTViZGZi'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+
+=== GET /ar ===
+HTTPStatus: 200 OK
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-NTAxYzU1NmQtMGVhYS00MWUzLTkzNjMtZTA1NjBlYjIxYjE2' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-NTAxYzU1NmQtMGVhYS00MWUzLTkzNjMtZTA1NjBlYjIxYjE2'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html lang="ar" dir="rtl" class="ZWJS8G_variable">
+Title: Al Jazira for Imdad Smart Co.
+FontPreloadCount: 1
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /en ===
+HTTPStatus: 200 OK
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-OTMzN2YxYTctOTA2MS00MTBmLTg1OGItNzI4ODAxNmJiZTM1' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-OTMzN2YxYTctOTA2MS00MTBmLTg1OGItNzI4ODAxNmJiZTM1'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html lang="en" dir="ltr" class="dzAZra_variable">
+Title: Al Jazira for Imdad Smart Co.
+FontPreloadCount: 4
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2" rel="preload" type="font/woff2"/>
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2" rel="preload" type="font/woff2"/>
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2" rel="preload" type="font/woff2"/>
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /ar/projects ===
+HTTPStatus: 404 Not Found
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-ZTZlMmUyOTQtM2ZjMS00Njk4LTg4YTktNDI0YTk0NThkN2M0' 'strict-dynamic'; style-src 'self' 'nonce-ZTZlMmUyOTQtM2ZjMS00Njk4LTg4YTktNDI0YTk0NThkN2M0'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html lang="ar" dir="rtl" class="ZWJS8G_variable">
+Title: الصفحة غير موجودة
+FontPreloadCount: 1
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /robots.txt ===
+HTTPStatus: 200 OK
+
+=== GET /sitemap.xml ===
+HTTPStatus: 200 OK
+
+=== GET /favicon.ico ===
+HTTPStatus: 200 OK
+
+=== GET /.well-known/security.txt ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="ar" dir="rtl" class="ZWJS8G_variable">
+Title: الصفحة غير موجودة
+FontPreloadCount: 1
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /brand/full-primary.svg ===
+HTTPStatus: 200 OK
+
+=== GET /ar/_specimen ===
+HTTPStatus: 404 Not Found
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-NTlmZTUzNGQtZGMzNy00NWU3LWJmMTUtYjcwMTc4OTViZmFm' 'strict-dynamic'; style-src 'self' 'nonce-NTlmZTUzNGQtZGMzNy00NWU3LWJmMTUtYjcwMTc4OTViZmFm'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html lang="ar" dir="rtl" class="dzAZra_variable ZWJS8G_variable">
+Title: الصفحة غير موجودة
+FontPreloadCount: 1
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /admin/login ===
+HTTPStatus: 200 OK
+Set-Cookie: payload-lng=ar; Path=/; Expires=Sat, 23 Oct 2027 21:59:32 GMT; Max-Age=31536000
+Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.gravatar.com; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html data-theme="light" dir="RTL" lang="ar">
+Title: تسجيل الدخول - Payload
+
+=== GET /fr ===
+HTTPStatus: 404 Not Found
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-ZWE5Nzg2MWUtNzZjMS00NGFlLTliYjktNTk2YzkzOTRjNmZk' 'strict-dynamic'; style-src 'self' 'nonce-ZWE5Nzg2MWUtNzZjMS00NGFlLTliYjktNTk2YzkzOTRjNmZk'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html lang="ar" dir="rtl" class="ZWJS8G_variable">
+Title: الصفحة غير موجودة
+FontPreloadCount: 1
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /en/this-page-does-not-exist ===
+HTTPStatus: 404 Not Found
+Content-Security-Policy: default-src 'self'; script-src 'self' 'nonce-MWFjYTNlMjItYWJmMy00MmE3LTgzYzUtZTljY2UzNzFkNzMy' 'strict-dynamic'; style-src 'self' 'nonce-MWFjYTNlMjItYWJmMy00MmE3LTgzYzUtZTljY2UzNzFkNzMy'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'
+HTMLTag: <html lang="en" dir="ltr" class="dzAZra_variable">
+Title: Page Not Found
+FontPreloadCount: 4
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2" rel="preload" type="font/woff2"/>
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2" rel="preload" type="font/woff2"/>
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2" rel="preload" type="font/woff2"/>
+  FontPreload: <link as="font" crossorigin="anonymous" href="/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2" rel="preload" type="font/woff2"/>
+
+=== GET /api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar ===
+HTTPStatus: 401 Unauthorized
+
+=== GET /api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=//evil.example.com ===
+HTTPStatus: 400 Bad Request
+
+=== GET /api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=/ar ===
+HTTPStatus: 403 Forbidden
+
+=== GET /api/preview/exit?returnTo=/ar ===
+HTTPStatus: 307 Temporary Redirect
+Location: http://localhost:3021/ar
+Set-Cookie: __prerender_bypass=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=none
+

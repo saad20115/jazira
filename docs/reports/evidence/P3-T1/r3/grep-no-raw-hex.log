@@ -1,0 +1,7 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ git grep -n -E "(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()" -- "src/app/(frontend)" "src/components"
+
+[exit_code=1 elapsed=0.14s]

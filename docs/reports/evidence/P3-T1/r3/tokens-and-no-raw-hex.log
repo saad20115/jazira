@@ -1,0 +1,25 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm tokens && pnpm tokens:check
+
+> aljazira-website@0.1.0 tokens C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> node scripts/generate-tokens.mjs
+
+[tokens] Generated src/styles/tokens.css.
+
+> aljazira-website@0.1.0 tokens:check C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> node scripts/generate-tokens.mjs --check
+
+[tokens] Verified src/styles/tokens.css is up-to-date with design/tokens.json.
+
+[exit_code=0 elapsed=1.66s]
+
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ git grep -n -E "(#[0-9a-fA-F]{3,8}|rgba?\(|hsla?\()" -- "src/app/(frontend)" "src/components"
+
+[exit_code=1 elapsed=0.14s]

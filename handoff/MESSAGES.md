@@ -1251,3 +1251,14 @@ Round 3:
 - **R-17..R-19:** nits, optional (R-19: write logs as clean UTF-8).
 
 Do r3 before continuing P3-T2, and give P3-T2's proxy and public files the R-12 fix.
+
+
+### M-110 · 2026-10-24 01:01 · Executor → CTO · P3-T1
+Submitted `P3-T1` Round 3 (`handoff/reports/P3-T1.md`, `IN_REVIEW | 3`) at code commit `6820066263554940b3ecdb235e3d68af2ab37cc4` (`6820066`) with fresh-clone evidence under `docs/reports/evidence/P3-T1/r3/`:
+- **`R-12`**: Added `isPassthroughRootOrPublicPath` and `hasMatchingPublicFile` (`src/proxy.ts`), `src/app/sitemap.ts`, and `public/favicon.ico` so `/robots.txt`, `/sitemap.xml`, `/favicon.ico`, `/icon.svg`, `/.well-known/**`, public asset directories (`/brand/**`, `/media/**`, `/systems/**`, `/3d/**`, `/models/**`, `/draco/**`, `/basis/**`, `/ktx2/**`, `/meshopt/**`, `/transcoders/**`, `/decoders/**`, `/textures/**`, `/hdr/**`, `/fonts/**`, `/images/**`, `/videos/**`, `/assets/**`), root-level 3D decoders/transcoders (`basis_transcoder.{js,wasm}`, `draco_decoder.{js,wasm}`, `draco_wasm_wrapper.js`, `meshopt_decoder.{js,wasm}`), and any existing file in `public/` pass through `proxy()` (`200 OK` on `/robots.txt`, `/sitemap.xml`, `/favicon.ico`, `/brand/full-primary.svg` in `r3/curl-headers.log`).
+- **`R-13`**: Banned any file in `src/**` from importing/re-exporting/`require()`-ing `scripts/**` or `tests/**` (`isForbiddenScriptsOrTestsSource`), moved script unit tests to `tests/unit/scripts-guard.test.ts`, guarded `src/lib/**` (`EXPLICIT_PURE_LIB_FILES` + `isForbiddenUnlistedLibSource`) against server-directory imports, `.payload` (`req.payload`) access, and unguarded Local API calls, and flagged any Local API or `cmsFind*` call in `src/app/(frontend)/**`, `src/components/**`, or `src/lib/**` whose options contain a `user` key (`forbiddenUserOptionInLocalApi`).
+- **`R-14`**: Rotated `PAYLOAD_SECRET` in local `.env` (invalidating the derived `PREVIEW_SECRET` HMAC recorded in `r2`, while leaving `r2/` untouched) and added `redactSecretValues` in `scripts/evidence/p3-t1-evidence.mjs` (`<REDACTED_PREVIEW_SECRET>` in `r3/curl-headers.log` and `r3/http-checks.json`).
+- **`R-15`**: Updated `cmsFindAllSmallCollection` (`SMALL_COLLECTION_FETCH_LIMIT = 101`) so when `> 100` docs exist, it logs a warning, never throws, and returns the first `100` docs (verified with a `101`-doc `stats` DB integration test in `tests/int/p3-t1.int.test.ts`).
+- **`R-16`, `R-18`, & `R-19`**: Updated `stitchSpecimenComparison` to stitch Figma reference component sheets (`design/screenshots/components/*.png`) alongside `specimen-en.png` and `specimen-ar.png` (`r3/specimen-comparison.png`), extended `no-jsx-string-literals` to catch `<meta content>`, `{LABELS.a}`, `{lbl()}`, and IIFEs (`R-18`), and fixed UTF-8 file reading in the fresh-clone DoD runner (`R-19`).
+
+Proceeding now to re-run `P3-T2` Round 1 fresh-clone DoD on top of the `R-12` proxy/public files fix per `M-109`.

@@ -1,0 +1,259 @@
+=== CASE A1: Client component importing @/security/apiError (must fail lint AND fail real build) ===
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm lint
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+
+
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801\src\components\CmsLink.tsx
+   2:1   error  '@/security/apiError' import is restricted from being used by a pattern. Frontend, component, and src/lib modules must not import from server directories (@/app/(payload), @/collections, @/globals, @/hooks, @/access, @/migrations, @/fields, @/security) (R-3, R-13)  @typescript-eslint/no-restricted-imports
+   2:1   error  Server-only module "@/security/apiError" must not be imported in a "use client" component (S4, R-12)                                                                                                                                                                      local/no-server-in-client
+   2:1   error  Importing server module "@/security/apiError" is forbidden in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**` (R-3, R-13)                                                                                                                                  local/require-override-access-false
+  87:14  error  Unsafe assignment of an error typed value                                                                                                                                                                                                                                 @typescript-eslint/no-unsafe-assignment
+
+✖ 4 problems (4 errors, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+[exit_code=1 elapsed=39.35s]
+
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm build
+
+> aljazira-website@0.1.0 build C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 318ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+ ELIFECYCLE  Command failed with exit code 1.
+
+
+> Build error occurred
+Error: Turbopack build failed with 2 errors:
+./src/components/CmsLink.tsx:2:1
+Error: Export publicApiError doesn't exist in target module
+  [90m1 |[0m [32m'use client'[0m
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { publicApiError } [36mfrom[0m [32m'@/security/apiError'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m'next/link'[0m
+  [90m4 |[0m [36mimport[0m [33mReact[0m [36mfrom[0m [32m'react'[0m
+  [90m5 |[0m
+
+The export publicApiError was not found in module [project]/src/security/apiError.ts [app-client] (ecmascript).
+Did you mean to import createPublicAPIError?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  #1 [Server Component]:
+    ./src/components/CmsLink.tsx
+    ./src/app/(frontend)/[locale]/not-found.tsx
+
+  #2 [Server Component]:
+    ./src/components/CmsLink.tsx
+    ./src/styles/font-preload.ts
+    ./src/app/(frontend)/[locale]/layout.tsx
+
+  #3 [Client Component Browser]:
+    ./src/components/CmsLink.tsx [Client Component Browser]
+    ./src/components/CmsLink.tsx [Server Component]
+    ./src/app/(frontend)/[locale]/page.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./src/components/CmsLink.tsx [Client Component SSR]
+    ./src/components/CmsLink.tsx [Server Component]
+    ./src/app/(frontend)/[locale]/page.tsx [Server Component]
+
+
+./src/components/CmsLink.tsx:2:1
+Error: Export publicApiError doesn't exist in target module
+  [90m1 |[0m [32m'use client'[0m
+[31m[1m>[0m [90m2 |[0m [36mimport[0m { publicApiError } [36mfrom[0m [32m'@/security/apiError'[0m
+  [90m  |[0m [31m[1m^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^[0m
+  [90m3 |[0m [36mimport[0m [33mLink[0m [36mfrom[0m [32m'next/link'[0m
+  [90m4 |[0m [36mimport[0m [33mReact[0m [36mfrom[0m [32m'react'[0m
+  [90m5 |[0m
+
+The export publicApiError was not found in module [project]/src/security/apiError.ts [app-ssr] (ecmascript).
+Did you mean to import createPublicAPIError?
+All exports of the module are statically known (It doesn't have dynamic exports). So it's known statically that the requested export doesn't exist.
+
+Import traces:
+  #1 [Server Component]:
+    ./src/components/CmsLink.tsx
+    ./src/app/(frontend)/[locale]/not-found.tsx
+
+  #2 [Server Component]:
+    ./src/components/CmsLink.tsx
+    ./src/styles/font-preload.ts
+    ./src/app/(frontend)/[locale]/layout.tsx
+
+  #3 [Client Component Browser]:
+    ./src/components/CmsLink.tsx [Client Component Browser]
+    ./src/components/CmsLink.tsx [Server Component]
+    ./src/app/(frontend)/[locale]/page.tsx [Server Component]
+
+  #4 [Client Component SSR]:
+    ./src/components/CmsLink.tsx [Client Component SSR]
+    ./src/components/CmsLink.tsx [Server Component]
+    ./src/app/(frontend)/[locale]/page.tsx [Server Component]
+
+
+    at ignore-listed frames
+
+[exit_code=1 elapsed=38.76s]
+
+
+=== CASE A2: Client component importing { APIError } from 'payload' (must fail lint AND fail real build via surviving runtime marker) ===
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm lint
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+
+
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801\src\components\CmsLink.tsx
+   2:1   error  'payload' import is restricted from being used. Importing or re-exporting "payload" at runtime is forbidden outside the server allow-list. Use src/lib/cms/client.ts wrappers instead (Z6, R-12, R-21, R-22)               @typescript-eslint/no-restricted-imports
+   2:1   error  Server-only module "payload" must not be imported in a "use client" component (S4, R-12)                                                                                                                                   local/no-server-in-client
+   2:1   error  Importing "payload" is forbidden outside the server allow-list (`src/lib/cms/client.ts` is the only allowed CMS wrapper). Use `cmsFind`, `cmsFindByID`, `cmsFindGlobal`, or `cmsCount` instead (Z6, R-6, R-12, R-21, R-3)  local/require-override-access-false
+  87:14  error  Re-exporting "payload" is forbidden everywhere except `src/payload.config.ts` and `src/lib/cms/client.ts` (Z6, R-21, R-3, R-13)                                                                                            local/require-override-access-false
+
+✖ 4 problems (4 errors, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+[exit_code=1 elapsed=41.26s]
+
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm build
+
+> aljazira-website@0.1.0 build C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 201ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 9.4s
+  Running TypeScript ...
+  Finished TypeScript in 13.0s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/7) ...
+  Generating static pages using 7 workers (1/7) 
+  Generating static pages using 7 workers (3/7) 
+  Generating static pages using 7 workers (5/7) 
+✓ Generating static pages using 7 workers (7/7) in 634ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/_specimen
+├ ƒ /[locale]/styleguide
+├ ƒ /admin/[[...segments]]
+├ ƒ /api/[...slug]
+├ ƒ /api/exit-preview
+├ ƒ /api/preview
+├ ƒ /api/preview/exit
+├ ○ /robots.txt
+└ ○ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+[check-client-bundle-sentinels] ERROR: Server-only sentinel/library marker "this.isOperational" leaked into client bundle file "chunks/1vsvtlze9iwn6.js" (S4, R-6, R-12, P3-T1 §9)!
+[check-client-bundle-sentinels] ERROR: Server-only sentinel/library marker "UNAVAILABLE_FOR_LEGAL_REASONS" leaked into client bundle file "chunks/1vsvtlze9iwn6.js" (S4, R-6, R-12, P3-T1 §9)!
+
+[exit_code=1 elapsed=33.81s]
+
+
+=== CASE B: Client component importing pure @/lib/quote/schema (must pass lint AND pass real build) ===
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm lint
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+
+
+[exit_code=0 elapsed=30.93s]
+
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm build
+
+> aljazira-website@0.1.0 build C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 89ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 7.5s
+  Running TypeScript ...
+  Finished TypeScript in 9.7s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/7) ...
+  Generating static pages using 7 workers (1/7) 
+  Generating static pages using 7 workers (3/7) 
+  Generating static pages using 7 workers (5/7) 
+✓ Generating static pages using 7 workers (7/7) in 566ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/_specimen
+├ ƒ /[locale]/styleguide
+├ ƒ /admin/[[...segments]]
+├ ƒ /api/[...slug]
+├ ƒ /api/exit-preview
+├ ƒ /api/preview
+├ ƒ /api/preview/exit
+├ ○ /robots.txt
+└ ○ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+[check-client-bundle-sentinels] Verified zero server-only sentinels or server library markers in .next/static
+
+[exit_code=0 elapsed=28.5s]

@@ -1,0 +1,281 @@
+{
+  "baseUrl": "http://localhost:3021",
+  "generatedAt": "2026-10-23T21:59:33.065Z",
+  "probes": [
+    {
+      "path": "/",
+      "url": "http://localhost:3021/",
+      "status": 308,
+      "statusText": "Permanent Redirect",
+      "headers": {
+        "location": "/ar",
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-ZWRhMTk5MzQtOTg1Ni00NjkzLThhZDUtZTY4MGExNTViZGZi' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-ZWRhMTk5MzQtOTg1Ni00NjkzLThhZDUtZTY4MGExNTViZGZi'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": null
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/ar",
+      "url": "http://localhost:3021/ar",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-NTAxYzU1NmQtMGVhYS00MWUzLTkzNjMtZTA1NjBlYjIxYjE2' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-NTAxYzU1NmQtMGVhYS00MWUzLTkzNjMtZTA1NjBlYjIxYjE2'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"ZWJS8G_variable\">",
+      "title": "Al Jazira for Imdad Smart Co.",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/en",
+      "url": "http://localhost:3021/en",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-OTMzN2YxYTctOTA2MS00MTBmLTg1OGItNzI4ODAxNmJiZTM1' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-OTMzN2YxYTctOTA2MS00MTBmLTg1OGItNzI4ODAxNmJiZTM1'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"en\" dir=\"ltr\" class=\"dzAZra_variable\">",
+      "title": "Al Jazira for Imdad Smart Co.",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2\" rel=\"preload\" type=\"font/woff2\"/>",
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2\" rel=\"preload\" type=\"font/woff2\"/>",
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2\" rel=\"preload\" type=\"font/woff2\"/>",
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/ar/projects",
+      "url": "http://localhost:3021/ar/projects",
+      "status": 404,
+      "statusText": "Not Found",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-ZTZlMmUyOTQtM2ZjMS00Njk4LTg4YTktNDI0YTk0NThkN2M0' 'strict-dynamic'; style-src 'self' 'nonce-ZTZlMmUyOTQtM2ZjMS00Njk4LTg4YTktNDI0YTk0NThkN2M0'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/robots.txt",
+      "url": "http://localhost:3021/robots.txt",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "text/plain"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/sitemap.xml",
+      "url": "http://localhost:3021/sitemap.xml",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "application/xml"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/favicon.ico",
+      "url": "http://localhost:3021/favicon.ico",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "image/x-icon"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/.well-known/security.txt",
+      "url": "http://localhost:3021/.well-known/security.txt",
+      "status": 404,
+      "statusText": "Not Found",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/brand/full-primary.svg",
+      "url": "http://localhost:3021/brand/full-primary.svg",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "image/svg+xml"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/ar/_specimen",
+      "url": "http://localhost:3021/ar/_specimen",
+      "status": 404,
+      "statusText": "Not Found",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-NTlmZTUzNGQtZGMzNy00NWU3LWJmMTUtYjcwMTc4OTViZmFm' 'strict-dynamic'; style-src 'self' 'nonce-NTlmZTUzNGQtZGMzNy00NWU3LWJmMTUtYjcwMTc4OTViZmFm'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/admin/login",
+      "url": "http://localhost:3021/admin/login",
+      "status": 200,
+      "statusText": "OK",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.gravatar.com; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": "payload-lng=ar; Path=/; Expires=Sat, 23 Oct 2027 21:59:32 GMT; Max-Age=31536000",
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html data-theme=\"light\" dir=\"RTL\" lang=\"ar\">",
+      "title": "تسجيل الدخول - Payload",
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/fr",
+      "url": "http://localhost:3021/fr",
+      "status": 404,
+      "statusText": "Not Found",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-ZWE5Nzg2MWUtNzZjMS00NGFlLTliYjktNTk2YzkzOTRjNmZk' 'strict-dynamic'; style-src 'self' 'nonce-ZWE5Nzg2MWUtNzZjMS00NGFlLTliYjktNTk2YzkzOTRjNmZk'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/en/this-page-does-not-exist",
+      "url": "http://localhost:3021/en/this-page-does-not-exist",
+      "status": 404,
+      "statusText": "Not Found",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": "default-src 'self'; script-src 'self' 'nonce-MWFjYTNlMjItYWJmMy00MmE3LTgzYzUtZTljY2UzNzFkNzMy' 'strict-dynamic'; style-src 'self' 'nonce-MWFjYTNlMjItYWJmMy00MmE3LTgzYzUtZTljY2UzNzFkNzMy'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+        "setCookie": null,
+        "contentType": "text/html; charset=utf-8"
+      },
+      "htmlTag": "<html lang=\"en\" dir=\"ltr\" class=\"dzAZra_variable\">",
+      "title": "Page Not Found",
+      "fontPreloadLinks": [
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2\" rel=\"preload\" type=\"font/woff2\"/>",
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2\" rel=\"preload\" type=\"font/woff2\"/>",
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2\" rel=\"preload\" type=\"font/woff2\"/>",
+        "<link as=\"font\" crossorigin=\"anonymous\" href=\"/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2\" rel=\"preload\" type=\"font/woff2\"/>"
+      ]
+    },
+    {
+      "path": "/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar",
+      "url": "http://localhost:3021/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar",
+      "status": 401,
+      "statusText": "Unauthorized",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "application/json"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=//evil.example.com",
+      "url": "http://localhost:3021/api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=//evil.example.com",
+      "status": 400,
+      "statusText": "Bad Request",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "application/json"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=/ar",
+      "url": "http://localhost:3021/api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=/ar",
+      "status": 403,
+      "statusText": "Forbidden",
+      "headers": {
+        "location": null,
+        "contentSecurityPolicy": null,
+        "setCookie": null,
+        "contentType": "application/json"
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    },
+    {
+      "path": "/api/preview/exit?returnTo=/ar",
+      "url": "http://localhost:3021/api/preview/exit?returnTo=/ar",
+      "status": 307,
+      "statusText": "Temporary Redirect",
+      "headers": {
+        "location": "http://localhost:3021/ar",
+        "contentSecurityPolicy": null,
+        "setCookie": "__prerender_bypass=; Path=/; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Secure; HttpOnly; SameSite=none",
+        "contentType": null
+      },
+      "htmlTag": null,
+      "title": null,
+      "fontPreloadLinks": []
+    }
+  ]
+}

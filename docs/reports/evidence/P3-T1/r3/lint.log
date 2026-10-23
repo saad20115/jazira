@@ -1,0 +1,11 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ pnpm lint
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+
+
+[exit_code=0 elapsed=30.2s]

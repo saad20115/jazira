@@ -1,0 +1,8 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ node scripts/evidence/p3-t1-evidence.mjs http://localhost:3022 docs\reports\evidence\P3-T1\r3 --specimen-only
+[p3-t1-evidence] Captured dev specimen screenshots (specimen-ar.png status=200, specimen-en.png status=200, specimen-comparison.png)
+
+[exit_code=0 elapsed=5.51s]

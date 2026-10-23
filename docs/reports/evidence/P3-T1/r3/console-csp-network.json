@@ -1,0 +1,270 @@
+{
+  "baseUrl": "http://localhost:3021",
+  "generatedAt": "2026-10-23T21:59:36.432Z",
+  "routes": [
+    {
+      "route": "/ar",
+      "status": 200,
+      "cspHeader": "default-src 'self'; script-src 'self' 'nonce-NmQzODdkNDYtYWNkMS00ODVmLWI2ZGMtYjU0ZGFkMDZkY2Nh' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-NmQzODdkNDYtYWNkMS00ODVmLWI2ZGMtYjU0ZGFkMDZkY2Nh'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+      "dom": {
+        "lang": "ar",
+        "dir": "rtl",
+        "htmlClassName": "ZWJS8G_variable",
+        "title": "Al Jazira for Imdad Smart Co.",
+        "bodyFontFamily": "\"Noto Kufi Arabic\", \"Noto Kufi Arabic Fallback\", sans-serif"
+      },
+      "counts": {
+        "totalConsoleMessages": 0,
+        "consoleErrors": 0,
+        "hydrationWarnings": 0,
+        "pageErrors": 0,
+        "cspViolations": 0,
+        "totalRequests": 16,
+        "selfHostedFontResponses": 4,
+        "googleFontRequests": 0
+      },
+      "consoleMessages": [],
+      "consoleErrors": [],
+      "hydrationWarnings": [],
+      "pageErrors": [],
+      "cspViolations": [],
+      "fontResponses": [
+        {
+          "url": "http://localhost:3021/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/4641603b8553767b-s.1y712r_ow2ydl.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/98fc1f0b00398dc4-s.0im4x-iahhxdy.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/e7be13e0732bd6dc-s.34m-p9c2jzir9.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        }
+      ],
+      "googleFontRequests": [],
+      "requests": [
+        {
+          "url": "http://localhost:3021/ar",
+          "resourceType": "document",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/ar",
+          "resourceType": "document",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/744885950b1fe0ff-s.30d2r2x65bwdm.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/brand/full-reversed.svg",
+          "resourceType": "image",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/2k35skanlb744.css",
+          "resourceType": "stylesheet",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/16t6ejn8_um6f.css",
+          "resourceType": "stylesheet",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/2u3a3ngt9p8u_.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/43dud-e_7c4ki.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/3sfswq63pd_74.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/3zs8cm0b3fz7k.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/09_osd36rl95e.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/2m5ju9wfmikye.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/4641603b8553767b-s.1y712r_ow2ydl.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/98fc1f0b00398dc4-s.0im4x-iahhxdy.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/e7be13e0732bd6dc-s.34m-p9c2jzir9.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        }
+      ]
+    },
+    {
+      "route": "/en",
+      "status": 200,
+      "cspHeader": "default-src 'self'; script-src 'self' 'nonce-NDVkMTU2MDktOTVkNC00YWU0LThhM2EtZjQ3ZDk3MWY0NzE4' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-NDVkMTU2MDktOTVkNC00YWU0LThhM2EtZjQ3ZDk3MWY0NzE4'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+      "dom": {
+        "lang": "en",
+        "dir": "ltr",
+        "htmlClassName": "dzAZra_variable",
+        "title": "Al Jazira for Imdad Smart Co.",
+        "bodyFontFamily": "Poppins, \"Poppins Fallback\", sans-serif"
+      },
+      "counts": {
+        "totalConsoleMessages": 0,
+        "consoleErrors": 0,
+        "hydrationWarnings": 0,
+        "pageErrors": 0,
+        "cspViolations": 0,
+        "totalRequests": 16,
+        "selfHostedFontResponses": 4,
+        "googleFontRequests": 0
+      },
+      "consoleMessages": [],
+      "consoleErrors": [],
+      "hydrationWarnings": [],
+      "pageErrors": [],
+      "cspViolations": [],
+      "fontResponses": [
+        {
+          "url": "http://localhost:3021/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2",
+          "status": 200,
+          "contentType": "font/woff2"
+        }
+      ],
+      "googleFontRequests": [],
+      "requests": [
+        {
+          "url": "http://localhost:3021/en",
+          "resourceType": "document",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/en",
+          "resourceType": "document",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/a218039a3287bcfd-s.43zbiuwnnoiok.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/8e6fa89aa22d24ec-s.2o7m9ogm38dql.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/e2334d715941921e-s.3o_v2fun1jzxk.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/media/47fe1b7cd6e6ed85-s.3bh2vc0w-r-ll.woff2",
+          "resourceType": "font",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/brand/full-reversed.svg",
+          "resourceType": "image",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/2k35skanlb744.css",
+          "resourceType": "stylesheet",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/16t6ejn8_um6f.css",
+          "resourceType": "stylesheet",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/2u3a3ngt9p8u_.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/43dud-e_7c4ki.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/3sfswq63pd_74.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/3zs8cm0b3fz7k.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/turbopack-2c3mg3r-05n1w.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/09_osd36rl95e.js",
+          "resourceType": "script",
+          "method": "GET"
+        },
+        {
+          "url": "http://localhost:3021/_next/static/chunks/2m5ju9wfmikye.js",
+          "resourceType": "script",
+          "method": "GET"
+        }
+      ]
+    }
+  ]
+}

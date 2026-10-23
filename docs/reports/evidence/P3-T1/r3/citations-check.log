@@ -1,0 +1,8 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t1-r3-dod-20261024-004801
+$ git rev-parse HEAD
+6820066263554940b3ecdb235e3d68af2ab37cc4
+$ node scripts/check-citations.mjs --generate handoff/reports/P3-T1.md docs/reports/evidence/P3-T1/r3/citations.log
+[check:citations] PASS: Verified 125 paired citation(s) across 1 report(s) against 70 identifier-only git grep block(s) in docs/reports/evidence/P3-T1/r3/citations.log (0 un-paired citations, 0 errors).
+
+[exit_code=0 elapsed=4.56s]
