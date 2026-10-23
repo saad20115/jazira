@@ -1,0 +1,45 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+cmd: node scripts/measure-login-timing.mjs
+duration_ms: 27101
+---
+=== P2-T9 Production Login Timing & Enumeration Verification (next start) ===
+Server URL            : http://127.0.0.1:3419
+Warmup rounds         : 3
+Measured samples/case : 20 (interleaved, 60 total requests)
+HTTP status (all 60)  : 401
+Identical JSON body   : {"errors":[{"message":"البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة."}]}
+
+| Round | unknown_email (ms) | existing_wrong_password (ms) | locked_account (ms) |
+|-------|--------------------|------------------------------|---------------------|
+|     1 |             267.17 |                       299.20 |              263.93 |
+|     2 |             278.63 |                       269.22 |              291.36 |
+|     3 |             258.08 |                       285.52 |              275.98 |
+|     4 |             258.68 |                       273.66 |              257.93 |
+|     5 |             263.18 |                       278.88 |              279.75 |
+|     6 |             262.78 |                       276.82 |              306.69 |
+|     7 |             279.22 |                       289.08 |              258.36 |
+|     8 |             258.63 |                       300.82 |              264.40 |
+|     9 |             257.53 |                       273.88 |              260.14 |
+|    10 |             262.61 |                       291.18 |              274.34 |
+|    11 |             269.08 |                       290.64 |              258.18 |
+|    12 |             258.65 |                       268.47 |              282.39 |
+|    13 |             266.60 |                       300.02 |              276.39 |
+|    14 |             258.65 |                       271.64 |              278.08 |
+|    15 |             290.40 |                       275.93 |              265.78 |
+|    16 |             273.73 |                       275.03 |              294.31 |
+|    17 |             282.03 |                       274.33 |              257.73 |
+|    18 |             268.46 |                       279.96 |              270.16 |
+|    19 |             362.47 |                       293.07 |              281.28 |
+|    20 |             270.01 |                       268.54 |              350.15 |
+
+| Category                | Min (ms) | P25 (ms) | Median (ms) | P75 (ms) | IQR (ms) | Mean (ms) | Max (ms) |
+|-------------------------|----------|----------|-------------|----------|----------|-----------|----------|
+| unknown_email           |   257.53 |   258.67 |      266.88 |   274.95 |    16.28 |    272.33 |   362.47 |
+| existing_wrong_password |   268.47 |   273.82 |      277.85 |   290.77 |    16.95 |    281.79 |   300.82 |
+| locked_account          |   257.73 |   262.98 |      275.16 |   281.56 |    18.58 |    277.37 |   350.15 |
+
+Overall median (60 samples)       : 274.10 ms
+Max pairwise median difference    : 10.97 ms (4.00%)
+Noise threshold                   : < 15.0% of overall median
+Result                            : PASS

@@ -1,0 +1,1493 @@
+$ git grep -n -e 'slugField' -- src/fields/slug.ts
+src/fields/slug.ts:27: * even when a test collection registers `slugField()` alone without `slugLockedField()`.
+src/fields/slug.ts:28: * Real collections use `slugFields()` / `slugLockedField()` to persist `slugLocked` in Postgres.
+src/fields/slug.ts:929:export function slugField(options: SlugFieldOptions = {}): SingleTextField {
+src/fields/slug.ts:1010:export function slugFields(options: SlugFieldOptions = {}): [SingleTextField, CheckboxField] {
+src/fields/slug.ts:1011:  return [slugField(options), slugLockedField(options.lockFieldName)]
+
+$ git grep -n -e 'slugLockedField' -- src/fields/slug.ts
+src/fields/slug.ts:27: * even when a test collection registers `slugField()` alone without `slugLockedField()`.
+src/fields/slug.ts:28: * Real collections use `slugFields()` / `slugLockedField()` to persist `slugLocked` in Postgres.
+src/fields/slug.ts:903:export function slugLockedField(name = DEFAULT_SLUG_LOCK_FIELD): CheckboxField {
+src/fields/slug.ts:1011:  return [slugField(options), slugLockedField(options.lockFieldName)]
+
+$ git grep -n -e 'slugify' -- src/fields/slug.ts
+src/fields/slug.ts:194:export function slugify(input: string, maxLength = MAX_SLUG_LENGTH): string {
+src/fields/slug.ts:350:          const autoSlug = slugify(extracted)
+src/fields/slug.ts:396:            const verAutoSlug = slugify(verSource)
+src/fields/slug.ts:735:    const generatedBaseSlug = source ? slugify(source) : undefined
+src/fields/slug.ts:742:    const incomingLocalAutoSlug = incomingLocalSource ? slugify(incomingLocalSource) : undefined
+src/fields/slug.ts:743:    const originalLocalAutoSlug = originalLocalSource ? slugify(originalLocalSource) : undefined
+src/fields/slug.ts:745:    const normalizedCandidate = manualCandidate !== undefined ? slugify(manualCandidate) : undefined
+src/fields/slug.ts:802:    // R-6, R-7, R-13 & R-2(3): If the editor typed a manual slug, normalize it via slugify,
+
+$ git grep -n -e 'transliterateArabic' -- src/fields/slug.ts
+src/fields/slug.ts:165:export function transliterateArabic(input: string): string {
+src/fields/slug.ts:195:  const transliterated = transliterateArabic(input)
+
+$ git grep -n -e 'resolveUniqueSlug' -- src/fields/slug.ts
+src/fields/slug.ts:217:export function resolveUniqueSlug(baseSlug: string, existingSlugs: Iterable<string>): string {
+src/fields/slug.ts:889:        const resolved = resolveUniqueSlug(generatedBaseSlug, existingSlugs)
+
+$ git grep -n -e 'validateSlug' -- src/fields/slug.ts
+src/fields/slug.ts:450:export const validateSlug: TextFieldSingleValidation = (value, options) => {
+src/fields/slug.ts:992:    validate: validateSlug,
+
+$ git grep -n -e 'slugField' -- src/fields/slug.test.ts
+src/fields/slug.test.ts:14:  slugField,
+src/fields/slug.test.ts:15:  slugFields,
+src/fields/slug.test.ts:53:describe('slugField & slugify', () => {
+src/fields/slug.test.ts:55:    const field = slugField({ from: 'title' })
+src/fields/slug.test.ts:69:    const [tupleSlug, tupleLock] = slugFields({ from: 'title' })
+src/fields/slug.test.ts:78:    const field = slugField({
+
+$ git grep -n -e 'getPayload' -- tests/int/p2-t1-slug.int.test.ts
+tests/int/p2-t1-slug.int.test.ts:9:  getPayload,
+tests/int/p2-t1-slug.int.test.ts:86:    payload = await getPayload({
+
+$ git grep -n -e 'orderField' -- src/fields/order.ts
+src/fields/order.ts:16:export function orderField(options: OrderFieldOptions = {}): SingleNumberField {
+
+$ git grep -n -e 'orderField' -- src/fields/order.test.ts
+src/fields/order.test.ts:4:import { orderField } from './order'
+src/fields/order.test.ts:6:describe('orderField', () => {
+src/fields/order.test.ts:8:    const field = orderField()
+src/fields/order.test.ts:18:    const field = orderField({
+
+$ git grep -n -e 'linkField' -- src/fields/link.ts
+src/fields/link.ts:250: * Resolves a `linkField` group value to its target href with deterministic precedence (R-11, R-16):
+src/fields/link.ts:392: * Field-level `beforeValidate` hook attached to every `linkField` group (`P2-T5 R-1`, security `I3`):
+src/fields/link.ts:464:export function linkField(options: LinkFieldOptions = {}): NamedGroupField {
+
+$ git grep -n -e 'validateExternalUrl' -- src/fields/link.ts
+src/fields/link.ts:62:export function validateExternalUrl(
+src/fields/link.ts:153:  const baseVerdict = validateExternalUrl(value, {
+src/fields/link.ts:270:      validateExternalUrl(link.url, { required: true }) === true
+src/fields/link.ts:387:    return validateExternalUrl(value, { required })
+src/fields/link.ts:420:    const urlVerdict = validateExternalUrl(linkObj.url, { required: true })
+
+$ git grep -n -e 'validateInternalPath' -- src/fields/link.ts
+src/fields/link.ts:175:export function validateInternalPath(
+src/fields/link.ts:327:      validateInternalPath(link.internalPath, { required: true }) === true
+src/fields/link.ts:337:    if (validateInternalPath(route, { required: true }) === true) {
+src/fields/link.ts:377:    return validateInternalPath(value, { required })
+src/fields/link.ts:440:    const pathVerdict = validateInternalPath(linkObj.internalPath, { required: true })
+
+$ git grep -n -e 'resolveLinkHref' -- src/fields/link.ts
+src/fields/link.ts:262:export function resolveLinkHref(link: LinkDataShape | null | undefined): string | null {
+
+$ git grep -n -e 'validateLinkGroupBeforeValidate' -- src/fields/link.ts
+src/fields/link.ts:399:export const validateLinkGroupBeforeValidate: FieldHook = ({
+src/fields/link.ts:589:      beforeValidate: [validateLinkGroupBeforeValidate, ...(hookOverrides?.beforeValidate ?? [])],
+
+$ git grep -n -e 'getEffectiveAllowedProtocols' -- src/fields/link.ts
+src/fields/link.ts:21:export function getEffectiveAllowedProtocols(
+src/fields/link.ts:103:  const normalizedAllowedProtocols = getEffectiveAllowedProtocols(allowedProtocols, nodeEnv)
+
+$ git grep -n -e 'validateExternalUrl' -- src/fields/link.test.ts
+src/fields/link.test.ts:11:  validateExternalUrl,
+src/fields/link.test.ts:40:  describe('validateExternalUrl (I3 scheme allowlist)', () => {
+src/fields/link.test.ts:51:        expect(validateExternalUrl(url, { required: true })).toBe(true)
+src/fields/link.test.ts:80:        const result = validateExternalUrl(bad, { required: true })
+src/fields/link.test.ts:91:      expect(validateExternalUrl('https://www.linkedin.com/in/aljazira', opts)).toBe(true)
+src/fields/link.test.ts:92:      expect(typeof validateExternalUrl('http://www.linkedin.com/in/aljazira', opts)).toBe('string')
+src/fields/link.test.ts:93:      expect(typeof validateExternalUrl('https://linkedin.com.evil.com/in/aljazira', opts)).toBe(
+src/fields/link.test.ts:338:      expect(validateExternalUrl('http://aljazira.co', { nodeEnv: 'development' })).toBe(true)
+src/fields/link.test.ts:339:      expect(validateExternalUrl('http://aljazira.co', { nodeEnv: 'test' })).toBe(true)
+src/fields/link.test.ts:342:      const prodHttp = validateExternalUrl('http://aljazira.co', {
+src/fields/link.test.ts:350:      expect(validateExternalUrl('https://aljazira.co', { nodeEnv: 'production' })).toBe(true)
+src/fields/link.test.ts:351:      expect(validateExternalUrl('mailto:info@aljazira.co', { nodeEnv: 'production' })).toBe(true)
+src/fields/link.test.ts:352:      expect(validateExternalUrl('tel:+966573534185', { nodeEnv: 'production' })).toBe(true)
+
+$ git grep -n -e 'getEffectiveAllowedProtocols' -- src/fields/link.test.ts
+src/fields/link.test.ts:7:  getEffectiveAllowedProtocols,
+src/fields/link.test.ts:321:      expect(getEffectiveAllowedProtocols(undefined, 'development')).toEqual([
+src/fields/link.test.ts:327:      expect(getEffectiveAllowedProtocols(undefined, 'test')).toEqual([
+src/fields/link.test.ts:333:      expect(getEffectiveAllowedProtocols(undefined, 'production')).toEqual([
+
+$ git grep -n -e 'callJsonApi' -- tests/int/p2-t5.int.test.ts
+tests/int/p2-t5.int.test.ts:90:async function callJsonApi(options: {
+tests/int/p2-t5.int.test.ts:165:    const firstReg = await callJsonApi({
+tests/int/p2-t5.int.test.ts:176:    const adminLogin = await callJsonApi({
+tests/int/p2-t5.int.test.ts:197:    const editorLogin = await callJsonApi({
+tests/int/p2-t5.int.test.ts:291:    const anonUpdate = await callJsonApi({
+tests/int/p2-t5.int.test.ts:301:    const editorUpdate = await callJsonApi({
+tests/int/p2-t5.int.test.ts:324:    const unsafeSocialUpdate = await callJsonApi({
+tests/int/p2-t5.int.test.ts:339:    const adminUpdateAr = await callJsonApi({
+tests/int/p2-t5.int.test.ts:377:    const adminUpdateEn = await callJsonApi({
+tests/int/p2-t5.int.test.ts:404:    const anonGetAr = await callJsonApi({
+tests/int/p2-t5.int.test.ts:413:    const anonGetEn = await callJsonApi({
+tests/int/p2-t5.int.test.ts:425:    const anonUpdate = await callJsonApi({
+tests/int/p2-t5.int.test.ts:433:    const unsafeNav = await callJsonApi({
+tests/int/p2-t5.int.test.ts:452:    const editorUpdateAr = await callJsonApi({
+tests/int/p2-t5.int.test.ts:493:    const anonReadNav = await callJsonApi({
+tests/int/p2-t5.int.test.ts:505:    const draftSave1 = await callJsonApi({
+tests/int/p2-t5.int.test.ts:524:    const anonBeforePublish = await callJsonApi({
+tests/int/p2-t5.int.test.ts:532:    const anonDraftQueryBeforePublish = await callJsonApi({
+tests/int/p2-t5.int.test.ts:543:    const anonVersions = await callJsonApi({
+tests/int/p2-t5.int.test.ts:550:    const publishSave = await callJsonApi({
+tests/int/p2-t5.int.test.ts:685:    const anonPublished = await callJsonApi({
+tests/int/p2-t5.int.test.ts:696:    const newerDraftSave = await callJsonApi({
+tests/int/p2-t5.int.test.ts:715:    const anonWhileNewerDraftExists = await callJsonApi({
+tests/int/p2-t5.int.test.ts:725:    const anonDraftParamWhileNewerDraftExists = await callJsonApi({
+tests/int/p2-t5.int.test.ts:745:    const editorDraftRead = await callJsonApi({
+tests/int/p2-t5.int.test.ts:759:    const bothHeroBgAndVideo = await callJsonApi({
+tests/int/p2-t5.int.test.ts:776:    const duplicateShot = await callJsonApi({
+tests/int/p2-t5.int.test.ts:798:    const fourSystems = await callJsonApi({
+tests/int/p2-t5.int.test.ts:818:    const sixSystems = await callJsonApi({
+tests/int/p2-t5.int.test.ts:841:    const fiveStats = await callJsonApi({
+tests/int/p2-t5.int.test.ts:857:    const headingInWhoWeAre = await callJsonApi({
+tests/int/p2-t5.int.test.ts:892:    const threeParagraphsDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:907:    const fiveParagraphsPublish = await callJsonApi({
+tests/int/p2-t5.int.test.ts:931:    const servicesPub = await callJsonApi({
+tests/int/p2-t5.int.test.ts:999:    const aboutPub = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1077:    const projectsPub = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1132:    const contactPub = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1163:    const privacyDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1186:    const anonPrivacy = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1198:    const draftOnPublishedServices = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1218:    const unpublishServices = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1247:    const badHeroBgDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1267:    const badStatsDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1287:    const badMetaImageDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1307:    const badEnumDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1339:    const badSiteSettings = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1401:    const saveEnMeta = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1416:    const delEnGlobalMetaBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1424:    await callJsonApi({
+tests/int/p2-t5.int.test.ts:1438:    await callJsonApi({
+tests/int/p2-t5.int.test.ts:1452:    const delEnGlobalMetaAllowed = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1460:    const savePrivacyWithUpload = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1490:    const delPrivacyBodyMediaBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1498:    await callJsonApi({
+tests/int/p2-t5.int.test.ts:1512:    const delPrivacyBodyMediaAllowed = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1547:    const delDedupMediaBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1568:      const draftRes = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1592:      const autosaveRes = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1613:      const navRes = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1633:      const badInternalRes = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1661:    const delReferencedStat = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1681:    const saveAboutDraftStat = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1697:    const delDraftStatBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1706:    await callJsonApi({
+tests/int/p2-t5.int.test.ts:1721:    const delDraftStatAllowed = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1729:    const saveHomeHeroVideoDraft = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1745:    const delHeroVideoBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1754:    await callJsonApi({
+tests/int/p2-t5.int.test.ts:1785:    const delProjectVideoBlocked = await callJsonApi({
+tests/int/p2-t5.int.test.ts:1802:    const delVideoAllowed = await callJsonApi({
+
+$ git grep -n -e 'videoUrlField' -- src/fields/videoUrl.ts
+src/fields/videoUrl.ts:312:export function videoUrlField(options: VideoUrlFieldOptions = {}): SingleTextField {
+
+$ git grep -n -e 'parseVideoUrl' -- src/fields/videoUrl.ts
+src/fields/videoUrl.ts:116:export function parseVideoUrl(input: unknown): ParsedVideoUrl | null {
+src/fields/videoUrl.ts:266:  const parsed = parseVideoUrl(input)
+src/fields/videoUrl.ts:282:  const parsed = parseVideoUrl(value)
+src/fields/videoUrl.ts:298:  const parsed = parseVideoUrl(trimmed)
+
+$ git grep -n -e 'toEmbedUrl' -- src/fields/videoUrl.ts
+src/fields/videoUrl.ts:265:export function toEmbedUrl(input: unknown): string | null {
+
+$ git grep -n -e 'videoUrlField' -- src/fields/videoUrl.test.ts
+src/fields/videoUrl.test.ts:10:  videoUrlField,
+src/fields/videoUrl.test.ts:20:describe('videoUrlField, parseVideoUrl & toEmbedUrl (I4)', () => {
+src/fields/videoUrl.test.ts:81:    const field = videoUrlField()
+src/fields/videoUrl.test.ts:136:    const field = videoUrlField({
+
+$ git grep -n -e 'limitedRichTextField' -- src/fields/richText.ts
+src/fields/richText.ts:368:export function limitedRichTextField(options: LimitedRichTextFieldOptions = {}): RichTextField {
+src/fields/richText.ts:503:  return limitedRichTextField({
+
+$ git grep -n -e 'allowsRichTextUploads' -- src/fields/richText.ts
+src/fields/richText.ts:473:      allowsRichTextUploads: mode !== 'paragraphsOnly',
+
+$ git grep -n -e 'paragraphRichTextField' -- src/fields/richText.ts
+src/fields/richText.ts:500:export function paragraphRichTextField(
+
+$ git grep -n -e 'validateLimitedLexicalState' -- src/fields/richText.ts
+src/fields/richText.ts:257:export function validateLimitedLexicalState(
+src/fields/richText.ts:388:    const validationResult = validateLimitedLexicalState(val, { maxParagraphs, mode, required })
+src/fields/richText.ts:488:      const astResult = validateLimitedLexicalState(value, { maxParagraphs, mode, required })
+
+$ git grep -n -e 'maxParagraphs' -- src/fields/richText.ts
+src/fields/richText.ts:83:  maxParagraphs?: number
+src/fields/richText.ts:261:  const { maxParagraphs, mode = 'limited', required = false } = options
+src/fields/richText.ts:281:  if (typeof maxParagraphs === 'number' && maxParagraphs > 0) {
+src/fields/richText.ts:288:    if (paragraphCount > maxParagraphs) {
+src/fields/richText.ts:289:      return `الحد الأقصى لعدد الفقرات المسموح به في هذا الحقل هو ${String(maxParagraphs)} فقرات (المُدخل: ${String(paragraphCount)}). / Maximum ${String(maxParagraphs)} paragraphs allowed (received ${String(paragraphCount)}).`
+src/fields/richText.ts:361:  maxParagraphs?: number
+src/fields/richText.ts:375:    maxParagraphs,
+src/fields/richText.ts:388:    const validationResult = validateLimitedLexicalState(val, { maxParagraphs, mode, required })
+src/fields/richText.ts:488:      const astResult = validateLimitedLexicalState(value, { maxParagraphs, mode, required })
+
+$ git grep -n -e 'limitedRichTextField' -- src/fields/richText.test.ts
+src/fields/richText.test.ts:4:  limitedRichTextField,
+src/fields/richText.test.ts:9:describe('limitedRichTextField & validateLimitedLexicalState (I2)', () => {
+src/fields/richText.test.ts:209:  it('preserves factory beforeValidate hook and admin config when overrides are passed to limitedRichTextField', () => {
+src/fields/richText.test.ts:211:    const field = limitedRichTextField({
+
+$ git grep -n -e 'seoGroupField' -- src/fields/seo.ts
+src/fields/seo.ts:71:export function seoGroupField(): GroupField {
+
+$ git grep -n -e 'seoPlugin' -- src/payload.config.ts
+src/payload.config.ts:2:import { seoPlugin } from '@payloadcms/plugin-seo'
+src/payload.config.ts:135:    seoPlugin({
+
+$ git grep -n -e 'withPublishable' -- src/collections/_shared/publishable.ts
+src/collections/_shared/publishable.ts:29:export function withPublishable<T extends CollectionConfig>(config: T): T {
+
+$ git grep -n -e 'publishableVersions' -- src/collections/_shared/publishable.ts
+src/collections/_shared/publishable.ts:5:export const publishableVersions = {
+src/collections/_shared/publishable.ts:15:export const PUBLISHABLE_VERSIONS = publishableVersions
+src/collections/_shared/publishable.ts:32:    versions: publishableVersions,
+
+$ git grep -n -e 'publishableVersions' -- src/collections/_shared/publishable.test.ts
+src/collections/_shared/publishable.test.ts:4:import { publishableGlobalVersions, publishableVersions, withPublishable } from './publishable'
+src/collections/_shared/publishable.test.ts:8:    expect(publishableVersions).toEqual({
+src/collections/_shared/publishable.test.ts:35:    expect(result.versions).toEqual(publishableVersions)
+
+$ git grep -n -e 'withImmutableCreatedAt' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:140:export function withImmutableCreatedAt(collection: CollectionConfig): CollectionConfig {
+
+$ git grep -n -e 'immutableCreatedAtField' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:34:export const immutableCreatedAtField: DateField = {
+src/collections/_shared/immutableTimestamps.ts:168:    : [...existingFields, immutableCreatedAtField]
+
+$ git grep -n -e 'stripCreatedAtOnUpdateBeforeOperation' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:29: *   `stripCreatedAtOnUpdateBeforeOperation`, `preserveCreatedAtBeforeValidate`, and
+src/collections/_shared/immutableTimestamps.ts:62:export const stripCreatedAtOnUpdateBeforeOperation: CollectionBeforeOperationHook = (rawArg) => {
+src/collections/_shared/immutableTimestamps.ts:177:        stripCreatedAtOnUpdateBeforeOperation,
+
+$ git grep -n -e 'preserveCreatedAtBeforeValidate' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:29: *   `stripCreatedAtOnUpdateBeforeOperation`, `preserveCreatedAtBeforeValidate`, and
+src/collections/_shared/immutableTimestamps.ts:87:export const preserveCreatedAtBeforeValidate: CollectionBeforeValidateHook = ({
+src/collections/_shared/immutableTimestamps.ts:181:        preserveCreatedAtBeforeValidate,
+
+$ git grep -n -e 'preserveCreatedAtBeforeChange' -- src/collections/_shared/immutableTimestamps.ts
+src/collections/_shared/immutableTimestamps.ts:30: *   `preserveCreatedAtBeforeChange` run unconditionally on `update`. Any future backfill
+src/collections/_shared/immutableTimestamps.ts:109:export const preserveCreatedAtBeforeChange: CollectionBeforeChangeHook = ({
+src/collections/_shared/immutableTimestamps.ts:185:        preserveCreatedAtBeforeChange,
+
+$ git grep -n -e 'Users' -- src/collections/Users.ts
+src/collections/Users.ts:246:export const Users: CollectionConfig = withImmutableCreatedAt({
+src/collections/Users.ts:259:      en: 'Users',
+
+$ git grep -n -e 'Media' -- src/collections/Media.ts
+src/collections/Media.ts:25:  validateAndSanitizeMediaFile,
+src/collections/Media.ts:37:    await validateAndSanitizeMediaFile(req.file)
+src/collections/Media.ts:42:export function richTextReferencesMediaId(node: unknown, targetId: number | string): boolean {
+src/collections/Media.ts:47:    return node.some((child) => richTextReferencesMediaId(child, targetId))
+src/collections/Media.ts:65:      if (richTextReferencesMediaId(val, targetId)) {
+src/collections/Media.ts:152:export const uploadValueMatchesMediaId = (raw: unknown, targetId: number | string): boolean => {
+src/collections/Media.ts:157:    return raw.some((item) => uploadValueMatchesMediaId(item, targetId))
+src/collections/Media.ts:293:        if (uploadValueMatchesMediaId(getNestedValue(doc, path), targetId)) {
+src/collections/Media.ts:299:        if (richTextReferencesMediaId(getNestedValue(doc, rtPath), targetId)) {
+src/collections/Media.ts:395: * `bodyMedia` sibling `relationship`/`upload` field targeting `'media'` in the same field list,
+src/collections/Media.ts:398:export function assertCollectionRichTextFieldsHaveBodyMediaSibling(
+src/collections/Media.ts:432:        const expectedSiblingPath = `${currentPath}Media`
+src/collections/Media.ts:433:        const fallbackBodyMediaPath = joinPath(prefix, 'bodyMedia')
+src/collections/Media.ts:434:        const hasBodyMediaSibling =
+src/collections/Media.ts:435:          mediaRelPaths.has(expectedSiblingPath) || mediaRelPaths.has(fallbackBodyMediaPath)
+src/collections/Media.ts:436:        if (allowsUploads && !hasBodyMediaSibling) {
+src/collections/Media.ts:438:            `Collection "${collectionSlug}" has richText field "${currentPath}" allowing uploads without a "bodyMedia" sibling targeting "media" (R-18).`,
+src/collections/Media.ts:509:const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Media.ts:547:export const Media: CollectionConfig = withImmutableCreatedAt({
+src/collections/Media.ts:553:      en: 'Media',
+src/collections/Media.ts:557:      en: 'Media',
+src/collections/Media.ts:565:      en: 'Media',
+src/collections/Media.ts:580:    beforeDelete: [preventMediaDeletionWhenReferenced],
+
+$ git grep -n -e 'Videos' -- src/collections/Videos.ts
+src/collections/Videos.ts:201:export const Videos: CollectionConfig = withImmutableCreatedAt({
+src/collections/Videos.ts:211:      en: 'Videos',
+
+$ git grep -n -e 'Brands' -- src/collections/Brands.ts
+src/collections/Brands.ts:42:export const Brands: CollectionConfig = withImmutableCreatedAt({
+src/collections/Brands.ts:53:      en: 'Brands',
+
+$ git grep -n -e 'Stats' -- src/collections/Stats.ts
+src/collections/Stats.ts:53:export const Stats: CollectionConfig = withImmutableCreatedAt({
+src/collections/Stats.ts:64:      en: 'Stats',
+
+$ git grep -n -e 'Materials' -- src/collections/Materials.ts
+src/collections/Materials.ts:63:export const Materials: CollectionConfig = withImmutableCreatedAt({
+src/collections/Materials.ts:74:      en: 'Approved Materials',
+
+$ git grep -n -e 'Services' -- src/collections/Services.ts
+src/collections/Services.ts:134:export const Services: CollectionConfig = withImmutableCreatedAt({
+src/collections/Services.ts:143:      en: 'Services',
+src/collections/Services.ts:157:      en: 'Main and specialist services displayed on the Home and Services pages.',
+src/collections/Services.ts:307:          en: 'Bullet highlights displayed on the Services page (up to 6 items).',
+src/collections/Services.ts:352:          en: 'Illustrative image for this service on the Home and Services pages.',
+
+$ git grep -n -e 'Team' -- src/collections/Team.ts
+src/collections/Team.ts:80:export const Team: CollectionConfig = withImmutableCreatedAt({
+src/collections/Team.ts:85:      en: 'Team Member',
+src/collections/Team.ts:89:      en: 'Team',
+
+$ git grep -n -e 'Projects' -- src/collections/Projects.ts
+src/collections/Projects.ts:568:export const Projects: CollectionConfig = withImmutableCreatedAt({
+src/collections/Projects.ts:580:      en: 'Projects',
+
+$ git grep -n -e 'QuoteRequests' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:322:export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
+src/collections/QuoteRequests.ts:355:      beforeListTable: ['/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar'],
+
+$ git grep -n -e 'buildCollectionTags' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:58:export function buildCollectionTags(
+src/hooks/revalidate.ts:677:      for (const tag of buildCollectionTags(collectionSlug, slugs)) {
+src/hooks/revalidate.ts:719:      for (const tag of buildCollectionTags(collectionSlug, slugs)) {
+
+$ git grep -n -e 'buildGlobalTags' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:81:export function buildGlobalTags(globalSlug: string): string[] {
+src/hooks/revalidate.ts:769:      for (const tag of buildGlobalTags(globalSlug)) {
+
+$ git grep -n -e 'captureMainPublishedDocBeforeChange' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:373:export const captureMainPublishedDocBeforeChange: CollectionBeforeChangeHook = async ({
+
+$ git grep -n -e 'captureMainPublishedGlobalBeforeChange' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:419:export const captureMainPublishedGlobalBeforeChange: GlobalBeforeChangeHook = async ({
+
+$ git grep -n -e 'createRevalidateAfterChangeHook' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:648:export function createRevalidateAfterChangeHook<T extends TypeWithID = TypeWithID>(
+
+$ git grep -n -e 'createRevalidateAfterDeleteHook' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:700:export function createRevalidateAfterDeleteHook<T extends TypeWithID = TypeWithID>(
+
+$ git grep -n -e 'createRevalidateGlobalAfterChangeHook' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:745:export function createRevalidateGlobalAfterChangeHook(
+
+$ git grep -n -e 'buildCollectionTags' -- src/hooks/revalidate.test.ts
+src/hooks/revalidate.test.ts:20:  buildCollectionTags,
+src/hooks/revalidate.test.ts:42:    const tags = buildCollectionTags('projects', ['sofitel-makkah-hotel'])
+
+$ git grep -n -e 'validateAndSanitizeVideoFile' -- src/security/uploadValidation.ts
+src/security/uploadValidation.ts:271:export async function validateAndSanitizeVideoFile(
+
+$ git grep -n -e 'MAX_VIDEO_FILE_SIZE_BYTES' -- src/security/uploadValidation.ts
+src/security/uploadValidation.ts:21:export const MAX_VIDEO_FILE_SIZE_BYTES = 100 * 1024 * 1024 // 100 MB
+src/security/uploadValidation.ts:274:  if (file.truncated || file.size > MAX_VIDEO_FILE_SIZE_BYTES) {
+src/security/uploadValidation.ts:279:          message: `Video file exceeds the maximum allowed size of 100 MB (${String(MAX_VIDEO_FILE_SIZE_BYTES)} bytes).`,
+src/security/uploadValidation.ts:287:  if (actualSize > MAX_VIDEO_FILE_SIZE_BYTES) {
+src/security/uploadValidation.ts:292:          message: `Video file exceeds the maximum allowed size of 100 MB (${String(MAX_VIDEO_FILE_SIZE_BYTES)} bytes).`,
+
+$ git grep -n -e 'MAX_VIDEO_FILE_SIZE_BYTES' -- src/collections/Videos.ts
+src/collections/Videos.ts:26:  MAX_VIDEO_FILE_SIZE_BYTES,
+src/collections/Videos.ts:96: *    1 file part (`files: 1`, R-12), `MAX_VIDEO_FILE_SIZE_BYTES` inclusive (`fileSize: MAX + 1`, R-13),
+src/collections/Videos.ts:124:              fileSize: MAX_VIDEO_FILE_SIZE_BYTES + 1,
+
+$ git grep -n -e 'VIDEO_UPLOAD_TEMP_DIR' -- src/collections/Videos.ts
+src/collections/Videos.ts:40:export const VIDEO_UPLOAD_TEMP_DIR = path.join(
+src/collections/Videos.ts:47:    fsSync.rmSync(VIDEO_UPLOAD_TEMP_DIR, { recursive: true, force: true })
+src/collections/Videos.ts:95: *    outside all served `staticDir` directories (`VIDEO_UPLOAD_TEMP_DIR`, R-11), capped at
+src/collections/Videos.ts:106:      VIDEO_UPLOAD_TEMP_DIR,
+src/collections/Videos.ts:145:      await fs.rmdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => undefined)
+src/collections/Videos.ts:155:      await fs.rmdir(VIDEO_UPLOAD_TEMP_DIR).catch(() => undefined)
+
+$ git grep -n -e 'preventVideoDeletionWhenReferenced' -- src/collections/Videos.ts
+src/collections/Videos.ts:166:const preventVideoDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Videos.ts:239:    beforeDelete: [preventVideoDeletionWhenReferenced],
+
+$ git grep -n -e 'preventBrandDeletionWhenUsedByMaterials' -- src/collections/Brands.ts
+src/collections/Brands.ts:13:const preventBrandDeletionWhenUsedByMaterials: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Brands.ts:75:    beforeDelete: [preventBrandDeletionWhenUsedByMaterials],
+
+$ git grep -n -e 'preventStatDeletionWhenReferenced' -- src/collections/Stats.ts
+src/collections/Stats.ts:18:const preventStatDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Stats.ts:86:    beforeDelete: [preventStatDeletionWhenReferenced],
+
+$ git grep -n -e 'minRows' -- src/collections/Materials.ts
+src/collections/Materials.ts:179:      minRows: 1,
+
+$ git grep -n -e '20261022_120943_p2_t2_videos_brands_stats_materials' -- src/migrations/index.ts
+src/migrations/index.ts:2:import * as migration_20261022_120943_p2_t2_videos_brands_stats_materials from './20261022_120943_p2_t2_videos_brands_stats_materials'
+src/migrations/index.ts:16:    up: migration_20261022_120943_p2_t2_videos_brands_stats_materials.up,
+src/migrations/index.ts:17:    down: migration_20261022_120943_p2_t2_videos_brands_stats_materials.down,
+src/migrations/index.ts:18:    name: '20261022_120943_p2_t2_videos_brands_stats_materials',
+
+$ git grep -n -e 'callJsonApi' -- tests/int/p2-t2.int.test.ts
+tests/int/p2-t2.int.test.ts:30:async function callJsonApi(options: {
+tests/int/p2-t2.int.test.ts:169:    const firstReg = await callJsonApi({
+tests/int/p2-t2.int.test.ts:182:    const editorCreate = await callJsonApi({
+tests/int/p2-t2.int.test.ts:194:    const editorLogin = await callJsonApi({
+tests/int/p2-t2.int.test.ts:218:      const getRes = await callJsonApi({
+tests/int/p2-t2.int.test.ts:224:      const postRes = await callJsonApi({
+tests/int/p2-t2.int.test.ts:307:    const mediaCrossRouteRes = await callJsonApi({
+tests/int/p2-t2.int.test.ts:376:    const statCreate = await callJsonApi({
+tests/int/p2-t2.int.test.ts:390:    const statUpdate = await callJsonApi({
+tests/int/p2-t2.int.test.ts:402:    const badBrand = await callJsonApi({
+tests/int/p2-t2.int.test.ts:414:    const brandCreate = await callJsonApi({
+tests/int/p2-t2.int.test.ts:430:    const missingBrandMaterial = await callJsonApi({
+tests/int/p2-t2.int.test.ts:443:    const floatItemNoMaterial = await callJsonApi({
+tests/int/p2-t2.int.test.ts:457:    const materialCreate = await callJsonApi({
+tests/int/p2-t2.int.test.ts:473:    const blockedDelete = await callJsonApi({
+tests/int/p2-t2.int.test.ts:485:    const materialDelete = await callJsonApi({
+tests/int/p2-t2.int.test.ts:492:    const brandDelete = await callJsonApi({
+tests/int/p2-t2.int.test.ts:499:    const statDelete = await callJsonApi({
+tests/int/p2-t2.int.test.ts:517:    const dotTmpDirRes = await callJsonApi({
+tests/int/p2-t2.int.test.ts:523:    const dotTmpFileRes = await callJsonApi({
+
+$ git grep -n -e 'publishedOrLoggedIn' -- src/collections/Services.ts
+src/collections/Services.ts:4:import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
+src/collections/Services.ts:164:    read: publishedOrLoggedIn,
+
+$ git grep -n -e 'validateServiceBeforeValidate' -- src/collections/Services.ts
+src/collections/Services.ts:78:const validateServiceBeforeValidate: CollectionBeforeValidateHook = async ({ data, req }) => {
+src/collections/Services.ts:170:    beforeValidate: [validateServiceBeforeValidate],
+
+$ git grep -n -e 'bodyMediaField' -- src/collections/Services.ts
+src/collections/Services.ts:7:import { bodyMediaField, limitedRichTextField } from '../fields/richText'
+src/collections/Services.ts:358:    bodyMediaField('body'),
+
+$ git grep -n -e 'activeOrLoggedIn' -- src/collections/Team.ts
+src/collections/Team.ts:18:export const activeOrLoggedIn: Access = ({ req }) => {
+src/collections/Team.ts:108:    read: activeOrLoggedIn,
+
+$ git grep -n -e 'active' -- src/collections/Team.ts
+src/collections/Team.ts:18:export const activeOrLoggedIn: Access = ({ req }) => {
+src/collections/Team.ts:23:    active: {
+src/collections/Team.ts:94:    defaultColumns: ['name', 'position', 'tier', 'active', 'order', 'updatedAt'],
+src/collections/Team.ts:108:    read: activeOrLoggedIn,
+src/collections/Team.ts:299:      name: 'active',
+
+$ git grep -n -e 'validateLinkedInUrl' -- src/collections/Team.ts
+src/collections/Team.ts:32:export function validateLinkedInUrl(value: unknown): true | string {
+src/collections/Team.ts:289:      validate: (value: unknown) => validateLinkedInUrl(value),
+
+$ git grep -n -e '20261022_140011_p2_t3_services_team' -- src/migrations/index.ts
+src/migrations/index.ts:3:import * as migration_20261022_140011_p2_t3_services_team from './20261022_140011_p2_t3_services_team'
+src/migrations/index.ts:21:    up: migration_20261022_140011_p2_t3_services_team.up,
+src/migrations/index.ts:22:    down: migration_20261022_140011_p2_t3_services_team.down,
+src/migrations/index.ts:23:    name: '20261022_140011_p2_t3_services_team',
+
+$ git grep -n -e 'callJsonApi' -- tests/int/p2-t3.int.test.ts
+tests/int/p2-t3.int.test.ts:31:async function callJsonApi(
+tests/int/p2-t3.int.test.ts:155:    const firstReg = await callJsonApi('POST', '/api/users/first-register', {
+tests/int/p2-t3.int.test.ts:168:    const editorCreate = await callJsonApi('POST', '/api/users', {
+tests/int/p2-t3.int.test.ts:178:    const loginRes = await callJsonApi('POST', '/api/users/login', {
+tests/int/p2-t3.int.test.ts:228:    const anonCreate = await callJsonApi('POST', '/api/services', {
+tests/int/p2-t3.int.test.ts:238:    const createDraftRes = await callJsonApi('POST', '/api/services?locale=ar', {
+tests/int/p2-t3.int.test.ts:272:    const anonListDraft = await callJsonApi('GET', '/api/services')
+tests/int/p2-t3.int.test.ts:276:    const anonListForceDraft = await callJsonApi('GET', '/api/services?draft=true')
+tests/int/p2-t3.int.test.ts:280:    const anonByIdDraft = await callJsonApi(
+tests/int/p2-t3.int.test.ts:287:    const editorByIdDraft = await callJsonApi(
+tests/int/p2-t3.int.test.ts:295:    const addEnAndPublishRes = await callJsonApi(
+tests/int/p2-t3.int.test.ts:322:    const anonListPublished = await callJsonApi('GET', '/api/services?locale=en')
+tests/int/p2-t3.int.test.ts:327:    const draftEditRes = await callJsonApi(
+tests/int/p2-t3.int.test.ts:340:    const anonForceDraftAfterEdit = await callJsonApi(
+tests/int/p2-t3.int.test.ts:346:    const anonPublicAfterEdit = await callJsonApi(
+tests/int/p2-t3.int.test.ts:353:    const editorDraftAfterEdit = await callJsonApi(
+tests/int/p2-t3.int.test.ts:431:    const validServiceRes = await callJsonApi('POST', '/api/services?locale=ar', {
+tests/int/p2-t3.int.test.ts:463:    const iframeRes = await callJsonApi('PATCH', `/api/services/${String(serviceId)}?locale=ar`, {
+tests/int/p2-t3.int.test.ts:490:    const rawHtmlDraftRes = await callJsonApi(
+tests/int/p2-t3.int.test.ts:522:    const h1Res = await callJsonApi('PATCH', `/api/services/${String(serviceId)}?locale=ar`, {
+tests/int/p2-t3.int.test.ts:559:    const jsLinkRes = await callJsonApi('PATCH', `/api/services/${String(serviceId)}?locale=ar`, {
+tests/int/p2-t3.int.test.ts:570:    const leadershipNoPhotoRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:585:    const leadershipBadPhotoRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:598:    const leadershipValidRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:614:    const staffNoPhotoRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:628:    const promoteWithoutPhotoRes = await callJsonApi(
+tests/int/p2-t3.int.test.ts:641:    const badLinkedinRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:654:    const inactiveMemberRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:668:    const anonTeamList = await callJsonApi('GET', '/api/team?locale=ar')
+tests/int/p2-t3.int.test.ts:674:    const anonInactiveById = await callJsonApi('GET', `/api/team/${String(inactiveId)}?locale=ar`)
+tests/int/p2-t3.int.test.ts:678:    const editorTeamList = await callJsonApi('GET', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:688:      (await callJsonApi('GET', '/api/team?locale=ar', { cookie: editorCookie })).data
+tests/int/p2-t3.int.test.ts:693:    const addEnBioRes = await callJsonApi('PATCH', `/api/team/${String(leaderId)}?locale=en`, {
+tests/int/p2-t3.int.test.ts:704:    const demoteToStaffArRes = await callJsonApi(
+tests/int/p2-t3.int.test.ts:717:    const anonReadEnAfterDemote = await callJsonApi(
+tests/int/p2-t3.int.test.ts:725:    const restoreLeadershipRes = await callJsonApi(
+tests/int/p2-t3.int.test.ts:740:    const httpLinkedinRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:752:    const bareLinkedinRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:787:    const missingIconServiceRes = await callJsonApi('POST', '/api/services?locale=ar', {
+tests/int/p2-t3.int.test.ts:797:    const missingTierServiceRes = await callJsonApi('POST', '/api/services?locale=ar', {
+tests/int/p2-t3.int.test.ts:808:    const deleteReferencedMediaRes = await callJsonApi(
+
+$ git grep -n -e 'activeMember' -- tests/int/p2-t3.int.test.ts
+tests/int/p2-t3.int.test.ts:654:    const inactiveMemberRes = await callJsonApi('POST', '/api/team?locale=ar', {
+tests/int/p2-t3.int.test.ts:664:    expect(inactiveMemberRes.status).toBe(201)
+tests/int/p2-t3.int.test.ts:665:    const inactiveId = (inactiveMemberRes.data.doc as { id: number | string }).id
+
+$ git grep -n -e 'publishedOrLoggedIn' -- src/collections/Projects.ts
+src/collections/Projects.ts:10:import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
+src/collections/Projects.ts:598:    read: publishedOrLoggedIn,
+
+$ git grep -n -e 'validateProjectBeforeValidate' -- src/collections/Projects.ts
+src/collections/Projects.ts:179:const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
+src/collections/Projects.ts:604:    beforeValidate: [validateProjectBeforeValidate],
+
+$ git grep -n -e 'PROJECT_SCOPE_OPTIONS' -- src/collections/Projects.ts
+src/collections/Projects.ts:54:export const PROJECT_SCOPE_OPTIONS = [
+src/collections/Projects.ts:776:              options: [...PROJECT_SCOPE_OPTIONS],
+
+$ git grep -n -e 'revalidateProjectRelatedAndHomeAfterChange' -- src/collections/Projects.ts
+src/collections/Projects.ts:405:const revalidateProjectRelatedAndHomeAfterChange: CollectionAfterChangeHook = async ({
+src/collections/Projects.ts:499:      'revalidateProjectRelatedAndHomeAfterChange failed; continuing without throwing',
+src/collections/Projects.ts:613:      revalidateProjectRelatedAndHomeAfterChange,
+
+$ git grep -n -e 'shouldAutoRunJobs' -- src/jobs/shouldAutoRun.ts
+src/jobs/shouldAutoRun.ts:13:export function shouldAutoRunJobs(
+
+$ git grep -n -e 'shouldAutoRunJobs' -- src/payload.config.ts
+src/payload.config.ts:32:import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
+src/payload.config.ts:125:    shouldAutoRun: () => shouldAutoRunJobs(),
+
+$ git grep -n -e 'shouldAutoRunJobs' -- src/jobs/shouldAutoRun.test.ts
+src/jobs/shouldAutoRun.test.ts:3:import { shouldAutoRunJobs } from './shouldAutoRun'
+src/jobs/shouldAutoRun.test.ts:5:describe('shouldAutoRunJobs (P2-T4 R-1)', () => {
+src/jobs/shouldAutoRun.test.ts:8:      shouldAutoRunJobs(
+src/jobs/shouldAutoRun.test.ts:18:      shouldAutoRunJobs(
+src/jobs/shouldAutoRun.test.ts:30:      shouldAutoRunJobs(
+src/jobs/shouldAutoRun.test.ts:39:      shouldAutoRunJobs(
+src/jobs/shouldAutoRun.test.ts:50:      shouldAutoRunJobs(
+src/jobs/shouldAutoRun.test.ts:60:      shouldAutoRunJobs(
+src/jobs/shouldAutoRun.test.ts:71:      shouldAutoRunJobs({ NODE_ENV: 'production' }, [
+src/jobs/shouldAutoRun.test.ts:78:    expect(shouldAutoRunJobs({ NODE_ENV: 'production' }, ['node', 'payload', 'migrate:down'])).toBe(
+src/jobs/shouldAutoRun.test.ts:83:      shouldAutoRunJobs({ NODE_ENV: 'production' }, ['node', 'payload', 'generate:types']),
+src/jobs/shouldAutoRun.test.ts:88:    expect(shouldAutoRunJobs({ NODE_ENV: 'test' }, ['node'])).toBe(false)
+src/jobs/shouldAutoRun.test.ts:89:    expect(shouldAutoRunJobs({ NODE_ENV: 'development', VITEST: 'true' }, ['node'])).toBe(false)
+src/jobs/shouldAutoRun.test.ts:90:    expect(shouldAutoRunJobs({ NODE_ENV: 'development', PLAYWRIGHT_TEST: 'true' }, ['node'])).toBe(
+src/jobs/shouldAutoRun.test.ts:97:      shouldAutoRunJobs({ NODE_ENV: 'production', PAYLOAD_JOBS_AUTORUN: 'false' }, [
+src/jobs/shouldAutoRun.test.ts:105:      shouldAutoRunJobs({ NODE_ENV: 'production', NODE_APP_INSTANCE: '1' }, [
+src/jobs/shouldAutoRun.test.ts:113:      shouldAutoRunJobs({ NODE_ENV: 'production', PM2_INSTANCE_ID: '2' }, [
+src/jobs/shouldAutoRun.test.ts:121:      shouldAutoRunJobs({ NODE_ENV: 'production', WORKER_ID: 'worker-2' }, [
+
+$ git grep -n -e '20261022_160652_p2_t4_projects' -- src/migrations/index.ts
+src/migrations/index.ts:4:import * as migration_20261022_160652_p2_t4_projects from './20261022_160652_p2_t4_projects'
+src/migrations/index.ts:26:    up: migration_20261022_160652_p2_t4_projects.up,
+src/migrations/index.ts:27:    down: migration_20261022_160652_p2_t4_projects.down,
+src/migrations/index.ts:28:    name: '20261022_160652_p2_t4_projects',
+
+$ git grep -n -e 'callJsonApi' -- tests/int/p2-t4.int.test.ts
+tests/int/p2-t4.int.test.ts:55:async function callJsonApi(
+tests/int/p2-t4.int.test.ts:179:    const firstReg = await callJsonApi('POST', '/api/users/first-register', {
+tests/int/p2-t4.int.test.ts:193:    const editorCreate = await callJsonApi('POST', '/api/users', {
+tests/int/p2-t4.int.test.ts:203:    const loginRes = await callJsonApi('POST', '/api/users/login', {
+tests/int/p2-t4.int.test.ts:271:    const anonCreate = await callJsonApi('POST', '/api/projects', {
+tests/int/p2-t4.int.test.ts:282:    const createDraftRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:331:    const anonList = await callJsonApi('GET', '/api/projects')
+tests/int/p2-t4.int.test.ts:335:    const anonForceDraftList = await callJsonApi('GET', '/api/projects?draft=true')
+tests/int/p2-t4.int.test.ts:339:    const anonByIdDraft = await callJsonApi(
+tests/int/p2-t4.int.test.ts:353:    const editorDraftGet = await callJsonApi(
+tests/int/p2-t4.int.test.ts:361:    const publishEnRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:397:    const anonListPublished = await callJsonApi('GET', '/api/projects?locale=en')
+tests/int/p2-t4.int.test.ts:410:    const draftUpdateRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:423:    const anonDraftByIdAfterEdit = await callJsonApi(
+tests/int/p2-t4.int.test.ts:429:    const anonPublicByIdAfterEdit = await callJsonApi(
+tests/int/p2-t4.int.test.ts:438:    const createScheduledDraftRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:473:    const anonBeforeTime = await callJsonApi('GET', `/api/projects/${String(scheduledId)}`)
+tests/int/p2-t4.int.test.ts:482:    const anonAfterTime = await callJsonApi('GET', `/api/projects/${String(scheduledId)}?locale=ar`)
+tests/int/p2-t4.int.test.ts:490:    const bothOnCreateRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:507:    const bothOnDraftRes = await callJsonApi('POST', '/api/projects?locale=ar&draft=true', {
+tests/int/p2-t4.int.test.ts:523:    const videoOnlyRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:539:    const patchVideoUrlWithoutClearingVideoRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:552:    const switchToYoutubeRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:568:    const switchToVimeoRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:581:    const defaultPortNormalizedRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:609:      const badRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:626:    const missingStatusRes = await callJsonApi('POST', '/api/projects?locale=en', {
+tests/int/p2-t4.int.test.ts:640:    const duplicateSlugRes = await callJsonApi('POST', '/api/projects?locale=en', {
+tests/int/p2-t4.int.test.ts:656:    const autoDedupeRes = await callJsonApi('POST', '/api/projects?locale=en', {
+tests/int/p2-t4.int.test.ts:673:      const badYearRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:689:    const longSummaryRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:704:    const tooManyDetailsRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:722:    const tooManyDeliverablesRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:739:    const tooManyGalleryRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:819:      const draftRes = await callJsonApi('POST', '/api/projects?locale=ar&draft=true', {
+tests/int/p2-t4.int.test.ts:827:    const badPublishBodyMediaRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:859:    const badPublishGalleryRes = await callJsonApi('POST', '/api/projects?locale=ar', {
+tests/int/p2-t4.int.test.ts:875:    const deleteCoverMediaRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:909:    const attachEnAndBodyMediaRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:979:    const deleteEnMetaRes = await callJsonApi('DELETE', `/api/media/${String(enMetaMediaId)}`, {
+tests/int/p2-t4.int.test.ts:985:    const deleteBodyUploadRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:995:    const deleteNestedQuoteUploadRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1006:    const serviceWithBodyUploadRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1040:    const deleteServiceBodyMediaRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1099:    const deleteHighPageBodyMediaRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1113:    const deleteUnusedRes = await callJsonApi('DELETE', `/api/media/${String(unusedMediaId)}`, {
+tests/int/p2-t4.int.test.ts:1127:      const nonFeaturedRes = await callJsonApi('POST', '/api/projects?locale=en', {
+tests/int/p2-t4.int.test.ts:1189:      const autosaveOnPublishedRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1207:      const promoteFeaturedRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1250:      const draftEditBeforeUnpublishRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1267:      const unpublishRes = await callJsonApi(
+tests/int/p2-t4.int.test.ts:1307:    const brandRes = await callJsonApi('POST', '/api/brands?locale=ar', {
+tests/int/p2-t4.int.test.ts:1318:    const materialRes = await callJsonApi('POST', '/api/materials?locale=ar', {
+tests/int/p2-t4.int.test.ts:1329:    const deleteBrandRes = await callJsonApi('DELETE', `/api/brands/${String(brandId)}`, {
+tests/int/p2-t4.int.test.ts:1340:    const deleteLastAdminRes = await callJsonApi('DELETE', `/api/users/${String(adminUserId)}`, {
+tests/int/p2-t4.int.test.ts:1349:    const demoteLastAdminRes = await callJsonApi('PATCH', `/api/users/${String(adminUserId)}`, {
+tests/int/p2-t4.int.test.ts:1362:    const invalidRevokeRes = await callJsonApi(
+
+$ git grep -n -e 'buttonGroup' -- src/fields/groups/button.ts
+src/fields/groups/button.ts:95:export function buttonGroup(options: ButtonGroupOptions = {}): NamedGroupField {
+
+$ git grep -n -e 'ctaGroup' -- src/fields/groups/cta.ts
+src/fields/groups/cta.ts:147:export function ctaGroup(options: CtaGroupOptions = {}): NamedGroupField {
+
+$ git grep -n -e 'pageHeaderGroup' -- src/fields/groups/pageHeader.ts
+src/fields/groups/pageHeader.ts:122:export function pageHeaderGroup(options: PageHeaderGroupOptions = {}): NamedGroupField {
+
+$ git grep -n -e 'sectionIntroGroup' -- src/fields/groups/sectionIntro.ts
+src/fields/groups/sectionIntro.ts:130:export function sectionIntroGroup(options: SectionIntroGroupOptions = {}): NamedGroupField {
+
+$ git grep -n -e 'pillarGroup' -- src/fields/groups/pillar.ts
+src/fields/groups/pillar.ts:55:export function pillarGroup(options: PillarGroupOptions = {}): NamedGroupField {
+
+$ git grep -n -e 'collapsibleSection' -- src/fields/groups/collapsibleSection.ts
+src/fields/groups/collapsibleSection.ts:16:export function collapsibleSection(
+
+$ git grep -n -e 'buttonGroup' -- src/fields/groups/groups.test.ts
+src/fields/groups/groups.test.ts:5:  buttonGroup,
+src/fields/groups/groups.test.ts:17:  describe('buttonGroup & resolveButtonHref', () => {
+src/fields/groups/groups.test.ts:19:      const btn = buttonGroup({ name: 'primaryCta', required: true })
+
+$ git grep -n -e 'ALL_GLOBALS' -- src/globals/index.ts
+src/globals/index.ts:28:export const ALL_GLOBALS = [
+
+$ git grep -n -e 'SiteSettings' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:349:export const SiteSettings: GlobalConfig = {
+
+$ git grep -n -e 'isAdmin' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:3:import { isAdmin } from '../access/isAdmin'
+src/globals/SiteSettings.ts:364:    update: isAdmin,
+
+$ git grep -n -e 'Navigation' -- src/globals/Navigation.ts
+src/globals/Navigation.ts:29:      en: 'Header Navigation Links',
+src/globals/Navigation.ts:224:export const Navigation: GlobalConfig = {
+src/globals/Navigation.ts:228:    en: 'Navigation & Footer Menus',
+
+$ git grep -n -e 'HomePage' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:125:const validateHomePageBeforeValidate: GlobalBeforeValidateHook = ({ data, originalDoc, req }) => {
+src/globals/HomePage.ts:227:export const HomePage: GlobalConfig = withPublishableGlobal({
+src/globals/HomePage.ts:242:    beforeValidate: [validateHomePageBeforeValidate],
+
+$ git grep -n -e 'minRows' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:471:            minRows: 5,
+
+$ git grep -n -e 'maxRows' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:472:            maxRows: 5,
+src/globals/HomePage.ts:661:          maxRows: 4,
+
+$ git grep -n -e 'ServicesPage' -- src/globals/ServicesPage.ts
+src/globals/ServicesPage.ts:12:export const ServicesPage: GlobalConfig = withPublishableGlobal({
+
+$ git grep -n -e 'AboutPage' -- src/globals/AboutPage.ts
+src/globals/AboutPage.ts:98:export const AboutPage: GlobalConfig = withPublishableGlobal({
+
+$ git grep -n -e 'ProjectsPage' -- src/globals/ProjectsPage.ts
+src/globals/ProjectsPage.ts:11:export const ProjectsPage: GlobalConfig = withPublishableGlobal({
+
+$ git grep -n -e 'ContactPage' -- src/globals/ContactPage.ts
+src/globals/ContactPage.ts:10:export const ContactPage: GlobalConfig = withPublishableGlobal({
+
+$ git grep -n -e 'PrivacyPage' -- src/globals/PrivacyPage.ts
+src/globals/PrivacyPage.ts:10:export const PrivacyPage: GlobalConfig = withPublishableGlobal({
+
+$ git grep -n -e '20261022_221250_p2_t5_globals' -- src/migrations/index.ts
+src/migrations/index.ts:5:import * as migration_20261022_221250_p2_t5_globals from './20261022_221250_p2_t5_globals'
+src/migrations/index.ts:31:    up: migration_20261022_221250_p2_t5_globals.up,
+src/migrations/index.ts:32:    down: migration_20261022_221250_p2_t5_globals.down,
+src/migrations/index.ts:33:    name: '20261022_221250_p2_t5_globals',
+
+$ git grep -n -e 'getCollapsibleGroupNames' -- src/globals/globals.test.ts
+src/globals/globals.test.ts:114:    const getCollapsibleGroupNames = (fields: typeof HomePage.fields): string[] =>
+src/globals/globals.test.ts:133:    expect(getCollapsibleGroupNames(HomePage.fields)).toEqual([
+src/globals/globals.test.ts:145:    expect(getCollapsibleGroupNames(ServicesPage.fields)).toEqual([
+src/globals/globals.test.ts:155:    expect(getCollapsibleGroupNames(AboutPage.fields)).toEqual([
+src/globals/globals.test.ts:164:    expect(getCollapsibleGroupNames(ProjectsPage.fields)).toEqual([
+src/globals/globals.test.ts:172:    expect(getCollapsibleGroupNames(ContactPage.fields)).toEqual([
+src/globals/globals.test.ts:179:    expect(getCollapsibleGroupNames(PrivacyPage.fields)).toEqual(['pageHeader', 'enabled', 'meta'])
+
+$ git grep -n -e 'normalizeQuotePhone' -- src/lib/quote/schema.ts
+src/lib/quote/schema.ts:27:export function normalizeQuotePhone(value: string): string {
+src/lib/quote/schema.ts:47:  const normalized = normalizeQuotePhone(value)
+src/lib/quote/schema.ts:67: * - After normalizing to E.164 via `normalizeQuotePhone`, KSA numbers (`+966...`) must match
+src/lib/quote/schema.ts:86:  const normalized = normalizeQuotePhone(trimmed)
+src/lib/quote/schema.ts:116:  .transform((val) => normalizeQuotePhone(val))
+
+$ git grep -n -e 'quotePhoneSchema' -- src/lib/quote/schema.ts
+src/lib/quote/schema.ts:108:export const quotePhoneSchema = z
+
+$ git grep -n -e 'normalizeQuotePhone' -- src/lib/quote/schema.test.ts
+src/lib/quote/schema.test.ts:8:  normalizeQuotePhone,
+src/lib/quote/schema.test.ts:24:    expect(normalizeQuotePhone('0573534185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:25:    expect(normalizeQuotePhone('057 353 4185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:26:    expect(normalizeQuotePhone('00966 57 353 4185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:27:    expect(normalizeQuotePhone('00 966 57 353 4185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:28:    expect(normalizeQuotePhone('+966 57 353 4185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:29:    expect(normalizeQuotePhone('+966 0573534185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:30:    expect(normalizeQuotePhone('00 966 0573534185')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:31:    expect(normalizeQuotePhone('  +966 (57) 353-4185  ')).toBe('+966573534185')
+src/lib/quote/schema.test.ts:32:    expect(normalizeQuotePhone('011 234 5678')).toBe('+966112345678')
+src/lib/quote/schema.test.ts:33:    expect(normalizeQuotePhone('+966 0112345678')).toBe('+966112345678')
+src/lib/quote/schema.test.ts:34:    expect(normalizeQuotePhone('+971 50 123 4567')).toBe('+971501234567')
+src/lib/quote/schema.test.ts:35:    expect(normalizeQuotePhone('00971-50-123-4567')).toBe('+971501234567')
+
+$ git grep -n -e 'FORBIDDEN_CLIENT_BUNDLE_SENTINELS' -- scripts/check-client-bundle-sentinels.mjs
+scripts/check-client-bundle-sentinels.mjs:12:export const FORBIDDEN_CLIENT_BUNDLE_SENTINELS = [
+scripts/check-client-bundle-sentinels.mjs:42:        for (const sentinel of FORBIDDEN_CLIENT_BUNDLE_SENTINELS) {
+
+$ git grep -n -e 'ENV_SERVER_ONLY_SENTINEL' -- src/env.ts
+src/env.ts:154:export const ENV_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_ENV__'
+src/env.ts:193:      `Invalid environment configuration (src/env.ts, ${ENV_SERVER_ONLY_SENTINEL}):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,
+
+$ git grep -n -e 'IPHASH_SERVER_ONLY_SENTINEL' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:15:export const IPHASH_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_IPHASH__'
+src/lib/ipHash.ts:19:    `src/lib/ipHash.ts is a server-only module and must never be imported in client code (S4, D2, ${IPHASH_SERVER_ONLY_SENTINEL}).`,
+
+$ git grep -n -e 'CMS_CLIENT_SERVER_ONLY_SENTINEL' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:9:export const CMS_CLIENT_SERVER_ONLY_SENTINEL =
+src/lib/cms/client.ts:123:      `CMS Local API client must never execute in the browser (${CMS_CLIENT_SERVER_ONLY_SENTINEL}).`,
+
+$ git grep -n -e 'check-client-bundle-sentinels' -- package.json
+package.json:13:    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build && node scripts/check-client-bundle-sentinels.mjs",
+
+$ git grep -n -e 'noServerInClientRule' -- eslint-rules/no-server-in-client.mjs
+eslint-rules/no-server-in-client.mjs:125:export const noServerInClientRule = {
+
+$ git grep -n -e 'hashIp' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:49:export function hashIp(ip: string, salt: string = env.IP_HASH_SALT): string {
+
+$ git grep -n -e 'hashIp' -- src/lib/ipHash.test.ts
+src/lib/ipHash.test.ts:5:import { hashIp, IP_HASH_HEX_REGEX, isValidIpHash, normalizeIpForHash } from './ipHash'
+src/lib/ipHash.test.ts:10:    const digest = hashIp(sampleIp)
+src/lib/ipHash.test.ts:29:    expect(hashIp('::ffff:198.51.100.7', salt)).toBe(hashIp('198.51.100.7', salt))
+src/lib/ipHash.test.ts:30:    expect(hashIp('2001:DB8::1A2B', salt)).toBe(hashIp('2001:db8::1a2b', salt))
+src/lib/ipHash.test.ts:37:    expect(hashIp('203.0.113.1', saltA)).not.toBe(hashIp('203.0.113.2', saltA))
+src/lib/ipHash.test.ts:38:    expect(hashIp('203.0.113.1', saltA)).not.toBe(hashIp('203.0.113.1', saltB))
+src/lib/ipHash.test.ts:39:    expect(() => hashIp('203.0.113.1', 'short')).toThrow(/at least 16 characters/)
+
+$ git grep -n -e 'isAdminOrEditor' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:10:import { isAdminOrEditor } from '../access/isAdminOrEditor'
+src/collections/QuoteRequests.ts:49:export const isAdminOrEditorFieldLevel: FieldAccess = ({ req }) => {
+src/collections/QuoteRequests.ts:60:  read: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:66:  read: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:68:  update: isAdminOrEditorFieldLevel,
+src/collections/QuoteRequests.ts:365:    read: isAdminOrEditor,
+src/collections/QuoteRequests.ts:366:    update: isAdminOrEditor,
+
+$ git grep -n -e 'readOnlyFieldAccess' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:59:export const readOnlyFieldAccess = {
+src/collections/QuoteRequests.ts:385:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:398:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:411:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:426:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:445:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:458:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:475:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:505:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:519:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:534:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:644:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:685:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:699:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:713:      access: readOnlyFieldAccess,
+src/collections/QuoteRequests.ts:730:      access: readOnlyFieldAccess,
+
+$ git grep -n -e 'workflowFieldAccess' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:65:export const workflowFieldAccess = {
+src/collections/QuoteRequests.ts:555:      access: workflowFieldAccess,
+src/collections/QuoteRequests.ts:609:      access: workflowFieldAccess,
+src/collections/QuoteRequests.ts:622:      access: workflowFieldAccess,
+
+$ git grep -n -e 'serviceTitle' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:195:  if (typeof mutable.serviceTitle === 'string') {
+src/collections/QuoteRequests.ts:196:    mutable.serviceTitle = mutable.serviceTitle.trim().slice(0, 200)
+src/collections/QuoteRequests.ts:307:    if (operation === 'create' && !isNonEmptyInput(mutable.serviceTitle)) {
+src/collections/QuoteRequests.ts:310:        mutable.serviceTitle = resolvedTitle.trim().slice(0, 200)
+src/collections/QuoteRequests.ts:451:      name: 'serviceTitle',
+
+$ git grep -n -e 'QuoteStatusPillCell' -- src/components/admin/QuoteStatusPillCell.tsx
+src/components/admin/QuoteStatusPillCell.tsx:75:export const QuoteStatusPillCell: React.FC<AdminCellComponentProps> = ({ cellData }) => {
+src/components/admin/QuoteStatusPillCell.tsx:119:export default QuoteStatusPillCell
+
+$ git grep -n -e 'EmailStatusPillCell' -- src/components/admin/EmailStatusPillCell.tsx
+src/components/admin/EmailStatusPillCell.tsx:55:export const EmailStatusPillCell: React.FC<AdminCellComponentProps> = ({ cellData }) => {
+src/components/admin/EmailStatusPillCell.tsx:99:export default EmailStatusPillCell
+
+$ git grep -n -e 'QuoteRequestsFilterBar' -- src/components/admin/QuoteRequestsFilterBar.tsx
+src/components/admin/QuoteRequestsFilterBar.tsx:17:export const QuoteRequestsFilterBar: React.FC = () => {
+src/components/admin/QuoteRequestsFilterBar.tsx:276:export default QuoteRequestsFilterBar
+
+$ git grep -n -e 'unlock' -- src/collections/Users.ts
+src/collections/Users.ts:279:    unlock: isAdmin,
+
+$ git grep -n -e 'disableVerifyEmailEndpointHandler' -- src/collections/Users.ts
+src/collections/Users.ts:233:export const disableVerifyEmailEndpointHandler: PayloadHandler = () =>
+src/collections/Users.ts:303:      handler: disableVerifyEmailEndpointHandler,
+
+$ git grep -n -e '20261022_231435_p2_t6_quote_requests' -- src/migrations/index.ts
+src/migrations/index.ts:6:import * as migration_20261022_231435_p2_t6_quote_requests from './20261022_231435_p2_t6_quote_requests'
+src/migrations/index.ts:36:    up: migration_20261022_231435_p2_t6_quote_requests.up,
+src/migrations/index.ts:37:    down: migration_20261022_231435_p2_t6_quote_requests.down,
+src/migrations/index.ts:38:    name: '20261022_231435_p2_t6_quote_requests',
+
+$ git grep -n -e '20261023_005934_p2_t6_quote_requests_service_title' -- src/migrations/index.ts
+src/migrations/index.ts:7:import * as migration_20261023_005934_p2_t6_quote_requests_service_title from './20261023_005934_p2_t6_quote_requests_service_title'
+src/migrations/index.ts:41:    up: migration_20261023_005934_p2_t6_quote_requests_service_title.up,
+src/migrations/index.ts:42:    down: migration_20261023_005934_p2_t6_quote_requests_service_title.down,
+src/migrations/index.ts:43:    name: '20261023_005934_p2_t6_quote_requests_service_title',
+
+$ git grep -n -e 'QuoteRequests' -- src/collections/QuoteRequests.test.ts
+src/collections/QuoteRequests.test.ts:24:  QuoteRequests,
+src/collections/QuoteRequests.test.ts:30:} from './QuoteRequests'
+src/collections/QuoteRequests.test.ts:39:describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
+src/collections/QuoteRequests.test.ts:41:    expect(QuoteRequests.slug).toBe('quote-requests')
+src/collections/QuoteRequests.test.ts:42:    expect(QuoteRequests.defaultSort).toBe('-createdAt')
+src/collections/QuoteRequests.test.ts:43:    expect(QuoteRequests.timestamps).toBe(true)
+src/collections/QuoteRequests.test.ts:44:    expect(QuoteRequests.admin?.useAsTitle).toBe('name')
+src/collections/QuoteRequests.test.ts:45:    expect(QuoteRequests.admin?.group).toEqual({
+src/collections/QuoteRequests.test.ts:49:    expect(QuoteRequests.admin?.defaultColumns).toEqual([
+src/collections/QuoteRequests.test.ts:58:    expect(QuoteRequests.admin?.components?.beforeListTable).toEqual([
+src/collections/QuoteRequests.test.ts:59:      '/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar',
+src/collections/QuoteRequests.test.ts:64:      QuoteRequests.access?.create?.({
+src/collections/QuoteRequests.test.ts:71:    const fieldNames = QuoteRequests.fields
+
+$ git grep -n -e 'lockedAdmin' -- tests/int/p2-t6.int.test.ts
+tests/int/p2-t6.int.test.ts:779:    const lockedAdminEmail = 'locked-admin-p2t6@aljazira.co'
+tests/int/p2-t6.int.test.ts:780:    const lockedAdminPassword = 'Str0ng!Locked#Pass2026$XyZ'
+tests/int/p2-t6.int.test.ts:782:    const lockedAdmin = await payload.create({
+tests/int/p2-t6.int.test.ts:788:        email: lockedAdminEmail,
+tests/int/p2-t6.int.test.ts:789:        password: lockedAdminPassword,
+tests/int/p2-t6.int.test.ts:793:    expect(lockedAdmin.role).toBe('admin')
+tests/int/p2-t6.int.test.ts:802:            email: lockedAdminEmail,
+tests/int/p2-t6.int.test.ts:814:          email: lockedAdminEmail,
+tests/int/p2-t6.int.test.ts:815:          password: lockedAdminPassword,
+tests/int/p2-t6.int.test.ts:824:        body: { email: lockedAdminEmail },
+tests/int/p2-t6.int.test.ts:833:        body: { email: lockedAdminEmail },
+tests/int/p2-t6.int.test.ts:859:          email: lockedAdminEmail,
+tests/int/p2-t6.int.test.ts:860:          password: lockedAdminPassword,
+tests/int/p2-t6.int.test.ts:870:        body: { email: lockedAdminEmail },
+tests/int/p2-t6.int.test.ts:878:          email: lockedAdminEmail,
+tests/int/p2-t6.int.test.ts:879:          password: lockedAdminPassword,
+tests/int/p2-t6.int.test.ts:908:        id: lockedAdmin.id,
+
+$ git grep -n -e 'enforceRoleAndPasswordBeforeValidate' -- src/collections/Users.ts
+src/collections/Users.ts:47:const enforceRoleAndPasswordBeforeValidate: CollectionBeforeValidateHook = async ({
+src/collections/Users.ts:359:    beforeValidate: [enforceRoleAndPasswordBeforeValidate],
+
+$ git grep -n -e 'callerRole' -- src/collections/Users.ts
+src/collections/Users.ts:61:  const callerRole = (req.user as { role?: string } | null | undefined)?.role
+src/collections/Users.ts:73:    } else if (callerRole !== 'admin') {
+src/collections/Users.ts:78:  } else if (originalDoc && callerRole !== 'admin') {
+
+$ git grep -n -e 'PAYLOAD_DEFAULT_ACCESS_NAMES' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:41:const PAYLOAD_DEFAULT_ACCESS_NAMES = new Set(['defaultAccess', 'defaultUnlockAccess'])
+src/access/z1-config-enumeration.test.ts:54:    PAYLOAD_DEFAULT_ACCESS_NAMES.has(fnName) || /^default.*Access$/i.test(fnName),
+
+$ git grep -n -e 'assertExplicitAccessFunction' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:43:export function assertExplicitAccessFunction(
+src/access/z1-config-enumeration.test.ts:76:        assertExplicitAccessFunction(col.access?.[op], `collection:${col.slug}`, op)
+src/access/z1-config-enumeration.test.ts:79:        assertExplicitAccessFunction(col.access?.unlock, `collection:${col.slug}`, 'unlock')
+src/access/z1-config-enumeration.test.ts:90:        assertExplicitAccessFunction(globalConfig.access?.[op], `global:${globalConfig.slug}`, op)
+src/access/z1-config-enumeration.test.ts:106:        assertExplicitAccessFunction(col.access[op], `sanitized collection:${col.slug}`, op)
+src/access/z1-config-enumeration.test.ts:109:        assertExplicitAccessFunction(
+src/access/z1-config-enumeration.test.ts:121:        assertExplicitAccessFunction(
+src/access/z1-config-enumeration.test.ts:129:    // Negative self-test: prove assertExplicitAccessFunction catches missing, defaultAccess, and defaultUnlockAccess (R-19)
+src/access/z1-config-enumeration.test.ts:137:      assertExplicitAccessFunction(undefined, 'synthetic:broken', 'delete')
+src/access/z1-config-enumeration.test.ts:140:      assertExplicitAccessFunction(simulatedDefaultAccess, 'synthetic:broken', 'update')
+src/access/z1-config-enumeration.test.ts:143:      assertExplicitAccessFunction(simulatedDefaultUnlockAccess, 'synthetic:broken', 'unlock')
+
+$ git grep -n -e 'assertCollectionRichTextFieldsHaveBodyMediaSibling' -- src/collections/Media.ts
+src/collections/Media.ts:398:export function assertCollectionRichTextFieldsHaveBodyMediaSibling(
+
+$ git grep -n -e 'assertCollectionRichTextFieldsHaveBodyMediaSibling' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:6:import { assertCollectionRichTextFieldsHaveBodyMediaSibling, Media } from '../collections/Media'
+src/access/z1-config-enumeration.test.ts:102:    assertCollectionRichTextFieldsHaveBodyMediaSibling(config.collections)
+
+$ git grep -n -e 'assertCollectionRichTextFieldsHaveBodyMediaSibling' -- src/globals/globals.test.ts
+src/globals/globals.test.ts:10:  assertCollectionRichTextFieldsHaveBodyMediaSibling,
+src/globals/globals.test.ts:438:      assertCollectionRichTextFieldsHaveBodyMediaSibling(allCollections)
+src/globals/globals.test.ts:442:      assertCollectionRichTextFieldsHaveBodyMediaSibling([
+
+$ git grep -n -e 'callJsonApi' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:50:async function callJsonApi(options: JsonApiCallOptions): Promise<{
+tests/int/p2-t8.int.test.ts:219:    const adminLogin = await callJsonApi({
+tests/int/p2-t8.int.test.ts:227:    const editorLogin = await callJsonApi({
+tests/int/p2-t8.int.test.ts:275:      anonRead: (await callJsonApi({ method: 'GET', slugPath: ['users', String(editorUser.id)] }))
+tests/int/p2-t8.int.test.ts:278:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:290:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:297:        await callJsonApi({ method: 'DELETE', slugPath: ['users', String(editorUser.id)] })
+tests/int/p2-t8.int.test.ts:300:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:307:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:320:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:328:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:335:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:342:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:355:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:363:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:388:    const usersOtherAnonRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:392:    const usersOtherAnonCreate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:402:    const usersOtherAnonUpdate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:407:    const usersOtherAnonDelete = await callJsonApi({
+tests/int/p2-t8.int.test.ts:411:    const usersOtherEditorRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:416:    const usersOtherEditorCreate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:427:    const usersOtherEditorPatch = await callJsonApi({
+tests/int/p2-t8.int.test.ts:433:    const usersOtherEditorDelete = await callJsonApi({
+tests/int/p2-t8.int.test.ts:438:    const usersOtherAdminRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:443:    const usersOtherAdminCreate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:455:    const usersOtherAdminUpdate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:461:    const usersOtherAdminDelete = await callJsonApi({
+tests/int/p2-t8.int.test.ts:539:      anonRead: (await callJsonApi({ method: 'GET', slugPath: ['media', String(editorMediaId)] }))
+tests/int/p2-t8.int.test.ts:543:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:550:        await callJsonApi({ method: 'DELETE', slugPath: ['media', String(editorMediaId)] })
+tests/int/p2-t8.int.test.ts:553:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:561:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:569:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:576:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:584:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:592:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:645:      anonRead: (await callJsonApi({ method: 'GET', slugPath: ['videos', String(editorVideoId)] }))
+tests/int/p2-t8.int.test.ts:649:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:656:        await callJsonApi({ method: 'DELETE', slugPath: ['videos', String(editorVideoId)] })
+tests/int/p2-t8.int.test.ts:659:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:667:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:675:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:682:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:690:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:698:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:839:      const anonCreate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:845:      const editorCreate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:852:      const adminCreate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:865:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:873:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:881:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:887:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:896:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:905:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:912:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:921:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:930:          await callJsonApi({
+tests/int/p2-t8.int.test.ts:987:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:993:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1000:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1007:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1013:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1020:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1028:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1036:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1043:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1050:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1058:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1066:        await callJsonApi({
+tests/int/p2-t8.int.test.ts:1148:      const seedRes = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1157:      const anonRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1162:      const anonUpdate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1168:      const editorRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1174:      const editorUpdate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1181:      const adminRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1187:      const adminUpdate = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1293:      const anonListDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1302:      const anonByIdDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1329:      const editorByIdDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1361:    const saveDraftOnPub = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1374:    const anonGetPubWithDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1382:    const anonGetPubWithoutDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1391:    const editorGetPubWithDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1495:      const saveDraftGlobal = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1504:      const anonGlobalDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1526:      const editorGlobalDraft = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1541:    const editorEscalationAttempt = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1573:    const adminPromotesEditor = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1623:    const delBlocked = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1665:    const delAllowed = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1678:      const httpNavRes = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1695:      const httpBrandRes = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1713:        const okNavRes = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1731:      const internalNavRes = await callJsonApi({
+
+$ git grep -n -e 'REST_GET' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:185:    restGet = routesModule.REST_GET(configModule.default)
+
+$ git grep -n -e 'usersOtherRow' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:478:    const usersOtherRow: CollectionMatrixRow = {
+tests/int/p2-t8.int.test.ts:493:    expect(usersOtherRow).toEqual({
+tests/int/p2-t8.int.test.ts:508:    recordedCollectionMatrix.push(usersOtherRow)
+
+$ git grep -n -e 'usersOtherAnonRead' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:388:    const usersOtherAnonRead = await callJsonApi({
+tests/int/p2-t8.int.test.ts:480:      anonRead: usersOtherAnonRead.status,
+
+$ git grep -n -e 'versionedPageGlobalCases' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1401:    const versionedPageGlobalCases: ReadonlyArray<{
+tests/int/p2-t8.int.test.ts:1494:    for (const globalCase of versionedPageGlobalCases) {
+
+$ git grep -n -e 'adminPromotesEditor' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1573:    const adminPromotesEditor = await callJsonApi({
+tests/int/p2-t8.int.test.ts:1581:    expect(adminPromotesEditor.status).toBe(200)
+tests/int/p2-t8.int.test.ts:1582:    expect((adminPromotesEditor.body.doc as { role: string }).role).toBe('admin')
+
+$ git grep -n -e 'adminRestoresEditor' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1584:    const adminRestoresEditor = await payload.update({
+tests/int/p2-t8.int.test.ts:1593:    expect(adminRestoresEditor.role).toBe('editor')
+
+$ git grep -n -e 'smuggledUsersOpts' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1754:    const smuggledUsersOpts: Record<string, unknown> = {
+tests/int/p2-t8.int.test.ts:1762:    await expect(cmsFind(smuggledUsersOpts as never)).rejects.toThrow()
+tests/int/p2-t8.int.test.ts:1763:    await expect(cmsCount(smuggledUsersOpts as never)).rejects.toThrow()
+
+$ git grep -n -e 'SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS' -- eslint.config.mjs
+eslint.config.mjs:8:export const SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS = [
+eslint.config.mjs:121:    files: SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS,
+
+$ git grep -n -e 'RESTRICTED_PAYLOAD_IMPORTS_CONFIG' -- eslint.config.mjs
+eslint.config.mjs:29:export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
+eslint.config.mjs:89:      '@typescript-eslint/no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
+eslint.config.mjs:117:      'no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
+
+$ git grep -n -e 'no-restricted-imports' -- eslint.config.mjs
+eslint.config.mjs:89:      '@typescript-eslint/no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
+eslint.config.mjs:117:      'no-restricted-imports': ['error', RESTRICTED_PAYLOAD_IMPORTS_CONFIG],
+eslint.config.mjs:123:      'no-restricted-imports': 'off',
+eslint.config.mjs:124:      '@typescript-eslint/no-restricted-imports': 'off',
+
+$ git grep -n -e 'isAllowedPayloadServerFile' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:9: *    (`isAllowedPayloadServerFile`).
+eslint-rules/require-override-access-false.mjs:55:export function isAllowedPayloadServerFile(filename) {
+eslint-rules/require-override-access-false.mjs:108:  return !isAllowedPayloadServerFile(filename)
+
+$ git grep -n -e 'isForbiddenPayloadModuleSource' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:115:export function isForbiddenPayloadModuleSource(sourceValue) {
+eslint-rules/require-override-access-false.mjs:357:      if (isForbiddenPayloadModuleSource(sourceVal)) {
+eslint-rules/require-override-access-false.mjs:412:        if (node.source?.type === 'Literal' && isForbiddenPayloadModuleSource(node.source.value)) {
+eslint-rules/require-override-access-false.mjs:467:          isForbiddenPayloadModuleSource(node.arguments[0].value)
+
+$ git grep -n -e 'ExportNamedDeclaration' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:5: * 1. Repo-wide import and re-export ban (`ImportDeclaration`, `ExportNamedDeclaration`,
+eslint-rules/require-override-access-false.mjs:400:      ExportNamedDeclaration(node) {
+
+$ git grep -n -e 'ExportAllDeclaration' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:6: *    `ExportAllDeclaration`, `ImportExpression`, and `require(...)`): importing or re-exporting
+eslint-rules/require-override-access-false.mjs:404:      ExportAllDeclaration(node) {
+
+$ git grep -n -e 'SAFE_CMS_QUERY_WHITELIST_KEYS' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:21:export const SAFE_CMS_QUERY_WHITELIST_KEYS = [
+src/lib/cms/client.ts:46: *   `never`, and `buildSafeCmsQueryArgs` copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`.
+src/lib/cms/client.ts:175: * Builds Payload query arguments strictly from `SAFE_CMS_QUERY_WHITELIST_KEYS` (`R-11`)
+src/lib/cms/client.ts:185:  for (const key of SAFE_CMS_QUERY_WHITELIST_KEYS) {
+src/lib/cms/client.ts:218: * Copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`, sets `overrideAccess: false` unconditionally,
+src/lib/cms/client.ts:236: * Copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`, sets `overrideAccess: false` unconditionally,
+src/lib/cms/client.ts:258: * Copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`, sets `overrideAccess: false` unconditionally,
+
+$ git grep -n -e 'SAFE_CMS_COUNT_WHITELIST_KEYS' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:39:export const SAFE_CMS_COUNT_WHITELIST_KEYS = ['collection', 'locale', 'where'] as const
+src/lib/cms/client.ts:198: * Builds Payload `count` arguments strictly from `SAFE_CMS_COUNT_WHITELIST_KEYS` (`R-11`)
+src/lib/cms/client.ts:205:  for (const key of SAFE_CMS_COUNT_WHITELIST_KEYS) {
+src/lib/cms/client.ts:276: * Copies only `SAFE_CMS_COUNT_WHITELIST_KEYS` and sets `overrideAccess: false` unconditionally.
+
+$ git grep -n -e 'buildSafeCmsQueryArgs' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:46: *   `never`, and `buildSafeCmsQueryArgs` copies only `SAFE_CMS_QUERY_WHITELIST_KEYS`.
+src/lib/cms/client.ts:180:export function buildSafeCmsQueryArgs(
+src/lib/cms/client.ts:225:  const safeArgs = buildSafeCmsQueryArgs(options as unknown as Record<string, unknown>, draft)
+src/lib/cms/client.ts:243:  const safeArgs = buildSafeCmsQueryArgs(options as unknown as Record<string, unknown>, draft)
+src/lib/cms/client.ts:265:  const safeArgs = buildSafeCmsQueryArgs(options as unknown as Record<string, unknown>, draft)
+
+$ git grep -n -e 'buildSafeCmsCountArgs' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:201:export function buildSafeCmsCountArgs(
+src/lib/cms/client.ts:282:  const safeArgs = buildSafeCmsCountArgs(options as unknown as Record<string, unknown>)
+
+$ git grep -n -e 'resolvePublicDraftFlag' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:160:export async function resolvePublicDraftFlag(): Promise<boolean> {
+src/lib/cms/client.ts:224:  const [payload, draft] = await Promise.all([getInternalPayload(), resolvePublicDraftFlag()])
+src/lib/cms/client.ts:242:  const [payload, draft] = await Promise.all([getInternalPayload(), resolvePublicDraftFlag()])
+src/lib/cms/client.ts:264:  const [payload, draft] = await Promise.all([getInternalPayload(), resolvePublicDraftFlag()])
+
+$ git grep -n -e 'cmsFind' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:17: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`).
+src/lib/cms/client.ts:42: * Options accepted by `cmsFind`.
+src/lib/cms/client.ts:47: * - `cmsFind` unconditionally sets `overrideAccess: false` and resolves `draft` from `draftMode()`.
+src/lib/cms/client.ts:221:export async function cmsFind<TSlug extends CmsCollectionSlug>(
+src/lib/cms/client.ts:239:export async function cmsFindByID<TSlug extends CmsCollectionSlug>(
+src/lib/cms/client.ts:261:export async function cmsFindGlobal<TSlug extends CmsGlobalSlug>(
+
+$ git grep -n -e 'cmsFindByID' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:17: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`).
+src/lib/cms/client.ts:239:export async function cmsFindByID<TSlug extends CmsCollectionSlug>(
+
+$ git grep -n -e 'cmsFindGlobal' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:17: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`).
+src/lib/cms/client.ts:261:export async function cmsFindGlobal<TSlug extends CmsGlobalSlug>(
+
+$ git grep -n -e 'cmsCount' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:37: * Explicit property whitelist for `cmsCount` (`R-11`).
+src/lib/cms/client.ts:278:export async function cmsCount<TSlug extends CmsCollectionSlug>(
+
+$ git grep -n -e 'GUARDED_PAYLOAD_METHODS' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:25:export const GUARDED_PAYLOAD_METHODS = new Set([
+eslint-rules/require-override-access-false.mjs:334:          if (origName && GUARDED_PAYLOAD_METHODS.has(origName)) {
+eslint-rules/require-override-access-false.mjs:437:            GUARDED_PAYLOAD_METHODS.has(methodName) &&
+eslint-rules/require-override-access-false.mjs:502:              GUARDED_PAYLOAD_METHODS.has(innerMethod) &&
+eslint-rules/require-override-access-false.mjs:516:          } else if (propName && GUARDED_PAYLOAD_METHODS.has(propName)) {
+
+$ git grep -n -e 'JUSTIFICATION_COMMENT_REGEX' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:46:const JUSTIFICATION_COMMENT_REGEX = /z6-allow-override-access\s*:\s*\S+/
+eslint-rules/require-override-access-false.mjs:285:    if ((isNearCall || isNearProp) && JUSTIFICATION_COMMENT_REGEX.test(comment.value)) {
+
+$ git grep -n -e 'inspectOptionsObject' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:221:function inspectOptionsObject(optionsArg) {
+eslint-rules/require-override-access-false.mjs:541:        const { hasUnclobberedLiteralFalse, overridePropNode } = inspectOptionsObject(optionsArg)
+
+$ git grep -n -e 'requireOverrideAccessFalseRule' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:294:export const requireOverrideAccessFalseRule = {
+eslint-rules/require-override-access-false.mjs:561:export default requireOverrideAccessFalseRule
+
+$ git grep -n -e 'requireOverrideAccessFalseRule' -- src/eslint-require-override-access-false.test.ts
+src/eslint-require-override-access-false.test.ts:10:import { requireOverrideAccessFalseRule } from '../eslint-rules/require-override-access-false.mjs'
+src/eslint-require-override-access-false.test.ts:33:              'require-override-access-false': requireOverrideAccessFalseRule,
+
+$ git grep -n -e 'buildSafeCmsQueryArgs' -- src/eslint-require-override-access-false.test.ts
+src/eslint-require-override-access-false.test.ts:14:  buildSafeCmsQueryArgs,
+src/eslint-require-override-access-false.test.ts:172:  it('constructs Payload args strictly from the explicit property whitelist in buildSafeCmsQueryArgs and buildSafeCmsCountArgs, dropping injected user, req, showHiddenFields, overrideAccess, and draft (R-6, R-11)', () => {
+src/eslint-require-override-access-false.test.ts:191:    const safePublished = buildSafeCmsQueryArgs(smuggledInput, false)
+src/eslint-require-override-access-false.test.ts:210:    const safeDraft = buildSafeCmsQueryArgs(
+
+$ git grep -n -e 'PAYLOAD_PBKDF2_ITERATIONS' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:14:export const PAYLOAD_PBKDF2_ITERATIONS = 600_000
+src/security/loginEnumeration.ts:65:      PAYLOAD_PBKDF2_ITERATIONS,
+
+$ git grep -n -e 'DUMMY_PBKDF2_SALT_HEX' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:23:export const DUMMY_PBKDF2_SALT_HEX =
+src/security/loginEnumeration.ts:64:      DUMMY_PBKDF2_SALT_HEX,
+
+$ git grep -n -e 'isUserCurrentlyLocked' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:39:export function isUserCurrentlyLocked(lockUntil: unknown, nowMs: number = Date.now()): boolean {
+src/security/loginEnumeration.ts:138:  if (!existingUser || isUserCurrentlyLocked(existingUser.lockUntil)) {
+
+$ git grep -n -e 'runDummyPayloadPasswordHash' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:60:export async function runDummyPayloadPasswordHash(password: string): Promise<boolean> {
+src/security/loginEnumeration.ts:100: *   `runDummyPayloadPasswordHash(password)` (600,000 PBKDF2-SHA256 iterations + `timingSafeEqual`)
+src/security/loginEnumeration.ts:139:    await runDummyPayloadPasswordHash(password)
+
+$ git grep -n -e 'createGenericAuthenticationError' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:87:export function createGenericAuthenticationError(t: unknown): AuthenticationError {
+src/security/loginEnumeration.ts:101: *   and throws `createGenericAuthenticationError(req.t)` (HTTP `401` with the generic localized
+src/security/loginEnumeration.ts:140:    throw createGenericAuthenticationError(req.t)
+src/security/loginEnumeration.ts:158:  const genericAuthErr = createGenericAuthenticationError(req.t)
+
+$ git grep -n -e 'hardenLoginEnumerationBeforeOperation' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:108:export const hardenLoginEnumerationBeforeOperation: CollectionBeforeOperationHook = async (
+
+$ git grep -n -e 'beforeOperation' -- src/collections/Users.ts
+src/collections/Users.ts:358:    beforeOperation: [enforcePasswordBeforeOperation, hardenLoginEnumerationBeforeOperation],
+
+$ git grep -n -e 'maskLockedAuthAfterError' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:152:export const maskLockedAuthAfterError: AfterErrorHook = ({ error, req, result }) => {
+
+$ git grep -n -e 'afterError' -- src/collections/Users.ts
+src/collections/Users.ts:363:    afterError: [maskLockedAuthAfterError],
+
+$ git grep -n -e 'hardenLoginEnumerationBeforeOperation' -- src/security/loginEnumeration.test.ts
+src/security/loginEnumeration.test.ts:9:  hardenLoginEnumerationBeforeOperation,
+src/security/loginEnumeration.test.ts:26:    expect(Users.hooks?.beforeOperation).toContain(hardenLoginEnumerationBeforeOperation)
+src/security/loginEnumeration.test.ts:50:  it('runs the dummy PBKDF2 hash and throws generic AuthenticationError (401) for unknown emails and locked accounts in hardenLoginEnumerationBeforeOperation', async () => {
+src/security/loginEnumeration.test.ts:65:      hardenLoginEnumerationBeforeOperation({
+
+$ git grep -n -e 'unknownAr' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:113:    const unknownAr = await callJsonApi({
+tests/int/p2-t9.int.test.ts:131:    expect(unknownAr.status).toBe(401)
+tests/int/p2-t9.int.test.ts:146:      expect(wrongResAr.rawText).toBe(unknownAr.rawText)
+tests/int/p2-t9.int.test.ts:147:      expect(wrongResAr.body).toEqual(unknownAr.body)
+tests/int/p2-t9.int.test.ts:209:    expect(lockedWrongAr.rawText).toBe(unknownAr.rawText)
+tests/int/p2-t9.int.test.ts:210:    expect(lockedWrongAr.body).toEqual(unknownAr.body)
+tests/int/p2-t9.int.test.ts:238:    expect(lockedCorrectAr.rawText).toBe(unknownAr.rawText)
+
+$ git grep -n -e 'afterAttempt5' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:175:    const afterAttempt5 = await payload.db.findOne<{
+tests/int/p2-t9.int.test.ts:183:    expect(afterAttempt5?.loginAttempts).toBe(5)
+tests/int/p2-t9.int.test.ts:184:    expect(typeof afterAttempt5?.lockUntil).toBe('string')
+tests/int/p2-t9.int.test.ts:185:    const lockRemainingMs = new Date(afterAttempt5?.lockUntil ?? '').getTime() - Date.now()
+
+$ git grep -n -e 'loginAfterLockWindow' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:251:    const loginAfterLockWindow = await callJsonApi({
+tests/int/p2-t9.int.test.ts:260:    expect(loginAfterLockWindow.status).toBe(200)
+tests/int/p2-t9.int.test.ts:261:    expect(typeof loginAfterLockWindow.body.token).toBe('string')
+tests/int/p2-t9.int.test.ts:262:    const setCookie = loginAfterLockWindow.headers.get('set-cookie') ?? ''
+
+$ git grep -n -e 'SAMPLES' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:18: * 2. Executes 3 interleaved warmup rounds followed by `SAMPLES = 20` interleaved rounds of:
+scripts/measure-login-timing.mjs:29:const SAMPLES = 20
+scripts/measure-login-timing.mjs:237:    for (let round = 1; round <= SAMPLES; round++) {
+scripts/measure-login-timing.mjs:309:    console.log(`Measured samples/case : ${String(SAMPLES)} (interleaved, 60 total requests)`)
+scripts/measure-login-timing.mjs:319:    for (let i = 0; i < SAMPLES; i++) {
+
+$ git grep -n -e 'THRESHOLD_PERCENT' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:31:const THRESHOLD_PERCENT = 15.0
+scripts/measure-login-timing.mjs:347:      `Noise threshold                   : < ${THRESHOLD_PERCENT.toFixed(1)}% of overall median`,
+scripts/measure-login-timing.mjs:350:      `Result                            : ${maxPairwiseDiffPct < THRESHOLD_PERCENT ? 'PASS' : 'FAIL'}`,
+scripts/measure-login-timing.mjs:353:    if (maxPairwiseDiffPct >= THRESHOLD_PERCENT) {
+scripts/measure-login-timing.mjs:355:        `Max pairwise median difference ${maxPairwiseDiffPct.toFixed(2)}% exceeded threshold ${THRESHOLD_PERCENT.toFixed(1)}%`,
+
+$ git grep -n -e 'ALL_PUBLIC_LOCALIZED_PATHS' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:24:const ALL_PUBLIC_LOCALIZED_PATHS = [
+src/globals/SiteSettings.ts:373:        localizedPaths: ALL_PUBLIC_LOCALIZED_PATHS,
+
+$ git grep -n -e 'localizedPaths' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:373:        localizedPaths: ALL_PUBLIC_LOCALIZED_PATHS,
+
+$ git grep -n -e 'layoutPaths' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:374:        layoutPaths: ['/'],
+
+$ git grep -n -e 'ALL_PUBLIC_LOCALIZED_PATHS' -- src/globals/Navigation.ts
+src/globals/Navigation.ts:12:const ALL_PUBLIC_LOCALIZED_PATHS = [
+src/globals/Navigation.ts:246:        localizedPaths: ALL_PUBLIC_LOCALIZED_PATHS,
+
+$ git grep -n -e 'localizedPaths' -- src/globals/Navigation.ts
+src/globals/Navigation.ts:246:        localizedPaths: ALL_PUBLIC_LOCALIZED_PATHS,
+
+$ git grep -n -e 'layoutPaths' -- src/globals/Navigation.ts
+src/globals/Navigation.ts:247:        layoutPaths: ['/'],
+
+$ git grep -n -e 'localizedPaths' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:246:        localizedPaths: ['/'],
+
+$ git grep -n -e 'localizedPaths' -- src/globals/ServicesPage.ts
+src/globals/ServicesPage.ts:30:        localizedPaths: ['/services'],
+
+$ git grep -n -e 'localizedPaths' -- src/globals/AboutPage.ts
+src/globals/AboutPage.ts:116:        localizedPaths: ['/about'],
+
+$ git grep -n -e 'extraTags' -- src/globals/ProjectsPage.ts
+src/globals/ProjectsPage.ts:31:        extraTags: ['collection:projects'],
+
+$ git grep -n -e 'localizedPaths' -- src/globals/ProjectsPage.ts
+src/globals/ProjectsPage.ts:29:        localizedPaths: ['/projects'],
+
+$ git grep -n -e 'layoutPaths' -- src/globals/ProjectsPage.ts
+src/globals/ProjectsPage.ts:30:        layoutPaths: ['/projects'],
+
+$ git grep -n -e 'localizedPaths' -- src/globals/ContactPage.ts
+src/globals/ContactPage.ts:28:        localizedPaths: ['/contact'],
+
+$ git grep -n -e 'localizedPaths' -- src/globals/PrivacyPage.ts
+src/globals/PrivacyPage.ts:28:        localizedPaths: ['/privacy'],
+
+$ git grep -n -e 'generateLimitsLogLines' -- scripts/print-limits.ts
+scripts/print-limits.ts:58:export function generateLimitsLogLines(): string[] {
+scripts/print-limits.ts:82:  for (const line of generateLimitsLogLines()) {
+
+$ git grep -n -e 'limits' -- package.json
+package.json:24:    "limits": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/print-limits.ts",
+
+$ git grep -n -e 'migrations' -- src/migrations/index.ts
+src/migrations/index.ts:9:export const migrations = [
+
+$ git grep -n -e 'smuggledProjectFindOpts' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1781:      const smuggledProjectFindOpts: Record<string, unknown> = {
+tests/int/p2-t8.int.test.ts:1790:      const findRes = await cmsFind<'projects'>(smuggledProjectFindOpts as never)
+
+$ git grep -n -e 'plugin-seo' -- package.json
+package.json:31:    "@payloadcms/plugin-seo": "3.91.0",
+
+$ git grep -n -e 'dompurify' -- package.json
+package.json:59:      "dompurify": "3.4.17",
+
+$ git grep -n -e 'publishedOrLoggedIn' -- src/access/publishedOrLoggedIn.ts
+src/access/publishedOrLoggedIn.ts:3:export const publishedOrLoggedIn: Access = ({ req }) => {
+
+$ git grep -n -e 'enforcePublishedReadOnGlobalBeforeOperation' -- src/globals/_shared/publishableGlobal.ts
+src/globals/_shared/publishableGlobal.ts:47:export const enforcePublishedReadOnGlobalBeforeOperation: GlobalBeforeOperationHook = ({
+src/globals/_shared/publishableGlobal.ts:329:      beforeOperation: [enforcePublishedReadOnGlobalBeforeOperation, ...existingBeforeOperation],
+
+$ git grep -n -e 'isAdminOrSelfFieldLevel' -- src/collections/Users.ts
+src/collections/Users.ts:19:  isAdminOrSelfFieldLevel,
+src/collections/Users.ts:187:  const canReadEmail = isAdminOrSelfFieldLevel({
+src/collections/Users.ts:388:        read: isAdminOrSelfFieldLevel,
+src/collections/Users.ts:418:        read: isAdminOrSelfFieldLevel,
+src/collections/Users.ts:432:        read: isAdminOrSelfFieldLevel,
+src/collections/Users.ts:440:        read: isAdminOrSelfFieldLevel,
+
+$ git grep -n -e 'isAdminFieldLevel' -- src/collections/Users.ts
+src/collections/Users.ts:17:  isAdminFieldLevel,
+src/collections/Users.ts:419:        create: isAdminFieldLevel,
+src/collections/Users.ts:420:        update: isAdminFieldLevel,
+
+$ git grep -n -e 'preventLastAdminDemotionBeforeChange' -- src/collections/Users.ts
+src/collections/Users.ts:87:const preventLastAdminDemotionBeforeChange: CollectionBeforeChangeHook = async ({
+src/collections/Users.ts:360:    beforeChange: [preventLastAdminDemotionBeforeChange],
+
+$ git grep -n -e 'preventLastAdminBeforeDelete' -- src/collections/Users.ts
+src/collections/Users.ts:122:const preventLastAdminBeforeDelete: CollectionBeforeDeleteHook = async ({ id, req }) => {
+src/collections/Users.ts:362:    beforeDelete: [preventLastAdminBeforeDelete],
+
+$ git grep -n -e 'restrictOtherUserFieldsForEditorAfterRead' -- src/collections/Users.ts
+src/collections/Users.ts:207:export const restrictOtherUserFieldsForEditorAfterRead: CollectionAfterReadHook = ({
+src/collections/Users.ts:361:    afterRead: [restrictOtherUserFieldsForEditorAfterRead],
+
+$ git grep -n -e 'ALLOWED_VIDEO_HOSTS' -- src/fields/videoUrl.ts
+src/fields/videoUrl.ts:3:export const ALLOWED_VIDEO_HOSTS = [
+src/fields/videoUrl.ts:12:export type AllowedVideoHost = (typeof ALLOWED_VIDEO_HOSTS)[number]
+src/fields/videoUrl.ts:146:  const isAllowedHost = (ALLOWED_VIDEO_HOSTS as readonly string[]).includes(hostname)
+
+$ git grep -n -e 'ALLOWED_VIDEO_EMBED_HOSTS' -- src/fields/link.ts
+src/fields/link.ts:133:export const ALLOWED_VIDEO_EMBED_HOSTS = [
+src/fields/link.ts:156:    allowedHosts: ALLOWED_VIDEO_EMBED_HOSTS,
+
+$ git grep -n -e 'findCollectionTargetReferences' -- src/collections/Media.ts
+src/collections/Media.ts:396: * so `findCollectionTargetReferences` can always query indexed media references in SQL.
+src/collections/Media.ts:469:export const findCollectionTargetReferences = async ({
+src/collections/Media.ts:516:    await findCollectionTargetReferences({
+
+$ git grep -n -e 'eyebrow' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:270:          name: 'eyebrow',
+src/globals/HomePage.ts:384:          name: 'eyebrow',
+
+$ git grep -n -e 'buttonGroup' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:4:import { buttonGroup } from '../fields/groups/button'
+src/globals/HomePage.ts:336:        buttonGroup({
+src/globals/HomePage.ts:344:        buttonGroup({
+src/globals/HomePage.ts:415:        buttonGroup({
+src/globals/HomePage.ts:446:          buttonGroup({
+src/globals/HomePage.ts:686:          buttonGroup({
+
+$ git grep -n -e 'secondaryButton' -- src/fields/groups/cta.ts
+src/fields/groups/cta.ts:29: * - `secondaryButton` (optional `buttonGroup` for secondary action such as "Call Us Now" in Figma CTA `18:660` / `24:1677` / `19:926`)
+src/fields/groups/cta.ts:116:        name: 'secondaryButton',
+src/fields/groups/cta.ts:144: * Reusable `cta` section group (`title` (L), `text` (L), `button`, plus optional `secondaryButton` & `backgroundImage`)
+
+$ git grep -n -e 'backgroundImage' -- src/fields/groups/cta.ts
+src/fields/groups/cta.ts:30: * - `backgroundImage` (optional `upload` -> `media` for CTA section backdrop)
+src/fields/groups/cta.ts:128:      name: 'backgroundImage',
+src/fields/groups/cta.ts:144: * Reusable `cta` section group (`title` (L), `text` (L), `button`, plus optional `secondaryButton` & `backgroundImage`)
+
+$ git grep -n -e 'eyebrow' -- src/globals/AboutPage.ts
+src/globals/AboutPage.ts:24:        name: 'eyebrow',
+src/globals/AboutPage.ts:161:          name: 'eyebrow',
+
+$ git grep -n -e 'title' -- src/globals/AboutPage.ts
+src/globals/AboutPage.ts:35:        name: 'title',
+src/globals/AboutPage.ts:172:          name: 'title',
+
+$ git grep -n -e 'image' -- src/globals/AboutPage.ts
+src/globals/AboutPage.ts:84:        name: 'image',
+src/globals/AboutPage.ts:214:          name: 'image',
+src/globals/AboutPage.ts:293:            name: 'image',
+
+$ git grep -n -e 'headerCta' -- src/globals/Navigation.ts
+src/globals/Navigation.ts:74:    name: 'headerCta',
+
+$ git grep -n -e 'footerCta' -- src/globals/Navigation.ts
+src/globals/Navigation.ts:172:    name: 'footerCta',
+
+$ git grep -n -e 'copyright' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:294:    name: 'copyright',
+
+$ git grep -n -e 'whatsapp' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:19:  'whatsapp',
+src/globals/SiteSettings.ts:91:    name: 'whatsapp',
+src/globals/SiteSettings.ts:102:    name: 'whatsappLabel',
+src/globals/SiteSettings.ts:262:          { label: { ar: 'واتساب (WhatsApp)', en: 'WhatsApp' }, value: 'whatsapp' },
+
+$ git grep -n -e 'seoGroupField' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:9:import { seoGroupField } from '../fields/seo'
+src/globals/HomePage.ts:721:    collapsibleSection(seoGroupField()),
+
+$ git grep -n -e 'window' -- src/lib/ipHash.ts
+src/lib/ipHash.ts:17:if (typeof window !== 'undefined') {
+
+$ git grep -n -e 'useAsTitle' -- src/collections/Users.ts
+src/collections/Users.ts:263:    useAsTitle: 'name',
+
+$ git grep -n -e 'isAdminOrEditor' -- src/collections/Users.ts
+src/collections/Users.ts:18:  isAdminOrEditor,
+src/collections/Users.ts:178:const isAdminOrEditorUserFieldAccess: FieldAccess = ({ req }) => {
+src/collections/Users.ts:275:    read: isAdminOrEditor,
+src/collections/Users.ts:375:        read: isAdminOrEditorUserFieldAccess,
+
+$ git grep -n -e 'CmsFindOptions' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:49:export interface CmsFindOptions<TSlug extends CmsCollectionSlug> {
+src/lib/cms/client.ts:222:  options: CmsFindOptions<TSlug>,
+
+$ git grep -n -e 'CmsFindByIDOptions' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:67:export interface CmsFindByIDOptions<TSlug extends CmsCollectionSlug> {
+src/lib/cms/client.ts:240:  options: CmsFindByIDOptions<TSlug>,
+
+$ git grep -n -e 'CmsFindGlobalOptions' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:81:export interface CmsFindGlobalOptions<TSlug extends CmsGlobalSlug> {
+src/lib/cms/client.ts:262:  options: CmsFindGlobalOptions<TSlug>,
+
+$ git grep -n -e 'CmsCountOptions' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:94:export interface CmsCountOptions<TSlug extends CmsCollectionSlug> {
+src/lib/cms/client.ts:279:  options: CmsCountOptions<TSlug>,
+
+$ git grep -n -e 'smuggledProjectByIdOpts' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1793:      const smuggledProjectByIdOpts: Record<string, unknown> = {
+tests/int/p2-t8.int.test.ts:1802:      const byIdRes = await cmsFindByID<'projects'>(smuggledProjectByIdOpts as never)
+
+$ git grep -n -e 'smuggledGlobalOpts' -- tests/int/p2-t8.int.test.ts
+tests/int/p2-t8.int.test.ts:1805:      const smuggledGlobalOpts: Record<string, unknown> = {
+tests/int/p2-t8.int.test.ts:1814:      const globalRes = await cmsFindGlobal<'privacy-page'>(smuggledGlobalOpts as never)
+
+$ git grep -n -e 'isPayloadImportForbiddenFile' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:104:export function isPayloadImportForbiddenFile(filename) {
+eslint-rules/require-override-access-false.mjs:311:    const forbidImports = isPayloadImportForbiddenFile(filename)
+
+$ git grep -n -e 'noServerInClientRule' -- src/eslint-no-server-in-client.test.ts
+src/eslint-no-server-in-client.test.ts:5:import { noServerInClientRule } from '../eslint-rules/no-server-in-client.mjs'
+src/eslint-no-server-in-client.test.ts:22:              'no-server-in-client': noServerInClientRule,
+
+$ git grep -n -e '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:10:  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__'
+
+$ git grep -n -e '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__' -- scripts/check-client-bundle-sentinels.mjs
+scripts/check-client-bundle-sentinels.mjs:15:  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__',
+
+$ git grep -n -e 'VALID_IDENTIFIER_REGEX' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:26:export const VALID_IDENTIFIER_REGEX = /^[A-Za-z0-9_$.-]{3,}$/
+scripts/check-citations.mjs:115:  if (!VALID_IDENTIFIER_REGEX.test(identifier)) {
+
+$ git grep -n -e 'PAIRED_CITATION_REGEX' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:101:const PAIRED_CITATION_REGEX =
+scripts/check-citations.mjs:196:    PAIRED_CITATION_REGEX.lastIndex = 0
+scripts/check-citations.mjs:198:    while ((match = PAIRED_CITATION_REGEX.exec(lineText)) !== null) {
+scripts/check-citations.mjs:212:    const remainder = lineText.replace(PAIRED_CITATION_REGEX, ' ')
+
+$ git grep -n -e 'validateCitationIdentifier' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:108:export function validateCitationIdentifier(identifier) {
+scripts/check-citations.mjs:265:      const idCheck = validateCitationIdentifier(currentPattern)
+scripts/check-citations.mjs:335:      const idCheck = validateCitationIdentifier(c.identifier)
+scripts/check-citations.mjs:423:      const idCheck = validateCitationIdentifier(c.identifier)
+
+$ git grep -n -e 'parseReportCitations' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:165:export function parseReportCitations(markdown, reportLabel = 'report.md') {
+scripts/check-citations.mjs:324:    const { paired, unpaired } = parseReportCitations(markdown, reportPath)
+scripts/check-citations.mjs:414:    const { paired, unpaired } = parseReportCitations(markdown, relReport)
+
+$ git grep -n -e 'parseCitationsLog' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:232:export function parseCitationsLog(citationsLogText) {
+scripts/check-citations.mjs:317:  const parsedLog = parseCitationsLog(citationsLogText)
+
+$ git grep -n -e 'verifyCitations' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:314:export function verifyCitations({ repoRoot, reports, citationsLogText }) {
+scripts/check-citations.mjs:500:  const result = verifyCitations({
+
+$ git grep -n -e 'check-citations.mjs' -- package.json
+package.json:25:    "check:citations": "node scripts/check-citations.mjs"
+
+$ git grep -n -e 'citations.log' -- .github/workflows/ci.yml
+.github/workflows/ci.yml:167:          pnpm check:citations docs/reports/phase-2.md handoff/reports/P2-T8.md docs/reports/evidence/P2-T8/r3/citations.log
+.github/workflows/ci.yml:168:          pnpm check:citations handoff/reports/P2-T9.md docs/reports/evidence/P2-T9/r1/citations.log
+
+$ git grep -n -e 'validateCitationIdentifier' -- src/check-citations.test.ts
+src/check-citations.test.ts:6:  validateCitationIdentifier,
+src/check-citations.test.ts:12:    expect(validateCitationIdentifier('buildSafeCmsQueryArgs')).toEqual({ valid: true })
+src/check-citations.test.ts:13:    expect(validateCitationIdentifier('SAFE_CMS_QUERY_WHITELIST_KEYS')).toEqual({ valid: true })
+src/check-citations.test.ts:25:      const res = validateCitationIdentifier(bad)
+
+$ git grep -n -e 'parseReportCitations' -- src/check-citations.test.ts
+src/check-citations.test.ts:5:  parseReportCitations,
+src/check-citations.test.ts:40:    const parsed = parseReportCitations(md, 'sample.md')
+
+$ git grep -n -e 'verifyCitations' -- src/check-citations.test.ts
+src/check-citations.test.ts:7:  verifyCitations,
+src/check-citations.test.ts:65:    const okResult = verifyCitations({
+src/check-citations.test.ts:78:    const wrongLineResult = verifyCitations({
+
+$ git grep -n -e 'col.auth' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:78:      if (col.auth) {
+src/access/z1-config-enumeration.test.ts:108:      if (Boolean(col.auth)) {
+
+$ git grep -n -e 'defaultUnlockAccess' -- src/access/z1-config-enumeration.test.ts
+src/access/z1-config-enumeration.test.ts:41:const PAYLOAD_DEFAULT_ACCESS_NAMES = new Set(['defaultAccess', 'defaultUnlockAccess'])
+src/access/z1-config-enumeration.test.ts:129:    // Negative self-test: prove assertExplicitAccessFunction catches missing, defaultAccess, and defaultUnlockAccess (R-19)
+src/access/z1-config-enumeration.test.ts:133:    const simulatedDefaultUnlockAccess: Access = function defaultUnlockAccess({ req: { user } }) {
+src/access/z1-config-enumeration.test.ts:144:    }).toThrow(/defaultUnlockAccess/)

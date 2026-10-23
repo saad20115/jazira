@@ -1,0 +1,131 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+cmd: "C:\Users\User21.CSE\AppData\Local\Temp\run-migrate-down-r3.cmd"
+duration_ms: 55447
+---
+ database_name 
+---------------
+ aljazira_dev
+(1 row)
+
+UPDATE 7
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[16:17:45] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     2 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     3 │ Yes │
+│                      20261022_160652_p2_t4_projects │     4 │ Yes │
+│                       20261022_221250_p2_t5_globals │     5 │ Yes │
+│                20261022_231435_p2_t6_quote_requests │     6 │ Yes │
+│  20261023_005934_p2_t6_quote_requests_service_title │     7 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[16:17:46] INFO: Done.
+=== migrate:down batch 7 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:17:51] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:17:51] INFO: Rolling back batch 7 consisting of 7 migration(s).
+[16:17:51] INFO: Migrating down: 20261023_005934_p2_t6_quote_requests_service_title
+[16:17:51] INFO: Migrated down:  20261023_005934_p2_t6_quote_requests_service_title (8ms)
+[16:17:51] INFO: Done.
+=== migrate:down batch 6 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:17:57] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:17:57] INFO: Rolling back batch 6 consisting of 6 migration(s).
+[16:17:57] INFO: Migrating down: 20261022_231435_p2_t6_quote_requests
+[16:17:57] INFO: Migrated down:  20261022_231435_p2_t6_quote_requests (14ms)
+[16:17:57] INFO: Done.
+=== migrate:down batch 5 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:18:03] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:18:03] INFO: Rolling back batch 5 consisting of 5 migration(s).
+[16:18:03] INFO: Migrating down: 20261022_221250_p2_t5_globals
+[16:18:03] INFO: Migrated down:  20261022_221250_p2_t5_globals (156ms)
+[16:18:04] INFO: Done.
+=== migrate:down batch 4 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:18:09] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:18:10] INFO: Rolling back batch 4 consisting of 4 migration(s).
+[16:18:10] INFO: Migrating down: 20261022_160652_p2_t4_projects
+[16:18:10] INFO: Migrated down:  20261022_160652_p2_t4_projects (42ms)
+[16:18:10] INFO: Done.
+=== migrate:down batch 3 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:18:16] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:18:16] INFO: Rolling back batch 3 consisting of 3 migration(s).
+[16:18:16] INFO: Migrating down: 20261022_140011_p2_t3_services_team
+[16:18:16] INFO: Migrated down:  20261022_140011_p2_t3_services_team (30ms)
+[16:18:16] INFO: Done.
+=== migrate:down batch 2 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:18:22] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:18:22] INFO: Rolling back batch 2 consisting of 2 migration(s).
+[16:18:22] INFO: Migrating down: 20261022_120943_p2_t2_videos_brands_stats_materials
+[16:18:22] INFO: Migrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (21ms)
+[16:18:22] INFO: Done.
+=== migrate:down batch 1 ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:18:28] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+[16:18:28] INFO: Rolling back batch 1 consisting of 1 migration(s).
+[16:18:28] INFO: Migrating down: 20261021_074848_initial_users_media
+[16:18:28] INFO: Migrated down:  20261021_074848_initial_users_media (25ms)
+[16:18:28] INFO: Done.
+=== migrate:status after 7x migrate:down ===
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[16:18:34] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │       │  No │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │       │  No │
+│                 20261022_140011_p2_t3_services_team │       │  No │
+│                      20261022_160652_p2_t4_projects │       │  No │
+│                       20261022_221250_p2_t5_globals │       │  No │
+│                20261022_231435_p2_t6_quote_requests │       │  No │
+│  20261023_005934_p2_t6_quote_requests_service_title │       │  No │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[16:18:34] INFO: Done.
+=== SQL check after 7x migrate:down in aljazira_dev ===
+ database_name | table_name 
+---------------+------------
+(0 rows)
+
+ database_name | user_table_count 
+---------------+------------------
+ aljazira_dev  |                0
+(1 row)
+
+ database_name | enum_count 
+---------------+------------
+ aljazira_dev  |          0
+(1 row)
+

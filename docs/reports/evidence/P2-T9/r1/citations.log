@@ -1,0 +1,227 @@
+$ git grep -n -e 'PAYLOAD_PBKDF2_ITERATIONS' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:14:export const PAYLOAD_PBKDF2_ITERATIONS = 600_000
+src/security/loginEnumeration.ts:65:      PAYLOAD_PBKDF2_ITERATIONS,
+
+$ git grep -n -e 'PAYLOAD_PBKDF2_KEY_LENGTH' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:15:export const PAYLOAD_PBKDF2_KEY_LENGTH = 32
+src/security/loginEnumeration.ts:66:      PAYLOAD_PBKDF2_KEY_LENGTH,
+
+$ git grep -n -e 'PAYLOAD_PBKDF2_DIGEST' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:16:export const PAYLOAD_PBKDF2_DIGEST = 'sha256'
+src/security/loginEnumeration.ts:67:      PAYLOAD_PBKDF2_DIGEST,
+
+$ git grep -n -e 'DUMMY_PBKDF2_SALT_HEX' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:23:export const DUMMY_PBKDF2_SALT_HEX =
+src/security/loginEnumeration.ts:64:      DUMMY_PBKDF2_SALT_HEX,
+
+$ git grep -n -e 'DUMMY_PBKDF2_HASH_BUFFER' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:25:export const DUMMY_PBKDF2_HASH_BUFFER = Buffer.from(
+src/security/loginEnumeration.ts:57: * `crypto.timingSafeEqual` against `DUMMY_PBKDF2_HASH_BUFFER`, matching the exact work
+src/security/loginEnumeration.ts:74:          hashBuffer.length === DUMMY_PBKDF2_HASH_BUFFER.length &&
+src/security/loginEnumeration.ts:75:          crypto.timingSafeEqual(hashBuffer, DUMMY_PBKDF2_HASH_BUFFER)
+
+$ git grep -n -e 'runDummyPayloadPasswordHash' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:60:export async function runDummyPayloadPasswordHash(password: string): Promise<boolean> {
+src/security/loginEnumeration.ts:100: *   `runDummyPayloadPasswordHash(password)` (600,000 PBKDF2-SHA256 iterations + `timingSafeEqual`)
+src/security/loginEnumeration.ts:139:    await runDummyPayloadPasswordHash(password)
+
+$ git grep -n -e 'crypto.pbkdf2' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:62:    crypto.pbkdf2(
+
+$ git grep -n -e 'crypto.timingSafeEqual' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:20: * PBKDF2-SHA256 + `crypto.timingSafeEqual` CPU work when a login targets an unknown
+src/security/loginEnumeration.ts:57: * `crypto.timingSafeEqual` against `DUMMY_PBKDF2_HASH_BUFFER`, matching the exact work
+src/security/loginEnumeration.ts:75:          crypto.timingSafeEqual(hashBuffer, DUMMY_PBKDF2_HASH_BUFFER)
+
+$ git grep -n -e 'hardenLoginEnumerationBeforeOperation' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:108:export const hardenLoginEnumerationBeforeOperation: CollectionBeforeOperationHook = async (
+
+$ git grep -n -e 'beforeOperation' -- src/collections/Users.ts
+src/collections/Users.ts:358:    beforeOperation: [enforcePasswordBeforeOperation, hardenLoginEnumerationBeforeOperation],
+
+$ git grep -n -e 'req.payload.db.findOne' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:125:  const existingUser = await req.payload.db.findOne<{
+
+$ git grep -n -e 'isUserCurrentlyLocked' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:39:export function isUserCurrentlyLocked(lockUntil: unknown, nowMs: number = Date.now()): boolean {
+src/security/loginEnumeration.ts:138:  if (!existingUser || isUserCurrentlyLocked(existingUser.lockUntil)) {
+
+$ git grep -n -e 'createGenericAuthenticationError' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:87:export function createGenericAuthenticationError(t: unknown): AuthenticationError {
+src/security/loginEnumeration.ts:101: *   and throws `createGenericAuthenticationError(req.t)` (HTTP `401` with the generic localized
+src/security/loginEnumeration.ts:140:    throw createGenericAuthenticationError(req.t)
+src/security/loginEnumeration.ts:158:  const genericAuthErr = createGenericAuthenticationError(req.t)
+
+$ git grep -n -e 'maxLoginAttempts' -- src/collections/Users.ts
+src/collections/Users.ts:286:    maxLoginAttempts: 5,
+
+$ git grep -n -e 'lockTime' -- src/collections/Users.ts
+src/collections/Users.ts:287:    lockTime: 15 * 60 * 1000, // 15 minutes (A1)
+
+$ git grep -n -e 'maskLockedAuthAfterError' -- src/security/loginEnumeration.ts
+src/security/loginEnumeration.ts:152:export const maskLockedAuthAfterError: AfterErrorHook = ({ error, req, result }) => {
+
+$ git grep -n -e 'afterError' -- src/collections/Users.ts
+src/collections/Users.ts:363:    afterError: [maskLockedAuthAfterError],
+
+$ git grep -n -e 'PAYLOAD_PBKDF2_ITERATIONS' -- src/security/loginEnumeration.test.ts
+src/security/loginEnumeration.test.ts:13:  PAYLOAD_PBKDF2_ITERATIONS,
+src/security/loginEnumeration.test.ts:20:    expect(PAYLOAD_PBKDF2_ITERATIONS).toBe(600_000)
+
+$ git grep -n -e 'isUserCurrentlyLocked' -- src/security/loginEnumeration.test.ts
+src/security/loginEnumeration.test.ts:10:  isUserCurrentlyLocked,
+src/security/loginEnumeration.test.ts:30:  it('evaluates isUserCurrentlyLocked accurately across nullish, expired, invalid, and future timestamps', () => {
+src/security/loginEnumeration.test.ts:32:    expect(isUserCurrentlyLocked(null, now)).toBe(false)
+src/security/loginEnumeration.test.ts:33:    expect(isUserCurrentlyLocked(undefined, now)).toBe(false)
+src/security/loginEnumeration.test.ts:34:    expect(isUserCurrentlyLocked('', now)).toBe(false)
+src/security/loginEnumeration.test.ts:35:    expect(isUserCurrentlyLocked('not-a-valid-date', now)).toBe(false)
+src/security/loginEnumeration.test.ts:36:    expect(isUserCurrentlyLocked(new Date(now - 1).toISOString(), now)).toBe(false)
+src/security/loginEnumeration.test.ts:37:    expect(isUserCurrentlyLocked(new Date(now), now)).toBe(false)
+src/security/loginEnumeration.test.ts:38:    expect(isUserCurrentlyLocked(new Date(now + 1).toISOString(), now)).toBe(true)
+src/security/loginEnumeration.test.ts:39:    expect(isUserCurrentlyLocked(new Date(now + 60_000), now)).toBe(true)
+
+$ git grep -n -e 'runDummyPayloadPasswordHash' -- src/security/loginEnumeration.test.ts
+src/security/loginEnumeration.test.ts:15:  runDummyPayloadPasswordHash,
+src/security/loginEnumeration.test.ts:42:  it('executes a full 600,000-iteration PBKDF2-SHA256 derivation in runDummyPayloadPasswordHash', async () => {
+src/security/loginEnumeration.test.ts:44:    const matched = await runDummyPayloadPasswordHash('Probe!Password#2026')
+
+$ git grep -n -e 'hardenLoginEnumerationBeforeOperation' -- src/security/loginEnumeration.test.ts
+src/security/loginEnumeration.test.ts:9:  hardenLoginEnumerationBeforeOperation,
+src/security/loginEnumeration.test.ts:26:    expect(Users.hooks?.beforeOperation).toContain(hardenLoginEnumerationBeforeOperation)
+src/security/loginEnumeration.test.ts:50:  it('runs the dummy PBKDF2 hash and throws generic AuthenticationError (401) for unknown emails and locked accounts in hardenLoginEnumerationBeforeOperation', async () => {
+src/security/loginEnumeration.test.ts:65:      hardenLoginEnumerationBeforeOperation({
+
+$ git grep -n -e 'maskLockedAuthAfterError' -- src/security/loginEnumeration.test.ts
+src/security/loginEnumeration.test.ts:11:  maskLockedAuthAfterError,
+src/security/loginEnumeration.test.ts:27:    expect(Users.hooks?.afterError).toContain(maskLockedAuthAfterError)
+src/security/loginEnumeration.test.ts:148:  it('rewrites LockedAuth in maskLockedAuthAfterError to the generic AuthenticationError response and leaves other errors untouched', () => {
+src/security/loginEnumeration.test.ts:152:    const masked = maskLockedAuthAfterError({
+src/security/loginEnumeration.test.ts:171:    const untouched = maskLockedAuthAfterError({
+
+$ git grep -n -e 'unknownAr' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:113:    const unknownAr = await callJsonApi({
+tests/int/p2-t9.int.test.ts:131:    expect(unknownAr.status).toBe(401)
+tests/int/p2-t9.int.test.ts:146:      expect(wrongResAr.rawText).toBe(unknownAr.rawText)
+tests/int/p2-t9.int.test.ts:147:      expect(wrongResAr.body).toEqual(unknownAr.body)
+tests/int/p2-t9.int.test.ts:209:    expect(lockedWrongAr.rawText).toBe(unknownAr.rawText)
+tests/int/p2-t9.int.test.ts:210:    expect(lockedWrongAr.body).toEqual(unknownAr.body)
+tests/int/p2-t9.int.test.ts:238:    expect(lockedCorrectAr.rawText).toBe(unknownAr.rawText)
+
+$ git grep -n -e 'unknownEn' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:122:    const unknownEn = await callJsonApi({
+tests/int/p2-t9.int.test.ts:132:    expect(unknownEn.status).toBe(401)
+tests/int/p2-t9.int.test.ts:172:    expect(fifthAttemptEn.rawText).toBe(unknownEn.rawText)
+tests/int/p2-t9.int.test.ts:173:    expect(fifthAttemptEn.body).toEqual(unknownEn.body)
+tests/int/p2-t9.int.test.ts:214:    expect(lockedWrongEn.rawText).toBe(unknownEn.rawText)
+tests/int/p2-t9.int.test.ts:215:    expect(lockedWrongEn.body).toEqual(unknownEn.body)
+tests/int/p2-t9.int.test.ts:240:    expect(lockedCorrectEn.rawText).toBe(unknownEn.rawText)
+
+$ git grep -n -e 'wrongResAr' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:136:      const wrongResAr = await callJsonApi({
+tests/int/p2-t9.int.test.ts:145:      expect(wrongResAr.status).toBe(401)
+tests/int/p2-t9.int.test.ts:146:      expect(wrongResAr.rawText).toBe(unknownAr.rawText)
+tests/int/p2-t9.int.test.ts:147:      expect(wrongResAr.body).toEqual(unknownAr.body)
+
+$ git grep -n -e 'fifthAttemptEn' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:162:    const fifthAttemptEn = await callJsonApi({
+tests/int/p2-t9.int.test.ts:171:    expect(fifthAttemptEn.status).toBe(401)
+tests/int/p2-t9.int.test.ts:172:    expect(fifthAttemptEn.rawText).toBe(unknownEn.rawText)
+tests/int/p2-t9.int.test.ts:173:    expect(fifthAttemptEn.body).toEqual(unknownEn.body)
+
+$ git grep -n -e 'afterAttempt5' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:175:    const afterAttempt5 = await payload.db.findOne<{
+tests/int/p2-t9.int.test.ts:183:    expect(afterAttempt5?.loginAttempts).toBe(5)
+tests/int/p2-t9.int.test.ts:184:    expect(typeof afterAttempt5?.lockUntil).toBe('string')
+tests/int/p2-t9.int.test.ts:185:    const lockRemainingMs = new Date(afterAttempt5?.lockUntil ?? '').getTime() - Date.now()
+
+$ git grep -n -e 'lockedWrongAr' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:190:    const lockedWrongAr = await callJsonApi({
+tests/int/p2-t9.int.test.ts:208:    expect(lockedWrongAr.status).toBe(401)
+tests/int/p2-t9.int.test.ts:209:    expect(lockedWrongAr.rawText).toBe(unknownAr.rawText)
+tests/int/p2-t9.int.test.ts:210:    expect(lockedWrongAr.body).toEqual(unknownAr.body)
+tests/int/p2-t9.int.test.ts:211:    expect(lockedWrongAr.rawText).not.toContain('قفل')
+
+$ git grep -n -e 'lockedWrongEn' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:199:    const lockedWrongEn = await callJsonApi({
+tests/int/p2-t9.int.test.ts:213:    expect(lockedWrongEn.status).toBe(401)
+tests/int/p2-t9.int.test.ts:214:    expect(lockedWrongEn.rawText).toBe(unknownEn.rawText)
+tests/int/p2-t9.int.test.ts:215:    expect(lockedWrongEn.body).toEqual(unknownEn.body)
+tests/int/p2-t9.int.test.ts:216:    expect(lockedWrongEn.rawText.toLowerCase()).not.toContain('locked')
+
+$ git grep -n -e 'lockedCorrectAr' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:219:    const lockedCorrectAr = await callJsonApi({
+tests/int/p2-t9.int.test.ts:237:    expect(lockedCorrectAr.status).toBe(401)
+tests/int/p2-t9.int.test.ts:238:    expect(lockedCorrectAr.rawText).toBe(unknownAr.rawText)
+
+$ git grep -n -e 'lockedCorrectEn' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:228:    const lockedCorrectEn = await callJsonApi({
+tests/int/p2-t9.int.test.ts:239:    expect(lockedCorrectEn.status).toBe(401)
+tests/int/p2-t9.int.test.ts:240:    expect(lockedCorrectEn.rawText).toBe(unknownEn.rawText)
+
+$ git grep -n -e 'loginAfterLockWindow' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:251:    const loginAfterLockWindow = await callJsonApi({
+tests/int/p2-t9.int.test.ts:260:    expect(loginAfterLockWindow.status).toBe(200)
+tests/int/p2-t9.int.test.ts:261:    expect(typeof loginAfterLockWindow.body.token).toBe('string')
+tests/int/p2-t9.int.test.ts:262:    const setCookie = loginAfterLockWindow.headers.get('set-cookie') ?? ''
+
+$ git grep -n -e 'HttpOnly' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:264:    expect(setCookie).toContain('HttpOnly')
+
+$ git grep -n -e 'SameSite' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:265:    expect(setCookie).toContain('SameSite=Strict')
+
+$ git grep -n -e 'afterSuccess' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:267:    const afterSuccess = await payload.db.findOne<{
+tests/int/p2-t9.int.test.ts:275:    expect(afterSuccess?.loginAttempts ?? 0).toBe(0)
+tests/int/p2-t9.int.test.ts:276:    expect(afterSuccess?.lockUntil ?? null).toBeNull()
+
+$ git grep -n -e 'forgotExisting' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:283:    const forgotExisting = await callJsonApi({
+tests/int/p2-t9.int.test.ts:295:    expect(forgotExisting.status).toBe(200)
+tests/int/p2-t9.int.test.ts:297:    expect(forgotExisting.rawText).toBe(forgotUnknown.rawText)
+
+$ git grep -n -e 'forgotUnknown' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:289:    const forgotUnknown = await callJsonApi({
+tests/int/p2-t9.int.test.ts:296:    expect(forgotUnknown.status).toBe(200)
+tests/int/p2-t9.int.test.ts:297:    expect(forgotExisting.rawText).toBe(forgotUnknown.rawText)
+
+$ git grep -n -e 'SAMPLES' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:18: * 2. Executes 3 interleaved warmup rounds followed by `SAMPLES = 20` interleaved rounds of:
+scripts/measure-login-timing.mjs:29:const SAMPLES = 20
+scripts/measure-login-timing.mjs:237:    for (let round = 1; round <= SAMPLES; round++) {
+scripts/measure-login-timing.mjs:309:    console.log(`Measured samples/case : ${String(SAMPLES)} (interleaved, 60 total requests)`)
+scripts/measure-login-timing.mjs:319:    for (let i = 0; i < SAMPLES; i++) {
+
+$ git grep -n -e 'WARMUP_ROUNDS' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:30:const WARMUP_ROUNDS = 3
+scripts/measure-login-timing.mjs:219:    for (let w = 1; w <= WARMUP_ROUNDS; w++) {
+scripts/measure-login-timing.mjs:308:    console.log(`Warmup rounds         : ${String(WARMUP_ROUNDS)}`)
+
+$ git grep -n -e 'THRESHOLD_PERCENT' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:31:const THRESHOLD_PERCENT = 15.0
+scripts/measure-login-timing.mjs:347:      `Noise threshold                   : < ${THRESHOLD_PERCENT.toFixed(1)}% of overall median`,
+scripts/measure-login-timing.mjs:350:      `Result                            : ${maxPairwiseDiffPct < THRESHOLD_PERCENT ? 'PASS' : 'FAIL'}`,
+scripts/measure-login-timing.mjs:353:    if (maxPairwiseDiffPct >= THRESHOLD_PERCENT) {
+scripts/measure-login-timing.mjs:355:        `Max pairwise median difference ${maxPairwiseDiffPct.toFixed(2)}% exceeded threshold ${THRESHOLD_PERCENT.toFixed(1)}%`,
+
+$ git grep -n -e 'computeStats' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:51:function computeStats(values) {
+scripts/measure-login-timing.mjs:293:    const unknownStats = computeStats(samplesByCategory.unknown_email.map((s) => s.durationMs))
+scripts/measure-login-timing.mjs:294:    const existingStats = computeStats(
+scripts/measure-login-timing.mjs:297:    const lockedStats = computeStats(samplesByCategory.locked_account.map((s) => s.durationMs))
+scripts/measure-login-timing.mjs:300:    const overallMedian = computeStats(allSamples.map((s) => s.durationMs)).median
+
+$ git grep -n -e 'postLogin' -- scripts/measure-login-timing.mjs
+scripts/measure-login-timing.mjs:129:async function postLogin(baseUrl, email, password) {
+scripts/measure-login-timing.mjs:196:      const lockSetupRes = await postLogin(
+scripts/measure-login-timing.mjs:220:      await postLogin(baseUrl, `timing-warmup-unknown-${String(w)}@aljazira.co`, 'Warmup!Wrong#123')
+scripts/measure-login-timing.mjs:221:      await postLogin(baseUrl, 'timing-warmup@aljazira.co', `Warmup!Wrong#${String(w)}`)
+scripts/measure-login-timing.mjs:222:      await postLogin(baseUrl, 'timing-locked@aljazira.co', `Warmup!Wrong#${String(w)}`)
+scripts/measure-login-timing.mjs:243:      const uRes = await postLogin(baseUrl, unknownEmail, probePassword)
+scripts/measure-login-timing.mjs:252:      const eRes = await postLogin(baseUrl, unlockedEmail, probePassword)
+scripts/measure-login-timing.mjs:263:      const lRes = await postLogin(baseUrl, 'timing-locked@aljazira.co', lockedPassword)
+
+$ git grep -n -e 'afterAttempt4' -- tests/int/p2-t9.int.test.ts
+tests/int/p2-t9.int.test.ts:150:    const afterAttempt4 = await payload.db.findOne<{
+tests/int/p2-t9.int.test.ts:158:    expect(afterAttempt4?.loginAttempts).toBe(4)
+tests/int/p2-t9.int.test.ts:159:    expect(afterAttempt4?.lockUntil ?? null).toBeNull()

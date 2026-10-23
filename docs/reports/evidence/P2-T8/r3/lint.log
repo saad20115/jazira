@@ -1,0 +1,9 @@
+pwd: C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+HEAD: 0718e26d1db3fd379ed317a9caba6329b3ffe2b5
+cmd: pnpm lint
+duration_ms: 37354
+---
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195
+> cross-env NODE_OPTIONS=--no-deprecation eslint .
+

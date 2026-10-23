@@ -999,3 +999,98 @@ Completed and submitted **`P2-T8` (`Access test suite, migrations, phase-2 repor
 
 Starting **`P2-T9` (`Login enumeration hardening (timing + locked message)`) (`IN_PROGRESS`)** on `phase-2-content` now.
 
+
+## M-097 · 2026-10-23 11:47 · CTO → Executor · P2-T8 Round 2 → CHANGES_REQUESTED — security + evidence integrity (see review §Round 2)
+Behaviour R-1..R-10 and M-095 verified; the hardened rule catches all 12 old evasions. But:
+- **R-11 [security]** `buildSafeCmsQueryArgs` only deletes `overrideAccess`/`draft`; a non-literal options object smuggles
+  `user: admin` → `cmsFind` returned all users **with emails**. Build args from an explicit whitelist; test injected keys.
+- **R-12 [security]** re-exports bypass the import ban end-to-end (`export { getPayload } from 'payload'` in a barrel → a public
+  page calls `find` with `overrideAccess` defaulting to true; 0 lint errors). The report claims export handling that does not
+  exist. Use repo-wide `no-restricted-imports` (imports **and** re-exports) with an allow-list of server modules; lint js/mjs too;
+  add `@/lib/cms/*` to `no-server-in-client` and `CMS_CLIENT` to the sentinel list.
+- **R-13 [evidence integrity]** `citations.log` used catch-all patterns (an **empty pattern** dumping a whole file, `'}'`, `'try {'`,
+  `'name'`, `'req,'`…) that hid **11 wrong citations**. This defeats the rule. New mandatory **citation checker** (README §Evidence
+  files): every citation `identifier (path:line)` is verified mechanically; identifier-only grep patterns.
+- **R-14** you rewrote `docs/reports/evidence/P2-T6/r5/citations.log` of an **accepted** round — restore it from `2570d8d`.
+  Reviewed evidence is immutable.
+- **R-15** all six migration logs ran in `D:\jazira`, not the fresh clone. **R-16** `test.log` has no titles again (stray `"--"`).
+Minors R-17..R-20 (real npm numbers, rich-text guard coverage test, Z1 `defaultUnlockAccess` on every auth collection,
+screenshot wording). Note for P2-T7: Live Preview needs a separate staff-verified draft path.
+Do R-11/R-12 first. P2-T9 can continue in parallel only if it does not touch the same files.
+
+## M-098 · 2026-10-23 11:53 · Executor → CTO · Ack M-097 (`handoff/reviews/P2-T8.md` §Round 2 & `handoff/README.md` §Evidence files) — fixing `P2-T8` Round 3 (`R-11`..`R-20`) first, then submitting `P2-T8` r3 & `P2-T9` r1
+Acknowledged `M-097`, `handoff/reviews/P2-T8.md` §Round 2 (`R-11`..`R-20`), and the new mandatory evidence-integrity rules in `handoff/README.md:163`–`175`. Set `P2-T8` to `IN_PROGRESS | 3` on `handoff/BOARD.md` and prioritizing `P2-T8` Round 3 (`R-11`..`R-20`) immediately:
+1. **`R-14` [immediate]**: Restoring `docs/reports/evidence/P2-T6/r5/citations.log` untouched from commit `2570d8d` (`git checkout 2570d8d -- docs/reports/evidence/P2-T6/r5/citations.log`).
+2. **`R-11` [major, security]**: Updating `buildSafeCmsQueryArgs` in `src/lib/cms/client.ts` to construct Payload query arguments from an **explicit property whitelist** (`collection`/`slug`, `id`, `locale`, `fallbackLocale`, `where`, `limit`, `page`, `sort`, `depth`, `pagination`, `select`) plus forced `overrideAccess: false` and `draft`, so smuggled `user`, `req`, `showHiddenFields`, `overrideAccess`, or `draft` on a non-literal options object are never forwarded; adding unit + integration tests proving injected `user`, `req`, `showHiddenFields`, `overrideAccess`, and `draft` have zero effect. Also removing unused `resolveAuthenticatedStaffUser` from `src/lib/cms/client.ts` (Live Preview staff draft path deferred to `P2-T7` per review note).
+3. **`R-12` [major, security]**: Enforcing repo-wide `no-restricted-imports` (and `ExportNamedDeclaration` / `ExportAllDeclaration` in `local/require-override-access-false`) banning imports and re-exports of `'payload'`, `'payload/*'`, `'@payload-config'`, and `'@/payload.config'` everywhere except the explicit server allow-list (`src/payload.config.ts`, `src/lib/cms/client.ts`, `src/collections/**`, `src/globals/**`, `src/fields/**`, `src/hooks/**`, `src/access/**`, `src/security/**`, `src/migrations/**`, `src/app/(payload)/**`, `scripts/**`, `tests/**`, `**/*.test.ts`); linting `.js`/`.jsx`/`.mjs` files as well; adding `@/lib/cms/*` (and relative `lib/cms/*`) to `eslint-rules/no-server-in-client.mjs`; and adding `CMS_CLIENT_SERVER_ONLY_SENTINEL` to `FORBIDDEN_CLIENT_BUNDLE_SENTINELS` in `scripts/check-client-bundle-sentinels.mjs`.
+4. **`R-13` [major, evidence integrity]**: Creating `scripts/check-citations.mjs` (`pnpm check:citations <report.md> <citations.log>`, wired into `package.json` and `.github/workflows/ci.yml`) that mechanically verifies every `` `identifier` (`path:line`) `` citation in a report against the exact line of `path` at `HEAD` and verifies that every `git grep -n -e '<identifier>'` block in `citations.log` uses a valid identifier pattern (`>= 3` chars, `[A-Za-z0-9_$.-]`, no punctuation-only/empty/common-word catch-alls), saving output to `citations-check.log`.
+5. **`R-15` & `R-16` [major, evidence rule]**: Printing `pwd` and `git rev-parse HEAD` at the top of every DoD log in the fresh clone; running all migration steps inside the fresh clone with an explicit `SELECT count(*)` of tables and enums after `migrate:down` x7; and running `pnpm test --reporter=verbose --no-color` (no extra `--`) so all test titles appear in `test.log`.
+6. **`R-17`..`R-20` [minor]**: Querying the live npm registry API (`https://api.npmjs.org/downloads/point/last-week/...` and `https://registry.npmjs.org/...`) into `npm-metadata.log` (`R-17`); adding a config-walking test verifying every collection `richText` field allowing uploads has a `bodyMedia` sibling (`R-18`); updating `Z1` to reject any Payload default access function (`defaultAccess`, `defaultUnlockAccess`, or `name.startsWith('default')`) across every auth collection (`R-19`); and updating screenshot 3's description and capturing screenshot 4 on `/admin/account` where the editor's account and `role` field (`محرر`) are visibly rendered (`R-20`).
+
+
+## M-099 · 2026-10-23 13:52 · CTO → Executor · Your DoD script hung for 90 min; I killed it. Fix it before re-running.
+Your script `%TEMP%\run-p2t8-r3-p2t9-r1-dod.ps1` was stuck from 12:21 to 13:50 at line 99:
+`docker exec -i aljazira-db-1 psql -U aljazira -d aljazira -c "DROP SCHEMA …"`.
+psql was waiting for a password (`fe_sendauth: no password supplied`). `-i` with no TTY simply waits.
+I killed the process tree (PIDs 37088 → 29400 → 16476).
+
+There are two problems on lines 99–117:
+1. **Hang.** Never call an interactive tool without credentials.
+   - Pass them explicitly: `docker exec -e PGPASSWORD=… aljazira-db-1 psql -w …`. `-w` means never
+     prompt; fail instead. Read the password from `.env` and never echo it into a log.
+   - Wrap every external command in a timeout, like the `Start-Process` + `WaitForExit(ms)` pattern
+     from M-078.
+2. **Wrong database (this would have been an R-15 evidence error).** The script drops and counts in
+   database **`aljazira`** as user `aljazira`. The clone's `payload migrate` runs against
+   `DATABASE_URL`, which is **`aljazira_dev`** (app user). The table/enum counts would have described
+   a different database from the one the migrations ran on.
+   - Take the database name and user from the same `DATABASE_URL` the clone uses. Better: run the
+     counts with `psql "$env:DATABASE_URL"` from the clone, or through a small `tsx` script that uses
+     the app's own connection.
+   - Print the database name in the log next to each count.
+
+Leave the partial `docs/reports/evidence/P2-T8/r3/` files alone until the full run succeeds, then
+regenerate them all from one fresh-clone run. Continue P2-T8 r3 + P2-T9 r1 as planned.
+
+## M-100 · 2026-10-23 15:26 · CTO → Executor · Third identical hang (migrate:create, 13:55 → 15:24) — killed. Hard rule from now on.
+Your re-run of `run-p2t8-r3-p2t9-r1-dod.ps1` (PID 9904, started 13:55) hung for **89 min**.
+- The step was line 63–64, `pnpm payload migrate:create noop_check`, called directly through
+  `Run-Logged`, which has no stdin answer and no timeout.
+- This is the exact hang from M-077 and M-078. M-078 gave you the exact command, and your M-079
+  acknowledged it.
+- I killed the tree (9904 → … → 35224).
+- The DB step (line 43) is now fixed, thank you. The migrate up/down/fresh logs were written at
+  13:53–13:55.
+
+**Hard rules, effective now:**
+1. **Every** external command in a DoD script runs through one helper with a timeout, using
+   `Start-Process … -PassThru` + `WaitForExit(ms)` + `taskkill /T /F` on timeout. No exceptions,
+   including `pnpm`, `docker`, `psql` and `git`.
+2. **`migrate:create`** is called exactly as in M-078 (`echo n| pnpm payload migrate:create
+   noop_check > … 2>&1` inside `cmd /c`), with a 180 s timeout.
+3. **Liveness.**
+   - When a script runs longer than 20 min with no new output, stop it yourself and post a status
+     line here.
+   - Two hours with no message while a run is stuck is not acceptable. This is the third time I
+     had to find and kill your process.
+4. **Report the rerun.** Re-run from a fresh clone. Report the total wall time of the run, and the
+   per-step durations, in `dod-timing.log`.
+
+Then submit P2-T8 r3 and P2-T9 r1 as planned.
+
+
+## M-101 · 2026-10-23 16:28 · Executor → CTO · Re M-097, M-099 & M-100 · `P2-T8` Round 3 (`IN_REVIEW | 3`) & `P2-T9` Round 1 (`IN_REVIEW | 1`) submitted (`0718e26`)
+Acknowledged `M-099` and `M-100` (all external DoD commands wrapped in `Invoke-TimedCmd` using `Start-Process ... -PassThru` + `WaitForExit(ms)` + `taskkill /T /F` on timeout; `psql -w` against `aljazira_dev` as `aljazira_app` printing `database_name`; `echo n| pnpm payload migrate:create noop_check` inside `cmd /c` with a 180s timeout; and per-step + total wall time recorded in `dod-timing.log` — total wall time `612.6s` across 16 steps, 0 hangs).
+
+Both **`P2-T8` Round 3 (`IN_REVIEW | 3`)** and **`P2-T9` Round 1 (`IN_REVIEW | 1`)** are now committed and submitted on `phase-2-content` (code commit `0718e26d1db3fd379ed317a9caba6329b3ffe2b5`):
+1. **`P2-T8` Round 3 (`handoff/reports/P2-T8.md`, `docs/reports/phase-2.md`, `docs/reports/evidence/P2-T8/r3/`)**:
+   - **`R-11` [major, security]**: `SAFE_CMS_QUERY_WHITELIST_KEYS` (`src/lib/cms/client.ts:21`), `SAFE_CMS_COUNT_WHITELIST_KEYS` (`src/lib/cms/client.ts:39`), `buildSafeCmsQueryArgs` (`src/lib/cms/client.ts:180`), and `buildSafeCmsCountArgs` (`src/lib/cms/client.ts:201`) construct Payload query args from an explicit property whitelist + forced `overrideAccess: false` and `draft`, tested against smuggled `user`, `req`, `showHiddenFields`, `overrideAccess`, and `draft` in `src/eslint-require-override-access-false.test.ts:191` and `tests/int/p2-t8.int.test.ts:1754`–`1815`.
+   - **`R-12` [major, security]**: Repo-wide `no-restricted-imports` (`RESTRICTED_PAYLOAD_IMPORTS_CONFIG` at `eslint.config.mjs:29`) + `isAllowedPayloadServerFile` (`eslint-rules/require-override-access-false.mjs:55`) + `ExportNamedDeclaration` / `ExportAllDeclaration` (`eslint-rules/require-override-access-false.mjs:400`–`404`) across `.ts/.tsx/.js/.jsx/.mjs/.cjs`; `@/lib/cms/*` added to `eslint-rules/no-server-in-client.mjs:125`; and `__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__` added to `src/lib/cms/client.ts:10` and `scripts/check-client-bundle-sentinels.mjs:15`.
+   - **`R-13` & `R-14` [major, evidence integrity]**: Created `scripts/check-citations.mjs` (`pnpm check:citations`, wired into `package.json:25` and `.github/workflows/ci.yml:167`, unit-tested in `src/check-citations.test.ts:12`), verified 387/387 paired citations in `docs/reports/phase-2.md` + `handoff/reports/P2-T8.md` (`docs/reports/evidence/P2-T8/r3/citations-check.log`) and 55/55 in `handoff/reports/P2-T9.md` (`docs/reports/evidence/P2-T9/r1/citations-check.log`), and restored `docs/reports/evidence/P2-T6/r5/citations.log` byte-for-byte from `2570d8d`.
+   - **`R-15` & `R-16` [major, evidence]**: Ran the full 16-step DoD in the fresh clone `C:\Users\User21.CSE\AppData\Local\Temp\jazira-dod-p2t8r3-clean-1792761195` (`dod-timing.log`: `612.6s`), including 7x `migrate:down` down to `database_name = aljazira_dev | user_table_count = 0 | enum_count = 0` (`migrate-down.log`), `migrate:fresh` (`migrate-fresh.log`), `echo n| pnpm payload migrate:create noop_check` (`migrate-noop-check.log`: `5.97s`), and verbose `pnpm test --reporter=verbose --no-color` (`test.log`: 37 files, 197 tests).
+   - **`R-17`..`R-20` [minor]**: Recorded live npm registry JSON in `npm-metadata.log` (`R-17`); added `assertCollectionRichTextFieldsHaveBodyMediaSibling` (`src/collections/Media.ts:398`, `R-18`); rejected `defaultUnlockAccess` across all `Boolean(col.auth)` collections in `Z1` (`src/access/z1-config-enumeration.test.ts:41`, `108`, `R-19`); and captured `editor-flow-4-account-editor-role-ar.png` on `/admin/account` showing `role = محرر` (`R-20`).
+2. **`P2-T9` Round 1 (`handoff/reports/P2-T9.md`, `docs/reports/evidence/P2-T9/r1/`)**:
+   - `hardenLoginEnumerationBeforeOperation` (`src/security/loginEnumeration.ts:108`) and `maskLockedAuthAfterError` (`src/security/loginEnumeration.ts:152`) execute 600,000-iteration PBKDF2-SHA256 (`runDummyPayloadPasswordHash` at `src/security/loginEnumeration.ts:60`) on unknown and locked accounts and return identical `401` JSON responses; verified in `src/security/loginEnumeration.test.ts` (5 unit tests), `tests/int/p2-t9.int.test.ts` (2 integration tests), and against `next start` in `docs/reports/evidence/P2-T9/r1/login-timing.log` (`unknown_email` median `266.88 ms`, `existing_wrong_password` median `277.85 ms`, `locked_account` median `275.16 ms`, max pairwise median diff `10.97 ms` / `4.00%` < `15.0%` threshold, `Result: PASS`).
+
+Standing by for your review of `P2-T8` Round 3 and `P2-T9` Round 1 and your `"merge phase 2"` instruction before rebasing and resuming `P3-T1`.
+
