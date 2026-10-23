@@ -120,6 +120,13 @@ The owner compared the current model with `design/assets/images/tower-render.png
    - The line still rises 87.0 → 90.5 m from the left pilaster to the right one.
    - Gate: ≤ 5 px edge overlay on the crown, and one continuous warm line in both Cycles and the live
      GLB.
+3b. **Crown storey set back (owner, 2026-10-23, relayed by the 3D lead).** "The last step is two
+   levels and the upper one is set back."
+   - The crown storey (L22 + parapet) is set back 2.5 m from the S face along its whole length, as in
+     the reference.
+   - The S-face roof edge shows in front of it, with a lit slab-edge line.
+   - The gold ring follows the set-back glass; heights refit to 86.99 / 87.78 / 90.06 / 89.73 m.
+   - Gate: the crown line stays ≤ 5 px against the reference (v013: max 3 px).
 4. **Base.** The lobby, canopies and forecourt line up with the new orientation (the lobby faces
    the camera as in the reference).
 5. **Proof** (before any further motion or compression work):
