@@ -1,0 +1,9 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+eac38739485a666c4dbe6dd8eb4b8df479c6411a
+$ node scripts/evidence/p3-t4-evidence.mjs --mode=dev-styleguide http://localhost:3104 "C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\evidence\P3-T4\r4" "C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\phase-3\P3-T4\r4"
+[P3-T4 Evidence] dev-styleguide artifacts generated in C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\evidence\P3-T4\r4 and C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\phase-3\P3-T4\r4
+
+
+[exit_code=0]

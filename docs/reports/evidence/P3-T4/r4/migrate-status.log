@@ -1,0 +1,27 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+eac38739485a666c4dbe6dd8eb4b8df479c6411a
+$ pnpm payload migrate:status
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[02:13:24] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\src\migrations[39m
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│[37m [0m[01m                                               Name[0m │[37m [0m[01mBatch[0m │[37m [0m[01mRan[0m │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│[37m [0m[32m                20261021_074848_initial_users_media[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m20261022_120943_p2_t2_videos_brands_stats_materials[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                20261022_140011_p2_t3_services_team[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                     20261022_160652_p2_t4_projects[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                      20261022_221250_p2_t5_globals[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m               20261022_231435_p2_t6_quote_requests[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m 20261023_005934_p2_t6_quote_requests_service_title[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m20261024_195628_p3_t12_site_settings_arabic_enabled[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[02:13:24] [32mINFO[39m: [36mDone.[39m
+
+
+[exit_code=0]

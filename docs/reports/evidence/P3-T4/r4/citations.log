@@ -1,0 +1,202 @@
+$ git grep -n -e 'INTRO_PREPAINT_INLINE_SCRIPT' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:27:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var nowRounded=Math.round(now);if(rm||seen||now>${String(INTRO_MAX_FIRST_PAINT_MS)}){if(!seen&&!rm){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}}window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var delayMs=Math.min(0,Math.round(${String(INTRO_HARD_CAP_MS)}-(now+${String(INTRO_TOTAL_DURATION_MS)})));d.style.setProperty('--intro-delay',delayMs+'ms');window.__aljaziraIntroDecision={action:'active',nowMs:nowRounded,delayMs:delayMs};d.setAttribute('data-intro','active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+
+$ git grep -n -e 'IntroSplash' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:8:import styles from './IntroSplash.module.css'
+src/components/IntroSplash.tsx:29:export interface IntroSplashProps {
+src/components/IntroSplash.tsx:65:export function shouldSkipIntroSplash(win: Window | undefined): boolean {
+src/components/IntroSplash.tsx:94:export function markIntroSplashSeen(win: Window | undefined): void {
+src/components/IntroSplash.tsx:117:export function IntroSplash({
+src/components/IntroSplash.tsx:123:}: IntroSplashProps): ReactElement {
+src/components/IntroSplash.tsx:134:      markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:165:    markIntroSplashSeen(window)
+
+$ git grep -n -e 'introOverlayTimeline' -- src/components/IntroSplash.module.css
+src/components/IntroSplash.module.css:1:@keyframes introOverlayTimeline {
+src/components/IntroSplash.module.css:105:  animation: introOverlayTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
+
+$ git grep -n -e 'INTRO_MAX_FIRST_PAINT_MS' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:11:export const INTRO_MAX_FIRST_PAINT_MS = 1200
+src/components/IntroSplash.tsx:27:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var nowRounded=Math.round(now);if(rm||seen||now>${String(INTRO_MAX_FIRST_PAINT_MS)}){if(!seen&&!rm){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}}window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var delayMs=Math.min(0,Math.round(${String(INTRO_HARD_CAP_MS)}-(now+${String(INTRO_TOTAL_DURATION_MS)})));d.style.setProperty('--intro-delay',delayMs+'ms');window.__aljaziraIntroDecision={action:'active',nowMs:nowRounded,delayMs:delayMs};d.setAttribute('data-intro','active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+
+$ git grep -n -e 'INTRO_HARD_CAP_MS' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:13:export const INTRO_HARD_CAP_MS = 1850
+src/components/IntroSplash.tsx:27:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var nowRounded=Math.round(now);if(rm||seen||now>${String(INTRO_MAX_FIRST_PAINT_MS)}){if(!seen&&!rm){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}}window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var delayMs=Math.min(0,Math.round(${String(INTRO_HARD_CAP_MS)}-(now+${String(INTRO_TOTAL_DURATION_MS)})));d.style.setProperty('--intro-delay',delayMs+'ms');window.__aljaziraIntroDecision={action:'active',nowMs:nowRounded,delayMs:delayMs};d.setAttribute('data-intro','active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+
+$ git grep -n -e 'INTRO_TOTAL_DURATION_MS' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:12:export const INTRO_TOTAL_DURATION_MS = 1200
+src/components/IntroSplash.tsx:27:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var nowRounded=Math.round(now);if(rm||seen||now>${String(INTRO_MAX_FIRST_PAINT_MS)}){if(!seen&&!rm){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}}window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var delayMs=Math.min(0,Math.round(${String(INTRO_HARD_CAP_MS)}-(now+${String(INTRO_TOTAL_DURATION_MS)})));d.style.setProperty('--intro-delay',delayMs+'ms');window.__aljaziraIntroDecision={action:'active',nowMs:nowRounded,delayMs:delayMs};d.setAttribute('data-intro','active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+
+$ git grep -n -e 'introLogoTimeline' -- src/components/IntroSplash.module.css
+src/components/IntroSplash.module.css:37:@keyframes introLogoTimeline {
+src/components/IntroSplash.module.css:167:  animation: introLogoTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
+
+$ git grep -n -e 'handleAnimationEnd' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:139:  const handleAnimationEnd = useCallback(
+src/components/IntroSplash.tsx:199:      onAnimationEnd={handleAnimationEnd}
+
+$ git grep -n -e '.homeContent' -- src/app/(frontend)/[locale]/page.module.css
+src/app/(frontend)/[locale]/page.module.css:14:.homeContent {
+src/app/(frontend)/[locale]/page.module.css:26:  .homeContent
+
+$ git grep -n -e 'footer' -- src/styles/globals.css
+src/styles/globals.css:139:html[data-intro='active'] body > footer {
+
+$ git grep -n -e 'home_page_locales' -- src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:6:  ALTER TABLE "home_page_locales" ADD COLUMN "hero_title_accent" varchar;
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:7:  ALTER TABLE "home_page_locales" ADD COLUMN "cta_title_accent" varchar;
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:20:  -- Backfill hero_title / hero_title_accent on home_page_locales and _home_page_v_locales (R-2, R-12, R-13, R-25):
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:22:  UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:81:  UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:258:   UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:280:   UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:353:  ALTER TABLE "home_page_locales" DROP COLUMN "hero_title_accent";
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:354:  ALTER TABLE "home_page_locales" DROP COLUMN "cta_title_accent";
+
+$ git grep -n -e '.track' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:8:  --track-width: 806px;
+src/components/ServicesCarousel.module.css:46:.track {
+src/components/ServicesCarousel.module.css:67:.trackDragging,
+src/components/ServicesCarousel.module.css:68:.carousel[data-dragging='true'] .track {
+src/components/ServicesCarousel.module.css:113:      var(--carousel-thumb-dir, 1) * (var(--track-width, 806px) - var(--thumb-width, 290px)) *
+src/components/ServicesCarousel.module.css:187:  .track,
+src/components/ServicesCarousel.module.css:219:  .track,
+
+$ git grep -n -e '.controlsRow' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:78:.controlsRow {
+src/components/ServicesCarousel.module.css:188:  .controlsRow {
+src/components/ServicesCarousel.module.css:199:  .controlsRow {
+
+$ git grep -n -e 'requiredLayoutKey' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:374:  for (const requiredLayoutKey of ['gutter', 'gutterTablet', 'gutterMobile']) {
+scripts/generate-tokens.mjs:376:      typeof layout[requiredLayoutKey] !== 'number' ||
+scripts/generate-tokens.mjs:377:      !Number.isFinite(layout[requiredLayoutKey])
+scripts/generate-tokens.mjs:380:        `Missing or invalid required numeric token layout.${requiredLayoutKey} in design/tokens.json`,
+
+$ git grep -n -e '--gutter-desktop' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:386:  lines.push(`  --gutter-desktop: ${Number(layout.gutter)}px;`)
+scripts/generate-tokens.mjs:389:  lines.push('  --container-gutter: var(--gutter-desktop);')
+
+$ git grep -n -e '--gutter-tablet' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:387:  lines.push(`  --gutter-tablet: ${Number(layout.gutterTablet)}px;`)
+scripts/generate-tokens.mjs:467:  lines.push('    --container-gutter: var(--gutter-tablet);')
+
+$ git grep -n -e '--gutter-mobile' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:388:  lines.push(`  --gutter-mobile: ${Number(layout.gutterMobile)}px;`)
+scripts/generate-tokens.mjs:488:  lines.push('    --container-gutter: var(--gutter-mobile);')
+
+$ git grep -n -e 'size-adjust' -- src/styles/globals.css
+src/styles/globals.css:6: * Calibrated `size-adjust: 112%` (`< 120%` line-height so glyphs never collide between lines
+src/styles/globals.css:15:  size-adjust: 112%;
+src/styles/globals.css:28:  size-adjust: 112%;
+src/styles/globals.css:51:  text-size-adjust: 100%;
+
+$ git grep -n -e 'min-block-size' -- src/app/(frontend)/[locale]/page.module.css
+src/app/(frontend)/[locale]/page.module.css:62:  min-block-size: var(--hero-height);
+src/app/(frontend)/[locale]/page.module.css:149:  min-block-size: 44px;
+src/app/(frontend)/[locale]/page.module.css:382:  min-block-size: 580px;
+src/app/(frontend)/[locale]/page.module.css:435:  min-block-size: 44px;
+src/app/(frontend)/[locale]/page.module.css:516:    min-block-size: 44px;
+src/app/(frontend)/[locale]/page.module.css:575:  min-block-size: 149px;
+src/app/(frontend)/[locale]/page.module.css:595:  min-block-size: 90px;
+src/app/(frontend)/[locale]/page.module.css:661:  min-block-size: 195px;
+src/app/(frontend)/[locale]/page.module.css:705:  min-block-size: 174px;
+src/app/(frontend)/[locale]/page.module.css:725:  min-block-size: 484px;
+src/app/(frontend)/[locale]/page.module.css:857:    min-block-size: 0;
+src/app/(frontend)/[locale]/page.module.css:868:    min-block-size: 0;
+src/app/(frontend)/[locale]/page.module.css:898:    min-block-size: 680px;
+src/app/(frontend)/[locale]/page.module.css:904:    min-block-size: calc(3 * var(--t-display-xl-lh));
+src/app/(frontend)/[locale]/page.module.css:951:    min-block-size: 44px;
+src/app/(frontend)/[locale]/page.module.css:957:    min-block-size: 0;
+
+$ git grep -n -e 'split_part' -- src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:37:        split_part("hero_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:45:    AND btrim(regexp_replace(split_part("hero_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:66:        split_part("version_hero_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:74:    AND btrim(regexp_replace(split_part("version_hero_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:96:        split_part("cta_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:104:    AND btrim(regexp_replace(split_part("cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:125:        split_part("version_cta_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:133:    AND btrim(regexp_replace(split_part("version_cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:154:        split_part("cta_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:162:    AND btrim(regexp_replace(split_part("cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:183:        split_part("version_cta_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:191:    AND btrim(regexp_replace(split_part("version_cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:212:        split_part("cta_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:220:    AND btrim(regexp_replace(split_part("cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:241:        split_part("version_cta_title", chr(10), 1),
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:249:    AND btrim(regexp_replace(split_part("version_cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
+
+$ git grep -n -e 'migrateP3T4R2Up' -- tests/int/p3-t4-migration.int.test.ts
+tests/int/p3-t4-migration.int.test.ts:9:  up as migrateP3T4R2Up,
+tests/int/p3-t4-migration.int.test.ts:46:      await migrateP3T4R2Up({ db, payload, req: {} } as never)
+tests/int/p3-t4-migration.int.test.ts:131:      await migrateP3T4R2Up({ db, payload, req: {} } as never)
+tests/int/p3-t4-migration.int.test.ts:365:      await migrateP3T4R2Up({ db, payload, req: {} } as never)
+tests/int/p3-t4-migration.int.test.ts:394:        await migrateP3T4R2Up({ db, payload, req: {} } as never)
+
+$ git grep -n -e 'titleAccent' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:292:          name: 'titleAccent',
+
+$ git grep -n -e 'backgroundImage' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:686:          name: 'backgroundImage',
+
+$ git grep -n -e 'titleAccent' -- src/fields/groups/cta.ts
+src/fields/groups/cta.ts:81:      name: 'titleAccent',
+
+$ git grep -n -e 'ctaFields' -- src/fields/groups/cta.ts
+src/fields/groups/cta.ts:32:export function ctaFields(options: CtaFieldsOptions = {}): Field[] {
+src/fields/groups/cta.ts:187:    fields: ctaFields(fieldOptions),
+
+$ git grep -n -e '.overlay' -- src/components/IntroSplash.module.css
+src/components/IntroSplash.module.css:80:.overlay {
+src/components/IntroSplash.module.css:99::global(html[data-intro='active']) .overlay,
+src/components/IntroSplash.module.css:100:.overlay[data-intro-forced='true'] {
+src/components/IntroSplash.module.css:104::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) {
+src/components/IntroSplash.module.css:108::global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']) {
+src/components/IntroSplash.module.css:125::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .glow {
+src/components/IntroSplash.module.css:166::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .logoWrap {
+src/components/IntroSplash.module.css:185::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .goldRule {
+src/components/IntroSplash.module.css:204::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .tagline {
+src/components/IntroSplash.module.css:260:  .overlay,
+src/components/IntroSplash.module.css:261:  :global(html[data-intro='active']) .overlay {
+
+$ git grep -n -e 'INTRO_PREPAINT_INLINE_SCRIPT' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:9:import { INTRO_PREPAINT_INLINE_SCRIPT } from '@/components/IntroSplash'
+src/app/(frontend)/[locale]/layout.tsx:376:          dangerouslySetInnerHTML={{ __html: INTRO_PREPAINT_INLINE_SCRIPT }}
+
+$ git grep -n -e 'preloadLocaleFonts' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:29:import { preloadLocaleFonts } from '@/styles/font-preload'
+src/app/(frontend)/[locale]/layout.tsx:352:  const fontPreloadUrls = preloadLocaleFonts(resolvedLocale)
+
+$ git grep -n -e 'LocaleHomePage' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:39:interface LocaleHomePageProps {
+src/app/(frontend)/[locale]/page.tsx:271:export async function generateMetadata({ params }: LocaleHomePageProps): Promise<Metadata> {
+src/app/(frontend)/[locale]/page.tsx:327:export default async function LocaleHomePage({
+src/app/(frontend)/[locale]/page.tsx:329:}: LocaleHomePageProps): Promise<React.JSX.Element> {
+
+$ git grep -n -e 'heroTitleAccent' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:367:  const heroTitleAccent = hero?.titleAccent?.trim() || null
+src/app/(frontend)/[locale]/page.tsx:378:    heroTitleAccent ||
+src/app/(frontend)/[locale]/page.tsx:546:              {heroTitle || heroTitleAccent ? (
+src/app/(frontend)/[locale]/page.tsx:549:                  {heroTitle && heroTitleAccent ? ' ' : null}
+src/app/(frontend)/[locale]/page.tsx:550:                  {heroTitleAccent ? (
+src/app/(frontend)/[locale]/page.tsx:552:                      {heroTitleAccent}
+
+$ git grep -n -e 'statsBgImage' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:432:  const statsBgImage = resolveMediaAsset(
+src/app/(frontend)/[locale]/page.tsx:751:            {statsBgImage ? (
+src/app/(frontend)/[locale]/page.tsx:755:                  className={styles.statsBgImage}
+src/app/(frontend)/[locale]/page.tsx:756:                  height={statsBgImage.height ?? 425}
+src/app/(frontend)/[locale]/page.tsx:758:                  src={statsBgImage.url}
+src/app/(frontend)/[locale]/page.tsx:759:                  width={statsBgImage.width ?? 1440}
+
+$ git grep -n -e 'ctaTitleAccent' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:477:  const ctaTitleAccent = cta?.titleAccent?.trim() || null
+src/app/(frontend)/[locale]/page.tsx:487:    ctaTitle || ctaTitleAccent || ctaText || ctaPrimaryLabel || ctaSecondaryLabel,
+src/app/(frontend)/[locale]/page.tsx:890:              {ctaTitle || ctaTitleAccent ? (
+src/app/(frontend)/[locale]/page.tsx:893:                  {ctaTitle && ctaTitleAccent ? ' ' : null}
+src/app/(frontend)/[locale]/page.tsx:894:                  {ctaTitleAccent ? (
+src/app/(frontend)/[locale]/page.tsx:896:                      {ctaTitleAccent}
+
+$ git grep -n -e 'gutterTablet' -- design/tokens.json
+design/tokens.json:354:    "gutterTablet": 24,

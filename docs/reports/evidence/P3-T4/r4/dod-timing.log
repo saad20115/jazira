@@ -1,0 +1,18 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+eac38739485a666c4dbe6dd8eb4b8df479c6411a
+
+install | start=2026-10-24T23:24:43.174Z | end=2026-10-24T23:24:45.280Z | exit=0 | cmd=pnpm install --frozen-lockfile
+migrate-up-down-up | start=2026-10-24T23:12:46.049Z | end=2026-10-24T23:13:17.539Z | exit=0 | cmd="DROP SCHEMA public CASCADE; CREATE SCHEMA public;" | docker exec -i aljazira-db-1 sh -c 'PGPASSWORD=$APP_DB_PASSWORD psql -U $APP_DB_USER -d $APP_DB_NAME' ; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } ; pnpm payload migrate:status ; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } ; pnpm payload migrate ; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } ; pnpm payload migrate:down ; if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE } ; pnpm payload migrate
+migrate-status | start=2026-10-24T23:13:17.549Z | end=2026-10-24T23:13:24.526Z | exit=0 | cmd=pnpm payload migrate:status
+lint | start=2026-10-24T23:13:24.529Z | end=2026-10-24T23:14:12.689Z | exit=0 | cmd=pnpm lint
+typecheck | start=2026-10-24T23:14:12.693Z | end=2026-10-24T23:14:21.251Z | exit=0 | cmd=pnpm typecheck
+format-check | start=2026-10-24T23:14:21.254Z | end=2026-10-24T23:14:30.731Z | exit=0 | cmd=pnpm format:check
+tokens-check | start=2026-10-24T23:14:30.735Z | end=2026-10-24T23:14:31.779Z | exit=0 | cmd=pnpm tokens:check
+test | start=2026-10-24T23:14:31.783Z | end=2026-10-24T23:18:31.398Z | exit=0 | cmd=pnpm test
+build | start=2026-10-24T23:18:31.410Z | end=2026-10-24T23:19:12.630Z | exit=0 | cmd=pnpm build
+audit | start=2026-10-24T23:19:12.635Z | end=2026-10-24T23:19:15.553Z | exit=0 | cmd=pnpm audit --prod
+evidence-dev-styleguide | start=2026-10-24T23:19:30.218Z | end=2026-10-24T23:19:44.897Z | exit=0 | cmd=node scripts/evidence/p3-t4-evidence.mjs --mode=dev-styleguide http://localhost:3104 "C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\evidence\P3-T4\r4" "C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\phase-3\P3-T4\r4"
+evidence-prod-home | start=2026-10-24T23:19:49.045Z | end=2026-10-24T23:24:06.927Z | exit=0 | cmd=node scripts/evidence/p3-t4-evidence.mjs --mode=prod-home http://localhost:3105 "C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\evidence\P3-T4\r4" "C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\docs\reports\phase-3\P3-T4\r4"
+[exit_code=0]

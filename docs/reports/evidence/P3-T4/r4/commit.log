@@ -1,0 +1,14 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+eac38739485a666c4dbe6dd8eb4b8df479c6411a
+$ git log -n 5 --oneline
+eac3873 fix(home): use display:none instead of content-visibility on below-the-fold sections during intro (P3-T4 R-22)
+f8eeea8 fix(home): keep who-we-are visible above the fold during active intro splash (P3-T4 R-22)
+e78ab14 fix(home): defer below-the-fold preFCP layout during active intro splash (P3-T4 R-22)
+8388969 docs(cto): A-1 §16 owner quote relayed by 3D lead
+195684c docs(cto): A-1 §16 v022 maquette/studio pivot reported (pending owner confirmation)
+$ git status -s
+?? docs/reports/evidence/P3-T4/r4/
+?? docs/reports/phase-3/P3-T4/r4/
+[exit_code=0]
