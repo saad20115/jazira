@@ -1486,6 +1486,11 @@ export async function runP3T4Evidence({
             }
           }
           requestAnimationFrame(sample)
+          const intervalId = setInterval(() => {
+            if (recordFrame() >= 2200) {
+              clearInterval(intervalId)
+            }
+          }, 25)
           window.addEventListener(
             'DOMContentLoaded',
             () => {
