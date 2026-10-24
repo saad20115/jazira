@@ -156,8 +156,8 @@
 
 @media (max-width: 767px) {
   .linkRow {
-    min-inline-size: var(--space-44);
-    min-block-size: var(--space-44);
+    min-inline-size: 44px;
+    min-block-size: 44px;
     margin-block-end: calc(var(--space-10) * -1);
   }
 }

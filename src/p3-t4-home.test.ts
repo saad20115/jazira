@@ -631,6 +631,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       for (const relPath of [
         'src/app/(frontend)/[locale]/page.module.css',
         'src/components/IntroSplash.module.css',
+        'src/components/ServiceTile.module.css',
       ]) {
         const cssContent = fs.readFileSync(path.resolve(process.cwd(), relPath), 'utf8')
         const stripped = cssContent.replace(/\/\*[\s\S]*?\*\//g, '')

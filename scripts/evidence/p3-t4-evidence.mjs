@@ -1294,6 +1294,20 @@ export async function runP3T4Evidence({
       const introLogPath = path.join(evidenceDir, 'intro-verification.log')
       fs.writeFileSync(introLogPath, introLog, 'utf8')
       copyToDirs(introLogPath, destDirs)
+
+      if (
+        !startVisible ||
+        revealStateAttr !== 'reveal' ||
+        !h1RenderedDuringIntro ||
+        totalElapsedMs > 1600 ||
+        storageAfterFirstLoad !== '1' ||
+        visibleOnSecondVisit ||
+        !visibleBeforeEscape ||
+        visibleAfterEscape ||
+        visibleWithReducedMotion
+      ) {
+        throw new Error(`Intro splash verification failed: ${JSON.stringify(introAudit)}`)
+      }
     }
 
     // =========================================================================

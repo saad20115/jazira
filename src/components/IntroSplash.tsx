@@ -1,6 +1,6 @@
 'use client'
 
-import { type ReactElement, useCallback, useEffect, useState } from 'react'
+import { type ReactElement, useCallback, useEffect, useRef, useState } from 'react'
 
 import { Logo } from '@/components/Logo'
 import { DEFAULT_LOCALE, getDictionary, type SupportedLocale } from '@/i18n'
@@ -86,16 +86,27 @@ export function IntroSplash({
 }: IntroSplashProps): ReactElement | null {
   const dict = getDictionary(locale)
   const [phase, setPhase] = useState<IntroSplashPhase>(() => (forceState ? forceState : 'hidden'))
+  const timersRef = useRef<number[]>([])
+
+  const clearScheduledTimers = useCallback((): void => {
+    if (typeof window !== 'undefined') {
+      for (const id of timersRef.current) {
+        window.clearTimeout(id)
+      }
+    }
+    timersRef.current = []
+  }, [])
 
   const dismissImmediately = useCallback((): void => {
     if (forceState) {
       return
     }
+    clearScheduledTimers()
     if (typeof window !== 'undefined') {
       markIntroSplashSeen(window)
     }
     setPhase('hidden')
-  }, [forceState])
+  }, [forceState, clearScheduledTimers])
 
   useEffect(() => {
     if (forceState || typeof window === 'undefined') {
@@ -122,13 +133,12 @@ export function IntroSplash({
       setPhase('hidden')
     }, INTRO_TOTAL_DURATION_MS)
 
+    timersRef.current = [startTimer, revealTimer, exitTimer, hideTimer]
+
     return () => {
-      window.clearTimeout(startTimer)
-      window.clearTimeout(revealTimer)
-      window.clearTimeout(exitTimer)
-      window.clearTimeout(hideTimer)
+      clearScheduledTimers()
     }
-  }, [forceState])
+  }, [forceState, clearScheduledTimers])
 
   useEffect(() => {
     if (phase === 'hidden' || forceState) {
