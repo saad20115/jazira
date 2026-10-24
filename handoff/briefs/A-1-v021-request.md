@@ -35,3 +35,28 @@ Build **v021**, the final delivery, on top of the v020 release. Change only thes
 
 v020 stays the pinned release until the site CTO reviews v021 and the owner signs it off. When v021 is
 ready, tell the owner.
+
+## Added 2026-10-24: N-5, overall darkness (owner: "المنظر العام مظلم عكس الصوره الاصلية")
+The owner reviewed a screenshot of the `build/v021/tower-lite` viewer.
+
+Mean luma (0–255), v021 lite vs reference:
+
+| Region | v021 lite | reference |
+|---|---|---|
+| whole frame | 81 | 90 |
+| top third | 117 | 114 |
+| middle third | 90 | 75 |
+| **bottom third** | **37** | **80** |
+
+The sky and tower are fine. The lower frame is the problem: the ground fade drops to near-black,
+and the plaza reads dark.
+
+**What to change:**
+- Raise the ground and plaza exposure so the bottom-third mean is about 70–85, in both Cycles and live.
+  - The ground fade should be dusk blue-grey, not black.
+  - Add warm lamp pools on the paving.
+  - Keep the planting visible and the forecourt lit.
+- Keep the sky, tower and glass as they are.
+- Re-verify that the entered views (`enter.site_*`) still match Cycles.
+
+**Proof:** a luma table for Cycles and live, plus the three-panel.
