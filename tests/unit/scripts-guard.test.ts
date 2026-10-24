@@ -129,6 +129,25 @@ describe('scripts/check-citations.mjs mechanical citation checker (P2-T8 R-13)',
       expect(wrongLineRes.errors[0]).toContain(
         'identifier `buildSafeCmsQueryArgs` not found on src/lib/cms/client.ts:2',
       )
+
+      const missingFileRefRes = verifyCitations({
+        repoRoot: tmpDir,
+        reports: [
+          {
+            reportPath: 'missing-evidence.md',
+            markdown: [
+              'Verified `buildSafeCmsQueryArgs` (`src/lib/cms/client.ts:1`).',
+              'Screenshot: `docs/reports/evidence/P3-T4/r1/home-1440-ar.png`.',
+            ].join('\n'),
+          },
+        ],
+        citationsLogText,
+      })
+      expect(missingFileRefRes.ok).toBe(false)
+      expect(missingFileRefRes.errors).toHaveLength(1)
+      expect(missingFileRefRes.errors[0]).toContain(
+        'referenced file "docs/reports/evidence/P3-T4/r1/home-1440-ar.png" does not exist on disk',
+      )
     } finally {
       fs.rmSync(tmpDir, { recursive: true, force: true })
     }

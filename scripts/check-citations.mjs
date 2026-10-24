@@ -96,10 +96,13 @@ export const FORBIDDEN_COMMON_WORD_PATTERNS = new Set([
 ])
 
 const REPO_FILE_LINE_REGEX =
-  /(?:(?:src|tests|scripts|eslint-rules|docs|handoff|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)):(\d+)/g
+  /(?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)):(\d+)/g
 
 const PAIRED_CITATION_REGEX =
-  /`([^`\r\n]+)`\s*\(\s*`?((?:(?:src|tests|scripts|eslint-rules|docs|handoff|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml))):(\d+)`?\s*\)/g
+  /`([^`\r\n]+)`\s*\(\s*`?((?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml))):(\d+)`?\s*\)/g
+
+const STANDALONE_FILE_PATH_REGEX =
+  /`((?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)))`/g
 
 /**
  * @param {string} identifier
@@ -186,6 +189,15 @@ export function parseReportCitations(markdown, reportLabel = 'report.md') {
    */
   const unpaired = []
 
+  /**
+   * @type {Array<{
+   *   filePath: string
+   *   reportLine: number
+   *   reportLabel: string
+   * }>}
+   */
+  const referencedFiles = []
+
   for (let idx = 0; idx < lines.length; idx++) {
     const lineText = lines[idx]
     const reportLine = idx + 1
@@ -219,9 +231,20 @@ export function parseReportCitations(markdown, reportLabel = 'report.md') {
         reportLabel,
       })
     }
+
+    STANDALONE_FILE_PATH_REGEX.lastIndex = 0
+    let fileMatch
+    while ((fileMatch = STANDALONE_FILE_PATH_REGEX.exec(remainder)) !== null) {
+      const [, filePath] = fileMatch
+      referencedFiles.push({
+        filePath,
+        reportLine,
+        reportLabel,
+      })
+    }
   }
 
-  return { paired, unpaired }
+  return { paired, unpaired, referencedFiles }
 }
 
 /**
@@ -319,16 +342,27 @@ export function verifyCitations({ repoRoot, reports, citationsLogText }) {
 
   let totalPairedCitations = 0
   let totalUnpairedCitations = 0
+  let totalReferencedFiles = 0
 
   for (const { reportPath, markdown } of reports) {
-    const { paired, unpaired } = parseReportCitations(markdown, reportPath)
+    const { paired, unpaired, referencedFiles } = parseReportCitations(markdown, reportPath)
     totalPairedCitations += paired.length
     totalUnpairedCitations += unpaired.length
+    totalReferencedFiles += referencedFiles.length
 
     for (const u of unpaired) {
       errors.push(
         `${u.reportLabel}:${String(u.reportLine)}: un-paired citation "${u.rawRef}" (must be written as \`identifier\` (\`${u.rawRef}\`)).`,
       )
+    }
+
+    for (const refFile of referencedFiles) {
+      const absRef = path.resolve(repoRoot, refFile.filePath)
+      if (!fs.existsSync(absRef)) {
+        errors.push(
+          `${refFile.reportLabel}:${String(refFile.reportLine)}: referenced file "${refFile.filePath}" does not exist on disk.`,
+        )
+      }
     }
 
     for (const c of paired) {
@@ -388,6 +422,7 @@ export function verifyCitations({ repoRoot, reports, citationsLogText }) {
     errors,
     totalPairedCitations,
     totalUnpairedCitations,
+    totalReferencedFiles,
     totalBlocks: parsedLog.totalBlocks,
   }
 }
@@ -514,6 +549,6 @@ if (
   }
 
   process.stdout.write(
-    `[check:citations] PASS: Verified ${String(result.totalPairedCitations)} paired citation(s) across ${String(reports.length)} report(s) against ${String(result.totalBlocks)} identifier-only git grep block(s) in ${citationsLogArg} (0 un-paired citations, 0 errors).\n`,
+    `[check:citations] PASS: Verified ${String(result.totalPairedCitations)} paired citation(s) and ${String(result.totalReferencedFiles)} referenced file path(s) across ${String(reports.length)} report(s) against ${String(result.totalBlocks)} identifier-only git grep block(s) in ${citationsLogArg} (0 un-paired citations, 0 errors).\n`,
   )
 }

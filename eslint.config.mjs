@@ -25,6 +25,7 @@ export const SERVER_PAYLOAD_IMPORT_ALLOWLIST_GLOBS = [
   'src/hooks/**/*.{ts,tsx,js,mjs}',
   'src/access/**/*.{ts,tsx,js,mjs}',
   'src/migrations/**/*.{ts,tsx,js,mjs}',
+  'src/seed/**/*.{ts,tsx,js,mjs}',
   'scripts/**/*.{ts,tsx,js,mjs}',
   'tests/**/*.{ts,tsx,js,mjs}',
   'next.config.ts',
@@ -50,6 +51,8 @@ export const FRONTEND_FORBIDDEN_SERVER_DIR_PATTERNS = [
   '@/fields/*',
   '@/security',
   '@/security/*',
+  '@/seed',
+  '@/seed/*',
 ]
 
 export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {

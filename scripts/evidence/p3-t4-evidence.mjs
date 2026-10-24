@@ -652,7 +652,7 @@ async function seedHomePageData(baseUrl, token) {
     },
   })
 
-  await apiRequest(baseUrl, token, '/api/globals/navigation', {
+  const savedNavAr = await apiRequest(baseUrl, token, '/api/globals/navigation', {
     method: 'POST',
     locale: 'ar',
     body: {
@@ -689,15 +689,35 @@ async function seedHomePageData(baseUrl, token) {
       },
     },
   })
+  const navHeaderList = savedNavAr?.result?.header || savedNavAr?.header || []
+  const navFooterCol0 = (savedNavAr?.result?.footer || savedNavAr?.footer || [])[0]
+  const navFooterLinks = navFooterCol0?.links || []
+
   await apiRequest(baseUrl, token, '/api/globals/navigation', {
     method: 'POST',
     locale: 'en',
     body: {
       header: [
-        { label: 'Services', link: { type: 'internal', internalRoute: '/services' } },
-        { label: 'About Us', link: { type: 'internal', internalRoute: '/about' } },
-        { label: 'Projects', link: { type: 'internal', internalRoute: '/projects' } },
-        { label: 'Contact Us', link: { type: 'internal', internalRoute: '/contact' } },
+        {
+          id: navHeaderList[0]?.id,
+          label: 'Services',
+          link: { type: 'internal', internalRoute: '/services' },
+        },
+        {
+          id: navHeaderList[1]?.id,
+          label: 'About Us',
+          link: { type: 'internal', internalRoute: '/about' },
+        },
+        {
+          id: navHeaderList[2]?.id,
+          label: 'Projects',
+          link: { type: 'internal', internalRoute: '/projects' },
+        },
+        {
+          id: navHeaderList[3]?.id,
+          label: 'Contact Us',
+          link: { type: 'internal', internalRoute: '/contact' },
+        },
       ],
       headerCta: {
         label: 'Get a Quote',
@@ -705,13 +725,34 @@ async function seedHomePageData(baseUrl, token) {
       },
       footer: [
         {
+          id: navFooterCol0?.id,
           title: 'Quick Links',
           links: [
-            { label: 'Home', link: { type: 'internal', internalRoute: '/' } },
-            { label: 'Services', link: { type: 'internal', internalRoute: '/services' } },
-            { label: 'About Us', link: { type: 'internal', internalRoute: '/about' } },
-            { label: 'Projects', link: { type: 'internal', internalRoute: '/projects' } },
-            { label: 'Contact Us', link: { type: 'internal', internalRoute: '/contact' } },
+            {
+              id: navFooterLinks[0]?.id,
+              label: 'Home',
+              link: { type: 'internal', internalRoute: '/' },
+            },
+            {
+              id: navFooterLinks[1]?.id,
+              label: 'Services',
+              link: { type: 'internal', internalRoute: '/services' },
+            },
+            {
+              id: navFooterLinks[2]?.id,
+              label: 'About Us',
+              link: { type: 'internal', internalRoute: '/about' },
+            },
+            {
+              id: navFooterLinks[3]?.id,
+              label: 'Projects',
+              link: { type: 'internal', internalRoute: '/projects' },
+            },
+            {
+              id: navFooterLinks[4]?.id,
+              label: 'Contact Us',
+              link: { type: 'internal', internalRoute: '/contact' },
+            },
           ],
         },
       ],
@@ -1085,11 +1126,14 @@ export async function runP3T4Evidence({
   const headerBlock = getRepoHeaderBlock()
 
   let token = null
-  if (mode === 'all' || mode === 'prod-home') {
+  if (mode === 'all' || mode === 'prod-home' || mode === 'seed-only') {
     console.log(`[P3-T4 Evidence] Seeding CMS via Payload REST API at ${baseUrl}...`)
     token = await ensureAdminAuthToken(baseUrl)
     await seedHomePageData(baseUrl, token)
     console.log(`[P3-T4 Evidence] CMS seeded and published in ar and en.`)
+    if (mode === 'seed-only') {
+      return
+    }
   }
 
   const browser = await chromium.launch({ headless: true })

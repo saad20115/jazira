@@ -60,18 +60,21 @@ export function isForbiddenServerImport(source) {
     normalized.startsWith('sharp/') ||
     normalized.startsWith('@/lib/cms/') ||
     normalized.startsWith('@/lib/odoo/') ||
-    normalized.startsWith('@/lib/ipHash/')
+    normalized.startsWith('@/lib/ipHash/') ||
+    normalized.startsWith('@/seed/') ||
+    normalized === '@/seed'
   ) {
     return true
   }
 
-  // Relative imports to env, payload.config, lib/cms, lib/odoo, lib/ipHash, or server security modules
+  // Relative imports to env, payload.config, lib/cms, lib/odoo, lib/ipHash, seed, or server security modules
   if (
     /(?:^|\/)env(?:\.[jt]sx?)?$/.test(normalized) ||
     /(?:^|\/)payload\.config(?:\.[jt]sx?)?$/.test(normalized) ||
     /(?:^|\/)lib\/cms(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
     /(?:^|\/)lib\/odoo(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
     /(?:^|\/)lib\/ipHash(?:\.[jt]sx?)?$/.test(normalized) ||
+    /(?:^|\/)seed(?:\/|$|\.[jt]sx?$)/.test(normalized) ||
     /(?:^|\/)security\/(?:apiError|emailAdapter|loginEnumeration|passwordPolicy|uploadValidation)(?:\.[jt]sx?)?$/.test(
       normalized,
     )

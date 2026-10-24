@@ -225,7 +225,8 @@ export function isAllowedPayloadServerFile(filename) {
     /(?:^|\/)src\/globals\//.test(normalized) ||
     /(?:^|\/)src\/hooks\//.test(normalized) ||
     /(?:^|\/)src\/access\//.test(normalized) ||
-    /(?:^|\/)src\/migrations\//.test(normalized)
+    /(?:^|\/)src\/migrations\//.test(normalized) ||
+    /(?:^|\/)src\/seed\//.test(normalized)
   )
 }
 
@@ -356,7 +357,7 @@ export function isForbiddenFrontendServerDirSource(sourceValue, filename = '') {
   }
   const trimmed = sourceValue.trim().replace(/\\/g, '/')
   if (
-    /^@\/(?:app\/\(payload\)|collections|globals|hooks|access|migrations|fields|security)(?:\/|$)/.test(
+    /^@\/(?:app\/\(payload\)|collections|globals|hooks|access|migrations|fields|security|seed)(?:\/|$)/.test(
       trimmed,
     )
   ) {
@@ -372,7 +373,7 @@ export function isForbiddenFrontendServerDirSource(sourceValue, filename = '') {
       return false
     }
     if (
-      /(?:^|\/)(?:\(payload\)|collections|globals|hooks|access|migrations|fields|security)(?:\/|$)/.test(
+      /(?:^|\/)(?:\(payload\)|collections|globals|hooks|access|migrations|fields|security|seed)(?:\/|$)/.test(
         trimmed,
       )
     ) {
