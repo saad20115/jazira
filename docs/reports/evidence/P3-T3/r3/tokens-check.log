@@ -1,0 +1,13 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732
+$ git rev-parse HEAD
+520d49c6f67df0e33ae17df885ed8b972c3941df
+--------------------------------------------------------------------------------
+$ pnpm tokens:check
+
+> aljazira-website@0.1.0 tokens:check C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732
+> node scripts/generate-tokens.mjs --check
+
+[tokens] Verified src/styles/tokens.css is up-to-date with design/tokens.json.
+
+[exit_code=0]

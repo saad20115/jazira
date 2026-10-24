@@ -1,0 +1,8 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732
+$ git rev-parse HEAD
+520d49c6f67df0e33ae17df885ed8b972c3941df
+--------------------------------------------------------------------------------
+$ node scripts/evidence/p3-t3-evidence.mjs http://localhost:3126 docs/reports/evidence/P3-T3/r3 docs/reports/phase-3/P3-T3/r3
+
+[exit_code=0]

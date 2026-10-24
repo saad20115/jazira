@@ -1,0 +1,291 @@
+$ git grep -n -e 'carousel' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:1:.carousel {
+src/components/ServicesCarousel.module.css:2:  --carousel-dir: -1;
+src/components/ServicesCarousel.module.css:3:  --carousel-thumb-dir: 1;
+src/components/ServicesCarousel.module.css:4:  --carousel-step: 310px;
+src/components/ServicesCarousel.module.css:20::global([dir='rtl']) .carousel {
+src/components/ServicesCarousel.module.css:21:  --carousel-dir: 1;
+src/components/ServicesCarousel.module.css:22:  --carousel-thumb-dir: -1;
+src/components/ServicesCarousel.module.css:25:.carousel:focus-visible {
+src/components/ServicesCarousel.module.css:59:      var(--carousel-dir, -1) * var(--index, 0) * var(--carousel-step, 310px) +
+src/components/ServicesCarousel.module.css:69:.carousel[data-dragging='true'] .track {
+src/components/ServicesCarousel.module.css:113:      var(--carousel-thumb-dir, 1) *
+
+$ git grep -n -e 'track' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:8:  --track-width: 806px;
+src/components/ServicesCarousel.module.css:46:.track {
+src/components/ServicesCarousel.module.css:68:.trackDragging,
+src/components/ServicesCarousel.module.css:69:.carousel[data-dragging='true'] .track {
+src/components/ServicesCarousel.module.css:114:        (var(--track-width, 806px) - var(--thumb-width, 290px)) *
+src/components/ServicesCarousel.module.css:188:  .track,
+src/components/ServicesCarousel.module.css:218:  .track,
+
+$ git grep -n -e 'progressThumb' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:101:.progressThumb {
+src/components/ServicesCarousel.module.css:219:  .progressThumb,
+
+$ git grep -n -e 'ServicesCarousel' -- src/components/ServicesCarousel.tsx
+src/components/ServicesCarousel.tsx:25:import styles from './ServicesCarousel.module.css'
+src/components/ServicesCarousel.tsx:27:export type ServicesCarouselPosition = 1 | 2 | 3 | 4 | 5
+src/components/ServicesCarousel.tsx:33:export interface ServicesCarouselProps {
+src/components/ServicesCarousel.tsx:38:  position?: ServicesCarouselPosition
+src/components/ServicesCarousel.tsx:72: * Figma component `ServicesCarousel` (`175:3714`, `design/context/components/services-carousel.md`).
+src/components/ServicesCarousel.tsx:77:export function ServicesCarousel({
+src/components/ServicesCarousel.tsx:86:}: ServicesCarouselProps): ReactElement | null {
+
+$ git grep -n -e 'card' -- src/components/TeamCard.module.css
+src/components/TeamCard.module.css:1:.card {
+src/components/TeamCard.module.css:10:  box-shadow: var(--shadow-card-raised);
+src/components/TeamCard.module.css:15:.card::after {
+src/components/TeamCard.module.css:21:  box-shadow: var(--shadow-team-card-hover);
+src/components/TeamCard.module.css:28:.card:hover::after,
+src/components/TeamCard.module.css:29:.card:focus-within::after,
+src/components/TeamCard.module.css:49: * Outer navy-950 card stays visible while `.content` fades up 28px. */
+src/components/TeamCard.module.css:87:.card:hover .portraitLayer,
+src/components/TeamCard.module.css:88:.card:focus-within .portraitLayer,
+src/components/TeamCard.module.css:98:  background-image: var(--gradient-team-card-overlay);
+src/components/TeamCard.module.css:120:.card:hover .cornerBracket,
+src/components/TeamCard.module.css:121:.card:focus-within .cornerBracket,
+src/components/TeamCard.module.css:149:.card:hover .linkedinBadge,
+src/components/TeamCard.module.css:150:.card:focus-within .linkedinBadge,
+src/components/TeamCard.module.css:195:.card:hover .accentLine,
+src/components/TeamCard.module.css:196:.card:focus-within .accentLine,
+src/components/TeamCard.module.css:202:  .card::after,
+src/components/TeamCard.module.css:216:  .card:hover .portraitLayer,
+src/components/TeamCard.module.css:217:  .card:focus-within .portraitLayer,
+
+$ git grep -n -e 'content' -- src/components/TeamCard.module.css
+src/components/TeamCard.module.css:16:  content: '';
+src/components/TeamCard.module.css:34:.content {
+src/components/TeamCard.module.css:49: * Outer navy-950 card stays visible while `.content` fades up 28px. */
+src/components/TeamCard.module.css:50:.stateEnter1 .content,
+src/components/TeamCard.module.css:51:.scrollPending .content {
+src/components/TeamCard.module.css:56:.stateEnter2 .content {
+src/components/TeamCard.module.css:61:.stateEnter3 .content {
+src/components/TeamCard.module.css:66:.stateEnter4 .content {
+src/components/TeamCard.module.css:71:.stateEnter5 .content,
+src/components/TeamCard.module.css:72:.scrollEntered .content {
+src/components/TeamCard.module.css:133:  justify-content: center;
+src/components/TeamCard.module.css:203:  .content,
+src/components/TeamCard.module.css:211:  .scrollPending .content {
+
+$ git grep -n -e 'TeamCard' -- src/components/TeamCard.tsx
+src/components/TeamCard.tsx:17:import styles from './TeamCard.module.css'
+src/components/TeamCard.tsx:19:export type TeamCardState =
+src/components/TeamCard.tsx:28:export interface TeamCardProps {
+src/components/TeamCard.tsx:35:  state?: TeamCardState
+src/components/TeamCard.tsx:38:const STATE_CLASS_MAP: Record<TeamCardState, string> = {
+src/components/TeamCard.tsx:66: * Figma component `TeamCard` (`150:596`, `design/context/components/team-card.md`).
+src/components/TeamCard.tsx:70:export function TeamCard({
+src/components/TeamCard.tsx:78:}: TeamCardProps): ReactElement {
+
+$ git grep -n -e 'renderToStaticMarkup' -- src/p3-t3-components.test.ts
+src/p3-t3-components.test.ts:5:import { renderToStaticMarkup } from 'react-dom/server'
+src/p3-t3-components.test.ts:153:      const defaultHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:165:      const featuredHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:181:      const defaultHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:195:      const hoverHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:211:      const completedHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:229:      const inProgressArHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:247:      const partnerDefaultHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:259:      const partnerLogoHoverHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:268:      const brandWordmarkHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:278:      const brandLogoHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:288:      const shortHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:295:      const mediumHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:302:      const longHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:320:      const avatarSilhouetteHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:332:      const avatarInitialsHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:342:      const avatarPhotoHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:351:      const portraitSilhouetteHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:360:      const portraitPhotoHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:381:        const html = renderToStaticMarkup(
+src/p3-t3-components.test.ts:400:      const memberHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:411:      const sixthCardHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:435:      expect(renderToStaticMarkup(React.createElement(LogoMarquee, { brands: [] }))).toBe('')
+src/p3-t3-components.test.ts:436:      expect(renderToStaticMarkup(React.createElement(TeamMarquee, { members: [] }))).toBe('')
+src/p3-t3-components.test.ts:438:      const logoHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:450:      const teamHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:470:        renderToStaticMarkup(React.createElement(ServicesCarousel, { services: [] })),
+src/p3-t3-components.test.ts:479:      const enHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:500:      const arHtml = renderToStaticMarkup(
+src/p3-t3-components.test.ts:527:      const html12 = renderToStaticMarkup(
+src/p3-t3-components.test.ts:536:      const html20 = renderToStaticMarkup(
+src/p3-t3-components.test.ts:620:        const html = renderToStaticMarkup(el)
+
+$ git grep -n -e 'runP3T3Evidence' -- scripts/evidence/p3-t3-evidence.mjs
+scripts/evidence/p3-t3-evidence.mjs:160:async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
+scripts/evidence/p3-t3-evidence.mjs:809:runP3T3Evidence(baseUrl, evidenceDir, phase3Dir).catch((err) => {
+
+$ git grep -n -e 'progressTrack' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:90:.progressTrack {
+src/components/ServicesCarousel.module.css:193:  .progressTrack {
+src/components/ServicesCarousel.module.css:204:  .progressTrack {
+
+$ git grep -n -e '--shadow-team-card-hover' -- src/styles/tokens.css
+src/styles/tokens.css:91:  --shadow-team-card-hover: 0 26px 48px 0 rgba(1, 16, 37, 0.28);
+
+$ git grep -n -e 'buildTokensCss' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:204:export function buildTokensCss(tokens) {
+scripts/generate-tokens.mjs:483:  const expectedCss = buildTokensCss(parsed)
+
+$ git grep -n -e '--shadow-partner-tile-rest' -- src/styles/tokens.css
+src/styles/tokens.css:92:  --shadow-partner-tile-rest: 0 4px 6px rgba(1, 16, 37, 0.03);
+
+$ git grep -n -e 'tile' -- src/components/PartnerTile.module.css
+src/components/PartnerTile.module.css:1:.tile {
+src/components/PartnerTile.module.css:15:  box-shadow: var(--shadow-partner-tile-rest);
+src/components/PartnerTile.module.css:24:.tile::after {
+src/components/PartnerTile.module.css:36:.tile:hover,
+src/components/PartnerTile.module.css:37:.tile:focus-within {
+src/components/PartnerTile.module.css:41:.tile:hover::after,
+src/components/PartnerTile.module.css:42:.tile:focus-within::after,
+src/components/PartnerTile.module.css:87:.tile:hover .subtitle,
+src/components/PartnerTile.module.css:88:.tile:focus-within .subtitle,
+src/components/PartnerTile.module.css:94:  .tile,
+src/components/PartnerTile.module.css:95:  .tile::after,
+src/components/PartnerTile.module.css:100:  .tile:hover,
+src/components/PartnerTile.module.css:101:  .tile:focus-within {
+
+$ git grep -n -e 'wordmark' -- src/components/PartnerTile.module.css
+src/components/PartnerTile.module.css:64:.wordmark {
+
+$ git grep -n -e 'PartnerTile' -- src/components/PartnerTile.tsx
+src/components/PartnerTile.tsx:7:import styles from './PartnerTile.module.css'
+src/components/PartnerTile.tsx:9:export type PartnerTileState = 'Default' | 'Hover'
+src/components/PartnerTile.tsx:11:export interface PartnerTileProps {
+src/components/PartnerTile.tsx:14:  state?: PartnerTileState
+src/components/PartnerTile.tsx:20: * Figma component `PartnerTile` (`15:332`, `design/context/components/partner-tile.md`).
+src/components/PartnerTile.tsx:23:export function PartnerTile({
+src/components/PartnerTile.tsx:29:}: PartnerTileProps): ReactElement {
+
+$ git grep -n -e 'CspSafeImage' -- src/components/CspSafeImage.tsx
+src/components/CspSafeImage.tsx:17:export type CspSafeImageProps = Omit<ImageProps, 'style'>
+src/components/CspSafeImage.tsx:19:export function CspSafeImage({ alt, ...rest }: CspSafeImageProps): JSX.Element {
+
+$ git grep -n -e 'ServiceCard' -- src/components/ServiceCard.tsx
+src/components/ServiceCard.tsx:10:import styles from './ServiceCard.module.css'
+src/components/ServiceCard.tsx:12:export type ServiceCardState = 'Default' | 'Hover'
+src/components/ServiceCard.tsx:14:export interface ServiceCardProps {
+src/components/ServiceCard.tsx:22:  state?: ServiceCardState
+src/components/ServiceCard.tsx:26: * Figma component `ServiceCard` (`15:320`, `design/context/components/service-card.md`).
+src/components/ServiceCard.tsx:29:export function ServiceCard({
+src/components/ServiceCard.tsx:38:}: ServiceCardProps): ReactElement {
+
+$ git grep -n -e 'ProjectCard' -- src/components/ProjectCard.tsx
+src/components/ProjectCard.tsx:10:import styles from './ProjectCard.module.css'
+src/components/ProjectCard.tsx:12:export type ProjectCardState = 'Default' | 'Hover'
+src/components/ProjectCard.tsx:14:export interface ProjectCardProps {
+src/components/ProjectCard.tsx:22:  state?: ProjectCardState
+src/components/ProjectCard.tsx:27: * Figma component `ProjectCard` (`15:269`, `design/context/components/project-card.md`).
+src/components/ProjectCard.tsx:31:export function ProjectCard({
+src/components/ProjectCard.tsx:41:}: ProjectCardProps): ReactElement {
+
+$ git grep -n -e 'Portrait' -- src/components/Portrait.tsx
+src/components/Portrait.tsx:7:import styles from './Portrait.module.css'
+src/components/Portrait.tsx:9:export interface PortraitProps {
+src/components/Portrait.tsx:16: * Figma component `PortraitPlaceholder` (`154:890`, `design/context/components/portrait-placeholder.md`).
+src/components/Portrait.tsx:20:export function Portrait({
+src/components/Portrait.tsx:24:}: PortraitProps): ReactElement {
+
+$ git grep -n -e 'Avatar' -- src/components/Avatar.tsx
+src/components/Avatar.tsx:7:import styles from './Avatar.module.css'
+src/components/Avatar.tsx:9:export type AvatarFallbackMode = 'silhouette' | 'initials'
+src/components/Avatar.tsx:11:export interface AvatarProps {
+src/components/Avatar.tsx:13:  fallbackMode?: AvatarFallbackMode
+src/components/Avatar.tsx:19: * Figma component `AvatarPlaceholder` (`150:318`, `design/context/components/avatar-placeholder.md`).
+src/components/Avatar.tsx:23:export function Avatar({
+src/components/Avatar.tsx:28:}: AvatarProps): ReactElement {
+
+$ git grep -n -e 'BrandTile' -- src/components/BrandTile.tsx
+src/components/BrandTile.tsx:7:import styles from './BrandTile.module.css'
+src/components/BrandTile.tsx:9:export interface BrandTileProps {
+src/components/BrandTile.tsx:15: * Figma component `BrandTile` (`156:890`, `design/context/components/brand-tile.md`, CTO §12).
+src/components/BrandTile.tsx:18:export function BrandTile({ brand, className }: BrandTileProps): ReactElement {
+
+$ git grep -n -e 'LogoMarquee' -- src/components/LogoMarquee.tsx
+src/components/LogoMarquee.tsx:9:import styles from './LogoMarquee.module.css'
+src/components/LogoMarquee.tsx:11:export type LogoMarqueePosition = 'A' | 'B'
+src/components/LogoMarquee.tsx:14:export interface LogoMarqueeProps {
+src/components/LogoMarquee.tsx:18:  position?: LogoMarqueePosition
+src/components/LogoMarquee.tsx:32: * Figma component `LogoMarquee` (`18:576`, `design/context/components/logo-marquee.md`).
+src/components/LogoMarquee.tsx:36:export function LogoMarquee({
+src/components/LogoMarquee.tsx:43:}: LogoMarqueeProps): ReactElement | null {
+
+$ git grep -n -e 'TeamMarquee' -- src/components/TeamMarquee.tsx
+src/components/TeamMarquee.tsx:10:import styles from './TeamMarquee.module.css'
+src/components/TeamMarquee.tsx:12:export type TeamMarqueePosition = 'A' | 'B'
+src/components/TeamMarquee.tsx:15:export interface TeamMarqueeProps {
+src/components/TeamMarquee.tsx:20:  position?: TeamMarqueePosition
+src/components/TeamMarquee.tsx:34: * Figma component `TeamMarquee` (`151:964`, `design/context/components/team-marquee.md`).
+src/components/TeamMarquee.tsx:38:export function TeamMarquee({
+src/components/TeamMarquee.tsx:46:}: TeamMarqueeProps): ReactElement | null {
+
+$ git grep -n -e 'resolveMediaAsset' -- src/components/media-utils.ts
+src/components/media-utils.ts:14:export function resolveMediaAsset(
+
+$ git grep -n -e 'extractInitials' -- src/components/media-utils.ts
+src/components/media-utils.ts:42:export function extractInitials(name: string): string {
+
+$ git grep -n -e 'ServiceTile' -- src/components/ServiceTile.tsx
+src/components/ServiceTile.tsx:8:import styles from './ServiceTile.module.css'
+src/components/ServiceTile.tsx:10:export type ServiceTileState = 'Default' | 'Featured'
+src/components/ServiceTile.tsx:11:export type ServiceTileVariant = 'grid' | 'carousel'
+src/components/ServiceTile.tsx:13:export interface ServiceTileProps {
+src/components/ServiceTile.tsx:19:  state?: ServiceTileState
+src/components/ServiceTile.tsx:20:  variant?: ServiceTileVariant
+src/components/ServiceTile.tsx:24: * Figma component `ServiceTile` (`109:333`, `design/context/components/service-tile.md`).
+src/components/ServiceTile.tsx:27:export function ServiceTile({
+src/components/ServiceTile.tsx:35:}: ServiceTileProps): ReactElement {
+src/components/ServiceTile.tsx:37:  const resolvedState: ServiceTileState = state ?? (service.featured ? 'Featured' : 'Default')
+
+$ git grep -n -e 'TeamMember' -- src/components/TeamMember.tsx
+src/components/TeamMember.tsx:6:import styles from './TeamMember.module.css'
+src/components/TeamMember.tsx:8:export interface TeamMemberProps {
+src/components/TeamMember.tsx:15: * Figma component `TeamMember` (`150:603`, `design/context/components/team-member.md`).
+src/components/TeamMember.tsx:18:export function TeamMember({
+src/components/TeamMember.tsx:22:}: TeamMemberProps): ReactElement {
+
+$ git grep -n -e 'P3_T3_COMPONENT_MAP' -- scripts/evidence/p3-t3-evidence.mjs
+scripts/evidence/p3-t3-evidence.mjs:28:const P3_T3_COMPONENT_MAP = [
+scripts/evidence/p3-t3-evidence.mjs:376:      for (const item of P3_T3_COMPONENT_MAP) {
+scripts/evidence/p3-t3-evidence.mjs:653:    for (const item of P3_T3_COMPONENT_MAP) {
+
+$ git grep -n -e 'createTriSideBySideImage' -- scripts/evidence/p3-t3-evidence.mjs
+scripts/evidence/p3-t3-evidence.mjs:112:async function createTriSideBySideImage(figmaBuffer, enBuffer, arBuffer, outPath) {
+scripts/evidence/p3-t3-evidence.mjs:663:        await createTriSideBySideImage(figmaBuf, enBuf, arBuf, outPath)
+
+$ git grep -n -e 'happy-dom' -- package.json
+package.json:63:      "happy-dom": "21.0.4",
+
+$ git grep -n -e 'isForbiddenHappyDomOrLexicalHeadlessSource' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:252:export function isForbiddenHappyDomOrLexicalHeadlessSource(sourceValue) {
+eslint-rules/require-override-access-false.mjs:855:        if (isForbiddenHappyDomOrLexicalHeadlessSource(sourceVal)) {
+eslint-rules/require-override-access-false.mjs:1016:        if (isForbiddenHappyDomOrLexicalHeadlessSource(sourceVal)) {
+eslint-rules/require-override-access-false.mjs:1097:        if (isForbiddenHappyDomOrLexicalHeadlessSource(sourceVal)) {
+eslint-rules/require-override-access-false.mjs:1160:          isForbiddenHappyDomOrLexicalHeadlessSource(node.source.value)
+eslint-rules/require-override-access-false.mjs:1310:          if (isForbiddenHappyDomOrLexicalHeadlessSource(node.arguments[0].value)) {
+
+$ git grep -n -e 'undici' -- package.json
+package.json:64:      "undici": "7.30.1"
+
+$ git grep -n -e 'chokidar' -- package.json
+package.json:60:      "chokidar@^3.0.0": "4.0.3",
+
+$ git grep -n -e 'dompurify' -- package.json
+package.json:61:      "dompurify": "3.4.17",
+
+$ git grep -n -e 'esbuild' -- package.json
+package.json:62:      "esbuild@<=0.24.2": "0.28.2",
+package.json:68:      "esbuild"
+
+$ git grep -n -e 'CmsLink' -- src/components/CmsLink.tsx
+src/components/CmsLink.tsx:6:  type CmsLinkDataLike,
+src/components/CmsLink.tsx:7:  resolveSafeCmsLinkData,
+src/components/CmsLink.tsx:11:export interface CmsLinkProps
+src/components/CmsLink.tsx:14:  link?: CmsLinkDataLike | null | undefined
+src/components/CmsLink.tsx:22: * `<CmsLink>` (`handoff/PLAN.md` §"Phase 3 rules", `docs/03-security.md` I3):
+src/components/CmsLink.tsx:30:export function CmsLink({
+src/components/CmsLink.tsx:39:}: CmsLinkProps): React.ReactElement {
+src/components/CmsLink.tsx:43:    ? resolveSafeCmsLinkData(link, { locale, nodeEnv })
+src/components/CmsLink.tsx:83:export default CmsLink

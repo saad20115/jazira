@@ -1,0 +1,56 @@
+{
+  "baseUrl": "http://localhost:3125",
+  "generatedAt": "2026-10-24T03:56:39.130Z",
+  "results": [
+    {
+      "route": "/ar/styleguide",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة"
+    },
+    {
+      "route": "/en/styleguide",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"en\" dir=\"ltr\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "Page Not Found"
+    },
+    {
+      "route": "/ar/_specimen",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"ar\" dir=\"rtl\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "الصفحة غير موجودة"
+    },
+    {
+      "route": "/en/_specimen",
+      "status": 404,
+      "statusText": "Not Found",
+      "htmlTag": "<html lang=\"en\" dir=\"ltr\" class=\"dzAZra_variable ZWJS8G_variable\">",
+      "title": "Page Not Found"
+    }
+  ],
+  "prodBrowserRoutes": [
+    {
+      "route": "/ar",
+      "status": 200,
+      "consoleErrorsCount": 0,
+      "pageErrorsCount": 0,
+      "cspViolationsCount": 0,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "cspViolations": []
+    },
+    {
+      "route": "/en",
+      "status": 200,
+      "consoleErrorsCount": 0,
+      "pageErrorsCount": 0,
+      "cspViolationsCount": 0,
+      "consoleErrors": [],
+      "pageErrors": [],
+      "cspViolations": []
+    }
+  ]
+}

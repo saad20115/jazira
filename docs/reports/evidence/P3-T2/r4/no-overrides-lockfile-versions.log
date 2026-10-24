@@ -1,0 +1,10 @@
+$ pnpm install --lockfile-only (with pnpm.overrides removed from package.json)
+$ Select-String -Path pnpm-lock.yaml -Pattern "^\s{2}(chokidar|dompurify|esbuild|happy-dom|undici)@"
+chokidar@3.6.0:
+dompurify@3.4.15:
+esbuild@0.18.20:
+esbuild@0.25.12:
+esbuild@0.28.2:
+happy-dom@20.14.6:
+undici@7.29.1:
+undici@7.29.1: {}

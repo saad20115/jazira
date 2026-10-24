@@ -1,0 +1,9 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732
+$ git rev-parse HEAD
+520d49c6f67df0e33ae17df885ed8b972c3941df
+--------------------------------------------------------------------------------
+$ node scripts/evidence/p3-t2-evidence.mjs --dev http://localhost:3126 docs/reports/evidence/P3-T2/r4 docs/reports/phase-3/P3-T2/r4
+[p3-t2-evidence] Completed dev styleguide screenshots, side-by-side sheets, 2-col footer screenshots, responsive navbar/drawer captures, Figma geometry verification, contrast log, and keyboard walkthrough in C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732\docs\reports\evidence\P3-T2\r4.
+
+[exit_code=0]

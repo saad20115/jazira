@@ -1,0 +1,359 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732
+$ git rev-parse HEAD
+520d49c6f67df0e33ae17df885ed8b972c3941df
+BaseURL: http://localhost:3126
+StyleSrcAttrViolations (unfiltered): 0
+InlineStyleAttrConsoleErrors (unfiltered): 0
+PageErrors (unfiltered): 0
+RawDevHmrCspEvents (recorded transparently): 1008
+
+=== Normal Motion, Dimensions & Interactive Checks (EN) ===
+{
+  "ssrInlineStyleAttributeCount": 0,
+  "frameworkAllowlist": [
+    "next-route-announcer",
+    "nextjs-portal",
+    "script[style=\"display: block; position: absolute;\"]"
+  ],
+  "totalBodyStyleElementsCount": 15,
+  "frameworkAllowedStyleElementsCount": 2,
+  "nonCustomPropInlineStyleCount": 0,
+  "cssomCustomPropElementCount": 13,
+  "componentDimensions": {
+    "serviceTileDefault": {
+      "width": 290,
+      "height": 252
+    },
+    "serviceTileFeatured": {
+      "width": 290,
+      "height": 252
+    },
+    "serviceTileCarousel": {
+      "width": 290,
+      "height": 300
+    },
+    "serviceCard": {
+      "width": 275,
+      "height": 360
+    },
+    "projectCard": {
+      "width": 370,
+      "height": 280
+    },
+    "partnerTile": {
+      "width": 275,
+      "height": 158
+    },
+    "partnerTileMaxHorizontalOverflowPx": 0,
+    "partnerTileDefaultShadow": "rgba(1, 16, 37, 0.03) 0px 4px 6px 0px",
+    "partnerTileWordmarkClassName": "PartnerTile-module__POHOKa__wordmark t-h4",
+    "partnerTileWordmarkFontSize": "20px",
+    "brandTile": {
+      "width": 200,
+      "height": 76
+    },
+    "avatar120": {
+      "width": 120,
+      "height": 120
+    },
+    "avatar52": {
+      "width": 52,
+      "height": 52
+    },
+    "portrait": {
+      "width": 264,
+      "height": 340
+    },
+    "teamMember": {
+      "width": 270,
+      "height": 82
+    },
+    "teamCard": {
+      "width": 264,
+      "height": 340
+    },
+    "teamCardEnter1OuterOpacity": "1",
+    "teamCardEnter1InnerOpacity": "0",
+    "teamCardSixthStaggerTransitionDelay": "0.6s, 0.6s",
+    "teamCardOuterTransitionProperty": "all",
+    "teamCardHoverAfterShadow": "rgba(1, 16, 37, 0.28) 0px 26px 48px 0px",
+    "teamCardHoverAfterOpacity": "1"
+  },
+  "mobileOverflow": {
+    "viewport390ScrollWidth": 390
+  },
+  "marqueeTrackRunningState": "running",
+  "marqueeTrackHoverState": "paused",
+  "marqueePauseToggle": {
+    "before": "false",
+    "afterClick": "true",
+    "rootPausedAttr": "true",
+    "restored": "false"
+  },
+  "duplicateAriaHiddenCount": 2,
+  "carouselThumbGeometry": [
+    {
+      "position": "1",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": 0
+    },
+    {
+      "position": "2",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": 129
+    },
+    {
+      "position": "3",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": 258
+    },
+    {
+      "position": "4",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": 387
+    },
+    {
+      "position": "5",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": 516
+    }
+  ],
+  "carouselA11y": {
+    "regionLabel": "Services",
+    "roleDescription": "carousel",
+    "maxIndex": "4",
+    "liveRegionAriaLiveWhilePlaying": "off",
+    "liveRegionAriaLiveWhenPaused": "polite",
+    "userPausedAttrAfterToggle": "true"
+  },
+  "carouselInitialIndex": "0",
+  "carouselAfterNextClickIndex": "1",
+  "carouselAfterKeyNextIndex": "3",
+  "carouselAfterKeyPrevIndex": "2",
+  "carouselPointerDrag": {
+    "trackTranslateXBeforeDrag": -620,
+    "trackTranslateXMidDrag": -760,
+    "midDragDeltaPx": -140,
+    "activeIndexAfterRelease": "3"
+  },
+  "carouselFocusSyncOnSlide6": {
+    "activeIndexAfterFocus": "4",
+    "viewportScrollLeft": 0,
+    "nextButtonDisabledAtMaxIndex": false
+  },
+  "carouselScaleProof": {
+    "services12": {
+      "activeIndexAtEnd": "8",
+      "maxIndex": "8",
+      "trackTranslateXAtEnd": -2480,
+      "thumbTranslateXAtEnd": 516,
+      "thumbWidth": 290,
+      "progressTrackWidth": 806,
+      "thumbOvershootPx": 0
+    },
+    "services20": {
+      "activeIndexAtEnd": "16",
+      "maxIndex": "16",
+      "trackTranslateXAtEnd": -4960,
+      "thumbTranslateXAtEnd": 516,
+      "thumbWidth": 290,
+      "progressTrackWidth": 806,
+      "thumbOvershootPx": 0
+    }
+  },
+  "teamCardScrollEntered": "true",
+  "sixthTeamCardScrollEntered": "true"
+}
+
+=== Normal Motion, Dimensions & Interactive Checks (AR / RTL) ===
+{
+  "ssrInlineStyleAttributeCount": 0,
+  "frameworkAllowlist": [
+    "next-route-announcer",
+    "nextjs-portal",
+    "script[style=\"display: block; position: absolute;\"]"
+  ],
+  "totalBodyStyleElementsCount": 15,
+  "frameworkAllowedStyleElementsCount": 2,
+  "nonCustomPropInlineStyleCount": 0,
+  "cssomCustomPropElementCount": 13,
+  "componentDimensions": {
+    "serviceTileDefault": {
+      "width": 290,
+      "height": 250
+    },
+    "serviceTileFeatured": {
+      "width": 290,
+      "height": 250
+    },
+    "serviceTileCarousel": {
+      "width": 290,
+      "height": 300
+    },
+    "serviceCard": {
+      "width": 275,
+      "height": 360
+    },
+    "projectCard": {
+      "width": 370,
+      "height": 280
+    },
+    "partnerTile": {
+      "width": 275,
+      "height": 158
+    },
+    "partnerTileMaxHorizontalOverflowPx": 0,
+    "partnerTileDefaultShadow": "rgba(1, 16, 37, 0.03) 0px 4px 6px 0px",
+    "partnerTileWordmarkClassName": "PartnerTile-module__POHOKa__wordmark t-h4",
+    "partnerTileWordmarkFontSize": "20px",
+    "brandTile": {
+      "width": 200,
+      "height": 76
+    },
+    "avatar120": {
+      "width": 120,
+      "height": 120
+    },
+    "avatar52": {
+      "width": 52,
+      "height": 52
+    },
+    "portrait": {
+      "width": 264,
+      "height": 340
+    },
+    "teamMember": {
+      "width": 270,
+      "height": 83
+    },
+    "teamCard": {
+      "width": 264,
+      "height": 340
+    },
+    "teamCardEnter1OuterOpacity": "1",
+    "teamCardEnter1InnerOpacity": "0",
+    "teamCardSixthStaggerTransitionDelay": "0.6s, 0.6s",
+    "teamCardOuterTransitionProperty": "all",
+    "teamCardHoverAfterShadow": "rgba(1, 16, 37, 0.28) 0px 26px 48px 0px",
+    "teamCardHoverAfterOpacity": "1"
+  },
+  "mobileOverflow": {
+    "viewport390ScrollWidth": 390
+  },
+  "marqueeTrackRunningState": "running",
+  "marqueeTrackHoverState": "paused",
+  "marqueePauseToggle": {
+    "before": "false",
+    "afterClick": "true",
+    "rootPausedAttr": "true",
+    "restored": "false"
+  },
+  "duplicateAriaHiddenCount": 2,
+  "carouselThumbGeometry": [
+    {
+      "position": "1",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": 0
+    },
+    {
+      "position": "2",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": -129
+    },
+    {
+      "position": "3",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": -258
+    },
+    {
+      "position": "4",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": -387
+    },
+    {
+      "position": "5",
+      "trackWidth": 806,
+      "thumbWidth": 290,
+      "thumbTranslateX": -516
+    }
+  ],
+  "carouselA11y": {
+    "regionLabel": "الخدمات",
+    "roleDescription": "معرض متحرك",
+    "maxIndex": "4",
+    "liveRegionAriaLiveWhilePlaying": "off",
+    "liveRegionAriaLiveWhenPaused": "polite",
+    "userPausedAttrAfterToggle": "true"
+  },
+  "carouselInitialIndex": "0",
+  "carouselAfterNextClickIndex": "1",
+  "carouselAfterKeyNextIndex": "3",
+  "carouselAfterKeyPrevIndex": "2",
+  "carouselPointerDrag": {
+    "trackTranslateXBeforeDrag": 620,
+    "trackTranslateXMidDrag": 760,
+    "midDragDeltaPx": 140,
+    "activeIndexAfterRelease": "3"
+  },
+  "carouselFocusSyncOnSlide6": {
+    "activeIndexAfterFocus": "4",
+    "viewportScrollLeft": 0,
+    "nextButtonDisabledAtMaxIndex": false
+  },
+  "carouselScaleProof": {
+    "services12": {
+      "activeIndexAtEnd": "8",
+      "maxIndex": "8",
+      "trackTranslateXAtEnd": 2480,
+      "thumbTranslateXAtEnd": -516,
+      "thumbWidth": 290,
+      "progressTrackWidth": 806,
+      "thumbOvershootPx": 0
+    },
+    "services20": {
+      "activeIndexAtEnd": "16",
+      "maxIndex": "16",
+      "trackTranslateXAtEnd": 4960,
+      "thumbTranslateXAtEnd": -516,
+      "thumbWidth": 290,
+      "progressTrackWidth": 806,
+      "thumbOvershootPx": 0
+    }
+  },
+  "teamCardScrollEntered": "true",
+  "sixthTeamCardScrollEntered": "true"
+}
+
+=== prefers-reduced-motion: reduce Verification (EN) ===
+{
+  "logoMarqueeAnimationName": "none",
+  "logoMarqueeDuplicateDisplay": "none",
+  "teamMarqueeAnimationName": "none",
+  "carouselReducedMotionAttr": "true",
+  "carouselIndexBeforeWait": "0",
+  "carouselIndexAfterWait": "0",
+  "carouselTrackTransitionDuration": "0s",
+  "teamCardTransitionDuration": "0s"
+}
+
+=== prefers-reduced-motion: reduce Verification (AR / RTL) ===
+{
+  "logoMarqueeAnimationName": "none",
+  "logoMarqueeDuplicateDisplay": "none",
+  "teamMarqueeAnimationName": "none",
+  "carouselReducedMotionAttr": "true",
+  "carouselIndexBeforeWait": "0",
+  "carouselIndexAfterWait": "0",
+  "carouselTrackTransitionDuration": "0s",
+  "teamCardTransitionDuration": "0s"
+}

@@ -1,0 +1,27 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r4-p3-t3-r3-dod-20261024-064732
+$ git rev-parse HEAD
+520d49c6f67df0e33ae17df885ed8b972c3941df
+BaseURL: http://localhost:3126
+FrameworkInlineStyleAllowlist (R-23): ["next-route-announcer", "nextjs-portal", "script[style=\"display: block; position: absolute;\"]"]
+
+=== Route: /ar/styleguide (HTTP 200) ===
+TotalBodyStyleElements (document.body.querySelectorAll('[style]')): 15
+FrameworkAllowedStyleElements (["next-route-announcer","nextjs-portal","script[style=\"display: block; position: absolute;\"]"]): 2
+CssomCustomPropOnlyElements (--*): 13
+NonCustomPropAppInlineStyleCount (R-23): 0
+StyleSrcAttrViolations (unfiltered): 0
+InlineStyleAttrConsoleErrors (unfiltered): 0
+PageErrors (unfiltered): 0
+RawDevHmrCspEvents: 505
+
+=== Route: /en/styleguide (HTTP 200) ===
+TotalBodyStyleElements (document.body.querySelectorAll('[style]')): 15
+FrameworkAllowedStyleElements (["next-route-announcer","nextjs-portal","script[style=\"display: block; position: absolute;\"]"]): 2
+CssomCustomPropOnlyElements (--*): 13
+NonCustomPropAppInlineStyleCount (R-23): 0
+StyleSrcAttrViolations (unfiltered): 0
+InlineStyleAttrConsoleErrors (unfiltered): 0
+PageErrors (unfiltered): 0
+RawDevHmrCspEvents: 504
+

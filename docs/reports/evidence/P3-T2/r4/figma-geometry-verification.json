@@ -1,0 +1,50 @@
+{
+  "baseUrl": "http://localhost:3126",
+  "generatedAt": "2026-10-24T03:57:45.370Z",
+  "homeMetrics": {
+    "theme": "Light",
+    "navTop": 0,
+    "navBottom": 80,
+    "mainTop": 0,
+    "borderBottomWidth": "0px"
+  },
+  "styleguideEnMetrics": {
+    "navbarLogoWidth": 172,
+    "navbarLogoHeight": 50,
+    "navbarCtaHeight": 44,
+    "navbarLinksLeft": 500,
+    "navbarLinksRight": 940,
+    "footerHeight": 505,
+    "footerDividerY": 391,
+    "footerDescriptionWidth": 300,
+    "footerQuickLinksX": 508,
+    "footerContactX": 716,
+    "footerHeadingFontSize": "17px",
+    "footerHeadingFontWeight": "600",
+    "footerHeadingTextTransform": "none",
+    "footerCtaTitleFontSize": "17px",
+    "footerCtaBodyFontSize": "14px",
+    "footerCtaBodyLineHeight": "22px",
+    "footerLanguageSwitcherHref": "/ar",
+    "footerLanguageSwitcherLang": "ar",
+    "footerLanguageSwitcherDir": "rtl",
+    "footer2ColContactWidth": 248
+  },
+  "rtlFabMetrics": {
+    "ringCenterX": 1188,
+    "ringCenterY": 5769,
+    "buttonCenterX": 1188,
+    "buttonCenterY": 5769,
+    "arFooter2ColContactWidth": 248
+  },
+  "mobileHitTargets": {
+    "drawerLinkHeight": 44,
+    "socialButtonWidth": 44,
+    "socialButtonHeight": 44,
+    "footerQuickLinkHeight": 44,
+    "arFooterLanguageSwitcherWidth": 44,
+    "arFooterLanguageSwitcherHeight": 44,
+    "enFooterLanguageSwitcherWidth": 44,
+    "enFooterLanguageSwitcherHeight": 44
+  }
+}
