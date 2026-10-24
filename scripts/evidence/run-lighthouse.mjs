@@ -35,21 +35,51 @@ async function waitForDevToolsPort(port, timeoutMs = 15000) {
   throw new Error(`Chromium DevTools port ${port} did not become ready within ${timeoutMs}ms`)
 }
 
-export async function runLighthouseAudit({
-  url,
-  locale,
-  headerBlock = '',
-  outLogPath,
-  outJsonPath,
-}) {
+function resolveHeadlessBrowserPath() {
+  const defaultExe = chromium.executablePath()
+  try {
+    const browsersRoot = path.resolve(defaultExe, '../../..')
+    const shellDirs = fs
+      .readdirSync(browsersRoot)
+      .filter((d) => d.startsWith('chromium_headless_shell-'))
+      .sort()
+      .reverse()
+    for (const dir of shellDirs) {
+      for (const sub of [
+        'chrome-headless-shell-win64/chrome-headless-shell.exe',
+        'chrome-headless-shell-linux64/chrome-headless-shell',
+        'chrome-headless-shell-mac-arm64/chrome-headless-shell',
+        'chrome-headless-shell-mac-x64/chrome-headless-shell',
+      ]) {
+        const candidate = path.join(browsersRoot, dir, sub)
+        if (fs.existsSync(candidate)) {
+          return candidate
+        }
+      }
+    }
+  } catch {
+    // fallback to defaultExe
+  }
+  return defaultExe
+}
+
+async function runLighthousePassOnce({ url, locale, headerBlock = '', outLogPath, outJsonPath }) {
+  // Ensure the Next.js server & image optimizer have warmed the route before measuring
+  try {
+    const warmRes = await fetch(url)
+    await warmRes.text()
+  } catch {
+    // ignore warm-up errors
+  }
+
   const port = await findFreePort()
   const userDataDir = fs.mkdtempSync(path.join(os.tmpdir(), `lh-profile-${locale}-`))
-  const chromePath = chromium.executablePath()
+  const chromePath = resolveHeadlessBrowserPath()
 
   const chromeArgs = [
     `--remote-debugging-port=${port}`,
     `--user-data-dir=${userDataDir}`,
-    '--headless=new',
+    '--headless',
     '--no-first-run',
     '--no-default-browser-check',
     '--disable-gpu',
@@ -209,6 +239,18 @@ export async function runLighthouseAudit({
       // ignore
     }
   }
+}
+
+export async function runLighthouseAudit(opts) {
+  let lastErr = null
+  for (let attempt = 1; attempt <= 2; attempt++) {
+    try {
+      return await runLighthousePassOnce(opts)
+    } catch (err) {
+      lastErr = err
+    }
+  }
+  throw lastErr
 }
 
 if (

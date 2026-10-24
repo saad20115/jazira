@@ -8,9 +8,9 @@ import { DEFAULT_LOCALE, getDictionary, type SupportedLocale } from '@/i18n'
 import styles from './IntroSplash.module.css'
 
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
-export const INTRO_REVEAL_DELAY_MS = 120
-export const INTRO_EXIT_DELAY_MS = 1150
-export const INTRO_TOTAL_DURATION_MS = 1450
+export const INTRO_REVEAL_DELAY_MS = 90
+export const INTRO_EXIT_DELAY_MS = 800
+export const INTRO_TOTAL_DURATION_MS = 1080
 
 /**
  * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`).

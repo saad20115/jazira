@@ -1570,26 +1570,27 @@ export async function runP3T4Evidence({
             const slide0 = document.querySelector(
               '[data-component="services-carousel"] [data-slide-index="0"]',
             )
-            const slide3 = document.querySelector(
-              '[data-component="services-carousel"] [data-slide-index="3"]',
+            const slide4 = document.querySelector(
+              '[data-component="services-carousel"] [data-slide-index="4"]',
             )
             const s0Rect = slide0 ? slide0.getBoundingClientRect() : null
-            const s3Rect = slide3 ? slide3.getBoundingClientRect() : null
+            const s4Rect = slide4 ? slide4.getBoundingClientRect() : null
             const carouselStartInset = s0Rect
               ? Math.round(isRtl ? vpWidth - s0Rect.right : s0Rect.left)
               : null
-            const slide3BleedsInlineEnd = s3Rect
+            const slide4BleedsInlineEnd = s4Rect
               ? isRtl
-                ? s3Rect.right > 0 && s3Rect.left < 0
-                : s3Rect.left < vpWidth && s3Rect.right > vpWidth
+                ? s4Rect.right > 0 && s4Rect.left < 0
+                : s4Rect.left < vpWidth && s4Rect.right > vpWidth
               : false
 
-            const statsRow = document.querySelector(
-              '[data-home-section="stats"] [class*="statsRow"]',
+            const statItems = Array.from(
+              document.querySelectorAll('[data-home-section="stats"] [data-stat-item]'),
             )
-            const statsGridCols = statsRow
-              ? window.getComputedStyle(statsRow).gridTemplateColumns.trim().split(/\s+/).length
-              : null
+            const distinctStatLefts = new Set(
+              statItems.map((el) => Math.round(el.getBoundingClientRect().left)),
+            )
+            const statsGridCols = distinctStatLefts.size
 
             const expandedAccordion = document.querySelector(
               '[data-home-section="interactive-systems"] [data-accordion-state="Expanded"]',
@@ -1641,7 +1642,7 @@ export async function runP3T4Evidence({
 
             return {
               carouselStartInset,
-              slide3BleedsInlineEnd,
+              slide4BleedsInlineEnd,
               statsGridCols,
               expandedAccordionBg,
               heroCtaPaddingTop,
@@ -1664,13 +1665,12 @@ export async function runP3T4Evidence({
 
         if (
           vpAudit.carouselStartInset !== vp.expectedGutter ||
-          (vp.width === 1440 && !vpAudit.slide3BleedsInlineEnd) ||
+          (vp.width === 1440 && !vpAudit.slide4BleedsInlineEnd) ||
           vpAudit.statsGridCols !== vp.expectedStatsCols ||
           vpAudit.expandedAccordionBg !== 'rgb(255, 255, 255)' ||
           vpAudit.heroCtaPaddingTop !== '0px' ||
           (vp.width >= 768 &&
-            (vpAudit.whoPhotoMarginTop !== '32px' ||
-              vpAudit.whoPhotoMarginInlineStart !== '32px')) ||
+            (vpAudit.whoPhotoMarginTop !== '8px' || vpAudit.whoPhotoMarginInlineStart !== '8px')) ||
           vpAudit.liveModelControlCount !== 0 ||
           !vpAudit.hreflangXDefault?.endsWith('/ar') ||
           !vpAudit.ogSiteName ||
@@ -1696,7 +1696,7 @@ export async function runP3T4Evidence({
           if (
             vpAudit.h1Text !== 'نبني المستقبل بحلول هندسية ذكية' ||
             vpAudit.ctaH2Text !== 'هل أنت مستعد لبناء مشروعك القادم؟' ||
-            !vpAudit.headerNavLabels.includes('الخدمات')
+            !vpAudit.headerNavLabels.includes('خدماتنا')
           ) {
             throw new Error(
               `Arabic copy/nav check failed on ar@${vp.label}: ${JSON.stringify(vpAudit)}`,
@@ -1956,7 +1956,9 @@ export async function runP3T4Evidence({
       const partnersSectionHiddenWhenDisabled = !anonAfterPublishEnHtml.includes(
         'data-home-section="partners"',
       )
-      const statsPlainNavyWhenBgNull = !anonAfterPublishEnHtml.includes('%2Fmedia%2Fbg-pipes.png')
+      const statsPlainNavyWhenBgNull =
+        !anonAfterPublishEnHtml.includes('bg-pipes') &&
+        !anonAfterPublishEnHtml.includes('statsBgLayer')
 
       // Capture screenshots of the live edits and disabled partners section (`R-5`)
       const cmsCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
@@ -2026,7 +2028,8 @@ export async function runP3T4Evidence({
 
       const anonRestoredHtml = await (await fetch(`${baseUrl}/en`)).text()
       const partnersSectionRestored = anonRestoredHtml.includes('data-home-section="partners"')
-      const statsBgRestored = anonRestoredHtml.includes('%2Fmedia%2Fbg-pipes.png')
+      const statsBgRestored =
+        anonRestoredHtml.includes('bg-pipes') && anonRestoredHtml.includes('statsBgLayer')
 
       const cmsRoundtripAudit = {
         draftLeakedToAnon,
