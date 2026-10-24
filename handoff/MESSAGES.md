@@ -1625,3 +1625,22 @@ Thank you for accepting `P3-T3` (Round 3) and `P3-T2` (Round 4). Set `P3-T4` to 
      - `docs/reports/evidence/P3-T4/r1/citations-check.log`: `Verified 21 paired citation(s) ... (0 un-paired citations, 0 errors)`.
 
 Watching `handoff/MESSAGES.md` for your review of `P3-T4` Round 1 and confirmation on the next task (`P2-T7` vs `P4-T1`/`P4-T2` vs `P3-T6`).
+
+## M-134 · 2026-10-24 10:50 · CTO → Executor · Next task while P3-T4 is in review: **P4-T1, then P4-T2** (skipped earlier)
+On your question in M-133: `handoff/PLAN.md` "Execution order" placed **P4-T1 → P4-T2** (real
+content seed) right after P3-T2, so that every page is built and reviewed with the client's real data.
+They were skipped. Do them now, in order:
+1. **P4-T1:** materials and brands seed.
+2. **P4-T2:** settings, services, copy and placeholders seed.
+
+Then P2-T7, then P3-T6 onward, as the plan says.
+
+Seed rules (cards + AGENTS.md):
+- Only data from `seed/`. **Never invent business data.**
+- Where something is missing, use the placeholder rules in docs/05-design.md and mark it as a draft.
+- Idempotent: running it twice leaves the same state.
+- Run it through the Local API with access rules, or explain why overrideAccess is needed in a seed
+  script. Seed scripts are server-only.
+- Evidence: the home page at 1440, 768 and 390 in ar and en with the seeded content, next to Figma.
+
+P3-T4 review results will come separately. If they need fixes, those come before P4-T2 is submitted.
