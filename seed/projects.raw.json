@@ -1,5 +1,5 @@
 {
-  "_about": "Real project list supplied by the owner on 2026-10-24: Profile A p11 (25 national projects) + the owner's spreadsheet of the Makkah projects (66 rows, from Profile A p12-p19). `company` = the company printed next to the project; whether it is the client or the main contractor is NOT stated. No years, values or images are given. `status` is as printed in the old profile and may be out of date. Never invent missing fields.",
+  "_about": "Real project list supplied by the owner on 2026-10-24: Profile A p11 (25 national projects) + the owner's spreadsheet of the Makkah projects (66 rows, from Profile A p12-p19). `company` = the company printed next to the project; whether it is the client or the main contractor is NOT stated. No years, values or images are given. `status` is as printed in the old profile and may be out of date. Never invent missing fields. OWNER 2026-10-24: every project is completed (Stella Hotel, Al Hada Hospital and Zamzam Health Building 3 included); `company` is the CLIENT / owner and may be named on the site; XLSX-1 and XLSX-2 (Janadriah) are two different projects; Al Jazera Co. is an unrelated client.",
   "count": 91,
   "projects": [
     {
@@ -79,7 +79,7 @@
       "location": "Dubai, UAE",
       "company": "Target Co.",
       "scope": "MEP",
-      "status": "working",
+      "status": "finished",
       "source": "Profile A p11 (printed page 9)"
     },
     {
@@ -99,7 +99,7 @@
       "location": "KSA",
       "company": "Honeywell Co.",
       "scope": "Fire Alarm System",
-      "status": "working",
+      "status": "finished",
       "source": "Profile A p11 (printed page 9)"
     },
     {
@@ -119,7 +119,7 @@
       "location": "Makkah, KSA",
       "company": "SVC Co.",
       "scope": "Fire Fighting",
-      "status": "working",
+      "status": "finished",
       "source": "Profile A p11 (printed page 9)"
     },
     {

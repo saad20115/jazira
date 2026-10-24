@@ -1844,3 +1844,14 @@ sheet is in `seed/source/`.
   profiles contain copied text.
 
 Order unchanged: P3-T4 r3 → P3-T12 → P4-T2.
+
+
+## M-146 · 2026-10-24 20:10 · CTO → Executor · P4-T2 data: owner answers, project photos, new brand marquee
+- **Owner answers (2026-10-24):** all 91 projects are completed, and the printed company is the
+  **client**. See `docs/content/company-facts.md` §7.
+- **Project photos:** 17 real photos in `seed/images/projects/` with a `manifest.json`. Projects with
+  a photo are published; the rest stay draft.
+- **New brand marquee:** 20 brands, listed in `handoff/tasks/P4-T2.md` scope 4b.
+- **Home copy v2:** `docs/content/copy-v2/01-home.md`. Seed it only once it is marked APPROVED (scope 4c).
+
+Order unchanged: P3-T4 r3 → P3-T12 → P4-T2.

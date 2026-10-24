@@ -84,3 +84,18 @@ visual identity is unchanged.
 - **Gallery photos:** many look like stock images. Use only photos the owner confirms are the
   company's own work.
 - **Puffery with no basis:** "world-renowned", "international presence".
+
+## 7. Owner answers (2026-10-24) — these override the ⚠️ items above
+| Question | Answer |
+|---|---|
+| Founding year / experience | **Since 1979** and **45+ years** are both correct ("45+" = more than 45). |
+| Project count | **90+ projects** and **100+ buildings** are both correct. |
+| Companies next to projects | They are **clients / owners**, and may be named on the website. |
+| Names on the website | Client names: **yes**. Founder's name: **no**. "Formerly IMDAD Group": **not used**. |
+| Project status | **All 91 completed**, including Stella Hotel, Al Hada Hospital and Zamzam Health Building 3. |
+| Brand marquee | Use the **bigger brands from the profile**. |
+| Email | **info@aljazira.co**. **No** reply-time promise ("within one working day" is removed). |
+| Janadriah projects 1 and 2 | Two **different** projects. |
+| Al Jazera Co. | An **unrelated client**. |
+| Photos | Use the photos in the profile now; better ones are added later from the admin. 17 captioned photos are in `seed/images/projects/` (`manifest.json`). |
+
