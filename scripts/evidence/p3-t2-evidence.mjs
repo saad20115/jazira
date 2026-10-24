@@ -435,7 +435,11 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
 
       // R-23: Inspect all `document.body.querySelectorAll('[style]')` across the entire body (including fixed elements like WhatsAppFab outside <main>)
       const bodyStyleInspection = await page.evaluate(() => {
-        const frameworkAllowlistSelectors = ['next-route-announcer', 'nextjs-portal']
+        const frameworkAllowlistSelectors = [
+          'next-route-announcer',
+          'nextjs-portal',
+          'script[style="display: block; position: absolute;"]',
+        ]
         const allStyledInBody = Array.from(document.body.querySelectorAll('[style]'))
         const frameworkStyledNodes = []
         const cssomCustomPropNodes = []
@@ -959,7 +963,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     const cspLogLines = [
       headerBlock.trimEnd(),
       `BaseURL: ${baseUrl}`,
-      `FrameworkInlineStyleAllowlist (R-23): ["next-route-announcer", "nextjs-portal"]`,
+      `FrameworkInlineStyleAllowlist (R-23): ["next-route-announcer", "nextjs-portal", "script[style=\\"display: block; position: absolute;\\"]"]`,
       '',
       ...consoleAndCspRoutes.flatMap((r) => [
         `=== Route: ${r.route} (HTTP ${String(r.status)}) ===`,

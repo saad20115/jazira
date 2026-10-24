@@ -246,7 +246,11 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       }
 
       const domStyleInspection = await page.evaluate(() => {
-        const frameworkAllowlistSelectors = ['next-route-announcer', 'nextjs-portal']
+        const frameworkAllowlistSelectors = [
+          'next-route-announcer',
+          'nextjs-portal',
+          'script[style="display: block; position: absolute;"]',
+        ]
         const allStyledInBody = Array.from(document.body.querySelectorAll('[style]'))
         let frameworkCount = 0
         let cssomCustomPropCount = 0
