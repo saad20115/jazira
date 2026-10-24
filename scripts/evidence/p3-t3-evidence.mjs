@@ -411,7 +411,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       // Test ServicesCarousel pause/play button (`R-6`)
       const carouselPauseBtn = carouselSec.locator('[data-carousel-action="toggle-pause"]').first()
       await carouselPauseBtn.click()
-      const carouselPausedAttr = await carouselSec.getAttribute('data-user-paused')
+      const carouselPausedAttr = await carouselSec.getAttribute('data-paused')
       const liveRegionAriaLiveWhenPaused = await liveRegionLoc.getAttribute('aria-live')
 
       const carouselFrames = []
@@ -442,12 +442,12 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       carouselFrames.push(await carouselWrapper.screenshot())
 
       // Pointer drag/swipe verification (`R-11`)
-      const viewportLoc = carouselSec.locator('[data-carousel-viewport="true"]').first()
-      const vpBox = await viewportLoc.boundingBox()
+      const trackLoc = carouselSec.locator('[data-carousel-track="true"]').first()
+      const vpBox = await carouselSec.boundingBox()
       let afterPointerDragIndex = afterKeyPrevIndex
       if (vpBox) {
         const startX = vpBox.x + vpBox.width / 2
-        const startY = vpBox.y + vpBox.height / 2
+        const startY = vpBox.y + 150
         const dragDelta = locale === 'ar' ? 140 : -140
         await page.mouse.move(startX, startY)
         await page.mouse.down()
@@ -461,12 +461,14 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
 
       // Off-screen slide keyboard focus sync verification (`R-5`)
       const slide6Link = carouselSec
-        .locator('[data-carousel-slide="true"][data-slide-index="5"] a')
+        .locator('[data-slide-index="5"] a')
         .first()
       await slide6Link.focus()
       await page.waitForTimeout(200)
       const afterFocusSlide6Index = await carouselSec.getAttribute('data-active-index')
-      const viewportScrollLeftAfterFocus = await viewportLoc.evaluate((el) => el.scrollLeft)
+      const viewportScrollLeftAfterFocus = await trackLoc.evaluate((el) =>
+        el.parentElement ? el.parentElement.scrollLeft : 0,
+      )
       const nextBtnDisabledAtMax = await nextBtn.isDisabled()
 
       const carouselGifPath = path.join(evidenceDir, `carousel-${locale}.gif`)
