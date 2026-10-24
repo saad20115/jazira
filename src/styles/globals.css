@@ -2,17 +2,30 @@
 @import './breakpoints.css';
 
 /*
- * Metric-matched fallback font for `Noto Kufi Arabic` (`R-3`):
- * Calibrates fallback horizontal glyph advance (`size-adjust`) and vertical metrics
- * (`ascent-override`, `descent-override`, `line-gap-override`) so Arabic headings
- * wrap identically before and after `Noto Kufi Arabic` finishes downloading on slow 4G.
+ * Metric-matched fallback font rules for `Noto Kufi Arabic` (`R-3`):
+ * Separate regular/medium (`100 500`) and semibold/bold (`600 900`) `size-adjust` and
+ * vertical metric overrides so Arabic display headings (`700`), CTA buttons (`600`), and
+ * body copy (`400`) wrap to the exact same line counts and heights (`h1 = 172px`,
+ * `subtitle = 114px`, `ctaGroup = 124px` at `412x823`) before and after `Noto Kufi Arabic`
+ * finishes downloading on slow 4G.
  */
 @font-face {
   font-family: 'Noto Kufi Arabic Metric Fallback';
+  font-weight: 100 500;
   src: local('Arial'), local('Tahoma'), local('Segoe UI'), local('sans-serif');
-  size-adjust: 121%;
-  ascent-override: 105%;
-  descent-override: 35%;
+  size-adjust: 125%;
+  ascent-override: 95%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Noto Kufi Arabic Metric Fallback';
+  font-weight: 600 900;
+  src: local('Arial'), local('Tahoma'), local('Segoe UI'), local('sans-serif');
+  size-adjust: 144%;
+  ascent-override: 82%;
+  descent-override: 25%;
   line-gap-override: 0%;
 }
 
