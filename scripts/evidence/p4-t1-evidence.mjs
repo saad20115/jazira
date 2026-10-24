@@ -121,9 +121,6 @@ async function run() {
     where: { id: { exists: true } },
     overrideAccess: true,
   })
-  if (typeof payload.db.destroy === 'function') {
-    await payload.db.destroy()
-  }
 
   // 3. Run 1: pnpm seed
   const run1Out = execFileSync(pnpmCmd, ['seed'], {
@@ -162,7 +159,7 @@ async function run() {
   }
 
   // 6. Query verification via Local API (`overrideAccess: false`, `user: SEED_ADMIN_USER`)
-  const payloadVerify = await getPayload({ config: payloadConfig })
+  const payloadVerify = payload
   try {
     const [materialsEn, materialsAr, brandsEn, brandsAr] = await Promise.all([
       payloadVerify.find({
