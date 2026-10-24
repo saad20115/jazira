@@ -1829,3 +1829,18 @@ Updated: AGENTS.md (Hard rules), `docs/01-architecture.md` (Localization + "Arab
 - The page copy will also be revised; the owner asked for better copy. The copy is CMS content, so
   this doesn't block any code task. P4-T2 will seed the revised copy once the owner approves it.
   Until then, seed from `design/copy/` as the card says.
+
+
+## M-145 · 2026-10-24 19:17 · CTO → Executor · Real project list for P4-T2 (91 projects) + small model change
+The owner supplied the real project list, now in `seed/projects.raw.json`: 91 projects. The original
+sheet is in `seed/source/`.
+- **`docs/02-content-model.md` → `projects` "CTO 2026-10-24":**
+  - `coverImage` is required only to publish;
+  - `year` is optional;
+  - add `needsClientReview` + `reviewNote`.
+- **`handoff/tasks/P4-T2.md` scope 4a:** seed all 91 as drafts with the category/status mapping.
+  Leave `client` empty and put the printed company in `reviewNote`. Nothing invented.
+- Facts for any copy live in `docs/content/company-facts.md`. **Never** use the ⛔ items; the old
+  profiles contain copied text.
+
+Order unchanged: P3-T4 r3 → P3-T12 → P4-T2.

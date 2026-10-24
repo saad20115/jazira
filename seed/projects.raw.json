@@ -1,0 +1,916 @@
+{
+  "_about": "Real project list supplied by the owner on 2026-10-24: Profile A p11 (25 national projects) + the owner's spreadsheet of the Makkah projects (66 rows, from Profile A p12-p19). `company` = the company printed next to the project; whether it is the client or the main contractor is NOT stated. No years, values or images are given. `status` is as printed in the old profile and may be out of date. Never invent missing fields.",
+  "count": 91,
+  "projects": [
+    {
+      "ref": "A-p11-1",
+      "name": "Princess Noura University (PNU)",
+      "printed": "Princess Noura University ( PNU)",
+      "location": "KSA",
+      "company": "Postech Co.",
+      "scope": "Low Current SCS",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-2",
+      "name": "NOMURA Investment Banking (Middle East)",
+      "printed": "NOMURA Investment Banking ( M. East)",
+      "location": "KSA",
+      "company": "Postech Co.",
+      "scope": "Low Current Systems",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-3",
+      "name": "Bank of America (Merrill Lynch)",
+      "printed": "Bank of America  ( Merrill Lynch)",
+      "location": "KSA",
+      "company": "Postech Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-4",
+      "name": "Roads & Transport Authority (RTA)",
+      "printed": "Roads & Transport Authority (RTA)",
+      "location": "Dubai, UAE",
+      "company": "Target Co.",
+      "scope": "Data Center MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-5",
+      "name": "Student Accommodation, Tabuk University",
+      "printed": "Student Accomidation Tabouk University",
+      "location": "KSA",
+      "company": "Target Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-6",
+      "name": "Medical Science College, Taif University",
+      "printed": "Med. Scince Collage Taif University",
+      "location": "KSA",
+      "company": "Target Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-7",
+      "name": "Cadillac Showroom - Al Jomaih",
+      "printed": "Kadillac Show Room - AL Gomaih",
+      "location": "KSA",
+      "company": "Somit Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-8",
+      "name": "Stella Hotel (32 floors)",
+      "printed": "Stella Hotel (32 floor)",
+      "location": "Dubai, UAE",
+      "company": "Target Co.",
+      "scope": "MEP",
+      "status": "working",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-9",
+      "name": "Police Training Institute",
+      "printed": "Police Training Instituet",
+      "location": "Qatar",
+      "company": "Target Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-10",
+      "name": "Al Hada Armed Forces Hospital",
+      "printed": "Al Hada Armed Force Hospital",
+      "location": "KSA",
+      "company": "Honeywell Co.",
+      "scope": "Fire Alarm System",
+      "status": "working",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-11",
+      "name": "Saudi Post (Jeddah)",
+      "printed": "Saudi Post (Jeddah)",
+      "location": "Jeddah, KSA",
+      "company": "MERCO Co.",
+      "scope": "MEP Upgrade",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-12",
+      "name": "Zamzam Health Building 3",
+      "printed": "Zamzam Health Building 3 (Makkah)",
+      "location": "Makkah, KSA",
+      "company": "SVC Co.",
+      "scope": "Fire Fighting",
+      "status": "working",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-13",
+      "name": "Jouf Cement Factory",
+      "printed": "Jouf Cement Factory",
+      "location": "KSA",
+      "company": "MERCO Sister Company",
+      "scope": "Civil & MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-14",
+      "name": "7 Schools (Jazan)",
+      "printed": "7 Schooles (Jazan)",
+      "location": "Jazan, KSA",
+      "company": "MERCO Sister Company",
+      "scope": "Civil & MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-15",
+      "name": "King Fahd Medical Hospital",
+      "printed": "King Fahd M. Hospital",
+      "location": "Jeddah, KSA",
+      "company": "MERCO",
+      "scope": "Fire Alarm & CCTV",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-16",
+      "name": "IKEA Store, Riyadh",
+      "printed": "IKEA Store … Riyadh",
+      "location": "Riyadh, KSA",
+      "company": "Sister company",
+      "scope": "Structured Cabling",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-17",
+      "name": "IKEA, Hofuf Branch",
+      "printed": "IKEA … Hafuf Branch",
+      "location": "Hofuf, KSA",
+      "company": "MERCO",
+      "scope": "Video Wall",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-18",
+      "name": "KAP1 (5 projects)",
+      "printed": "KAP1 … 5 Projects",
+      "location": "KSA",
+      "company": "MERCO",
+      "scope": "Low Current Systems",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-19",
+      "name": "Shaqra University",
+      "printed": "Shaqraa Universty",
+      "location": "KSA",
+      "company": "Petrojet",
+      "scope": "Data & Low Current Systems",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-20",
+      "name": "Ministry of Municipality Auditorium",
+      "printed": "Ministry of Municipality Auditorium",
+      "location": "Riyadh, KSA",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-21",
+      "name": "Mobily Terminal Building",
+      "printed": "Mobily Terminal Building",
+      "location": "KSA",
+      "company": "Petrojet",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-22",
+      "name": "Al Andalus Intercontinental Hotel",
+      "printed": "AL Andaluse Intercontinental Hotel",
+      "location": "Jeddah, KSA",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-23",
+      "name": "Al Essa Hotel",
+      "printed": "Al Essa Hotel -Riyadh",
+      "location": "Riyadh, KSA",
+      "company": "AKNAN",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-24",
+      "name": "Al Thumamah Park",
+      "printed": "Al Thumamah Park",
+      "location": "KSA",
+      "company": "AKNAN",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "A-p11-25",
+      "name": "King Salman Oasis of Science",
+      "printed": "King Salman Osis Of Scince",
+      "location": "KSA",
+      "company": "AKNAN",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Profile A p11 (printed page 9)"
+    },
+    {
+      "ref": "XLSX-1",
+      "name": "Hotel AL Janaderiah Palace Hotel",
+      "printed": "Hotel AL Janaderiah Palace Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-2",
+      "name": "Hotel AL Janadriah Palace",
+      "printed": "Hotel AL Janadriah Palace",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-3",
+      "name": "Hotel Rehab AL Janadriah",
+      "printed": "Hotel Rehab AL Janadriah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-4",
+      "name": "AL Zaher Tower (1)",
+      "printed": "AL Zaher Tower (1)",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-5",
+      "name": "AL Zaher Tower (2)",
+      "printed": "AL Zaher Tower (2)",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-6",
+      "name": "Gabal Sawdan Tower",
+      "printed": "Gabal Sawdan Tower",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-7",
+      "name": "AL Dahla Tower",
+      "printed": "AL Dahla Tower",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-8",
+      "name": "Safwat AL Shrooq Hotel",
+      "printed": "Safwat AL Shrooq Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-9",
+      "name": "Manar AL Shrooq Hotel",
+      "printed": "Manar AL Shrooq Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-10",
+      "name": "Rawdat AL Shrooq Hotel",
+      "printed": "Rawdat AL Shrooq Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-11",
+      "name": "Dar AL Shrooq Hotel",
+      "printed": "Dar AL Shrooq Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-12",
+      "name": "Bafel Khyat Tower",
+      "printed": "Bafel Khyat Tower",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Omar Saeed Bafel Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-13",
+      "name": "Sofitel Makkah Hotel",
+      "printed": "Sofitel Makkah Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Beyout Makkah Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-14",
+      "name": "Meridien Makkah Hotel",
+      "printed": "Meridien Makkah Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Beyout Makkah Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-15",
+      "name": "Mawakeb AL Rawdah Hotel",
+      "printed": "Mawakeb AL Rawdah Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Beyout Makkah Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-16",
+      "name": "Beyout Makkah Pavilion HQ",
+      "printed": "Beyout Makkah Pavilion HQ",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Beyout Makkah Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-17",
+      "name": "Otaybiah Central Market",
+      "printed": "Otaybiah Central Market",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Beyout Makkah Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-18",
+      "name": "Ramada Dar AL Faezeen Hotel",
+      "printed": "Ramada Dar AL Faezeen Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Masa Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-19",
+      "name": "Ramada Ashee Hotel",
+      "printed": "Ramada Ashee Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Masa Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-20",
+      "name": "Elaf AL Moltaqa Hotel",
+      "printed": "Elaf AL Moltaqa Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Masa Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-21",
+      "name": "Eoan Hotel",
+      "printed": "Eoan Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Masa Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-22",
+      "name": "Jeddah Palace Hotel",
+      "printed": "Jeddah Palace Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Jazera Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-23",
+      "name": "Dorrat AL Khalil Hotel",
+      "printed": "Dorrat AL Khalil Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "BAL Jazera Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-24",
+      "name": "Habibah Hotel Makkah",
+      "printed": "Habibah Hotel Makkah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Nouh Maraq",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-25",
+      "name": "AL Souhadaa Hotel",
+      "printed": "AL Souhadaa Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Jazera Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-26",
+      "name": "Watany Mall",
+      "printed": "Watany Mall",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Jazera Co.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-27",
+      "name": "AL Maqam Tower (A,B,C,D)",
+      "printed": "AL Maqam Tower (A,B,C,D)",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "ATTAMEER CO.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-28",
+      "name": "AL Naseem Tower (91 to 99)",
+      "printed": "AL Naseem Tower (91 to 99)",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "ATTAMEER CO.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-29",
+      "name": "Aziziah Tower",
+      "printed": "Aziziah Tower",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "ATTAMEER CO.",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-30",
+      "name": "Olayan Tower Qudai",
+      "printed": "Olayan Tower Qudai",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-31",
+      "name": "Ghadeer Tower Qudai",
+      "printed": "Ghadeer Tower Qudai",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-32",
+      "name": "Culture Center Qudai",
+      "printed": "Culture Center Qudai",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-33",
+      "name": "Olayan Tower Aziziah",
+      "printed": "Olayan Tower Aziziah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-34",
+      "name": "Olayan Golden Hotel",
+      "printed": "Olayan Golden Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-35",
+      "name": "Naaeb AL Haram Hotel",
+      "printed": "Naaeb AL Haram Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-36",
+      "name": "Shk. Saleh AL Owied",
+      "printed": "Shk. Saleh AL Owied",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Olayan Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-37",
+      "name": "Hyper Abraj",
+      "printed": "Hyper Abraj",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-38",
+      "name": "AL Zaydi Concrete Factory",
+      "printed": "AL Zaydi Concrete Factory",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-39",
+      "name": "AL Mona Ajiad Hotel",
+      "printed": "AL Mona Ajiad Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-40",
+      "name": "AL Lewaa Hotel",
+      "printed": "AL Lewaa Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-41",
+      "name": "Abou AL Jadail Kitchen",
+      "printed": "Abou AL Jadail Kitchen",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-42",
+      "name": "Abdullah Bokhari Hotel",
+      "printed": "Abdullah Bokhari Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-43",
+      "name": "Abdulatif Sendy Hotel",
+      "printed": "Abdulatif Sendy Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-44",
+      "name": "Abou Ghalia Consultant HQ",
+      "printed": "Abou Ghalia Consultant HQ",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-45",
+      "name": "Nursery School",
+      "printed": "Nursery School",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-46",
+      "name": "Labor Court Bathaa Qwraish",
+      "printed": "Labor Court Bathaa Qwraish",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-47",
+      "name": "National Water Company Building",
+      "printed": "National Water Company Building",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP- Upgrad",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-48",
+      "name": "Awqaf AL Moufty Hotel AL Joumaizah",
+      "printed": "Awqaf AL Moufty Hotel AL Joumaizah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Awqaf AL Moufty",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-49",
+      "name": "Awqaf AL Moufty Hotel AL Aziziah",
+      "printed": "Awqaf AL Moufty Hotel AL Aziziah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Awqaf AL Moufty",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-50",
+      "name": "Awqaf AL Moufty Hotel Ibrahim AL Khalil",
+      "printed": "Awqaf AL Moufty Hotel Ibrahim AL Khalil",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Awqaf AL Moufty",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-51",
+      "name": "Mena Sanitary Network",
+      "printed": "Mena Sanitary Network",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-52",
+      "name": "Charity Inst. Block Makkah",
+      "printed": "Charity Inst. Block Makkah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-53",
+      "name": "Charity Inst. Block Jeddah",
+      "printed": "Charity Inst. Block Jeddah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-54",
+      "name": "Issa Bin Laden HQ",
+      "printed": "Issa Bin Laden HQ",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Issa Bin Laden",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-55",
+      "name": "Issa Bin Laden HQ Parking",
+      "printed": "Issa Bin Laden HQ Parking",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Issa Bin Laden",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-56",
+      "name": "Hamraa Hospital Jeddah",
+      "printed": "Hamraa Hospital Jeddah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-57",
+      "name": "Issa Bin Laden Stores (1 to 9)",
+      "printed": "Issa Bin Laden Stores (1 to 9)",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Issa Bin Laden",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-58",
+      "name": "Mena Gate Hotel",
+      "printed": "Mena Gate Hotel",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-59",
+      "name": "Awali Mall Makkah",
+      "printed": "Awali Mall Makkah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-60",
+      "name": "Afwaj AL Tawba Hotel (1 to 15)",
+      "printed": "Afwaj AL Tawba Hotel (1 to 15)",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Afwaj AL Tawba Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-61",
+      "name": "Afwaj AL Tawba Group Store",
+      "printed": "Afwaj AL Tawba Group Store",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "Afwaj AL Tawba Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-62",
+      "name": "AL Zaydi Kitchen",
+      "printed": "AL Zaydi Kitchen",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "AL Zaydi Group",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-63",
+      "name": "AL Fraj Stores",
+      "printed": "AL Fraj Stores",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-64",
+      "name": "Qawafel Makkah Market",
+      "printed": "Qawafel Makkah Market",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-65",
+      "name": "Maternity and Children Hospital Makkah",
+      "printed": "Maternity and Children Hospital Makkah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    },
+    {
+      "ref": "XLSX-66",
+      "name": "Family Market Makkah",
+      "printed": "Family Market Makkah",
+      "location": "Makkah region, KSA (profile section header 'Makkah')",
+      "company": "",
+      "scope": "MEP",
+      "status": "finished",
+      "source": "Owner sheet 2026-10-24 (from Profile A p12-p19)"
+    }
+  ]
+}

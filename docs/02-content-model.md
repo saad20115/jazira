@@ -213,6 +213,11 @@ relationship fields (written below as "stat" / "stats").
   `scopeSummary` (L, "Full MEP"); `deliverables` (array, max 10, `text` (L)) — "Key deliverables";
   `details` (array, max 8, `pillar`) — the accordion in "Information & about".
 - Gallery captions come from `media.caption` (lightbox "1 / 3 · caption").
+- **CTO 2026-10-24 (real project list, `seed/projects.raw.json`, 91 projects):**
+  - `coverImage` is required **only to publish**: a validation on `_status === 'published'`. Drafts
+    may have no image, because most real projects have no photo yet.
+  - `year` is optional (no years are known).
+  - Add `needsClientReview` (checkbox) and `reviewNote` (textarea, admin-only, not public).
 
 ### `team` — clarification
 - Leadership roles in the design: Chairman, Chief Executive Officer, Commercial Director,

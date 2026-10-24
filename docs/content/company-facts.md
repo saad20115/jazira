@@ -29,6 +29,7 @@ visual identity is unchanged.
 |---|---|---|
 | ~85% of the MEP package self-performed; ~15% subcontracted (ELV, gas, HV, TAB) | ✅ (A p04 also says "three quarters"; we use 85%, the specific figure) | A p03 |
 | **21** MEP systems self-performed (HVAC, BMS, ventilation, stair pressurization, plumbing, water supply, drainage, smoke management, fire detection, fire fighting, fire stopping, exhaust, cold rooms & central refrigeration, power distribution, small power & MV, lighting, data networks, telephone, CCTV & TV, access control & sound, data centers & NOC rooms) | ✅ This is where "21+ disciplines" comes from | A p03 |
+| **Owner's project sheet (2026-10-24)** confirms the 66 Makkah projects. With the 25 national projects (A p11), the total is **91**. Data: `seed/projects.raw.json`; original: `seed/source/projects-makkah.xlsx` | ✅ | owner sheet |
 | Projects: **91 unique entries** (88 finished, 3 "working"), several bundling many buildings (e.g. Al Naseem Towers 91–99, Afwaj Al Tawba Hotels 1–15, Issa Bin Laden Stores 1–9, 7 Jazan schools, KAP1 5 projects) | ✅ "90+ projects" is safe; "100+" holds only if it counts buildings | A p11–p19, B p8–13 |
 | Countries with projects: Saudi Arabia, UAE (Dubai: RTA, Stella Hotel), Qatar (Police Training Institute) = **3** | ✅ | A p11 |
 | Headcount: staff table totals 46, including 20 outsourced labourers | ⛔ don't publish | A p07 |
