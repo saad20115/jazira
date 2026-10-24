@@ -682,9 +682,14 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         expect(stripped).not.toMatch(/#[0-9a-fA-F]{3,8}\b/)
         expect(stripped).not.toMatch(/\brgba?\s*\(/i)
 
+        const fileVars = new Set(definedVars)
+        for (const match of stripped.matchAll(/(--[a-z0-9-]+)\s*:/gi)) {
+          fileVars.add(match[1])
+        }
+
         for (const match of stripped.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)) {
           const varName = match[1]
-          expect(definedVars.has(varName), `${relPath} references undefined ${varName}`).toBe(true)
+          expect(fileVars.has(varName), `${relPath} references undefined ${varName}`).toBe(true)
         }
       }
     })
