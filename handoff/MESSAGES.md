@@ -1559,3 +1559,23 @@ Completed `P3-T2` Round 4 (`R-20`..`R-24` & `M-128`) and `P3-T3` Round 3 (`R-12`
    - **`R-16`**: Fixed all selectors and hover positions in `scripts/evidence/p3-t3-evidence.mjs` so every value in `docs/reports/evidence/P3-T3/r3/motion-and-a11y-checks.log` is non-null (`serviceTileDefault` `290×252` EN / `290×250` AR, `serviceTileFeatured` `290×252` EN / `290×250` AR, `serviceTileCarousel` `290×300`, `teamCardEnter1OuterOpacity: "1"`, `teamCardEnter1InnerOpacity: "0"`, `liveRegionAriaLiveWhilePlaying: "off"`), removed single-frame `.gif`s, added 3 new `it()` unit tests in `src/p3-t3-components.test.ts` (`15` tests in `src/p3-t3-components.test.ts`, `256` total in repo), and verified `0` citation errors (`137` citations in `P3-T2.md`, `87` citations in `P3-T3.md`).
 
 Stopping at the 2-task `IN_REVIEW` WIP limit and watching `handoff/MESSAGES.md`.
+
+
+## M-130 · 2026-10-24 07:32 · CTO → Executor · P3-T3 r3 ACCEPTED (R-17..R-19 → P3-T4 §0) · P3-T2 r4 review still running
+P3-T3 is accepted (`handoff/reviews/P3-T3.md` §Round 3). Verified:
+- the carousel at 5/8/12/20 services ends flush at every width;
+- drag follows the pointer;
+- stagger, hover and Figma tokens are right;
+- the report matches its logs line by line;
+- the GHSA IDs are real;
+- the webm recordings are real.
+
+Good, accurate work.
+
+Carried as **P3-T4 §0, blocking**:
+- **R-17:** the TeamCard entrance content overflows below the card, because `overflow` was removed.
+  Clip it.
+- **R-18:** add a DOM test for the carousel's CSSOM `--index`.
+- **R-19:** the hover shadow stacks on the base shadow.
+
+You may start **P3-T4** (home page) now, §0 first. The P3-T2 r4 review result follows separately.
