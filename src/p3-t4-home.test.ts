@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  INTRO_PREPAINT_INLINE_SCRIPT,
   INTRO_SPLASH_STORAGE_KEY,
   INTRO_TOTAL_DURATION_MS,
   IntroSplash,
@@ -52,7 +53,6 @@ import LocaleHomePage, {
   extractLexicalParagraphs,
   generateMetadata,
   renderAccentHeading,
-  splitDisplayLines,
 } from '@/app/(frontend)/[locale]/page'
 
 function makeMedia(id: number, url: string, alt: string): Media {
@@ -219,7 +219,8 @@ function buildSampleHomePage(): HomePage {
     hero: {
       enabled: true,
       eyebrow: 'MEP & SMART ENGINEERING CONTRACTORS · RIYADH, KSA',
-      title: 'Smart Engineering\nSolutions for Mega Projects',
+      title: 'Smart Engineering',
+      titleAccent: 'Solutions for Mega Projects',
       subtitle:
         'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting.',
       background: makeMedia(1, '/media/hero-city.png', 'Riyadh skyline'),
@@ -308,6 +309,7 @@ function buildSampleHomePage(): HomePage {
       title: 'Trusted by Industry Leaders',
       text: 'Proven track record across Saudi Arabia’s most demanding sectors.',
       stats: SAMPLE_STATS,
+      backgroundImage: makeMedia(6, '/media/bg-pipes.png', 'Stats Background'),
     },
     featuredProjects: {
       enabled: true,
@@ -327,7 +329,8 @@ function buildSampleHomePage(): HomePage {
     },
     cta: {
       enabled: true,
-      title: 'Ready to Start Your\nNext Project?',
+      title: 'Ready to Start Your',
+      titleAccent: 'Next Project?',
       text: 'Share your project scope or BOQ with our engineering team.',
       backgroundImage: makeMedia(4, '/media/proj-tower.png', 'CTA Backdrop'),
       button: {
@@ -437,11 +440,23 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(revealHtml).toContain('data-intro-state="reveal"')
       expect(revealHtml).toContain('حلول الأعمال الكهروميكانيكية والهندسة الذكية · الرياض')
       expect(revealHtml).toContain('تخطي المقدمة')
+
+      // R-4: SSR render without forceState emits the overlay in initial 'start' state so it is present at frame 0
+      const ssrDefaultHtml = renderToStaticMarkup(
+        React.createElement(IntroSplash, {
+          locale: 'en',
+          siteName: 'Al Jazira for Imdad Smart Co.',
+        }),
+      )
+      expect(ssrDefaultHtml).toContain('data-component="intro-splash"')
+      expect(ssrDefaultHtml).toContain('data-intro-state="start"')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('aljazira_intro_seen')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('data-intro')
     })
   })
 
-  describe('2. Text & Heading Helpers (`extractLexicalParagraphs`, `splitDisplayLines`, `renderAccentHeading`)', () => {
-    it('extracts up to 2 paragraphs from Lexical richText JSON and splits Hero/CTA display lines cleanly', () => {
+  describe('2. Text & Heading Helpers (`extractLexicalParagraphs`, `renderAccentHeading`)', () => {
+    it('extracts up to 2 paragraphs from Lexical richText JSON and styles section H2 accent spans', () => {
       const lexical = makeLexicalParagraphs([
         'First paragraph.',
         'Second paragraph.',
@@ -452,19 +467,6 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         'Second paragraph.',
       ])
       expect(extractLexicalParagraphs(null)).toEqual([])
-
-      expect(splitDisplayLines('Smart Engineering\nSolutions for Mega Projects', 'hero')).toEqual({
-        line1: 'Smart Engineering',
-        line2: 'Solutions for Mega Projects',
-      })
-      expect(splitDisplayLines('Smart Engineering Solutions for Mega Projects', 'hero')).toEqual({
-        line1: 'Smart Engineering',
-        line2: 'Solutions for Mega Projects',
-      })
-      expect(splitDisplayLines('Ready to Start Your Next Project?', 'cta')).toEqual({
-        line1: 'Ready to Start Your',
-        line2: 'Next Project?',
-      })
 
       const accentHtml = renderToStaticMarkup(
         React.createElement(
@@ -503,9 +505,10 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         prevIdx = idx
       }
 
-      // Verifies Hero content + scroll hint button
+      // Verifies Hero content + scroll hint button + R-2/R-8 space between title and titleAccent spans
       expect(html).toContain('Smart Engineering')
       expect(html).toContain('Solutions for Mega Projects')
+      expect(html).toContain('</span> <span')
       expect(html).toContain('data-home-scroll-hint="true"')
 
       // Verifies Who We Are badge stat + paragraphs
@@ -517,15 +520,17 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(html).toContain('data-component="services-carousel"')
       expect(html).toContain('Electrical Contracting')
 
-      // Verifies Interactive Systems 3D card + 5 accordion items
+      // Verifies Interactive Systems 3D card + 5 accordion items, and R-6 (live 3D badge/button hidden until P3-T5)
       expect(html).toContain('data-interactive-3d-card="true"')
-      expect(html).toContain('3D MODEL · LIVE VERSION AVAILABLE')
+      expect(html).not.toContain('3D MODEL · LIVE VERSION AVAILABLE')
+      expect(html).not.toContain('data-open-3d-model="true"')
       expect(html).toContain('HVAC &amp; Chilled Water')
       expect(html).toContain('Fire Fighting &amp; Fire Alarm')
 
-      // Verifies Stats section
+      // Verifies Stats section + R-7 statsSection.backgroundImage
       expect(html).toContain('Trusted by Industry Leaders')
       expect(html).toContain('Projects Delivered')
+      expect(html).toContain('%2Fmedia%2Fbg-pipes.png')
 
       // Verifies Featured Projects cards using project.scopeSummary badge
       expect(html).toContain('LOW CURRENT SCS')
@@ -596,6 +601,16 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(metaWithHome.description).toBe(
         'Integrated MEP and smart engineering contracting in Riyadh, KSA.',
       )
+      expect(metaWithHome.alternates).toEqual({
+        canonical: '/en',
+        languages: {
+          ar: '/ar',
+          en: '/en',
+          'x-default': '/ar',
+        },
+      })
+      expect(metaWithHome.openGraph?.siteName).toBe('Al Jazira for Imdad Smart Co.')
+      expect(metaWithHome.openGraph?.url).toBe('/en')
       expect(metaWithHome.openGraph?.images).toEqual([
         {
           url: '/media/hero-city.png',

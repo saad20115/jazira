@@ -5,6 +5,7 @@ import { draftMode, headers } from 'next/headers'
 import type React from 'react'
 
 import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
+import { INTRO_PREPAINT_INLINE_SCRIPT } from '@/components/IntroSplash'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
 import {
@@ -92,6 +93,7 @@ export async function generateMetadata({
         languages: {
           ar: '/ar',
           en: '/en',
+          'x-default': '/ar',
         },
       },
       openGraph: {
@@ -113,6 +115,7 @@ export async function generateMetadata({
         languages: {
           ar: '/ar',
           en: '/en',
+          'x-default': '/ar',
         },
       },
     }
@@ -261,6 +264,7 @@ export default async function LocaleRootLayout({
   // `notFound()` throws in child pages never abort `<html lang={resolvedLocale} dir={dir}>` (`R-7`).
   const requestHeaders = await headers()
   const activePathname = requestHeaders.get('x-aljazira-pathname') || `/${resolvedLocale}`
+  const cspNonce = requestHeaders.get('x-nonce') || undefined
 
   const isDevSpecimenOrStyleguide =
     activePathname.endsWith('/_specimen') || activePathname.endsWith('/styleguide')
@@ -271,7 +275,13 @@ export default async function LocaleRootLayout({
     : getLocaleFontClassName(resolvedLocale)
 
   return (
-    <html lang={resolvedLocale} dir={dir} className={htmlFontClass}>
+    <html lang={resolvedLocale} dir={dir} className={htmlFontClass} suppressHydrationWarning>
+      <head>
+        <script
+          nonce={cspNonce}
+          dangerouslySetInnerHTML={{ __html: INTRO_PREPAINT_INLINE_SCRIPT }}
+        />
+      </head>
       <body>
         {fontPreloadUrls.map((href) => (
           <link

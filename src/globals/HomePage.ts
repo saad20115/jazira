@@ -289,6 +289,17 @@ export const HomePage: GlobalConfig = withPublishableGlobal({
           },
         },
         {
+          name: 'titleAccent',
+          type: 'text',
+          localized: true,
+          required: false,
+          maxLength: 200,
+          label: {
+            ar: 'الجزء الذهبي المميز من العنوان (Hero Accent Title — سطر ثانٍ)',
+            en: 'Hero Accent Title (Gold Second Line)',
+          },
+        },
+        {
           name: 'subtitle',
           type: 'textarea',
           localized: true,
@@ -669,6 +680,17 @@ export const HomePage: GlobalConfig = withPublishableGlobal({
               return 'الحد الأقصى للإحصائيات المعروضة في هذا القسم هو 4 أرقام. / Maximum 4 stats allowed in this section.'
             }
             return true
+          },
+        },
+        {
+          name: 'backgroundImage',
+          type: 'upload',
+          relationTo: 'media',
+          required: false,
+          filterOptions: () => true,
+          label: {
+            ar: 'صورة خلفية القسم (اختيارية)',
+            en: 'Background Image (Optional)',
           },
         },
       ],

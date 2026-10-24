@@ -5,6 +5,8 @@ import path from 'node:path'
 import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 
+import { runLighthouseAudit } from './run-lighthouse.mjs'
+
 /**
  * Self-contained machine-captured evidence generator for `P3-T4`
  * ("Home page + intro splash", `handoff/tasks/P3-T4.md`, `R-17`..`R-27`).
@@ -770,13 +772,14 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
     },
   })
 
-  // 6. Seed home-page global in ar and en (`design/copy/01-home.md`)
+  // 6. Seed home-page global in ar and en (`design/copy/01-home.md`, R-2 title+titleAccent, R-7 statsSection.backgroundImage)
   const homeAr = {
     _status: 'published',
     hero: {
       enabled: true,
       eyebrow: '+45 عاماً من التميز الهندسي',
-      title: 'نبني المستقبل\nبحلول هندسية ذكية',
+      title: 'نبني المستقبل',
+      titleAccent: 'بحلول هندسية ذكية',
       subtitle:
         'شركة الجزيرة للإمداد الذكي هي مقاول رائد للأعمال الكهروميكانيكية في منطقة الخليج، تقدم حلولاً عالمية المستوى في الأنظمة الميكانيكية والكهربائية والصحية بخبرة تمتد لأكثر من أربعة عقود.',
       background: mediaIds['hero-city.png'],
@@ -793,7 +796,7 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
       enabled: true,
       badgeStat: statIds[0],
       eyebrow: 'من نحن',
-      title: 'التميز الهندسي\nمنذ عام 1979',
+      title: 'التميز الهندسي منذ عام 1979',
       text: makeLexical(
         [
           'بخبرة تقارب خمسة عقود في أسواق الخليج، توسعت شركة الجزيرة للإمداد الذكي ونمت بخطى ثابتة، محققة أداءً استثنائياً ومكانة مرموقة كمقاول متخصص وموثوق للأعمال الكهروميكانيكية.',
@@ -810,7 +813,7 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
     coreServices: {
       enabled: true,
       eyebrow: 'ماذا نقدم',
-      title: 'خدمات كهروميكانيكية وإنشائية متكاملة\nتحت عقد واحد',
+      title: 'خدمات كهروميكانيكية وإنشائية متكاملة تحت عقد واحد',
       intro:
         'من تنسيق التصميم إلى الفحص والتشغيل التجريبي، يتم تنفيذ نحو 85% من كل حزمة كهروميكانيكية بواسطة مهندسينا وفنيينا — تقليل التداخلات، خفض المخاطر، وتسريع التسليم.',
       button: {
@@ -864,6 +867,7 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
       enabled: true,
       title: 'ثقة رواد الصناعة والقطاعات الحيوية',
       text: 'أرقامنا تتحدث عن نفسها — عقود من الحلول الكهروميكانيكية الموثوقة في جميع أنحاء منطقة الخليج.',
+      backgroundImage: mediaIds['bg-pipes.png'],
       stats: statIds,
     },
     featuredProjects: {
@@ -885,7 +889,8 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
     },
     cta: {
       enabled: true,
-      title: 'هل أنت مستعد لبناء\nمشروعك القادم؟',
+      title: 'هل أنت مستعد لبناء',
+      titleAccent: 'مشروعك القادم؟',
       text: 'دع خبرتنا التي تمتد لأكثر من 45 عاماً في الأعمال الكهروميكانيكية تعمل لصالح مشروعك القادم. تواصل معنا للحصول على استشارة مجانية.',
       backgroundImage: mediaIds['proj-tower.png'],
       button: {
@@ -920,7 +925,8 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
     hero: {
       enabled: true,
       eyebrow: '45+ Years of Engineering Excellence',
-      title: 'Building the Future\nwith Smart Solutions',
+      title: 'Building the Future',
+      titleAccent: 'with Smart Solutions',
       subtitle:
         'Al Jazira for Imdad Smart Company is a leading MEP contractor in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over four decades of proven excellence.',
       background: mediaIds['hero-city.png'],
@@ -1013,6 +1019,7 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
       enabled: true,
       title: 'Trusted by Industry Leaders',
       text: 'Our numbers speak for themselves — decades of reliable MEP solutions across the Gulf region.',
+      backgroundImage: mediaIds['bg-pipes.png'],
       stats: statIds,
     },
     featuredProjects: {
@@ -1034,7 +1041,8 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
     },
     cta: {
       enabled: true,
-      title: 'Ready to Build\nYour Next Project?',
+      title: 'Ready to Build',
+      titleAccent: 'Your Next Project?',
       text: 'Let our 45+ years of MEP expertise work for your next construction or infrastructure project. Get in touch for a free consultation.',
       backgroundImage: mediaIds['proj-tower.png'],
       button: {
@@ -1117,8 +1125,8 @@ export async function runP3T4Evidence({
   baseUrl = process.env.EVIDENCE_BASE_URL || 'http://localhost:3000',
   evidenceDir = path.resolve(process.cwd(), 'docs/evidence/P3-T4'),
   phase3Dir = path.resolve(process.cwd(), 'docs/evidence/phase-3'),
-  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1'),
-  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1'),
+  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r2'),
+  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r2'),
   mode = 'all',
   skipBrands = false,
 } = {}) {
@@ -1129,10 +1137,11 @@ export async function runP3T4Evidence({
   const headerBlock = getRepoHeaderBlock()
 
   let token = null
+  let seededData = null
   if (mode === 'all' || mode === 'prod-home' || mode === 'seed-only') {
     console.log(`[P3-T4 Evidence] Seeding CMS via Payload REST API at ${baseUrl}...`)
     token = await ensureAdminAuthToken(baseUrl)
-    await seedHomePageData(baseUrl, token, { skipBrands })
+    seededData = await seedHomePageData(baseUrl, token, { skipBrands })
     console.log(`[P3-T4 Evidence] CMS seeded and published in ar and en.`)
     if (mode === 'seed-only') {
       return
@@ -1160,6 +1169,28 @@ export async function runP3T4Evidence({
       const enter2PngPath = path.join(evidenceDir, 'team-card-enter-2-clipped.png')
       await enter2Locator.screenshot({ path: enter2PngPath })
       copyToDirs(enter2PngPath, destDirs)
+
+      const hoverEnLocator = page
+        .locator(
+          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-state="Hover"]',
+        )
+        .first()
+      await hoverEnLocator.scrollIntoViewIfNeeded()
+      const hoverEnPngPath = path.join(evidenceDir, 'team-card-hover-shadow-en.png')
+      await hoverEnLocator.screenshot({ path: hoverEnPngPath })
+      copyToDirs(hoverEnPngPath, destDirs)
+
+      await page.goto(`${baseUrl}/ar/styleguide`, { waitUntil: 'networkidle' })
+      await page.evaluate(() => document.fonts.ready)
+      const hoverArLocator = page
+        .locator(
+          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-state="Hover"]',
+        )
+        .first()
+      await hoverArLocator.scrollIntoViewIfNeeded()
+      const hoverArPngPath = path.join(evidenceDir, 'team-card-hover-shadow-ar.png')
+      await hoverArLocator.screenshot({ path: hoverArPngPath })
+      copyToDirs(hoverArPngPath, destDirs)
 
       const r17Audit = await page.evaluate(() => {
         const card = document.querySelector(
@@ -1203,29 +1234,69 @@ export async function runP3T4Evidence({
     }
 
     // =========================================================================
-    // 2. Intro Splash Recording & Verification (`28:1609` -> `28:1615`, CTO §3)
+    // 2. Intro Splash Recording & Verification (`28:1609` -> `28:1615`, CTO §3, R-4, R-9)
     // =========================================================================
     {
-      // 2a. Capture `intro-start-en.png` (`28:1609`) and `intro-reveal-en.png` (`28:1615`)
-      const snapCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
-      const snapPage = await snapCtx.newPage()
-      await snapPage.goto(`${baseUrl}/en`, { waitUntil: 'domcontentloaded' })
-      const snapIntro = snapPage.locator('[data-component="intro-splash"]')
-      await snapIntro.waitFor({ state: 'visible', timeout: 1500 })
-      const startVisible = await snapIntro.isVisible()
-      const startPngPath = path.join(evidenceDir, 'intro-start-en.png')
-      await snapPage.screenshot({ path: startPngPath })
-      copyToDirs(startPngPath, destDirs)
+      // 2a. Verify SSR HTML already includes `[data-component="intro-splash"][data-intro-state="start"]` (R-4)
+      const ssrEnHtml = await (await fetch(`${baseUrl}/en`)).text()
+      const ssrArHtml = await (await fetch(`${baseUrl}/ar`)).text()
+      const ssrContainsIntroStartEn =
+        ssrEnHtml.includes('data-component="intro-splash"') &&
+        ssrEnHtml.includes('data-intro-state="start"')
+      const ssrContainsIntroStartAr =
+        ssrArHtml.includes('data-component="intro-splash"') &&
+        ssrArHtml.includes('data-intro-state="start"')
 
-      await snapPage
-        .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
-        .waitFor({ state: 'visible', timeout: 1000 })
-      await snapPage.waitForTimeout(320)
-      const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
-      const revealPngPath = path.join(evidenceDir, 'intro-reveal-en.png')
-      await snapPage.screenshot({ path: revealPngPath })
-      copyToDirs(revealPngPath, destDirs)
-      await snapCtx.close()
+      // 2b. Capture `intro-start-en.png`, `intro-reveal-en.png`, `intro-start-ar.png`, `intro-reveal-ar.png`
+      //     and verify R-4 (dataset.intro === 'active', opacity === '1' at domcontentloaded) and R-9 (`inert` + focus)
+      const introStateByLocale = {}
+      for (const loc of ['en', 'ar']) {
+        const snapCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        const snapPage = await snapCtx.newPage()
+        await snapPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        const snapIntro = snapPage.locator('[data-component="intro-splash"]')
+        await snapIntro.waitFor({ state: 'visible', timeout: 1500 })
+
+        const initialDomCheck = await snapPage.evaluate(() => {
+          const overlay = document.querySelector('[data-component="intro-splash"]')
+          const style = overlay ? window.getComputedStyle(overlay) : null
+          const header = document.querySelector('header')
+          const homeContent = document.querySelector('[data-home-content="true"]')
+          const footer = document.querySelector('footer')
+          const fab = document.querySelector('[data-component="whatsapp-fab"]')
+          return {
+            htmlDataIntro: document.documentElement.dataset.intro ?? null,
+            overlayDisplay: style?.display ?? null,
+            overlayOpacity: style?.opacity ?? null,
+            headerInert: Boolean(header?.hasAttribute('inert')),
+            homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
+            footerInert: Boolean(footer?.hasAttribute('inert')),
+            fabInert: Boolean(fab?.hasAttribute('inert')),
+            activeElementIsSkip: document.activeElement?.getAttribute('data-intro-skip') === 'true',
+          }
+        })
+
+        const startVisible = await snapIntro.isVisible()
+        const startPngPath = path.join(evidenceDir, `intro-start-${loc}.png`)
+        await snapPage.screenshot({ path: startPngPath })
+        copyToDirs(startPngPath, destDirs)
+
+        await snapPage
+          .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
+          .waitFor({ state: 'visible', timeout: 1200 })
+        await snapPage.waitForTimeout(300)
+        const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
+        const revealPngPath = path.join(evidenceDir, `intro-reveal-${loc}.png`)
+        await snapPage.screenshot({ path: revealPngPath })
+        copyToDirs(revealPngPath, destDirs)
+        await snapCtx.close()
+
+        introStateByLocale[loc] = {
+          startVisible,
+          revealStateAttr,
+          ...initialDomCheck,
+        }
+      }
 
       // Stitch side-by-side against Figma `00-intro-start.png` and `00-intro-reveal.png`
       const figmaIntroStart = path.resolve(
@@ -1236,66 +1307,91 @@ export async function runP3T4Evidence({
         process.cwd(),
         'design/screenshots/pages/00-intro-reveal.png',
       )
-      if (fs.existsSync(figmaIntroStart)) {
+      const startEnPngPath = path.join(evidenceDir, 'intro-start-en.png')
+      const revealEnPngPath = path.join(evidenceDir, 'intro-reveal-en.png')
+      if (fs.existsSync(figmaIntroStart) && fs.existsSync(startEnPngPath)) {
         const sbsStart = path.join(evidenceDir, 'side-by-side-00-intro-start.png')
         await createSideBySideImage(
-          [fs.readFileSync(figmaIntroStart), fs.readFileSync(startPngPath)],
+          [fs.readFileSync(figmaIntroStart), fs.readFileSync(startEnPngPath)],
           sbsStart,
         )
         copyToDirs(sbsStart, destDirs)
       }
-      if (fs.existsSync(figmaIntroReveal)) {
+      if (fs.existsSync(figmaIntroReveal) && fs.existsSync(revealEnPngPath)) {
         const sbsReveal = path.join(evidenceDir, 'side-by-side-00-intro-reveal.png')
         await createSideBySideImage(
-          [fs.readFileSync(figmaIntroReveal), fs.readFileSync(revealPngPath)],
+          [fs.readFileSync(figmaIntroReveal), fs.readFileSync(revealEnPngPath)],
           sbsReveal,
         )
         copyToDirs(sbsReveal, destDirs)
       }
 
-      // 2b. Record uninterrupted live intro video on fresh session (/en) and measure duration
-      const videoTmpDir = path.join(evidenceDir, '_video_tmp')
-      fs.mkdirSync(videoTmpDir, { recursive: true })
-      const videoCtx = await browser.newContext({
-        viewport: { width: 1440, height: 900 },
-        recordVideo: { dir: videoTmpDir, size: { width: 1440, height: 900 } },
-      })
-      const videoPage = await videoCtx.newPage()
-      await videoPage.goto(`${baseUrl}/en`, { waitUntil: 'domcontentloaded' })
-      const introLocator = videoPage.locator('[data-component="intro-splash"]')
-      await introLocator.waitFor({ state: 'visible', timeout: 1500 })
-      const t0 = Date.now()
+      // 2c. Record uninterrupted live intro videos on fresh sessions (/en and /ar) and measure duration
+      const videoMetricsByLocale = {}
+      for (const loc of ['en', 'ar']) {
+        const videoTmpDir = path.join(evidenceDir, `_video_tmp_${loc}`)
+        fs.mkdirSync(videoTmpDir, { recursive: true })
+        const videoCtx = await browser.newContext({
+          viewport: { width: 1440, height: 900 },
+          recordVideo: { dir: videoTmpDir, size: { width: 1440, height: 900 } },
+        })
+        const videoPage = await videoCtx.newPage()
+        await videoPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        const introLocator = videoPage.locator('[data-component="intro-splash"]')
+        await introLocator.waitFor({ state: 'visible', timeout: 1500 })
+        const t0 = Date.now()
 
-      // Verify LCP <h1> is already rendered in the DOM while the intro is visible
-      const h1RenderedDuringIntro = await videoPage.evaluate(() => {
-        const h1 = document.querySelector('h1')
-        return Boolean(h1 && h1.textContent && h1.textContent.trim().length > 0)
-      })
+        const h1RenderedDuringIntro = await videoPage.evaluate(() => {
+          const h1 = document.querySelector('h1')
+          return Boolean(h1 && h1.textContent && h1.textContent.trim().length > 0)
+        })
 
-      // Wait for intro to auto-dismiss (<= 1.6s total)
-      await introLocator.waitFor({ state: 'detached', timeout: 2200 })
-      const totalElapsedMs = Date.now() - t0
-      const storageAfterFirstLoad = await videoPage.evaluate(() =>
-        window.sessionStorage.getItem('aljazira_intro_seen'),
-      )
+        await introLocator.waitFor({ state: 'detached', timeout: 2200 })
+        const totalElapsedMs = Date.now() - t0
+        const afterDismissCheck = await videoPage.evaluate(() => ({
+          storageAfterFirstLoad: window.sessionStorage.getItem('aljazira_intro_seen'),
+          headerInertAfterDismiss: Boolean(document.querySelector('header')?.hasAttribute('inert')),
+          homeContentInertAfterDismiss: Boolean(
+            document.querySelector('[data-home-content="true"]')?.hasAttribute('inert'),
+          ),
+        }))
 
-      // Reload in same session -> intro must NOT appear again
-      await videoPage.reload({ waitUntil: 'domcontentloaded' })
-      await videoPage.waitForTimeout(150)
-      const visibleOnSecondVisit = await introLocator.isVisible().catch(() => false)
+        // Reload in same session -> intro must NOT appear again (suppressed pre-paint via html[data-intro="seen"])
+        await videoPage.reload({ waitUntil: 'domcontentloaded' })
+        const reloadCheck = await videoPage.evaluate(() => {
+          const overlay = document.querySelector('[data-component="intro-splash"]')
+          return {
+            htmlDataIntroOnReload: document.documentElement.dataset.intro ?? null,
+            overlayDisplayOnReload: overlay ? window.getComputedStyle(overlay).display : 'none',
+          }
+        })
+        await videoPage.waitForTimeout(150)
+        const visibleOnSecondVisit = await introLocator.isVisible().catch(() => false)
 
-      const recordedVideo = videoPage.video()
-      await videoPage.close()
-      await videoCtx.close()
-      if (recordedVideo) {
-        const videoSrcPath = await recordedVideo.path()
-        const finalVideoPath = path.join(evidenceDir, 'intro-splash-en.webm')
-        fs.copyFileSync(videoSrcPath, finalVideoPath)
-        copyToDirs(finalVideoPath, destDirs)
+        const recordedVideo = videoPage.video()
+        await videoPage.close()
+        await videoCtx.close()
+        if (recordedVideo) {
+          const videoSrcPath = await recordedVideo.path()
+          const shortNamePath = path.join(evidenceDir, `intro-${loc}.webm`)
+          const splashNamePath = path.join(evidenceDir, `intro-splash-${loc}.webm`)
+          fs.copyFileSync(videoSrcPath, shortNamePath)
+          fs.copyFileSync(videoSrcPath, splashNamePath)
+          copyToDirs(shortNamePath, destDirs)
+          copyToDirs(splashNamePath, destDirs)
+        }
+        fs.rmSync(videoTmpDir, { recursive: true, force: true })
+
+        videoMetricsByLocale[loc] = {
+          h1RenderedDuringIntro,
+          totalElapsedMs,
+          ...afterDismissCheck,
+          ...reloadCheck,
+          visibleOnSecondVisit,
+        }
       }
-      fs.rmSync(videoTmpDir, { recursive: true, force: true })
 
-      // 2c. Verify Escape key skip in a fresh session
+      // 2d. Verify Escape key skip in a fresh session
       const escCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const escPage = await escCtx.newPage()
       await escPage.goto(`${baseUrl}/ar`, { waitUntil: 'domcontentloaded' })
@@ -1307,13 +1403,14 @@ export async function runP3T4Evidence({
       const visibleAfterEscape = await escIntro.isVisible().catch(() => false)
       await escCtx.close()
 
-      // 2d. Verify prefers-reduced-motion: reduce suppresses intro completely
+      // 2e. Verify prefers-reduced-motion: reduce suppresses intro completely pre-paint
       const rmCtx = await browser.newContext({
         viewport: { width: 1440, height: 900 },
         reducedMotion: 'reduce',
       })
       const rmPage = await rmCtx.newPage()
       await rmPage.goto(`${baseUrl}/ar`, { waitUntil: 'domcontentloaded' })
+      const rmDataIntro = await rmPage.evaluate(() => document.documentElement.dataset.intro)
       await rmPage.waitForTimeout(120)
       const visibleWithReducedMotion = await rmPage
         .locator('[data-component="intro-splash"]')
@@ -1322,19 +1419,18 @@ export async function runP3T4Evidence({
       await rmCtx.close()
 
       const introAudit = {
-        startVisible,
-        revealStateAttr,
-        h1RenderedDuringIntro,
-        totalElapsedMs,
-        storageAfterFirstLoad,
-        visibleOnSecondVisit,
+        ssrContainsIntroStartEn,
+        ssrContainsIntroStartAr,
+        introStateByLocale,
+        videoMetricsByLocale,
         visibleBeforeEscape,
         visibleAfterEscape,
+        rmDataIntro,
         visibleWithReducedMotion,
       }
       const introLog = [
         headerBlock,
-        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3) ===',
+        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3, R-4 SSR pre-paint, R-9 inert + focus) ===',
         JSON.stringify(introAudit, null, 2),
         '',
       ].join('\n')
@@ -1342,24 +1438,47 @@ export async function runP3T4Evidence({
       fs.writeFileSync(introLogPath, introLog, 'utf8')
       copyToDirs(introLogPath, destDirs)
 
+      for (const loc of ['en', 'ar']) {
+        const st = introStateByLocale[loc]
+        const vm = videoMetricsByLocale[loc]
+        if (
+          !st.startVisible ||
+          st.revealStateAttr !== 'reveal' ||
+          st.htmlDataIntro !== 'active' ||
+          st.overlayDisplay !== 'flex' ||
+          !st.headerInert ||
+          !st.homeContentInert ||
+          !st.footerInert ||
+          !st.activeElementIsSkip ||
+          !vm.h1RenderedDuringIntro ||
+          vm.totalElapsedMs > 1600 ||
+          vm.storageAfterFirstLoad !== '1' ||
+          vm.headerInertAfterDismiss ||
+          vm.homeContentInertAfterDismiss ||
+          vm.htmlDataIntroOnReload !== 'seen' ||
+          vm.visibleOnSecondVisit
+        ) {
+          throw new Error(
+            `Intro splash verification failed for ${loc}: ${JSON.stringify(introAudit)}`,
+          )
+        }
+      }
       if (
-        !startVisible ||
-        revealStateAttr !== 'reveal' ||
-        !h1RenderedDuringIntro ||
-        totalElapsedMs > 1600 ||
-        storageAfterFirstLoad !== '1' ||
-        visibleOnSecondVisit ||
+        !ssrContainsIntroStartEn ||
+        !ssrContainsIntroStartAr ||
         !visibleBeforeEscape ||
         visibleAfterEscape ||
+        rmDataIntro !== 'seen' ||
         visibleWithReducedMotion
       ) {
-        throw new Error(`Intro splash verification failed: ${JSON.stringify(introAudit)}`)
+        throw new Error(`Intro splash global verification failed: ${JSON.stringify(introAudit)}`)
       }
     }
 
     // =========================================================================
     // 3. Full-page Screenshots (1440 / 768 / 390 in ar & en), Section Side-by-Sides,
-    //    Console/Hydration/CSP Audit, R-27 44x44px Touch Target Audit, and CLS
+    //    Console/Hydration/CSP Audit, R-1 Carousel Gutter/Bleed Audit, R-6/R-8/R-10/R-11 Audits,
+    //    R-27 44x44px Touch Target Audit, and CLS
     // =========================================================================
     const consoleErrors = []
     const pageErrors = []
@@ -1367,14 +1486,15 @@ export async function runP3T4Evidence({
     const hydrationWarnings = []
 
     const viewports = [
-      { width: 1440, height: 900, label: '1440' },
-      { width: 768, height: 1024, label: '768' },
-      { width: 390, height: 844, label: '390' },
+      { width: 1440, height: 900, label: '1440', expectedGutter: 140, expectedStatsCols: 4 },
+      { width: 768, height: 1024, label: '768', expectedGutter: 24, expectedStatsCols: 2 },
+      { width: 390, height: 844, label: '390', expectedGutter: 16, expectedStatsCols: 1 },
     ]
 
     const sectionBuffersByLocale = { en: {}, ar: {} }
     const touchTargetReport390 = { ar: [], en: [] }
     const clsReport = {}
+    const layoutAndSeoAudit = {}
 
     for (const locale of ['ar', 'en']) {
       for (const vp of viewports) {
@@ -1431,6 +1551,152 @@ export async function runP3T4Evidence({
         await page.screenshot({ path: fullScreenshotPath, fullPage: true })
         copyToDirs(fullScreenshotPath, destDirs)
 
+        if (vp.width === 1440) {
+          const alt1440Path = path.join(evidenceDir, `home-1440-${locale}.png`)
+          fs.copyFileSync(fullScreenshotPath, alt1440Path)
+          copyToDirs(alt1440Path, destDirs)
+        }
+
+        // Audit R-1, R-6, R-8, R-10, R-11 on this locale & viewport
+        const vpAudit = await page.evaluate(
+          ({ vpWidth, isRtl }) => {
+            const slide0 = document.querySelector(
+              '[data-component="services-carousel"] [data-slide-index="0"]',
+            )
+            const slide3 = document.querySelector(
+              '[data-component="services-carousel"] [data-slide-index="3"]',
+            )
+            const s0Rect = slide0 ? slide0.getBoundingClientRect() : null
+            const s3Rect = slide3 ? slide3.getBoundingClientRect() : null
+            const carouselStartInset = s0Rect
+              ? Math.round(isRtl ? vpWidth - s0Rect.right : s0Rect.left)
+              : null
+            const slide3BleedsInlineEnd = s3Rect
+              ? isRtl
+                ? s3Rect.right > 0 && s3Rect.left < 0
+                : s3Rect.left < vpWidth && s3Rect.right > vpWidth
+              : false
+
+            const statsRow = document.querySelector(
+              '[data-home-section="stats"] [class*="statsRow"]',
+            )
+            const statsGridCols = statsRow
+              ? window.getComputedStyle(statsRow).gridTemplateColumns.trim().split(/\s+/).length
+              : null
+
+            const expandedAccordion = document.querySelector(
+              '[data-home-section="interactive-systems"] [data-accordion-state="Expanded"]',
+            )
+            const expandedAccordionBg = expandedAccordion
+              ? window.getComputedStyle(expandedAccordion).backgroundColor
+              : null
+
+            const heroCtaGroup = document.querySelector(
+              '[data-home-section="hero"] [class*="heroCtaGroup"]',
+            )
+            const heroCtaPaddingTop = heroCtaGroup
+              ? window.getComputedStyle(heroCtaGroup).paddingTop
+              : null
+
+            const whoPhotoWrap = document.querySelector(
+              '[data-home-section="who-we-are"] [class*="whoPhotoWrap"]',
+            )
+            const whoPhotoMarginTop = whoPhotoWrap
+              ? window.getComputedStyle(whoPhotoWrap).marginTop
+              : null
+            const whoPhotoMarginInlineStart = whoPhotoWrap
+              ? window.getComputedStyle(whoPhotoWrap).marginInlineStart
+              : null
+
+            const liveModelControlCount = document.querySelectorAll(
+              '[data-open-3d-model], [class*="liveModelBadge"]',
+            ).length
+
+            const h1Text = document.querySelector('h1')?.textContent ?? null
+            const ctaH2Text =
+              document.querySelector('[data-home-section="cta"] h2')?.textContent ?? null
+
+            const hreflangXDefault =
+              document
+                .querySelector('link[rel="alternate"][hreflang="x-default"]')
+                ?.getAttribute('href') ?? null
+            const ogSiteName =
+              document.querySelector('meta[property="og:site_name"]')?.getAttribute('content') ??
+              null
+            const ogUrl =
+              document.querySelector('meta[property="og:url"]')?.getAttribute('content') ?? null
+            const ogImage =
+              document.querySelector('meta[property="og:image"]')?.getAttribute('content') ?? null
+
+            const headerNavLabels = Array.from(
+              document.querySelectorAll('[data-component="navbar"] nav a'),
+            ).map((a) => (a.textContent || '').trim())
+
+            return {
+              carouselStartInset,
+              slide3BleedsInlineEnd,
+              statsGridCols,
+              expandedAccordionBg,
+              heroCtaPaddingTop,
+              whoPhotoMarginTop,
+              whoPhotoMarginInlineStart,
+              liveModelControlCount,
+              h1Text,
+              ctaH2Text,
+              hreflangXDefault,
+              ogSiteName,
+              ogUrl,
+              ogImage,
+              headerNavLabels,
+            }
+          },
+          { vpWidth: vp.width, isRtl: locale === 'ar' },
+        )
+
+        layoutAndSeoAudit[`${locale}-${vp.label}`] = vpAudit
+
+        if (
+          vpAudit.carouselStartInset !== vp.expectedGutter ||
+          (vp.width === 1440 && !vpAudit.slide3BleedsInlineEnd) ||
+          vpAudit.statsGridCols !== vp.expectedStatsCols ||
+          vpAudit.expandedAccordionBg !== 'rgb(255, 255, 255)' ||
+          vpAudit.heroCtaPaddingTop !== '0px' ||
+          (vp.width >= 768 &&
+            (vpAudit.whoPhotoMarginTop !== '32px' ||
+              vpAudit.whoPhotoMarginInlineStart !== '32px')) ||
+          vpAudit.liveModelControlCount !== 0 ||
+          !vpAudit.hreflangXDefault?.endsWith('/ar') ||
+          !vpAudit.ogSiteName ||
+          !vpAudit.ogUrl?.endsWith(`/${locale}`) ||
+          !vpAudit.ogImage
+        ) {
+          throw new Error(
+            `Layout/SEO audit failed on ${locale}@${vp.label}: ${JSON.stringify(vpAudit)}`,
+          )
+        }
+
+        if (locale === 'en') {
+          if (
+            vpAudit.h1Text !== 'Building the Future with Smart Solutions' ||
+            vpAudit.ctaH2Text !== 'Ready to Build Your Next Project?' ||
+            !vpAudit.headerNavLabels.includes('Services')
+          ) {
+            throw new Error(
+              `English copy/nav check failed on en@${vp.label}: ${JSON.stringify(vpAudit)}`,
+            )
+          }
+        } else {
+          if (
+            vpAudit.h1Text !== 'نبني المستقبل بحلول هندسية ذكية' ||
+            vpAudit.ctaH2Text !== 'هل أنت مستعد لبناء مشروعك القادم؟' ||
+            !vpAudit.headerNavLabels.includes('الخدمات')
+          ) {
+            throw new Error(
+              `Arabic copy/nav check failed on ar@${vp.label}: ${JSON.stringify(vpAudit)}`,
+            )
+          }
+        }
+
         const pageCspEvents = await page.evaluate(() => window.__aljaziraCspEvents || [])
         for (const ev of pageCspEvents) {
           cspViolations.push(`[${locale}@${vp.label}] ${ev.violatedDirective}: ${ev.blockedURI}`)
@@ -1469,7 +1735,7 @@ export async function runP3T4Evidence({
         }
 
         if (vp.width === 390) {
-          // R-27: Verify every visible interactive control on Home page is >= 44x44px (or >= 44px height for full-width/inline links)
+          // R-27: Verify every visible interactive control on Home page is >= 44x44px
           const controls = await page.evaluate(() => {
             const elements = Array.from(
               document.querySelectorAll(
@@ -1576,18 +1842,25 @@ export async function runP3T4Evidence({
       )
     }
 
-    // Save Console / Hydration / CSP / CLS log
+    // Save Console / Hydration / CSP / CLS / R-1 / R-6 / R-8 / R-10 / R-11 log
     const maxCls = Math.max(...Object.values(clsReport), 0)
     const runtimeLog = [
       headerBlock,
-      '=== Console, Hydration, CSP & CLS Audit (/ar and /en across 1440, 768, 390) ===',
+      '=== Console, Hydration, CSP, CLS & Layout/SEO Audit (/ar and /en across 1440, 768, 390) ===',
       `consoleErrors: ${consoleErrors.length}`,
       `pageErrors: ${pageErrors.length}`,
       `hydrationWarnings: ${hydrationWarnings.length}`,
       `cspViolations: ${cspViolations.length}`,
       `maxCls: ${maxCls}`,
       JSON.stringify(
-        { clsReport, consoleErrors, pageErrors, hydrationWarnings, cspViolations },
+        {
+          clsReport,
+          layoutAndSeoAudit,
+          consoleErrors,
+          pageErrors,
+          hydrationWarnings,
+          cspViolations,
+        },
         null,
         2,
       ),
@@ -1608,7 +1881,7 @@ export async function runP3T4Evidence({
     }
 
     // =========================================================================
-    // 4. CMS Live Roundtrip: Draft isolation + Edit -> Publish -> Visible + `enabled: false`
+    // 4. CMS Live Roundtrip: Draft isolation + Edit -> Publish -> Visible (R-2, R-7) + `enabled: false`
     // =========================================================================
     {
       // 4a. Save a DRAFT change (`_status: 'draft'`) -> anonymous visitor MUST NOT see it
@@ -1628,15 +1901,22 @@ export async function runP3T4Evidence({
         'DRAFT ONLY UNPUBLISHED HEADING DO NOT SHOW',
       )
 
-      // 4b. Publish (`_status: 'published'`) an edit AND toggle `partners.enabled: false`
+      // 4b. Publish (`_status: 'published'`) live edits to `hero.title` + `hero.titleAccent`,
+      //     `statsSection.backgroundImage: null` (R-7 empty state), and `partners.enabled: false`
       await apiRequest(baseUrl, token, '/api/globals/home-page', {
         method: 'POST',
         locale: 'en',
         body: {
           _status: 'published',
+          hero: {
+            enabled: true,
+            title: 'Engineering Tomorrow',
+            titleAccent: 'Across the Kingdom — Live CMS Verified',
+          },
           statsSection: {
             enabled: true,
             title: 'Trusted by Industry Leaders — Live CMS Verified',
+            backgroundImage: null,
           },
           partners: {
             enabled: false,
@@ -1644,41 +1924,115 @@ export async function runP3T4Evidence({
         },
       })
 
-      const anonAfterPublishHtml = await (await fetch(`${baseUrl}/en`)).text()
-      const publishedTitleVisible = anonAfterPublishHtml.includes(
-        'Trusted by Industry Leaders — Live CMS Verified',
-      )
-      const partnersSectionHiddenWhenDisabled = !anonAfterPublishHtml.includes(
+      await apiRequest(baseUrl, token, '/api/globals/home-page', {
+        method: 'POST',
+        locale: 'ar',
+        body: {
+          _status: 'published',
+          hero: {
+            enabled: true,
+            title: 'نهندس الغد',
+            titleAccent: 'في أنحاء المملكة — تحديث مباشر',
+          },
+        },
+      })
+
+      const anonAfterPublishEnHtml = await (await fetch(`${baseUrl}/en`)).text()
+      const anonAfterPublishArHtml = await (await fetch(`${baseUrl}/ar`)).text()
+      const publishedTitleVisible =
+        anonAfterPublishEnHtml.includes('Engineering Tomorrow') &&
+        anonAfterPublishEnHtml.includes('Across the Kingdom — Live CMS Verified') &&
+        anonAfterPublishEnHtml.includes('Trusted by Industry Leaders — Live CMS Verified')
+      const publishedTitleVisibleAr =
+        anonAfterPublishArHtml.includes('نهندس الغد') &&
+        anonAfterPublishArHtml.includes('في أنحاء المملكة — تحديث مباشر')
+      const partnersSectionHiddenWhenDisabled = !anonAfterPublishEnHtml.includes(
         'data-home-section="partners"',
       )
+      const statsPlainNavyWhenBgNull = !anonAfterPublishEnHtml.includes('%2Fmedia%2Fbg-pipes.png')
 
-      // Restore original published state
+      // Capture screenshots of the live edits and disabled partners section (`R-5`)
+      const cmsCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+      await cmsCtx.addInitScript(() => {
+        window.sessionStorage.setItem('aljazira_intro_seen', '1')
+      })
+      const cmsPage = await cmsCtx.newPage()
+      await cmsPage.goto(`${baseUrl}/en`, { waitUntil: 'networkidle' })
+      await cmsPage.evaluate(() => document.fonts.ready)
+      const cmsEditEnPath = path.join(evidenceDir, 'cms-live-edit-en.png')
+      await cmsPage.screenshot({ path: cmsEditEnPath })
+      copyToDirs(cmsEditEnPath, destDirs)
+
+      const cmsToggleDisabledPath = path.join(evidenceDir, 'cms-toggle-partners-disabled-en.png')
+      await cmsPage.screenshot({ path: cmsToggleDisabledPath, fullPage: true })
+      copyToDirs(cmsToggleDisabledPath, destDirs)
+
+      await cmsPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle' })
+      await cmsPage.evaluate(() => document.fonts.ready)
+      const cmsEditArPath = path.join(evidenceDir, 'cms-live-edit-ar.png')
+      await cmsPage.screenshot({ path: cmsEditArPath })
+      copyToDirs(cmsEditArPath, destDirs)
+      await cmsCtx.close()
+
+      // Restore original published state in both locales
+      const bgPipesId = seededData?.mediaIds?.['bg-pipes.png'] ?? null
       await apiRequest(baseUrl, token, '/api/globals/home-page', {
         method: 'POST',
         locale: 'en',
         body: {
           _status: 'published',
+          hero: {
+            enabled: true,
+            title: 'Building the Future',
+            titleAccent: 'with Smart Solutions',
+          },
           statsSection: {
             enabled: true,
             title: 'Trusted by Industry Leaders',
+            backgroundImage: bgPipesId,
           },
           partners: {
             enabled: true,
           },
         },
       })
+      await apiRequest(baseUrl, token, '/api/globals/home-page', {
+        method: 'POST',
+        locale: 'ar',
+        body: {
+          _status: 'published',
+          hero: {
+            enabled: true,
+            title: 'نبني المستقبل',
+            titleAccent: 'بحلول هندسية ذكية',
+          },
+          statsSection: {
+            enabled: true,
+            title: 'ثقة رواد الصناعة والقطاعات الحيوية',
+            backgroundImage: bgPipesId,
+          },
+          partners: {
+            enabled: true,
+          },
+        },
+      })
+
       const anonRestoredHtml = await (await fetch(`${baseUrl}/en`)).text()
       const partnersSectionRestored = anonRestoredHtml.includes('data-home-section="partners"')
+      const statsBgRestored = anonRestoredHtml.includes('%2Fmedia%2Fbg-pipes.png')
 
       const cmsRoundtripAudit = {
         draftLeakedToAnon,
         publishedTitleVisible,
+        publishedTitleVisibleAr,
         partnersSectionHiddenWhenDisabled,
+        statsPlainNavyWhenBgNull,
         partnersSectionRestored,
+        statsBgRestored,
       }
       const cmsLog = [
         headerBlock,
-        '=== CMS Live Roundtrip & Section `enabled` Toggle Verification ===',
+        '=== CMS Live Roundtrip, R-2 Title+TitleAccent, R-7 Stats Bg & Section `enabled` Toggle Verification ===',
         JSON.stringify(cmsRoundtripAudit, null, 2),
         '',
       ].join('\n')
@@ -1689,63 +2043,121 @@ export async function runP3T4Evidence({
       if (
         draftLeakedToAnon ||
         !publishedTitleVisible ||
+        !publishedTitleVisibleAr ||
         !partnersSectionHiddenWhenDisabled ||
-        !partnersSectionRestored
+        !statsPlainNavyWhenBgNull ||
+        !partnersSectionRestored ||
+        !statsBgRestored
       ) {
         throw new Error(`CMS roundtrip verification failed: ${JSON.stringify(cmsRoundtripAudit)}`)
       }
     }
 
     // =========================================================================
-    // 5. Preliminary Mobile Performance & Accessibility Metrics on `/ar` (`390x844`)
+    // 5. Cold-Cache Throttled Mobile CLS Audit (`412x823`, `4x CPU`, `Slow 4G`) (R-3)
     // =========================================================================
     {
-      const perfCtx = await browser.newContext({
-        viewport: { width: 390, height: 844 },
-        isMobile: true,
-        hasTouch: true,
-      })
-      await perfCtx.addInitScript(() => {
-        window.sessionStorage.setItem('aljazira_intro_seen', '1')
-      })
-      const perfPage = await perfCtx.newPage()
-      await perfPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle' })
-      await perfPage.evaluate(() => document.fonts.ready)
+      const throttledClsByLocale = {}
+      for (const loc of ['ar', 'en']) {
+        const clsCtx = await browser.newContext({
+          viewport: { width: 412, height: 823 },
+          isMobile: true,
+          hasTouch: true,
+          deviceScaleFactor: 1.75,
+        })
+        await clsCtx.addInitScript(() => {
+          window.sessionStorage.setItem('aljazira_intro_seen', '1')
+          window.__aljaziraShifts = []
+          try {
+            const obs = new PerformanceObserver((list) => {
+              for (const entry of list.getEntries()) {
+                if (!entry.hadRecentInput) {
+                  window.__aljaziraShifts.push({
+                    value: Number(entry.value.toFixed(5)),
+                    startTime: Math.round(entry.startTime),
+                    sources: (entry.sources || []).map((s) => ({
+                      node: s.node
+                        ? s.node.tagName +
+                          (s.node.className ? '.' + String(s.node.className).split(' ')[0] : '')
+                        : null,
+                      previousRect: s.previousRect,
+                      currentRect: s.currentRect,
+                    })),
+                  })
+                }
+              }
+            })
+            obs.observe({ type: 'layout-shift', buffered: true })
+          } catch {
+            // ignore
+          }
+        })
+        const clsPage = await clsCtx.newPage()
+        const cdp = await clsCtx.newCDPSession(clsPage)
+        await cdp.send('Network.enable')
+        await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
+        await cdp.send('Network.emulateNetworkConditions', {
+          offline: false,
+          latency: 150,
+          downloadThroughput: Math.floor((1.6 * 1024 * 1024) / 8),
+          uploadThroughput: Math.floor((750 * 1024) / 8),
+        })
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
 
-      const perfMetrics = await perfPage.evaluate(() => {
-        const nav = performance.getEntriesByType('navigation')[0]
-        const paints = performance.getEntriesByType('paint')
-        const fcp = paints.find((p) => p.name === 'first-contentful-paint')?.startTime ?? null
-        return {
-          url: window.location.href,
-          lang: document.documentElement.lang,
-          dir: document.documentElement.dir,
-          ttfbMs: nav ? Math.round(nav.responseStart - nav.requestStart) : null,
-          fcpMs: fcp !== null ? Math.round(fcp) : null,
-          domContentLoadedMs: nav ? Math.round(nav.domContentLoadedEventEnd) : null,
-          loadEventMs: nav ? Math.round(nav.loadEventEnd) : null,
-          sectionsRendered: Array.from(document.querySelectorAll('[data-home-section]')).map((el) =>
-            el.getAttribute('data-home-section'),
-          ),
-          imagesMissingAltCount: Array.from(document.querySelectorAll('img')).filter(
-            (img) => !img.hasAttribute('alt'),
-          ).length,
-          buttonsMissingAccessibleNameCount: Array.from(document.querySelectorAll('button')).filter(
-            (btn) => !(btn.textContent?.trim() || btn.getAttribute('aria-label')?.trim()),
-          ).length,
+        await clsPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'networkidle' })
+        await clsPage.evaluate(() => document.fonts.ready)
+        await clsPage.waitForTimeout(500)
+
+        const shifts = await clsPage.evaluate(() => window.__aljaziraShifts || [])
+        const totalCls = Number(shifts.reduce((acc, s) => acc + (s.value || 0), 0).toFixed(5))
+        const h1Height = await clsPage.evaluate(() => {
+          const h1 = document.querySelector('h1')
+          return h1 ? Math.round(h1.getBoundingClientRect().height) : null
+        })
+        throttledClsByLocale[loc] = {
+          viewport: '412x823',
+          cpuThrottlingRate: 4,
+          network: 'Slow 4G (150ms RTT, 1.6Mbps down, cacheDisabled=true)',
+          totalCls,
+          h1Height,
+          shifts,
         }
-      })
-      await perfCtx.close()
+        await clsCtx.close()
 
-      const perfLog = [
+        if (totalCls > 0.05) {
+          throw new Error(
+            `R-3 throttled mobile CLS exceeded 0.05 on /${loc}: ${JSON.stringify(throttledClsByLocale[loc])}`,
+          )
+        }
+      }
+
+      const r3ClsLog = [
         headerBlock,
-        '=== Preliminary Mobile Performance & Accessibility Audit on /ar (390x844) ===',
-        JSON.stringify(perfMetrics, null, 2),
+        '=== R-3 Throttled Cold-Cache Mobile CLS Verification (/ar and /en at 412x823, 4x CPU, Slow 4G) ===',
+        JSON.stringify(throttledClsByLocale, null, 2),
         '',
       ].join('\n')
-      const perfLogPath = path.join(evidenceDir, 'lighthouse-mobile-ar.log')
-      fs.writeFileSync(perfLogPath, perfLog, 'utf8')
-      copyToDirs(perfLogPath, destDirs)
+      const r3ClsLogPath = path.join(evidenceDir, 'r3-mobile-cls.log')
+      fs.writeFileSync(r3ClsLogPath, r3ClsLog, 'utf8')
+      copyToDirs(r3ClsLogPath, destDirs)
+    }
+
+    // =========================================================================
+    // 6. Official Google Lighthouse Mobile Audits on `/ar` and `/en` (R-5, DoD)
+    // =========================================================================
+    for (const loc of ['ar', 'en']) {
+      const lhLogPath = path.join(evidenceDir, `lighthouse-mobile-${loc}.log`)
+      const lhJsonPath = path.join(evidenceDir, `lighthouse-mobile-${loc}.json`)
+      console.log(`[P3-T4 Evidence] Running Google Lighthouse mobile audit on ${baseUrl}/${loc}...`)
+      await runLighthouseAudit({
+        url: `${baseUrl}/${loc}`,
+        locale: loc,
+        headerBlock,
+        outLogPath: lhLogPath,
+        outJsonPath: lhJsonPath,
+      })
+      copyToDirs(lhLogPath, destDirs)
+      copyToDirs(lhJsonPath, destDirs)
     }
   } finally {
     await browser.close()
@@ -1769,9 +2181,9 @@ if (
   const evidenceDir = posArgs[1] || path.resolve(process.cwd(), 'docs/evidence/P3-T4')
   const phase3Dir = posArgs[2] || path.resolve(process.cwd(), 'docs/evidence/phase-3')
   const reportsEvidenceDir =
-    posArgs[3] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1')
+    posArgs[3] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r2')
   const reportsPhase3Dir =
-    posArgs[4] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1')
+    posArgs[4] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r2')
 
   runP3T4Evidence({
     baseUrl,

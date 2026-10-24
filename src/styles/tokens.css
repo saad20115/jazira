@@ -188,7 +188,7 @@
   --frame-width: 1440px;
   --container-width: 1160px;
   --gutter-desktop: 140px;
-  --gutter-tablet: 32px;
+  --gutter-tablet: 24px;
   --gutter-mobile: 16px;
   --container-gutter: var(--gutter-desktop);
   --section-padding-y: 72px;

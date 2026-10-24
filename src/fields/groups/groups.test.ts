@@ -81,7 +81,7 @@ describe('reusable field groups (button, cta, pageHeader, sectionIntro, collapsi
   })
 
   describe('ctaGroup & ctaFields', () => {
-    it('includes enabled checkbox, localized title/text, primary button, secondaryButton, and backgroundImage, and wraps in collapsibleSection', () => {
+    it('includes enabled checkbox, localized title/titleAccent/text, primary button, secondaryButton, and backgroundImage, and wraps in collapsibleSection', () => {
       const group = ctaGroup()
       expect(group.name).toBe('cta')
       expect(group.type).toBe('group')
@@ -94,6 +94,7 @@ describe('reusable field groups (button, cta, pageHeader, sectionIntro, collapsi
       expect(names).toEqual([
         'enabled',
         'title',
+        'titleAccent',
         'text',
         'button',
         'secondaryButton',

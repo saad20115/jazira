@@ -1,6 +1,21 @@
 @import './tokens.css';
 @import './breakpoints.css';
 
+/*
+ * Metric-matched fallback font for `Noto Kufi Arabic` (`R-3`):
+ * Calibrates fallback horizontal glyph advance (`size-adjust`) and vertical metrics
+ * (`ascent-override`, `descent-override`, `line-gap-override`) so Arabic headings
+ * wrap identically before and after `Noto Kufi Arabic` finishes downloading on slow 4G.
+ */
+@font-face {
+  font-family: 'Noto Kufi Arabic Metric Fallback';
+  src: local('Arial'), local('Tahoma'), local('Segoe UI'), local('sans-serif');
+  size-adjust: 121%;
+  ascent-override: 105%;
+  descent-override: 35%;
+  line-gap-override: 0%;
+}
+
 *,
 *::before,
 *::after {

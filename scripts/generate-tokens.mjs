@@ -374,7 +374,7 @@ export function buildTokensCss(tokens) {
   lines.push(`  --frame-width: ${Number(layout.frameWidth ?? 1440)}px;`)
   lines.push(`  --container-width: ${Number(layout.containerWidth ?? 1160)}px;`)
   lines.push(`  --gutter-desktop: ${Number(layout.gutter ?? 140)}px;`)
-  lines.push('  --gutter-tablet: 32px;')
+  lines.push('  --gutter-tablet: 24px;')
   lines.push('  --gutter-mobile: 16px;')
   lines.push('  --container-gutter: var(--gutter-desktop);')
   const sectionPaddingObj = /** @type {{ typical?: number }} */ (layout.sectionPaddingY ?? {})

@@ -1381,6 +1381,7 @@ export interface HomePage {
     enabled?: boolean | null;
     eyebrow?: string | null;
     title?: string | null;
+    titleAccent?: string | null;
     subtitle?: string | null;
     background?: (number | null) | Media;
     backgroundVideo?: (number | null) | Video;
@@ -1526,6 +1527,7 @@ export interface HomePage {
     title?: string | null;
     text?: string | null;
     stats?: (number | Stat)[] | null;
+    backgroundImage?: (number | null) | Media;
   };
   featuredProjects?: {
     enabled?: boolean | null;
@@ -1564,6 +1566,7 @@ export interface HomePage {
   cta?: {
     enabled?: boolean | null;
     title?: string | null;
+    titleAccent?: string | null;
     text?: string | null;
     button?: {
       label?: string | null;
@@ -1674,6 +1677,7 @@ export interface ServicesPage {
   cta?: {
     enabled?: boolean | null;
     title?: string | null;
+    titleAccent?: string | null;
     text?: string | null;
     button?: {
       label?: string | null;
@@ -1890,6 +1894,7 @@ export interface ProjectsPage {
   cta?: {
     enabled?: boolean | null;
     title?: string | null;
+    titleAccent?: string | null;
     text?: string | null;
     button?: {
       label?: string | null;
@@ -2173,6 +2178,7 @@ export interface HomePageSelect<T extends boolean = true> {
         enabled?: T;
         eyebrow?: T;
         title?: T;
+        titleAccent?: T;
         subtitle?: T;
         background?: T;
         backgroundVideo?: T;
@@ -2282,6 +2288,7 @@ export interface HomePageSelect<T extends boolean = true> {
         title?: T;
         text?: T;
         stats?: T;
+        backgroundImage?: T;
       };
   featuredProjects?:
     | T
@@ -2319,6 +2326,7 @@ export interface HomePageSelect<T extends boolean = true> {
     | {
         enabled?: T;
         title?: T;
+        titleAccent?: T;
         text?: T;
         button?:
           | T
@@ -2421,6 +2429,7 @@ export interface ServicesPageSelect<T extends boolean = true> {
     | {
         enabled?: T;
         title?: T;
+        titleAccent?: T;
         text?: T;
         button?:
           | T
@@ -2605,6 +2614,7 @@ export interface ProjectsPageSelect<T extends boolean = true> {
     | {
         enabled?: T;
         title?: T;
+        titleAccent?: T;
         text?: T;
         button?:
           | T

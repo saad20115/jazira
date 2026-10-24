@@ -21,6 +21,10 @@
   pointer-events: none;
 }
 
+:global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']) {
+  display: none;
+}
+
 .glow {
   position: absolute;
   inset: 0;

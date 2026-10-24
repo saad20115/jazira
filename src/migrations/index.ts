@@ -5,6 +5,7 @@ import * as migration_20261022_160652_p2_t4_projects from './20261022_160652_p2_
 import * as migration_20261022_221250_p2_t5_globals from './20261022_221250_p2_t5_globals'
 import * as migration_20261022_231435_p2_t6_quote_requests from './20261022_231435_p2_t6_quote_requests'
 import * as migration_20261023_005934_p2_t6_quote_requests_service_title from './20261023_005934_p2_t6_quote_requests_service_title'
+import * as migration_20261024_104400_p3_t4_r2_title_accent_and_stats_bg from './20261024_104400_p3_t4_r2_title_accent_and_stats_bg'
 
 export const migrations = [
   {
@@ -41,5 +42,10 @@ export const migrations = [
     up: migration_20261023_005934_p2_t6_quote_requests_service_title.up,
     down: migration_20261023_005934_p2_t6_quote_requests_service_title.down,
     name: '20261023_005934_p2_t6_quote_requests_service_title',
+  },
+  {
+    up: migration_20261024_104400_p3_t4_r2_title_accent_and_stats_bg.up,
+    down: migration_20261024_104400_p3_t4_r2_title_accent_and_stats_bg.down,
+    name: '20261024_104400_p3_t4_r2_title_accent_and_stats_bg',
   },
 ]

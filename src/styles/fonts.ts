@@ -15,6 +15,7 @@ export const poppins = Poppins({
   display: 'swap',
   variable: '--font-poppins',
   preload: false,
+  adjustFontFallback: true,
 })
 
 export const notoKufiArabic = Noto_Kufi_Arabic({
@@ -24,6 +25,8 @@ export const notoKufiArabic = Noto_Kufi_Arabic({
   display: 'swap',
   variable: '--font-noto-kufi-arabic',
   preload: false,
+  adjustFontFallback: false,
+  fallback: ['Noto Kufi Arabic Metric Fallback', 'Tahoma', 'Arial', 'sans-serif'],
 })
 
 /**

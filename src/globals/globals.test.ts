@@ -228,6 +228,7 @@ describe('P2-T5 Globals unit suite', () => {
           'hero.background',
           'whoWeAre.image',
           'interactiveSystems.heroImage',
+          'statsSection.backgroundImage',
           'cta.backgroundImage',
           'meta.image',
         ],

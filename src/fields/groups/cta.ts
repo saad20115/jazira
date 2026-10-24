@@ -78,6 +78,29 @@ export function ctaFields(options: CtaFieldsOptions = {}): Field[] {
       },
     },
     {
+      name: 'titleAccent',
+      type: 'text',
+      localized: true,
+      required: false,
+      maxLength: titleMaxLength,
+      label: {
+        ar: 'الجزء الذهبي المميز من العنوان (سطر ثانٍ اختياري)',
+        en: 'CTA Accent Heading (Gold Second Line)',
+      },
+      validate: (val: unknown) => {
+        if (val === null || val === undefined || val === '') {
+          return true
+        }
+        if (typeof val !== 'string') {
+          return 'الجزء المميز من العنوان غير صالح. / Invalid CTA accent title.'
+        }
+        if (val.length > titleMaxLength) {
+          return `يجب ألا يتجاوز الجزء المميز من العنوان ${String(titleMaxLength)} حرفاً. / CTA accent title must not exceed ${String(titleMaxLength)} characters.`
+        }
+        return true
+      },
+    },
+    {
       name: 'text',
       type: 'textarea',
       localized: true,

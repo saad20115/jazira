@@ -12,6 +12,15 @@ export const INTRO_REVEAL_DELAY_MS = 120
 export const INTRO_EXIT_DELAY_MS = 1150
 export const INTRO_TOTAL_DURATION_MS = 1450
 
+/**
+ * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`).
+ * Sets `document.documentElement.dataset.intro = 'seen' | 'active'` before first paint
+ * so the SSR `<IntroSplash>` overlay is visible at frame 0 (`0 ms`) on a fresh tab and
+ * hidden before first paint when already seen in `sessionStorage` or when
+ * `prefers-reduced-motion: reduce` is active.
+ */
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';d.setAttribute('data-intro',rm||seen?'seen':'active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+
 export type IntroSplashPhase = 'hidden' | 'start' | 'reveal' | 'exiting'
 
 export interface IntroSplashProps {
@@ -20,6 +29,29 @@ export interface IntroSplashProps {
   locale?: SupportedLocale
   siteName?: string | null
   tagline?: string | null
+}
+
+const INERT_TARGET_SELECTORS = [
+  'header',
+  '[data-home-content="true"]',
+  'footer',
+  '[data-component="whatsapp-fab"]',
+] as const
+
+function setBackgroundInert(inert: boolean): void {
+  if (typeof document === 'undefined') {
+    return
+  }
+  for (const selector of INERT_TARGET_SELECTORS) {
+    const nodes = document.querySelectorAll<HTMLElement>(selector)
+    nodes.forEach((node) => {
+      if (inert) {
+        node.setAttribute('inert', '')
+      } else {
+        node.removeAttribute('inert')
+      }
+    })
+  }
 }
 
 /**
@@ -70,12 +102,14 @@ export function markIntroSplashSeen(win: Window | undefined): void {
 /**
  * Figma Intro Splash (`28:1609` Start -> `28:1615` Reveal, `docs/05-design.md` §"CTO decisions" #3).
  *
+ * - SSR-rendered in initial `start` state (`R-4`) so the overlay is present from `t = 0 ms` before first paint.
  * - Plays once per browser session (`sessionStorage` key `aljazira_intro_seen`).
  * - Total duration `1450ms` (`<= 1.6s`).
+ * - Sets `inert` on background content and focuses the `"Skip Intro"` button while active (`R-9`).
  * - Click anywhere or press `Escape` (or activate the `>= 44×44px` skip button) to dismiss immediately.
  * - Never shown when `prefers-reduced-motion: reduce` is enabled.
  * - Non-blocking fixed overlay (`z-index: 60`) over the already-rendered Hero so the LCP `<h1>` / hero
- *   image is in the DOM and painting from `t = 0`.
+ *   image is in the SSR HTML and painting from `t = 0`.
  */
 export function IntroSplash({
   locale = DEFAULT_LOCALE,
@@ -85,8 +119,9 @@ export function IntroSplash({
   className,
 }: IntroSplashProps): ReactElement | null {
   const dict = getDictionary(locale)
-  const [phase, setPhase] = useState<IntroSplashPhase>(() => (forceState ? forceState : 'hidden'))
+  const [phase, setPhase] = useState<IntroSplashPhase>(() => (forceState ? forceState : 'start'))
   const timersRef = useRef<number[]>([])
+  const skipButtonRef = useRef<HTMLButtonElement | null>(null)
 
   const clearScheduledTimers = useCallback((): void => {
     if (typeof window !== 'undefined') {
@@ -102,8 +137,10 @@ export function IntroSplash({
       return
     }
     clearScheduledTimers()
+    setBackgroundInert(false)
     if (typeof window !== 'undefined') {
       markIntroSplashSeen(window)
+      document.documentElement.setAttribute('data-intro', 'seen')
     }
     setPhase('hidden')
   }, [forceState, clearScheduledTimers])
@@ -112,14 +149,23 @@ export function IntroSplash({
     if (forceState || typeof window === 'undefined') {
       return
     }
-    if (shouldSkipIntroSplash(window)) {
-      return
+    const prePaintState = document.documentElement.getAttribute('data-intro')
+    if (prePaintState === 'seen' || shouldSkipIntroSplash(window)) {
+      document.documentElement.setAttribute('data-intro', 'seen')
+      setBackgroundInert(false)
+      const skipTimer = window.setTimeout(() => {
+        setPhase('hidden')
+      }, 0)
+      timersRef.current = [skipTimer]
+      return () => {
+        clearScheduledTimers()
+      }
     }
 
+    document.documentElement.setAttribute('data-intro', 'active')
     markIntroSplashSeen(window)
-    const startTimer = window.setTimeout(() => {
-      setPhase('start')
-    }, 0)
+    setBackgroundInert(true)
+    skipButtonRef.current?.focus({ preventScroll: true })
 
     const revealTimer = window.setTimeout(() => {
       setPhase('reveal')
@@ -130,13 +176,16 @@ export function IntroSplash({
     }, INTRO_EXIT_DELAY_MS)
 
     const hideTimer = window.setTimeout(() => {
+      setBackgroundInert(false)
+      document.documentElement.setAttribute('data-intro', 'seen')
       setPhase('hidden')
     }, INTRO_TOTAL_DURATION_MS)
 
-    timersRef.current = [startTimer, revealTimer, exitTimer, hideTimer]
+    timersRef.current = [revealTimer, exitTimer, hideTimer]
 
     return () => {
       clearScheduledTimers()
+      setBackgroundInert(false)
     }
   }, [forceState, clearScheduledTimers])
 
@@ -176,6 +225,7 @@ export function IntroSplash({
       aria-label={siteName ?? dict.nav.brandName}
       className={overlayClasses}
       data-component="intro-splash"
+      data-intro-forced={forceState ? 'true' : undefined}
       data-intro-state={effectivePhase}
       onClick={dismissImmediately}
       role="region"
@@ -191,6 +241,7 @@ export function IntroSplash({
       </div>
 
       <button
+        ref={skipButtonRef}
         className={`${styles.skipButton} t-label-button`}
         data-intro-skip="true"
         onClick={(event) => {
