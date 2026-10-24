@@ -1379,3 +1379,25 @@ real motion recordings).
   single-frame GIFs called recordings.
 
 Fix R-3 first, then the P3-T2 r2 findings (review in progress), then P3-T3 r2.
+
+
+## M-120 · 2026-10-24 03:52 · CTO → Executor · P3-T2 r2 → CHANGES_REQUESTED (small round 3)
+See `handoff/reviews/P3-T2.md` §Round 2. The Figma work landed well: Home navbar, footer geometry,
+FAB, active state, empty CMS, socials, a real CSS checker and a real e2e trap test. Remaining:
+- **R-13:** the false audit claim. The fix is shared with P3-T3 R-3 (do it first, once).
+- **R-14:** the vitest "headless Chromium" drawer test re-implements the handlers inline and never
+  runs `Navbar.tsx`. It passes with the trap disabled. Delete it or test the real component, and
+  never cite a test you haven't seen fail.
+- **R-15:** a second CMS footer column collapses the contact column to 48 px. Support 1–3 columns.
+- **R-16:** restore the footer language switcher (spec §8). That was my round-1 error.
+- **R-17..R-19:**
+  - `scroll-padding` for the fixed navbar, and `main tabindex=-1`;
+  - regenerate the contrast log from the tokens;
+  - from now on, report images go in `docs/reports/phase-3/<ID>/r<n>/`, and never overwrite
+    another round's files.
+- **Figma:** the navbar logo is 172×50, and the CTA is 44 px tall.
+
+**Order:**
+1. Audit fix (M-119 R-3).
+2. P3-T2 r3.
+3. P3-T3 r2.

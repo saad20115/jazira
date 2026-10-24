@@ -180,7 +180,7 @@ Binding for Phase 3. They fill what the Figma file does not specify.
 
 19. **Contrast fixes (CTO decision 2026-10-24, from the P3-T2 review R-11).** Accessibility wins over
     the exact Figma tint in three places. Nothing else changes.
-    - **Focus ring on light backgrounds:** a 2 px `--navy-900` (`#011025`) outline with a 2 px
+    - **Focus ring on light backgrounds:** a 2 px `--navy-950` (`#011025`) outline with a 2 px
       offset. This replaces `--gold-500`, which is 2.15:1 on white. On dark backgrounds the ring
       stays `--gold-300`.
     - **Small gold text on light backgrounds** (Eyebrow Light, accordion "Show details", text links)
