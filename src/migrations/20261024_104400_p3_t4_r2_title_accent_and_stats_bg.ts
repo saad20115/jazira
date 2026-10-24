@@ -17,114 +17,323 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "home_page_stats_section_stats_section_background_image_idx" ON "home_page" USING btree ("stats_section_background_image_id");
   CREATE INDEX "_home_page_v_version_stats_section_version_stats_section_idx" ON "_home_page_v" USING btree ("version_stats_section_background_image_id");
 
-  -- Backfill hero_title / hero_title_accent on home_page_locales and _home_page_v_locales (R-2)
+  -- Backfill hero_title / hero_title_accent on home_page_locales and _home_page_v_locales (R-2, R-12, R-13):
+  -- Split strictly on newline (chr(10)); leave any single-line value untouched; use POSIX '[[:space:]]+' (no E'\\s+').
   UPDATE "home_page_locales"
   SET
-    "hero_title_accent" = CASE
-      WHEN position(E'\n' in "hero_title") > 0 THEN btrim(regexp_replace(substring("hero_title" from position(E'\n' in "hero_title") + 1), E'\\s+', ' ', 'g'))
-      WHEN btrim("hero_title") = 'Building the Future with Smart Solutions' THEN 'with Smart Solutions'
-      WHEN btrim("hero_title") = 'نبني المستقبل بحلول هندسية ذكية' THEN 'بحلول هندسية ذكية'
-      ELSE "hero_title_accent"
-    END,
-    "hero_title" = CASE
-      WHEN position(E'\n' in "hero_title") > 0 THEN btrim(split_part("hero_title", E'\n', 1))
-      WHEN btrim("hero_title") = 'Building the Future with Smart Solutions' THEN 'Building the Future'
-      WHEN btrim("hero_title") = 'نبني المستقبل بحلول هندسية ذكية' THEN 'نبني المستقبل'
-      ELSE "hero_title"
-    END
-  WHERE "hero_title" IS NOT NULL AND ("hero_title_accent" IS NULL OR btrim("hero_title_accent") = '');
+    "hero_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("hero_title" from strpos("hero_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "hero_title" = btrim(
+      regexp_replace(
+        split_part("hero_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "hero_title" IS NOT NULL
+    AND strpos("hero_title", chr(10)) > 0
+    AND (
+      "hero_title_accent" IS NULL
+      OR btrim(regexp_replace("hero_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
   UPDATE "_home_page_v_locales"
   SET
-    "version_hero_title_accent" = CASE
-      WHEN position(E'\n' in "version_hero_title") > 0 THEN btrim(regexp_replace(substring("version_hero_title" from position(E'\n' in "version_hero_title") + 1), E'\\s+', ' ', 'g'))
-      WHEN btrim("version_hero_title") = 'Building the Future with Smart Solutions' THEN 'with Smart Solutions'
-      WHEN btrim("version_hero_title") = 'نبني المستقبل بحلول هندسية ذكية' THEN 'بحلول هندسية ذكية'
-      ELSE "version_hero_title_accent"
-    END,
-    "version_hero_title" = CASE
-      WHEN position(E'\n' in "version_hero_title") > 0 THEN btrim(split_part("version_hero_title", E'\n', 1))
-      WHEN btrim("version_hero_title") = 'Building the Future with Smart Solutions' THEN 'Building the Future'
-      WHEN btrim("version_hero_title") = 'نبني المستقبل بحلول هندسية ذكية' THEN 'نبني المستقبل'
-      ELSE "version_hero_title"
-    END
-  WHERE "version_hero_title" IS NOT NULL AND ("version_hero_title_accent" IS NULL OR btrim("version_hero_title_accent") = '');
+    "version_hero_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("version_hero_title" from strpos("version_hero_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "version_hero_title" = btrim(
+      regexp_replace(
+        split_part("version_hero_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "version_hero_title" IS NOT NULL
+    AND strpos("version_hero_title", chr(10)) > 0
+    AND (
+      "version_hero_title_accent" IS NULL
+      OR btrim(regexp_replace("version_hero_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
-  -- Backfill cta_title / cta_title_accent on home_page, services_page, and projects_page (R-2)
+  -- Backfill cta_title / cta_title_accent on home_page, services_page, and projects_page (R-2, R-12, R-13)
   UPDATE "home_page_locales"
   SET
-    "cta_title_accent" = CASE
-      WHEN position(E'\n' in "cta_title") > 0 THEN btrim(regexp_replace(substring("cta_title" from position(E'\n' in "cta_title") + 1), E'\\s+', ' ', 'g'))
-      WHEN btrim("cta_title") = 'Ready to Build Your Next Project?' THEN 'Your Next Project?'
-      WHEN btrim("cta_title") = 'هل أنت مستعد لبناء مشروعك القادم؟' THEN 'مشروعك القادم؟'
-      ELSE "cta_title_accent"
-    END,
-    "cta_title" = CASE
-      WHEN position(E'\n' in "cta_title") > 0 THEN btrim(split_part("cta_title", E'\n', 1))
-      WHEN btrim("cta_title") = 'Ready to Build Your Next Project?' THEN 'Ready to Build'
-      WHEN btrim("cta_title") = 'هل أنت مستعد لبناء مشروعك القادم؟' THEN 'هل أنت مستعد لبناء'
-      ELSE "cta_title"
-    END
-  WHERE "cta_title" IS NOT NULL AND ("cta_title_accent" IS NULL OR btrim("cta_title_accent") = '');
+    "cta_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("cta_title" from strpos("cta_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "cta_title" = btrim(
+      regexp_replace(
+        split_part("cta_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "cta_title" IS NOT NULL
+    AND strpos("cta_title", chr(10)) > 0
+    AND (
+      "cta_title_accent" IS NULL
+      OR btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
   UPDATE "_home_page_v_locales"
   SET
-    "version_cta_title_accent" = CASE
-      WHEN position(E'\n' in "version_cta_title") > 0 THEN btrim(regexp_replace(substring("version_cta_title" from position(E'\n' in "version_cta_title") + 1), E'\\s+', ' ', 'g'))
-      WHEN btrim("version_cta_title") = 'Ready to Build Your Next Project?' THEN 'Your Next Project?'
-      WHEN btrim("version_cta_title") = 'هل أنت مستعد لبناء مشروعك القادم؟' THEN 'مشروعك القادم؟'
-      ELSE "version_cta_title_accent"
-    END,
-    "version_cta_title" = CASE
-      WHEN position(E'\n' in "version_cta_title") > 0 THEN btrim(split_part("version_cta_title", E'\n', 1))
-      WHEN btrim("version_cta_title") = 'Ready to Build Your Next Project?' THEN 'Ready to Build'
-      WHEN btrim("version_cta_title") = 'هل أنت مستعد لبناء مشروعك القادم؟' THEN 'هل أنت مستعد لبناء'
-      ELSE "version_cta_title"
-    END
-  WHERE "version_cta_title" IS NOT NULL AND ("version_cta_title_accent" IS NULL OR btrim("version_cta_title_accent") = '');
+    "version_cta_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("version_cta_title" from strpos("version_cta_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "version_cta_title" = btrim(
+      regexp_replace(
+        split_part("version_cta_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "version_cta_title" IS NOT NULL
+    AND strpos("version_cta_title", chr(10)) > 0
+    AND (
+      "version_cta_title_accent" IS NULL
+      OR btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
   UPDATE "services_page_locales"
   SET
-    "cta_title_accent" = btrim(regexp_replace(substring("cta_title" from position(E'\n' in "cta_title") + 1), E'\\s+', ' ', 'g')),
-    "cta_title" = btrim(split_part("cta_title", E'\n', 1))
-  WHERE "cta_title" IS NOT NULL AND position(E'\n' in "cta_title") > 0 AND ("cta_title_accent" IS NULL OR btrim("cta_title_accent") = '');
+    "cta_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("cta_title" from strpos("cta_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "cta_title" = btrim(
+      regexp_replace(
+        split_part("cta_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "cta_title" IS NOT NULL
+    AND strpos("cta_title", chr(10)) > 0
+    AND (
+      "cta_title_accent" IS NULL
+      OR btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
   UPDATE "_services_page_v_locales"
   SET
-    "version_cta_title_accent" = btrim(regexp_replace(substring("version_cta_title" from position(E'\n' in "version_cta_title") + 1), E'\\s+', ' ', 'g')),
-    "version_cta_title" = btrim(split_part("version_cta_title", E'\n', 1))
-  WHERE "version_cta_title" IS NOT NULL AND position(E'\n' in "version_cta_title") > 0 AND ("version_cta_title_accent" IS NULL OR btrim("version_cta_title_accent") = '');
+    "version_cta_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("version_cta_title" from strpos("version_cta_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "version_cta_title" = btrim(
+      regexp_replace(
+        split_part("version_cta_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "version_cta_title" IS NOT NULL
+    AND strpos("version_cta_title", chr(10)) > 0
+    AND (
+      "version_cta_title_accent" IS NULL
+      OR btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
   UPDATE "projects_page_locales"
   SET
-    "cta_title_accent" = btrim(regexp_replace(substring("cta_title" from position(E'\n' in "cta_title") + 1), E'\\s+', ' ', 'g')),
-    "cta_title" = btrim(split_part("cta_title", E'\n', 1))
-  WHERE "cta_title" IS NOT NULL AND position(E'\n' in "cta_title") > 0 AND ("cta_title_accent" IS NULL OR btrim("cta_title_accent") = '');
+    "cta_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("cta_title" from strpos("cta_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "cta_title" = btrim(
+      regexp_replace(
+        split_part("cta_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "cta_title" IS NOT NULL
+    AND strpos("cta_title", chr(10)) > 0
+    AND (
+      "cta_title_accent" IS NULL
+      OR btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );
 
   UPDATE "_projects_page_v_locales"
   SET
-    "version_cta_title_accent" = btrim(regexp_replace(substring("version_cta_title" from position(E'\n' in "version_cta_title") + 1), E'\\s+', ' ', 'g')),
-    "version_cta_title" = btrim(split_part("version_cta_title", E'\n', 1))
-  WHERE "version_cta_title" IS NOT NULL AND position(E'\n' in "version_cta_title") > 0 AND ("version_cta_title_accent" IS NULL OR btrim("version_cta_title_accent") = '');`)
+    "version_cta_title_accent" = NULLIF(
+      btrim(
+        regexp_replace(
+          substring("version_cta_title" from strpos("version_cta_title", chr(10)) + 1),
+          '[[:space:]]+',
+          ' ',
+          'g'
+        )
+      ),
+      ''
+    ),
+    "version_cta_title" = btrim(
+      regexp_replace(
+        split_part("version_cta_title", chr(10), 1),
+        '[[:space:]]+',
+        ' ',
+        'g'
+      )
+    )
+  WHERE "version_cta_title" IS NOT NULL
+    AND strpos("version_cta_title", chr(10)) > 0
+    AND (
+      "version_cta_title_accent" IS NULL
+      OR btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
+    );`)
 }
 
 export async function down({ db }: MigrateDownArgs): Promise<void> {
   await db.execute(sql`
    UPDATE "home_page_locales"
-   SET "hero_title" = btrim("hero_title") || ' ' || btrim("hero_title_accent")
-   WHERE "hero_title" IS NOT NULL AND "hero_title_accent" IS NOT NULL AND btrim("hero_title_accent") <> '';
+   SET "hero_title" = CASE
+     WHEN "hero_title" IS NULL OR btrim(regexp_replace("hero_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("hero_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("hero_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("hero_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "hero_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("hero_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
 
    UPDATE "_home_page_v_locales"
-   SET "version_hero_title" = btrim("version_hero_title") || ' ' || btrim("version_hero_title_accent")
-   WHERE "version_hero_title" IS NOT NULL AND "version_hero_title_accent" IS NOT NULL AND btrim("version_hero_title_accent") <> '';
+   SET "version_hero_title" = CASE
+     WHEN "version_hero_title" IS NULL OR btrim(regexp_replace("version_hero_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("version_hero_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("version_hero_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("version_hero_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "version_hero_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("version_hero_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
 
    UPDATE "home_page_locales"
-   SET "cta_title" = btrim("cta_title") || ' ' || btrim("cta_title_accent")
-   WHERE "cta_title" IS NOT NULL AND "cta_title_accent" IS NOT NULL AND btrim("cta_title_accent") <> '';
+   SET "cta_title" = CASE
+     WHEN "cta_title" IS NULL OR btrim(regexp_replace("cta_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("cta_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "cta_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
 
    UPDATE "_home_page_v_locales"
-   SET "version_cta_title" = btrim("version_cta_title") || ' ' || btrim("version_cta_title_accent")
-   WHERE "version_cta_title" IS NOT NULL AND "version_cta_title_accent" IS NOT NULL AND btrim("version_cta_title_accent") <> '';
+   SET "version_cta_title" = CASE
+     WHEN "version_cta_title" IS NULL OR btrim(regexp_replace("version_cta_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("version_cta_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "version_cta_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
+
+   UPDATE "services_page_locales"
+   SET "cta_title" = CASE
+     WHEN "cta_title" IS NULL OR btrim(regexp_replace("cta_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("cta_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "cta_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
+
+   UPDATE "_services_page_v_locales"
+   SET "version_cta_title" = CASE
+     WHEN "version_cta_title" IS NULL OR btrim(regexp_replace("version_cta_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("version_cta_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "version_cta_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
+
+   UPDATE "projects_page_locales"
+   SET "cta_title" = CASE
+     WHEN "cta_title" IS NULL OR btrim(regexp_replace("cta_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("cta_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "cta_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
+
+   UPDATE "_projects_page_v_locales"
+   SET "version_cta_title" = CASE
+     WHEN "version_cta_title" IS NULL OR btrim(regexp_replace("version_cta_title", '[[:space:]]+', ' ', 'g')) = ''
+       THEN btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g'))
+     ELSE btrim(regexp_replace("version_cta_title", '[[:space:]]+', ' ', 'g'))
+       || chr(10)
+       || btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g'))
+   END
+   WHERE "version_cta_title_accent" IS NOT NULL
+     AND btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) <> '';
 
    ALTER TABLE "home_page" DROP CONSTRAINT "home_page_stats_section_background_image_id_media_id_fk";
   
