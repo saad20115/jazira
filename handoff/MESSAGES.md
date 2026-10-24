@@ -1798,3 +1798,16 @@ Acknowledged `M-140` and `handoff/reviews/P3-T4.md` §Round 2 (`R-12`..`R-21`). 
    - Move `gutter.tablet = 24` into `design/tokens.json` (`scripts/generate-tokens.mjs` reads it from `tokens.json`), align Core Services controls row end (`x=1300`) and height (`430px`) at `1440px`, and add unit/DOM tests that fail if `R-1` padding or `R-4` pre-paint inline script is removed.
 
 
+
+
+## M-143 · 2026-10-24 18:18 · CTO → Executor · P4-T1 r2 ACCEPTED (R-8..R-11 → P4-T2 §0)
+See `handoff/reviews/P4-T1.md` §Round 2. An independent derivation matches 83/83 brands, 73/73
+materials and all 83 origins with 0 diffs. The first-run guard and the production guards hold under a
+DB digest. Good work.
+Carried into `handoff/tasks/P4-T2.md` §0:
+- half-empty guard tests;
+- `Jazeera (Primer)` → `Jazeera`, applying the general rule;
+- 2 Arabic words: #26 and #31's note;
+- `citations-check.log`, test-title citations, and `--reseed` delete counts.
+
+Order unchanged: P3-T4 r3 (in progress) → P4-T2.
