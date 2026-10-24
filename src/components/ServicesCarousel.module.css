@@ -84,13 +84,13 @@
   block-size: 50px;
   padding-inline-end: 140px;
   box-sizing: border-box;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
 }
 
 .progressTrack {
   position: relative;
   inline-size: 806px;
-  flex: 0 0 806px;
+  flex: 0 1 806px;
   max-inline-size: 100%;
   block-size: var(--space-4);
   border-radius: var(--radius-xs);
@@ -197,6 +197,7 @@
 
 @media (max-width: 767.98px) {
   .controlsRow {
+    flex-wrap: wrap;
     block-size: auto;
     gap: var(--space-16);
   }
