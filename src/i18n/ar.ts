@@ -117,6 +117,11 @@ export interface UiDictionary {
     bannerText: string
     exitPreviewLabel: string
   }
+  home: {
+    scrollToExplore: string
+    interactive3dBadge: string
+    relatedProjectsHeading: string
+  }
   actions: {
     learnMore: string
     viewAll: string
@@ -269,6 +274,11 @@ export const arDictionary = {
   draftMode: {
     bannerText: 'وضع المعاينة المباشرة (مسودة غير منشورة للزوار)',
     exitPreviewLabel: 'إنهاء المعاينة',
+  },
+  home: {
+    scrollToExplore: 'مرر للاستكشاف',
+    interactive3dBadge: 'نموذج ثلاثي الأبعاد · العرض المباشر متاح',
+    relatedProjectsHeading: 'مشاريع ذات صلة',
   },
   actions: {
     learnMore: 'اعرف المزيد',

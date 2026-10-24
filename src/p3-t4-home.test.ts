@@ -1,0 +1,647 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
+import React from 'react'
+import { renderToStaticMarkup } from 'react-dom/server'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  INTRO_SPLASH_STORAGE_KEY,
+  INTRO_TOTAL_DURATION_MS,
+  IntroSplash,
+  markIntroSplashSeen,
+  shouldSkipIntroSplash,
+} from '@/components/IntroSplash'
+import type { Brand, HomePage, Media, Project, Service, SiteSetting, Stat } from '@/payload-types'
+
+const mockSiteSettings = vi.fn<() => Promise<SiteSetting | null>>()
+const mockHomePage = vi.fn<() => Promise<HomePage | null>>()
+const mockServices = vi.fn<() => Promise<Service[]>>()
+const mockStats = vi.fn<() => Promise<Stat[]>>()
+const mockProjects = vi.fn<
+  (
+    locale: string,
+    opts?: { featuredOnly?: boolean },
+  ) => Promise<{
+    docs: Project[]
+    totalDocs: number
+    totalPages: number
+    page: number
+  }>
+>()
+const mockBrands = vi.fn<() => Promise<Brand[]>>()
+
+vi.mock('next/navigation', () => ({
+  notFound: () => {
+    throw new Error('NEXT_NOT_FOUND')
+  },
+  usePathname: () => '/en',
+}))
+
+vi.mock('@/lib/cms', () => ({
+  getSiteSettings: () => mockSiteSettings(),
+  getHomePage: () => mockHomePage(),
+  getServices: () => mockServices(),
+  getStats: () => mockStats(),
+  getProjects: (locale: string, opts?: { featuredOnly?: boolean }) => mockProjects(locale, opts),
+  getBrands: () => mockBrands(),
+}))
+
+import LocaleHomePage, {
+  extractLexicalParagraphs,
+  generateMetadata,
+  renderAccentHeading,
+  splitDisplayLines,
+} from '@/app/(frontend)/[locale]/page'
+
+function makeMedia(id: number, url: string, alt: string): Media {
+  return {
+    id,
+    url,
+    alt,
+    width: 1200,
+    height: 800,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  }
+}
+
+function makeLexicalParagraphs(
+  texts: string[],
+): NonNullable<NonNullable<HomePage['whoWeAre']>['text']> {
+  return {
+    root: {
+      type: 'root',
+      format: '',
+      indent: 0,
+      version: 1,
+      direction: 'ltr',
+      children: texts.map((t) => ({
+        type: 'paragraph',
+        format: '',
+        indent: 0,
+        version: 1,
+        children: [{ type: 'text', text: t, version: 1 }],
+      })),
+    },
+  }
+}
+
+const SAMPLE_STATS: Stat[] = [
+  {
+    id: 1,
+    label: 'Years of Experience',
+    value: '9+',
+    order: 1,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 2,
+    label: 'Projects Delivered',
+    value: '30+',
+    order: 2,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 3,
+    label: 'Engineers & Technicians',
+    value: '120+',
+    order: 3,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 4,
+    label: 'Partner Brands',
+    value: '50+',
+    order: 4,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+]
+
+const SAMPLE_SERVICES: Service[] = [
+  {
+    id: 1,
+    title: 'Electrical Contracting',
+    slug: 'electrical-contracting',
+    tier: 'main',
+    order: 1,
+    featured: true,
+    icon: 'electrical',
+    shortDescription: 'Complete MV/LV electrical contracting.',
+    image: makeMedia(10, '/media/svc-electrical.png', 'Electrical'),
+    _status: 'published',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 2,
+    title: 'HVAC & Mechanical Systems',
+    slug: 'hvac-mechanical',
+    tier: 'main',
+    order: 2,
+    featured: true,
+    icon: 'hvac',
+    shortDescription: 'Chilled-water plants, AHUs, VRF, and TAB.',
+    image: makeMedia(11, '/media/svc-hvac.png', 'HVAC'),
+    _status: 'published',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+]
+
+const SAMPLE_PROJECTS: Project[] = [
+  {
+    id: 101,
+    title: 'Al Khalil Investment Project',
+    slug: 'al-khalil-makkah',
+    summary: 'Full low-current and structured cabling.',
+    location: 'Makkah — Ibrahim Al Khalil Rd.',
+    category: 'low-current',
+    scopeSummary: 'LOW CURRENT SCS',
+    scope: ['low-current', 'hvac'],
+    status: 'completed',
+    featured: true,
+    order: 1,
+    coverImage: makeMedia(20, '/media/proj-tower.png', 'Al Khalil'),
+    _status: 'published',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 102,
+    title: 'King Abdullah Road Tunnel — Exit 10',
+    slug: 'king-abdullah-tunnel',
+    summary: 'Ventilation, jet fans, fire fighting.',
+    location: 'Riyadh — King Abdullah Rd.',
+    category: 'mep',
+    scopeSummary: 'FULL MEP WORKS',
+    scope: ['hvac', 'fire-fighting', 'electrical'],
+    status: 'completed',
+    featured: true,
+    order: 2,
+    coverImage: makeMedia(21, '/media/proj-tunnel.png', 'Tunnel'),
+    _status: 'published',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+]
+
+const SAMPLE_BRANDS: Brand[] = [
+  {
+    id: 201,
+    name: 'ABB',
+    logo: makeMedia(30, '/media/brand-abb.png', 'ABB'),
+    showInMarquee: true,
+    order: 1,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 202,
+    name: 'Schneider Electric',
+    logo: makeMedia(31, '/media/brand-schneider.png', 'Schneider Electric'),
+    showInMarquee: true,
+    order: 2,
+    updatedAt: '2026-01-01T00:00:00.000Z',
+    createdAt: '2026-01-01T00:00:00.000Z',
+  },
+]
+
+function buildSampleHomePage(): HomePage {
+  return {
+    id: 1,
+    _status: 'published',
+    hero: {
+      enabled: true,
+      eyebrow: 'MEP & SMART ENGINEERING CONTRACTORS · RIYADH, KSA',
+      title: 'Smart Engineering\nSolutions for Mega Projects',
+      subtitle:
+        'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting.',
+      background: makeMedia(1, '/media/hero-city.png', 'Riyadh skyline'),
+      primaryCta: {
+        label: 'Explore Our Services',
+        link: { type: 'internal', internalRoute: '/services' },
+      },
+      secondaryCta: {
+        label: 'View Projects',
+        link: { type: 'internal', internalRoute: '/projects' },
+      },
+    },
+    whoWeAre: {
+      enabled: true,
+      badgeStat: SAMPLE_STATS[0],
+      eyebrow: 'WHO WE ARE',
+      title: 'An Integrated MEP Engineering Partner Built on Precision',
+      text: makeLexicalParagraphs([
+        'Al Jazira for Imdad Smart Co. is a Riyadh-based engineering and contracting company.',
+        'From design coordination and BIM modeling to installation, testing and commissioning.',
+      ]),
+      button: {
+        label: 'Learn More About Us',
+        link: { type: 'internal', internalRoute: '/about' },
+      },
+      image: makeMedia(2, '/media/about-team.png', 'Engineering team'),
+    },
+    coreServices: {
+      enabled: true,
+      eyebrow: 'CORE SERVICES',
+      title: 'Comprehensive MEP & Contracting Disciplines',
+      intro: 'Eight integrated engineering capabilities delivered by our in-house teams.',
+      button: {
+        label: 'View All Services',
+        link: { type: 'internal', internalRoute: '/services' },
+      },
+    },
+    interactiveSystems: {
+      enabled: true,
+      eyebrow: 'INTERACTIVE SYSTEMS',
+      title: 'Explore Every System Inside the Building',
+      intro: 'Click any discipline to inspect how our MEP systems work together.',
+      heroImage: makeMedia(3, '/media/tower-render.png', '3D Building Systems'),
+      liveModelLabel: 'Open the live 3D model',
+      relatedProjectsLabel: 'Related projects',
+      systems: [
+        {
+          id: 'sys-1',
+          title: 'HVAC & Chilled Water',
+          text: 'Chillers, AHUs, FCUs, VRF, ductwork, smoke management.',
+          shot: 'hvac',
+          disciplines: ['hvac'],
+        },
+        {
+          id: 'sys-2',
+          title: 'Fire Fighting & Fire Alarm',
+          text: 'Fire pumps, sprinkler and hose systems.',
+          shot: 'fire',
+          disciplines: ['fire-fighting'],
+        },
+        {
+          id: 'sys-3',
+          title: 'Plumbing, Drainage & Water Supply',
+          text: 'Booster sets, water tanks, domestic water.',
+          shot: 'plumbing',
+          disciplines: ['plumbing'],
+        },
+        {
+          id: 'sys-4',
+          title: 'Power Distribution & Lighting',
+          text: 'MV/LV panels, busways, small power.',
+          shot: 'power',
+          disciplines: ['electrical'],
+        },
+        {
+          id: 'sys-5',
+          title: 'Smart Systems, ELV & BMS',
+          text: 'Structured cabling, CCTV, access control.',
+          shot: 'smart',
+          disciplines: ['low-current', 'data-center'],
+        },
+      ],
+    },
+    statsSection: {
+      enabled: true,
+      title: 'Trusted by Industry Leaders',
+      text: 'Proven track record across Saudi Arabia’s most demanding sectors.',
+      stats: SAMPLE_STATS,
+    },
+    featuredProjects: {
+      enabled: true,
+      eyebrow: 'OUR PORTFOLIO',
+      title: 'Landmark Projects Across the Kingdom',
+      intro: 'Selected engagements demonstrating our capability across infrastructure.',
+      button: {
+        label: 'View All Projects',
+        link: { type: 'internal', internalRoute: '/projects' },
+      },
+    },
+    partners: {
+      enabled: true,
+      eyebrow: 'TRUSTED PARTNERS',
+      title: 'Global Manufacturers We Work With',
+      intro: 'Certified installer and supply partner for leading international MEP brands.',
+    },
+    cta: {
+      enabled: true,
+      title: 'Ready to Start Your\nNext Project?',
+      text: 'Share your project scope or BOQ with our engineering team.',
+      backgroundImage: makeMedia(4, '/media/proj-tower.png', 'CTA Backdrop'),
+      button: {
+        label: 'Contact Us Today',
+        link: { type: 'internal', internalRoute: '/contact' },
+      },
+      secondaryButton: {
+        label: 'Call Us Now',
+      },
+    },
+    meta: {
+      title: 'Al Jazira for Imdad Smart Co. — MEP & Smart Engineering',
+      description: 'Integrated MEP and smart engineering contracting in Riyadh, KSA.',
+      image: makeMedia(5, '/media/hero-city.png', 'OG Image'),
+    },
+  }
+}
+
+describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:1615`)', () => {
+  beforeEach(() => {
+    vi.clearAllMocks()
+    mockSiteSettings.mockResolvedValue({
+      id: 1,
+      companyName: 'Al Jazira for Imdad Smart Co.',
+      tagline: 'MEP & Smart Engineering Solutions · Riyadh, KSA',
+      phone: '+966 57 353 4185',
+      email: 'info@aljazira-imdad.sa',
+      whatsapp: '966573534185',
+      defaultSeo: {
+        title: 'Default SEO Title',
+        description: 'Default SEO Description',
+      },
+    })
+    mockHomePage.mockResolvedValue(buildSampleHomePage())
+    mockServices.mockResolvedValue(SAMPLE_SERVICES)
+    mockStats.mockResolvedValue(SAMPLE_STATS)
+    mockProjects.mockResolvedValue({
+      docs: SAMPLE_PROJECTS,
+      totalDocs: SAMPLE_PROJECTS.length,
+      totalPages: 1,
+      page: 1,
+    })
+    mockBrands.mockResolvedValue(SAMPLE_BRANDS)
+  })
+
+  describe('1. IntroSplash (`28:1609` -> `28:1615`, CTO decision §3)', () => {
+    it('enforces total duration <= 1600ms, sessionStorage key aljazira_intro_seen, and prefers-reduced-motion suppression', () => {
+      expect(INTRO_SPLASH_STORAGE_KEY).toBe('aljazira_intro_seen')
+      expect(INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(1600)
+
+      // 1. Server / undefined window -> skip
+      expect(shouldSkipIntroSplash(undefined)).toBe(true)
+
+      // 2. Fresh browser session with motion allowed -> do NOT skip
+      const store = new Map<string, string>()
+      const mockWinAllowed = {
+        matchMedia: () => ({ matches: false }),
+        sessionStorage: {
+          getItem: (k: string) => store.get(k) ?? null,
+          setItem: (k: string, v: string) => {
+            store.set(k, v)
+          },
+        },
+      } as unknown as Window
+
+      expect(shouldSkipIntroSplash(mockWinAllowed)).toBe(false)
+      markIntroSplashSeen(mockWinAllowed)
+      expect(store.get(INTRO_SPLASH_STORAGE_KEY)).toBe('1')
+      // Once marked seen in sessionStorage -> skip on subsequent visits
+      expect(shouldSkipIntroSplash(mockWinAllowed)).toBe(true)
+
+      // 3. prefers-reduced-motion: reduce -> always skip even when sessionStorage is empty
+      const mockWinReducedMotion = {
+        matchMedia: (q: string) => ({
+          matches: q.includes('prefers-reduced-motion'),
+        }),
+        sessionStorage: {
+          getItem: () => null,
+          setItem: () => undefined,
+        },
+      } as unknown as Window
+      expect(shouldSkipIntroSplash(mockWinReducedMotion)).toBe(true)
+    })
+
+    it('renders start (`28:1609`) and reveal (`28:1615`) states with Logo, gold rule, tagline, and >=44px skip button', () => {
+      const startHtml = renderToStaticMarkup(
+        React.createElement(IntroSplash, {
+          locale: 'en',
+          forceState: 'start',
+          siteName: 'Al Jazira for Imdad Smart Co.',
+          tagline: 'MEP & Smart Engineering Solutions · Riyadh, KSA',
+        }),
+      )
+      expect(startHtml).toContain('data-component="intro-splash"')
+      expect(startHtml).toContain('data-intro-state="start"')
+      expect(startHtml).toContain('data-intro-skip="true"')
+      expect(startHtml).toContain('Skip Intro')
+
+      const revealHtml = renderToStaticMarkup(
+        React.createElement(IntroSplash, {
+          locale: 'ar',
+          forceState: 'reveal',
+          siteName: 'شركة الجزيرة للإمداد الذكي',
+          tagline: 'حلول الأعمال الكهروميكانيكية والهندسة الذكية · الرياض',
+        }),
+      )
+      expect(revealHtml).toContain('data-intro-state="reveal"')
+      expect(revealHtml).toContain('حلول الأعمال الكهروميكانيكية والهندسة الذكية · الرياض')
+      expect(revealHtml).toContain('تخطي المقدمة')
+    })
+  })
+
+  describe('2. Text & Heading Helpers (`extractLexicalParagraphs`, `splitDisplayLines`, `renderAccentHeading`)', () => {
+    it('extracts up to 2 paragraphs from Lexical richText JSON and splits Hero/CTA display lines cleanly', () => {
+      const lexical = makeLexicalParagraphs([
+        'First paragraph.',
+        'Second paragraph.',
+        'Third paragraph.',
+      ])
+      expect(extractLexicalParagraphs(lexical, 2)).toEqual([
+        'First paragraph.',
+        'Second paragraph.',
+      ])
+      expect(extractLexicalParagraphs(null)).toEqual([])
+
+      expect(splitDisplayLines('Smart Engineering\nSolutions for Mega Projects', 'hero')).toEqual({
+        line1: 'Smart Engineering',
+        line2: 'Solutions for Mega Projects',
+      })
+      expect(splitDisplayLines('Smart Engineering Solutions for Mega Projects', 'hero')).toEqual({
+        line1: 'Smart Engineering',
+        line2: 'Solutions for Mega Projects',
+      })
+      expect(splitDisplayLines('Ready to Start Your Next Project?', 'cta')).toEqual({
+        line1: 'Ready to Start Your',
+        line2: 'Next Project?',
+      })
+
+      const accentHtml = renderToStaticMarkup(
+        React.createElement(
+          'h2',
+          null,
+          renderAccentHeading('An Integrated MEP Engineering Partner Built on Precision'),
+        ),
+      )
+      expect(accentHtml).toContain('Built on Precision')
+      expect(accentHtml).toContain('<span')
+    })
+  })
+
+  describe('3. LocaleHomePage full render (`en` and `ar`), section order, `enabled` toggles, and empty states', () => {
+    it('renders all 8 sections in Figma order (`hero`, `who-we-are`, `core-services`, `interactive-systems`, `stats`, `featured-projects`, `partners`, `cta`)', async () => {
+      const element = await LocaleHomePage({
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      const html = renderToStaticMarkup(element)
+
+      const sectionOrder = [
+        'data-home-section="hero"',
+        'data-home-section="who-we-are"',
+        'data-home-section="core-services"',
+        'data-home-section="interactive-systems"',
+        'data-home-section="stats"',
+        'data-home-section="featured-projects"',
+        'data-home-section="partners"',
+        'data-home-section="cta"',
+      ]
+
+      let prevIdx = -1
+      for (const marker of sectionOrder) {
+        const idx = html.indexOf(marker)
+        expect(idx, `Expected ${marker} to be present`).toBeGreaterThan(prevIdx)
+        prevIdx = idx
+      }
+
+      // Verifies Hero content + scroll hint button
+      expect(html).toContain('Smart Engineering')
+      expect(html).toContain('Solutions for Mega Projects')
+      expect(html).toContain('data-home-scroll-hint="true"')
+
+      // Verifies Who We Are badge stat + paragraphs
+      expect(html).toContain('data-who-badge-stat="true"')
+      expect(html).toContain('Years of Experience')
+      expect(html).toContain('Al Jazira for Imdad Smart Co. is a Riyadh-based engineering')
+
+      // Verifies Core Services carousel
+      expect(html).toContain('data-component="services-carousel"')
+      expect(html).toContain('Electrical Contracting')
+
+      // Verifies Interactive Systems 3D card + 5 accordion items + discipline-matched related projects
+      expect(html).toContain('data-interactive-3d-card="true"')
+      expect(html).toContain('3D MODEL · LIVE VERSION AVAILABLE')
+      expect(html).toContain('data-system-related-projects="hvac"')
+      expect(html).toContain('/en/projects/al-khalil-makkah')
+      expect(html).toContain('/en/projects/king-abdullah-tunnel')
+
+      // Verifies Stats section
+      expect(html).toContain('Trusted by Industry Leaders')
+      expect(html).toContain('Projects Delivered')
+
+      // Verifies Featured Projects cards using project.scopeSummary badge
+      expect(html).toContain('LOW CURRENT SCS')
+      expect(html).toContain('FULL MEP WORKS')
+
+      // Verifies Partners LogoMarquee
+      expect(html).toContain('data-component="logo-marquee"')
+      expect(html).toContain('ABB')
+
+      // Verifies CTA section
+      expect(html).toContain('Ready to Start Your')
+      expect(html).toContain('Next Project?')
+      expect(html).toContain('tel:+966573534185')
+    })
+
+    it('hides individual sections when their `enabled` checkbox is false', async () => {
+      const customHome = buildSampleHomePage()
+      customHome.whoWeAre = { ...customHome.whoWeAre, enabled: false }
+      customHome.statsSection = { ...customHome.statsSection, enabled: false }
+      customHome.partners = { ...customHome.partners, enabled: false }
+      mockHomePage.mockResolvedValueOnce(customHome)
+
+      const element = await LocaleHomePage({
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      const html = renderToStaticMarkup(element)
+
+      expect(html).toContain('data-home-section="hero"')
+      expect(html).not.toContain('data-home-section="who-we-are"')
+      expect(html).toContain('data-home-section="core-services"')
+      expect(html).toContain('data-home-section="interactive-systems"')
+      expect(html).not.toContain('data-home-section="stats"')
+      expect(html).toContain('data-home-section="featured-projects"')
+      expect(html).not.toContain('data-home-section="partners"')
+      expect(html).toContain('data-home-section="cta"')
+    })
+
+    it('renders cleanly without crashing when CMS collections and globals are empty', async () => {
+      mockSiteSettings.mockResolvedValueOnce(null)
+      mockHomePage.mockResolvedValueOnce(null)
+      mockServices.mockResolvedValueOnce([])
+      mockStats.mockResolvedValueOnce([])
+      mockProjects.mockResolvedValue({
+        docs: [],
+        totalDocs: 0,
+        totalPages: 0,
+        page: 1,
+      })
+      mockBrands.mockResolvedValueOnce([])
+
+      const element = await LocaleHomePage({
+        params: Promise.resolve({ locale: 'ar' }),
+      })
+      const html = renderToStaticMarkup(element)
+      expect(html).toContain('data-page="home"')
+      expect(html).not.toContain('data-home-section="hero"')
+    })
+  })
+
+  describe('4. generateMetadata (`home-page.meta` + `site-settings.defaultSeo` fallback)', () => {
+    it('uses home-page.meta when populated and falls back to site-settings.defaultSeo when empty', async () => {
+      const metaWithHome = await generateMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      expect(metaWithHome.title).toEqual({
+        absolute: 'Al Jazira for Imdad Smart Co. — MEP & Smart Engineering',
+      })
+      expect(metaWithHome.description).toBe(
+        'Integrated MEP and smart engineering contracting in Riyadh, KSA.',
+      )
+      expect(metaWithHome.openGraph?.images).toEqual([
+        {
+          url: '/media/hero-city.png',
+          width: 1200,
+          height: 800,
+          alt: 'OG Image',
+        },
+      ])
+
+      const homeWithoutMeta = buildSampleHomePage()
+      homeWithoutMeta.meta = {}
+      mockHomePage.mockResolvedValueOnce(homeWithoutMeta)
+
+      const fallbackMeta = await generateMetadata({
+        params: Promise.resolve({ locale: 'ar' }),
+      })
+      expect(fallbackMeta.title).toEqual({ absolute: 'Default SEO Title' })
+      expect(fallbackMeta.description).toBe('Default SEO Description')
+    })
+  })
+
+  describe('5. CSS token discipline in Home & IntroSplash CSS modules', () => {
+    it('ensures every var(--*) referenced in page.module.css and IntroSplash.module.css is defined in tokens.css and contains zero raw hex/rgb literals', () => {
+      const tokensCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/styles/tokens.css'),
+        'utf8',
+      )
+      const definedVars = new Set<string>()
+      for (const match of tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/gi)) {
+        definedVars.add(match[1])
+      }
+
+      for (const relPath of [
+        'src/app/(frontend)/[locale]/page.module.css',
+        'src/components/IntroSplash.module.css',
+      ]) {
+        const cssContent = fs.readFileSync(path.resolve(process.cwd(), relPath), 'utf8')
+        const stripped = cssContent.replace(/\/\*[\s\S]*?\*\//g, '')
+        expect(stripped).not.toMatch(/#[0-9a-fA-F]{3,8}\b/)
+        expect(stripped).not.toMatch(/\brgba?\s*\(/i)
+
+        for (const match of stripped.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)) {
+          const varName = match[1]
+          expect(definedVars.has(varName), `${relPath} references undefined ${varName}`).toBe(true)
+        }
+      }
+    })
+  })
+})

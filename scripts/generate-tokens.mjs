@@ -260,24 +260,36 @@ export function buildTokensCss(tokens) {
   lines.push('    rgba(1, 16, 37, 0.15),')
   lines.push('    rgba(1, 16, 37, 0.9)')
   lines.push('  );')
-  lines.push(
-    '  --gradient-service-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.25) 0%, rgba(1, 16, 37, 0.92) 100%);',
-  )
-  lines.push(
-    '  --gradient-service-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.45) 0%, rgba(1, 16, 37, 0.96) 100%);',
-  )
-  lines.push(
-    '  --gradient-project-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.15) 0%, rgba(1, 16, 37, 0.92) 100%);',
-  )
-  lines.push(
-    '  --gradient-project-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.35) 0%, rgba(1, 16, 37, 0.96) 100%);',
-  )
-  lines.push(
-    '  --gradient-team-card-overlay: linear-gradient(to top, var(--navy-950) 0%, rgba(1, 16, 37, 0) 100%);',
-  )
-  lines.push(
-    '  --gradient-portrait-glow: radial-gradient(circle at center, rgba(223, 168, 42, 0.28) 0%, rgba(223, 168, 42, 0) 100%);',
-  )
+  lines.push('  --gradient-service-card-default: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.25) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.92) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-service-card-hover: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.45) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.96) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-project-card-default: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.15) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.92) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-project-card-hover: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.35) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.96) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-team-card-overlay: linear-gradient(')
+  lines.push('    to top,')
+  lines.push('    var(--navy-950) 0%,')
+  lines.push('    rgba(1, 16, 37, 0) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-portrait-glow: radial-gradient(')
+  lines.push('    circle at center,')
+  lines.push('    rgba(223, 168, 42, 0.28) 0%,')
+  lines.push('    rgba(223, 168, 42, 0) 100%')
+  lines.push('  );')
   lines.push(
     '  --gradient-gold-accent-line: linear-gradient(to right, var(--gold-500), var(--gold-300));',
   )
@@ -290,6 +302,38 @@ export function buildTokensCss(tokens) {
   lines.push(
     '  --gradient-footer: radial-gradient(50% 50% at 50% 50%, var(--navy-900) 0%, var(--navy-950) 100%);',
   )
+  lines.push('  --gradient-hero-overlay: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.75) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.6) 55%,')
+  lines.push('    rgba(1, 16, 37, 0.92) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-hero-gold-glow: radial-gradient(')
+  lines.push('    circle at center,')
+  lines.push('    rgba(223, 168, 42, 0.18) 0%,')
+  lines.push('    rgba(223, 168, 42, 0) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-intro-gold-glow: radial-gradient(')
+  lines.push('    circle at center,')
+  lines.push('    rgba(223, 168, 42, 0.22) 0%,')
+  lines.push('    rgba(223, 168, 42, 0) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-interactive-card: radial-gradient(')
+  lines.push('    50% 50% at 50% 50%,')
+  lines.push('    rgba(23, 43, 82, 1) 0%,')
+  lines.push('    rgba(12, 30, 59, 1) 50%,')
+  lines.push('    rgba(1, 16, 37, 1) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-stats-overlay: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.88) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.94) 100%')
+  lines.push('  );')
+  lines.push('  --gradient-cta-overlay: linear-gradient(')
+  lines.push('    to bottom,')
+  lines.push('    rgba(1, 16, 37, 0.9) 0%,')
+  lines.push('    rgba(1, 16, 37, 0.85) 100%')
+  lines.push('  );')
 
   lines.push('')
   lines.push('  /* === 4. Shadows (`design/tokens.json` -> `shadow`, CTO §15) === */')
@@ -303,6 +347,8 @@ export function buildTokensCss(tokens) {
   lines.push('  --shadow-team-card-hover: 0 26px 48px 0 rgba(1, 16, 37, 0.28);')
   lines.push('  --shadow-partner-tile-rest: 0 4px 6px rgba(1, 16, 37, 0.03);')
   lines.push('  --shadow-partner-tile-hover: 0 18px 18px rgba(1, 16, 37, 0.12);')
+  lines.push('  --shadow-who-image: 0 24px 50px 0 rgba(1, 16, 37, 0.18);')
+  lines.push('  --shadow-who-badge: 0 18px 20px 0 rgba(1, 16, 37, 0.16);')
 
   lines.push('')
   lines.push('  /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */')
@@ -311,6 +357,7 @@ export function buildTokensCss(tokens) {
     if (key.startsWith('$')) continue
     lines.push(`  ${toCssVarName(key, 'radius')}: ${cleanCssDimensionValue(val)};`)
   }
+  lines.push('  --radius-5xl: 24px;')
 
   lines.push('')
   lines.push('  /* === 6. Spacing Scale (`design/tokens.json` -> `spacing.scale`) === */')
@@ -375,9 +422,7 @@ export function buildTokensCss(tokens) {
   lines.push('/* Noto Kufi Arabic for all text, letter-spacing 0, line-height +10%. */')
   lines.push(":root[lang='ar'],")
   lines.push("[dir='rtl'] {")
-  lines.push(
-    '  --font-sans: var(--font-noto-kufi-arabic), sans-serif;',
-  )
+  lines.push('  --font-sans: var(--font-noto-kufi-arabic), sans-serif;')
   lines.push('  --font-lh-multiplier: 1.1;')
   for (const [styleName, styleDef] of Object.entries(typography)) {
     const { slug } = TYPOGRAPHY_STYLE_MAP[styleName]

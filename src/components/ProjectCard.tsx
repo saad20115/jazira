@@ -18,7 +18,9 @@ export interface ProjectCardProps {
   fallbackImageUrl?: string
   href?: string
   locale?: SupportedLocale
-  project: Pick<Project, 'title' | 'slug' | 'category' | 'location' | 'status' | 'coverImage'>
+  project: Pick<Project, 'title' | 'slug' | 'category' | 'location' | 'status' | 'coverImage'> & {
+    scopeSummary?: string | null
+  }
   state?: ProjectCardState
   statusLabel?: string
 }
@@ -41,17 +43,18 @@ export function ProjectCard({
 }: ProjectCardProps): ReactElement {
   const dict = getDictionary(locale)
   const resolvedHref = href ?? `/${locale}/projects/${project.slug}`
-  const resolvedCategoryLabel = categoryLabel ?? dict.cards.projectCategories[project.category]
+  const trimmedScopeSummary =
+    typeof project.scopeSummary === 'string' && project.scopeSummary.trim().length > 0
+      ? project.scopeSummary.trim()
+      : null
+  const resolvedCategoryLabel =
+    categoryLabel ?? trimmedScopeSummary ?? dict.cards.projectCategories[project.category]
   const resolvedStatusLabel = statusLabel ?? dict.cards.projectStatus[project.status]
   const resolvedCtaLabel = ctaLabel ?? dict.cards.viewProject
   const mediaAsset = resolveMediaAsset(project.coverImage, project.title, 'card')
   const imageSrc = mediaAsset?.url ?? fallbackImageUrl ?? null
 
-  const cardClasses = [
-    styles.card,
-    state === 'Hover' ? styles.stateHover : '',
-    className ?? '',
-  ]
+  const cardClasses = [styles.card, state === 'Hover' ? styles.stateHover : '', className ?? '']
     .filter(Boolean)
     .join(' ')
 

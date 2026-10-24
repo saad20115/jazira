@@ -64,16 +64,72 @@
     rgba(1, 16, 37, 0.15),
     rgba(1, 16, 37, 0.9)
   );
-  --gradient-service-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.25) 0%, rgba(1, 16, 37, 0.92) 100%);
-  --gradient-service-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.45) 0%, rgba(1, 16, 37, 0.96) 100%);
-  --gradient-project-card-default: linear-gradient(to bottom, rgba(1, 16, 37, 0.15) 0%, rgba(1, 16, 37, 0.92) 100%);
-  --gradient-project-card-hover: linear-gradient(to bottom, rgba(1, 16, 37, 0.35) 0%, rgba(1, 16, 37, 0.96) 100%);
-  --gradient-team-card-overlay: linear-gradient(to top, var(--navy-950) 0%, rgba(1, 16, 37, 0) 100%);
-  --gradient-portrait-glow: radial-gradient(circle at center, rgba(223, 168, 42, 0.28) 0%, rgba(223, 168, 42, 0) 100%);
+  --gradient-service-card-default: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.25) 0%,
+    rgba(1, 16, 37, 0.92) 100%
+  );
+  --gradient-service-card-hover: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.45) 0%,
+    rgba(1, 16, 37, 0.96) 100%
+  );
+  --gradient-project-card-default: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.15) 0%,
+    rgba(1, 16, 37, 0.92) 100%
+  );
+  --gradient-project-card-hover: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.35) 0%,
+    rgba(1, 16, 37, 0.96) 100%
+  );
+  --gradient-team-card-overlay: linear-gradient(
+    to top,
+    var(--navy-950) 0%,
+    rgba(1, 16, 37, 0) 100%
+  );
+  --gradient-portrait-glow: radial-gradient(
+    circle at center,
+    rgba(223, 168, 42, 0.28) 0%,
+    rgba(223, 168, 42, 0) 100%
+  );
   --gradient-gold-accent-line: linear-gradient(to right, var(--gold-500), var(--gold-300));
   --gradient-marquee-edge-fade: linear-gradient(to right, var(--surface), rgba(246, 248, 251, 0));
   --gradient-navy-panel: linear-gradient(to bottom, var(--navy-800), var(--navy-950));
   --gradient-footer: radial-gradient(50% 50% at 50% 50%, var(--navy-900) 0%, var(--navy-950) 100%);
+  --gradient-hero-overlay: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.75) 0%,
+    rgba(1, 16, 37, 0.6) 55%,
+    rgba(1, 16, 37, 0.92) 100%
+  );
+  --gradient-hero-gold-glow: radial-gradient(
+    circle at center,
+    rgba(223, 168, 42, 0.18) 0%,
+    rgba(223, 168, 42, 0) 100%
+  );
+  --gradient-intro-gold-glow: radial-gradient(
+    circle at center,
+    rgba(223, 168, 42, 0.22) 0%,
+    rgba(223, 168, 42, 0) 100%
+  );
+  --gradient-interactive-card: radial-gradient(
+    50% 50% at 50% 50%,
+    rgba(23, 43, 82, 1) 0%,
+    rgba(12, 30, 59, 1) 50%,
+    rgba(1, 16, 37, 1) 100%
+  );
+  --gradient-stats-overlay: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.88) 0%,
+    rgba(1, 16, 37, 0.94) 100%
+  );
+  --gradient-cta-overlay: linear-gradient(
+    to bottom,
+    rgba(1, 16, 37, 0.9) 0%,
+    rgba(1, 16, 37, 0.85) 100%
+  );
 
   /* === 4. Shadows (`design/tokens.json` -> `shadow`, CTO §15) === */
   --shadow-card-rest: 0 6px 8px rgba(1, 16, 37, 0.04);
@@ -91,6 +147,8 @@
   --shadow-team-card-hover: 0 26px 48px 0 rgba(1, 16, 37, 0.28);
   --shadow-partner-tile-rest: 0 4px 6px rgba(1, 16, 37, 0.03);
   --shadow-partner-tile-hover: 0 18px 18px rgba(1, 16, 37, 0.12);
+  --shadow-who-image: 0 24px 50px 0 rgba(1, 16, 37, 0.18);
+  --shadow-who-badge: 0 18px 20px 0 rgba(1, 16, 37, 0.16);
 
   /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */
   --radius-pill: 100px;
@@ -103,6 +161,7 @@
   --radius-3xl: 18px;
   --radius-4xl: 20px;
   --radius-fab: 30px;
+  --radius-5xl: 24px;
 
   /* === 6. Spacing Scale (`design/tokens.json` -> `spacing.scale`) === */
   --space-2: 2px;

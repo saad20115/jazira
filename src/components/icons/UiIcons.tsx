@@ -213,3 +213,67 @@ export function CloseIcon({ size = 22, ...svgProps }: UiIconProps): ReactElement
     </svg>
   )
 }
+
+export function CubeIcon({ size = 14, ...svgProps }: UiIconProps): ReactElement {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 14 14"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.4}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      data-icon="ui-cube"
+      {...svgProps}
+    >
+      <path d="M7 1.16667L12.25 4.08333V9.91667L7 12.8333L1.75 9.91667V4.08333L7 1.16667Z" />
+      <path d="M1.75 4.08333L7 7L12.25 4.08333M7 7V12.8333" />
+    </svg>
+  )
+}
+
+export function ArrowUpRightIcon({ size = 16, ...svgProps }: UiIconProps): ReactElement {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 16 16"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+      focusable="false"
+      data-directional-icon="true"
+      data-icon="ui-arrow-up-right"
+      {...svgProps}
+    >
+      <path d="M4.66667 11.3333L11.3333 4.66667M6 4.66667H11.3333V10" />
+    </svg>
+  )
+}
+
+export function CornerBracketIcon({ size = 80, ...svgProps }: UiIconProps): ReactElement {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 80 80"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      aria-hidden="true"
+      focusable="false"
+      data-directional-icon="true"
+      data-icon="ui-corner-bracket"
+      {...svgProps}
+    >
+      <path d="M2 80V14C2 7.37258 7.37258 2 14 2H80" />
+    </svg>
+  )
+}

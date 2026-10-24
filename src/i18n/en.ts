@@ -111,6 +111,11 @@ export const enDictionary = {
     bannerText: 'Live Preview Mode (unpublished draft content)',
     exitPreviewLabel: 'Exit Preview',
   },
+  home: {
+    scrollToExplore: 'Scroll to explore',
+    interactive3dBadge: '3D MODEL · LIVE VERSION AVAILABLE',
+    relatedProjectsHeading: 'Related projects',
+  },
   actions: {
     learnMore: 'Learn More',
     viewAll: 'View All',

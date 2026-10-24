@@ -52,9 +52,9 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-block: 6px;
-  padding-inline: 12px;
-  border-radius: var(--radius-pill);
+  padding-block: 8px;
+  padding-inline: 10px;
+  border-radius: var(--radius-sm);
   background-color: var(--surface);
   color: var(--navy-950);
   font-family: var(--font-sans);

@@ -1,130 +1,926 @@
-.heroShell {
-  min-block-size: var(--hero-height);
-  padding-block-start: calc(var(--navbar-height) + var(--section-padding-y));
-  padding-block-end: var(--section-padding-y);
-  background: var(--gradient-navy-panel);
-  color: var(--white);
+/*
+ * Home Page (`/[locale]`) styles (`handoff/tasks/P3-T4.md`, `design/context/01-home/01-hero.md`..`08-cta.md`).
+ * Uses CSS logical properties (`inline-size`, `block-size`, `padding-inline`, `padding-block`, `inset-inline-start`, etc.)
+ * and tokens from `src/styles/tokens.css`.
+ */
+
+.homePage {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: var(--space-48);
+  inline-size: 100%;
+  background-color: var(--white);
 }
 
-.topBar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-24);
-  padding-block-end: var(--space-24);
-  border-block-end: 1px solid var(--glass-border-white-16);
+.goldText {
+  color: var(--gold-500);
 }
 
-.brandBlock {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.companyName {
+.whiteText {
   color: var(--white);
 }
 
-.tagline {
-  color: var(--gold-300);
+.blockLine {
+  display: block;
 }
 
-.localeSwitch {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-8);
-  padding-block: var(--space-8);
-  padding-inline: var(--space-16);
-  background-color: var(--glass-white-8);
-  border: 1px solid var(--glass-border-white-28);
+.goldDivider {
+  inline-size: 52px;
+  block-size: 3px;
   border-radius: var(--radius-pill);
+  background-image: var(--gradient-gold-accent-line);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   1. Hero Section (`17:199`, `1440×864`)
+   ========================================================================== */
+
+.heroSection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  inline-size: 100%;
+  min-block-size: var(--hero-height);
+  padding-block-start: 200px;
+  padding-block-end: 90px;
+  padding-inline: var(--container-gutter);
+  background-color: var(--navy-950);
   color: var(--white);
-  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  overflow: hidden;
+  box-sizing: border-box;
 }
 
-.localeSwitch:hover {
-  border-color: var(--gold-500);
-  background-color: var(--gold-tint-15);
+.heroMediaLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
 }
 
-.heroCard {
-  padding-block: var(--space-48);
-  padding-inline: var(--space-40);
-  background-color: var(--glass-white-6);
-  border: 1px solid var(--glass-border-white-16);
+.heroBgMedia {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+  opacity: 0.45;
+  display: block;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-hero-overlay);
+}
+
+.heroGoldGlow {
+  position: absolute;
+  inset-block-start: 82px;
+  inset-inline: 0;
+  margin-inline: auto;
+  inline-size: 700px;
+  block-size: 700px;
+  border-radius: var(--radius-pill);
+  background-image: var(--gradient-hero-gold-glow);
+  pointer-events: none;
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-28);
+  inline-size: 100%;
+  max-inline-size: 1000px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.heroTitle {
+  margin: 0;
+  color: var(--white);
+  text-align: center;
+}
+
+.heroSubtitle {
+  margin: 0;
+  max-inline-size: 640px;
+  color: var(--white);
+  opacity: 0.82;
+  text-align: center;
+}
+
+.heroCtaGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  padding-block-start: var(--space-8);
+}
+
+.scrollHintButton {
+  position: relative;
+  z-index: 1;
+  margin-block-start: auto;
+  padding-block-start: var(--space-28);
+  padding-block-end: var(--space-4);
+  padding-inline: var(--space-16);
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  background: transparent;
+  border: 0;
+  color: var(--white);
+  cursor: pointer;
+  transition: opacity 180ms ease;
+}
+
+.scrollHintButton:hover {
+  opacity: 0.9;
+}
+
+.scrollHintButton:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.scrollHintLabel {
+  color: var(--white);
+  opacity: 0.55;
+}
+
+.scrollHintIcon {
+  display: inline-flex;
+  color: var(--gold-500);
+}
+
+/* ==========================================================================
+   2. Who We Are Section (`17:222`, `1440×628`)
+   ========================================================================== */
+
+.whoSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: 78px;
+  background-color: var(--white);
+  box-sizing: border-box;
+}
+
+.whoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-64);
+}
+
+.whoVisualCol {
+  position: relative;
+  inline-size: 560px;
+  block-size: 440px;
+  flex-shrink: 0;
+}
+
+.whoCornerBracket {
+  position: absolute;
+  inset-block-start: -12px;
+  inset-inline-start: -12px;
+  inline-size: 80px;
+  block-size: 80px;
+  color: var(--gold-500);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.whoPhotoWrap {
+  position: relative;
+  inline-size: 540px;
+  block-size: 410px;
   border-radius: var(--radius-3xl);
-  box-shadow: var(--shadow-panel-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-who-image);
+  background-color: var(--navy-900);
+}
+
+.whoPhoto {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.whoBadgeCard {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  z-index: 3;
+  inline-size: 240px;
+  padding-block: var(--space-20);
+  padding-inline: var(--space-24);
+  border-radius: var(--radius-xl);
+  background-color: var(--navy-950);
+  border: 1.5px solid var(--gold-500);
+  box-shadow: var(--shadow-who-badge);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+  box-sizing: border-box;
+}
+
+.whoBadgeNumber {
+  margin: 0;
+  color: var(--gold-500);
+}
+
+.whoBadgeLabel {
+  margin: 0;
+  color: var(--white);
+  opacity: 0.8;
+}
+
+.whoContentCol {
+  flex: 1 1 0;
+  min-inline-size: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-20);
 }
 
-.eyebrow {
+.whoTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.whoParagraph {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.whoButtonWrap {
+  padding-block-start: var(--space-8);
+}
+
+/* ==========================================================================
+   3. Core Services Section (`17:254`, `1440×764`)
+   ========================================================================== */
+
+.servicesSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--surface);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.servicesStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-40);
+  inline-size: 100%;
+}
+
+.splitSectionHead {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-40);
+  inline-size: 100%;
+  min-block-size: 150px;
+  box-sizing: border-box;
+}
+
+.splitHeadLeft {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  max-inline-size: 620px;
+}
+
+.sectionHeadingDark {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.servicesIntroText {
+  margin: 0;
+  inline-size: 380px;
+  max-inline-size: 100%;
+  color: var(--text-body);
+  flex-shrink: 0;
+}
+
+.carouselOuter {
+  inline-size: 100%;
+  max-inline-size: var(--frame-width);
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   4. Interactive Systems Section (`111:1608`, `1440×922`)
+   ========================================================================== */
+
+.interactiveSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--white);
+  box-sizing: border-box;
+}
+
+.interactiveStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+
+.interactiveIntroText {
+  margin: 0;
+  inline-size: 440px;
+  max-inline-size: 100%;
+  color: var(--text-body);
+  flex-shrink: 0;
+}
+
+.explorerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-40);
+  inline-size: 100%;
+  min-block-size: 580px;
+}
+
+.buildingCard {
+  position: relative;
+  inline-size: 600px;
+  block-size: 580px;
+  border-radius: var(--radius-5xl);
+  background-image: var(--gradient-interactive-card);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.buildingRender {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.liveModelBadge {
+  position: absolute;
+  inset-block-start: 22px;
+  inset-inline-start: 22px;
+  z-index: 2;
   display: inline-flex;
   align-items: center;
-  padding-block: var(--space-6);
+  gap: var(--space-8);
+  padding-block: var(--space-8);
   padding-inline: var(--space-14);
-  background-color: var(--gold-tint-15);
-  border: 1px solid var(--gold-500);
   border-radius: var(--radius-pill);
+  background-color: var(--overlay-navy-70);
+  border: 1px solid var(--gold-border-45);
   color: var(--gold-300);
 }
 
-.heroTitle {
-  color: var(--white);
-  max-inline-size: 22ch;
+.liveModelBadgeIcon {
+  display: inline-flex;
+  color: var(--gold-500);
+  flex-shrink: 0;
 }
 
-.heroSubtitle {
-  color: var(--text-muted);
-  max-inline-size: 64ch;
+.openModelButton {
+  position: absolute;
+  inset-block-end: 22px;
+  inset-inline-start: 22px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding-block: var(--space-12);
+  padding-inline: var(--space-20);
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  color: var(--navy-950);
+  box-shadow: var(--shadow-button-gold);
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
 }
 
-.ctaRow {
-  margin-block-start: var(--space-8);
+.openModelButton:hover {
+  background-color: var(--gold-300);
+  transform: translateY(-1px);
+}
+
+.openModelButton:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.accordionCol {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
+.interactiveAccordion {
+  gap: var(--space-12);
+}
+
+.interactiveAccordion :global([data-accordion-state='Expanded']) {
+  background-color: var(--surface);
+  border-color: var(--gold-300);
+  border-width: 1.2px;
+}
+
+.systemBodyStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.systemDescription {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.relatedProjectsRow {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-16);
+  gap: var(--space-8);
 }
 
-.primaryCta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding-block: var(--space-14);
-  padding-inline: var(--space-28);
-  background-color: var(--gold-500);
+.relatedProjectsLabel {
   color: var(--navy-950);
-  border-radius: var(--radius-sm);
-  box-shadow: var(--shadow-button-gold);
-  transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
-.primaryCta:hover {
-  background-color: var(--gold-300);
-  box-shadow: var(--shadow-button-gold-hover);
-}
-
-.secondaryCta {
+.relatedProjectLink {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding-block: var(--space-14);
-  padding-inline: var(--space-28);
-  background-color: var(--glass-white-8);
-  color: var(--white);
-  border: 1px solid var(--glass-border-white-28);
-  border-radius: var(--radius-sm);
-  transition: border-color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+  gap: var(--space-6);
+  padding-block: var(--space-4);
+  padding-inline: var(--space-10);
+  border-radius: var(--radius-pill);
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  color: var(--navy-950);
+  text-decoration: none;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
 }
 
-.secondaryCta:hover {
-  border-color: var(--gold-300);
+.relatedProjectLink:hover {
+  border-color: var(--gold-500);
+  color: var(--gold-700);
+}
+
+/* ==========================================================================
+   5. Trusted by Industry Leaders (`18:285`, `1440×425`)
+   ========================================================================== */
+
+.statsSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: 65px;
+  background-color: var(--navy-950);
+  color: var(--white);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.statsBgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.statsBgImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0.25;
+  display: block;
+}
+
+.statsBgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-stats-overlay);
+}
+
+.statsStack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-56);
+}
+
+.statsHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-14);
+  text-align: center;
+  min-block-size: 149px;
+}
+
+.statsTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.statsSubtitle {
+  margin: 0;
+  max-inline-size: 620px;
+  color: var(--white);
+  opacity: 0.72;
+}
+
+.statsRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  inline-size: 100%;
+  min-block-size: 90px;
+}
+
+.statItemGroup {
+  display: contents;
+}
+
+.statCol {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-8);
+  text-align: center;
+  padding-inline: var(--space-12);
+}
+
+.statNumber {
+  margin: 0;
+  color: var(--white);
+}
+
+.statSuffix {
+  color: var(--gold-500);
+}
+
+.statLabel {
+  margin: 0;
+  color: var(--white);
+  opacity: 0.65;
+}
+
+.statDivider {
+  inline-size: 1px;
+  block-size: 64px;
   background-color: var(--glass-white-14);
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   6. Featured Projects Section (`18:308`, `1440×1067`)
+   ========================================================================== */
+
+.projectsSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block-start: var(--section-padding-y);
+  padding-block-end: 70px;
+  background-color: var(--surface);
+  box-sizing: border-box;
+}
+
+.projectsStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-48);
+}
+
+.centeredSectionHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-12);
+  text-align: center;
+  min-block-size: 195px;
+}
+
+.centeredSectionIntro {
+  margin: 0;
+  max-inline-size: 620px;
+  color: var(--text-body);
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-24);
+  inline-size: 100%;
+}
+
+/* ==========================================================================
+   7. Trusted Partners Section (`18:579`, `1440×547`)
+   ========================================================================== */
+
+.partnersSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block-start: var(--section-padding-y);
+  padding-block-end: 65px;
+  background-color: var(--surface);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.partnersStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-40);
+  inline-size: 100%;
+}
+
+.partnersHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-12);
+  text-align: center;
+  min-block-size: 174px;
+}
+
+.marqueeOuter {
+  inline-size: 100%;
+  max-inline-size: var(--frame-width);
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   8. Call to Action Section (`18:660`, `1440×484`)
+   ========================================================================== */
+
+.ctaSection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: 484px;
+  padding-block: 83px;
+  padding-inline: var(--container-gutter);
+  background-color: var(--navy-950);
+  color: var(--white);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.ctaBgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ctaBgImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0.22;
+  display: block;
+}
+
+.ctaBgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-cta-overlay);
+}
+
+.ctaSquareTopStart,
+.ctaSquareBottomStart,
+.ctaSquareTopEnd,
+.ctaSquareBottomEnd {
+  position: absolute;
+  border: 1.2px solid var(--glass-border-white-22);
+  border-radius: var(--radius-xl);
+  transform: rotate(45deg);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ctaSquareTopStart {
+  inset-block-start: 40px;
+  inset-inline-start: 80px;
+  inline-size: 90px;
+  block-size: 90px;
+}
+
+.ctaSquareBottomStart {
+  inset-block-end: 47px;
+  inset-inline-start: 200px;
+  inline-size: 60px;
+  block-size: 60px;
+}
+
+.ctaSquareTopEnd {
+  inset-block-start: 50px;
+  inset-inline-end: 90px;
+  inline-size: 90px;
+  block-size: 90px;
+}
+
+.ctaSquareBottomEnd {
+  inset-block-end: 57px;
+  inset-inline-end: 210px;
+  inline-size: 60px;
+  block-size: 60px;
+}
+
+.ctaContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-24);
+  inline-size: 100%;
+  max-inline-size: 780px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.ctaTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.ctaSubtitle {
+  margin: 0;
+  max-inline-size: 560px;
+  color: var(--white);
+  opacity: 0.78;
+}
+
+.ctaButtonsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  padding-block-start: var(--space-6);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints (`768px–1279.98px` Tablet & `< 768px` Mobile)
+   ========================================================================== */
+
+@media (max-width: 1279.98px) {
+  .whoContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-40);
+  }
+
+  .whoVisualCol {
+    inline-size: 100%;
+    max-inline-size: 560px;
+    margin-inline: auto;
+  }
+
+  .whoPhotoWrap {
+    inline-size: calc(100% - 20px);
+  }
+
+  .splitSectionHead {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-16);
+    min-block-size: 0;
+  }
+
+  .servicesIntroText,
+  .interactiveIntroText {
+    inline-size: 100%;
+    max-inline-size: 620px;
+  }
+
+  .explorerRow {
+    flex-direction: column;
+    min-block-size: 0;
+  }
+
+  .buildingCard {
+    inline-size: 100%;
+    block-size: 440px;
+  }
+
+  .projectsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ctaSquareBottomStart,
+  .ctaSquareBottomEnd {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .heroSection {
+    min-block-size: 680px;
+    padding-block-start: 132px;
+    padding-block-end: 48px;
+  }
+
+  .heroGoldGlow {
+    inline-size: 360px;
+    block-size: 360px;
+  }
+
+  .whoSection {
+    padding-block: var(--section-padding-y);
+  }
+
+  .whoVisualCol {
+    block-size: auto;
+    padding-block-end: var(--space-32);
+  }
+
+  .whoPhotoWrap {
+    inline-size: 100%;
+    block-size: 300px;
+  }
+
+  .whoBadgeCard {
+    position: relative;
+    inset: auto;
+    margin-block-start: -36px;
+    margin-inline-start: auto;
+    inline-size: min(240px, 100%);
+  }
+
+  .buildingCard {
+    block-size: 360px;
+  }
+
+  .statsRow {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-28);
+  }
+
+  .statDivider {
+    display: none;
+  }
+
+  .projectsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .relatedProjectLink {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    padding-block: var(--space-10);
+    padding-inline: var(--space-14);
+  }
+
+  .ctaSection {
+    min-block-size: 0;
+    padding-block: var(--space-56);
+  }
+
+  .ctaSquareTopStart,
+  .ctaSquareTopEnd {
+    display: none;
+  }
 }

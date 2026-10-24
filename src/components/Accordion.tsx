@@ -61,11 +61,7 @@ export function AccordionItem({
     onToggle?.(next)
   }
 
-  const itemClasses = [
-    styles.item,
-    isExpanded ? styles.itemExpanded : '',
-    className ?? '',
-  ]
+  const itemClasses = [styles.item, isExpanded ? styles.itemExpanded : '', className ?? '']
     .filter(Boolean)
     .join(' ')
 
@@ -122,20 +118,42 @@ export interface AccordionEntry {
 
 export interface AccordionProps {
   className?: string
+  defaultExpandedIndex?: number
   items: readonly AccordionEntry[]
   locale: SupportedLocale
+  onExpandedIndexChange?: (nextIndex: number | null) => void
+  singleExpand?: boolean
 }
 
 export function Accordion({
   locale,
   items,
   className,
+  singleExpand = false,
+  defaultExpandedIndex,
+  onExpandedIndexChange,
 }: AccordionProps): ReactElement {
+  const initialSingleIndex = (() => {
+    if (defaultExpandedIndex !== undefined) {
+      return defaultExpandedIndex
+    }
+    const foundIdx = items.findIndex((item) => item.defaultExpanded)
+    return foundIdx >= 0 ? foundIdx : 0
+  })()
+
+  const [activeIndex, setActiveIndex] = useState<number | null>(initialSingleIndex)
+
   const listClasses = [styles.accordionList, className ?? ''].filter(Boolean).join(' ')
   return (
     <div className={listClasses} data-component="accordion">
       {items.map((entry, idx) => {
         const badge = entry.numberBadge ?? String(idx + 1).padStart(2, '0')
+        const controlledState: AccordionItemState | undefined = singleExpand
+          ? activeIndex === idx
+            ? 'Expanded'
+            : 'Collapsed'
+          : undefined
+
         return (
           <AccordionItem
             body={entry.body}
@@ -144,6 +162,16 @@ export function Accordion({
             key={entry.id ?? `${badge}-${entry.title}`}
             locale={locale}
             numberBadge={badge}
+            onToggle={
+              singleExpand
+                ? (nextExpanded) => {
+                    const nextIdx = nextExpanded ? idx : null
+                    setActiveIndex(nextIdx)
+                    onExpandedIndexChange?.(nextIdx)
+                  }
+                : undefined
+            }
+            state={controlledState}
             title={entry.title}
           />
         )
