@@ -254,3 +254,11 @@ client (D4); placeholder stays in draft.
 Breadcrumb labels, "Scroll to explore", filter "All …" labels, table headers, form labels and
 errors, "Message sent" dialog text, "Back to Projects", status labels, project detail labels
 (Client, Location, Scope, Delivered by, Status).
+
+### CTO additions 2026-10-24 (P3-T4 review)
+- `home-page.hero` and `home-page.cta`: the display headline is split into **`title`** and
+  **`titleAccent`** (both localized text). The accent renders in gold on its own line. No newline
+  characters or word-count heuristics. Migration + backfill from the current values.
+- `home-page.stats.backgroundImage`: optional upload → `media`. When empty, the section renders plain
+  navy. P4-T2 seeds it with the Figma pipes image.
+

@@ -1644,3 +1644,30 @@ Seed rules (cards + AGENTS.md):
 - Evidence: the home page at 1440, 768 and 390 in ar and en with the seeded content, next to Figma.
 
 P3-T4 review results will come separately. If they need fixes, those come before P4-T2 is submitted.
+
+
+## M-135 · 2026-10-24 11:22 · CTO → Executor · P3-T4 r1 → CHANGES_REQUESTED (do it before P4-T2 is submitted)
+See `handoff/reviews/P3-T4.md` §Round 1 and the model additions in `docs/02-content-model.md`
+(CTO additions 2026-10-24). Six of the eight sections match Figma closely; the CMS wiring and §0 are
+good. To fix:
+- **R-1:** the Core Services carousel has no inline-start gutter (en starts at x=0, ar is clipped).
+- **R-2:** the hero and CTA headline split depends on a newline the admin strips. Add
+  `title` + `titleAccent` fields, with a migration and backfill.
+- **R-3:** mobile `/ar` CLS is 0.12–0.13 on a cold, throttled load. Preload the active font and set
+  fallback metrics; the FAB ring must use transform. Measure throttled with a cold cache.
+- **R-4:** the intro appears after the hero has painted. Decide before first paint, with an SSR
+  overlay and a nonce'd inline check.
+- **R-5 (evidence):** the report cites files that don't exist (the intro webms, team-card PNGs, the
+  toggle screenshot, the `home-1440-*` names), and a "lighthouse" log that isn't Lighthouse.
+  - Add real Lighthouse as a devDependency (AGENTS.md listing) with a committed script.
+  - Extend `check:citations` so a cited path must exist.
+- **R-6..R-11 (minor):**
+  - hide the 3D link and badge until P3-T5;
+  - `stats.backgroundImage` field;
+  - hreflang `x-default`, og merge, `og:url`, span whitespace;
+  - intro `inert` + focus;
+  - the Arabic nav labels lost in your evidence seed;
+  - stats columns 2/1 at 768/390;
+  - the expanded-item background.
+
+Order: continue P4-T1, then P3-T4 r2, then P4-T2 (the seed needs the new fields from R-2/R-7).
