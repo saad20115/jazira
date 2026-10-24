@@ -70,7 +70,7 @@
 
 .itemExpanded .badge {
   background-color: var(--gold-50);
-  color: var(--gold-700);
+  color: var(--navy-950);
 }
 
 .title {
@@ -96,6 +96,12 @@
   line-height: var(--t-body-s-lh);
   letter-spacing: var(--t-body-s-ls);
   color: var(--gold-700);
+}
+
+@media (max-width: 1023px) {
+  .headerButton {
+    min-block-size: 44px;
+  }
 }
 
 @media (max-width: 639px) {

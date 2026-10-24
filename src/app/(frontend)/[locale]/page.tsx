@@ -174,12 +174,26 @@ export function splitAccentHeadingParts(
   }
 
   const words = trimmed.split(/\s+/)
-  if (words.length < 4) {
+  if (words.length < 2) {
     return { before: trimmed, accent: null, after: '' }
+  }
+  if (words.length === 2) {
+    return {
+      before: `${words[0] ?? ''} `,
+      accent: words[1] ?? null,
+      after: '',
+    }
+  }
+  if (words.length === 3) {
+    return {
+      before: `${words[0] ?? ''} `,
+      accent: words.slice(1).join(' '),
+      after: '',
+    }
   }
 
   if (mode === 'who') {
-    const splitAt = Math.max(1, words.length - 3)
+    const splitAt = words.length === 4 ? 2 : Math.max(1, words.length - 3)
     return {
       before: `${words.slice(0, splitAt).join(' ')} `,
       accent: words.slice(splitAt).join(' '),
@@ -197,6 +211,14 @@ export function splitAccentHeadingParts(
         after: '',
       }
     }
+    if (words.length >= 6) {
+      const splitAt = words.length - 3
+      return {
+        before: `${words.slice(0, splitAt).join(' ')} `,
+        accent: words.slice(splitAt).join(' '),
+        after: '',
+      }
+    }
     return {
       before: `${words[0] ?? ''} `,
       accent: words.slice(1, -1).join(' '),
@@ -205,6 +227,14 @@ export function splitAccentHeadingParts(
   }
 
   if (mode === 'interactive') {
+    const commaMatch = /^([^,،]+[,،])\s*(.+)$/.exec(trimmed)
+    if (commaMatch && commaMatch[1] && commaMatch[2]) {
+      return {
+        before: `${commaMatch[1]} `,
+        accent: commaMatch[2],
+        after: '',
+      }
+    }
     const splitAt = Math.min(3, words.length - 1)
     return {
       before: `${words.slice(0, splitAt).join(' ')} `,
@@ -337,33 +367,20 @@ export default async function LocaleHomePage({
 
   const dict = getDictionary(locale)
 
-  const [
-    siteSettings,
-    homePage,
-    mainServices,
-    allStats,
-    featuredProjectsResult,
-    allProjectsResult,
-    marqueeBrands,
-  ] = await Promise.all([
-    getSiteSettings(locale).catch(() => null),
-    getHomePage(locale).catch(() => null),
-    getServices(locale, { tier: 'main' }).catch(() => []),
-    getStats(locale).catch(() => []),
-    getProjects(locale, { featuredOnly: true, limit: 6 }).catch(() => ({
-      docs: [] as Project[],
-      totalDocs: 0,
-      totalPages: 0,
-      page: 1,
-    })),
-    getProjects(locale, { limit: 24 }).catch(() => ({
-      docs: [] as Project[],
-      totalDocs: 0,
-      totalPages: 0,
-      page: 1,
-    })),
-    getBrands(locale, { marqueeOnly: true }).catch(() => []),
-  ])
+  const [siteSettings, homePage, mainServices, allStats, featuredProjectsResult, marqueeBrands] =
+    await Promise.all([
+      getSiteSettings(locale).catch(() => null),
+      getHomePage(locale).catch(() => null),
+      getServices(locale, { tier: 'main' }).catch(() => []),
+      getStats(locale).catch(() => []),
+      getProjects(locale, { featuredOnly: true, limit: 6 }).catch(() => ({
+        docs: [] as Project[],
+        totalDocs: 0,
+        totalPages: 0,
+        page: 1,
+      })),
+      getBrands(locale, { marqueeOnly: true }).catch(() => []),
+    ])
 
   const companyName = siteSettings?.companyName || null
   const tagline = siteSettings?.tagline || null
@@ -423,8 +440,6 @@ export default async function LocaleHomePage({
     'hero',
   )
   const interactiveSystemsList = interactiveSystems?.systems ?? []
-  const relatedProjectsLabel =
-    interactiveSystems?.relatedProjectsLabel?.trim() || dict.home.relatedProjectsHeading
   const liveModelLabel = interactiveSystems?.liveModelLabel?.trim() || dict.actions.openLive3dModel
   const hasInteractiveContent = Boolean(
     interactiveSystemsList.length > 0 && (interactiveTitle || interactiveHeroImage),
@@ -485,54 +500,18 @@ export default async function LocaleHomePage({
   const ctaBgImage = resolveMediaAsset(cta?.backgroundImage, ctaTitle ?? companyName ?? '', 'hero')
   const hasCtaContent = Boolean(ctaTitle || ctaText || ctaPrimaryLabel || ctaSecondaryLabel)
 
-  // Build Interactive Systems Accordion entries with discipline-matched related projects
-  const allProjectsPool =
-    allProjectsResult.docs.length > 0 ? allProjectsResult.docs : featuredProjectDocs
+  // Build Interactive Systems Accordion entries (`111:1608`)
   const accordionEntries: AccordionEntry[] = interactiveSystemsList.map(
     (
       sysItem: NonNullable<NonNullable<HomePage['interactiveSystems']>['systems']>[number],
       idx: number,
-    ) => {
-      const sysDisciplines = Array.isArray(sysItem.disciplines) ? sysItem.disciplines : []
-      const matchingProjects = allProjectsPool
-        .filter(
-          (proj) =>
-            Array.isArray(proj.scope) &&
-            proj.scope.some((scopeVal) => sysDisciplines.includes(scopeVal)),
-        )
-        .slice(0, 2)
-
-      return {
-        id: sysItem.id ?? `system-${String(idx + 1)}`,
-        numberBadge: String(idx + 1).padStart(2, '0'),
-        title: sysItem.title,
-        defaultExpanded: idx === 0,
-        body: (
-          <div className={styles.systemBodyStack}>
-            <p className={`${styles.systemDescription} t-body-m`}>{sysItem.text}</p>
-            {matchingProjects.length > 0 ? (
-              <div
-                className={styles.relatedProjectsRow}
-                data-system-related-projects={sysItem.shot}
-              >
-                <span className={`${styles.relatedProjectsLabel} t-caption-s`}>
-                  {relatedProjectsLabel}:
-                </span>
-                {matchingProjects.map((proj) => (
-                  <CmsLink
-                    className={`${styles.relatedProjectLink} t-caption-s`}
-                    href={`/${locale}/projects/${proj.slug}`}
-                    key={proj.slug}
-                  >
-                    <span>{proj.title}</span>
-                  </CmsLink>
-                ))}
-              </div>
-            ) : null}
-          </div>
-        ),
-      }
-    },
+    ) => ({
+      id: sysItem.id ?? `system-${String(idx + 1)}`,
+      numberBadge: String(idx + 1).padStart(2, '0'),
+      title: sysItem.title,
+      defaultExpanded: idx === 0,
+      body: <p className={`${styles.systemDescription} t-body-m`}>{sysItem.text}</p>,
+    }),
   )
 
   return (

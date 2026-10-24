@@ -516,12 +516,11 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(html).toContain('data-component="services-carousel"')
       expect(html).toContain('Electrical Contracting')
 
-      // Verifies Interactive Systems 3D card + 5 accordion items + discipline-matched related projects
+      // Verifies Interactive Systems 3D card + 5 accordion items
       expect(html).toContain('data-interactive-3d-card="true"')
       expect(html).toContain('3D MODEL · LIVE VERSION AVAILABLE')
-      expect(html).toContain('data-system-related-projects="hvac"')
-      expect(html).toContain('/en/projects/al-khalil-makkah')
-      expect(html).toContain('/en/projects/king-abdullah-tunnel')
+      expect(html).toContain('HVAC &amp; Chilled Water')
+      expect(html).toContain('Fire Fighting &amp; Fire Alarm')
 
       // Verifies Stats section
       expect(html).toContain('Trusted by Industry Leaders')

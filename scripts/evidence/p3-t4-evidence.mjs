@@ -188,59 +188,29 @@ async function seedHomePageData(baseUrl, token) {
       '3D Building Systems Overview',
       'نظرة عامة على أنظمة المبنى ثلاثية الأبعاد',
     ],
-    ['svc-electrical.png', 'Electrical Contracting', 'المقاولات الكهربائية'],
-    ['svc-hvac.png', 'HVAC & Mechanical Systems', 'التكييف والأنظمة الميكانيكية'],
-    ['svc-firefighting.png', 'Firefighting Systems', 'أنظمة مكافحة الحريق'],
-    ['svc-firealarm.png', 'Fire Alarm & Early Warning', 'أنظمة الإنذار المبكر عن الحريق'],
-    ['svc-lowcurrent.png', 'Low-Current & Smart Systems', 'التيار الخفيف والأنظمة الذكية'],
-    ['svc-plumbing.png', 'Plumbing & Sanitary Networks', 'السباكة والشبكات الصحية'],
-    ['svc-datacenter.png', 'Data Center Infrastructure', 'البنية التحتية لمراكز البيانات'],
-    ['svc-civil.png', 'General Contracting & Civil Works', 'المقاولات العامة والأعمال المدنية'],
-    ['proj-tower.png', 'Al Khalil Investment Project', 'مشروع الخليل الاستثماري'],
-    ['proj-tunnel.png', 'King Abdullah Road Tunnel — Exit 10', 'نفق طريق الملك عبدالله — مخرج 10'],
-    ['proj-datacenter.png', 'Riyadh Enterprise Data Center', 'مركز بيانات الأعمال بالرياض'],
-    ['proj-hospital.png', 'Specialized Medical Complex', 'المجمع الطبي التخصصي'],
-    ['proj-mall.png', 'Commercial Plaza & Retail Strip', 'البلازا التجارية والمجمع التجاري'],
-    [
-      'proj-warehouse.png',
-      'Cold-Storage & Logistics Hub',
-      'مركز المستودعات المبردة والخدمات اللوجستية',
-    ],
-    ['brand-abb.png', 'ABB', 'ABB'],
-    ['brand-schneider.png', 'Schneider Electric', 'Schneider Electric'],
-    ['brand-siemens.png', 'Siemens', 'Siemens'],
-    ['brand-legrand.png', 'Legrand', 'Legrand'],
-    ['brand-3m.png', '3M', '3M'],
-    ['brand-york.png', 'York', 'York'],
-    ['brand-gree.png', 'Gree', 'Gree'],
-    ['brand-daikin.png', 'Daikin', 'Daikin'],
-    ['brand-honeywell.png', 'Honeywell', 'Honeywell'],
-    ['brand-notifier.png', 'Notifier', 'Notifier'],
-    ['brand-simplex.png', 'Simplex', 'Simplex'],
-    ['brand-bosch.png', 'Bosch', 'Bosch'],
-    ['brand-hikvision.png', 'Hikvision', 'Hikvision'],
-    ['brand-cisco.png', 'Cisco', 'Cisco'],
-    ['brand-commscope.png', 'CommScope', 'CommScope'],
-    ['brand-panduit.png', 'Panduit', 'Panduit'],
-    ['brand-corning.png', 'Corning', 'Corning'],
-    ['brand-grohe.png', 'Grohe', 'Grohe'],
-    ['brand-Grundfos.png', 'Grundfos', 'Grundfos'],
+    ['proj-tower.png', 'Stella Hotel (32 Floors)', 'فندق ستيلا (32 طابقاً)'],
+    ['svc-smart.png', 'Smart Systems & Low Current', 'الأنظمة الذكية والتيار الخفيف'],
+    ['svc-mep.png', 'MEP Works & Infrastructure', 'الأعمال الكهروميكانيكية والبنية التحتية'],
+    ['svc-fire.png', 'Fire Fighting & Fire Alarm', 'أنظمة مكافحة الحريق والإنذار المبكر'],
+    ['bg-pipes.png', 'MEP Piping & Plant Room', 'شبكات الأنابيب وغرف الماكينات'],
+    ['header-office.png', 'Al Jazira Head Office', 'المقر الرئيسي لشركة الجزيرة'],
   ]
 
   const mediaIds = {}
   for (const [file, altEn, altAr] of mediaFiles) {
     const fullPath = path.join(imagesDir, file)
-    if (fs.existsSync(fullPath)) {
-      mediaIds[file] = await ensureMediaUploaded(baseUrl, token, fullPath, altEn, altAr)
+    if (!fs.existsSync(fullPath)) {
+      throw new Error(`Missing required design image: ${fullPath}`)
     }
+    mediaIds[file] = await ensureMediaUploaded(baseUrl, token, fullPath, altEn, altAr)
   }
 
-  // 1. Seed Stats (4 items)
+  // 1. Seed Stats (4 items matching design/copy/01-home.md `18:285` & `17:222`)
   const statsSpec = [
-    { order: 1, value: '9+', labelEn: 'Years of Experience', labelAr: 'عاماً من الخبرة' },
-    { order: 2, value: '30+', labelEn: 'Projects Delivered', labelAr: 'مشروعاً منجزاً' },
-    { order: 3, value: '120+', labelEn: 'Engineers & Technicians', labelAr: 'مهندساً وفنياً' },
-    { order: 4, value: '50+', labelEn: 'Partner Brands', labelAr: 'علامة تجارية شريكة' },
+    { order: 1, value: '45+', labelEn: 'Years of Experience', labelAr: 'عاماً من الخبرة' },
+    { order: 2, value: '100+', labelEn: 'Completed Projects', labelAr: 'مشروعاً منجزاً' },
+    { order: 3, value: '85%', labelEn: 'Self-Performed Work', labelAr: 'أعمال منفذة ذاتياً' },
+    { order: 4, value: '21+', labelEn: 'MEP Disciplines', labelAr: 'تخصصاً كهروميكانيكياً' },
   ]
   const statIds = []
   const existingStats = await apiRequest(baseUrl, token, '/api/stats?limit=20&sort=order')
@@ -273,103 +243,111 @@ async function seedHomePageData(baseUrl, token) {
     }
   }
 
-  // 2. Seed 8 Main Services
+  // 2. Seed 8 Main Services (`design/copy/01-home.md` `17:254`, tile 1 featured = gold, tiles 2..8 = white)
   const servicesSpec = [
     {
       order: 1,
-      slug: 'electrical-contracting',
-      icon: 'electrical',
-      image: 'svc-electrical.png',
-      titleEn: 'Electrical Contracting',
+      slug: 'hvac-ventilation-refrigeration',
+      icon: 'hvac',
+      featured: true,
+      image: 'svc-mep.png',
+      titleEn: 'HVAC, Ventilation & Refrigeration',
       shortEn:
-        'Complete MV/LV distribution, panels, cabling, lighting, earthing and lightning protection for commercial and industrial facilities.',
-      titleAr: 'المقاولات الكهربائية',
+        'Chilled water & VRF systems, ventilation, smoke management, staircase pressurization, cold rooms and central refrigeration.',
+      titleAr: 'التكييف والتهوية والتبريد',
       shortAr:
-        'توزيع متكامل للجهد المتوسط والمنخفض، اللوحات، الكابلات، الإنارة، التأريض والحماية من الصواعق للمنشآت التجارية والصناعية.',
+        'أنظمة المياه المبردة وVRF، التهوية، إدارة الدخان، تضغيط السلالم، غرف التبريد والتبريد المركزي.',
     },
     {
       order: 2,
-      slug: 'hvac-mechanical',
-      icon: 'hvac',
-      image: 'svc-hvac.png',
-      titleEn: 'HVAC & Mechanical Systems',
+      slug: 'fire-fighting-fire-alarm',
+      icon: 'fire',
+      featured: false,
+      image: 'svc-fire.png',
+      titleEn: 'Fire Fighting & Fire Alarm',
       shortEn:
-        'Chilled-water plants, AHUs/FCUs, VRF, ductwork, ventilation, smoke management and full testing, adjusting & balancing (TAB).',
-      titleAr: 'التكييف والأنظمة الميكانيكية',
+        'Fire pumps, sprinklers and hose systems, clean-agent suppression, fire detection & alarm, and fire stopping.',
+      titleAr: 'مكافحة الحريق والإنذار المبكر',
       shortAr:
-        'محطات المياه المبردة، وحدات مناولة الهواء، أنظمة VRF، مجاري الهواء، التهوية، سحب الدخان وأعمال الفحص والضبط والموازنة (TAB).',
+        'مضخات الحريق، شبكات الرش الآلي وصناديق الإطفاء، الإطفاء بالغازات النظيفة، وأنظمة الكشف والإنذار المبكر.',
     },
     {
       order: 3,
-      slug: 'firefighting-systems',
-      icon: 'fire',
-      image: 'svc-firefighting.png',
-      titleEn: 'Firefighting Systems',
+      slug: 'plumbing-water-drainage',
+      icon: 'plumbing',
+      featured: false,
+      image: 'svc-mep.png',
+      titleEn: 'Plumbing, Water & Drainage',
       shortEn:
-        'Civil Defense-compliant sprinkler networks, fire pumps, FM-200 / Novec clean-agent suppression, hose reels and foam systems.',
-      titleAr: 'أنظمة مكافحة الحريق',
+        'Water supply and booster sets, tanks, drainage and exhaust networks, and complete sanitary installations.',
+      titleAr: 'السباكة والمياه والصرف الصحي',
       shortAr:
-        'شبكات الرش الآلي المعتمدة من الدفاع المدني، مضخات الحريق، أنظمة الإطفاء بالغازات النظيفة FM-200 / Novec، وصناديق الإطفاء.',
+        'شبكات تغذية المياه ومضخات الرفع، الخزانات، شبكات الصرف والتهوية، وكافة التركيبات الصحية المتكاملة.',
     },
     {
       order: 4,
-      slug: 'fire-alarm-early-warning',
-      icon: 'fire',
-      image: 'svc-firealarm.png',
-      titleEn: 'Fire Alarm & Early Warning',
+      slug: 'electrical-power-distribution',
+      icon: 'electrical',
+      featured: false,
+      image: 'svc-mep.png',
+      titleEn: 'Electrical & Power Distribution',
       shortEn:
-        'Addressable and conventional detection, voice evacuation, aspirating smoke detection (VESDA) and BMS integration.',
-      titleAr: 'أنظمة الإنذار المبكر عن الحريق',
+        'Power distribution, small power and MV systems, lighting and cable networks — from main panel to final outlet.',
+      titleAr: 'الكهرباء وتوزيع الطاقة',
       shortAr:
-        'أنظمة الكشف المعنونة والتقليدية، الإخلاء الصوتي، الكشف المبكر عن الدخان (VESDA) والربط مع أنظمة إدارة المباني (BMS).',
+        'توزيع القوى الكهربائية، أنظمة الجهد المتوسط والمنخفض، شبكات الإنارة والكابلات — من اللوحة الرئيسية حتى المخرج النهائي.',
     },
     {
       order: 5,
-      slug: 'low-current-smart-systems',
+      slug: 'smart-systems-elv-security',
       icon: 'smart',
-      image: 'svc-lowcurrent.png',
-      titleEn: 'Low-Current & Smart Systems',
+      featured: false,
+      image: 'svc-smart.png',
+      titleEn: 'Smart Systems, ELV & Security',
       shortEn:
-        'Structured cabling, IP CCTV, access control, public address, audiovisual, nurse call and building management systems.',
-      titleAr: 'التيار الخفيف والأنظمة الذكية',
+        'Structured cabling, data centers & NOC rooms, CCTV, access control, sound & AV, queue management and BMS.',
+      titleAr: 'الأنظمة الذكية والتيار الخفيف والأمن',
       shortAr:
-        'الشبكات الهيكلية، كاميرات المراقبة الشبكية، التحكم في الدخول، النداء العام، الأنظمة المرئية والصوتية وأنظمة إدارة المباني.',
+        'الشبكات الهيكلية، مراكز البيانات وغرف التحكم، كاميرات المراقبة، التحكم في الدخول، الأنظمة الصوتية والمرئية وBMS.',
     },
     {
       order: 6,
-      slug: 'plumbing-sanitary',
-      icon: 'plumbing',
-      image: 'svc-plumbing.png',
-      titleEn: 'Plumbing & Sanitary Networks',
+      slug: 'general-contracting',
+      icon: 'contracting',
+      featured: false,
+      image: 'proj-tower.png',
+      titleEn: 'General Contracting',
       shortEn:
-        'Domestic water supply, booster pumps, drainage, storm water, solar/central water heating and sanitary fixtures.',
-      titleAr: 'السباكة والشبكات الصحية',
+        'New construction, project management from design to delivery, and upgrading of existing buildings.',
+      titleAr: 'المقاولات العامة',
       shortAr:
-        'شبكات تغذية المياه، مضخات الرفع، الصرف الصحي وتصريف مياه الأمطار، السخانات المركزية والشمسية والأدوات الصحية.',
+        'الإنشاءات الجديدة، إدارة المشاريع من التصميم حتى التسليم، وتطوير وتأهيل المباني القائمة.',
     },
     {
       order: 7,
-      slug: 'data-center-infrastructure',
-      icon: 'mep',
-      image: 'svc-datacenter.png',
-      titleEn: 'Data Center Infrastructure',
+      slug: 'mep-equipment-supply',
+      icon: 'supply',
+      featured: false,
+      image: 'svc-mep.png',
+      titleEn: 'MEP Equipment Supply',
       shortEn:
-        'Server rooms, raised floors, precision cooling, UPS & power distribution, structured fiber/copper cabling and environmental monitoring.',
-      titleAr: 'البنية التحتية لمراكز البيانات',
+        'Genuine equipment from our partner brands, with brand pricing, submittals and delivery to site.',
+      titleAr: 'توريد المعدات الكهروميكانيكية',
       shortAr:
-        'غرف الخوادم، الأرضيات المرفوعة، التبريد الدقيق، وحدات عدم انقطاع التيار (UPS)، كابلات الألياف والنحاس ومراقبة البيئة.',
+        'معدات أصلية من العلامات التجارية الشريكة لنا، مع التسعير المعتمد والاعتمادات الفنية والتوريد للموقع.',
     },
     {
       order: 8,
-      slug: 'general-contracting-civil',
-      icon: 'contracting',
-      image: 'svc-civil.png',
-      titleEn: 'General Contracting & Civil Works',
+      slug: 'testing-commissioning-maintenance',
+      icon: 'testing',
+      featured: false,
+      image: 'svc-mep.png',
+      titleEn: 'Testing, Commissioning & Maintenance',
       shortEn:
-        'Turnkey electromechanical fit-out, plant rooms, trenching, structural supports and architectural finishing tied to MEP scope.',
-      titleAr: 'المقاولات العامة والأعمال المدنية',
+        'Testing, adjusting & balancing, commissioning and handover — plus planned maintenance and upgrades.',
+      titleAr: 'الفحص والتشغيل والصيانة',
       shortAr:
-        'التجهيزات الكهروميكانيكية المتكاملة، غرف الماكينات، الحفريات، الدعامات الإنشائية والتشطيبات المعمارية المرتبطة بنطاق MEP.',
+        'أعمال الفحص والضبط والموازنة (TAB)، التشغيل التجريبي والتسليم — بالإضافة إلى الصيانة الدورية والتحديثات.',
     },
   ]
 
@@ -382,7 +360,7 @@ async function seedHomePageData(baseUrl, token) {
       slug: svc.slug,
       tier: 'main',
       order: svc.order,
-      featured: true,
+      featured: svc.featured,
       icon: svc.icon,
       shortDescription: svc.shortAr,
       image: heroImageId,
@@ -418,115 +396,113 @@ async function seedHomePageData(baseUrl, token) {
     }
   }
 
-  // 3. Seed 6 Featured Projects
+  // 3. Seed 6 Featured Projects (`design/context/01-home/06-featured-projects.md` `18:308`)
   const projectsSpec = [
     {
       order: 1,
-      slug: 'al-khalil-investment-makkah',
+      slug: 'princess-noura-university-pnu',
       category: 'low-current',
       scope: ['low-current', 'hvac'],
       status: 'completed',
-      image: 'proj-tower.png',
-      titleEn: 'Al Khalil Investment Project',
-      locationEn: 'Makkah — Ibrahim Al Khalil Rd.',
+      image: 'svc-smart.png',
+      titleEn: 'Princess Noura University (PNU)',
+      locationEn: 'Riyadh, KSA',
       scopeSummaryEn: 'LOW CURRENT SCS',
       summaryEn:
-        'Full low-current and structured cabling infrastructure across a landmark hospitality and commercial development in Makkah.',
-      titleAr: 'مشروع الخليل الاستثماري',
-      locationAr: 'مكة المكرمة — شارع إبراهيم الخليل',
+        'Structured cabling and low-current smart systems across Princess Noura University campus in Riyadh.',
+      titleAr: 'جامعة الأميرة نورة بنت عبدالرحمن',
+      locationAr: 'الرياض، السعودية',
       scopeSummaryAr: 'أنظمة التيار الخفيف والشبكات',
       summaryAr:
-        'تنفيذ كامل للبنية التحتية لأنظمة التيار الخفيف والشبكات الهيكلية في مشروع فندقي وتجاري بارز بمكة المكرمة.',
+        'تنفيذ شبكات التيار الخفيف والأنظمة الذكية والاتصالات في الحرم الجامعي لجامعة الأميرة نورة بالرياض.',
     },
     {
       order: 2,
-      slug: 'king-abdullah-tunnel-exit-10',
+      slug: 'sofitel-makkah-hotel',
       category: 'mep',
-      scope: ['hvac', 'fire-fighting', 'electrical'],
+      scope: ['mep', 'hvac', 'fire-fighting', 'plumbing', 'electrical'],
       status: 'completed',
-      image: 'proj-tunnel.png',
-      titleEn: 'King Abdullah Road Tunnel — Exit 10',
-      locationEn: 'Riyadh — King Abdullah Rd.',
+      image: 'about-team.png',
+      titleEn: 'Sofitel Makkah Hotel',
+      locationEn: 'Makkah, KSA',
       scopeSummaryEn: 'FULL MEP WORKS',
       summaryEn:
-        'Jet ventilation, firefighting networks, power distribution and monitoring systems for a major urban roadway tunnel.',
-      titleAr: 'نفق طريق الملك عبدالله — مخرج 10',
-      locationAr: 'الرياض — طريق الملك عبدالله',
+        'Complete mechanical, electrical, plumbing and firefighting works for Sofitel Makkah Hotel.',
+      titleAr: 'فندق سوفيتيل مكة',
+      locationAr: 'مكة المكرمة، السعودية',
       scopeSummaryAr: 'أعمال كهروميكانيكية متكاملة',
       summaryAr:
-        'أنظمة التهوية النفاثة، شبكات مكافحة الحريق، توزيع الطاقة وأنظمة المراقبة لنفق مروري رئيسي بالرياض.',
+        'تنفيذ متكامل للأعمال الميكانيكية والكهربائية والصحية وأنظمة مكافحة الحريق لفندق سوفيتيل مكة.',
     },
     {
       order: 3,
-      slug: 'enterprise-data-center-riyadh',
-      category: 'data-center',
-      scope: ['data-center', 'low-current', 'electrical'],
+      slug: 'stella-hotel-32-floors',
+      category: 'mep',
+      scope: ['mep', 'hvac', 'fire-fighting', 'plumbing', 'electrical'],
       status: 'in-progress',
-      image: 'proj-datacenter.png',
-      titleEn: 'Enterprise Data Center — Riyadh',
-      locationEn: 'Riyadh — North Business District',
-      scopeSummaryEn: 'DATA CENTER MEP',
-      summaryEn:
-        'Precision cooling, dual-bus UPS distribution, clean-agent suppression and high-density fiber backbone.',
-      titleAr: 'مركز بيانات الأعمال — الرياض',
-      locationAr: 'الرياض — حي الأعمال الشمالي',
-      scopeSummaryAr: 'تجهيز مراكز البيانات',
-      summaryAr:
-        'أنظمة التبريد الدقيق، توزيع الطاقة المزدوج UPS، الإطفاء بالغازات النظيفة وشبكات الألياف الضوئية عالية الكثافة.',
+      image: 'proj-tower.png',
+      titleEn: 'Stella Hotel (32 Floors)',
+      locationEn: 'Dubai, UAE',
+      scopeSummaryEn: 'FULL MEP WORKS',
+      summaryEn: 'Full-scope electromechanical package for a 32-storey luxury hospitality tower.',
+      titleAr: 'فندق ستيلا (32 طابقاً)',
+      locationAr: 'دبي، الإمارات',
+      scopeSummaryAr: 'أعمال كهروميكانيكية متكاملة',
+      summaryAr: 'حزمة الأعمال الكهروميكانيكية المتكاملة لبرج فندقي فاخر مكون من 32 طابقاً.',
     },
     {
       order: 4,
-      slug: 'specialized-medical-complex-riyadh',
-      category: 'mep',
-      scope: ['hvac', 'plumbing', 'fire-fighting', 'electrical'],
+      slug: 'roads-transport-authority-rta',
+      category: 'data-center',
+      scope: ['data-center', 'low-current', 'electrical', 'hvac'],
       status: 'completed',
-      image: 'proj-hospital.png',
-      titleEn: 'Specialized Medical Complex',
-      locationEn: 'Riyadh — Al Olaya',
-      scopeSummaryEn: 'HEALTHCARE MEP',
+      image: 'svc-smart.png',
+      titleEn: 'Roads & Transport Authority (RTA)',
+      locationEn: 'Dubai, UAE',
+      scopeSummaryEn: 'DATA CENTER MEP',
       summaryEn:
-        'Hygienic air handling, medical gas coordination, life-safety power and complete sanitary networks.',
-      titleAr: 'المجمع الطبي التخصصي',
-      locationAr: 'الرياض — العليا',
-      scopeSummaryAr: 'أنظمة كهروميكانيكية طبية',
+        'Mission-critical data center MEP, precision cooling, power distribution and structured cabling.',
+      titleAr: 'هيئة الطرق والمواصلات (RTA)',
+      locationAr: 'دبي، الإمارات',
+      scopeSummaryAr: 'تجهيز مراكز البيانات',
       summaryAr:
-        'وحدات مناولة الهواء الصحية، تنسيق الغازات الطبية، أنظمة طاقة الطوارئ والشبكات الصحية المتكاملة.',
+        'تجهيز البنية التحتية الكهروميكانيكية لمراكز البيانات والتبريد الدقيق وتوزيع الطاقة.',
     },
     {
       order: 5,
-      slug: 'commercial-plaza-retail-strip',
-      category: 'fire-fighting',
-      scope: ['fire-fighting', 'hvac', 'electrical'],
-      status: 'in-progress',
-      image: 'proj-mall.png',
-      titleEn: 'Commercial Plaza & Retail Strip',
-      locationEn: 'Riyadh — Al Narjis',
-      scopeSummaryEn: 'FIRE & HVAC',
+      slug: 'king-salman-oasis-of-science',
+      category: 'mep',
+      scope: ['mep', 'hvac', 'fire-fighting', 'plumbing', 'electrical'],
+      status: 'completed',
+      image: 'svc-mep.png',
+      titleEn: 'King Salman Oasis of Science',
+      locationEn: 'Riyadh, KSA',
+      scopeSummaryEn: 'FULL MEP WORKS',
       summaryEn:
-        'Civil Defense firefighting, smoke management, rooftop package HVAC and tenant power distribution.',
-      titleAr: 'البلازا التجارية والمجمع التجاري',
-      locationAr: 'الرياض — النرجس',
-      scopeSummaryAr: 'مكافحة الحريق والتكييف',
+        'Comprehensive MEP systems and smart building controls for King Salman Oasis of Science in Riyadh.',
+      titleAr: 'واحة الملك سلمان للعلوم',
+      locationAr: 'الرياض، السعودية',
+      scopeSummaryAr: 'أعمال كهروميكانيكية متكاملة',
       summaryAr:
-        'أنظمة مكافحة الحريق المعتمدة من الدفاع المدني، إدارة الدخان، وحدات التكييف المدمجة وتوزيع الطاقة للمتاجر.',
+        'تنفيذ الأنظمة الكهروميكانيكية الشاملة وأنظمة التحكم الذكي لواحة الملك سلمان للعلوم بالرياض.',
     },
     {
       order: 6,
-      slug: 'cold-storage-logistics-hub',
-      category: 'civil-mep',
-      scope: ['hvac', 'plumbing', 'civil'],
+      slug: 'al-maqam-towers-makkah',
+      category: 'mep',
+      scope: ['mep', 'hvac', 'fire-fighting', 'plumbing', 'electrical'],
       status: 'completed',
-      image: 'proj-warehouse.png',
-      titleEn: 'Cold-Storage & Logistics Hub',
-      locationEn: 'Riyadh — Al Kharj Industrial Rd.',
-      scopeSummaryEn: 'INDUSTRIAL MEP',
+      image: 'about-team.png',
+      titleEn: 'Al Maqam Towers (A, B, C, D)',
+      locationEn: 'Makkah, KSA',
+      scopeSummaryEn: 'FULL MEP WORKS',
       summaryEn:
-        'Industrial refrigeration, insulated plant rooms, high-bay LED lighting and ESFR sprinkler protection.',
-      titleAr: 'مركز المستودعات المبردة والخدمات اللوجستية',
-      locationAr: 'الرياض — طريق الخرج الصناعي',
-      scopeSummaryAr: 'أنظمة صناعية ومستودعات',
+        'Full MEP construction and life-safety systems across four high-rise towers in Makkah.',
+      titleAr: 'أبراج المقام (A, B, C, D)',
+      locationAr: 'مكة المكرمة، السعودية',
+      scopeSummaryAr: 'أعمال كهروميكانيكية متكاملة',
       summaryAr:
-        'التبريد الصناعي، غرف الماكينات المعزولة، إنارة المستودعات العالية وأنظمة الرش الآلي المبكر ESFR.',
+        'تنفيذ كامل للأعمال الكهروميكانيكية وأنظمة السلامة في أربعة أبراج عالية بمكة المكرمة.',
     },
   ]
 
@@ -580,79 +556,78 @@ async function seedHomePageData(baseUrl, token) {
     }
   }
 
-  // 4. Seed 20 Marquee Brands
+  // 4. Seed 20 Marquee Brands (`design/context/01-home/07-trusted-partners.md` `18:579`, wordmark + origin)
   const brandsSpec = [
-    ['ABB', 'brand-abb.png'],
-    ['Schneider Electric', 'brand-schneider.png'],
-    ['Siemens', 'brand-siemens.png'],
-    ['Legrand', 'brand-legrand.png'],
-    ['3M', 'brand-3m.png'],
-    ['York', 'brand-york.png'],
-    ['Gree', 'brand-gree.png'],
-    ['Daikin', 'brand-daikin.png'],
-    ['Honeywell', 'brand-honeywell.png'],
-    ['Notifier', 'brand-notifier.png'],
-    ['Simplex', 'brand-simplex.png'],
-    ['Bosch', 'brand-bosch.png'],
-    ['Hikvision', 'brand-hikvision.png'],
-    ['Cisco', 'brand-cisco.png'],
-    ['CommScope', 'brand-commscope.png'],
-    ['Panduit', 'brand-panduit.png'],
-    ['Corning', 'brand-corning.png'],
-    ['Grohe', 'brand-grohe.png'],
-    ['Grundfos', 'brand-Grundfos.png'],
-    ['Alfanar', 'brand-abb.png'],
+    ['Alfanar', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['Legrand', 'France', 'فرنسا'],
+    ['Belden', 'USA', 'الولايات المتحدة'],
+    ['CommScope', 'USA', 'الولايات المتحدة'],
+    ['Tridonic', 'Austria', 'النمسا'],
+    ['Eaton Cooper', 'USA', 'الولايات المتحدة'],
+    ['Tyco', 'USA', 'الولايات المتحدة'],
+    ['Grohe', 'Germany', 'ألمانيا'],
+    ['Ariston', 'Italy', 'إيطاليا'],
+    ['Watts', 'USA', 'الولايات المتحدة'],
+    ['Zamil', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['SKM', 'UAE', 'الإمارات العربية المتحدة'],
+    ['Systemair', 'Sweden', 'السويد'],
+    ['Hempel', 'Denmark', 'الدنمارك'],
+    ['Jazeera Paints', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['Saudi Ceramics', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['Tahweel', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['Bahra Cables', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['Al Rajhi Steel', 'Saudi Arabia', 'المملكة العربية السعودية'],
+    ['Obeikan Glass', 'Saudi Arabia', 'المملكة العربية السعودية'],
   ]
   const existingBrands = await apiRequest(baseUrl, token, '/api/brands?limit=50')
   for (let i = 0; i < brandsSpec.length; i++) {
-    const [name, imgFile] = brandsSpec[i]
+    const [name, originEn, originAr] = brandsSpec[i]
     const order = i + 1
-    const logoId = mediaIds[imgFile]
     const found = (existingBrands.docs || []).find((d) => d.name === name)
     if (found) {
       await apiRequest(baseUrl, token, `/api/brands/${found.id}`, {
         method: 'PATCH',
         locale: 'ar',
-        body: { name, logo: logoId, showInMarquee: true, order },
+        body: { name, origin: originAr, logo: null, showInMarquee: true, order },
       })
       await apiRequest(baseUrl, token, `/api/brands/${found.id}`, {
         method: 'PATCH',
         locale: 'en',
-        body: { name, logo: logoId, showInMarquee: true, order },
+        body: { name, origin: originEn, logo: null, showInMarquee: true, order },
       })
     } else {
       const created = await apiRequest(baseUrl, token, '/api/brands', {
         method: 'POST',
         locale: 'ar',
-        body: { name, logo: logoId, showInMarquee: true, order },
+        body: { name, origin: originAr, logo: null, showInMarquee: true, order },
       })
       await apiRequest(baseUrl, token, `/api/brands/${created.doc.id}`, {
         method: 'PATCH',
         locale: 'en',
-        body: { name },
+        body: { name, origin: originEn },
       })
     }
   }
 
-  // 5. Seed site-settings & navigation globals
+  // 5. Seed site-settings & navigation globals (`design/copy/01-home.md` & `overlays-and-intro.md`)
   await apiRequest(baseUrl, token, '/api/globals/site-settings', {
     method: 'POST',
     locale: 'ar',
     body: {
       companyName: 'شركة الجزيرة للإمداد الذكي',
-      tagline: 'حلول الأعمال الكهروميكانيكية والهندسة الذكية · الرياض، المملكة العربية السعودية',
+      tagline: 'مقاولات الأعمال الكهروميكانيكية · مكافحة الحريق · الأنظمة الذكية',
       footerText:
-        'شركة سعودية رائدة في المقاولات الكهروميكانيكية وأنظمة مكافحة الحريق والتيار الخفيف والحلول الهندسية الذكية في المملكة العربية السعودية.',
+        'شركة رائدة في مقاولات الأعمال الكهروميكانيكية في منطقة الخليج، نقدم حلولاً عالمية المستوى في الأنظمة الميكانيكية والكهربائية والصحية بخبرة تمتد لأكثر من 45 عاماً.',
       phone: '+966 57 353 4185',
-      email: 'info@aljazira-imdad.sa',
+      email: 'info@aljazira.co',
       whatsapp: '966573534185',
       whatsappLabel: 'تواصل معنا عبر واتساب',
-      address: 'حي السليمانية، الرياض، المملكة العربية السعودية',
+      address: '7676 بطحاء قريش، مكة المكرمة، المملكة العربية السعودية',
       copyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
       defaultSeo: {
         title: 'شركة الجزيرة للإمداد الذكي — المقاولات الكهروميكانيكية والأنظمة الذكية',
         description:
-          'مقاولات متكاملة للأعمال الكهروميكانيكية ومكافحة الحريق والتيار الخفيف والبنية التحتية الذكية في الرياض والمملكة العربية السعودية.',
+          'مقاولات متكاملة للأعمال الكهروميكانيكية ومكافحة الحريق والتيار الخفيف والبنية التحتية الذكية في المملكة العربية السعودية والخليج.',
         image: mediaIds['hero-city.png'],
       },
     },
@@ -662,16 +637,16 @@ async function seedHomePageData(baseUrl, token) {
     locale: 'en',
     body: {
       companyName: 'Al Jazira for Imdad Smart Co.',
-      tagline: 'MEP & Smart Engineering Solutions · Riyadh, KSA',
+      tagline: 'MEP CONTRACTING · FIREFIGHTING · SMART SYSTEMS',
       footerText:
-        'Riyadh-based electromechanical, firefighting, low-current and smart engineering contractor delivering precision execution across Saudi Arabia.',
+        'A leading MEP construction company in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over 45 years of experience.',
       whatsappLabel: 'Chat with us on WhatsApp',
-      address: 'Al Sulimaniyah Dist., Riyadh, Kingdom of Saudi Arabia',
-      copyright: '© 2026 Al Jazira for Imdad Smart Co. All rights reserved.',
+      address: '7676 Bathaa Quraish, Makkah Al-Mukarramah, KSA',
+      copyright: '© 2026 Al Jazira for Imdad Smart Company. All rights reserved.',
       defaultSeo: {
         title: 'Al Jazira for Imdad Smart Co. — MEP & Smart Engineering Contractors',
         description:
-          'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting across Saudi Arabia.',
+          'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting across Saudi Arabia and the Gulf region.',
         image: mediaIds['hero-city.png'],
       },
     },
@@ -682,9 +657,8 @@ async function seedHomePageData(baseUrl, token) {
     locale: 'ar',
     body: {
       header: [
-        { label: 'الرئيسية', link: { type: 'internal', internalRoute: '/' } },
-        { label: 'من نحن', link: { type: 'internal', internalRoute: '/about' } },
         { label: 'خدماتنا', link: { type: 'internal', internalRoute: '/services' } },
+        { label: 'من نحن', link: { type: 'internal', internalRoute: '/about' } },
         { label: 'مشاريعنا', link: { type: 'internal', internalRoute: '/projects' } },
         { label: 'تواصل معنا', link: { type: 'internal', internalRoute: '/contact' } },
       ],
@@ -697,22 +671,21 @@ async function seedHomePageData(baseUrl, token) {
           title: 'روابط سريعة',
           links: [
             { label: 'الرئيسية', link: { type: 'internal', internalRoute: '/' } },
-            { label: 'من نحن', link: { type: 'internal', internalRoute: '/about' } },
             { label: 'خدماتنا', link: { type: 'internal', internalRoute: '/services' } },
+            { label: 'من نحن', link: { type: 'internal', internalRoute: '/about' } },
             { label: 'مشاريعنا', link: { type: 'internal', internalRoute: '/projects' } },
             { label: 'تواصل معنا', link: { type: 'internal', internalRoute: '/contact' } },
-            { label: 'سياسة الخصوصية', link: { type: 'internal', internalRoute: '/privacy' } },
           ],
         },
       ],
       footerCta: {
         title: 'هل لديك مشروع قادم؟',
-        text: 'تواصل مع فريقنا الهندسي لدراسة نطاق مشروعك وتقديم عرض فني ومالي متكامل.',
+        text: 'أرسل لنا المخططات أو جداول الكميات (BOQ) وسيتواصل معك مهندسونا خلال يوم عمل واحد.',
         button: {
           label: 'اطلب عرض سعر',
           link: { type: 'internal', internalRoute: '/contact' },
         },
-        whatsappLabel: 'أو تحدث عبر واتساب ←',
+        whatsappLabel: 'تحدث عبر واتساب',
       },
     },
   })
@@ -721,11 +694,10 @@ async function seedHomePageData(baseUrl, token) {
     locale: 'en',
     body: {
       header: [
-        { label: 'Home', link: { type: 'internal', internalRoute: '/' } },
-        { label: 'About Us', link: { type: 'internal', internalRoute: '/about' } },
         { label: 'Services', link: { type: 'internal', internalRoute: '/services' } },
+        { label: 'About Us', link: { type: 'internal', internalRoute: '/about' } },
         { label: 'Projects', link: { type: 'internal', internalRoute: '/projects' } },
-        { label: 'Contact', link: { type: 'internal', internalRoute: '/contact' } },
+        { label: 'Contact Us', link: { type: 'internal', internalRoute: '/contact' } },
       ],
       headerCta: {
         label: 'Get a Quote',
@@ -736,35 +708,34 @@ async function seedHomePageData(baseUrl, token) {
           title: 'Quick Links',
           links: [
             { label: 'Home', link: { type: 'internal', internalRoute: '/' } },
-            { label: 'About Us', link: { type: 'internal', internalRoute: '/about' } },
             { label: 'Services', link: { type: 'internal', internalRoute: '/services' } },
+            { label: 'About Us', link: { type: 'internal', internalRoute: '/about' } },
             { label: 'Projects', link: { type: 'internal', internalRoute: '/projects' } },
             { label: 'Contact Us', link: { type: 'internal', internalRoute: '/contact' } },
-            { label: 'Privacy Policy', link: { type: 'internal', internalRoute: '/privacy' } },
           ],
         },
       ],
       footerCta: {
-        title: 'Have an Upcoming Project?',
-        text: 'Speak with our engineering team for a complete technical and commercial proposal.',
+        title: 'Have a project in mind?',
+        text: 'Send us your drawings or BOQ and our engineers will get back to you within one working day.',
         button: {
           label: 'Get a Quote',
           link: { type: 'internal', internalRoute: '/contact' },
         },
-        whatsappLabel: 'Or chat on WhatsApp →',
+        whatsappLabel: 'Chat on WhatsApp',
       },
     },
   })
 
-  // 6. Seed home-page global in ar and en
+  // 6. Seed home-page global in ar and en (`design/copy/01-home.md`)
   const homeAr = {
     _status: 'published',
     hero: {
       enabled: true,
-      eyebrow: 'مقاولو الأعمال الكهروميكانيكية والهندسة الذكية · الرياض، السعودية',
-      title: 'حلول هندسية ذكية\nللمشاريع الكبرى',
+      eyebrow: '+45 عاماً من التميز الهندسي',
+      title: 'نبني المستقبل\nبحلول هندسية ذكية',
       subtitle:
-        'مقاولات متكاملة للأعمال الكهروميكانيكية ومكافحة الحريق والتيار الخفيف والبنية التحتية الذكية — ننفذها بدقة والتزام كامل بمعايير السلامة والجودة في جميع أنحاء المملكة.',
+        'شركة الجزيرة للإمداد الذكي هي مقاول رائد للأعمال الكهروميكانيكية في منطقة الخليج، تقدم حلولاً عالمية المستوى في الأنظمة الميكانيكية والكهربائية والصحية بخبرة تمتد لأكثر من أربعة عقود.',
       background: mediaIds['hero-city.png'],
       primaryCta: {
         label: 'استكشف خدماتنا',
@@ -779,11 +750,11 @@ async function seedHomePageData(baseUrl, token) {
       enabled: true,
       badgeStat: statIds[0],
       eyebrow: 'من نحن',
-      title: 'شريك هندسي متكامل للأعمال الكهروميكانيكية قائم على الدقة',
+      title: 'التميز الهندسي\nمنذ عام 1979',
       text: makeLexical(
         [
-          'شركة الجزيرة للإمداد الذكي هي شركة هندسة ومقاولات مقرها الرياض متخصصة في الأنظمة الكهروميكانيكية ومكافحة الحريق والتيار الخفيف والأنظمة الذكية للمشاريع الحكومية والتجارية والصناعية.',
-          'من تنسيق التصميم ونمذجة BIM إلى التوريد والتركيب والفحص والتشغيل (T&C)، تدير فرقنا الهندسية كل تخصص تحت سقف واحد لتسليم المشاريع في موعدها ووفق أعلى الاشتراطات.',
+          'بخبرة تقارب خمسة عقود في أسواق الخليج، توسعت شركة الجزيرة للإمداد الذكي ونمت بخطى ثابتة، محققة أداءً استثنائياً ومكانة مرموقة كمقاول متخصص وموثوق للأعمال الكهروميكانيكية.',
+          'ننفذ حزم الأعمال الكهروميكانيكية الشاملة عبر مهندسينا وفنيينا الداخليين، مما يقلل الاعتماد على مقاولي الباطن ويضمن أعلى مستويات الجودة والخدمة والتسليم في الموعد المحدد.',
         ],
         'rtl',
       ),
@@ -795,10 +766,10 @@ async function seedHomePageData(baseUrl, token) {
     },
     coreServices: {
       enabled: true,
-      eyebrow: 'خدماتنا الأساسية',
-      title: 'تخصصات شاملة في الأعمال الكهروميكانيكية والمقاولات',
+      eyebrow: 'ماذا نقدم',
+      title: 'خدمات كهروميكانيكية وإنشائية متكاملة\nتحت عقد واحد',
       intro:
-        'ثمانية تخصصات هندسية متكاملة تنفذها كوادرنا المتخصصة — من شبكات الجهد المتوسط والمنخفض والتكييف إلى مكافحة الحريق ومراكز البيانات.',
+        'من تنسيق التصميم إلى الفحص والتشغيل التجريبي، يتم تنفيذ نحو 85% من كل حزمة كهروميكانيكية بواسطة مهندسينا وفنيينا — تقليل التداخلات، خفض المخاطر، وتسريع التسليم.',
       button: {
         label: 'عرض جميع الخدمات',
         link: { type: 'internal', internalRoute: '/services' },
@@ -806,10 +777,10 @@ async function seedHomePageData(baseUrl, token) {
     },
     interactiveSystems: {
       enabled: true,
-      eyebrow: 'الأنظمة التفاعلية',
-      title: 'استكشف كل نظام داخل المبنى',
+      eyebrow: 'تفاعلي',
+      title: 'كل نظام، فريق واحد مسؤول',
       intro:
-        'اضغط على أي تخصص لاستعراض كيفية تكامل أنظمتنا الكهروميكانيكية داخل المنشأة الحديثة — أو افتح النموذج التفاعلي ثلاثي الأبعاد.',
+        'اختر أي نظام لترى كيف نقوم بتصميمه وتركيبه وفحصه وتشغيله، من المبردات على السطح إلى مضخات الحريق في الطابق الأرضي.',
       heroImage: mediaIds['tower-render.png'],
       liveModelLabel: 'افتح النموذج ثلاثي الأبعاد المباشر',
       relatedProjectsLabel: 'مشاريع ذات صلة',
@@ -849,15 +820,15 @@ async function seedHomePageData(baseUrl, token) {
     statsSection: {
       enabled: true,
       title: 'ثقة رواد الصناعة والقطاعات الحيوية',
-      text: 'سجل حافل بالإنجاز في أهم القطاعات الحيوية بالمملكة — بدعم كوادرنا الهندسية المعتمدة وشركائنا العالميين.',
+      text: 'أرقامنا تتحدث عن نفسها — عقود من الحلول الكهروميكانيكية الموثوقة في جميع أنحاء منطقة الخليج.',
       stats: statIds,
     },
     featuredProjects: {
       enabled: true,
       eyebrow: 'سجل أعمالنا',
-      title: 'مشاريع رائدة في مختلف أنحاء المملكة',
+      title: 'مشاريع رائدة',
       intro:
-        'مختارات من المشاريع المنفذة والجارية التي تعكس قدراتنا في البنية التحتية والضيافة والمجمعات التجارية ومراكز البيانات.',
+        'مختارات من أبرز مشاريعنا في المقاولات الكهروميكانيكية والأنظمة الذكية في منطقة الخليج.',
       button: {
         label: 'استعراض جميع المشاريع',
         link: { type: 'internal', internalRoute: '/projects' },
@@ -866,14 +837,13 @@ async function seedHomePageData(baseUrl, token) {
     partners: {
       enabled: true,
       eyebrow: 'شركاء النجاح',
-      title: 'كبرى العلامات والمصنّعين العالميين الذين نعمل معهم',
-      intro:
-        'مقاول ومورّد معتمد لأبرز العلامات التجارية العالمية في أنظمة الكهرباء والتكييف ومكافحة الحريق والتيار الخفيف.',
+      title: 'شركاء النجاح',
+      intro: 'نتعاون مع أبرز العلامات التجارية العالمية لتقديم حلول بأعلى معايير الجودة.',
     },
     cta: {
       enabled: true,
-      title: 'هل أنت مستعد لبدء\nمشروعك القادم؟',
-      text: 'شاركنا نطاق مشروعك أو جداول الكميات (BOQ) — وسيقوم فريقنا الهندسي بإعداد عرض فني ومالي مفصل.',
+      title: 'هل أنت مستعد لبناء\nمشروعك القادم؟',
+      text: 'دع خبرتنا التي تمتد لأكثر من 45 عاماً في الأعمال الكهروميكانيكية تعمل لصالح مشروعك القادم. تواصل معنا للحصول على استشارة مجانية.',
       backgroundImage: mediaIds['proj-tower.png'],
       button: {
         label: 'تواصل معنا اليوم',
@@ -886,7 +856,7 @@ async function seedHomePageData(baseUrl, token) {
     meta: {
       title: 'شركة الجزيرة للإمداد الذكي — المقاولات الكهروميكانيكية والأنظمة الذكية',
       description:
-        'مقاولات متكاملة للأعمال الكهروميكانيكية ومكافحة الحريق والتيار الخفيف والبنية التحتية الذكية في الرياض والمملكة العربية السعودية.',
+        'مقاولات متكاملة للأعمال الكهروميكانيكية ومكافحة الحريق والتيار الخفيف والبنية التحتية الذكية في المملكة العربية السعودية والخليج.',
       image: mediaIds['hero-city.png'],
     },
   }
@@ -902,10 +872,10 @@ async function seedHomePageData(baseUrl, token) {
     _status: 'published',
     hero: {
       enabled: true,
-      eyebrow: 'MEP & SMART ENGINEERING CONTRACTORS · RIYADH, KSA',
-      title: 'Smart Engineering\nSolutions for Mega Projects',
+      eyebrow: '45+ Years of Engineering Excellence',
+      title: 'Building the Future\nwith Smart Solutions',
       subtitle:
-        'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting — delivered with precision, safety and on-schedule execution across Saudi Arabia.',
+        'Al Jazira for Imdad Smart Company is a leading MEP contractor in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over four decades of proven excellence.',
       background: mediaIds['hero-city.png'],
       primaryCta: {
         label: 'Explore Our Services',
@@ -919,12 +889,12 @@ async function seedHomePageData(baseUrl, token) {
     whoWeAre: {
       enabled: true,
       badgeStat: statIds[0],
-      eyebrow: 'WHO WE ARE',
-      title: 'An Integrated MEP Engineering Partner Built on Precision',
+      eyebrow: 'Who We Are',
+      title: 'Engineering Excellence Since 1979',
       text: makeLexical(
         [
-          'Al Jazira for Imdad Smart Co. is a Riyadh-based engineering and contracting company specializing in electromechanical systems, firefighting, low-current and smart building solutions for commercial, industrial and governmental developments.',
-          'From design coordination and BIM modeling to installation, testing and commissioning, our engineers and technicians manage every discipline under one roof — ensuring seamless integration and reliable handover.',
+          'With nearly five decades of expertise in Gulf markets, Al Jazira for Imdad Smart Company has rapidly expanded and grown from strength to strength, delivering exceptional performance and earning a reputation as a highly dependable specialist MEP contractor.',
+          'We deliver comprehensive MEP packages through our in-house engineers, minimizing reliance on subcontractors and ensuring better quality, service, and on-time delivery.',
         ],
         'ltr',
       ),
@@ -936,10 +906,10 @@ async function seedHomePageData(baseUrl, token) {
     },
     coreServices: {
       enabled: true,
-      eyebrow: 'CORE SERVICES',
-      title: 'Comprehensive MEP & Contracting Disciplines',
+      eyebrow: 'What we do',
+      title: 'Integrated MEP & construction services under one contract',
       intro:
-        'Eight integrated engineering capabilities delivered by our in-house teams — from high-voltage power and HVAC plants to smart ELV systems.',
+        'From design coordination to testing & commissioning, around 85% of every MEP package is delivered by our own engineers and technicians — fewer interfaces, lower risk, faster handover.',
       button: {
         label: 'View All Services',
         link: { type: 'internal', internalRoute: '/services' },
@@ -947,10 +917,10 @@ async function seedHomePageData(baseUrl, token) {
     },
     interactiveSystems: {
       enabled: true,
-      eyebrow: 'INTERACTIVE SYSTEMS',
-      title: 'Explore Every System Inside the Building',
+      eyebrow: 'Interactive',
+      title: 'Every system, one accountable team',
       intro:
-        'Click any discipline to inspect how our MEP systems work together inside a modern facility — or launch the live interactive 3D view.',
+        'Pick a system to see how we design, install, test and commission it, from rooftop chillers to the fire pumps at ground level.',
       heroImage: mediaIds['tower-render.png'],
       liveModelLabel: 'Open the live 3D model',
       relatedProjectsLabel: 'Related projects',
@@ -995,15 +965,15 @@ async function seedHomePageData(baseUrl, token) {
     statsSection: {
       enabled: true,
       title: 'Trusted by Industry Leaders',
-      text: 'Proven track record across Saudi Arabia’s most demanding sectors — backed by certified engineers and global manufacturer partnerships.',
+      text: 'Our numbers speak for themselves — decades of reliable MEP solutions across the Gulf region.',
       stats: statIds,
     },
     featuredProjects: {
       enabled: true,
-      eyebrow: 'OUR PORTFOLIO',
-      title: 'Landmark Projects Across the Kingdom',
+      eyebrow: 'Our Portfolio',
+      title: 'Featured Projects',
       intro:
-        'Selected engagements demonstrating our capability across infrastructure, hospitality, commercial complexes and mission-critical facilities.',
+        'A showcase of our most prestigious MEP construction and smart systems projects across the Gulf region.',
       button: {
         label: 'View All Projects',
         link: { type: 'internal', internalRoute: '/projects' },
@@ -1011,15 +981,14 @@ async function seedHomePageData(baseUrl, token) {
     },
     partners: {
       enabled: true,
-      eyebrow: 'TRUSTED PARTNERS',
-      title: 'Global Manufacturers We Work With',
-      intro:
-        'Certified installer and supply partner for leading international electrical, HVAC, firefighting and low-current brands.',
+      eyebrow: 'Trusted Partners',
+      title: 'Trusted Partners',
+      intro: 'We collaborate with world-leading brands to deliver the highest quality solutions.',
     },
     cta: {
       enabled: true,
-      title: 'Ready to Start Your\nNext Project?',
-      text: 'Share your project scope or BOQ with our engineering team — we will prepare a detailed technical and commercial proposal.',
+      title: 'Ready to Build\nYour Next Project?',
+      text: 'Let our 45+ years of MEP expertise work for your next construction or infrastructure project. Get in touch for a free consultation.',
       backgroundImage: mediaIds['proj-tower.png'],
       button: {
         label: 'Contact Us Today',
@@ -1032,7 +1001,7 @@ async function seedHomePageData(baseUrl, token) {
     meta: {
       title: 'Al Jazira for Imdad Smart Co. — MEP & Smart Engineering Contractors',
       description:
-        'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting across Saudi Arabia.',
+        'Full-scope electromechanical, firefighting, low-current and smart infrastructure contracting across Saudi Arabia and the Gulf region.',
       image: mediaIds['hero-city.png'],
     },
   }
@@ -1101,10 +1070,13 @@ export async function runP3T4Evidence({
   baseUrl = process.env.EVIDENCE_BASE_URL || 'http://localhost:3000',
   evidenceDir = path.resolve(process.cwd(), 'docs/evidence/P3-T4'),
   phase3Dir = path.resolve(process.cwd(), 'docs/evidence/phase-3'),
+  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1'),
+  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1'),
 } = {}) {
-  fs.mkdirSync(evidenceDir, { recursive: true })
-  fs.mkdirSync(phase3Dir, { recursive: true })
-  const destDirs = [evidenceDir, phase3Dir]
+  const destDirs = [evidenceDir, phase3Dir, reportsEvidenceDir, reportsPhase3Dir]
+  for (const d of destDirs) {
+    fs.mkdirSync(d, { recursive: true })
+  }
   const headerBlock = getRepoHeaderBlock()
 
   console.log(`[P3-T4 Evidence] Seeding CMS via Payload REST API at ${baseUrl}...`)
@@ -1393,11 +1365,15 @@ export async function runP3T4Evidence({
         clsReport[`${locale}-${vp.label}`] = clsVal
 
         if (vp.width === 1440) {
-          // Hide fixed navbar/fab temporarily when capturing individual section screenshots
-          // except for 01-hero? Actually in 01-hero.png Figma screenshot, Navbar is NOT inside 01-hero.png (`10-navbar.png` is separate).
-          await page.addStyleTag({
-            content:
-              '[data-component="navbar"], [data-component="whatsapp-fab"] { visibility: hidden !important; }',
+          // Hide fixed navbar/fab via CSSOM insertRule (100% CSP-safe; no inline <style> or style="")
+          await page.evaluate(() => {
+            const sheet = document.styleSheets[0]
+            if (sheet) {
+              sheet.insertRule(
+                '[data-component="navbar"], [data-component="whatsapp-fab"] { visibility: hidden !important; }',
+                sheet.cssRules.length,
+              )
+            }
           })
           await page.waitForTimeout(50)
 
@@ -1709,8 +1685,18 @@ if (
   const baseUrl = process.argv[2] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
   const evidenceDir = process.argv[3] || path.resolve(process.cwd(), 'docs/evidence/P3-T4')
   const phase3Dir = process.argv[4] || path.resolve(process.cwd(), 'docs/evidence/phase-3')
+  const reportsEvidenceDir =
+    process.argv[5] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1')
+  const reportsPhase3Dir =
+    process.argv[6] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1')
 
-  runP3T4Evidence({ baseUrl, evidenceDir, phase3Dir }).catch((err) => {
+  runP3T4Evidence({
+    baseUrl,
+    evidenceDir,
+    phase3Dir,
+    reportsEvidenceDir,
+    reportsPhase3Dir,
+  }).catch((err) => {
     console.error('[P3-T4 Evidence] ERROR:', err)
     process.exit(1)
   })
