@@ -436,3 +436,23 @@
   overflow: hidden;
 }
 
+@media (min-width: 1440px) {
+  .carouselFrame {
+    margin-inline: -16px;
+    padding-inline: 14px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .sectionCard {
+    padding-block: 24px;
+    padding-inline: 16px;
+  }
+
+  .cardsRow,
+  .carouselFrame {
+    padding-block: 16px;
+    padding-inline: 12px;
+  }
+}
+

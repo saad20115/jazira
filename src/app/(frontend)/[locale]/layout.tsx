@@ -184,9 +184,11 @@ async function LocaleShellHeader({
 
 async function LocaleShellFooter({
   locale,
+  activePathname,
   isDevSpecimenOrStyleguide,
 }: {
   locale: SupportedLocale
+  activePathname: string
   isDevSpecimenOrStyleguide: boolean
 }): Promise<React.JSX.Element | null> {
   if (isDevSpecimenOrStyleguide) {
@@ -229,6 +231,7 @@ async function LocaleShellFooter({
         }
         ctaTitle={navigation?.footerCta?.title}
         ctaWhatsappLabel={navigation?.footerCta?.whatsappLabel}
+        currentPath={activePathname}
         description={siteSettings?.footerText}
         emails={siteSettings?.email ? [siteSettings.email] : undefined}
         footerColumns={footerColumns}
@@ -293,9 +296,12 @@ export default async function LocaleRootLayout({
           activePathname={activePathname}
           isDevSpecimenOrStyleguide={isDevSpecimenOrStyleguide}
         />
-        <main id="main-content">{children}</main>
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
         <LocaleShellFooter
           locale={resolvedLocale}
+          activePathname={activePathname}
           isDevSpecimenOrStyleguide={isDevSpecimenOrStyleguide}
         />
       </body>

@@ -6,7 +6,7 @@ import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 
 /**
- * Self-contained machine-captured evidence generator for `P3-T2` (`R-1`..`R-12`, `M-107`,
+ * Self-contained machine-captured evidence generator for `P3-T2` (`R-1`..`R-19`, `M-107`, `M-120`,
  * `handoff/tasks/P3-T2.md`, `handoff/README.md` §"Machine-captured evidence", `docs/05-design.md` §19).
  *
  * Usage:
@@ -44,6 +44,51 @@ function computeContrastRatio(fgHex, bgHex) {
   const lighter = Math.max(l1, l2)
   const darker = Math.min(l1, l2)
   return Number(((lighter + 0.05) / (darker + 0.05)).toFixed(2))
+}
+
+/**
+ * Parses `src/styles/tokens.css` directly from disk and resolves hex values and `var(--*)` aliases (`R-18`).
+ */
+function loadTokensFromCss() {
+  const tokensPath = path.resolve(process.cwd(), 'src', 'styles', 'tokens.css')
+  const css = fs.readFileSync(tokensPath, 'utf8')
+  /** @type {Record<string, string>} */
+  const rawMap = {}
+  const declRegex = /(--[a-zA-Z0-9-]+)\s*:\s*([^;]+);/g
+  let match = declRegex.exec(css)
+  while (match !== null) {
+    const name = match[1].trim()
+    const val = match[2].trim()
+    if (!rawMap[name]) {
+      rawMap[name] = val
+    }
+    match = declRegex.exec(css)
+  }
+
+  /**
+   * @param {string} tokenName
+   * @returns {string}
+   */
+  function resolveHex(tokenName) {
+    let current = rawMap[tokenName]
+    let depth = 0
+    while (current && depth < 10) {
+      const hexMatch = current.match(/^#[0-9a-fA-F]{6}$/)
+      if (hexMatch) {
+        return hexMatch[0].toLowerCase()
+      }
+      const varMatch = current.match(/^var\((--[a-zA-Z0-9-]+)\)$/)
+      if (varMatch) {
+        current = rawMap[varMatch[1]]
+        depth += 1
+      } else {
+        break
+      }
+    }
+    throw new Error(`Could not resolve hex value for token ${tokenName} in ${tokensPath}`)
+  }
+
+  return { tokensPath, resolveHex }
 }
 
 const COMPONENT_SECTION_MAP = [
@@ -111,7 +156,7 @@ function copyToDirs(srcFile, destDirs) {
   }
 }
 
-async function runProd404Check(baseUrl, evidenceDir) {
+async function runProd404AndCspCheck(baseUrl, evidenceDir) {
   fs.mkdirSync(evidenceDir, { recursive: true })
   const headerBlock = getRepoHeaderBlock()
   const routes = ['/ar/styleguide', '/en/styleguide', '/ar/_specimen', '/en/_specimen']
@@ -145,6 +190,77 @@ async function runProd404Check(baseUrl, evidenceDir) {
     }
   }
 
+  // Unfiltered production browser check on /ar and /en (`R-2` / `M-119`)
+  const browser = await chromium.launch({ headless: true })
+  const prodBrowserRoutes = []
+  try {
+    for (const publicRoute of ['/ar', '/en']) {
+      const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+      const page = await context.newPage()
+      const consoleErrors = []
+      const pageErrors = []
+      const cspViolations = []
+
+      await page.addInitScript(() => {
+        window.__prodCspViolations = []
+        window.addEventListener('securitypolicyviolation', (e) => {
+          window.__prodCspViolations.push({
+            blockedURI: e.blockedURI,
+            violatedDirective: e.violatedDirective,
+            effectiveDirective: e.effectiveDirective,
+          })
+        })
+      })
+      page.on('console', (msg) => {
+        if (msg.type() === 'error') {
+          consoleErrors.push(msg.text())
+        }
+      })
+      page.on('pageerror', (err) => {
+        pageErrors.push(err.message || String(err))
+      })
+
+      const res = await page.goto(`${baseUrl}${publicRoute}`, {
+        waitUntil: 'networkidle',
+        timeout: 60000,
+      })
+      const recordedViolations = await page.evaluate(() => window.__prodCspViolations || [])
+      cspViolations.push(...recordedViolations)
+
+      prodBrowserRoutes.push({
+        route: publicRoute,
+        status: res ? res.status() : null,
+        consoleErrorsCount: consoleErrors.length,
+        pageErrorsCount: pageErrors.length,
+        cspViolationsCount: cspViolations.length,
+        consoleErrors,
+        pageErrors,
+        cspViolations,
+      })
+
+      logLines.push(`=== Browser Unfiltered CSP & Console Check: ${publicRoute} (next start) ===`)
+      logLines.push(`HTTPStatus: ${String(res ? res.status() : null)}`)
+      logLines.push(`ConsoleErrors (unfiltered): ${String(consoleErrors.length)}`)
+      logLines.push(`PageErrors (unfiltered): ${String(pageErrors.length)}`)
+      logLines.push(`CSPViolations (unfiltered): ${String(cspViolations.length)}`)
+      logLines.push('')
+
+      await context.close()
+
+      if (consoleErrors.length > 0 || pageErrors.length > 0 || cspViolations.length > 0) {
+        throw new Error(
+          `Production route ${publicRoute} had errors/CSP violations: ${JSON.stringify({
+            consoleErrors,
+            pageErrors,
+            cspViolations,
+          })}`,
+        )
+      }
+    }
+  } finally {
+    await browser.close()
+  }
+
   fs.writeFileSync(
     path.join(evidenceDir, 'styleguide-prod-404.log'),
     `${logLines.join('\n')}\n`,
@@ -152,110 +268,98 @@ async function runProd404Check(baseUrl, evidenceDir) {
   )
   fs.writeFileSync(
     path.join(evidenceDir, 'styleguide-prod-404.json'),
-    `${JSON.stringify({ baseUrl, generatedAt: new Date().toISOString(), results }, null, 2)}\n`,
+    `${JSON.stringify(
+      { baseUrl, generatedAt: new Date().toISOString(), results, prodBrowserRoutes },
+      null,
+      2,
+    )}\n`,
     'utf8',
   )
   process.stdout.write(
-    `[p3-t2-evidence] Verified /ar/styleguide and /en/styleguide return HTTP 404 on production server.\n`,
+    `[p3-t2-evidence] Verified /ar/styleguide & /en/styleguide return HTTP 404 and /ar & /en have 0 unfiltered CSP/console errors on production server.\n`,
   )
 }
 
 function writeContrastReport(evidenceDir, headerBlock) {
+  const { tokensPath, resolveHex } = loadTokensFromCss()
+
   const pairs = [
     {
       label: 'Small gold text on white (Accordion "Show details", ServiceTile "Learn more")',
       foregroundToken: '--gold-700',
-      foregroundHex: '#8a6410',
       backgroundToken: '--white',
-      backgroundHex: '#ffffff',
       minRequired: 4.5,
     },
     {
       label: 'Small gold text on surface (PartnerTile hover subtitle on surface)',
       foregroundToken: '--gold-700',
-      foregroundHex: '#8a6410',
       backgroundToken: '--surface',
-      backgroundHex: '#f6f8fb',
       minRequired: 4.5,
     },
     {
       label: 'Small gold text on gold-50 (Eyebrow Light, Accordion expanded badge)',
       foregroundToken: '--gold-700',
-      foregroundHex: '#8a6410',
       backgroundToken: '--gold-50',
-      backgroundHex: '#fbf4e3',
       minRequired: 4.5,
     },
     {
       label: 'Light-surface focus-visible ring on white',
       foregroundToken: '--navy-900',
-      foregroundHex: '#0b1a33',
       backgroundToken: '--white',
-      backgroundHex: '#ffffff',
       minRequired: 3.0,
     },
     {
       label: 'Light-surface focus-visible ring on surface',
       foregroundToken: '--navy-900',
-      foregroundHex: '#0b1a33',
       backgroundToken: '--surface',
-      backgroundHex: '#f6f8fb',
       minRequired: 3.0,
     },
     {
       label: 'Light-surface focus-visible ring on gold-50',
       foregroundToken: '--navy-900',
-      foregroundHex: '#0b1a33',
       backgroundToken: '--gold-50',
-      backgroundHex: '#fbf4e3',
       minRequired: 3.0,
     },
     {
       label: 'Dark-surface focus-visible ring & Eyebrow Dark text on navy-950',
       foregroundToken: '--gold-300',
-      foregroundHex: '#efcb76',
       backgroundToken: '--navy-950',
-      backgroundHex: '#011025',
       minRequired: 4.5,
     },
     {
       label: 'Dark-surface focus-visible ring on navy-900',
       foregroundToken: '--gold-300',
-      foregroundHex: '#efcb76',
       backgroundToken: '--navy-900',
-      backgroundHex: '#0b1a33',
       minRequired: 4.5,
     },
     {
       label: 'Gold Button text (--navy-950) on --gold-500 fill',
       foregroundToken: '--navy-950',
-      foregroundHex: '#011025',
       backgroundToken: '--gold-500',
-      backgroundHex: '#dfa82a',
       minRequired: 4.5,
     },
     {
       label: 'Body text (--text-body) on --white',
       foregroundToken: '--text-body',
-      foregroundHex: '#475467',
       backgroundToken: '--white',
-      backgroundHex: '#ffffff',
       minRequired: 4.5,
     },
   ].map((entry) => {
-    const ratio = computeContrastRatio(entry.foregroundHex, entry.backgroundHex)
+    const foregroundHex = resolveHex(entry.foregroundToken)
+    const backgroundHex = resolveHex(entry.backgroundToken)
+    const ratio = computeContrastRatio(foregroundHex, backgroundHex)
     const pass = ratio >= entry.minRequired
     if (!pass) {
       throw new Error(
         `Contrast check failed for ${entry.label}: ${String(ratio)}:1 < ${String(entry.minRequired)}:1`,
       )
     }
-    return { ...entry, ratio, pass }
+    return { ...entry, foregroundHex, backgroundHex, ratio, pass }
   })
 
   const lines = [
     headerBlock.trimEnd(),
-    '=== WCAG 2.1 Contrast Verification (docs/05-design.md §19, R-12) ===',
+    `=== WCAG 2.1 Contrast Verification (parsed from ${path.relative(process.cwd(), tokensPath)}, R-12, R-18) ===`,
     ...pairs.map(
       (p) =>
         `- [PASS] ${p.label}: ${p.foregroundToken} (${p.foregroundHex}) on ${p.backgroundToken} (${p.backgroundHex}) -> ${String(p.ratio)}:1 (required >= ${String(p.minRequired)}:1)`,
@@ -265,7 +369,7 @@ function writeContrastReport(evidenceDir, headerBlock) {
   fs.writeFileSync(path.join(evidenceDir, 'contrast-ratios.log'), `${lines.join('\n')}\n`, 'utf8')
   fs.writeFileSync(
     path.join(evidenceDir, 'contrast-ratios.json'),
-    `${JSON.stringify({ generatedAt: new Date().toISOString(), pairs }, null, 2)}\n`,
+    `${JSON.stringify({ generatedAt: new Date().toISOString(), sourceFile: 'src/styles/tokens.css', pairs }, null, 2)}\n`,
     'utf8',
   )
 }
@@ -282,7 +386,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
   try {
     const consoleAndCspRoutes = []
 
-    // 1. Styleguide 1440 screenshots (ar & en) + side-by-side component sheets
+    // 1. Styleguide 1440 screenshots (ar & en) + side-by-side component sheets + 2-column footer capture (`R-16`)
     for (const locale of ['ar', 'en']) {
       const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const page = await context.newPage()
@@ -322,31 +426,34 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       await page.screenshot({ path: fullScreenshotPath, fullPage: true })
       copyToDirs(fullScreenshotPath, outDirs)
 
+      // Capture 2-column Footer (`R-16`)
+      const footer2ColLocator = page.locator('[data-testid="styleguide-footer-2col"]').first()
+      await footer2ColLocator.scrollIntoViewIfNeeded()
+      const footer2ColPath = path.join(evidenceDir, `footer-2col-${locale}.png`)
+      await footer2ColLocator.screenshot({ path: footer2ColPath })
+      copyToDirs(footer2ColPath, outDirs)
+
       const cspViolations = await page.evaluate(() => window.__cspViolations || [])
-      const isNextDevRuntimeCspNoise = (text) =>
-        text.includes('eval() is not supported in this environment') ||
-        text.includes('Applying inline style violates the following Content Security Policy directive')
-      const appConsoleErrors = consoleMessages.filter(
-        (m) => m.type === 'error' && !isNextDevRuntimeCspNoise(m.text),
-      )
-      const appCspViolations = cspViolations.filter(
+      // Never filter style-src-attr or inline style attribute violations (`R-2` / `M-119`)
+      const styleSrcAttrViolations = cspViolations.filter(
         (v) =>
-          v.blockedURI !== 'eval' &&
-          v.effectiveDirective !== 'style-src-elem' &&
-          v.effectiveDirective !== 'style-src-attr' &&
-          v.effectiveDirective !== 'script-src-elem',
+          v.effectiveDirective === 'style-src-attr' || v.violatedDirective === 'style-src-attr',
+      )
+      const inlineStyleAttrConsoleErrors = consoleMessages.filter(
+        (m) =>
+          m.type === 'error' &&
+          m.text.includes('style-src-attr'),
       )
 
       consoleAndCspRoutes.push({
         route: `/${locale}/styleguide`,
         status: res ? res.status() : null,
-        consoleErrors: appConsoleErrors.length,
-        pageErrors: pageErrors.length,
-        cspViolations: appCspViolations.length,
-        devOverlayCspNoiseCount: consoleMessages.filter(
-          (m) => m.type === 'error' && isNextDevRuntimeCspNoise(m.text),
-        ).length,
-        appConsoleErrors,
+        styleSrcAttrViolationsCount: styleSrcAttrViolations.length,
+        inlineStyleAttrConsoleErrorsCount: inlineStyleAttrConsoleErrors.length,
+        pageErrorsCount: pageErrors.length,
+        rawCspViolationsCount: cspViolations.length,
+        rawCspViolations: cspViolations,
+        rawConsoleErrorCount: consoleMessages.filter((m) => m.type === 'error').length,
         consoleMessages,
       })
 
@@ -375,7 +482,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       await context.close()
     }
 
-    // 2. Navbar + mobile drawer at 1440 / 768 / 390 in ar and en (captured on /[locale]/styleguide where full preview nav items & CTA are rendered)
+    // 2. Navbar + mobile drawer at 1440 / 768 / 390 in ar and en
     const viewports = [
       { width: 1440, height: 900, hasDrawer: false },
       { width: 768, height: 1024, hasDrawer: true },
@@ -421,7 +528,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       }
     }
 
-    // 2b. Verify Figma geometry on /en/styleguide & /ar/styleguide at 1440 and /ar & /en Home overlay (`R-1`, `R-3`, `R-7`, `R-10`)
+    // 2b. Verify Figma geometry on /en/styleguide & /ar/styleguide at 1440 and /ar & /en Home overlay (`R-1`, `R-3`, `R-7`, `R-10`, `R-15`, `R-16`, `M-120`)
     const geoContext = await browser.newContext({ viewport: { width: 1440, height: 900 } })
     const geoPage = await geoContext.newPage()
     await geoPage.goto(`${baseUrl}/en`, { waitUntil: 'networkidle', timeout: 60000 })
@@ -445,6 +552,10 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       const topNav = document.querySelector('header[data-component="navbar"]')
       const desktopNav = topNav ? topNav.querySelector('nav') : null
       const navRect = desktopNav ? desktopNav.getBoundingClientRect() : null
+      const navLogo = topNav ? topNav.querySelector('[data-component="logo"]') : null
+      const navLogoRect = navLogo ? navLogo.getBoundingClientRect() : null
+      const navCta = topNav ? topNav.querySelector('[data-component="button"]') : null
+      const navCtaRect = navCta ? navCta.getBoundingClientRect() : null
 
       const footerEl = document.querySelector('footer[data-component="footer"]')
       const footerRect = footerEl ? footerEl.getBoundingClientRect() : null
@@ -456,19 +567,38 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       const headingEl = footerEl ? footerEl.querySelector('h2') : null
       const ctaTitleEl = footerEl ? footerEl.querySelector('[class*="ctaTitle"]') : null
       const ctaBodyEl = footerEl ? footerEl.querySelector('[class*="ctaBody"]') : null
+      const dividerEl = footerEl ? footerEl.querySelector('[class*="divider"]') : null
+      const langSwitcherEl = footerEl
+        ? footerEl.querySelector('[data-testid="footer-language-switcher"]')
+        : null
+
+      // 2-column footer (`R-16`)
+      const footer2ColWrapper = document.querySelector('[data-testid="styleguide-footer-2col"]')
+      const footer2ColContact = footer2ColWrapper
+        ? footer2ColWrapper.querySelector('[class*="contactColumn"]')
+        : null
+      const footer2ColContactRect = footer2ColContact
+        ? footer2ColContact.getBoundingClientRect()
+        : null
 
       const fLeft = footerRect ? footerRect.left : 0
+      const fTop = footerRect ? footerRect.top : 0
       const qlRect = quickLinksCol ? quickLinksCol.getBoundingClientRect() : null
       const ctRect = contactCol ? contactCol.getBoundingClientRect() : null
       const descRect = descEl ? descEl.getBoundingClientRect() : null
+      const dividerRect = dividerEl ? dividerEl.getBoundingClientRect() : null
       const hStyle = headingEl ? window.getComputedStyle(headingEl) : null
       const ctaTitleStyle = ctaTitleEl ? window.getComputedStyle(ctaTitleEl) : null
       const ctaBodyStyle = ctaBodyEl ? window.getComputedStyle(ctaBodyEl) : null
 
       return {
+        navbarLogoWidth: navLogoRect ? Math.round(navLogoRect.width) : null,
+        navbarLogoHeight: navLogoRect ? Math.round(navLogoRect.height) : null,
+        navbarCtaHeight: navCtaRect ? Math.round(navCtaRect.height) : null,
         navbarLinksLeft: navRect ? Math.round(navRect.left) : null,
         navbarLinksRight: navRect ? Math.round(navRect.right) : null,
         footerHeight: footerRect ? Math.round(footerRect.height) : null,
+        footerDividerY: dividerRect ? Math.round(dividerRect.top - fTop) : null,
         footerDescriptionWidth: descRect ? Math.round(descRect.width) : null,
         footerQuickLinksX: qlRect ? Math.round(qlRect.left - fLeft) : null,
         footerContactX: ctRect ? Math.round(ctRect.left - fLeft) : null,
@@ -478,6 +608,12 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         footerCtaTitleFontSize: ctaTitleStyle ? ctaTitleStyle.fontSize : null,
         footerCtaBodyFontSize: ctaBodyStyle ? ctaBodyStyle.fontSize : null,
         footerCtaBodyLineHeight: ctaBodyStyle ? ctaBodyStyle.lineHeight : null,
+        footerLanguageSwitcherHref: langSwitcherEl ? langSwitcherEl.getAttribute('href') : null,
+        footerLanguageSwitcherLang: langSwitcherEl ? langSwitcherEl.getAttribute('lang') : null,
+        footerLanguageSwitcherDir: langSwitcherEl ? langSwitcherEl.getAttribute('dir') : null,
+        footer2ColContactWidth: footer2ColContactRect
+          ? Math.round(footer2ColContactRect.width)
+          : null,
       }
     })
 
@@ -488,11 +624,21 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       const btn = pulseFab ? pulseFab.querySelector('a') : null
       const rRect = ring ? ring.getBoundingClientRect() : null
       const bRect = btn ? btn.getBoundingClientRect() : null
+      const footer2ColWrapper = document.querySelector('[data-testid="styleguide-footer-2col"]')
+      const footer2ColContact = footer2ColWrapper
+        ? footer2ColWrapper.querySelector('[class*="contactColumn"]')
+        : null
+      const footer2ColContactRect = footer2ColContact
+        ? footer2ColContact.getBoundingClientRect()
+        : null
       return {
         ringCenterX: rRect ? Math.round(rRect.left + rRect.width / 2) : null,
         ringCenterY: rRect ? Math.round(rRect.top + rRect.height / 2) : null,
         buttonCenterX: bRect ? Math.round(bRect.left + bRect.width / 2) : null,
         buttonCenterY: bRect ? Math.round(bRect.top + bRect.height / 2) : null,
+        arFooter2ColContactWidth: footer2ColContactRect
+          ? Math.round(footer2ColContactRect.width)
+          : null,
       }
     })
     await geoContext.close()
@@ -539,14 +685,18 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     )
     const geoLines = [
       headerBlock.trimEnd(),
-      '=== Figma Geometry, RTL FAB Centering & 390px Hit Target Verification (R-1, R-7, R-10) ===',
+      '=== Figma Geometry, RTL FAB Centering, 2-Column Footer & 390px Hit Target Verification (R-1..R-19, M-120) ===',
       `- Home Navbar Theme: ${String(homeMetrics.theme)} (expected Light), borderBottomWidth=${String(homeMetrics.borderBottomWidth)} (expected 0px)`,
       `- Home Navbar Overlay: navbar y=${String(homeMetrics.navTop)}..${String(homeMetrics.navBottom)}, <main> y=${String(homeMetrics.mainTop)} (expected 0)`,
+      `- Desktop Navbar Logo Size: ${String(styleguideEnMetrics.navbarLogoWidth)}x${String(styleguideEnMetrics.navbarLogoHeight)}px (expected 172x50px)`,
+      `- Desktop Navbar CTA Button Height: ${String(styleguideEnMetrics.navbarCtaHeight)}px (expected 44px)`,
       `- Desktop Navbar Links x-range at 1440px: ${String(styleguideEnMetrics.navbarLinksLeft)}–${String(styleguideEnMetrics.navbarLinksRight)} (centred around 720px)`,
       `- Footer Quick Links x=${String(styleguideEnMetrics.footerQuickLinksX)} (expected 508), Contact Info x=${String(styleguideEnMetrics.footerContactX)} (expected 716)`,
-      `- Footer Height=${String(styleguideEnMetrics.footerHeight)}px (expected 503px), Description Width=${String(styleguideEnMetrics.footerDescriptionWidth)}px (expected 300px)`,
+      `- Footer Height=${String(styleguideEnMetrics.footerHeight)}px (expected 503px), Divider y=${String(styleguideEnMetrics.footerDividerY)}px (expected ~388px), Description Width=${String(styleguideEnMetrics.footerDescriptionWidth)}px (expected 300px)`,
       `- Footer Column Heading: fontSize=${String(styleguideEnMetrics.footerHeadingFontSize)}, fontWeight=${String(styleguideEnMetrics.footerHeadingFontWeight)}, textTransform=${String(styleguideEnMetrics.footerHeadingTextTransform)}`,
       `- Footer CTA Title fontSize=${String(styleguideEnMetrics.footerCtaTitleFontSize)}, CTA Body=${String(styleguideEnMetrics.footerCtaBodyFontSize)}/${String(styleguideEnMetrics.footerCtaBodyLineHeight)}`,
+      `- Footer Bottom-Bar Language Switcher (R-15): href="${String(styleguideEnMetrics.footerLanguageSwitcherHref)}", lang="${String(styleguideEnMetrics.footerLanguageSwitcherLang)}", dir="${String(styleguideEnMetrics.footerLanguageSwitcherDir)}"`,
+      `- Footer 2-Column Layout Contact Width (R-16): EN=${String(styleguideEnMetrics.footer2ColContactWidth)}px, AR=${String(rtlFabMetrics.arFooter2ColContactWidth)}px (expected >= 220px)`,
       `- RTL WhatsApp FAB Pulse Ring Center: (${String(rtlFabMetrics.ringCenterX)}, ${String(rtlFabMetrics.ringCenterY)}) vs Button Center: (${String(rtlFabMetrics.buttonCenterX)}, ${String(rtlFabMetrics.buttonCenterY)})`,
       `- Mobile 390px Hit Targets: drawerLinkHeight=${String(mobileHitTargets.drawerLinkHeight)}px, socialButton=${String(mobileHitTargets.socialButtonWidth)}x${String(mobileHitTargets.socialButtonHeight)}px, footerQuickLinkHeight=${String(mobileHitTargets.footerQuickLinkHeight)}px`,
       '',
@@ -724,15 +874,19 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     )
 
     for (const r of consoleAndCspRoutes) {
-      if (r.consoleErrors > 0 || r.pageErrors > 0 || r.cspViolations > 0) {
+      if (
+        r.styleSrcAttrViolationsCount > 0 ||
+        r.inlineStyleAttrConsoleErrorsCount > 0 ||
+        r.pageErrorsCount > 0
+      ) {
         throw new Error(
-          `Styleguide route ${r.route} had errors: consoleErrors=${String(r.consoleErrors)}, pageErrors=${String(r.pageErrors)}, cspViolations=${String(r.cspViolations)}`,
+          `Styleguide route ${r.route} had inline style/page errors: styleSrcAttrViolations=${String(r.styleSrcAttrViolationsCount)}, inlineStyleAttrConsoleErrors=${String(r.inlineStyleAttrConsoleErrorsCount)}, pageErrors=${String(r.pageErrorsCount)}`,
         )
       }
     }
 
     process.stdout.write(
-      `[p3-t2-evidence] Completed dev styleguide screenshots, side-by-side sheets, responsive navbar/drawer captures, Figma geometry verification, contrast log, and keyboard walkthrough in ${evidenceDir}.\n`,
+      `[p3-t2-evidence] Completed dev styleguide screenshots, side-by-side sheets, 2-col footer screenshots, responsive navbar/drawer captures, Figma geometry verification, contrast log, and keyboard walkthrough in ${evidenceDir}.\n`,
     )
   } finally {
     await browser.close()
@@ -743,11 +897,11 @@ async function main() {
   const flags = new Set(process.argv.slice(2).filter((a) => a.startsWith('--')))
   const args = process.argv.slice(2).filter((a) => !a.startsWith('--'))
   const baseUrl = (args[0] || process.env.BASE_URL || 'http://localhost:3000').replace(/\/+$/, '')
-  const evidenceDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T2/r2')
-  const phase3Dir = path.resolve(process.cwd(), args[2] || 'docs/reports/phase-3/P3-T2')
+  const evidenceDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T2/r3')
+  const phase3Dir = path.resolve(process.cwd(), args[2] || 'docs/reports/phase-3/P3-T2/r3')
 
   if (flags.has('--prod')) {
-    await runProd404Check(baseUrl, evidenceDir)
+    await runProd404AndCspCheck(baseUrl, evidenceDir)
   } else {
     await runDevCapture(baseUrl, evidenceDir, phase3Dir)
   }

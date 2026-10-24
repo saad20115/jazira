@@ -9,7 +9,12 @@ import {
   SocialIcon,
 } from '@/components/icons'
 import { Logo } from '@/components/Logo'
-import { getDictionary, type SupportedLocale } from '@/i18n'
+import {
+  getAlternateLocale,
+  getDictionary,
+  switchLocaleInPathname,
+  type SupportedLocale,
+} from '@/i18n'
 import {
   type CmsLinkDataLike,
   resolveSafeCmsLinkData,
@@ -49,6 +54,7 @@ export interface FooterProps {
   ctaEyebrow?: string | null | undefined
   ctaTitle?: string | null | undefined
   ctaWhatsappLabel?: string | null | undefined
+  currentPath?: string | null | undefined
   description?: string | null | undefined
   emails?: readonly string[] | null | undefined
   footerColumns?: readonly FooterColumnItem[] | null | undefined
@@ -154,12 +160,18 @@ export function Footer({
   ctaButtonHref,
   ctaButtonLink,
   ctaWhatsappLabel,
+  currentPath,
   copyright,
   privacyLink,
   className,
 }: FooterProps): ReactElement {
   const dict = getDictionary(locale)
   const brandAriaLabel = siteName || dict.nav.brandName
+  const alternateLocale = getAlternateLocale(locale)
+  const languageSwitchHref = switchLocaleInPathname(
+    currentPath || `/${locale}`,
+    alternateLocale,
+  )
 
   // R-3 & R-4: Render all CMS `navigation.footer` columns with their CMS `title`;
   // never fall back to invented dictionary links when CMS is empty.
@@ -208,7 +220,10 @@ export function Footer({
   return (
     <footer className={footerClasses} data-component="footer" data-theme="dark">
       <div className={styles.container}>
-        <div className={styles.topGrid}>
+        <div
+          className={styles.topGrid}
+          data-link-columns={String(Math.min(3, Math.max(1, resolvedColumns.length)))}
+        >
           {/* Column 1: Brand, description, and icon-only socials */}
           <div className={styles.brandColumn}>
             <CmsLink
@@ -217,7 +232,7 @@ export function Footer({
               href={`/${locale}`}
               locale={locale}
             >
-              <Logo alt={brandAriaLabel} color="Reversed" type="Full" />
+              <Logo alt={brandAriaLabel} color="Reversed" size="shell" type="Full" />
             </CmsLink>
 
             {description ? <p className={styles.description}>{description}</p> : null}
@@ -381,23 +396,32 @@ export function Footer({
           ) : null}
         </div>
 
-        {/* Bottom bar: copyright only (plus optional CMS privacyLink if explicitly provided) */}
-        {copyright || hasPrivacyLink ? (
-          <div className={styles.bottomBar}>
-            {copyright ? <p className={styles.copyright}>{copyright}</p> : null}
+        {/* Bottom bar: copyright + optional CMS privacyLink + language switcher (`docs/05-design.md` §8, R-16) */}
+        <div className={styles.bottomBar}>
+          {copyright ? <p className={styles.copyright}>{copyright}</p> : <span />}
+          <div className={styles.bottomLinks}>
             {hasPrivacyLink ? (
-              <div className={styles.bottomLinks}>
-                <CmsLink
-                  className={styles.bottomLink}
-                  link={privacyLink}
-                  locale={locale}
-                >
-                  {privacyLink?.label || dict.footer.privacyPolicy}
-                </CmsLink>
-              </div>
+              <CmsLink
+                className={styles.bottomLink}
+                link={privacyLink}
+                locale={locale}
+              >
+                {privacyLink?.label || dict.footer.privacyPolicy}
+              </CmsLink>
             ) : null}
+            <CmsLink
+              aria-label={dict.nav.languageSwitcherAriaLabel}
+              className={styles.bottomLink}
+              data-testid="footer-language-switcher"
+              href={languageSwitchHref}
+              hrefLang={alternateLocale}
+              lang={alternateLocale}
+              locale={alternateLocale}
+            >
+              {dict.nav.languageSwitcherShort}
+            </CmsLink>
           </div>
-        ) : null}
+        </div>
       </div>
     </footer>
   )

@@ -104,10 +104,14 @@ export interface UiDictionary {
     slideOfTotal: string
     previousSlide: string
     nextSlide: string
+    pauseAutoPlay: string
+    playAutoPlay: string
   }
   marquee: {
     partnersRegionLabel: string
     teamRegionLabel: string
+    pauseMarquee: string
+    playMarquee: string
   }
   draftMode: {
     bannerText: string
@@ -247,16 +251,20 @@ export const arDictionary = {
     },
   },
   carousel: {
-    regionLabel: 'معرض الخدمات',
+    regionLabel: 'الخدمات',
     carouselRoleDescription: 'معرض متحرك',
     slideRoleDescription: 'شريحة',
     slideOfTotal: '{current} من {total}',
     previousSlide: 'الخدمة السابقة',
     nextSlide: 'الخدمة التالية',
+    pauseAutoPlay: 'إيقاف العرض التلقائي مؤقتاً',
+    playAutoPlay: 'تشغيل العرض التلقائي',
   },
   marquee: {
     partnersRegionLabel: 'العلامات التجارية الشريكة',
     teamRegionLabel: 'أعضاء الفريق الهندسي',
+    pauseMarquee: 'إيقاف الشريط المتحرك مؤقتاً',
+    playMarquee: 'تشغيل الشريط المتحرك',
   },
   draftMode: {
     bannerText: 'وضع المعاينة المباشرة (مسودة غير منشورة للزوار)',

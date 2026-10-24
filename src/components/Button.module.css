@@ -122,7 +122,7 @@
 /* Focus-visible state (CTO decisions §10 & §19: --navy-900 on light surfaces, --gold-300 on dark surfaces) */
 .button:focus-visible,
 .stateFocusVisible {
-  outline: 2px solid var(--navy-900);
+  outline: 2px solid var(--navy-950);
   outline-offset: 2px;
 }
 

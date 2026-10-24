@@ -16,15 +16,49 @@
   padding-block-end: 36px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   gap: 56px;
 }
 
 .topGrid {
   display: flex;
+  flex-wrap: wrap;
   align-items: flex-start;
   gap: 48px;
   inline-size: 100%;
+}
+
+@media (min-width: 1024px) {
+  .topGrid[data-link-columns='2'] {
+    gap: 28px;
+  }
+
+  .topGrid[data-link-columns='2'] .brandColumn {
+    inline-size: 260px;
+  }
+
+  .topGrid[data-link-columns='2'] .linksColumn {
+    inline-size: 140px;
+  }
+
+  .topGrid[data-link-columns='2'] .ctaCard {
+    inline-size: 260px;
+  }
+
+  .topGrid[data-link-columns='3'] {
+    gap: 20px;
+  }
+
+  .topGrid[data-link-columns='3'] .brandColumn {
+    inline-size: 230px;
+  }
+
+  .topGrid[data-link-columns='3'] .linksColumn {
+    inline-size: 120px;
+  }
+
+  .topGrid[data-link-columns='3'] .ctaCard {
+    inline-size: 240px;
+  }
 }
 
 @media (max-width: 1023px) {
@@ -203,10 +237,10 @@
   opacity: 1;
 }
 
-/* Column 3: Contact Info (flex: 1 0 0 at desktop, starts at x=716) */
+/* Column 3: Contact Info (flex: 1 1 210px at desktop, starts at x=716 when 1 link column) */
 .contactColumn {
-  flex: 1 0 0;
-  min-inline-size: 0;
+  flex: 1 1 210px;
+  min-inline-size: 210px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -379,16 +413,22 @@
   }
 }
 
-/* Bottom bar (Figma 13:568) */
+/* Bottom bar (Figma 13:568, divider at y=388) */
 .bottomBar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding-block-start: 24px;
+  padding-block-start: 56px;
   border-block-start: 1px solid var(--glass-border-white-10);
   inline-size: 100%;
+}
+
+@media (max-width: 1023px) {
+  .bottomBar {
+    padding-block-start: 28px;
+  }
 }
 
 .copyright {

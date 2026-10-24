@@ -49,6 +49,7 @@ export interface StyleguideStrings {
   accordionSampleTitle2: string
   accordionSampleBody2: string
   footerPreview: Omit<FooterProps, 'locale'>
+  footerTwoColumnsPreview: Omit<FooterProps, 'locale'>
   whatsappPreviewNumber: string
   mockServiceTile: Pick<Service, 'title' | 'slug' | 'icon' | 'shortDescription' | 'featured'>
   mockServiceCard: Pick<
@@ -148,47 +149,47 @@ const MOCK_MARQUEE_ROW2_BRANDS_AR: readonly MarqueeBrandItem[] = [
 ]
 
 const MOCK_TEAM_MARQUEE_ROW1_EN: readonly MarqueeTeamItem[] = [
-  { id: 1, name: 'Eng. Abdullah Al-Rashed', position: 'Senior Electrical Engineer', photo: null },
-  { id: 2, name: 'Eng. Omar Al-Qahtani', position: 'HVAC Lead Engineer', photo: null },
-  { id: 3, name: 'Eng. Salman Al-Subaie', position: 'Fire Protection Specialist', photo: null },
-  { id: 4, name: 'Eng. Majed Al-Ghamdi', position: 'BMS & Controls Engineer', photo: null },
-  { id: 5, name: 'Eng. Tariq Al-Dosari', position: 'Plumbing Systems Lead', photo: null },
-  { id: 6, name: 'Eng. Yasser Al-Shehri', position: 'Low-Current Engineer', photo: null },
-  { id: 7, name: 'Eng. Nasser Al-Mutairi', position: 'Site Execution Manager', photo: null },
-  { id: 8, name: 'Eng. Waleed Al-Zahrani', position: 'QA / QC Manager', photo: null },
+  { id: 1, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 2, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 3, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 4, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 5, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 6, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 7, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 8, name: 'Full Name', position: 'Role / Position', photo: null },
 ]
 
 const MOCK_TEAM_MARQUEE_ROW2_EN: readonly MarqueeTeamItem[] = [
-  { id: 9, name: 'Eng.Rayyan Al-Otaibi', position: 'HSE Officer', photo: null },
-  { id: 10, name: 'Eng. Hani Al-Shamrani', position: 'Procurement Lead', photo: null },
-  { id: 11, name: 'Eng. Adel Al-Juhani', position: 'Testing & Commissioning', photo: null },
-  { id: 12, name: 'Eng. Badr Al-Enazi', position: 'Planning & Cost Control', photo: null },
-  { id: 13, name: 'Eng. Turki Al-Malki', position: 'BIM / CAD Coordinator', photo: null },
-  { id: 14, name: 'Eng. Ziad Al-Amri', position: 'Civil Structural Engineer', photo: null },
-  { id: 15, name: 'Eng. Sami Al-Balawi', position: 'Commissioning Lead', photo: null },
-  { id: 16, name: 'Eng. Rami Al-Hazmi', position: 'Maintenance Supervisor', photo: null },
+  { id: 9, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 10, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 11, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 12, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 13, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 14, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 15, name: 'Full Name', position: 'Role / Position', photo: null },
+  { id: 16, name: 'Full Name', position: 'Role / Position', photo: null },
 ]
 
 const MOCK_TEAM_MARQUEE_ROW1_AR: readonly MarqueeTeamItem[] = [
-  { id: 1, name: 'م. عبدالله الراشد', position: 'مهندس كهرباء أول', photo: null },
-  { id: 2, name: 'م. عمر القحطاني', position: 'رئيس مهندسي التكييف', photo: null },
-  { id: 3, name: 'م. سلمان السبيعي', position: 'أخصائي أنظمة الحريق', photo: null },
-  { id: 4, name: 'م. ماجد الغامدي', position: 'مهندس تحكم وأنظمة ذكية', photo: null },
-  { id: 5, name: 'م. طارق الدوسري', position: 'رئيس أنظمة السباكة', photo: null },
-  { id: 6, name: 'م. ياسر الشهري', position: 'مهندس تيار خفيف', photo: null },
-  { id: 7, name: 'م. ناصر المطيري', position: 'مدير تنفيذ الموقع', photo: null },
-  { id: 8, name: 'م. وليد الزهراني', position: 'مدير ضمان ومراقبة الجودة', photo: null },
+  { id: 1, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 2, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 3, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 4, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 5, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 6, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 7, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 8, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
 ]
 
 const MOCK_TEAM_MARQUEE_ROW2_AR: readonly MarqueeTeamItem[] = [
-  { id: 9, name: 'م. ريان العتيبي', position: 'مسؤول السلامة المهنية', photo: null },
-  { id: 10, name: 'م. هاني الشمراني', position: 'رئيس قسم المشتريات', photo: null },
-  { id: 11, name: 'م. عادل الجهني', position: 'الاختبار والتشغيل التجريبي', photo: null },
-  { id: 12, name: 'م. بدر العنزي', position: 'التخطيط وضبط التكاليف', photo: null },
-  { id: 13, name: 'م. تركي المالكي', position: 'منسق نمذجة معلومات البناء', photo: null },
-  { id: 14, name: 'م. زياد العمري', position: 'مهندس مدني وإنشائي', photo: null },
-  { id: 15, name: 'م. سامي البلوي', position: 'رئيس التشغيل التجريبي', photo: null },
-  { id: 16, name: 'م. رامي الحازمي', position: 'مشرف الصيانة', photo: null },
+  { id: 9, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 10, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 11, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 12, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 13, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 14, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 15, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
+  { id: 16, name: 'الاسم الكامل', position: 'المسمى الوظيفي', photo: null },
 ]
 
 const MOCK_CAROUSEL_SERVICES_EN: readonly CarouselServiceItem[] = [
@@ -401,6 +402,39 @@ const STYLEGUIDE_AR: StyleguideStrings = {
     ctaButtonHref: '/ar/contact#quote',
     copyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
   },
+  footerTwoColumnsPreview: {
+    siteName: 'شركة الجزيرة للإمداد الذكي',
+    description:
+      'شركة رائدة في المقاولات الكهروميكانيكية والمدنية وتوريد المواد الهندسية المعتمدة في المملكة العربية السعودية.',
+    footerColumns: [
+      {
+        id: 'ar-col-1',
+        title: 'روابط سريعة',
+        links: buildDefaultFooterQuickLinks('ar'),
+      },
+      {
+        id: 'ar-col-2',
+        title: 'خدماتنا',
+        links: [
+          { id: 'ar-s1', label: 'المقاولات العامة', href: '/ar/services' },
+          { id: 'ar-s2', label: 'الأنظمة الكهربائية', href: '/ar/services' },
+          { id: 'ar-s3', label: 'التكييف والميكانيكا', href: '/ar/services' },
+          { id: 'ar-s4', label: 'مكافحة الحريق', href: '/ar/services' },
+        ],
+      },
+    ],
+    phones: ['+966 57 353 4185'],
+    emails: ['info@aljazira.co'],
+    address: '7676 بطحاء قريش، مكة المكرمة، المملكة العربية السعودية',
+    whatsapp: '+966573534185',
+    socialLinks: PREVIEW_SOCIAL_LINKS,
+    ctaTitle: 'هل لديك مشروع قيد الدراسة؟',
+    ctaBody:
+      'أرسل لنا المخططات أو جداول الكميات وسيقوم مهندسونا بالتواصل معك خلال يوم عمل واحد.',
+    ctaButtonLabel: 'اطلب عرض سعر',
+    ctaButtonHref: '/ar/contact#quote',
+    copyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
+  },
   whatsappPreviewNumber: '+966500000000',
   mockServiceTile: {
     title: 'المقاولات العامة',
@@ -449,8 +483,8 @@ const STYLEGUIDE_AR: StyleguideStrings = {
   mockMarqueeRow1Brands: MOCK_MARQUEE_ROW1_BRANDS_AR,
   mockMarqueeRow2Brands: MOCK_MARQUEE_ROW2_BRANDS_AR,
   mockTeamCardMember: {
-    name: 'م. أحمد الحربي',
-    position: 'الرئيس التنفيذي',
+    name: 'الاسم الكامل',
+    position: 'المسمى الوظيفي',
     photo: null,
     linkedin: 'https://www.linkedin.com',
     bio: null,
@@ -458,40 +492,40 @@ const STYLEGUIDE_AR: StyleguideStrings = {
   mockTeamRowMembers: [
     {
       id: 1,
-      name: 'م. أحمد الحربي',
-      position: 'الرئيس التنفيذي',
+      name: 'الاسم الكامل',
+      position: 'المسمى الوظيفي',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
     {
       id: 2,
-      name: 'م. خالد المنصور',
-      position: 'المدير التجاري',
+      name: 'الاسم الكامل',
+      position: 'المسمى الوظيفي',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
     {
       id: 3,
-      name: 'م. فهد العتيبي',
-      position: 'مدير الإدارة الهندسية',
+      name: 'الاسم الكامل',
+      position: 'المسمى الوظيفي',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
     {
       id: 4,
-      name: 'م. سلطان الحربي',
-      position: 'مدير المشاريع',
+      name: 'الاسم الكامل',
+      position: 'المسمى الوظيفي',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
   ],
   mockTeamMember: {
-    name: 'م. عبدالله الراشد',
-    position: 'مهندس كهرباء أول',
+    name: 'الاسم الكامل',
+    position: 'المسمى الوظيفي',
     photo: null,
   },
   mockTeamMarqueeRow1: MOCK_TEAM_MARQUEE_ROW1_AR,
@@ -540,6 +574,39 @@ const STYLEGUIDE_EN: StyleguideStrings = {
     description:
       'A leading MEP construction company in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over 45 years of experience.',
     quickLinks: buildDefaultFooterQuickLinks('en'),
+    phones: ['+966 57 353 4185'],
+    emails: ['info@aljazira.co'],
+    address: '7676 Bathaa Quraish, Makkah Al-Mukarramah, KSA',
+    whatsapp: '+966573534185',
+    socialLinks: PREVIEW_SOCIAL_LINKS,
+    ctaTitle: 'Have a project in mind?',
+    ctaBody:
+      'Send us your drawings or BOQ and our engineers will get back to you within one working day.',
+    ctaButtonLabel: 'Get a Quote',
+    ctaButtonHref: '/en/contact#quote',
+    copyright: '© 2026 Al Jazira for Imdad Smart Company. All rights reserved.',
+  },
+  footerTwoColumnsPreview: {
+    siteName: 'Al Jazira for Imdad Smart Co.',
+    description:
+      'A leading MEP construction company in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over 45 years of experience.',
+    footerColumns: [
+      {
+        id: 'en-col-1',
+        title: 'Quick Links',
+        links: buildDefaultFooterQuickLinks('en'),
+      },
+      {
+        id: 'en-col-2',
+        title: 'Our Services',
+        links: [
+          { id: 'en-s1', label: 'General Contracting', href: '/en/services' },
+          { id: 'en-s2', label: 'Electrical Systems', href: '/en/services' },
+          { id: 'en-s3', label: 'HVAC & Mechanical', href: '/en/services' },
+          { id: 'en-s4', label: 'Firefighting & Safety', href: '/en/services' },
+        ],
+      },
+    ],
     phones: ['+966 57 353 4185'],
     emails: ['info@aljazira.co'],
     address: '7676 Bathaa Quraish, Makkah Al-Mukarramah, KSA',
@@ -601,8 +668,8 @@ const STYLEGUIDE_EN: StyleguideStrings = {
   mockMarqueeRow1Brands: MOCK_MARQUEE_ROW1_BRANDS_EN,
   mockMarqueeRow2Brands: MOCK_MARQUEE_ROW2_BRANDS_EN,
   mockTeamCardMember: {
-    name: 'Eng. Ahmed Al-Harbi',
-    position: 'CHIEF EXECUTIVE OFFICER',
+    name: 'Full Name',
+    position: 'ROLE / POSITION',
     photo: null,
     linkedin: 'https://www.linkedin.com',
     bio: null,
@@ -610,40 +677,40 @@ const STYLEGUIDE_EN: StyleguideStrings = {
   mockTeamRowMembers: [
     {
       id: 1,
-      name: 'Eng. Ahmed Al-Harbi',
-      position: 'CHIEF EXECUTIVE OFFICER',
+      name: 'Full Name',
+      position: 'ROLE / POSITION',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
     {
       id: 2,
-      name: 'Eng. Khalid Al-Mansour',
-      position: 'COMMERCIAL DIRECTOR',
+      name: 'Full Name',
+      position: 'ROLE / POSITION',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
     {
       id: 3,
-      name: 'Eng. Fahad Al-Otaibi',
-      position: 'ENGINEERING MANAGER',
+      name: 'Full Name',
+      position: 'ROLE / POSITION',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
     {
       id: 4,
-      name: 'Eng. Sultan Al-Harbi',
-      position: 'PROJECT DIRECTOR',
+      name: 'Full Name',
+      position: 'ROLE / POSITION',
       photo: null,
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
   ],
   mockTeamMember: {
-    name: 'Eng. Abdullah Al-Rashed',
-    position: 'Senior Electrical Engineer',
+    name: 'Full Name',
+    position: 'Role / Position',
     photo: null,
   },
   mockTeamMarqueeRow1: MOCK_TEAM_MARQUEE_ROW1_EN,

@@ -69,7 +69,7 @@
 }
 
 .brandLink:focus-visible {
-  outline: 2px solid var(--navy-900);
+  outline: 2px solid var(--navy-950);
   outline-offset: 2px;
 }
 
@@ -153,12 +153,17 @@
 }
 
 .langSwitch:focus-visible {
-  outline: 2px solid var(--navy-900);
+  outline: 2px solid var(--navy-950);
   outline-offset: 2px;
 }
 
 .themeDark .langSwitch:focus-visible {
   outline-color: var(--gold-300);
+}
+
+.navbarCta {
+  padding-block: 11px;
+  block-size: 44px;
 }
 
 .mobileTriggerWrap {
@@ -195,7 +200,7 @@
 }
 
 .menuButton:focus-visible {
-  outline: 2px solid var(--navy-900);
+  outline: 2px solid var(--navy-950);
   outline-offset: 2px;
 }
 

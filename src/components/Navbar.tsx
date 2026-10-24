@@ -335,7 +335,7 @@ export function Navbar({
           href={`/${locale}`}
           locale={locale}
         >
-          <Logo alt={brandAriaLabel} color={logoColor} type="Full" />
+          <Logo alt={brandAriaLabel} color={logoColor} size="shell" type="Full" />
         </CmsLink>
 
         {navItems.length > 0 ? (
@@ -368,6 +368,7 @@ export function Navbar({
             className={styles.langSwitch}
             href={languageSwitchHref}
             hrefLang={getAlternateLocale(locale)}
+            lang={getAlternateLocale(locale)}
             locale={getAlternateLocale(locale)}
           >
             {dict.nav.languageSwitcherShort}
@@ -375,6 +376,7 @@ export function Navbar({
 
           {hasCta ? (
             <Button
+              className={styles.navbarCta}
               href={ctaLink ? undefined : resolvedCtaHref}
               label={resolvedCtaLabel}
               link={ctaLink}
@@ -437,7 +439,7 @@ export function Navbar({
                   closeDrawer(false)
                 }}
               >
-                <Logo alt={brandAriaLabel} color="Reversed" type="Compact" />
+                <Logo alt={brandAriaLabel} color="Reversed" size="shell" type="Compact" />
               </CmsLink>
 
               <button
@@ -489,6 +491,7 @@ export function Navbar({
                 className={styles.drawerLangSwitch}
                 href={languageSwitchHref}
                 hrefLang={getAlternateLocale(locale)}
+                lang={getAlternateLocale(locale)}
                 locale={getAlternateLocale(locale)}
                 onClick={() => {
                   closeDrawer(false)

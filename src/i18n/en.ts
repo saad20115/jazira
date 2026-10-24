@@ -87,21 +87,25 @@ export const enDictionary = {
       'civil-mep': 'CIVIL & MEP',
     },
     projectStatus: {
-      completed: 'COMPLETED',
-      'in-progress': 'IN PROGRESS',
+      completed: 'Completed',
+      'in-progress': 'In Progress',
     },
   },
   carousel: {
-    regionLabel: 'Services carousel',
+    regionLabel: 'Services',
     carouselRoleDescription: 'carousel',
     slideRoleDescription: 'slide',
     slideOfTotal: '{current} of {total}',
     previousSlide: 'Previous service',
     nextSlide: 'Next service',
+    pauseAutoPlay: 'Pause automatic slide show',
+    playAutoPlay: 'Play automatic slide show',
   },
   marquee: {
     partnersRegionLabel: 'Partner brands',
     teamRegionLabel: 'Engineering team members',
+    pauseMarquee: 'Pause scrolling marquee',
+    playMarquee: 'Play scrolling marquee',
   },
   draftMode: {
     bannerText: 'Live Preview Mode (unpublished draft content)',

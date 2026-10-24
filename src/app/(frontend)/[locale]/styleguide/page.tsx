@@ -369,6 +369,25 @@ export default async function StyleguidePage({
           </div>
         </section>
 
+        {/* 6b. Footer with 2 CMS link columns (R-15 visual check) */}
+        <section
+          className={styles.sectionCard}
+          data-styleguide-section="footer-2col"
+          data-testid="styleguide-footer-2col"
+          id="styleguide-footer-2col"
+        >
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{sg.sectionFooter} (2 CMS Link Columns · R-15)</h2>
+            <span className={styles.nodeBadge} dir="ltr">
+              {NODE_IDS.footer}
+            </span>
+          </div>
+
+          <div className={styles.navbarFrame}>
+            <Footer locale={resolvedLocale} {...sg.footerTwoColumnsPreview} />
+          </div>
+        </section>
+
         {/* 7. WhatsAppFab (12:93) */}
         <section
           className={styles.sectionCard}

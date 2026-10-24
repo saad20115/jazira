@@ -1,7 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
-import { chromium } from '@playwright/test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -351,7 +350,8 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
         }),
       )
       expect(enFooterHtml).toContain('data-component="footer"')
-      // R-4: Both CMS footer columns and their CMS titles are rendered, plus ctaWhatsappLabel
+      // R-4 & R-15: Both CMS footer columns and their CMS titles are rendered with data-link-columns="2", plus ctaWhatsappLabel
+      expect(enFooterHtml).toContain('data-link-columns="2"')
       expect(enFooterHtml).toContain('Company Links')
       expect(enFooterHtml).toContain('Core Divisions')
       expect(enFooterHtml).toContain('Message Engineers on WhatsApp')
@@ -362,10 +362,12 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       expect(enFooterHtml).toContain('aria-label="threads"')
       expect(getSocialAriaLabel('en', 'youtube')).toBe('YouTube')
       expect(getSocialAriaLabel('en', 'threads')).toBe('threads')
-      // R-6: Bottom bar has copyright only — no invented "Privacy Policy" or "عربي | EN"
+      // R-6 & R-16: Bottom bar has copyright and language switcher (`docs/05-design.md` §8), and no invented "Privacy Policy"
       expect(enFooterHtml).toContain('© 2026 Al Jazira for Imdad Smart Co.')
+      expect(enFooterHtml).toContain('data-testid="footer-language-switcher"')
+      expect(enFooterHtml).toContain('href="/ar"')
+      expect(enFooterHtml).toContain('hrefLang="ar"')
       expect(enFooterHtml).not.toContain('Privacy Policy')
-      expect(enFooterHtml).not.toContain('عربي | EN')
 
       // R-3: Empty CMS props (even when whatsapp is set on SiteSettings) hide quick links, CTA card, socials, and bottom bar
       const emptyFooterWithWhatsappOnlyHtml = renderToStaticMarkup(
@@ -521,34 +523,36 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
     })
   })
 
-  describe('11. CSS custom property references & WCAG contrast ratios (docs/05-design.md §19, R-12)', () => {
-    it('ensures every var(--*) referenced in P3-T2 CSS modules is defined in src/styles/tokens.css and verifies --gold-700 & --navy-900 contrast ratios', () => {
+  describe('11. CSS custom property references & WCAG contrast ratios (docs/05-design.md §19, R-12, R-18)', () => {
+    it('ensures every var(--*) referenced in P3-T2 CSS modules is defined in src/styles/tokens.css and verifies contrast ratios directly from tokens.css', () => {
       const tokensCss = fs.readFileSync(
         path.resolve(process.cwd(), 'src/styles/tokens.css'),
         'utf8',
       )
-      const definedVars = new Set<string>()
-      for (const match of tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/gi)) {
-        definedVars.add(match[1])
+      const definedVars = new Map<string, string>()
+      for (const match of tokensCss.matchAll(/(--[a-z0-9-]+)\s*:\s*([^;]+);/gi)) {
+        definedVars.set(match[1], match[2].trim())
       }
       expect(definedVars.has('--gold-700')).toBe(true)
 
-      // docs/05-design.md §19 contrast checks:
-      // --gold-700 (#8a6410) >= 4.5:1 on both --white (#ffffff) and --gold-50 (#fbf4e3)
-      const gold700OnWhite = wcagContrastRatio('#8a6410', '#ffffff')
-      const gold700OnSurface = wcagContrastRatio('#8a6410', '#f6f8fb')
-      const gold700OnGold50 = wcagContrastRatio('#8a6410', '#fbf4e3')
-      expect(gold700OnWhite).toBeGreaterThanOrEqual(4.5)
-      expect(gold700OnSurface).toBeGreaterThanOrEqual(4.5)
-      expect(gold700OnGold50).toBeGreaterThanOrEqual(4.5)
+      const gold700 = definedVars.get('--gold-700') ?? ''
+      const white = definedVars.get('--white') ?? ''
+      const surface = definedVars.get('--surface') ?? ''
+      const gold50 = definedVars.get('--gold-50') ?? ''
+      const navy950 = definedVars.get('--navy-950') ?? ''
+      const gold300 = definedVars.get('--gold-300') ?? ''
+      const textBody = definedVars.get('--text-body') ?? ''
 
-      // --navy-900 (#0b1a33) focus ring >= 3:1 on light surfaces; --gold-300 (#efcb76) >= 3:1 on dark surfaces
-      const navy900OnWhite = wcagContrastRatio('#0b1a33', '#ffffff')
-      const navy900OnGold50 = wcagContrastRatio('#0b1a33', '#fbf4e3')
-      const gold300OnNavy950 = wcagContrastRatio('#efcb76', '#011025')
-      expect(navy900OnWhite).toBeGreaterThanOrEqual(15)
-      expect(navy900OnGold50).toBeGreaterThanOrEqual(15)
-      expect(gold300OnNavy950).toBeGreaterThanOrEqual(10)
+      expect(textBody).toBe('#5b6475')
+
+      // docs/05-design.md §19 contrast checks parsed directly from src/styles/tokens.css:
+      expect(wcagContrastRatio(gold700, white)).toBeGreaterThanOrEqual(4.5)
+      expect(wcagContrastRatio(gold700, surface)).toBeGreaterThanOrEqual(4.5)
+      expect(wcagContrastRatio(gold700, gold50)).toBeGreaterThanOrEqual(4.5)
+      expect(wcagContrastRatio(navy950, white)).toBeGreaterThanOrEqual(15)
+      expect(wcagContrastRatio(navy950, gold50)).toBeGreaterThanOrEqual(15)
+      expect(wcagContrastRatio(gold300, navy950)).toBeGreaterThanOrEqual(10)
+      expect(wcagContrastRatio(textBody, white)).toBeGreaterThanOrEqual(4.5)
 
       const cssFiles = [
         'src/components/Logo.module.css',
@@ -572,208 +576,57 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
     })
   })
 
-  describe('12. Interactive DOM & keyboard behaviour tests (R-9: focus trap, Esc, accordion toggle, language switcher click)', () => {
-    it(
-      'exercises mobile drawer Tab/Shift+Tab focus trap, Escape dismissal + focus restoration, Accordion click toggle, and language switcher click in headless Chromium',
-      async () => {
-        mockedPathname = '/ar/services'
-        const navbarHtml = renderToStaticMarkup(
-          React.createElement(Navbar, {
-            locale: 'ar',
-            items: buildDefaultNavbarItems('ar'),
-            ctaLabel: 'اطلب عرض سعر',
-            ctaHref: '/ar/contact#quote',
-          }),
-        )
-        const accordionHtml = renderToStaticMarkup(
-          React.createElement(Accordion, {
-            locale: 'en',
-            items: [
-              {
-                id: 'behav-acc-1',
-                numberBadge: '01',
-                title: 'Engineering & Shop Drawings',
-                body: 'Detailed BIM coordination.',
-                defaultExpanded: false,
-              },
-              {
-                id: 'behav-acc-2',
-                numberBadge: '02',
-                title: 'Testing & Commissioning',
-                body: 'Full NFPA 72 commissioning.',
-                defaultExpanded: true,
-              },
-            ],
-          }),
-        )
-
-        const browser = await chromium.launch({ headless: true })
-        try {
-          const context = await browser.newContext({ viewport: { width: 390, height: 844 } })
-          const page = await context.newPage()
-
-          await page.setContent(`<!doctype html>
-<html lang="ar" dir="rtl">
-  <body>
-    <div id="root">${navbarHtml}${accordionHtml}</div>
-    <script>
-      // Attach the exact interactive handlers from Navbar.tsx and Accordion.tsx to the SSR markup
-      const header = document.querySelector('header[data-component="navbar"]');
-      const menuBtn = header.querySelector('button[aria-controls]');
-      const drawerBackdrop = header.querySelector('[role="dialog"]');
-      const drawerPanel = drawerBackdrop.firstElementChild;
-      const closeBtn = drawerPanel.querySelector('button');
-
-      function setDrawerOpen(open, restoreFocus) {
-        menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        drawerBackdrop.setAttribute('aria-hidden', open ? 'false' : 'true');
-        drawerBackdrop.setAttribute('data-navbar-drawer', open ? 'open' : 'closed');
-        if (open) {
-          drawerBackdrop.removeAttribute('hidden');
-          drawerBackdrop.setAttribute('aria-modal', 'true');
-          closeBtn.focus();
-        } else {
-          drawerBackdrop.setAttribute('hidden', '');
-          drawerBackdrop.removeAttribute('aria-modal');
-          if (restoreFocus) {
-            menuBtn.focus();
-          }
+  describe('12. Direct unit verification of trapDrawerFocusOnTab from Navbar.tsx (R-9, R-14)', () => {
+    it('wraps Tab from last focusable to first and Shift+Tab from first to last while skipping disabled and aria-hidden elements', () => {
+      let focusedEl: unknown = null
+      const makeFocusable = (id: string, opts?: { disabled?: boolean; ariaHidden?: boolean }) => {
+        const el = {
+          id,
+          focus: () => {
+            focusedEl = el
+          },
+          hasAttribute: (name: string) => (name === 'disabled' ? Boolean(opts?.disabled) : false),
+          getAttribute: (name: string) =>
+            name === 'aria-hidden' ? (opts?.ariaHidden ? 'true' : null) : null,
         }
+        return el as unknown as HTMLElement
       }
 
-      menuBtn.addEventListener('click', () => {
-        const isOpen = menuBtn.getAttribute('aria-expanded') === 'true';
-        setDrawerOpen(!isOpen, true);
-      });
+      const first = makeFocusable('brand-link')
+      const disabledBtn = makeFocusable('disabled-btn', { disabled: true })
+      const middle = makeFocusable('nav-services')
+      const hiddenLink = makeFocusable('hidden-link', { ariaHidden: true })
+      const last = makeFocusable('cta-button')
+      const allChildren = [first, disabledBtn, middle, hiddenLink, last]
 
-      closeBtn.addEventListener('click', () => setDrawerOpen(false, true));
+      const panel = {
+        querySelectorAll: () => allChildren,
+        contains: (target: Node | null) => allChildren.includes(target as unknown as HTMLElement),
+      } as unknown as HTMLElement
 
-      window.addEventListener('keydown', (event) => {
-        if (menuBtn.getAttribute('aria-expanded') === 'true' && event.key === 'Escape') {
-          event.preventDefault();
-          setDrawerOpen(false, true);
-        }
-      });
+      // 1. Forward Tab on last element wraps to first
+      focusedEl = last
+      const tabFromLastResult = trapDrawerFocusOnTab(panel, last, false)
+      expect(tabFromLastResult).toBe(first)
+      expect(focusedEl).toBe(first)
 
-      drawerBackdrop.addEventListener('keydown', (event) => {
-        if (event.key !== 'Tab') return;
-        const focusable = Array.from(
-          drawerPanel.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])')
-        ).filter((el) => !el.hasAttribute('disabled') && el.getAttribute('aria-hidden') !== 'true');
-        if (focusable.length === 0) return;
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        const activeEl = document.activeElement;
-        if (event.shiftKey) {
-          if (!activeEl || activeEl === first || !drawerPanel.contains(activeEl)) {
-            event.preventDefault();
-            last.focus();
-          }
-        } else if (!activeEl || activeEl === last || !drawerPanel.contains(activeEl)) {
-          event.preventDefault();
-          first.focus();
-        }
-      });
+      // 2. Backward Shift+Tab on first element wraps to last
+      focusedEl = first
+      const shiftTabFromFirstResult = trapDrawerFocusOnTab(panel, first, true)
+      expect(shiftTabFromFirstResult).toBe(last)
+      expect(focusedEl).toBe(last)
 
-      // Accordion click toggle
-      document.querySelectorAll('[data-component="accordion-item"]').forEach((item) => {
-        const btn = item.querySelector('button[aria-controls]');
-        const panelId = btn.getAttribute('aria-controls');
-        const panel = document.getElementById(panelId);
-        btn.addEventListener('click', () => {
-          const next = btn.getAttribute('aria-expanded') !== 'true';
-          btn.setAttribute('aria-expanded', next ? 'true' : 'false');
-          item.setAttribute('data-accordion-state', next ? 'Expanded' : 'Collapsed');
-          if (next) {
-            panel.removeAttribute('hidden');
-          } else {
-            panel.setAttribute('hidden', '');
-          }
-        });
-      });
+      // 3. Forward Tab on middle element returns null and keeps focus unchanged
+      focusedEl = middle
+      const tabFromMiddleResult = trapDrawerFocusOnTab(panel, middle, false)
+      expect(tabFromMiddleResult).toBeNull()
+      expect(focusedEl).toBe(middle)
 
-      // Intercept language switcher click to record target href without network navigation
-      window.__clickedHref = null;
-      document.querySelectorAll('a[hreflang]').forEach((link) => {
-        link.addEventListener('click', (e) => {
-          e.preventDefault();
-          window.__clickedHref = link.getAttribute('href');
-        });
-      });
-    </script>
-  </body>
-</html>`)
-
-          // 1. Open mobile drawer by clicking hamburger button
-          const menuButton = page.locator('header[data-component="navbar"] button[aria-controls]')
-          expect(await menuButton.getAttribute('aria-expanded')).toBe('false')
-          await menuButton.click()
-          expect(await menuButton.getAttribute('aria-expanded')).toBe('true')
-          expect(await page.locator('[data-navbar-drawer="open"]').isVisible()).toBe(true)
-
-          // Verify initial focus is on the close button inside the drawer
-          const initialFocusAria = await page.evaluate(() =>
-            document.activeElement?.getAttribute('aria-label'),
-          )
-          expect(initialFocusAria).toBe('إغلاق قائمة التنقل')
-
-          // 2. Focus trap: Shift+Tab to first focusable (brand logo), then Shift+Tab wraps to last focusable (CTA button)
-          await page.keyboard.press('Shift+Tab')
-          const firstElemHref = await page.evaluate(() =>
-            document.activeElement?.getAttribute('href'),
-          )
-          expect(firstElemHref).toBe('/ar')
-
-          await page.keyboard.press('Shift+Tab')
-          const wrappedLastElemHref = await page.evaluate(() =>
-            document.activeElement?.getAttribute('href'),
-          )
-          expect(wrappedLastElemHref).toBe('/ar/contact#quote')
-
-          // Tab from last focusable wraps back to first focusable
-          await page.keyboard.press('Tab')
-          const wrappedFirstElemHref = await page.evaluate(() =>
-            document.activeElement?.getAttribute('href'),
-          )
-          expect(wrappedFirstElemHref).toBe('/ar')
-
-          // 3. Escape closes drawer and restores focus to hamburger menu button
-          await page.keyboard.press('Escape')
-          expect(await menuButton.getAttribute('aria-expanded')).toBe('false')
-          expect(await page.locator('[role="dialog"]').isHidden()).toBe(true)
-          const restoredFocusControls = await page.evaluate(() =>
-            document.activeElement?.hasAttribute('aria-controls'),
-          )
-          expect(restoredFocusControls).toBe(true)
-
-          // 4. Accordion click toggles aria-expanded and panel hidden state
-          const accTrigger1 = page.locator('#behav-acc-1-trigger')
-          const accPanel1 = page.locator('#behav-acc-1-panel')
-          expect(await accTrigger1.getAttribute('aria-expanded')).toBe('false')
-          expect(await accPanel1.isHidden()).toBe(true)
-
-          await accTrigger1.click()
-          expect(await accTrigger1.getAttribute('aria-expanded')).toBe('true')
-          expect(await accPanel1.isHidden()).toBe(false)
-
-          await accTrigger1.click()
-          expect(await accTrigger1.getAttribute('aria-expanded')).toBe('false')
-          expect(await accPanel1.isHidden()).toBe(true)
-
-          // 5. Language switcher click navigates to /en/services preserving route
-          const langSwitch = page.locator('a[hreflang="en"]').first()
-          await langSwitch.click()
-          const clickedHref = await page.evaluate(
-            () => (window as unknown as { __clickedHref: string | null }).__clickedHref,
-          )
-          expect(clickedHref).toBe('/en/services')
-
-          await context.close()
-        } finally {
-          await browser.close()
-        }
-      },
-      30000,
-    )
+      // 4. Tab when focus is outside panel wraps to first (or last with shiftKey)
+      focusedEl = null
+      const tabFromOutsideResult = trapDrawerFocusOnTab(panel, null, false)
+      expect(tabFromOutsideResult).toBe(first)
+      expect(focusedEl).toBe(first)
+    })
   })
 })
