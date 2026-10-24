@@ -60,3 +60,40 @@ and the plaza reads dark.
 - Re-verify that the entered views (`enter.site_*`) still match Cycles.
 
 **Proof:** a luma table for Cycles and live, plus the three-panel.
+
+## Added 2026-10-24: N-6, premium façade, glass, lighting and reflections
+Owner, translated: "The building's façade and glass in the original image look luxurious and premium.
+In the model they are very weak, and so are the lighting and its reflections."
+
+**What makes the reference premium, and what to change:**
+
+1. **Glass.** Deep blue, highly reflective glass that mirrors the dusk sky: lighter at the top,
+   warm at the horizon, with visible Fresnel.
+   - Cycles: real reflections (roughness about 0.03–0.08, a slight blue tint).
+   - Live: a PMREM environment map built from the same sky gradient (`scene.environment`), with
+     tone mapping matched to Cycles (state which one, ACES or AgX, in the manifest).
+   - Never a flat colour texture.
+2. **Depth behind the glass.** The interiors read as real rooms (ceiling light panels, depth,
+   partitions), not flat yellow bands.
+   - Full GLB: interior mapping (a baked interior atlas, or a parallax/cubemap interior shader).
+   - Lite: a baked interior texture with a depth cue.
+3. **Mullions.** Thin dark-bronze/champagne metal with crisp specular highlights that catch the
+   light. A dense vertical rhythm as in the reference, not flat beige lines.
+4. **Gold pilasters and frame.** Champagne-gold metal with a vertical **uplight wash** (brighter at
+   the base, fading upward) and soft specular, plus the continuous LED line on the crown.
+5. **Lighting and reflections.**
+   - Base uplights washing the pilasters and lobby.
+   - The lobby glow reflected softly on the forecourt paving (slightly glossy paving).
+   - Warm lamp pools (with N-5).
+   - Subtle selective bloom on the light sources only.
+6. **Spandrels and slab edges.** Thin and dark, so the glass reads as one continuous curtain wall.
+
+**Constraints:**
+- Budgets are unchanged: full ≤ 8 MB, lite ≤ 2.5 MB, lite ≤ 60 draw calls.
+- Interior mapping and the env map must stay within them. On weak GPUs, the lite file may fall back
+  to the baked interior.
+
+**Proof:**
+- A façade close-up crop (ref | Cycles | live) at the same framing.
+- The three-panel.
+- Draw calls, GPU memory and sizes.
