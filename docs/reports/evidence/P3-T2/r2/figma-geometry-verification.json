@@ -1,0 +1,37 @@
+{
+  "baseUrl": "http://localhost:3126",
+  "generatedAt": "2026-10-24T00:23:30.817Z",
+  "homeMetrics": {
+    "theme": "Light",
+    "navTop": 0,
+    "navBottom": 80,
+    "mainTop": 0,
+    "borderBottomWidth": "0px"
+  },
+  "styleguideEnMetrics": {
+    "navbarLinksLeft": 500,
+    "navbarLinksRight": 940,
+    "footerHeight": 504,
+    "footerDescriptionWidth": 300,
+    "footerQuickLinksX": 508,
+    "footerContactX": 716,
+    "footerHeadingFontSize": "17px",
+    "footerHeadingFontWeight": "600",
+    "footerHeadingTextTransform": "none",
+    "footerCtaTitleFontSize": "17px",
+    "footerCtaBodyFontSize": "14px",
+    "footerCtaBodyLineHeight": "22px"
+  },
+  "rtlFabMetrics": {
+    "ringCenterX": 1188,
+    "ringCenterY": 4956,
+    "buttonCenterX": 1188,
+    "buttonCenterY": 4956
+  },
+  "mobileHitTargets": {
+    "drawerLinkHeight": 44,
+    "socialButtonWidth": 44,
+    "socialButtonHeight": 44,
+    "footerQuickLinkHeight": 44
+  }
+}

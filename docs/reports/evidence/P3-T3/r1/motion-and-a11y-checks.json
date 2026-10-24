@@ -1,0 +1,50 @@
+{
+  "baseUrl": "http://localhost:3126",
+  "consoleErrorsAndWarnings": 0,
+  "pageErrors": 0,
+  "cspViolations": 0,
+  "motionVerification": {
+    "en": {
+      "marqueeTrackRunningState": "running",
+      "marqueeTrackHoverState": "paused",
+      "duplicateAriaHiddenCount": 2,
+      "carouselInitialIndex": "0",
+      "carouselAfterNextClickIndex": "1",
+      "carouselAfterKeyNextIndex": "3",
+      "carouselAfterKeyPrevIndex": "2",
+      "teamCardScrollEntered": "true"
+    },
+    "ar": {
+      "marqueeTrackRunningState": "running",
+      "marqueeTrackHoverState": "paused",
+      "duplicateAriaHiddenCount": 2,
+      "carouselInitialIndex": "0",
+      "carouselAfterNextClickIndex": "1",
+      "carouselAfterKeyNextIndex": "3",
+      "carouselAfterKeyPrevIndex": "2",
+      "teamCardScrollEntered": "true"
+    },
+    "reducedMotion": {
+      "en": {
+        "logoMarqueeAnimationName": "none",
+        "logoMarqueeDuplicateDisplay": "none",
+        "teamMarqueeAnimationName": "none",
+        "carouselReducedMotionAttr": "true",
+        "carouselIndexBeforeWait": "0",
+        "carouselIndexAfterWait": "0",
+        "carouselTrackTransitionDuration": "0s",
+        "teamCardTransitionDuration": "0s"
+      },
+      "ar": {
+        "logoMarqueeAnimationName": "none",
+        "logoMarqueeDuplicateDisplay": "none",
+        "teamMarqueeAnimationName": "none",
+        "carouselReducedMotionAttr": "true",
+        "carouselIndexBeforeWait": "0",
+        "carouselIndexAfterWait": "0",
+        "carouselTrackTransitionDuration": "0s",
+        "teamCardTransitionDuration": "0s"
+      }
+    }
+  }
+}

@@ -1,0 +1,16 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r2-p3-t3-r1-dod-20261024-031340
+$ git rev-parse HEAD
+8199fd1d3e4d8bf7ec80830bd0e3a8a395b310aa
+=== WCAG 2.1 Contrast Verification (docs/05-design.md §19, R-12) ===
+- [PASS] Small gold text on white (Accordion "Show details", ServiceTile "Learn more"): --gold-700 (#8a6410) on --white (#ffffff) -> 5.37:1 (required >= 4.5:1)
+- [PASS] Small gold text on surface (PartnerTile hover subtitle on surface): --gold-700 (#8a6410) on --surface (#f6f8fb) -> 5.05:1 (required >= 4.5:1)
+- [PASS] Small gold text on gold-50 (Eyebrow Light, Accordion expanded badge): --gold-700 (#8a6410) on --gold-50 (#fbf4e3) -> 4.9:1 (required >= 4.5:1)
+- [PASS] Light-surface focus-visible ring on white: --navy-900 (#0b1a33) on --white (#ffffff) -> 17.36:1 (required >= 3:1)
+- [PASS] Light-surface focus-visible ring on surface: --navy-900 (#0b1a33) on --surface (#f6f8fb) -> 16.32:1 (required >= 3:1)
+- [PASS] Light-surface focus-visible ring on gold-50: --navy-900 (#0b1a33) on --gold-50 (#fbf4e3) -> 15.83:1 (required >= 3:1)
+- [PASS] Dark-surface focus-visible ring & Eyebrow Dark text on navy-950: --gold-300 (#efcb76) on --navy-950 (#011025) -> 12.23:1 (required >= 4.5:1)
+- [PASS] Dark-surface focus-visible ring on navy-900: --gold-300 (#efcb76) on --navy-900 (#0b1a33) -> 11.14:1 (required >= 4.5:1)
+- [PASS] Gold Button text (--navy-950) on --gold-500 fill: --navy-950 (#011025) on --gold-500 (#dfa82a) -> 8.87:1 (required >= 4.5:1)
+- [PASS] Body text (--text-body) on --white: --text-body (#475467) on --white (#ffffff) -> 7.69:1 (required >= 4.5:1)
+

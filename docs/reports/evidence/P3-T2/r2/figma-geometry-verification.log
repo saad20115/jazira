@@ -1,0 +1,15 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r2-p3-t3-r1-dod-20261024-031340
+$ git rev-parse HEAD
+8199fd1d3e4d8bf7ec80830bd0e3a8a395b310aa
+=== Figma Geometry, RTL FAB Centering & 390px Hit Target Verification (R-1, R-7, R-10) ===
+- Home Navbar Theme: Light (expected Light), borderBottomWidth=0px (expected 0px)
+- Home Navbar Overlay: navbar y=0..80, <main> y=0 (expected 0)
+- Desktop Navbar Links x-range at 1440px: 500–940 (centred around 720px)
+- Footer Quick Links x=508 (expected 508), Contact Info x=716 (expected 716)
+- Footer Height=504px (expected 503px), Description Width=300px (expected 300px)
+- Footer Column Heading: fontSize=17px, fontWeight=600, textTransform=none
+- Footer CTA Title fontSize=17px, CTA Body=14px/22px
+- RTL WhatsApp FAB Pulse Ring Center: (1188, 4956) vs Button Center: (1188, 4956)
+- Mobile 390px Hit Targets: drawerLinkHeight=44px, socialButton=44x44px, footerQuickLinkHeight=44px
+

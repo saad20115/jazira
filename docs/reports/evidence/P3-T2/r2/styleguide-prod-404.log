@@ -1,0 +1,26 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r2-p3-t3-r1-dod-20261024-031340
+$ git rev-parse HEAD
+8199fd1d3e4d8bf7ec80830bd0e3a8a395b310aa
+BaseURL (production next start): http://localhost:3125
+
+=== GET /ar/styleguide ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="ar" dir="rtl" class="dzAZra_variable ZWJS8G_variable">
+Title: الصفحة غير موجودة
+
+=== GET /en/styleguide ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="en" dir="ltr" class="dzAZra_variable ZWJS8G_variable">
+Title: Page Not Found
+
+=== GET /ar/_specimen ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="ar" dir="rtl" class="dzAZra_variable ZWJS8G_variable">
+Title: الصفحة غير موجودة
+
+=== GET /en/_specimen ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="en" dir="ltr" class="dzAZra_variable ZWJS8G_variable">
+Title: Page Not Found
+

@@ -1,0 +1,56 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r2-p3-t3-r1-dod-20261024-031340
+$ git rev-parse HEAD
+8199fd1d3e4d8bf7ec80830bd0e3a8a395b310aa
+BaseURL: http://localhost:3126
+ConsoleErrorsAndWarnings: 0
+PageErrors: 0
+CSPViolations: 0
+
+=== Normal Motion & Interactive Checks (EN) ===
+{
+  "marqueeTrackRunningState": "running",
+  "marqueeTrackHoverState": "paused",
+  "duplicateAriaHiddenCount": 2,
+  "carouselInitialIndex": "0",
+  "carouselAfterNextClickIndex": "1",
+  "carouselAfterKeyNextIndex": "3",
+  "carouselAfterKeyPrevIndex": "2",
+  "teamCardScrollEntered": "true"
+}
+
+=== Normal Motion & Interactive Checks (AR / RTL) ===
+{
+  "marqueeTrackRunningState": "running",
+  "marqueeTrackHoverState": "paused",
+  "duplicateAriaHiddenCount": 2,
+  "carouselInitialIndex": "0",
+  "carouselAfterNextClickIndex": "1",
+  "carouselAfterKeyNextIndex": "3",
+  "carouselAfterKeyPrevIndex": "2",
+  "teamCardScrollEntered": "true"
+}
+
+=== prefers-reduced-motion: reduce Verification (EN) ===
+{
+  "logoMarqueeAnimationName": "none",
+  "logoMarqueeDuplicateDisplay": "none",
+  "teamMarqueeAnimationName": "none",
+  "carouselReducedMotionAttr": "true",
+  "carouselIndexBeforeWait": "0",
+  "carouselIndexAfterWait": "0",
+  "carouselTrackTransitionDuration": "0s",
+  "teamCardTransitionDuration": "0s"
+}
+
+=== prefers-reduced-motion: reduce Verification (AR / RTL) ===
+{
+  "logoMarqueeAnimationName": "none",
+  "logoMarqueeDuplicateDisplay": "none",
+  "teamMarqueeAnimationName": "none",
+  "carouselReducedMotionAttr": "true",
+  "carouselIndexBeforeWait": "0",
+  "carouselIndexAfterWait": "0",
+  "carouselTrackTransitionDuration": "0s",
+  "teamCardTransitionDuration": "0s"
+}

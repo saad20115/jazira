@@ -1,0 +1,105 @@
+{
+  "generatedAt": "2026-10-24T00:22:35.888Z",
+  "pairs": [
+    {
+      "label": "Small gold text on white (Accordion \"Show details\", ServiceTile \"Learn more\")",
+      "foregroundToken": "--gold-700",
+      "foregroundHex": "#8a6410",
+      "backgroundToken": "--white",
+      "backgroundHex": "#ffffff",
+      "minRequired": 4.5,
+      "ratio": 5.37,
+      "pass": true
+    },
+    {
+      "label": "Small gold text on surface (PartnerTile hover subtitle on surface)",
+      "foregroundToken": "--gold-700",
+      "foregroundHex": "#8a6410",
+      "backgroundToken": "--surface",
+      "backgroundHex": "#f6f8fb",
+      "minRequired": 4.5,
+      "ratio": 5.05,
+      "pass": true
+    },
+    {
+      "label": "Small gold text on gold-50 (Eyebrow Light, Accordion expanded badge)",
+      "foregroundToken": "--gold-700",
+      "foregroundHex": "#8a6410",
+      "backgroundToken": "--gold-50",
+      "backgroundHex": "#fbf4e3",
+      "minRequired": 4.5,
+      "ratio": 4.9,
+      "pass": true
+    },
+    {
+      "label": "Light-surface focus-visible ring on white",
+      "foregroundToken": "--navy-900",
+      "foregroundHex": "#0b1a33",
+      "backgroundToken": "--white",
+      "backgroundHex": "#ffffff",
+      "minRequired": 3,
+      "ratio": 17.36,
+      "pass": true
+    },
+    {
+      "label": "Light-surface focus-visible ring on surface",
+      "foregroundToken": "--navy-900",
+      "foregroundHex": "#0b1a33",
+      "backgroundToken": "--surface",
+      "backgroundHex": "#f6f8fb",
+      "minRequired": 3,
+      "ratio": 16.32,
+      "pass": true
+    },
+    {
+      "label": "Light-surface focus-visible ring on gold-50",
+      "foregroundToken": "--navy-900",
+      "foregroundHex": "#0b1a33",
+      "backgroundToken": "--gold-50",
+      "backgroundHex": "#fbf4e3",
+      "minRequired": 3,
+      "ratio": 15.83,
+      "pass": true
+    },
+    {
+      "label": "Dark-surface focus-visible ring & Eyebrow Dark text on navy-950",
+      "foregroundToken": "--gold-300",
+      "foregroundHex": "#efcb76",
+      "backgroundToken": "--navy-950",
+      "backgroundHex": "#011025",
+      "minRequired": 4.5,
+      "ratio": 12.23,
+      "pass": true
+    },
+    {
+      "label": "Dark-surface focus-visible ring on navy-900",
+      "foregroundToken": "--gold-300",
+      "foregroundHex": "#efcb76",
+      "backgroundToken": "--navy-900",
+      "backgroundHex": "#0b1a33",
+      "minRequired": 4.5,
+      "ratio": 11.14,
+      "pass": true
+    },
+    {
+      "label": "Gold Button text (--navy-950) on --gold-500 fill",
+      "foregroundToken": "--navy-950",
+      "foregroundHex": "#011025",
+      "backgroundToken": "--gold-500",
+      "backgroundHex": "#dfa82a",
+      "minRequired": 4.5,
+      "ratio": 8.87,
+      "pass": true
+    },
+    {
+      "label": "Body text (--text-body) on --white",
+      "foregroundToken": "--text-body",
+      "foregroundHex": "#475467",
+      "backgroundToken": "--white",
+      "backgroundHex": "#ffffff",
+      "minRequired": 4.5,
+      "ratio": 7.69,
+      "pass": true
+    }
+  ]
+}

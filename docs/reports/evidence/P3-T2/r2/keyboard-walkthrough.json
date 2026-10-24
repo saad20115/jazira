@@ -1,0 +1,281 @@
+{
+  "baseUrl": "http://localhost:3126",
+  "generatedAt": "2026-10-24T00:23:39.433Z",
+  "desktopNavbarSteps": [
+    {
+      "step": "Tab 1 (skip link)",
+      "active": {
+        "tag": "a",
+        "text": "انتقل إلى المحتوى الرئيسي",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "#main-content",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 2 (brand logo)",
+      "active": {
+        "tag": "a",
+        "text": "",
+        "ariaLabel": "شركة الجزيرة للإمداد الذكي",
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 3 (NavLink: Home - active)",
+      "active": {
+        "tag": "a",
+        "text": "الرئيسية",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": "page",
+        "href": "/ar",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 4 (NavLink: Services)",
+      "active": {
+        "tag": "a",
+        "text": "خدماتنا",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar/services",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 5 (NavLink: About Us)",
+      "active": {
+        "tag": "a",
+        "text": "من نحن",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar/about",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 6 (NavLink: Projects)",
+      "active": {
+        "tag": "a",
+        "text": "مشاريعنا",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar/projects",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 7 (NavLink: Contact Us)",
+      "active": {
+        "tag": "a",
+        "text": "تواصل معنا",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar/contact",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 8 (Desktop language switcher)",
+      "active": {
+        "tag": "a",
+        "text": "EN",
+        "ariaLabel": "EN — التبديل إلى اللغة الإنجليزية (Switch to English)",
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/en/styleguide",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 9 (Desktop Request a Quote CTA)",
+      "active": {
+        "tag": "a",
+        "text": "اطلب عرض سعر",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar/contact#quote",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    }
+  ],
+  "mobileDrawerSteps": [
+    {
+      "step": "Tab 1 (skip link)",
+      "active": {
+        "tag": "a",
+        "text": "انتقل إلى المحتوى الرئيسي",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "#main-content",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 2 (brand logo)",
+      "active": {
+        "tag": "a",
+        "text": "",
+        "ariaLabel": "شركة الجزيرة للإمداد الذكي",
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Tab 3 (hamburger button closed)",
+      "active": {
+        "tag": "button",
+        "text": "",
+        "ariaLabel": "فتح قائمة التنقل",
+        "ariaExpanded": "false",
+        "ariaCurrent": null,
+        "href": null,
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    },
+    {
+      "step": "Enter on hamburger -> drawer opens & focuses close button",
+      "active": {
+        "tag": "button",
+        "text": "",
+        "ariaLabel": "إغلاق قائمة التنقل",
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": null,
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(239, 203, 118)"
+      }
+    },
+    {
+      "step": "Shift+Tab 1 -> moves to first drawer element (drawer brand logo)",
+      "active": {
+        "tag": "a",
+        "text": "",
+        "ariaLabel": "شركة الجزيرة للإمداد الذكي",
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(239, 203, 118)"
+      }
+    },
+    {
+      "step": "Shift+Tab 2 from first drawer element -> wraps to last drawer element (focus trap)",
+      "active": {
+        "tag": "a",
+        "text": "اطلب عرض سعر",
+        "ariaLabel": null,
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar/contact#quote",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(239, 203, 118)"
+      }
+    },
+    {
+      "step": "Tab from last drawer element -> wraps back to first drawer element (focus trap)",
+      "active": {
+        "tag": "a",
+        "text": "",
+        "ariaLabel": "شركة الجزيرة للإمداد الذكي",
+        "ariaExpanded": null,
+        "ariaCurrent": null,
+        "href": "/ar",
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(239, 203, 118)"
+      }
+    },
+    {
+      "step": "Escape closes drawer and restores focus to hamburger trigger (aria-expanded=\"false\")",
+      "active": {
+        "tag": "button",
+        "text": "",
+        "ariaLabel": "فتح قائمة التنقل",
+        "ariaExpanded": "false",
+        "ariaCurrent": null,
+        "href": null,
+        "outlineStyle": "solid",
+        "outlineWidth": "2px",
+        "outlineColor": "rgb(11, 26, 51)"
+      }
+    }
+  ],
+  "accordionKeyboard": {
+    "beforeToggle": {
+      "tag": "button",
+      "text": "01عنصر أكورديون مطوي (Collapsed State)عرض التفاصيل",
+      "ariaLabel": null,
+      "ariaExpanded": "false",
+      "ariaCurrent": null,
+      "href": null,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(11, 26, 51)"
+    },
+    "afterEnterKey": {
+      "tag": "button",
+      "text": "01عنصر أكورديون مطوي (Collapsed State)إخفاء التفاصيل",
+      "ariaLabel": null,
+      "ariaExpanded": "true",
+      "ariaCurrent": null,
+      "href": null,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(11, 26, 51)"
+    },
+    "afterSpaceKey": {
+      "tag": "button",
+      "text": "01عنصر أكورديون مطوي (Collapsed State)عرض التفاصيل",
+      "ariaLabel": null,
+      "ariaExpanded": "false",
+      "ariaCurrent": null,
+      "href": null,
+      "outlineStyle": "solid",
+      "outlineWidth": "2px",
+      "outlineColor": "rgb(11, 26, 51)"
+    }
+  }
+}

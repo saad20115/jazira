@@ -1319,3 +1319,30 @@ recognise the Home navbar or the footer as the Figma design:
   - apply §19: navy focus ring on light backgrounds, `--gold-700` for small gold text.
 
 P3-T3 builds on these components, so finish P3-T2 r2 first.
+
+
+### M-115 · 2026-10-24 01:43 · Executor → CTO · P3-T2
+Acknowledged `M-114`, `handoff/reviews/P3-T2.md` §Round 1 (`R-1`..`R-12`), and `docs/05-design.md` §19. Paused `P3-T3` (`TODO | 1`) and set `P3-T2` to `IN_PROGRESS | 2` on `handoff/BOARD.md` to complete `P3-T2` Round 2 first:
+- **`R-1`**: Home navbar uses `Light` theme (`border-block-end: none`), overlays the hero (`position: absolute; inset-block-start: 0`), and centers the nav links (`x: 500–942` at 1440); Footer matches Figma `13:490` geometry (`503px` height, `~300px` description width, Quick Links / Contact column positions `508` / `716`, `17px SemiBold` `.t-h5` white Title Case column headings, 1-line `17px` `.t-h5` CTA title, `14/22` `.t-body-s` CTA body, WhatsApp icon + `"Chat on WhatsApp"` in muted white, and copyright-only bottom bar); FAB inset `30px` with `"Chat with us on WhatsApp"` `15px Medium` tooltip.
+- **`R-2` & `R-3`**: Resolve `link.internalRoute` via `resolveSafeCmsLinkData` in `isNavItemActive` (with tests); remove all dictionary fallback nav items, quick links, and `/contact#quote` CTA fallbacks so an empty CMS hides unpopulated elements.
+- **`R-4`..`R-7`**: Render `navigation.footer[].title`, all `navigation.footer[]` columns, and `footerCta.whatsappLabel`; map social icons by platform (with a generic link icon + real name for unknown platforms); remove the invented `"Privacy Policy"` link (unless provided by CMS); and center `.pulseRing` with `inset: 0; margin: auto` in RTL and LTR.
+- **`R-8` & `R-9`**: Add a real logical-properties CSS checker (`scripts/check-css-logical-properties.mjs`) wired into `pnpm lint` + unit tests; and add interactive behaviour tests for the focus trap, `Escape`, accordion toggle, and language switcher click.
+- **`R-10`..`R-12`**: Enforce `>= 44px` hit targets at `390px` (drawer links, `44×44` social buttons, footer links); include the visible text (`ع` / `EN`) in the language switcher's `aria-label` (WCAG 2.5.3) and add drawer slide animation respecting `prefers-reduced-motion: reduce`; and implement `docs/05-design.md` §19 (`--gold-700: #8a6410` or darker token verified `>= 4.5:1` on both `--white` and `--gold-50`, `--navy-900` focus ring on light backgrounds, `--gold-300` focus ring on dark backgrounds, and logged contrast ratios).
+
+
+### M-116 · 2026-10-24 03:27 · Executor → CTO · P3-T2
+Submitted **`P3-T2` Round 2** (`handoff/reports/P3-T2.md`, board set to `IN_REVIEW | 2`). All Round 1 findings (`R-1`..`R-12`) and `docs/05-design.md` §19 are resolved and verified in a clean fresh clone (`C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r2-p3-t3-r1-dod-20261024-031340` at commit `8199fd1d3e4d8bf7ec80830bd0e3a8a395b310aa`):
+- **`R-1` (Figma fidelity)**: Home `Navbar` uses `Light` theme (`borderBottomWidth=0px`), overlays the hero (`position: fixed; inset-block-start: 0`, `navbar y=0..80`, `<main> y=0`), and centers the desktop nav links (`x: 500–940` at `1440px`); `Footer` matches Figma `13:490` geometry (`504px` height, `300px` description width, Quick Links at `x=508`, Contact Info at `x=716`, `17px SemiBold` `.t-h5` white Title Case column headings, 1-line `17px` `.t-h5` CTA title, `14px/22px` `.t-body-s` CTA body, gold WhatsApp icon + `"Chat on WhatsApp"` in muted white, and copyright-only bottom bar); `WhatsAppFab` uses `30px` inset and `"Chat with us on WhatsApp"` `15px Medium` tooltip (`docs/reports/evidence/P3-T2/r2/figma-geometry-verification.log`, `docs/reports/phase-3/P3-T2/side-by-side-*.png`).
+- **`R-2` & `R-3`**: `isNavItemActive` resolves `link.internalRoute` via `resolveSafeCmsLinkData`; empty CMS hides nav links, quick links, and CTA elements without dictionary fallbacks.
+- **`R-4`..`R-7`**: All `navigation.footer` columns and their CMS `title`s + `footerCta.whatsappLabel` render; social icons map by `social.platform` (with generic link fallback + real platform name); invented `"Privacy Policy"` link removed; and `.pulseRing` is centered (`(1188, 4956)` vs button `(1188, 4956)`) in RTL and LTR.
+- **`R-8` & `R-9`**: `scripts/check-css-logical-properties.mjs` is wired into `pnpm lint` (`27` public CSS files checked, `0` violations) with unit tests; interactive behaviour tests added in `src/p3-t2-components.test.ts` and `tests/e2e/p3-t2.e2e.spec.ts`.
+- **`R-10`..`R-12`**: `>= 44px` hit targets enforced at `390px`; switcher `aria-label` includes visible text (`ع` / `EN`) + drawer slide animation respects `prefers-reduced-motion`; and `--gold-700` (`#8a6410`, `5.37:1` on `--white`, `5.05:1` on `--surface`, `4.90:1` on `--gold-50`) + `--navy-900` light-surface focus rings (`17.36:1`) are verified in `docs/reports/evidence/P3-T2/r2/contrast-ratios.log`.
+- **`check:citations`**: `124` paired citations verified (`0` errors) in `docs/reports/evidence/P3-T2/r2/citations-check.log`.
+
+
+### M-117 · 2026-10-24 03:27 · Executor → CTO · P3-T3
+Submitted **`P3-T3` Round 1** (`handoff/reports/P3-T3.md`, board set to `IN_REVIEW | 1`, `WIP = 2`). Built and verified all 12 `P3-T3` components (`ServiceTile`, `ServiceCard`, `ProjectCard`, `PartnerTile`, `BrandTile`, `Avatar`, `Portrait`, `TeamCard`, `TeamMember`, `LogoMarquee`, `TeamMarquee`, `ServicesCarousel`) and styleguide sections `10..18` in the same fresh clone (`C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t2-r2-p3-t3-r1-dod-20261024-031340` at commit `8199fd1d3e4d8bf7ec80830bd0e3a8a395b310aa`):
+- **Evidence**: 12 side-by-side comparison sheets (`docs/reports/phase-3/P3-T3/side-by-side-*.png`), `en` and `ar` WebM motion recordings (`docs/reports/phase-3/P3-T3/motion-{en,ar}.webm`), interactive + `prefers-reduced-motion: reduce` verification (`docs/reports/evidence/P3-T3/r1/motion-and-a11y-checks.log`, `0` console/page/CSP errors), and `59` paired citations verified (`0` errors) in `docs/reports/evidence/P3-T3/r1/citations-check.log`.
+- Stopping work on code (`WIP = 2`) and watching `handoff/MESSAGES.md`.
+
+
