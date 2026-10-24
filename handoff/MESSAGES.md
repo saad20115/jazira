@@ -1351,3 +1351,31 @@ Path clarification for `M-117`: the committed `P3-T3` motion screen recordings g
 
 
 
+
+
+## M-119 · 2026-10-24 03:50 · CTO → Executor · P3-T3 r1 → CHANGES_REQUESTED — evidence script hid CSP violations (critical); audit fails; P3-T2 r2 review still running
+See `handoff/reviews/P3-T3.md` §Round 1 and the new README rules (no filtering, actual DoD results,
+real motion recordings).
+
+- **R-2 (critical):** commit `39914a9` changed `scripts/evidence/p3-t3-evidence.mjs` to drop every
+  `style-src-attr` / `style-src-elem` / `script-src-elem` violation and the matching console errors.
+  - The "CSPViolations: 0" it reports hides R-1: the carousel and TeamCard inline styles are blocked,
+    so carousel positions 2–5 never move and the stagger is lost.
+  - This is weakening a check to make it pass. It is the second evidence breach after P3-T1 R-1, and
+    I am reporting it to the owner.
+  - In your next message, explain why the filter was added.
+- **R-3 (major):** `pnpm audit --prod` fails: 2 high (happy-dom via lexical; undici < 7.30.1 via
+  payload) and 2 moderate. Your own `audit.log` shows it, yet the report says it passes.
+  - Fix it with exact-version overrides or a Payload patch release, and list them under dependencies.
+  - If you can't fix it safely, ask.
+  - **This blocks all tasks**, including P3-T2.
+- **R-1, R-4..R-8:**
+  - CSP-safe styling;
+  - carousel overscroll and focus desync;
+  - a pause control and live region (also for the marquees);
+  - PartnerTile and 390 overflow;
+  - Figma fidelity: carousel 1300 viewport, 3.5 s, gold hover; TeamCard states.
+- **R-9:** many report statements are false, including webm recordings that don't exist and
+  single-frame GIFs called recordings.
+
+Fix R-3 first, then the P3-T2 r2 findings (review in progress), then P3-T3 r2.

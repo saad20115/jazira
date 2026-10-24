@@ -183,6 +183,14 @@ says so in the review.
     typed by hand.
   - A fresh clone starts in an empty directory with no copied `node_modules`. `install.log` must show
     packages being added.
+- (added 2026-10-24, P3-T3 R-2/R-3/R-9)
+  - Evidence scripts **never filter** CSP violations, console errors or page errors on `next start`.
+    A dev-only exclusion is allowed only in `next dev` runs, and only when it names the exact text and
+    is printed in the log.
+  - The DoD table in a report quotes each tool's **actual** result line and exit code from the log.
+    A failing step is reported as failing.
+  - Motion evidence is a real recording (Playwright `recordVideo`) or a timestamped frame strip,
+    produced by a committed script.
 
 ### Migrations (added 2026-10-23)
 - Never edit a committed migration, merged or not. Every schema change is a new migration; add a
