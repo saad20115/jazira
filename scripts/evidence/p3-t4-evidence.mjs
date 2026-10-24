@@ -866,7 +866,11 @@ async function seedHomePageData(baseUrl, token) {
     locale: 'ar',
     body: homeAr,
   })
-  const existingSystemIds = (savedHomeAr?.interactiveSystems?.systems || []).map((s) => s.id)
+  const savedSystems =
+    savedHomeAr?.result?.interactiveSystems?.systems ||
+    savedHomeAr?.interactiveSystems?.systems ||
+    []
+  const existingSystemIds = savedSystems.map((s) => s.id)
 
   const homeEn = {
     _status: 'published',
@@ -1155,40 +1159,35 @@ export async function runP3T4Evidence({
     // 2. Intro Splash Recording & Verification (`28:1609` -> `28:1615`, CTO §3)
     // =========================================================================
     {
-      const videoTmpDir = path.join(evidenceDir, '_video_tmp')
-      fs.mkdirSync(videoTmpDir, { recursive: true })
-
-      // 2a. Record live intro video on fresh session (/en)
-      const videoCtx = await browser.newContext({
-        viewport: { width: 1440, height: 900 },
-        recordVideo: { dir: videoTmpDir, size: { width: 1440, height: 900 } },
-      })
-      const videoPage = await videoCtx.newPage()
-      const t0 = Date.now()
-      await videoPage.goto(`${baseUrl}/en`, { waitUntil: 'domcontentloaded' })
-
-      // Capture start state (`28:1609`) immediately
-      const introLocator = videoPage.locator('[data-component="intro-splash"]')
-      const startVisible = await introLocator.isVisible().catch(() => false)
+      // 2a. Capture `intro-start-en.png` (`28:1609`) and `intro-reveal-en.png` (`28:1615`)
+      const snapCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+      const snapPage = await snapCtx.newPage()
+      await snapPage.goto(`${baseUrl}/en`, { waitUntil: 'domcontentloaded' })
+      const snapIntro = snapPage.locator('[data-component="intro-splash"]')
+      await snapIntro.waitFor({ state: 'visible', timeout: 1500 })
+      const startVisible = await snapIntro.isVisible()
       const startPngPath = path.join(evidenceDir, 'intro-start-en.png')
-      await videoPage.screenshot({ path: startPngPath })
+      await snapPage.screenshot({ path: startPngPath })
       copyToDirs(startPngPath, destDirs)
 
-      // Wait ~380ms for reveal state (`28:1615`)
-      await videoPage.waitForTimeout(380)
-      const revealStateAttr = await introLocator.getAttribute('data-intro-state').catch(() => null)
+      await snapPage
+        .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
+        .waitFor({ state: 'visible', timeout: 1000 })
+      await snapPage.waitForTimeout(320)
+      const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
       const revealPngPath = path.join(evidenceDir, 'intro-reveal-en.png')
-      await videoPage.screenshot({ path: revealPngPath })
+      await snapPage.screenshot({ path: revealPngPath })
       copyToDirs(revealPngPath, destDirs)
+      await snapCtx.close()
 
       // Stitch side-by-side against Figma `00-intro-start.png` and `00-intro-reveal.png`
       const figmaIntroStart = path.resolve(
         process.cwd(),
-        'design/screenshots/overlays/00-intro-start.png',
+        'design/screenshots/pages/00-intro-start.png',
       )
       const figmaIntroReveal = path.resolve(
         process.cwd(),
-        'design/screenshots/overlays/00-intro-reveal.png',
+        'design/screenshots/pages/00-intro-reveal.png',
       )
       if (fs.existsSync(figmaIntroStart)) {
         const sbsStart = path.join(evidenceDir, 'side-by-side-00-intro-start.png')
@@ -1206,6 +1205,19 @@ export async function runP3T4Evidence({
         )
         copyToDirs(sbsReveal, destDirs)
       }
+
+      // 2b. Record uninterrupted live intro video on fresh session (/en) and measure duration
+      const videoTmpDir = path.join(evidenceDir, '_video_tmp')
+      fs.mkdirSync(videoTmpDir, { recursive: true })
+      const videoCtx = await browser.newContext({
+        viewport: { width: 1440, height: 900 },
+        recordVideo: { dir: videoTmpDir, size: { width: 1440, height: 900 } },
+      })
+      const videoPage = await videoCtx.newPage()
+      await videoPage.goto(`${baseUrl}/en`, { waitUntil: 'domcontentloaded' })
+      const introLocator = videoPage.locator('[data-component="intro-splash"]')
+      await introLocator.waitFor({ state: 'visible', timeout: 1500 })
+      const t0 = Date.now()
 
       // Verify LCP <h1> is already rendered in the DOM while the intro is visible
       const h1RenderedDuringIntro = await videoPage.evaluate(() => {
@@ -1236,31 +1248,26 @@ export async function runP3T4Evidence({
       }
       fs.rmSync(videoTmpDir, { recursive: true, force: true })
 
-      // 2b. Verify Escape key skip in a fresh session
+      // 2c. Verify Escape key skip in a fresh session
       const escCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const escPage = await escCtx.newPage()
       await escPage.goto(`${baseUrl}/ar`, { waitUntil: 'domcontentloaded' })
-      await escPage.waitForTimeout(80)
-      const visibleBeforeEscape = await escPage
-        .locator('[data-component="intro-splash"]')
-        .isVisible()
-        .catch(() => false)
+      const escIntro = escPage.locator('[data-component="intro-splash"]')
+      await escIntro.waitFor({ state: 'visible', timeout: 1500 })
+      const visibleBeforeEscape = await escIntro.isVisible()
       await escPage.keyboard.press('Escape')
       await escPage.waitForTimeout(50)
-      const visibleAfterEscape = await escPage
-        .locator('[data-component="intro-splash"]')
-        .isVisible()
-        .catch(() => false)
+      const visibleAfterEscape = await escIntro.isVisible().catch(() => false)
       await escCtx.close()
 
-      // 2c. Verify prefers-reduced-motion: reduce suppresses intro completely
+      // 2d. Verify prefers-reduced-motion: reduce suppresses intro completely
       const rmCtx = await browser.newContext({
         viewport: { width: 1440, height: 900 },
         reducedMotion: 'reduce',
       })
       const rmPage = await rmCtx.newPage()
       await rmPage.goto(`${baseUrl}/ar`, { waitUntil: 'domcontentloaded' })
-      await rmPage.waitForTimeout(100)
+      await rmPage.waitForTimeout(120)
       const visibleWithReducedMotion = await rmPage
         .locator('[data-component="intro-splash"]')
         .isVisible()
@@ -1312,7 +1319,7 @@ export async function runP3T4Evidence({
       for (const vp of viewports) {
         const ctx = await browser.newContext({
           viewport: { width: vp.width, height: vp.height },
-          reducedMotion: 'reduce',
+          reducedMotion: 'no-preference',
         })
         await ctx.addInitScript(() => {
           window.sessionStorage.setItem('aljazira_intro_seen', '1')

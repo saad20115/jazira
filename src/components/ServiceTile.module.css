@@ -154,6 +154,14 @@
   transform: translateX(-3px);
 }
 
+@media (max-width: 767px) {
+  .linkRow {
+    min-inline-size: var(--space-44);
+    min-block-size: var(--space-44);
+    margin-block-end: calc(var(--space-10) * -1);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tile,
   .linkRow,

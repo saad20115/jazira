@@ -174,10 +174,10 @@ export function IntroSplash({
 
       <div className={styles.centerStack}>
         <div className={styles.logoWrap}>
-          <Logo alt={siteName ?? dict.nav.brandName} color="Reversed" size="shell" type="Full" />
+          <Logo alt={siteName ?? dict.nav.brandName} color="Reversed" size="default" type="Full" />
         </div>
         <div aria-hidden="true" className={styles.goldRule} />
-        {tagline ? <p className={`${styles.tagline} t-label-eyebrow`}>{tagline}</p> : null}
+        {tagline ? <p className={`${styles.tagline} t-label-link`}>{tagline}</p> : null}
       </div>
 
       <button

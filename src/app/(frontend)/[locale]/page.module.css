@@ -82,8 +82,9 @@
   margin-inline: auto;
   inline-size: 700px;
   block-size: 700px;
-  border-radius: var(--radius-pill);
+  border-radius: 50%;
   background-image: var(--gradient-hero-gold-glow);
+  filter: blur(48px);
   pointer-events: none;
 }
 
@@ -223,17 +224,17 @@
   inset-block-end: 0;
   inset-inline-end: 0;
   z-index: 3;
-  inline-size: 240px;
-  padding-block: var(--space-20);
-  padding-inline: var(--space-24);
-  border-radius: var(--radius-xl);
-  background-color: var(--navy-950);
-  border: 1.5px solid var(--gold-500);
+  min-inline-size: 168px;
+  padding-block: var(--space-18);
+  padding-inline: 26px;
+  border-radius: var(--radius-2xl);
+  background-color: var(--white);
   box-shadow: var(--shadow-who-badge);
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-4);
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
   box-sizing: border-box;
 }
 
@@ -244,8 +245,7 @@
 
 .whoBadgeLabel {
   margin: 0;
-  color: var(--white);
-  opacity: 0.8;
+  color: var(--text-body);
 }
 
 .whoContentCol {
@@ -296,18 +296,18 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-40);
+  gap: var(--space-64);
   inline-size: 100%;
-  min-block-size: 150px;
   box-sizing: border-box;
 }
 
 .splitHeadLeft {
+  flex: 1 1 0;
+  min-inline-size: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-12);
-  max-inline-size: 620px;
+  gap: var(--space-16);
 }
 
 .sectionHeadingDark {
@@ -384,18 +384,18 @@
 
 .liveModelBadge {
   position: absolute;
-  inset-block-start: 22px;
-  inset-inline-start: 22px;
+  inset-block-start: 19px;
+  inset-inline-start: 19px;
   z-index: 2;
   display: inline-flex;
   align-items: center;
-  gap: var(--space-8);
-  padding-block: var(--space-8);
-  padding-inline: var(--space-14);
+  gap: var(--space-6);
+  padding-block: var(--space-6);
+  padding-inline: var(--space-12);
   border-radius: var(--radius-pill);
-  background-color: var(--overlay-navy-70);
-  border: 1px solid var(--gold-border-45);
-  color: var(--gold-300);
+  background-color: var(--glass-white-8);
+  border: 1px solid var(--glass-border-white-16);
+  color: var(--white);
 }
 
 .liveModelBadgeIcon {
@@ -743,37 +743,40 @@
   position: absolute;
   border: 1.2px solid var(--glass-border-white-22);
   border-radius: var(--radius-xl);
-  transform: rotate(45deg);
   pointer-events: none;
   z-index: 1;
 }
 
 .ctaSquareTopStart {
-  inset-block-start: 40px;
-  inset-inline-start: 80px;
+  inset-block-start: 68px;
+  inset-inline-start: 230px;
   inline-size: 90px;
   block-size: 90px;
+  transform: rotate(-14deg);
 }
 
 .ctaSquareBottomStart {
-  inset-block-end: 47px;
-  inset-inline-start: 200px;
+  inset-block-start: 330px;
+  inset-inline-start: 290px;
   inline-size: 60px;
   block-size: 60px;
+  transform: rotate(10deg);
 }
 
 .ctaSquareTopEnd {
-  inset-block-start: 50px;
-  inset-inline-end: 90px;
+  inset-block-start: 90px;
+  inset-inline-end: 230px;
   inline-size: 90px;
   block-size: 90px;
+  transform: rotate(14deg);
 }
 
 .ctaSquareBottomEnd {
-  inset-block-end: 57px;
-  inset-inline-end: 210px;
+  inset-block-start: 318px;
+  inset-inline-end: 290px;
   inline-size: 60px;
   block-size: 60px;
+  transform: rotate(-12deg);
 }
 
 .ctaContent {

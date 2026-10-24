@@ -593,7 +593,7 @@ export default async function LocaleHomePage({
                     label={heroSecondaryLabel}
                     link={hero?.secondaryCta?.link}
                     locale={locale}
-                    showArrow={false}
+                    showArrow
                     variant="Glass"
                   />
                 ) : null}
@@ -781,6 +781,14 @@ export default async function LocaleHomePage({
           id="stats"
         >
           <div aria-hidden="true" className={styles.statsBgLayer}>
+            <CspSafeImage
+              alt=""
+              className={styles.statsBgImage}
+              height={425}
+              sizes="100vw"
+              src="/images/bg-pipes.png"
+              width={1440}
+            />
             <div className={styles.statsBgOverlay} />
           </div>
 
