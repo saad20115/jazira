@@ -1,0 +1,75 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+=== Google Lighthouse v13.5.0 Mobile Audit (en -> http://localhost:3105/en) [Attempt 1/1, no retry] ===
+Performance:    84 (preliminary mobile score; target >= 85)
+Accessibility:  96 (gate >= 95)
+Best Practices: 100 (gate >= 95)
+SEO:            100 (gate >= 95)
+CLS:            0 (gate <= 0.05)
+{
+  "attempt": 1,
+  "totalAttempts": 1,
+  "lighthouseVersion": "13.5.0",
+  "requestedUrl": "http://localhost:3105/en",
+  "finalDisplayedUrl": "http://localhost:3105/en",
+  "fetchTime": "2026-10-24T19:02:11.066Z",
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "scores": {
+    "performance": 84,
+    "accessibility": 96,
+    "bestPractices": 100,
+    "seo": 100
+  },
+  "clsNumeric": 0,
+  "metrics": {
+    "first-contentful-paint": {
+      "numericValue": 1368.918,
+      "displayValue": "1.4 s",
+      "score": 0.97
+    },
+    "largest-contentful-paint": {
+      "numericValue": 3865.571,
+      "displayValue": "3.9 s",
+      "score": 0.53
+    },
+    "total-blocking-time": {
+      "numericValue": 230.5,
+      "displayValue": "230 ms",
+      "score": 0.86
+    },
+    "cumulative-layout-shift": {
+      "numericValue": 0,
+      "displayValue": "0",
+      "score": 1
+    },
+    "speed-index": {
+      "numericValue": 1484.9189,
+      "displayValue": "1.5 s",
+      "score": 1
+    },
+    "interactive": {
+      "numericValue": 4056.0363,
+      "displayValue": "4.1 s",
+      "score": 0.87
+    }
+  },
+  "failingAudits": [
+    {
+      "category": "accessibility",
+      "id": "color-contrast",
+      "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "score": 0,
+      "displayValue": null
+    }
+  ]
+}

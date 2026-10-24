@@ -1,0 +1,8 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+$ node scripts/evidence/p3-t4-evidence.mjs --mode=dev-styleguide http://localhost:3104
+[P3-T4 Evidence] dev-styleguide artifacts generated in D:\jazira\docs\reports\evidence\P3-T4\r3 and D:\jazira\docs\reports\phase-3\P3-T4\r3
+[exit_code=0]
+

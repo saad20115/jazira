@@ -1855,3 +1855,22 @@ Order unchanged: P3-T4 r3 → P3-T12 → P4-T2.
 - **Home copy v2:** `docs/content/copy-v2/01-home.md`. Seed it only once it is marked APPROVED (scope 4c).
 
 Order unchanged: P3-T4 r3 → P3-T12 → P4-T2.
+
+
+## M-147 · 2026-10-24 22:08 · Executor → CTO · P3-T4 r3 ready for review (`5c9358d`) — starting P3-T12 r1
+`P3-T4` Round 3 (`IN_REVIEW | 3`) is complete and submitted on `phase-3-frontend` (verified code commit `5c9358ded2e274dcba8b9f59f6defd4e73f941d5`, report `handoff/reports/P3-T4.md`, logs in `docs/reports/evidence/P3-T4/r3/`, visual captures in `docs/reports/phase-3/P3-T4/r3/`):
+1. **`R-12` [critical, migration] & `R-13` [major, migration]**:
+   - Fixed `src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts` in place: replaced `E'\\s+'` with POSIX `'[[:space:]]+'` (no `E` prefix), removed literal en/ar copy-string matching heuristics so `up()` splits strictly on newline (`strpos(col, chr(10)) > 0`) and leaves single-line values untouched, and updated `down()` to concatenate `title || chr(10) || title_accent` back across all 6 tables (`home_page_locales`, `_home_page_v_locales`, `services_page_locales`, `_services_page_v_locales`, `projects_page_locales`, `_projects_page_v_locales`) before dropping `*_title_accent`.
+   - Added `tests/int/p3-t4-migration.int.test.ts` testing pre-R2 rows containing `'s'`, `\n`, embedded whitespace, single-line strings, and Arabic across `up -> down -> up` (`1 passed`), ran `migrate-up-down-up.log` from an empty schema (`DROP SCHEMA public CASCADE; CREATE SCHEMA public;`), and documented `titleAccent` on shared `ctaFields` under `Deviations from Spec`.
+2. **`R-14` [major, a11y] & `R-15` [major, `<= 1.6 s` from `navigationStart`]**:
+   - `.overlay` (`src/components/IntroSplash.module.css:59`) is `display: none` (`src/components/IntroSplash.module.css:67`) by default unless `html[data-intro="active"]` is set; proven with `javaScriptEnabled: false` (`overlayVisibleNoJs: false`, `h1VisibleNoJs: true`, `primaryCtaVisibleNoJs: true` on `/ar` and `/en` in `intro-verification.log`).
+   - `INTRO_PREPAINT_INLINE_SCRIPT` (`src/components/IntroSplash.tsx:24`) and `IntroSplash` (`src/components/IntroSplash.tsx:119`) schedule exit and finish relative to `navigationStart` (`performance.now()`) with `INTRO_HARD_CAP_MS = 1520` (`<= 1600ms`); proven under `412x823`, `4x CPU`, `Slow 4G` (`150ms RTT`, `1.6 Mbps` down, `cacheDisabled: true`): `/ar` `firstVisibleFrameMs: 1078`, `firstHiddenFrameMs: 1229` (`<= 1600ms`); `/en` `firstVisibleFrameMs: 1233`, `firstHiddenFrameMs: 1363` (`<= 1600ms`).
+3. **`R-16` [major, evidence integrity], `R-17` [minor, citations], `R-18` [minor, repo hygiene], `R-19` [minor, perf/visual], `R-20` [minor, visual/tokens], `R-21` [nits]**:
+   - `runLighthouseAudit` (`scripts/evidence/run-lighthouse.mjs:70`) runs a single attempt per locale (`[Attempt 1/1, no retry]`: `/ar` Perf `90` / A11y `96` / BP `100` / SEO `100` / CLS `0.00067`; `/en` Perf `84` / A11y `96` / BP `100` / SEO `100` / CLS `0`).
+   - `scripts/check-citations.mjs` supports `[locale]` paths and checks committed `HEAD` (`git cat-file -p HEAD:<path>`), verified by unit/mutation tests in `tests/unit/scripts-guard.test.ts` and `citations-check.log` (`57` paired citations, `0` errors).
+   - Cleaned duplicate evidence folders; all 43 PNGs in `docs/reports/phase-3/P3-T4/r3/` are `<= 1440px` wide and `< 3 MB`.
+   - Calibrated bold `'Noto Kufi Arabic Metric Fallback'` (`size-adjust: 152%` at `src/styles/globals.css:28`) and restored active-locale SSR font preloads (`src/app/(frontend)/[locale]/layout.tsx:272`); throttled cold-cache mobile CLS across **all** `layout-shift` entries (`r3-mobile-cls.log`) is `0.0114` on `/ar` and `0` on `/en` (both `<= 0.05`).
+   - Added `gutterTablet` (`design/tokens.json:354`) and `gutterMobile` to `design/tokens.json` and `scripts/generate-tokens.mjs`, and fixed `.controlsRow` (`src/components/ServicesCarousel.module.css:78`) (`carouselHeight: 430`, `controlsInlineEndCoord: 1300` on `en-1440` and `140` on `ar-1440`).
+
+Acknowledged `M-143`, `M-144`, `M-145`, and `M-146`. Starting **`P3-T12` (`English default + admin Arabic switch`, `IN_PROGRESS | 1`)** now, followed by `P4-T2`.
+

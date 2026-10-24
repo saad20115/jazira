@@ -1,0 +1,14 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+$ git status --short
+
+$ git log -n 5 --oneline
+5c9358d fix(frontend): scope fast throttled IntroSplash exit to mobile viewports (P3-T4 R-15)
+a1d844a test(evidence): wait for stylesheet load in no-JS check and deduplicate rAF samples (P3-T4 R-14, R-15)
+274b32c fix(frontend): wait for computed display:flex in IntroSplash syncWhenPresent before scheduling throttled exit (P3-T4 R-15)
+ef5974e fix(frontend): sync IntroSplash on DOMContentLoaded and prevent hydration phase regression (P3-T4 R-15)
+d75211f fix(frontend): restore active-locale SSR font preloads and measure CLS before fullPage screenshot (P3-T4 R-15, R-19)
+[exit_code=0]
+

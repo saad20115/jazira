@@ -1,0 +1,152 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+
+=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3, R-4 SSR pre-paint, R-9 inert + focus, R-14 No-JS, R-15 <=1.6s Throttled Cap) ===
+{
+  "ssrContainsIntroStartEn": true,
+  "ssrContainsIntroStartAr": true,
+  "noJsVerification": {
+    "ar": {
+      "javaScriptEnabled": false,
+      "overlayVisibleNoJs": false,
+      "h1VisibleNoJs": true,
+      "primaryCtaVisibleNoJs": true
+    },
+    "en": {
+      "javaScriptEnabled": false,
+      "overlayVisibleNoJs": false,
+      "h1VisibleNoJs": true,
+      "primaryCtaVisibleNoJs": true
+    }
+  },
+  "introStateByLocale": {
+    "en": {
+      "startVisible": true,
+      "revealStateAttr": "reveal",
+      "htmlDataIntro": "active",
+      "overlayDisplay": "flex",
+      "overlayOpacity": "1",
+      "headerInert": true,
+      "homeContentInert": true,
+      "footerInert": true,
+      "fabInert": true,
+      "activeElementIsSkip": true
+    },
+    "ar": {
+      "startVisible": true,
+      "revealStateAttr": "reveal",
+      "htmlDataIntro": "active",
+      "overlayDisplay": "flex",
+      "overlayOpacity": "1",
+      "headerInert": true,
+      "homeContentInert": true,
+      "footerInert": true,
+      "fabInert": true,
+      "activeElementIsSkip": true
+    }
+  },
+  "videoMetricsByLocale": {
+    "en": {
+      "h1RenderedDuringIntro": true,
+      "totalElapsedMs": 809,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "ar": {
+      "h1RenderedDuringIntro": true,
+      "totalElapsedMs": 697,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    }
+  },
+  "throttledRafTimelineByLocale": {
+    "ar": {
+      "frameCount": 4,
+      "firstVisibleFrameMs": 1078,
+      "lastVisibleFrameMs": 1078,
+      "firstHiddenFrameMs": 1229,
+      "finalHtmlDataIntro": "seen",
+      "finalDisplay": "detached",
+      "sampledFrames": [
+        {
+          "tMs": 508,
+          "htmlIntro": null,
+          "display": "detached",
+          "opacity": 0
+        },
+        {
+          "tMs": 1040,
+          "htmlIntro": "active",
+          "display": "detached",
+          "opacity": 0
+        },
+        {
+          "tMs": 1078,
+          "htmlIntro": "active",
+          "display": "flex",
+          "opacity": 1
+        },
+        {
+          "tMs": 1229,
+          "htmlIntro": "seen",
+          "display": "none",
+          "opacity": 1
+        }
+      ]
+    },
+    "en": {
+      "frameCount": 5,
+      "firstVisibleFrameMs": 1233,
+      "lastVisibleFrameMs": 1332,
+      "firstHiddenFrameMs": 1363,
+      "finalHtmlDataIntro": "seen",
+      "finalDisplay": "detached",
+      "sampledFrames": [
+        {
+          "tMs": 518,
+          "htmlIntro": null,
+          "display": "detached",
+          "opacity": 0
+        },
+        {
+          "tMs": 1217,
+          "htmlIntro": "active",
+          "display": "detached",
+          "opacity": 0
+        },
+        {
+          "tMs": 1233,
+          "htmlIntro": "active",
+          "display": "flex",
+          "opacity": 1
+        },
+        {
+          "tMs": 1332,
+          "htmlIntro": "active",
+          "display": "flex",
+          "opacity": 0.09
+        },
+        {
+          "tMs": 1363,
+          "htmlIntro": "seen",
+          "display": "none",
+          "opacity": 1
+        }
+      ]
+    }
+  },
+  "visibleBeforeEscape": true,
+  "visibleAfterEscape": false,
+  "rmDataIntro": "seen",
+  "visibleWithReducedMotion": false
+}

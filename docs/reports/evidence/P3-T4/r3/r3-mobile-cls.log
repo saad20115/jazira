@@ -1,0 +1,248 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+
+=== R-3 & R-19 Throttled Cold-Cache Mobile CLS Verification (/ar and /en at 412x823, 4x CPU, Slow 4G, all layout-shift entries counted) ===
+{
+  "ar": {
+    "viewport": "412x823",
+    "cpuThrottlingRate": 4,
+    "network": "Slow 4G (150ms RTT, 1.6Mbps down, cacheDisabled=true)",
+    "totalClsAllEntries": 0.0114,
+    "totalClsWithoutInput": 0.00766,
+    "h1Height": 172,
+    "shifts": [
+      {
+        "value": 0.00374,
+        "hadRecentInput": true,
+        "startTime": 2446,
+        "sources": [
+          {
+            "node": "undefined",
+            "previousRect": {
+              "x": 16,
+              "y": 243.796875,
+              "width": 380,
+              "height": 140.203125,
+              "top": 243.796875,
+              "right": 396,
+              "bottom": 384,
+              "left": 16
+            },
+            "currentRect": {
+              "x": 16,
+              "y": 235.796875,
+              "width": 380,
+              "height": 140.203125,
+              "top": 235.796875,
+              "right": 396,
+              "bottom": 376,
+              "left": 16
+            }
+          },
+          {
+            "node": "undefined",
+            "previousRect": {
+              "x": 16,
+              "y": 392.203125,
+              "width": 380,
+              "height": 116.78125,
+              "top": 392.203125,
+              "right": 396,
+              "bottom": 508.984375,
+              "left": 16
+            },
+            "currentRect": {
+              "x": 16,
+              "y": 389.203125,
+              "width": 380,
+              "height": 116.78125,
+              "top": 389.203125,
+              "right": 396,
+              "bottom": 505.984375,
+              "left": 16
+            }
+          },
+          {
+            "node": "undefined",
+            "previousRect": {
+              "x": 16,
+              "y": 186.59375,
+              "width": 380,
+              "height": 83,
+              "top": 186.59375,
+              "right": 396,
+              "bottom": 269.59375,
+              "left": 16
+            },
+            "currentRect": {
+              "x": 16,
+              "y": 178.59375,
+              "width": 380,
+              "height": 83,
+              "top": 178.59375,
+              "right": 396,
+              "bottom": 261.59375,
+              "left": 16
+            }
+          },
+          {
+            "node": "SPAN.HVoFbW_eyebrow",
+            "previousRect": {
+              "x": 95.234375,
+              "y": 132,
+              "width": 221.546875,
+              "height": 31.59375,
+              "top": 132,
+              "right": 316.78125,
+              "bottom": 163.59375,
+              "left": 95.234375
+            },
+            "currentRect": {
+              "x": 102.375,
+              "y": 132,
+              "width": 207.25,
+              "height": 31.59375,
+              "top": 132,
+              "right": 309.625,
+              "bottom": 163.59375,
+              "left": 102.375
+            }
+          }
+        ]
+      },
+      {
+        "value": 0.00766,
+        "hadRecentInput": false,
+        "startTime": 3524,
+        "sources": [
+          {
+            "node": "undefined",
+            "previousRect": {
+              "x": 16,
+              "y": 235.796875,
+              "width": 380,
+              "height": 140.203125,
+              "top": 235.796875,
+              "right": 396,
+              "bottom": 376,
+              "left": 16
+            },
+            "currentRect": {
+              "x": 16,
+              "y": 235.796875,
+              "width": 380,
+              "height": 140.203125,
+              "top": 235.796875,
+              "right": 396,
+              "bottom": 376,
+              "left": 16
+            }
+          },
+          {
+            "node": "undefined",
+            "previousRect": {
+              "x": 16,
+              "y": 389.203125,
+              "width": 380,
+              "height": 116.78125,
+              "top": 389.203125,
+              "right": 396,
+              "bottom": 505.984375,
+              "left": 16
+            },
+            "currentRect": {
+              "x": 16,
+              "y": 389.203125,
+              "width": 380,
+              "height": 116.78125,
+              "top": 389.203125,
+              "right": 396,
+              "bottom": 505.984375,
+              "left": 16
+            }
+          },
+          {
+            "node": "undefined",
+            "previousRect": {
+              "x": 16,
+              "y": 178.59375,
+              "width": 380,
+              "height": 83,
+              "top": 178.59375,
+              "right": 396,
+              "bottom": 261.59375,
+              "left": 16
+            },
+            "currentRect": {
+              "x": 16,
+              "y": 178.59375,
+              "width": 380,
+              "height": 83,
+              "top": 178.59375,
+              "right": 396,
+              "bottom": 261.59375,
+              "left": 16
+            }
+          },
+          {
+            "node": "DIV.jb7jfG_wrapper",
+            "previousRect": {
+              "x": 30,
+              "y": 733,
+              "width": 248.6875,
+              "height": 60,
+              "top": 733,
+              "right": 278.6875,
+              "bottom": 793,
+              "left": 30
+            },
+            "currentRect": {
+              "x": 30,
+              "y": 733,
+              "width": 255.859375,
+              "height": 60,
+              "top": 733,
+              "right": 285.859375,
+              "bottom": 793,
+              "left": 30
+            }
+          },
+          {
+            "node": "A.iYV4-q_button",
+            "previousRect": {
+              "x": 96.8125,
+              "y": 603.78125,
+              "width": 218.125,
+              "height": 54.203125,
+              "top": 603.78125,
+              "right": 314.9375,
+              "bottom": 657.984375,
+              "left": 96.8125
+            },
+            "currentRect": {
+              "x": 102.8125,
+              "y": 603.78125,
+              "width": 206.375,
+              "height": 54.203125,
+              "top": 603.78125,
+              "right": 309.1875,
+              "bottom": 657.984375,
+              "left": 102.8125
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "en": {
+    "viewport": "412x823",
+    "cpuThrottlingRate": 4,
+    "network": "Slow 4G (150ms RTT, 1.6Mbps down, cacheDisabled=true)",
+    "totalClsAllEntries": 0,
+    "totalClsWithoutInput": 0,
+    "h1Height": 208,
+    "shifts": []
+  }
+}

@@ -1,0 +1,204 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+$ docker exec aljazira-db-1 sh -c "PGPASSWORD=\"$APP_DB_PASSWORD\" psql -U \"$APP_DB_USER\" -d \"$APP_DB_NAME\" -c \"DROP SCHEMA public CASCADE; CREATE SCHEMA public;\""
+NOTICE:  drop cascades to 164 other objects
+DETAIL:  drop cascades to type _locales
+drop cascades to type enum_users_role
+drop cascades to table users_sessions
+drop cascades to table users
+drop cascades to table media
+drop cascades to table media_locales
+drop cascades to table payload_kv
+drop cascades to table payload_locked_documents
+drop cascades to table payload_locked_documents_rels
+drop cascades to table payload_preferences
+drop cascades to table payload_preferences_rels
+drop cascades to table payload_migrations
+drop cascades to type enum_materials_system
+drop cascades to table videos
+drop cascades to table videos_locales
+drop cascades to table brands
+drop cascades to table brands_locales
+drop cascades to table stats
+drop cascades to table stats_locales
+drop cascades to table materials
+drop cascades to table materials_locales
+drop cascades to table materials_rels
+drop cascades to type enum_services_tier
+drop cascades to type enum_services_icon
+drop cascades to type enum_services_status
+drop cascades to type enum__services_v_version_tier
+drop cascades to type enum__services_v_version_icon
+drop cascades to type enum__services_v_version_status
+drop cascades to type enum__services_v_published_locale
+drop cascades to type enum_team_tier
+drop cascades to type enum_payload_jobs_log_task_slug
+drop cascades to type enum_payload_jobs_log_state
+drop cascades to type enum_payload_jobs_task_slug
+drop cascades to table services_highlights
+drop cascades to table services_highlights_locales
+drop cascades to table services
+drop cascades to table services_locales
+drop cascades to table _services_v_version_highlights
+drop cascades to table _services_v_version_highlights_locales
+drop cascades to table _services_v
+drop cascades to table _services_v_locales
+drop cascades to table team
+drop cascades to table team_locales
+drop cascades to table payload_jobs_log
+drop cascades to table payload_jobs
+drop cascades to type enum_projects_scope
+drop cascades to type enum_projects_category
+drop cascades to type enum_projects_execution_status
+drop cascades to type enum_projects_status
+drop cascades to type enum__projects_v_version_scope
+drop cascades to type enum__projects_v_version_category
+drop cascades to type enum__projects_v_version_status
+drop cascades to type enum__projects_v_published_locale
+drop cascades to table projects_scope
+drop cascades to table projects_details
+drop cascades to table projects_details_locales
+drop cascades to table projects_deliverables
+drop cascades to table projects_deliverables_locales
+drop cascades to table projects
+drop cascades to table projects_locales
+drop cascades to table projects_rels
+drop cascades to table _projects_v_version_scope
+drop cascades to table _projects_v_version_details
+drop cascades to table _projects_v_version_details_locales
+drop cascades to table _projects_v_version_deliverables
+drop cascades to table _projects_v_version_deliverables_locales
+drop cascades to table _projects_v
+drop cascades to table _projects_v_locales
+drop cascades to table _projects_v_rels
+drop cascades to table services_rels
+drop cascades to table _services_v_rels
+drop cascades to type enum_site_settings_social_platform
+drop cascades to type enum_link_type
+drop cascades to type enum_link_internal_route
+drop cascades to type enum_hp_int_sys_disc
+drop cascades to type enum_hp_int_sys_shot
+drop cascades to type enum_home_page_status
+drop cascades to type enum__home_page_v_version_status
+drop cascades to type enum__home_page_v_published_locale
+drop cascades to type enum_services_page_status
+drop cascades to type enum__services_page_v_version_status
+drop cascades to type enum__services_page_v_published_locale
+drop cascades to type enum_about_page_status
+drop cascades to type enum__about_page_v_version_status
+drop cascades to type enum__about_page_v_published_locale
+drop cascades to type enum_projects_page_status
+drop cascades to type enum__projects_page_v_version_status
+drop cascades to type enum__projects_page_v_published_locale
+drop cascades to type enum_contact_page_status
+drop cascades to type enum__contact_page_v_version_status
+drop cascades to type enum__contact_page_v_published_locale
+drop cascades to type enum_privacy_page_status
+drop cascades to type enum__privacy_page_v_version_status
+drop cascades to type enum__privacy_page_v_published_locale
+drop cascades to table site_socials
+drop cascades to table site_settings
+drop cascades to table site_settings_locales
+drop cascades to table nav_header
+drop cascades to table nav_header_locales
+drop cascades to table nav_ft_links
+and 64 other objects (see server log for list)
+DROP SCHEMA
+CREATE SCHEMA
+
+$ pnpm payload migrate:status
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[21:53:23] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean\src\migrations[39m
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│[37m [0m[01m                                               Name[0m │[37m [0m[01mBatch[0m │[37m [0m[01mRan[0m │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│[37m [0m[31m                20261021_074848_initial_users_media[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m20261022_120943_p2_t2_videos_brands_stats_materials[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m                20261022_140011_p2_t3_services_team[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m                     20261022_160652_p2_t4_projects[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m                      20261022_221250_p2_t5_globals[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m               20261022_231435_p2_t6_quote_requests[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m 20261023_005934_p2_t6_quote_requests_service_title[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+│[37m [0m[31m 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[0m │[37m [0m[31m     [0m │[37m [0m[31m No[0m │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[21:53:23] [32mINFO[39m: [36mDone.[39m
+
+$ pnpm payload migrate
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[21:53:31] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean\src\migrations[39m
+[21:53:31] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[21:53:31] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (113ms)[39m
+[21:53:31] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[21:53:31] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (65ms)[39m
+[21:53:31] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[21:53:31] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (127ms)[39m
+[21:53:31] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[21:53:31] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (113ms)[39m
+[21:53:31] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[21:53:32] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (329ms)[39m
+[21:53:32] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[21:53:32] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (31ms)[39m
+[21:53:32] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[21:53:32] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (5ms)[39m
+[21:53:32] [32mINFO[39m: [36mMigrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[21:53:32] [32mINFO[39m: [36mMigrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (24ms)[39m
+[21:53:32] [32mINFO[39m: [36mDone.[39m
+
+$ pnpm payload migrate:down
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[21:53:38] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean\src\migrations[39m
+[21:53:38] [32mINFO[39m: [36mRolling back batch 1 consisting of 8 migration(s).[39m
+[21:53:38] [32mINFO[39m: [36mMigrating down: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[21:53:38] [32mINFO[39m: [36mMigrated down:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (15ms)[39m
+[21:53:38] [32mINFO[39m: [36mMigrating down: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[21:53:38] [32mINFO[39m: [36mMigrated down:  20261023_005934_p2_t6_quote_requests_service_title (5ms)[39m
+[21:53:38] [32mINFO[39m: [36mMigrating down: 20261022_231435_p2_t6_quote_requests[39m
+[21:53:38] [32mINFO[39m: [36mMigrated down:  20261022_231435_p2_t6_quote_requests (10ms)[39m
+[21:53:39] [32mINFO[39m: [36mMigrating down: 20261022_221250_p2_t5_globals[39m
+[21:53:39] [32mINFO[39m: [36mMigrated down:  20261022_221250_p2_t5_globals (161ms)[39m
+[21:53:39] [32mINFO[39m: [36mMigrating down: 20261022_160652_p2_t4_projects[39m
+[21:53:39] [32mINFO[39m: [36mMigrated down:  20261022_160652_p2_t4_projects (32ms)[39m
+[21:53:39] [32mINFO[39m: [36mMigrating down: 20261022_140011_p2_t3_services_team[39m
+[21:53:39] [32mINFO[39m: [36mMigrated down:  20261022_140011_p2_t3_services_team (22ms)[39m
+[21:53:39] [32mINFO[39m: [36mMigrating down: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[21:53:39] [32mINFO[39m: [36mMigrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (24ms)[39m
+[21:53:39] [32mINFO[39m: [36mMigrating down: 20261021_074848_initial_users_media[39m
+[21:53:39] [32mINFO[39m: [36mMigrated down:  20261021_074848_initial_users_media (26ms)[39m
+[21:53:39] [32mINFO[39m: [36mDone.[39m
+
+$ pnpm payload migrate
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[21:53:45] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean\src\migrations[39m
+[21:53:45] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[21:53:45] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (84ms)[39m
+[21:53:45] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[21:53:45] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (44ms)[39m
+[21:53:45] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[21:53:45] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (70ms)[39m
+[21:53:45] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[21:53:46] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (81ms)[39m
+[21:53:46] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[21:53:46] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (296ms)[39m
+[21:53:46] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[21:53:46] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (15ms)[39m
+[21:53:46] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[21:53:46] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (4ms)[39m
+[21:53:46] [32mINFO[39m: [36mMigrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[21:53:46] [32mINFO[39m: [36mMigrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (14ms)[39m
+[21:53:46] [32mINFO[39m: [36mDone.[39m
+[exit_code=0]
+

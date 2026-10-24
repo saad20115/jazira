@@ -1,0 +1,15 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+
+=== CMS Live Roundtrip, R-2 Title+TitleAccent, R-7 Stats Bg & Section `enabled` Toggle Verification ===
+{
+  "draftLeakedToAnon": false,
+  "publishedTitleVisible": true,
+  "publishedTitleVisibleAr": true,
+  "partnersSectionHiddenWhenDisabled": true,
+  "statsPlainNavyWhenBgNull": true,
+  "partnersSectionRestored": true,
+  "statsBgRestored": true
+}

@@ -1,0 +1,19 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r3-clean
+$ git rev-parse HEAD
+5c9358ded2e274dcba8b9f59f6defd4e73f941d5
+
+install | start=2026-10-24T18:53:14.083Z | end=2026-10-24T18:53:15.938Z | exit=0 | cmd=pnpm install --frozen-lockfile
+migrate-up-down-up | start=2026-10-24T18:53:15.941Z | end=2026-10-24T18:53:46.546Z | exit=0 | cmd=docker exec aljazira-db-1 psql -c 'DROP SCHEMA public CASCADE; CREATE SCHEMA public;' && pnpm payload migrate:status && pnpm payload migrate && pnpm payload migrate:down && pnpm payload migrate
+migrate-status | start=2026-10-24T18:53:46.548Z | end=2026-10-24T18:53:53.675Z | exit=0 | cmd=pnpm payload migrate:status
+lint | start=2026-10-24T18:53:53.677Z | end=2026-10-24T18:54:41.397Z | exit=0 | cmd=pnpm lint
+typecheck | start=2026-10-24T18:54:41.399Z | end=2026-10-24T18:54:50.402Z | exit=0 | cmd=pnpm typecheck
+format-check | start=2026-10-24T18:54:50.404Z | end=2026-10-24T18:54:59.282Z | exit=0 | cmd=pnpm format:check
+tokens-check | start=2026-10-24T18:54:59.285Z | end=2026-10-24T18:55:00.048Z | exit=0 | cmd=pnpm tokens:check
+test | start=2026-10-24T18:55:00.053Z | end=2026-10-24T18:58:44.481Z | exit=0 | cmd=pnpm test
+build | start=2026-10-24T18:58:44.484Z | end=2026-10-24T18:59:33.235Z | exit=0 | cmd=pnpm build
+audit | start=2026-10-24T18:59:33.237Z | end=2026-10-24T18:59:35.414Z | exit=0 | cmd=pnpm audit --prod
+evidence-dev-styleguide | start=2026-10-24T18:59:54.195Z | end=2026-10-24T19:00:04.409Z | exit=0 | cmd=node scripts/evidence/p3-t4-evidence.mjs --mode=dev-styleguide http://localhost:3104
+evidence-prod-home | start=2026-10-24T19:00:09.031Z | end=2026-10-24T19:02:21.313Z | exit=0 | cmd=node scripts/evidence/p3-t4-evidence.mjs --mode=prod-home http://localhost:3105
+[exit_code=0]
+
