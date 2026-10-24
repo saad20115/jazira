@@ -124,7 +124,7 @@ describe('P3-T4 R2 Migration Integration (R-12, R-13) — 20261024_104400_p3_t4_
         INSERT INTO "_projects_page_v_locales" ("_parent_id", "_locale", "version_cta_title")
         VALUES
           (1, 'en', ${'Projects version CTA\nVersion accent with systems'}),
-          (1, 'ar', ${'عنوان مشاريع بسطر واحد فقط'})
+          (1, 'ar', ${'\nLeading newline with empty first line stays untouched'})
       `)
 
       // 3. Run up() and verify exact title & accent across all 6 tables
@@ -242,7 +242,7 @@ describe('P3-T4 R2 Migration Integration (R-12, R-13) — 20261024_104400_p3_t4_
       expect(projectsVersionRows.rows).toEqual([
         {
           _locale: 'ar',
-          version_cta_title: 'عنوان مشاريع بسطر واحد فقط',
+          version_cta_title: '\nLeading newline with empty first line stays untouched',
           version_cta_title_accent: null,
         },
         {
@@ -353,7 +353,7 @@ describe('P3-T4 R2 Migration Integration (R-12, R-13) — 20261024_104400_p3_t4_
       expect(projectsVersionDownRows.rows).toEqual([
         {
           _locale: 'ar',
-          version_cta_title: 'عنوان مشاريع بسطر واحد فقط',
+          version_cta_title: '\nLeading newline with empty first line stays untouched',
         },
         {
           _locale: 'en',

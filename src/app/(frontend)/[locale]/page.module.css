@@ -890,6 +890,10 @@
     padding-block-end: 48px;
   }
 
+  :global(:root[lang='ar']) .heroTitle {
+    min-block-size: calc(3 * var(--t-display-xl-lh));
+  }
+
   .heroGoldGlow {
     inline-size: 360px;
     block-size: 360px;

@@ -17,8 +17,8 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
   CREATE INDEX "home_page_stats_section_stats_section_background_image_idx" ON "home_page" USING btree ("stats_section_background_image_id");
   CREATE INDEX "_home_page_v_version_stats_section_version_stats_section_idx" ON "_home_page_v" USING btree ("version_stats_section_background_image_id");
 
-  -- Backfill hero_title / hero_title_accent on home_page_locales and _home_page_v_locales (R-2, R-12, R-13):
-  -- Split strictly on newline (chr(10)); leave any single-line value untouched; use POSIX '[[:space:]]+' (no E'\\s+').
+  -- Backfill hero_title / hero_title_accent on home_page_locales and _home_page_v_locales (R-2, R-12, R-13, R-25):
+  -- Split strictly on newline (chr(10)); skip rows whose first line is empty; leave any single-line value untouched; use POSIX '[[:space:]]+' (no E'\\s+').
   UPDATE "home_page_locales"
   SET
     "hero_title_accent" = NULLIF(
@@ -42,6 +42,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "hero_title" IS NOT NULL
     AND strpos("hero_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("hero_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "hero_title_accent" IS NULL
       OR btrim(regexp_replace("hero_title_accent", '[[:space:]]+', ' ', 'g')) = ''
@@ -70,12 +71,13 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "version_hero_title" IS NOT NULL
     AND strpos("version_hero_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("version_hero_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "version_hero_title_accent" IS NULL
       OR btrim(regexp_replace("version_hero_title_accent", '[[:space:]]+', ' ', 'g')) = ''
     );
 
-  -- Backfill cta_title / cta_title_accent on home_page, services_page, and projects_page (R-2, R-12, R-13)
+  -- Backfill cta_title / cta_title_accent on home_page, services_page, and projects_page (R-2, R-12, R-13, R-25)
   UPDATE "home_page_locales"
   SET
     "cta_title_accent" = NULLIF(
@@ -99,6 +101,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "cta_title" IS NOT NULL
     AND strpos("cta_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "cta_title_accent" IS NULL
       OR btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
@@ -127,6 +130,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "version_cta_title" IS NOT NULL
     AND strpos("version_cta_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("version_cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "version_cta_title_accent" IS NULL
       OR btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
@@ -155,6 +159,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "cta_title" IS NOT NULL
     AND strpos("cta_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "cta_title_accent" IS NULL
       OR btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
@@ -183,6 +188,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "version_cta_title" IS NOT NULL
     AND strpos("version_cta_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("version_cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "version_cta_title_accent" IS NULL
       OR btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
@@ -211,6 +217,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "cta_title" IS NOT NULL
     AND strpos("cta_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "cta_title_accent" IS NULL
       OR btrim(regexp_replace("cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''
@@ -239,6 +246,7 @@ export async function up({ db }: MigrateUpArgs): Promise<void> {
     )
   WHERE "version_cta_title" IS NOT NULL
     AND strpos("version_cta_title", chr(10)) > 0
+    AND btrim(regexp_replace(split_part("version_cta_title", chr(10), 1), '[[:space:]]+', ' ', 'g')) <> ''
     AND (
       "version_cta_title_accent" IS NULL
       OR btrim(regexp_replace("version_cta_title_accent", '[[:space:]]+', ' ', 'g')) = ''

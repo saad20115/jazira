@@ -231,9 +231,7 @@ async function seedMinimalHomeAndSettings(baseUrl, adminToken, arabicEnabled) {
         eyebrow: 'WHO WE ARE',
         title: 'An Integrated MEP Engineering Partner Built on Precision',
         text: makeLexical(
-          [
-            'Al Jazira for Imdad Smart Co. is a Riyadh-based engineering and contracting company.',
-          ],
+          ['Al Jazira for Imdad Smart Co. is a Riyadh-based engineering and contracting company.'],
           'ltr',
         ),
         button: {
@@ -270,7 +268,9 @@ async function seedMinimalHomeAndSettings(baseUrl, adminToken, arabicEnabled) {
         eyebrow: 'من نحن',
         title: 'شريك هندسي متكامل في أنظمة الكهروميكانيك',
         text: makeLexical(
-          ['شركة الجزيرة للإمداد الذكي شركة سعودية متخصصة في مقاولات الكهروميكانيك والأنظمة الذكية.'],
+          [
+            'شركة الجزيرة للإمداد الذكي شركة سعودية متخصصة في مقاولات الكهروميكانيك والأنظمة الذكية.',
+          ],
           'rtl',
         ),
         button: {
@@ -285,10 +285,7 @@ async function seedMinimalHomeAndSettings(baseUrl, adminToken, arabicEnabled) {
 async function formatHttpProbe(baseUrl, reqPath, options = {}) {
   const url = `${baseUrl}${reqPath}`
   const res = await fetch(url, { redirect: 'manual', ...options })
-  const lines = [
-    `$ curl -I "${url}"`,
-    `HTTP/1.1 ${String(res.status)} ${res.statusText}`,
-  ]
+  const lines = [`$ curl -I "${url}"`, `HTTP/1.1 ${String(res.status)} ${res.statusText}`]
   for (const headerName of ['location', 'content-type', 'x-nextjs-cache', 'cache-control']) {
     const val = res.headers.get(headerName)
     if (val) {
@@ -304,10 +301,7 @@ async function main() {
     process.cwd(),
     process.argv[3] || 'docs/reports/evidence/P3-T12/r1',
   )
-  const phase3Dir = path.resolve(
-    process.cwd(),
-    process.argv[4] || 'docs/reports/phase-3/P3-T12/r1',
-  )
+  const phase3Dir = path.resolve(process.cwd(), process.argv[4] || 'docs/reports/phase-3/P3-T12/r1')
 
   fs.mkdirSync(evidenceDir, { recursive: true })
   fs.mkdirSync(phase3Dir, { recursive: true })
@@ -354,13 +348,15 @@ async function main() {
 
   const probeEnOff = await formatHttpProbe(baseUrl, '/en')
   const enOffHtml = await probeEnOff.res.text()
-  const enOffHreflangs = [...enOffHtml.matchAll(/<link[^>]*hrefLang="([^"]+)"[^>]*href="([^"]+)"[^>]*>/gi)].map(
-    (m) => ({ hreflang: m[1], href: m[2] }),
-  )
+  const enOffHreflangs = [
+    ...enOffHtml.matchAll(/<link[^>]*hrefLang="([^"]+)"[^>]*href="([^"]+)"[^>]*>/gi),
+  ].map((m) => ({ hreflang: m[1], href: m[2] }))
   const enOffJsonLdMatch = enOffHtml.match(
     /<script[^>]*type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/i,
   )
-  const enOffOgLocaleMatch = enOffHtml.match(/<meta[^>]*property="og:locale"[^>]*content="([^"]+)"/i)
+  const enOffOgLocaleMatch = enOffHtml.match(
+    /<meta[^>]*property="og:locale"[^>]*content="([^"]+)"/i,
+  )
 
   curlLogLines.push(
     probeEnOff.textBlock,
@@ -396,7 +392,9 @@ async function main() {
   )
 
   if (arabicLinksOnEn.length > 0) {
-    throw new Error(`Found unexpected /ar links on /en when arabicEnabled=false: ${JSON.stringify(arabicLinksOnEn)}`)
+    throw new Error(
+      `Found unexpected /ar links on /en when arabicEnabled=false: ${JSON.stringify(arabicLinksOnEn)}`,
+    )
   }
 
   for (const href of uniqueHrefsOnEn) {
@@ -480,7 +478,9 @@ async function main() {
     `has_draft_banner: ${String(arDraftPreviewHtml.includes('/api/preview/exit'))}`,
   )
   if (arDraftPreviewRes.status !== 200 || !arDraftPreviewHtml.includes('lang="ar"')) {
-    throw new Error(`Expected editor draft preview of /ar to return 200 RTL, got ${String(arDraftPreviewRes.status)}`)
+    throw new Error(
+      `Expected editor draft preview of /ar to return 200 RTL, got ${String(arDraftPreviewRes.status)}`,
+    )
   }
 
   // 3b. Live Preview iframe request (Sec-Fetch-Dest: iframe) as logged-in editor
@@ -498,7 +498,9 @@ async function main() {
     `html_open_tag: ${(arLivePreviewHtml.match(/<html[^>]*>/i) || [''])[0]}`,
   )
   if (arLivePreviewRes.status !== 200 || !arLivePreviewHtml.includes('lang="ar"')) {
-    throw new Error(`Expected editor Live Preview iframe of /ar to return 200 RTL, got ${String(arLivePreviewRes.status)}`)
+    throw new Error(
+      `Expected editor Live Preview iframe of /ar to return 200 RTL, got ${String(arLivePreviewRes.status)}`,
+    )
   }
 
   // =========================================================================
@@ -536,17 +538,18 @@ async function main() {
   )
 
   if (immediateArOn.res.status !== 200 || !immediateArOnHtml.includes('dir="rtl"')) {
-    throw new Error(`Expected immediate /ar request after enabling to return 200 RTL, got ${String(immediateArOn.res.status)}`)
+    throw new Error(
+      `Expected immediate /ar request after enabling to return 200 RTL, got ${String(immediateArOn.res.status)}`,
+    )
   }
   if (!immediateEnOnHtml.includes('href="/ar"')) {
-    throw new Error('Expected immediate /en request after enabling to include language switcher href="/ar"')
+    throw new Error(
+      'Expected immediate /en request after enabling to include language switcher href="/ar"',
+    )
   }
 
   // Record State 2 in curl-headers-both-states.log and sitemap-both-states.log
-  curlLogLines.push(
-    '=== STATE 2: site-settings.arabicEnabled = true (Enabled by Admin) ===',
-    '',
-  )
+  curlLogLines.push('=== STATE 2: site-settings.arabicEnabled = true (Enabled by Admin) ===', '')
   const probeRootOn = await formatHttpProbe(baseUrl, '/')
   curlLogLines.push(probeRootOn.textBlock, '')
   curlLogLines.push(
@@ -679,7 +682,9 @@ async function main() {
       `Editor UI /admin/globals/site-settings #field-arabicEnabled isDisabled(): ${String(isEditorCheckboxDisabled)}`,
     )
     if (!isEditorCheckboxDisabled) {
-      throw new Error('Expected #field-arabicEnabled to be disabled (read-only) for editor in Admin UI')
+      throw new Error(
+        'Expected #field-arabicEnabled to be disabled (read-only) for editor in Admin UI',
+      )
     }
     await saveCompressedPng(
       await editorPage.screenshot({ fullPage: false }),

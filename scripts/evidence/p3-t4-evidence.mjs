@@ -616,6 +616,7 @@ async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
     method: 'POST',
     locale: 'ar',
     body: {
+      arabicEnabled: true,
       companyName: 'شركة الجزيرة للإمداد الذكي',
       tagline: 'مقاولات الأعمال الكهروميكانيكية · مكافحة الحريق · الأنظمة الذكية',
       footerText:
@@ -1309,26 +1310,41 @@ export async function runP3T4Evidence({
         const revealPage = await revealCtx.newPage()
         await revealPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
         const revealIntro = revealPage.locator('[data-component="intro-splash"]')
-        await revealPage
-          .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
-          .waitFor({ state: 'visible', timeout: 1500 })
+        await revealIntro.waitFor({ state: 'visible', timeout: 1500 })
+        await revealPage.waitForFunction(
+          () => {
+            const logo = document.querySelector(
+              '[data-component="intro-splash"] [class*="logoWrap"]',
+            )
+            const header = document.querySelector('header')
+            const logoOpacity = logo ? Number(window.getComputedStyle(logo).opacity) : 0
+            return logoOpacity >= 0.99 && Boolean(header?.hasAttribute('inert'))
+          },
+          { timeout: 1500 },
+        )
 
-        const revealStateAttr = await revealIntro.getAttribute('data-intro-state')
         const hydratedA11yCheck = await revealPage.evaluate(() => {
           const header = document.querySelector('header')
           const homeContent = document.querySelector('[data-home-content="true"]')
           const footer = document.querySelector('footer')
           const fab = document.querySelector('[data-component="whatsapp-fab"]')
+          const logo = document.querySelector('[data-component="intro-splash"] [class*="logoWrap"]')
+          const overlay = document.querySelector('[data-component="intro-splash"]')
           return {
             headerInert: Boolean(header?.hasAttribute('inert')),
             homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
             footerInert: Boolean(footer?.hasAttribute('inert')),
             fabInert: Boolean(fab?.hasAttribute('inert')),
             activeElementIsSkip: document.activeElement?.getAttribute('data-intro-skip') === 'true',
+            revealLogoOpacity: logo
+              ? Number(Number(window.getComputedStyle(logo).opacity).toFixed(2))
+              : 0,
+            revealOverlayOpacity: overlay
+              ? Number(Number(window.getComputedStyle(overlay).opacity).toFixed(2))
+              : 0,
           }
         })
 
-        await revealPage.waitForTimeout(60)
         const revealBuf = await revealPage.screenshot()
         await revealCtx.close()
 
@@ -1337,7 +1353,6 @@ export async function runP3T4Evidence({
 
         introStateByLocale[loc] = {
           startVisible,
-          revealStateAttr,
           ...initialDomCheck,
           ...hydratedA11yCheck,
         }
@@ -1367,190 +1382,324 @@ export async function runP3T4Evidence({
         )
       }
 
-      // 2d. Record uninterrupted live intro videos on fresh sessions (/en and /ar) and measure duration
+      // 2d. Record uninterrupted live intro .webm videos at each width (412, 768, 1440) in /en and /ar
+      const videoViewports = [
+        {
+          label: '412',
+          width: 412,
+          height: 823,
+          isMobile: true,
+          hasTouch: true,
+          deviceScaleFactor: 1.75,
+        },
+        {
+          label: '768',
+          width: 768,
+          height: 1024,
+          isMobile: false,
+          hasTouch: true,
+          deviceScaleFactor: 1,
+        },
+        {
+          label: '1440',
+          width: 1440,
+          height: 900,
+          isMobile: false,
+          hasTouch: false,
+          deviceScaleFactor: 1,
+        },
+      ]
       const videoMetricsByLocale = {}
-      for (const loc of ['en', 'ar']) {
-        const videoTmpDir = path.join(reportsPhase3Dir, `_video_tmp_${loc}`)
-        fs.mkdirSync(videoTmpDir, { recursive: true })
-        const videoCtx = await browser.newContext({
-          viewport: { width: 1440, height: 900 },
-          recordVideo: { dir: videoTmpDir, size: { width: 1440, height: 900 } },
-        })
-        const videoPage = await videoCtx.newPage()
-        await videoPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
-        const introLocator = videoPage.locator('[data-component="intro-splash"]')
-        await introLocator.waitFor({ state: 'visible', timeout: 1500 })
-        const t0 = Date.now()
+      const videoFilesByWidthAndLocale = {}
+      for (const vvp of videoViewports) {
+        for (const loc of ['en', 'ar']) {
+          const videoTmpDir = path.join(reportsPhase3Dir, `_video_tmp_${vvp.label}_${loc}`)
+          fs.mkdirSync(videoTmpDir, { recursive: true })
+          const videoCtx = await browser.newContext({
+            viewport: { width: vvp.width, height: vvp.height },
+            isMobile: vvp.isMobile,
+            hasTouch: vvp.hasTouch,
+            deviceScaleFactor: vvp.deviceScaleFactor,
+            recordVideo: { dir: videoTmpDir, size: { width: vvp.width, height: vvp.height } },
+          })
+          const videoPage = await videoCtx.newPage()
+          await videoPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+          const introLocator = videoPage.locator('[data-component="intro-splash"]')
+          await introLocator.waitFor({ state: 'visible', timeout: 1500 })
+          const t0 = Date.now()
 
-        const h1RenderedDuringIntro = await videoPage.evaluate(() => {
-          const h1 = document.querySelector('h1')
-          return Boolean(h1 && h1.textContent && h1.textContent.trim().length > 0)
-        })
+          const h1RenderedDuringIntro = await videoPage.evaluate(() => {
+            const h1 = document.querySelector('h1')
+            return Boolean(h1 && h1.textContent && h1.textContent.trim().length > 0)
+          })
 
-        await introLocator.waitFor({ state: 'detached', timeout: 2000 })
-        const totalElapsedMs = Date.now() - t0
-        const afterDismissCheck = await videoPage.evaluate(() => ({
-          storageAfterFirstLoad: window.sessionStorage.getItem('aljazira_intro_seen'),
-          headerInertAfterDismiss: Boolean(document.querySelector('header')?.hasAttribute('inert')),
-          homeContentInertAfterDismiss: Boolean(
-            document.querySelector('[data-home-content="true"]')?.hasAttribute('inert'),
-          ),
-        }))
+          await introLocator.waitFor({ state: 'hidden', timeout: 2500 })
+          const totalElapsedMs = Date.now() - t0
+          const afterDismissCheck = await videoPage.evaluate(() => ({
+            storageAfterFirstLoad: window.sessionStorage.getItem('aljazira_intro_seen'),
+            headerInertAfterDismiss: Boolean(
+              document.querySelector('header')?.hasAttribute('inert'),
+            ),
+            homeContentInertAfterDismiss: Boolean(
+              document.querySelector('[data-home-content="true"]')?.hasAttribute('inert'),
+            ),
+          }))
 
-        // Reload in same session -> intro must NOT appear again (suppressed pre-paint via html[data-intro="seen"])
-        await videoPage.reload({ waitUntil: 'domcontentloaded' })
-        const reloadCheck = await videoPage.evaluate(() => {
-          const overlay = document.querySelector('[data-component="intro-splash"]')
-          return {
-            htmlDataIntroOnReload: document.documentElement.dataset.intro ?? null,
-            overlayDisplayOnReload: overlay ? window.getComputedStyle(overlay).display : 'none',
+          // Reload in same session -> intro must NOT appear again (suppressed pre-paint via html[data-intro="seen"])
+          await videoPage.reload({ waitUntil: 'domcontentloaded' })
+          const reloadCheck = await videoPage.evaluate(() => {
+            const overlay = document.querySelector('[data-component="intro-splash"]')
+            return {
+              htmlDataIntroOnReload: document.documentElement.dataset.intro ?? null,
+              overlayDisplayOnReload: overlay ? window.getComputedStyle(overlay).display : 'none',
+            }
+          })
+          await videoPage.waitForTimeout(150)
+          const visibleOnSecondVisit = await introLocator.isVisible().catch(() => false)
+
+          const recordedVideo = videoPage.video()
+          await videoPage.close()
+          await videoCtx.close()
+          const widthVideoName = `intro-${vvp.label}-${loc}.webm`
+          const widthVideoPath = path.join(reportsPhase3Dir, widthVideoName)
+          if (recordedVideo) {
+            const videoSrcPath = await recordedVideo.path()
+            fs.copyFileSync(videoSrcPath, widthVideoPath)
+            if (vvp.width === 1440) {
+              fs.copyFileSync(videoSrcPath, path.join(reportsPhase3Dir, `intro-${loc}.webm`))
+            }
           }
-        })
-        await videoPage.waitForTimeout(150)
-        const visibleOnSecondVisit = await introLocator.isVisible().catch(() => false)
+          fs.rmSync(videoTmpDir, { recursive: true, force: true })
 
-        const recordedVideo = videoPage.video()
-        await videoPage.close()
-        await videoCtx.close()
-        if (recordedVideo) {
-          const videoSrcPath = await recordedVideo.path()
-          const shortNamePath = path.join(reportsPhase3Dir, `intro-${loc}.webm`)
-          fs.copyFileSync(videoSrcPath, shortNamePath)
-        }
-        fs.rmSync(videoTmpDir, { recursive: true, force: true })
-
-        videoMetricsByLocale[loc] = {
-          h1RenderedDuringIntro,
-          totalElapsedMs,
-          ...afterDismissCheck,
-          ...reloadCheck,
-          visibleOnSecondVisit,
+          videoFilesByWidthAndLocale[`${vvp.label}-${loc}`] = {
+            file: widthVideoName,
+            totalElapsedMs,
+            h1RenderedDuringIntro,
+            ...afterDismissCheck,
+            ...reloadCheck,
+            visibleOnSecondVisit,
+          }
+          if (vvp.width === 1440) {
+            videoMetricsByLocale[loc] = videoFilesByWidthAndLocale[`${vvp.label}-${loc}`]
+          }
         }
       }
 
-      // 2e. R-15 Verification: Throttled first-visit rAF timeline (`412x823`, `4x CPU`, `Slow 4G`, `cacheDisabled=true`)
-      //     proving the overlay is gone (`display === 'none'` or detached or `opacity <= 0.05`) by `<= 1600 ms` from `navigationStart` (`performance.now()`)
-      //     First warm Next.js `.next/cache/images` at 412x823 @ 1.75x so server-side sharp resizing does not skew `/ar` vs `/en`.
-      for (const warmLoc of ['ar', 'en']) {
-        const warmCtx = await browser.newContext({
-          viewport: { width: 412, height: 823 },
-          isMobile: true,
-          hasTouch: true,
-          deviceScaleFactor: 1.75,
-        })
-        const warmPage = await warmCtx.newPage()
-        await warmPage.goto(`${baseUrl}/${warmLoc}`, { waitUntil: 'networkidle' })
-        await warmCtx.close()
+      // 2e. R-22 & R-23 Full 36-run rAF Timeline Proof:
+      //     Viewports: 412x823, 768x1024, 1440x900
+      //     Modes: unthrottled, throttled (4x CPU, Slow 4G: 150ms RTT, 1.6Mbps down, cacheDisabled=true)
+      //     Locales: ar, en
+      //     Runs: 3 runs each (3 * 2 * 2 * 3 = 36 runs total)
+      //     First warm Next.js `.next/cache/images` at 412, 768, and 1440 so server-side image resizing is cached.
+      for (const vvp of videoViewports) {
+        for (const warmLoc of ['ar', 'en']) {
+          const warmCtx = await browser.newContext({
+            viewport: { width: vvp.width, height: vvp.height },
+            isMobile: vvp.isMobile,
+            hasTouch: vvp.hasTouch,
+            deviceScaleFactor: vvp.deviceScaleFactor,
+          })
+          const warmPage = await warmCtx.newPage()
+          await warmPage.goto(`${baseUrl}/${warmLoc}`, { waitUntil: 'networkidle' })
+          await warmCtx.close()
+        }
       }
 
-      const throttledRafTimelineByLocale = {}
-      for (const loc of ['ar', 'en']) {
-        const thCtx = await browser.newContext({
-          viewport: { width: 412, height: 823 },
-          isMobile: true,
-          hasTouch: true,
-          deviceScaleFactor: 1.75,
-        })
-        await thCtx.addInitScript(() => {
-          window.__aljaziraIntroFrames = []
-          let moAttached = false
-          const recordFrame = () => {
-            if (!moAttached && document.documentElement && typeof MutationObserver === 'function') {
-              moAttached = true
-              const mo = new MutationObserver(() => {
-                recordFrame()
+      const rafMatrixRuns = []
+      for (const vvp of videoViewports) {
+        for (const throttleMode of ['unthrottled', 'throttled']) {
+          for (const loc of ['ar', 'en']) {
+            for (let runIndex = 1; runIndex <= 3; runIndex += 1) {
+              const runCtx = await browser.newContext({
+                viewport: { width: vvp.width, height: vvp.height },
+                isMobile: vvp.isMobile,
+                hasTouch: vvp.hasTouch,
+                deviceScaleFactor: vvp.deviceScaleFactor,
               })
-              mo.observe(document.documentElement, {
-                attributes: true,
-                attributeFilter: ['data-intro', 'data-intro-phase'],
+              await runCtx.addInitScript(() => {
+                window.__aljaziraRafAll = []
+                const sample = () => {
+                  const now = Math.round(performance.now())
+                  const htmlIntro = document.documentElement?.dataset?.intro ?? null
+                  const overlay = document.querySelector('[data-component="intro-splash"]')
+                  const logo = document.querySelector(
+                    '[data-component="intro-splash"] [class*="logoWrap"]',
+                  )
+                  const style = overlay ? window.getComputedStyle(overlay) : null
+                  const logoStyle = logo ? window.getComputedStyle(logo) : null
+                  const display = style ? style.display : 'none'
+                  const visibility = style ? style.visibility : 'hidden'
+                  const overlayOpacity = style ? Number(Number(style.opacity).toFixed(3)) : 0
+                  const logoOpacity = logoStyle ? Number(Number(logoStyle.opacity).toFixed(3)) : 0
+                  const overlayVisible =
+                    display === 'flex' && visibility !== 'hidden' && overlayOpacity > 0.01
+                  window.__aljaziraRafAll.push({
+                    tMs: now,
+                    htmlIntro,
+                    display,
+                    visibility,
+                    overlayOpacity,
+                    logoOpacity,
+                    overlayVisible,
+                  })
+                  if (now < 2700) {
+                    requestAnimationFrame(sample)
+                  }
+                }
+                requestAnimationFrame(sample)
+              })
+
+              const runPage = await runCtx.newPage()
+              if (throttleMode === 'throttled') {
+                const cdp = await runCtx.newCDPSession(runPage)
+                await cdp.send('Network.enable')
+                await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
+                await cdp.send('Network.emulateNetworkConditions', {
+                  offline: false,
+                  latency: 150,
+                  downloadThroughput: Math.floor((1.6 * 1024 * 1024) / 8),
+                  uploadThroughput: Math.floor((750 * 1024) / 8),
+                })
+                await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
+              }
+
+              await runPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+              await runPage.waitForTimeout(2600)
+
+              const runSummary = await runPage.evaluate(() => {
+                const frames = window.__aljaziraRafAll || []
+                const decision = window.__aljaziraIntroDecision || null
+                const visibleFrames = frames.filter((f) => f.overlayVisible)
+                const firstVisible = visibleFrames[0] || null
+                const lastVisible = visibleFrames[visibleFrames.length - 1] || null
+                const hiddenFrame = firstVisible
+                  ? frames.find((f) => f.tMs > firstVisible.tMs && !f.overlayVisible) || null
+                  : null
+                const logoFullFrames = visibleFrames.filter((f) => f.logoOpacity >= 0.99)
+                const logoFirstFull = logoFullFrames[0] || null
+                const logoLastFull = logoFullFrames[logoFullFrames.length - 1] || null
+
+                // R-23 Check 1: once logo reaches >= 0.99 while overlay is visible, does it ever drop < 0.95?
+                let logoRestartCount = 0
+                if (logoFirstFull) {
+                  for (const f of visibleFrames) {
+                    if (f.tMs > logoFirstFull.tMs && f.logoOpacity < 0.95) {
+                      logoRestartCount += 1
+                    }
+                  }
+                }
+
+                // R-23 Check 2: once overlay starts fading out (< 0.95), does overlayOpacity ever bounce back up?
+                let overlayBounceCount = 0
+                let fadeStarted = false
+                let minOverlayOpacityDuringFade = 1
+                if (firstVisible) {
+                  for (const f of frames) {
+                    if (f.tMs < firstVisible.tMs) continue
+                    const effOpacity = f.overlayVisible ? f.overlayOpacity : 0
+                    if (effOpacity < 0.95) {
+                      fadeStarted = true
+                    }
+                    if (fadeStarted) {
+                      if (effOpacity > minOverlayOpacityDuringFade + 0.02) {
+                        overlayBounceCount += 1
+                      }
+                      if (effOpacity < minOverlayOpacityDuringFade) {
+                        minOverlayOpacityDuringFade = effOpacity
+                      }
+                    }
+                  }
+                }
+
+                const overlayNow = document.querySelector('[data-component="intro-splash"]')
+                const styleNow = overlayNow ? window.getComputedStyle(overlayNow) : null
+                const finalOverlayVisible = Boolean(
+                  styleNow &&
+                  styleNow.display !== 'none' &&
+                  styleNow.visibility !== 'hidden' &&
+                  Number(styleNow.opacity) > 0.01,
+                )
+                const finalInertCount = document.querySelectorAll('[inert]').length
+
+                return {
+                  decision,
+                  firstVisibleMs: firstVisible ? firstVisible.tMs : null,
+                  logoFullyVisibleStartMs: logoFirstFull ? logoFirstFull.tMs : null,
+                  logoFullyVisibleEndMs: logoLastFull ? logoLastFull.tMs : null,
+                  logoFullyVisibleDurationMs:
+                    logoFirstFull && logoLastFull ? logoLastFull.tMs - logoFirstFull.tMs : 0,
+                  lastVisibleMs: lastVisible ? lastVisible.tMs : null,
+                  hiddenMs: hiddenFrame ? hiddenFrame.tMs : null,
+                  durationFromFirstVisibleMs:
+                    firstVisible && hiddenFrame ? hiddenFrame.tMs - firstVisible.tMs : null,
+                  visibleFrameCount: visibleFrames.length,
+                  totalRafFrames: frames.length,
+                  logoRestartCount,
+                  overlayBounceCount,
+                  finalHtmlDataIntro: document.documentElement.dataset.intro ?? null,
+                  finalOverlayVisible,
+                  finalInertCount,
+                }
+              })
+
+              await runCtx.close()
+              rafMatrixRuns.push({
+                viewport: `${vvp.width}x${vvp.height}`,
+                width: vvp.width,
+                mode: throttleMode,
+                locale: loc,
+                run: runIndex,
+                ...runSummary,
               })
             }
+          }
+        }
+      }
+
+      // 2e-bis. Explicit verification of the > 1.2s late-first-paint skip rule (CTO decision item 4)
+      const lateFirstPaintSkipByLocale = {}
+      for (const loc of ['ar', 'en']) {
+        const lateCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        await lateCtx.addInitScript(() => {
+          window.__aljaziraLateCheckFrames = []
+          const sample = () => {
             const now = Math.round(performance.now())
-            const htmlIntro = document.documentElement?.dataset?.intro ?? null
             const overlay = document.querySelector('[data-component="intro-splash"]')
             const style = overlay ? window.getComputedStyle(overlay) : null
-            const display = overlay ? style.display : 'detached'
-            const opacity = overlay ? Number(Number(style.opacity).toFixed(2)) : 0
-            const prev = window.__aljaziraIntroFrames[window.__aljaziraIntroFrames.length - 1]
-            if (
-              !prev ||
-              prev.htmlIntro !== htmlIntro ||
-              prev.display !== display ||
-              Math.abs(prev.opacity - opacity) >= 0.05
-            ) {
-              window.__aljaziraIntroFrames.push({
-                tMs: now,
-                htmlIntro,
-                display,
-                opacity,
-              })
-            }
-            return now
-          }
-          const sample = () => {
-            const now = recordFrame()
-            if (now < 2200) {
+            const visible = Boolean(
+              style &&
+              style.display === 'flex' &&
+              style.visibility !== 'hidden' &&
+              Number(style.opacity) > 0.01,
+            )
+            window.__aljaziraLateCheckFrames.push({ tMs: now, visible })
+            if (now < 2000) {
               requestAnimationFrame(sample)
             }
           }
           requestAnimationFrame(sample)
-          const intervalId = setInterval(() => {
-            if (recordFrame() >= 2200) {
-              clearInterval(intervalId)
-            }
-          }, 25)
-          window.addEventListener(
-            'DOMContentLoaded',
-            () => {
-              recordFrame()
-            },
-            { once: true },
-          )
         })
-        const thPage = await thCtx.newPage()
-        const cdp = await thCtx.newCDPSession(thPage)
-        await cdp.send('Network.enable')
-        await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
-        await cdp.send('Network.emulateNetworkConditions', {
-          offline: false,
-          latency: 150,
-          downloadThroughput: Math.floor((1.6 * 1024 * 1024) / 8),
-          uploadThroughput: Math.floor((750 * 1024) / 8),
+        const latePage = await lateCtx.newPage()
+        let delayedFirstCss = false
+        await latePage.route('**/*.css*', async (route) => {
+          if (!delayedFirstCss) {
+            delayedFirstCss = true
+            await new Promise((resolve) => setTimeout(resolve, 1300))
+          }
+          await route.continue()
         })
-        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
-
-        await thPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
-        await thPage.waitForTimeout(2300)
-
-        const timeline = await thPage.evaluate(() => {
-          const frames = window.__aljaziraIntroFrames || []
-          const firstVisible = frames.find((f) => f.display === 'flex' && f.opacity > 0) || null
-          const lastVisible =
-            [...frames].reverse().find((f) => f.display === 'flex' && f.opacity > 0.05) || null
-          const firstHiddenAfterVisible = firstVisible
-            ? frames.find(
-                (f) =>
-                  f.tMs > firstVisible.tMs &&
-                  (f.display === 'none' || f.display === 'detached' || f.opacity <= 0.05),
-              ) || null
-            : null
-          const overlayNow = document.querySelector('[data-component="intro-splash"]')
-          const finalDisplay = overlayNow ? window.getComputedStyle(overlayNow).display : 'detached'
+        await latePage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        await latePage.waitForTimeout(300)
+        const lateResult = await latePage.evaluate(() => {
+          const frames = window.__aljaziraLateCheckFrames || []
           return {
-            frameCount: frames.length,
-            firstVisibleFrameMs: firstVisible?.tMs ?? null,
-            lastVisibleFrameMs: lastVisible?.tMs ?? null,
-            firstHiddenFrameMs: firstHiddenAfterVisible?.tMs ?? null,
-            finalHtmlDataIntro: document.documentElement.dataset.intro ?? null,
-            finalDisplay,
-            sampledFrames:
-              frames.length <= 40
-                ? frames
-                : frames.filter((_, idx) => idx % 2 === 0 || idx === frames.length - 1),
+            decision: window.__aljaziraIntroDecision || null,
+            htmlDataIntro: document.documentElement.dataset.intro ?? null,
+            visibleFrameCount: frames.filter((f) => f.visible).length,
           }
         })
-        throttledRafTimelineByLocale[loc] = timeline
-        await thCtx.close()
+        lateFirstPaintSkipByLocale[loc] = lateResult
+        await lateCtx.close()
       }
 
       // 2f. Verify Escape key skip in a fresh session
@@ -1586,15 +1735,27 @@ export async function runP3T4Evidence({
         noJsVerification,
         introStateByLocale,
         videoMetricsByLocale,
-        throttledRafTimelineByLocale,
+        videoFilesByWidthAndLocale,
+        rafMatrixRuns,
+        lateFirstPaintSkipByLocale,
         visibleBeforeEscape,
         visibleAfterEscape,
         rmDataIntro,
         visibleWithReducedMotion,
       }
+      const rafTableLines = [
+        '| # | Viewport | Mode | Locale | Run | Decision (`nowMs` / `delayMs`) | First Visible (ms) | Logo `opacity=1` Start..End (`duration` ms) | Hidden (ms) | Visible Duration (ms) | Visible Frames / Total rAF | Logo Restarts / Bounces |',
+        '|---|---|---|---|---|---|---|---|---|---|---|---|',
+        ...rafMatrixRuns.map(
+          (r, i) =>
+            `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.decision?.action ?? 'n/a'}\` (\`${r.decision?.nowMs ?? 'n/a'}ms\` / \`${r.decision?.delayMs ?? 0}ms\`) | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
+        ),
+      ]
       const introLog = [
         headerBlock,
-        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3, R-4 SSR pre-paint, R-9 inert + focus, R-14 No-JS, R-15 <=1.6s Throttled Cap) ===',
+        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO Round 4 Pure-CSS Decision, R-22 36-Run Matrix, R-23 0 Restarts/Bounces) ===',
+        ...rafTableLines,
+        '',
         JSON.stringify(introAudit, null, 2),
         '',
       ].join('\n')
@@ -1604,19 +1765,19 @@ export async function runP3T4Evidence({
         const st = introStateByLocale[loc]
         const vm = videoMetricsByLocale[loc]
         const nj = noJsVerification[loc]
-        const tl = throttledRafTimelineByLocale[loc]
+        const lfp = lateFirstPaintSkipByLocale[loc]
         if (
           nj.overlayVisibleNoJs ||
           !nj.h1VisibleNoJs ||
           !nj.primaryCtaVisibleNoJs ||
           !st.startVisible ||
-          st.revealStateAttr !== 'reveal' ||
           st.htmlDataIntro !== 'active' ||
           st.overlayDisplay !== 'flex' ||
           !st.headerInert ||
           !st.homeContentInert ||
           !st.footerInert ||
           !st.activeElementIsSkip ||
+          st.revealLogoOpacity < 0.99 ||
           !vm.h1RenderedDuringIntro ||
           vm.totalElapsedMs > 1600 ||
           vm.storageAfterFirstLoad !== '1' ||
@@ -1624,14 +1785,43 @@ export async function runP3T4Evidence({
           vm.homeContentInertAfterDismiss ||
           vm.htmlDataIntroOnReload !== 'seen' ||
           vm.visibleOnSecondVisit ||
-          tl.firstVisibleFrameMs === null ||
-          tl.firstHiddenFrameMs === null ||
-          tl.firstHiddenFrameMs > 1600 ||
-          tl.finalHtmlDataIntro !== 'seen'
+          lfp.decision?.action !== 'skipped_late_first_paint' ||
+          lfp.decision?.nowMs <= 1200 ||
+          lfp.htmlDataIntro !== 'seen' ||
+          lfp.visibleFrameCount !== 0
         ) {
           throw new Error(
             `Intro splash verification failed for ${loc}: ${JSON.stringify(introAudit)}`,
           )
+        }
+      }
+      for (const r of rafMatrixRuns) {
+        if (!r.decision) {
+          throw new Error(`Missing intro decision in run: ${JSON.stringify(r)}`)
+        }
+        if (r.decision.action === 'active') {
+          if (
+            r.decision.nowMs > 1200 ||
+            r.firstVisibleMs === null ||
+            r.hiddenMs === null ||
+            r.hiddenMs > 2500 ||
+            r.durationFromFirstVisibleMs === null ||
+            r.durationFromFirstVisibleMs > 1600 ||
+            r.logoFullyVisibleDurationMs < 300 ||
+            r.visibleFrameCount < 5 ||
+            r.logoRestartCount !== 0 ||
+            r.overlayBounceCount !== 0 ||
+            r.finalOverlayVisible ||
+            r.finalInertCount !== 0
+          ) {
+            throw new Error(`Intro rAF run failed active assertions: ${JSON.stringify(r)}`)
+          }
+        } else if (r.decision.action === 'skipped_late_first_paint') {
+          if (r.decision.nowMs <= 1200 || r.visibleFrameCount !== 0 || r.finalOverlayVisible) {
+            throw new Error(`Intro rAF run failed late-skip assertions: ${JSON.stringify(r)}`)
+          }
+        } else {
+          throw new Error(`Unexpected intro decision action in fresh run: ${JSON.stringify(r)}`)
         }
       }
       if (
@@ -1850,7 +2040,7 @@ export async function runP3T4Evidence({
           (vp.width >= 768 &&
             (vpAudit.whoPhotoMarginTop !== '8px' || vpAudit.whoPhotoMarginInlineStart !== '8px')) ||
           vpAudit.liveModelControlCount !== 0 ||
-          !vpAudit.hreflangXDefault?.endsWith('/ar') ||
+          !vpAudit.hreflangXDefault?.endsWith('/en') ||
           !vpAudit.ogSiteName ||
           !vpAudit.ogUrl?.endsWith(`/${locale}`) ||
           !vpAudit.ogImage
@@ -2234,10 +2424,93 @@ export async function runP3T4Evidence({
     }
 
     // =========================================================================
-    // 5. Cold-Cache Throttled Mobile CLS Audit (`412x823`, `4x CPU`, `Slow 4G`) (R-3, R-19)
+    // 5. Cold-Cache Throttled Mobile CLS Audit (`412x823`, `4x CPU`, `Slow 4G`) (R-3, R-19, R-25)
     //    Counts ALL `layout-shift` entries (both `hadRecentInput: false` and `hadRecentInput: true`)
+    //    and verifies R-25 Arabic fallback font non-collision (`maxLineOverlapPx === 0`)
     // =========================================================================
     {
+      const arabicFallbackCollisionByViewport = {}
+      for (const fvp of [
+        { label: '412', width: 412, height: 823 },
+        { label: '1440', width: 1440, height: 900 },
+      ]) {
+        const fbCtx = await browser.newContext({
+          viewport: { width: fvp.width, height: fvp.height },
+        })
+        await fbCtx.addInitScript(() => {
+          window.sessionStorage.setItem('aljazira_intro_seen', '1')
+        })
+        const fbPage = await fbCtx.newPage()
+        await fbPage.route('**/*.woff2*', (route) => route.abort())
+        await fbPage.goto(`${baseUrl}/ar`, { waitUntil: 'domcontentloaded' })
+        await fbPage.waitForTimeout(150)
+
+        const fbMetrics = await fbPage.evaluate(() => {
+          const h1 = document.querySelector('h1')
+          if (!h1) return { lineCount: 0, lines: [], maxLineOverlapPx: 0 }
+          const walker = document.createTreeWalker(h1, NodeFilter.SHOW_TEXT)
+          const rawRects = []
+          let node = walker.nextNode()
+          while (node) {
+            const text = node.nodeValue || ''
+            const regex = /\S+/g
+            let match
+            while ((match = regex.exec(text)) !== null) {
+              const range = document.createRange()
+              range.setStart(node, match.index)
+              range.setEnd(node, match.index + match[0].length)
+              for (const r of Array.from(range.getClientRects())) {
+                if (r.width > 0 && r.height > 0) {
+                  rawRects.push({
+                    top: Number(r.top.toFixed(2)),
+                    bottom: Number(r.bottom.toFixed(2)),
+                    height: Number(r.height.toFixed(2)),
+                  })
+                }
+              }
+            }
+            node = walker.nextNode()
+          }
+          rawRects.sort((a, b) => a.top - b.top)
+          const lines = []
+          for (const r of rawRects) {
+            const last = lines[lines.length - 1]
+            if (!last || Math.abs(r.top - last.top) > 10) {
+              lines.push({ top: r.top, bottom: r.bottom, height: r.height })
+            } else {
+              last.top = Math.min(last.top, r.top)
+              last.bottom = Math.max(last.bottom, r.bottom)
+              last.height = Number((last.bottom - last.top).toFixed(2))
+            }
+          }
+          let maxLineOverlapPx = 0
+          for (let i = 0; i < lines.length - 1; i += 1) {
+            const overlap = Number((lines[i].bottom - lines[i + 1].top).toFixed(2))
+            if (overlap > maxLineOverlapPx) {
+              maxLineOverlapPx = overlap
+            }
+          }
+          return {
+            lineCount: lines.length,
+            lines,
+            maxLineOverlapPx,
+          }
+        })
+        if (fvp.width === 412) {
+          await saveCompressedPng(
+            await fbPage.screenshot(),
+            path.join(reportsPhase3Dir, 'ar-fallback-font-412.png'),
+          )
+        }
+        arabicFallbackCollisionByViewport[fvp.label] = fbMetrics
+        await fbCtx.close()
+        if (fbMetrics.maxLineOverlapPx > 0) {
+          throw new Error(
+            `R-25 Arabic fallback line collision detected at ${fvp.label}px: ${JSON.stringify(fbMetrics)}`,
+          )
+        }
+      }
+
       const throttledClsByLocale = {}
       for (const loc of ['ar', 'en']) {
         const clsCtx = await browser.newContext({
@@ -2322,8 +2595,8 @@ export async function runP3T4Evidence({
 
       const r3ClsLog = [
         headerBlock,
-        '=== R-3 & R-19 Throttled Cold-Cache Mobile CLS Verification (/ar and /en at 412x823, 4x CPU, Slow 4G, all layout-shift entries counted) ===',
-        JSON.stringify(throttledClsByLocale, null, 2),
+        '=== R-3, R-19 & R-25 Throttled Cold-Cache Mobile CLS & Arabic Fallback Non-Collision Verification (/ar and /en at 412x823, 4x CPU, Slow 4G, all layout-shift entries counted) ===',
+        JSON.stringify({ arabicFallbackCollisionByViewport, throttledClsByLocale }, null, 2),
         '',
       ].join('\n')
       fs.writeFileSync(path.join(reportsEvidenceDir, 'r3-mobile-cls.log'), r3ClsLog, 'utf8')
@@ -2349,7 +2622,7 @@ export async function runP3T4Evidence({
   }
 
   console.log(
-    `[P3-T4 Evidence] All P3-T4 r3 evidence generated in ${reportsEvidenceDir} (logs) and ${reportsPhase3Dir} (images/videos)`,
+    `[P3-T4 Evidence] All P3-T4 r4 evidence generated in ${reportsEvidenceDir} (logs) and ${reportsPhase3Dir} (images/videos)`,
   )
 }
 
@@ -2366,9 +2639,9 @@ if (
 
   const baseUrl = posArgs[0] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
   const reportsEvidenceDir =
-    posArgs[1] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r3')
+    posArgs[1] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r4')
   const reportsPhase3Dir =
-    posArgs[2] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r3')
+    posArgs[2] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r4')
 
   runP3T4Evidence({
     baseUrl,

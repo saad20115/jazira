@@ -2,9 +2,9 @@
 @import './breakpoints.css';
 
 /*
- * Metric-matched fallback font rules for `Noto Kufi Arabic` (`R-3`, `R-19`):
- * Separate regular/medium (`100 500`) and semibold/bold (`600 900`) `size-adjust` and
- * vertical metric overrides across Windows, Android, macOS, and Linux fallback faces.
+ * Metric-matched fallback font rules for `Noto Kufi Arabic` (`R-3`, `R-19`, `R-25`):
+ * Calibrated `size-adjust: 112%` (`< 120%` line-height so glyphs never collide between lines
+ * before font swap) with vertical metric overrides across Windows, Android, macOS, and Linux.
  */
 @font-face {
   font-family: 'Noto Kufi Arabic Metric Fallback';
@@ -12,9 +12,9 @@
   src:
     local('Arial'), local('Tahoma'), local('Segoe UI'), local('Roboto'), local('Noto Sans Arabic'),
     local('DejaVu Sans'), local('sans-serif');
-  size-adjust: 125%;
-  ascent-override: 95%;
-  descent-override: 30%;
+  size-adjust: 112%;
+  ascent-override: 86%;
+  descent-override: 20%;
   line-gap-override: 0%;
 }
 
@@ -25,9 +25,9 @@
     local('Arial Bold'), local('Tahoma Bold'), local('Segoe UI Bold'), local('Roboto Bold'),
     local('Noto Sans Arabic Bold'), local('DejaVu Sans Bold'), local('Arial'), local('Tahoma'),
     local('sans-serif');
-  size-adjust: 152%;
-  ascent-override: 78%;
-  descent-override: 22%;
+  size-adjust: 112%;
+  ascent-override: 86%;
+  descent-override: 20%;
   line-gap-override: 0%;
 }
 

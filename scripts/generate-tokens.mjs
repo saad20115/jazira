@@ -371,11 +371,21 @@ export function buildTokensCss(tokens) {
     '  /* === 7. Layout Geometry & Breakpoint Gutters (`design/tokens.json` -> `layout`, CTO §1) === */',
   )
   const layout = /** @type {Record<string, unknown>} */ (tokens.layout ?? {})
+  for (const requiredLayoutKey of ['gutter', 'gutterTablet', 'gutterMobile']) {
+    if (
+      typeof layout[requiredLayoutKey] !== 'number' ||
+      !Number.isFinite(layout[requiredLayoutKey])
+    ) {
+      throw new Error(
+        `Missing or invalid required numeric token layout.${requiredLayoutKey} in design/tokens.json`,
+      )
+    }
+  }
   lines.push(`  --frame-width: ${Number(layout.frameWidth ?? 1440)}px;`)
   lines.push(`  --container-width: ${Number(layout.containerWidth ?? 1160)}px;`)
-  lines.push(`  --gutter-desktop: ${Number(layout.gutter ?? 140)}px;`)
-  lines.push(`  --gutter-tablet: ${Number(layout.gutterTablet ?? 24)}px;`)
-  lines.push(`  --gutter-mobile: ${Number(layout.gutterMobile ?? 16)}px;`)
+  lines.push(`  --gutter-desktop: ${Number(layout.gutter)}px;`)
+  lines.push(`  --gutter-tablet: ${Number(layout.gutterTablet)}px;`)
+  lines.push(`  --gutter-mobile: ${Number(layout.gutterMobile)}px;`)
   lines.push('  --container-gutter: var(--gutter-desktop);')
   const sectionPaddingObj = /** @type {{ typical?: number }} */ (layout.sectionPaddingY ?? {})
   lines.push(`  --section-padding-y: ${Number(sectionPaddingObj.typical ?? 72)}px;`)

@@ -51,7 +51,7 @@
   block-size: 340px;
   padding-block-start: var(--space-10);
   padding-block-end: 30px;
-  padding-inline-end: 140px;
+  padding-inline-end: var(--gutter-desktop);
   box-sizing: border-box;
   will-change: transform;
   transform: translate3d(
@@ -82,7 +82,7 @@
   gap: var(--space-24);
   inline-size: 100%;
   block-size: 50px;
-  padding-inline-end: 140px;
+  padding-inline-end: var(--gutter-desktop);
   box-sizing: border-box;
   flex-wrap: nowrap;
 }

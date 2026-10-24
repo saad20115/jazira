@@ -6,11 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
 import { SiteSettings } from '@/globals/SiteSettings'
-import {
-  buildHreflangAlternates,
-  DEFAULT_LOCALE,
-  SUPPORTED_LOCALES,
-} from '@/i18n'
+import { buildHreflangAlternates, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/i18n'
 import type { HomePage, Navigation, SiteSetting } from '@/payload-types'
 import { DEFAULT_ADMIN_LANG, proxy } from '@/proxy'
 
@@ -19,9 +15,8 @@ const mockNavigation = vi.fn<() => Promise<Navigation | null>>()
 const mockHomePage = vi.fn<() => Promise<HomePage | null>>()
 const mockDraftMode = vi.fn<() => Promise<{ isEnabled: boolean }>>()
 const mockHeaders = vi.fn<() => Promise<Headers>>()
-const mockStaffUser = vi.fn<
-  () => Promise<{ id: number; email: string; role: 'admin' | 'editor' } | null>
->()
+const mockStaffUser =
+  vi.fn<() => Promise<{ id: number; email: string; role: 'admin' | 'editor' } | null>>()
 const mockRevalidateTag = vi.fn()
 const mockRevalidatePath = vi.fn()
 
@@ -166,9 +161,7 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
 
   describe('2. SiteSettings `arabicEnabled` schema, field-level access, and revalidation hook', () => {
     it('defines arabicEnabled checkbox on SiteSettings with defaultValue: false, exact admin description, and isAdminFieldLevel update access', async () => {
-      const field = SiteSettings.fields.find(
-        (f) => 'name' in f && f.name === 'arabicEnabled',
-      )
+      const field = SiteSettings.fields.find((f) => 'name' in f && f.name === 'arabicEnabled')
       expect(field).toBeDefined()
       expect(field && 'type' in field ? field.type : null).toBe('checkbox')
       expect(field && 'defaultValue' in field ? field.defaultValue : null).toBe(false)
@@ -360,9 +353,7 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
       })
       mockHeaders.mockResolvedValue(reqHeaders)
 
-      await expect(
-        enforceArabicEnabledOrRedirect(reqHeaders, '/ar', ''),
-      ).resolves.toBeUndefined()
+      await expect(enforceArabicEnabledOrRedirect(reqHeaders, '/ar', '')).resolves.toBeUndefined()
 
       const layoutEl = await LocaleRootLayout({
         params: Promise.resolve({ locale: 'ar' }),

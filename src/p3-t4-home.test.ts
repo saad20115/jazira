@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   INTRO_HARD_CAP_MS,
+  INTRO_MAX_FIRST_PAINT_MS,
   INTRO_PREPAINT_INLINE_SCRIPT,
   INTRO_SPLASH_STORAGE_KEY,
   INTRO_TOTAL_DURATION_MS,
@@ -759,31 +760,44 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(carouselBlock).toMatch(/inline-size\s*:\s*1300px/)
       expect(carouselBlock).toMatch(/gap\s*:\s*var\(--space-40\)/)
       expect(viewportBlock).toMatch(/block-size\s*:\s*340px/)
-      expect(trackBlock).toMatch(/padding-inline-end\s*:\s*140px/)
-      expect(controlsRowBlock).toMatch(/padding-inline-end\s*:\s*140px/)
+      expect(trackBlock).toMatch(/padding-inline-end\s*:\s*var\(--gutter-desktop\)/)
+      expect(controlsRowBlock).toMatch(/padding-inline-end\s*:\s*var\(--gutter-desktop\)/)
       expect(controlsRowBlock).toMatch(/block-size\s*:\s*50px/)
       expect(servicesCarouselCss).toMatch(
         /@media\s*\(max-width:\s*1279\.98px\)\s*\{[\s\S]*?\.track,\s*\.controlsRow\s*\{[\s\S]*?padding-inline-end\s*:\s*var\(--container-gutter\)/,
       )
 
-      // 3. R-14: Verify .overlay in IntroSplash.module.css is display: none by default (no-JS safe)
-      //    and display: flex only when html[data-intro='active'] or [data-intro-forced='true']
+      // 3. R-14 & R-23: Verify .overlay in IntroSplash.module.css is display: none by default (no-JS safe),
+      //    display: flex only when html[data-intro='active'] or [data-intro-forced='true'], and uses a single
+      //    pure-CSS keyframe timeline ending in visibility: hidden; pointer-events: none with forwards fill
+      //    and zero transition on .overlay / .logoWrap (R-23)
       const introSplashCss = fs.readFileSync(
         path.resolve(process.cwd(), 'src/components/IntroSplash.module.css'),
         'utf8',
       )
       const overlayRule = introSplashCss.match(/\.overlay\s*\{([^}]*)\}/)?.[1] ?? ''
+      const logoWrapRule = introSplashCss.match(/\.logoWrap\s*\{([^}]*)\}/)?.[1] ?? ''
       expect(overlayRule).toMatch(/display\s*:\s*none/)
       expect(overlayRule).not.toMatch(/display\s*:\s*flex/)
+      expect(overlayRule).not.toMatch(/transition\s*:/)
+      expect(logoWrapRule).not.toMatch(/transition\s*:/)
       expect(introSplashCss).toMatch(
         /:global\(html\[data-intro='active'\]\)\s+\.overlay[\s\S]*?display\s*:\s*flex/,
       )
+      expect(introSplashCss).toMatch(
+        /animation\s*:\s*introOverlayTimeline\s+1200ms\s+linear\s+var\(--intro-delay,\s*0ms\)\s+forwards/,
+      )
 
-      // 4. R-15: Verify INTRO_TOTAL_DURATION_MS and INTRO_HARD_CAP_MS are <= 1600ms and timed from performance.now()
+      // 4. R-22 & CTO Round 4 Decision: Verify duration <= 1600ms, max first-paint skip at 1200ms,
+      //    2.5s cap via CSS --intro-delay computed from performance.now(), and zero viewport/UA branches
       expect(INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(1600)
-      expect(INTRO_HARD_CAP_MS).toBeLessThanOrEqual(1600)
+      expect(INTRO_MAX_FIRST_PAINT_MS).toBe(1200)
+      expect(INTRO_HARD_CAP_MS).toBeLessThanOrEqual(2500)
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('performance.now()')
-      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain(`${String(INTRO_HARD_CAP_MS)}-now`)
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('--intro-delay')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('innerWidth')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setTimeout')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setInterval')
     })
   })
 })

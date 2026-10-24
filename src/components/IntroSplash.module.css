@@ -1,51 +1,71 @@
-@keyframes introOverlayExit {
+@keyframes introOverlayTimeline {
   0% {
     opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  75% {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  99.9% {
+    opacity: 0;
+    visibility: visible;
+    pointer-events: none;
   }
   100% {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
   }
 }
 
-@keyframes introGlowReveal {
+@keyframes introGlowTimeline {
   0% {
     opacity: 0.45;
     transform: scale(0.42);
   }
+  25%,
   100% {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes introLogoReveal {
-  0% {
+@keyframes introLogoTimeline {
+  0%,
+  4% {
     opacity: 0;
     transform: scale(0.68);
   }
+  25%,
   100% {
     opacity: 1;
     transform: scale(1);
   }
 }
 
-@keyframes introRuleReveal {
-  0% {
+@keyframes introRuleTimeline {
+  0%,
+  8% {
     opacity: 0;
     transform: scaleX(0);
   }
+  28%,
   100% {
     opacity: 1;
     transform: scaleX(1);
   }
 }
 
-@keyframes introTaglineReveal {
-  0% {
+@keyframes introTaglineTimeline {
+  0%,
+  10% {
     opacity: 0;
     transform: translateY(6px);
   }
+  30%,
   100% {
     opacity: 0.7;
     transform: translateY(0);
@@ -53,7 +73,7 @@
 }
 
 :global(html) {
-  --intro-exit-delay: 850ms;
+  --intro-delay: 0ms;
 }
 
 .overlay {
@@ -72,7 +92,7 @@
   cursor: pointer;
   user-select: none;
   opacity: 1;
-  transition: opacity 260ms cubic-bezier(0.22, 1, 0.36, 1);
+  visibility: visible;
 }
 
 :global(html[data-intro='active']) .overlay,
@@ -81,18 +101,10 @@
 }
 
 :global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) {
-  animation: introOverlayExit 220ms cubic-bezier(0.22, 1, 0.36, 1) var(--intro-exit-delay, 850ms)
-    forwards;
+  animation: introOverlayTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
 }
 
-.overlayExiting,
-:global(html[data-intro-phase='exiting']) .overlay:not([data-intro-forced='true']) {
-  opacity: 0;
-  pointer-events: none;
-}
-
-:global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']),
-:global(html[data-intro-phase='hidden']) .overlay:not([data-intro-forced='true']) {
+:global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']) {
   display: none;
 }
 
@@ -108,18 +120,14 @@
   pointer-events: none;
   opacity: 0.45;
   transform: scale(0.42);
-  transition:
-    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 460ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 :global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .glow {
-  animation: introGlowReveal 420ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+  animation: introGlowTimeline 1200ms cubic-bezier(0.22, 1, 0.36, 1) var(--intro-delay, 0ms)
+    forwards;
 }
 
-.stateReveal .glow,
-:global(html[data-intro-phase='reveal']) .overlay:not([data-intro-forced='true']) .glow,
-:global(html[data-intro-phase='exiting']) .overlay:not([data-intro-forced='true']) .glow {
+.stateReveal .glow {
   opacity: 1;
   transform: scale(1);
 }
@@ -142,9 +150,6 @@
   justify-content: center;
   opacity: 0;
   transform: scale(0.68);
-  transition:
-    opacity 340ms cubic-bezier(0.22, 1, 0.36, 1),
-    transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .logoWrap :global([data-component='logo']) {
@@ -159,12 +164,10 @@
 }
 
 :global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .logoWrap {
-  animation: introLogoReveal 340ms cubic-bezier(0.22, 1, 0.36, 1) 80ms forwards;
+  animation: introLogoTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
 }
 
-.stateReveal .logoWrap,
-:global(html[data-intro-phase='reveal']) .overlay:not([data-intro-forced='true']) .logoWrap,
-:global(html[data-intro-phase='exiting']) .overlay:not([data-intro-forced='true']) .logoWrap {
+.stateReveal .logoWrap {
   opacity: 1;
   transform: scale(1);
 }
@@ -177,18 +180,14 @@
   transform: scaleX(0);
   transform-origin: center;
   opacity: 0;
-  transition:
-    transform 380ms cubic-bezier(0.22, 1, 0.36, 1) 60ms,
-    opacity 280ms ease 50ms;
 }
 
 :global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .goldRule {
-  animation: introRuleReveal 380ms cubic-bezier(0.22, 1, 0.36, 1) 130ms forwards;
+  animation: introRuleTimeline 1200ms cubic-bezier(0.22, 1, 0.36, 1) var(--intro-delay, 0ms)
+    forwards;
 }
 
-.stateReveal .goldRule,
-:global(html[data-intro-phase='reveal']) .overlay:not([data-intro-forced='true']) .goldRule,
-:global(html[data-intro-phase='exiting']) .overlay:not([data-intro-forced='true']) .goldRule {
+.stateReveal .goldRule {
   transform: scaleX(1);
   opacity: 1;
 }
@@ -200,18 +199,14 @@
   text-transform: uppercase;
   opacity: 0;
   transform: translateY(6px);
-  transition:
-    opacity 340ms cubic-bezier(0.22, 1, 0.36, 1) 90ms,
-    transform 340ms cubic-bezier(0.22, 1, 0.36, 1) 90ms;
 }
 
 :global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .tagline {
-  animation: introTaglineReveal 340ms cubic-bezier(0.22, 1, 0.36, 1) 160ms forwards;
+  animation: introTaglineTimeline 1200ms cubic-bezier(0.22, 1, 0.36, 1) var(--intro-delay, 0ms)
+    forwards;
 }
 
-.stateReveal .tagline,
-:global(html[data-intro-phase='reveal']) .overlay:not([data-intro-forced='true']) .tagline,
-:global(html[data-intro-phase='exiting']) .overlay:not([data-intro-forced='true']) .tagline {
+.stateReveal .tagline {
   opacity: 0.7;
   transform: translateY(0);
 }

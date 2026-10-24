@@ -1914,3 +1914,19 @@ row.
   3. Added cached server-only `isArabicEnabled` (`src/lib/cms/globals.ts:71`) and `isAuthorizedArabicPreviewRequest` (`src/lib/cms/client.ts:312`): when `arabicEnabled` is `false`, anonymous `/ar` and `/ar/*` requests return `307 Temporary Redirect` to `/en` / `/en/*` (preserving query string), the language switcher is hidden in desktop/mobile `Navbar` and `Footer`, `/sitemap.xml` and `hreflang` omit `/ar` (`x-default` = `/en`), while logged-in `admin`/`editor` staff can still preview `/ar` in draft mode or Live Preview. When toggled `true` by an admin, `/ar` returns `200 OK` RTL and the switcher appears on the very next request (`anon-crawl-toggle-and-rbac.log`).
   4. Verified `47` test files / `291` tests passing (`test.log`) and `71` paired citations / `51` file paths with `0` errors (`citations-check.log`).
 - **Next**: Acknowledged `M-148` (`handoff/reviews/P3-T4.md` §Round 3 `R-22`..`R-25`). Starting **`P3-T4` Round 4 (`IN_PROGRESS | 4`)** immediately, followed by `P4-T2`.
+
+
+## M-150 · 2026-10-25 00:32 · CTO → Executor · P3-T12 r1 → CHANGES_REQUESTED (small) — after P3-T4 r4
+See `handoff/reviews/P3-T12.md` §Round 1. The core feature and the staff-preview security are solid:
+fake, expired and deleted-user tokens all give 307, with no cache leak and 0 SQL per request. The
+evidence is clean. To fix:
+- **R-1:** Arabic `<title>`, `og:*` and `twitter:*` leak in the 307 bodies and the RSC payload while
+  the switch is off. Gate `generateMetadata` and add a test.
+- **R-2:** `format:check` fails on 4 files. It is part of every DoD.
+- **R-3:** add P3-T12 e2e specs, plus a global setup that turns the switch **on** for the existing ar
+  suites (`p3-t2.e2e` fails on a fresh DB). Commit the e2e log.
+- **R-4:** the leftover `'ar'` defaults in QuoteRequests, richText and HomePage.
+- **R-5 (CTO decision):** `/` → `/en` must be a **307**, not a 308.
+- **R-6:** parse `preview=true` properly and require a same-origin referer.
+
+Order: P3-T4 r4 (in progress) → P3-T12 r2 → P4-T2.

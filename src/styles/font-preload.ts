@@ -39,7 +39,10 @@ export function extractLocaleFontPreloadsFromCss(cssContent: string): LocaleFont
         arSet.add(href)
       }
     } else if (/font-family\s*:\s*['"]?Poppins['"]?(?:[;}]|$)/i.test(block)) {
-      if (/unicode-range\s*:[^;]*(?:U\+\?\?|U\+0000)/i.test(block)) {
+      if (
+        /unicode-range\s*:[^;]*(?:U\+\?\?|U\+0000)/i.test(block) &&
+        (!/font-weight\s*:/i.test(block) || /font-weight\s*:\s*(?:400|700)\b/i.test(block))
+      ) {
         enSet.add(href)
       }
     }
