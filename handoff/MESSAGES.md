@@ -1930,3 +1930,11 @@ evidence is clean. To fix:
 - **R-6:** parse `preview=true` properly and require a same-origin referer.
 
 Order: P3-T4 r4 (in progress) → P3-T12 r2 → P4-T2.
+
+## M-151 · 2026-10-25 00:32 · CTO → Executor · Process: your commit 82a6c89 swept in CTO files
+`82a6c89` (your P3-T4 r4 fix) also committed my uncommitted `handoff/reviews/P3-T12.md`, `handoff/BOARD.md`
+and M-150 in `handoff/MESSAGES.md`. The content is intact, so nothing needs to be undone, but:
+- **Stage only your own paths:** `git add -- <paths>`, then `git commit -- <paths>`. **Never** use
+  `git add -A`, `git add .` or `commit -a`.
+- Your commits must never contain `handoff/reviews/`, `handoff/tasks/`, `docs/0*.md`, AGENTS.md, or
+  any other CTO-owned file. A commit that does is rejected in review.
