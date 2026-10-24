@@ -1271,17 +1271,26 @@ export async function runP3T4Evidence({
         await noJsCtx.close()
       }
 
-      // 2c. Capture `intro-start-en.png`, `intro-reveal-en.png`, `intro-start-ar.png`, `intro-reveal-ar.png`
-      //     and verify R-4 (dataset.intro === 'active', opacity === '1' at domcontentloaded) and R-9 (`inert` + focus)
+      // 2c. Warm 1440x900 image/SSR cache, then capture `intro-start-en.png`, `intro-reveal-en.png`,
+      //     `intro-start-ar.png`, `intro-reveal-ar.png` in dedicated fresh sessions so `screenshot()` latency
+      //     during `start` never consumes the `reveal` window, and verify R-4 + R-9 (`inert` + focus).
+      for (const warmLoc of ['en', 'ar']) {
+        const warm1440Ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        const warm1440Page = await warm1440Ctx.newPage()
+        await warm1440Page.goto(`${baseUrl}/${warmLoc}`, { waitUntil: 'networkidle' })
+        await warm1440Ctx.close()
+      }
+
       const introStateByLocale = {}
       for (const loc of ['en', 'ar']) {
-        const snapCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
-        const snapPage = await snapCtx.newPage()
-        await snapPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
-        const snapIntro = snapPage.locator('[data-component="intro-splash"]')
-        await snapIntro.waitFor({ state: 'visible', timeout: 1500 })
+        // Fresh context 1: capture Start state (`28:1609`) at domcontentloaded
+        const startCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        const startPage = await startCtx.newPage()
+        await startPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        const startIntro = startPage.locator('[data-component="intro-splash"]')
+        await startIntro.waitFor({ state: 'visible', timeout: 1500 })
 
-        const initialDomCheck = await snapPage.evaluate(() => {
+        const initialDomCheck = await startPage.evaluate(() => {
           const overlay = document.querySelector('[data-component="intro-splash"]')
           const style = overlay ? window.getComputedStyle(overlay) : null
           return {
@@ -1291,15 +1300,21 @@ export async function runP3T4Evidence({
           }
         })
 
-        const startVisible = await snapIntro.isVisible()
-        const startBuf = await snapPage.screenshot()
+        const startVisible = await startIntro.isVisible()
+        const startBuf = await startPage.screenshot()
+        await startCtx.close()
 
-        await snapPage
+        // Fresh context 2: capture Reveal state (`28:1615`) and verify R-9 (`inert` + focus)
+        const revealCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        const revealPage = await revealCtx.newPage()
+        await revealPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        const revealIntro = revealPage.locator('[data-component="intro-splash"]')
+        await revealPage
           .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
-          .waitFor({ state: 'visible', timeout: 1200 })
+          .waitFor({ state: 'visible', timeout: 1500 })
 
-        const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
-        const hydratedA11yCheck = await snapPage.evaluate(() => {
+        const revealStateAttr = await revealIntro.getAttribute('data-intro-state')
+        const hydratedA11yCheck = await revealPage.evaluate(() => {
           const header = document.querySelector('header')
           const homeContent = document.querySelector('[data-home-content="true"]')
           const footer = document.querySelector('footer')
@@ -1313,9 +1328,9 @@ export async function runP3T4Evidence({
           }
         })
 
-        await snapPage.waitForTimeout(80)
-        const revealBuf = await snapPage.screenshot()
-        await snapCtx.close()
+        await revealPage.waitForTimeout(60)
+        const revealBuf = await revealPage.screenshot()
+        await revealCtx.close()
 
         await saveCompressedPng(startBuf, path.join(reportsPhase3Dir, `intro-start-${loc}.png`))
         await saveCompressedPng(revealBuf, path.join(reportsPhase3Dir, `intro-reveal-${loc}.png`))
@@ -1438,7 +1453,7 @@ export async function runP3T4Evidence({
         })
         await thCtx.addInitScript(() => {
           window.__aljaziraIntroFrames = []
-          const sample = () => {
+          const recordFrame = () => {
             const now = Math.round(performance.now())
             const htmlIntro = document.documentElement?.dataset?.intro ?? null
             const overlay = document.querySelector('[data-component="intro-splash"]')
@@ -1451,11 +1466,31 @@ export async function runP3T4Evidence({
               display,
               opacity,
             })
+            return now
+          }
+          const sample = () => {
+            const now = recordFrame()
             if (now < 2200) {
               requestAnimationFrame(sample)
             }
           }
           requestAnimationFrame(sample)
+          window.addEventListener(
+            'DOMContentLoaded',
+            () => {
+              recordFrame()
+              if (document.documentElement && typeof MutationObserver === 'function') {
+                const mo = new MutationObserver(() => {
+                  recordFrame()
+                })
+                mo.observe(document.documentElement, {
+                  attributes: true,
+                  attributeFilter: ['data-intro', 'data-intro-phase'],
+                })
+              }
+            },
+            { once: true },
+          )
         })
         const thPage = await thCtx.newPage()
         const cdp = await thCtx.newCDPSession(thPage)
