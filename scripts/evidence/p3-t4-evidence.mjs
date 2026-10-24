@@ -1542,7 +1542,7 @@ export async function runP3T4Evidence({
                     logoOpacity,
                     overlayVisible,
                   })
-                  if (now < 2700) {
+                  if (now < 3500) {
                     requestAnimationFrame(sample)
                   }
                 }

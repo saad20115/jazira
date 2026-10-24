@@ -17,6 +17,18 @@
   inline-size: 100%;
 }
 
+/*
+ * While the full-viewport SSR intro splash (`html[data-intro='active']`) covers the screen,
+ * defer style, layout, and text shaping of below-the-fold sections (`y >= 1052px`) so First Paint
+ * (`preFCP`) only lays out `<IntroSplash>`, `<Navbar>`, `<section id="hero">`, and `<section data-home-section="trust-bar">`.
+ */
+:global(html[data-intro='active'])
+  .homeContent
+  > :not([data-home-section='hero']):not([data-home-section='trust-bar']) {
+  content-visibility: hidden;
+  contain-intrinsic-size: auto 600px;
+}
+
 .goldText {
   color: var(--gold-500);
 }
@@ -89,7 +101,6 @@
   block-size: 700px;
   border-radius: 50%;
   background-image: var(--gradient-hero-gold-glow);
-  filter: blur(48px);
   pointer-events: none;
 }
 

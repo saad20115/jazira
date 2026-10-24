@@ -10,8 +10,8 @@
   font-family: 'Noto Kufi Arabic Metric Fallback';
   font-weight: 100 500;
   src:
-    local('Arial'), local('Tahoma'), local('Segoe UI'), local('Roboto'), local('Noto Sans Arabic'),
-    local('DejaVu Sans'), local('sans-serif');
+    local('Segoe UI'), local('Tahoma'), local('Arial'), local('Roboto'), local('Noto Sans Arabic'),
+    local('DejaVu Sans');
   size-adjust: 112%;
   ascent-override: 86%;
   descent-override: 20%;
@@ -22,9 +22,9 @@
   font-family: 'Noto Kufi Arabic Metric Fallback';
   font-weight: 600 900;
   src:
-    local('Arial Bold'), local('Tahoma Bold'), local('Segoe UI Bold'), local('Roboto Bold'),
-    local('Noto Sans Arabic Bold'), local('DejaVu Sans Bold'), local('Arial'), local('Tahoma'),
-    local('sans-serif');
+    local('Segoe UI Bold'), local('Tahoma Bold'), local('Arial Bold'), local('Roboto Bold'),
+    local('Noto Sans Arabic Bold'), local('DejaVu Sans Bold'), local('Segoe UI'), local('Tahoma'),
+    local('Arial');
   size-adjust: 112%;
   ascent-override: 86%;
   descent-override: 20%;
@@ -134,4 +134,9 @@ a {
 
 nextjs-portal {
   display: none;
+}
+
+html[data-intro='active'] body > footer {
+  content-visibility: hidden;
+  contain-intrinsic-size: auto 503px;
 }

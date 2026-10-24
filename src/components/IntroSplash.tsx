@@ -10,7 +10,7 @@ import styles from './IntroSplash.module.css'
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
 export const INTRO_MAX_FIRST_PAINT_MS = 1200
 export const INTRO_TOTAL_DURATION_MS = 1200
-export const INTRO_HARD_CAP_MS = 2400
+export const INTRO_HARD_CAP_MS = 1850
 
 /**
  * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-22`, `R-23`).

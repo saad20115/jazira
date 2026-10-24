@@ -4,16 +4,17 @@
     visibility: visible;
     pointer-events: auto;
   }
-  75% {
+  74% {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
-  99.9% {
+  89.9% {
     opacity: 0;
     visibility: visible;
     pointer-events: none;
   }
+  90%,
   100% {
     opacity: 0;
     visibility: hidden;
@@ -26,7 +27,7 @@
     opacity: 0.45;
     transform: scale(0.42);
   }
-  25%,
+  24%,
   100% {
     opacity: 1;
     transform: scale(1);
@@ -39,7 +40,7 @@
     opacity: 0;
     transform: scale(0.68);
   }
-  25%,
+  24%,
   100% {
     opacity: 1;
     transform: scale(1);
@@ -116,7 +117,6 @@
   block-size: 720px;
   border-radius: 50%;
   background-image: var(--gradient-intro-gold-glow);
-  filter: blur(48px);
   pointer-events: none;
   opacity: 0.45;
   transform: scale(0.42);
