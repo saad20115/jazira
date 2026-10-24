@@ -1,140 +1,140 @@
 {
-  "_about": "Project photos cropped from the owner profile (Profile A p12-p16, captioned photos). The owner said on 2026-10-24 to use the profile photos and add better ones later from the admin. They are low resolution (print scan thumbnails); never upscale them past their size.",
+  "_about": "Project photos cropped from the owner profile (Profile A p12-p16, captioned photos). The owner said on 2026-10-24 to use the profile photos and add better ones later from the admin. They are low resolution (print scan thumbnails); They were cleaned and enlarged 2x locally (median denoise, Lanczos, unsharp mask, auto-contrast); no AI and no content changes. Owner 2026-10-24: better photos will be added later from the admin. Never upscale them further.",
   "photos": [
     {
       "file": "seed/images/projects/rawdat-al-shrooq-hotel.jpg",
       "project": "XLSX-10",
       "captionAsPrinted": "Rawdat AL Shrooq",
-      "width": 252,
-      "height": 472,
+      "width": 504,
+      "height": 944,
       "question": null
     },
     {
       "file": "seed/images/projects/safwat-al-shrooq-hotel.jpg",
       "project": "XLSX-8",
       "captionAsPrinted": "Safwat AL Shrooq Hotel",
-      "width": 348,
-      "height": 476,
+      "width": 696,
+      "height": 952,
       "question": null
     },
     {
       "file": "seed/images/projects/hotel-al-janadriah-tower.jpg",
       "project": "XLSX-1|XLSX-2",
       "captionAsPrinted": "Hotel AL Janadriah Tower",
-      "width": 516,
-      "height": 380,
+      "width": 1032,
+      "height": 760,
       "question": "caption matches no row exactly: project 1 or 2?"
     },
     {
       "file": "seed/images/projects/hotel-rehab-al-janadriah.jpg",
       "project": "XLSX-3",
       "captionAsPrinted": "Hotel Rehab Al Jenadriah",
-      "width": 568,
-      "height": 380,
+      "width": 1136,
+      "height": 760,
       "question": null
     },
     {
       "file": "seed/images/projects/otaybiah-central-market.jpg",
       "project": "XLSX-17",
       "captionAsPrinted": "Otaybiah Central Market",
-      "width": 468,
-      "height": 336,
+      "width": 936,
+      "height": 672,
       "question": null
     },
     {
       "file": "seed/images/projects/meridien-makkah-hotel.jpg",
       "project": "XLSX-14",
       "captionAsPrinted": "Meridiaen Makkah",
-      "width": 216,
-      "height": 332,
+      "width": 432,
+      "height": 664,
       "question": null
     },
     {
       "file": "seed/images/projects/ramada-makkah-hotel.jpg",
       "project": "XLSX-18|XLSX-19",
       "captionAsPrinted": "Ramada Makkah Hotel",
-      "width": 528,
-      "height": 344,
+      "width": 1056,
+      "height": 688,
       "question": "caption matches no row exactly: Ramada Dar AL Faezeen or Ramada Ashee?"
     },
     {
       "file": "seed/images/projects/sofitel-makkah-hotel.jpg",
       "project": "XLSX-13",
       "captionAsPrinted": "Sofitel Makkah Hotel",
-      "width": 464,
-      "height": 344,
+      "width": 928,
+      "height": 688,
       "question": null
     },
     {
       "file": "seed/images/projects/aziziah-tower.jpg",
       "project": "XLSX-29",
       "captionAsPrinted": "Aziziah Tower",
-      "width": 468,
-      "height": 252,
+      "width": 936,
+      "height": 504,
       "question": null
     },
     {
       "file": "seed/images/projects/jeddah-palace-hotel.jpg",
       "project": "XLSX-22",
       "captionAsPrinted": "Jeddah Palace",
-      "width": 188,
-      "height": 352,
+      "width": 376,
+      "height": 704,
       "question": null
     },
     {
       "file": "seed/images/projects/al-maqam-towers.jpg",
       "project": "XLSX-27",
       "captionAsPrinted": "AL Maqam Tower",
-      "width": 468,
-      "height": 348,
+      "width": 936,
+      "height": 696,
       "question": null
     },
     {
       "file": "seed/images/projects/al-naseem-towers.jpg",
       "project": "XLSX-28",
       "captionAsPrinted": "AL Naseem Tower",
-      "width": 416,
-      "height": 344,
+      "width": 832,
+      "height": 688,
       "question": null
     },
     {
       "file": "seed/images/projects/olayan-golden-hotel.jpg",
       "project": "XLSX-34",
       "captionAsPrinted": "Olayan Golden Hotel",
-      "width": 408,
-      "height": 744,
+      "width": 816,
+      "height": 1488,
       "question": null
     },
     {
       "file": "seed/images/projects/naaeb-al-haram-hotel.jpg",
       "project": "XLSX-35",
       "captionAsPrinted": "Naaeb AL Haram Hotel",
-      "width": 488,
-      "height": 740,
+      "width": 976,
+      "height": 1480,
       "question": null
     },
     {
       "file": "seed/images/projects/national-water-company-building.jpg",
       "project": "XLSX-47",
       "captionAsPrinted": "National Water Company",
-      "width": 572,
-      "height": 372,
+      "width": 1144,
+      "height": 744,
       "question": null
     },
     {
       "file": "seed/images/projects/al-zaydi-concrete-factory.jpg",
       "project": "XLSX-38",
       "captionAsPrinted": "AL Zaydi Concret Factory",
-      "width": 368,
-      "height": 368,
+      "width": 736,
+      "height": 736,
       "question": null
     },
     {
       "file": "seed/images/projects/hyper-abraj.jpg",
       "project": "XLSX-37",
       "captionAsPrinted": "Hyper Abraj",
-      "width": 648,
-      "height": 372,
+      "width": 1296,
+      "height": 744,
       "question": null
     }
   ]

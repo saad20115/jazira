@@ -300,3 +300,52 @@ Location on the 3D machine: `C:ljazira-3d\web\stills\`. The 3D lead verified al
   the Cycles still, so the crossfade shows a small brightness shift, not a jump.
 - **Façade notes N-1..N-4:** the owner told the site CTO directly that they must be fixed before the
   final delivery. They are still open, so the stills will be re-rendered with them (v021).
+
+## 15. v021 candidate (3D lead report, 2026-10-24): N-1..N-6 built; not promoted
+The 3D lead reports v021 is built and QA-passed. It is **not promoted**: `web/` is still v020, which
+stays the pinned release until the site CTO reviews v021 and the owner signs it off.
+
+| File | Bytes | SHA-256 |
+|---|---|---|
+| `tower.glb` | 7,097,856 | `341f1e3b494bd9572d85cf62ce0107723348cc44537cdb600c90c6eaefb56b51` |
+| `tower-lite.glb` | 2,099,116 | `54fd2c1fae54d738facc9634bf8bc0411359999f0c95d0f64804feec2220893c` |
+| `manifest.json` | — | `6013a7b1ec11ac1eca8c0cc7822282059d42aabd6b4dd44bb365504b46032508` |
+| `stills_manifest.json` | — | `9ea52865f5b2d758a96902cf6507d9162ba665d794d361d0c05a3e4e2fd3ec56` |
+
+The full table is in `renders/r4-corner/v021/sha256_v021.txt` on the 3D machine.
+
+**N-5, mean luma by thirds (whole / top / middle / bottom):**
+
+| | whole | top | middle | bottom |
+|---|---|---|---|---|
+| Reference | 90 | 114 | 75 | 80 |
+| Cycles | 93 | 108 | 97 | 75 |
+| Live full | 95 | 115 | 96 | 73 |
+| Live lite | 99 | 117 | 106 | 74 |
+
+The bottom third meets the 70–85 target.
+
+**N-6:**
+- deep-blue glass with a live PMREM sky;
+- interior mapping in full, baked rooms in lite;
+- champagne mullions;
+- pilaster and lobby uplights;
+- selective bloom (threshold 8).
+
+**New manifest `render` contract** (`web/build/v021/extras-schema.md`):
+- AgX, look "Medium High Contrast", calibrated pivot 0.606;
+- optional bloom, MSAA and interior mapping, each with a fallback;
+- lite defaults to bloom off.
+
+The reference viewer stops the fan on reduced motion, a hidden tab, or when off-screen.
+
+**Still owed before acceptance:**
+- the façade close-up crop (ref | Cycles | live);
+- the three-panel and crown/podium crops;
+- draw calls (lite ≤ 60) and GPU memory for full and lite.
+
+**P3-T5** wires against the v021 contract. Hashes are pinned only after the owner signs off.
+
+**Announced next: v022** (realism: city backdrop, paving, palms).
+- Same extras schema plus a city card (+3–5 draw calls, one unlit BLEND material).
+- Caps: full ≤ 7.6 MB, lite ≤ 2.4 MB, lite ≤ 60 calls including post.
