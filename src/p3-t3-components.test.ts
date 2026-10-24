@@ -1,8 +1,10 @@
 import fs from 'node:fs'
 import path from 'node:path'
 
+import { chromium } from '@playwright/test'
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
+import ts from 'typescript'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import StyleguidePage from '@/app/(frontend)/[locale]/styleguide/page'
@@ -407,7 +409,7 @@ describe('P3-T3 — Cards & motion components', () => {
       expect(memberHtml).toContain('CHIEF EXECUTIVE OFFICER')
     })
 
-    it('supports arbitrary TeamCard stagger delays (e.g. 600ms on a 6th card) via --team-enter-delay custom property and uses ::after opacity overlay instead of border/shadow transitions', () => {
+    it('supports arbitrary TeamCard stagger delays (e.g. 600ms on a 6th card) via --team-enter-delay custom property, clips entrance content via .clipFrame (R-17), and fades .card::before base shadow out on hover while .card::after hover shadow fades in (R-15, R-19)', () => {
       const sixthCardHtml = renderToStaticMarkup(
         React.createElement(TeamCard, {
           member: SAMPLE_TEAM_MEMBER,
@@ -417,6 +419,8 @@ describe('P3-T3 — Cards & motion components', () => {
         }),
       )
       expect(sixthCardHtml).toContain('data-enter-delay="600"')
+      expect(sixthCardHtml).toContain('data-team-card-clip="true"')
+      expect(sixthCardHtml).toContain('data-team-card-content="true"')
       expect(sixthCardHtml).not.toContain('style=')
 
       const teamCardCss = fs.readFileSync(
@@ -425,7 +429,11 @@ describe('P3-T3 — Cards & motion components', () => {
       )
       expect(teamCardCss).toContain('var(--team-enter-delay, 0ms)')
       expect(teamCardCss).not.toContain("data-enter-delay='")
+      expect(teamCardCss).toContain('.clipFrame')
+      expect(teamCardCss).toContain('.card::before')
       expect(teamCardCss).toContain('.card::after')
+      expect(teamCardCss).toMatch(/\.stateHover::before\s*\{\s*opacity:\s*0;/)
+      expect(teamCardCss).toMatch(/\.stateHover::after\s*\{\s*opacity:\s*1;/)
       expect(teamCardCss).not.toMatch(/transition:\s*[^;]*(?:border-color|box-shadow)/)
     })
   })
@@ -551,6 +559,271 @@ describe('P3-T3 — Cards & motion components', () => {
       expect(carouselCss).toContain('var(--drag-x, 0px)')
       expect(carouselCss).toContain('var(--index, 0)')
       expect(carouselCss).toContain('var(--max-index, 4)')
+    })
+
+    it('mounts ServicesCarousel in a real Chromium DOM, sets --index / --max-index / --drag-x via CSSOM setProperty, and moves the track and thumb via calc() (R-18)', async () => {
+      const rawTsx = fs.readFileSync(
+        path.resolve(process.cwd(), 'src', 'components', 'ServicesCarousel.tsx'),
+        'utf8',
+      )
+      const strippedTsx = rawTsx
+        .replace(/^'use client'\s*/m, '')
+        .replace(/^import\s+[\s\S]*?from\s+['"][^'"]+['"]\s*$/gm, '')
+        .replace(/\bexport\s+function\s+ServicesCarousel\b/, 'function ServicesCarousel')
+        .replace(/\bexport\s+type\b/g, 'type')
+        .replace(/\bexport\s+interface\b/g, 'interface')
+
+      const transpiled = ts.transpileModule(strippedTsx, {
+        compilerOptions: {
+          module: ts.ModuleKind.None,
+          target: ts.ScriptTarget.ES2022,
+          jsx: ts.JsxEmit.React,
+          jsxFactory: 'MiniReact.createElement',
+        },
+      }).outputText
+
+      const tokensCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src', 'styles', 'tokens.css'),
+        'utf8',
+      )
+      const carouselCss = fs
+        .readFileSync(
+          path.resolve(process.cwd(), 'src', 'components', 'ServicesCarousel.module.css'),
+          'utf8',
+        )
+        .replace(/:global\(\[dir='rtl'\]\)/g, "[dir='rtl']")
+
+      const browser = await chromium.launch({ headless: true })
+      try {
+        const page = await browser.newPage({ viewport: { width: 1440, height: 900 } })
+        await page.setContent(
+          `<!doctype html><html lang="en" dir="ltr"><head><style>${tokensCss}\n${carouselCss}\n.carousel .track, .carousel .progressThumb { transition: none !important; }</style></head><body><div id="mount"></div></body></html>`,
+        )
+
+        const bootstrapScript = `
+          (function() {
+            const states = [];
+            const refs = [];
+            let effects = [];
+            let hookCursor = 0;
+            let rerender = function() {};
+
+            const MiniReact = {
+              useState: function(init) {
+                const idx = hookCursor++;
+                if (!(idx in states)) {
+                  states[idx] = typeof init === 'function' ? init() : init;
+                }
+                const setState = function(updater) {
+                  const prev = states[idx];
+                  const next = typeof updater === 'function' ? updater(prev) : updater;
+                  if (next !== prev) {
+                    states[idx] = next;
+                    rerender();
+                  }
+                };
+                return [states[idx], setState];
+              },
+              useRef: function(init) {
+                const idx = hookCursor++;
+                if (!(idx in refs)) {
+                  refs[idx] = { current: init };
+                }
+                return refs[idx];
+              },
+              useCallback: function(fn) {
+                hookCursor++;
+                return fn;
+              },
+              useEffect: function(fn) {
+                hookCursor++;
+                effects.push(fn);
+              },
+              useSyncExternalStore: function(_sub, getSnap) {
+                hookCursor++;
+                return getSnap();
+              },
+              createElement: function(type, props) {
+                const children = Array.prototype.slice.call(arguments, 2);
+                const safeProps = props || {};
+                if (typeof type === 'function') {
+                  return type(Object.assign({}, safeProps, { children: children }));
+                }
+                const tag = typeof type === 'string' ? type : 'div';
+                const el = document.createElement(tag);
+                Object.keys(safeProps).forEach(function(k) {
+                  const v = safeProps[k];
+                  if (v === undefined || v === null || k === 'children' || k === 'key') {
+                    return;
+                  }
+                  if (k === 'className' && typeof v === 'string') {
+                    el.className = v;
+                  } else if (k === 'ref') {
+                    if (typeof v === 'function') {
+                      v(el);
+                    } else if (typeof v === 'object' && 'current' in v) {
+                      v.current = el;
+                    }
+                  } else if (k.indexOf('on') === 0 && typeof v === 'function') {
+                    const rawEvt = k.slice(2).replace(/Capture$/, '').toLowerCase();
+                    const useCapture = /Capture$/.test(k);
+                    el.addEventListener(rawEvt, v, useCapture);
+                  } else if (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean') {
+                    const attrName = k === 'tabIndex' ? 'tabindex' : k;
+                    el.setAttribute(attrName, String(v));
+                  }
+                });
+                const appendChildItem = function(child) {
+                  if (Array.isArray(child)) {
+                    child.forEach(appendChildItem);
+                  } else if (child instanceof Node) {
+                    el.appendChild(child);
+                  } else if (typeof child === 'string' || typeof child === 'number') {
+                    el.appendChild(document.createTextNode(String(child)));
+                  }
+                };
+                children.forEach(appendChildItem);
+                return el;
+              }
+            };
+
+            const useState = MiniReact.useState;
+            const useEffect = MiniReact.useEffect;
+            const useCallback = MiniReact.useCallback;
+            const useRef = MiniReact.useRef;
+            const useSyncExternalStore = MiniReact.useSyncExternalStore;
+            const styles = new Proxy({}, { get: function(_t, prop) { return String(prop); } });
+            const DEFAULT_LOCALE = 'en';
+            const formatStepCounter = function(_tpl, cur, tot) { return String(cur) + ' of ' + String(tot); };
+            const getDictionary = function() {
+              return {
+                cards: { viewAllServicesButton: 'View All Services' },
+                carousel: {
+                  carouselRoleDescription: 'carousel',
+                  regionLabel: 'Services',
+                  slideRoleDescription: 'slide',
+                  slideOfTotal: '{current} of {total}',
+                  pauseAutoPlay: 'Pause',
+                  playAutoPlay: 'Play',
+                  previousSlide: 'Previous',
+                  nextSlide: 'Next',
+                }
+              };
+            };
+            const ServiceTile = function(p) {
+              return MiniReact.createElement('div', { style: 'width:290px;height:300px;' }, p.service.title);
+            };
+            const Button = function(p) { return MiniReact.createElement('a', {}, p.label); };
+            const ArrowLeftIcon = function() { return MiniReact.createElement('span', {}, '<'); };
+            const ArrowRightIcon = function() { return MiniReact.createElement('span', {}, '>'); };
+
+            ${transpiled}
+
+            const services12 = Array.from({ length: 12 }, function(_, idx) {
+              return {
+                id: idx + 1,
+                title: 'Service ' + String(idx + 1),
+                slug: 'service-' + String(idx + 1),
+                icon: 'mep',
+                shortDescription: 'Desc',
+                featured: idx === 0,
+              };
+            });
+
+            const mountNode = document.getElementById('mount');
+            rerender = function() {
+              hookCursor = 0;
+              effects = [];
+              mountNode.innerHTML = '';
+              const tree = ServicesCarousel({
+                services: services12,
+                locale: 'en',
+                autoAdvanceMs: 0,
+              });
+              mountNode.appendChild(tree);
+              effects.forEach(function(fn) { fn(); });
+            };
+            rerender();
+          })();
+        `
+
+        await page.addScriptTag({ content: bootstrapScript })
+
+        const domResult = await page.evaluate(() => {
+          const mountNode = document.getElementById('mount')
+          if (!mountNode) {
+            throw new Error('Missing #mount container')
+          }
+
+          const getMetrics = () => {
+            const section = mountNode.querySelector<HTMLElement>(
+              '[data-component="services-carousel"]',
+            )
+            const viewport = section?.querySelector<HTMLElement>('.viewport')
+            const track = section?.querySelector<HTMLElement>('[data-carousel-track="true"]')
+            const progressTrack = section?.querySelector<HTMLElement>('.progressTrack')
+            const thumb = section?.querySelector<HTMLElement>('[data-carousel-thumb="true"]')
+            if (!section || !viewport || !track || !progressTrack || !thumb) {
+              throw new Error('Missing carousel DOM nodes')
+            }
+            return {
+              indexVar: section.style.getPropertyValue('--index'),
+              maxIndexVar: section.style.getPropertyValue('--max-index'),
+              dragXVar: section.style.getPropertyValue('--drag-x'),
+              trackDeltaPx: Math.round(
+                track.getBoundingClientRect().left - viewport.getBoundingClientRect().left,
+              ),
+              thumbLeftPx: Math.round(
+                thumb.getBoundingClientRect().left - progressTrack.getBoundingClientRect().left,
+              ),
+              thumbRightOvershootPx: Math.round(
+                thumb.getBoundingClientRect().right - progressTrack.getBoundingClientRect().right,
+              ),
+            }
+          }
+
+          const initial = getMetrics()
+
+          // Click Next button -> index 1
+          const nextBtn = mountNode.querySelector<HTMLButtonElement>('[data-carousel-action="next"]')
+          if (!nextBtn) {
+            throw new Error('Missing next button')
+          }
+          nextBtn.click()
+          const afterNext = getMetrics()
+
+          // Press End key on section -> index 8 (for 12 services, visibleCount = 4)
+          const sectionAfterNext = mountNode.querySelector<HTMLElement>(
+            '[data-component="services-carousel"]',
+          )
+          if (!sectionAfterNext) {
+            throw new Error('Missing carousel section after next click')
+          }
+          sectionAfterNext.dispatchEvent(
+            new KeyboardEvent('keydown', { key: 'End', bubbles: true }),
+          )
+          const afterEnd = getMetrics()
+
+          return { initial, afterNext, afterEnd }
+        })
+
+        expect(domResult.initial.indexVar).toBe('0')
+        expect(domResult.initial.maxIndexVar).toBe('8')
+        expect(domResult.initial.trackDeltaPx).toBe(0)
+        expect(domResult.initial.thumbLeftPx).toBe(0)
+
+        // Removing setProperty('--index', ...) or flipping calc() sign breaks these assertions:
+        expect(domResult.afterNext.indexVar).toBe('1')
+        expect(domResult.afterNext.trackDeltaPx).toBe(-310)
+        expect(domResult.afterNext.thumbLeftPx).toBe(65) // round(516 * 1 / 8) = 65
+
+        expect(domResult.afterEnd.indexVar).toBe('8')
+        expect(domResult.afterEnd.trackDeltaPx).toBe(-2480) // -8 * 310
+        expect(domResult.afterEnd.thumbLeftPx).toBe(516) // 806 - 290
+        expect(domResult.afterEnd.thumbRightOvershootPx).toBe(0)
+      } finally {
+        await browser.close()
+      }
     })
   })
 

@@ -6,10 +6,27 @@
   block-size: 340px;
   border-radius: var(--radius-3xl);
   background-color: var(--navy-950);
-  border: 1px solid var(--glass-border-white-8);
-  box-shadow: var(--shadow-card-raised);
   box-sizing: border-box;
   isolation: isolate;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-3xl);
+  border: 1px solid var(--glass-border-white-8);
+  box-shadow: var(--shadow-card-raised);
+  opacity: 1;
+  pointer-events: none;
+  z-index: 4;
+  transition: opacity 320ms ease;
+}
+
+.card:hover::before,
+.card:focus-within::before,
+.stateHover::before {
+  opacity: 0;
 }
 
 .card::after {
@@ -29,6 +46,17 @@
 .card:focus-within::after,
 .stateHover::after {
   opacity: 1;
+}
+
+.clipFrame {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--radius-3xl);
+  overflow: hidden;
+  background-color: var(--navy-950);
+  z-index: 1;
 }
 
 .content {
@@ -199,6 +227,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .card::before,
   .card::after,
   .content,
   .portraitLayer,

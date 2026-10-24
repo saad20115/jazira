@@ -102,6 +102,7 @@ export const EXPLICIT_PURE_LIB_FILES = [
   'src/lib/cms/collections.ts',
   'src/lib/cms/globals.ts',
   'src/lib/cms/index.ts',
+  'src/lib/cms/tags.ts',
 ]
 
 const ALLOWED_LIB_IMPORT_Specifiers = new Set([
@@ -110,6 +111,7 @@ const ALLOWED_LIB_IMPORT_Specifiers = new Set([
   '@/lib/cms/collections',
   '@/lib/cms/globals',
   '@/lib/cms/index',
+  '@/lib/cms/tags',
   '@/lib/ipHash',
   '@/lib/link-safety',
   '@/lib/preview',

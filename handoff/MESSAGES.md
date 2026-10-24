@@ -1591,3 +1591,14 @@ and R-27.
 
 Phase 3 so far: P3-T1, P3-T2 and P3-T3 are accepted. Next is P3-T4, the home page, which is the first
 full page against Figma.
+
+
+### M-132 · 2026-10-24 07:37 · Executor → CTO · Ack M-130 & M-131 (`P3-T3` & `P3-T2` ACCEPTED) — `R-25`/`R-26` committed (`9c2b048`), starting `P3-T4` (`IN_PROGRESS | 1`, `§0` first)
+Thank you for accepting `P3-T3` (Round 3) and `P3-T2` (Round 4). Set `P3-T4` to `IN_PROGRESS | 1` on `handoff/BOARD.md`:
+1. **`R-25` & `R-26` (one-commit `docs:` fix)**: Fixed in commit `9c2b048` (`docs(phase-3): fix npm-overrides-metadata.log line refs and esbuild path (R-25, R-26)`), copying the exact `npm-overrides-metadata.log` lines (`:2`/`:3`/`:4` for `happy-dom`, `:7`/`:8`/`:9` for `undici`) and parent dependency paths (`no-overrides-audit.json:9` `.>@payloadcms/db-postgres>drizzle-kit>@esbuild-kit/esm-loader>@esbuild-kit/core-utils>esbuild`, `no-overrides-audit.json:120`, `pre-fix-audit-prod.json:87`, `pre-fix-audit-prod.json:126`) into `docs/dependency-overrides.md`, `handoff/reports/P3-T2.md`, and `handoff/reports/P3-T3.md` (`check:citations` PASS with `0` errors).
+2. **`P3-T4 §0` (completing first before Home page sections)**:
+   - **`R-17` & `R-19`**: Adding an inner `.clipFrame` (`overflow: hidden; border-radius: var(--radius-3xl)`) inside `TeamCard` so `.content` in `Enter 1`..`Enter 4` is strictly clipped to the `264×340` card without hanging below, and moving the base shadow (`--shadow-card-raised`) and base border onto `.card::before` (`opacity: 1` -> `0` on hover/focus-within) so it fades out on hover instead of stacking under `.card::after`'s hover shadow (`--shadow-card-team-hover`), plus capturing the `Enter 2` screenshot.
+   - **`R-18`**: Adding a real DOM test in `src/p3-t3-components.test.ts` that mounts `ServicesCarousel`, asserts `el.style.getPropertyValue('--index')` updates on navigation, and verifies track translation direction/step so removing `setProperty('--index', ...)` or flipping the `calc()` sign fails the test.
+   - **`R-20` (from `P3-T1` review)**: Extracting `buildCollectionTags` and `buildGlobalTags` into one pure shared module (`src/lib/cms/tags.ts`) imported by both `src/hooks/revalidate.ts` and `src/lib/cms/client.ts`, with unit tests across all collection and global slugs.
+   - **`R-27`**: Ensuring every interactive/locale/CTA control on the Home page is `>= 44×44px` at `390px`.
+3. Proceeding immediately to `P3-T4 §0` and then the full Home page + Intro splash (`handoff/tasks/P3-T4.md`).

@@ -34,39 +34,13 @@ export const SMALL_COLLECTION_FETCH_LIMIT = MAX_CMS_QUERY_LIMIT + 1
  */
 export const DEFAULT_CMS_QUERY_LIMIT = 10
 
-export const CMS_REVALIDATE_LOCALES = ['ar', 'en'] as const
+import {
+  buildCollectionTags,
+  buildGlobalTags,
+  REVALIDATE_LOCALES as CMS_REVALIDATE_LOCALES,
+} from './tags'
 
-export function buildCollectionTags(
-  collectionSlug: string,
-  docSlugs: readonly string[] = [],
-): string[] {
-  const tags = new Set<string>()
-  tags.add(`collection:${collectionSlug}`)
-  for (const locale of CMS_REVALIDATE_LOCALES) {
-    tags.add(`collection:${collectionSlug}:${locale}`)
-  }
-
-  for (const rawSlug of docSlugs) {
-    const slug = rawSlug.trim()
-    if (slug.length > 0) {
-      tags.add(`doc:${collectionSlug}:${slug}`)
-      for (const locale of CMS_REVALIDATE_LOCALES) {
-        tags.add(`doc:${collectionSlug}:${slug}:${locale}`)
-      }
-    }
-  }
-
-  return Array.from(tags)
-}
-
-export function buildGlobalTags(globalSlug: string): string[] {
-  const tags = new Set<string>()
-  tags.add(`global:${globalSlug}`)
-  for (const locale of CMS_REVALIDATE_LOCALES) {
-    tags.add(`global:${globalSlug}:${locale}`)
-  }
-  return Array.from(tags)
-}
+export { buildCollectionTags, buildGlobalTags, CMS_REVALIDATE_LOCALES }
 
 /**
  * Small, known collections permitted to use `pagination: false` through the dedicated

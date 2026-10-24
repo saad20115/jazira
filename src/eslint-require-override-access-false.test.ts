@@ -545,6 +545,7 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       'src/lib/cms/collections.ts',
       'src/lib/cms/globals.ts',
       'src/lib/cms/index.ts',
+      'src/lib/cms/tags.ts',
     ])
 
     // 1. Ban imports of `scripts/**` and `tests/**` from any file in `src/**`

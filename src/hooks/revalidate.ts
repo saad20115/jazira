@@ -8,8 +8,14 @@ import type {
   TypeWithID,
 } from 'payload'
 
-export const REVALIDATE_LOCALES = ['ar', 'en'] as const
-export type RevalidateLocale = (typeof REVALIDATE_LOCALES)[number]
+import {
+  buildCollectionTags,
+  buildGlobalTags,
+  REVALIDATE_LOCALES,
+  type RevalidateLocale,
+} from '../lib/cms/tags'
+
+export { buildCollectionTags, buildGlobalTags, REVALIDATE_LOCALES, type RevalidateLocale }
 
 interface MinimalLogger {
   warn?: (obj: unknown, msg?: string) => void
@@ -53,38 +59,6 @@ export function safeRevalidatePath(
       logger?.warn?.({ err, path }, 'revalidatePath failed; continuing without throwing')
     }
   }
-}
-
-export function buildCollectionTags(
-  collectionSlug: string,
-  docSlugs: readonly string[] = [],
-): string[] {
-  const tags = new Set<string>()
-  tags.add(`collection:${collectionSlug}`)
-  for (const locale of REVALIDATE_LOCALES) {
-    tags.add(`collection:${collectionSlug}:${locale}`)
-  }
-
-  for (const rawSlug of docSlugs) {
-    const slug = rawSlug.trim()
-    if (slug.length > 0) {
-      tags.add(`doc:${collectionSlug}:${slug}`)
-      for (const locale of REVALIDATE_LOCALES) {
-        tags.add(`doc:${collectionSlug}:${slug}:${locale}`)
-      }
-    }
-  }
-
-  return Array.from(tags)
-}
-
-export function buildGlobalTags(globalSlug: string): string[] {
-  const tags = new Set<string>()
-  tags.add(`global:${globalSlug}`)
-  for (const locale of REVALIDATE_LOCALES) {
-    tags.add(`global:${globalSlug}:${locale}`)
-  }
-  return Array.from(tags)
 }
 
 function extractSlug(doc: unknown): string | undefined {

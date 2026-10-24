@@ -11,11 +11,23 @@ const { mockRevalidatePath, mockRevalidateTag } = vi.hoisted(() => ({
   mockRevalidateTag: vi.fn(),
 }))
 
+vi.mock('server-only', () => ({}))
+
 vi.mock('next/cache', () => ({
   revalidatePath: mockRevalidatePath,
   revalidateTag: mockRevalidateTag,
+  unstable_cache: (fn: unknown) => fn,
 }))
 
+import {
+  buildCollectionTags as clientBuildCollectionTags,
+  buildGlobalTags as clientBuildGlobalTags,
+} from '@/lib/cms/client'
+import {
+  buildCollectionTags as tagsBuildCollectionTags,
+  buildGlobalTags as tagsBuildGlobalTags,
+  REVALIDATE_LOCALES as tagsRevalidateLocales,
+} from '@/lib/cms/tags'
 import {
   buildCollectionTags,
   buildGlobalTags,
@@ -23,6 +35,7 @@ import {
   createRevalidateAfterChangeHook,
   createRevalidateAfterDeleteHook,
   createRevalidateGlobalAfterChangeHook,
+  REVALIDATE_LOCALES,
 } from './revalidate'
 
 interface SampleDoc extends TypeWithID {
@@ -53,6 +66,69 @@ describe('revalidate hooks & tag builders', () => {
   it('builds global tags per global and per locale (ar, en)', () => {
     const tags = buildGlobalTags('home-page')
     expect(tags).toEqual(['global:home-page', 'global:home-page:ar', 'global:home-page:en'])
+  })
+
+  it('de-duplicates buildCollectionTags and buildGlobalTags into src/lib/cms/tags.ts and maintains parity across all collection and global slugs (R-20)', () => {
+    expect(buildCollectionTags).toBe(tagsBuildCollectionTags)
+    expect(clientBuildCollectionTags).toBe(tagsBuildCollectionTags)
+    expect(buildGlobalTags).toBe(tagsBuildGlobalTags)
+    expect(clientBuildGlobalTags).toBe(tagsBuildGlobalTags)
+    expect(REVALIDATE_LOCALES).toBe(tagsRevalidateLocales)
+
+    const allCollectionSlugs = [
+      'services',
+      'projects',
+      'materials',
+      'brands',
+      'team',
+      'stats',
+      'media',
+      'videos',
+      'users',
+      'quote-requests',
+    ] as const
+
+    for (const collectionSlug of allCollectionSlugs) {
+      expect(buildCollectionTags(collectionSlug)).toEqual(clientBuildCollectionTags(collectionSlug))
+      expect(buildCollectionTags(collectionSlug)).toEqual([
+        `collection:${collectionSlug}`,
+        `collection:${collectionSlug}:ar`,
+        `collection:${collectionSlug}:en`,
+      ])
+
+      const sampleDocSlugs = [
+        `${collectionSlug}-item-1`,
+        `${collectionSlug}-item-2`,
+        `${collectionSlug}-item-1`,
+        '   ',
+        null,
+        undefined,
+      ]
+      expect(buildCollectionTags(collectionSlug, sampleDocSlugs)).toEqual(
+        clientBuildCollectionTags(collectionSlug, sampleDocSlugs),
+      )
+      expect(buildCollectionTags(collectionSlug, sampleDocSlugs)).toEqual([
+        `collection:${collectionSlug}`,
+        `collection:${collectionSlug}:ar`,
+        `collection:${collectionSlug}:en`,
+        `doc:${collectionSlug}:${collectionSlug}-item-1`,
+        `doc:${collectionSlug}:${collectionSlug}-item-1:ar`,
+        `doc:${collectionSlug}:${collectionSlug}-item-1:en`,
+        `doc:${collectionSlug}:${collectionSlug}-item-2`,
+        `doc:${collectionSlug}:${collectionSlug}-item-2:ar`,
+        `doc:${collectionSlug}:${collectionSlug}-item-2:en`,
+      ])
+    }
+
+    const allGlobalSlugs = ['site-settings', 'home-page', 'about-page', 'contact-page'] as const
+    for (const globalSlug of allGlobalSlugs) {
+      expect(buildGlobalTags(globalSlug)).toEqual(clientBuildGlobalTags(globalSlug))
+      expect(buildGlobalTags(globalSlug)).toEqual([
+        `global:${globalSlug}`,
+        `global:${globalSlug}:ar`,
+        `global:${globalSlug}:en`,
+      ])
+    }
   })
 
   it('skips revalidation on draft creation, draft-to-draft autosave, and draft/autosave on a published doc, and revalidates only on publish, unpublish, and published delete (R-3, R-4, R-5)', async () => {

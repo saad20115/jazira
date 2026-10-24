@@ -119,15 +119,34 @@ export function ServicesCarousel({
 
   const clampedActiveIndex = Math.min(activeIndex, maxIndex)
 
+  const syncSectionCssProperties = useCallback(
+    (
+      node: HTMLElement | null,
+      indexValue: number,
+      maxIndexValue: number,
+      dragPxValue: number,
+    ): void => {
+      if (!node) {
+        return
+      }
+      node.style.setProperty('--index', String(indexValue))
+      node.style.setProperty('--max-index', String(Math.max(1, maxIndexValue)))
+      node.style.setProperty('--drag-x', `${String(dragPxValue)}px`)
+    },
+    [],
+  )
+
+  const handleSectionRef = useCallback(
+    (node: HTMLElement | null): void => {
+      sectionRef.current = node
+      syncSectionCssProperties(node, clampedActiveIndex, maxIndex, dragOffsetPx)
+    },
+    [clampedActiveIndex, dragOffsetPx, maxIndex, syncSectionCssProperties],
+  )
+
   useEffect(() => {
-    const node = sectionRef.current
-    if (!node) {
-      return
-    }
-    node.style.setProperty('--index', String(clampedActiveIndex))
-    node.style.setProperty('--max-index', String(Math.max(1, maxIndex)))
-    node.style.setProperty('--drag-x', `${String(dragOffsetPx)}px`)
-  }, [clampedActiveIndex, maxIndex, dragOffsetPx])
+    syncSectionCssProperties(sectionRef.current, clampedActiveIndex, maxIndex, dragOffsetPx)
+  }, [clampedActiveIndex, maxIndex, dragOffsetPx, syncSectionCssProperties])
 
   useEffect(() => {
     const viewportNode = viewportRef.current
@@ -344,7 +363,7 @@ export function ServicesCarousel({
 
   return (
     <section
-      ref={sectionRef}
+      ref={handleSectionRef}
       aria-roledescription={dict.carousel.carouselRoleDescription}
       aria-label={dict.carousel.regionLabel}
       tabIndex={0}
