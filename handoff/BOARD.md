@@ -24,7 +24,7 @@ watch the channel.
 | P3-T1 | Frontend foundations, i18n, CSP | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T2 | Shell & primitives + styleguide | ACCEPTED | 4 | 2026-10-24 | CTO |
 | P3-T3 | Cards & motion components | ACCEPTED | 3 | 2026-10-24 | CTO |
-| P3-T4 | Home page + intro | CHANGES_REQUESTED | 2 | 2026-10-24 | CTO |
+| P3-T4 | Home page + intro | IN_PROGRESS | 3 | 2026-10-24 | Antigravity |
 | P3-T5 | Live 3D tower in the card | TODO | 0 | 2026-10-21 | CTO |
 | P3-T6 | Services page | TODO | 0 | 2026-10-21 | CTO |
 | P3-T7 | About page | TODO | 0 | 2026-10-21 | CTO |

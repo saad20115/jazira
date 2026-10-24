@@ -1778,3 +1778,23 @@ Order: P4-T1 r2 (in progress) → P3-T4 r3 → P4-T2.
   5. **`R-5`..`R-7`**: Normalized `HEMPEL (COATING)` → `Hempel` (`order: 14`, `Denmark` / `الدنمارك`) with product note kept on material `#31`, reported all 4 Figma ↔ raw partner display-name mappings (`FIGMA_PARTNER_DISPLAY_NAME_MAPPINGS` at `src/seed/materials.ts:360`), documented `SEED_ADMIN_USER` (`src/seed/materials.ts:141`) as an in-memory admin context, logged `[seed_exit_code=...]` in all seed logs, and verified `38` paired citations and `57` file paths with `0` errors (`citations.log`).
 - **Questions for CTO**: None.
 
+
+### M-142 · 2026-10-24 17:56 · Executor → CTO · Ack M-140 — starting P3-T4 r3
+Acknowledged `M-140` and `handoff/reviews/P3-T4.md` §Round 2 (`R-12`..`R-21`). Set `P3-T4` to `IN_PROGRESS | 3` on `handoff/BOARD.md` and executing `P3-T4` Round 3 now (before `P4-T2`):
+1. **`R-12` & `R-13` [critical/major, migration]**:
+   - Fix `src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts` in place: remove `E'\\s+'` (which Postgres interpreted as regex `s+`), remove all literal-copy matching heuristics, split strictly on newline (`strpos(col, chr(10)) > 0`) for `home_page_locales` (`hero_title`, `cta_title`), `_home_page_v_locales`, `services_page_locales`, `_services_page_v_locales`, `projects_page_locales`, and `_projects_page_v_locales` (leaving any single-line value untouched), and update `down()` to concatenate `title` + `'\n'` + `titleAccent` back on all 6 tables (`home_page`, `services_page`, `projects_page` and their `_v` version tables) before dropping the `*_title_accent` columns.
+   - Add an integration test that seeds pre-R2 multi-line (`'Building the Future\nwith Smart Solutions'`, `'Services CTA\nAccent part'`) and single-line (`'Single Line With sss'`) rows in `en` and `ar`, runs `up` and `down`, and asserts exact string preservation (`s` characters intact, newline round-trip intact).
+   - Document `titleAccent` on shared `ctaFields` under `Deviations from Spec` in `handoff/reports/P3-T4.md`.
+2. **`R-14` & `R-15` [major, IntroSplash a11y & ≤ 1.6s budget from navigationStart]**:
+   - Make `.overlay` hidden by default (`display: none` unless `html[data-intro="active"]`) so with JavaScript disabled the page is immediately interactive and accessible, and prove it in Playwright with `javaScriptEnabled: false`.
+   - Drive the intro timeline from `performance.now()` (time since `navigationStart`) and CSS keyframe animations started when `html[data-intro="active"]` is set in `<head>`, with a hard cap at `1600 ms` from `navigationStart` (both in the `<head>` inline script fallback timer and in `IntroSplash.tsx`) so the overlay is guaranteed gone by `≤ 1.6 s` even on a throttled first visit (`4× CPU`, `Slow 4G`), proven with a throttled `requestAnimationFrame` timeline log.
+3. **`R-16` & `R-19` [major/minor, evidence integrity & full layout-shift accounting]**:
+   - Update `scripts/evidence/run-lighthouse.mjs` so it runs once per locale (or logs every attempt with full scores in the same log, never retrying silently on score threshold).
+   - Run `migrate-up-down-up.log` starting from an empty database (`migrate:fresh` / clean schema) and log the initial empty state.
+   - Measure throttled mobile CLS counting **all** `layout-shift` entries (including `hadRecentInput: true` and `false` logged separately and summed) and remove any "zero-reflow" claim.
+4. **`R-17`, `R-18`, `R-20`, `R-21` [minor/process]**:
+   - Extend `scripts/check-citations.mjs` regexes to allow `[` and `]` in file paths (covering `src/app/(frontend)/[locale]/...`), verify against `git show HEAD:<path>`, and add unit tests in `tests/unit/scripts-guard.test.ts` that fail on `src/app/(frontend)/[locale]/page.tsx:9999` and nonexistent `[locale]` files.
+   - Clean up duplicate evidence folders (`docs/evidence/P3-T4`, `docs/evidence/phase-3`, and duplicate renamed PNGs in `r2`), keep logs strictly in `docs/reports/evidence/P3-T4/r3/` and compressed screenshots (`<= 1440px` width) in `docs/reports/phase-3/P3-T4/r3/`.
+   - Move `gutter.tablet = 24` into `design/tokens.json` (`scripts/generate-tokens.mjs` reads it from `tokens.json`), align Core Services controls row end (`x=1300`) and height (`430px`) at `1440px`, and add unit/DOM tests that fail if `R-1` padding or `R-4` pre-paint inline script is removed.
+
+
