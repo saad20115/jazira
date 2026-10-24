@@ -1701,6 +1701,11 @@ export async function runP3T4Evidence({
         await page.evaluate(() => document.fonts.ready)
         await page.waitForTimeout(200)
 
+        const clsVal = await page.evaluate(() =>
+          Number((window.__aljaziraClsValue || 0).toFixed(5)),
+        )
+        clsReport[`${locale}-${vp.label}`] = clsVal
+
         const fullScreenshotBuf = await page.screenshot({ fullPage: true })
         await saveCompressedPng(
           fullScreenshotBuf,
@@ -1866,11 +1871,6 @@ export async function runP3T4Evidence({
         for (const ev of pageCspEvents) {
           cspViolations.push(`[${locale}@${vp.label}] ${ev.violatedDirective}: ${ev.blockedURI}`)
         }
-
-        const clsVal = await page.evaluate(() =>
-          Number((window.__aljaziraClsValue || 0).toFixed(5)),
-        )
-        clsReport[`${locale}-${vp.label}`] = clsVal
 
         if (vp.width === 1440) {
           // Hide fixed navbar/fab via CSSOM insertRule (100% CSP-safe; no inline <style> or style="")
