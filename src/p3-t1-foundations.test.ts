@@ -279,11 +279,11 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
 })
 
 describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', () => {
-  it('redirects / -> 308 Permanent Redirect to /en with strict public CSP header', () => {
+  it('redirects / -> 307 Temporary Redirect to /en with strict public CSP header', () => {
     const req = new NextRequest('http://localhost:3000/?utm=test')
     const res = proxy(req)
 
-    expect(res.status).toBe(308)
+    expect(res.status).toBe(307)
     expect(res.headers.get('location')).toBe('http://localhost:3000/en?utm=test')
     const csp = res.headers.get('Content-Security-Policy') ?? ''
     expect(csp).toContain("default-src 'self'")

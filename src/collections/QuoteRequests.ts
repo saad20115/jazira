@@ -8,6 +8,7 @@ import {
 
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
+import { DEFAULT_LOCALE } from '../i18n'
 import { isValidIpHash } from '../lib/ipHash'
 import {
   E164_GENERAL_PHONE_REGEX,
@@ -147,8 +148,8 @@ async function verifyRelatedDocExists(
     where: { id: { equals: relId } },
     limit: 1,
     depth: 0,
-    locale: locale ?? 'ar',
-    fallbackLocale: 'ar',
+    locale: locale ?? DEFAULT_LOCALE,
+    fallbackLocale: DEFAULT_LOCALE,
     overrideAccess: true,
     req,
   })
@@ -296,7 +297,7 @@ const validateQuoteRequestBeforeValidate: CollectionBeforeValidateHook = async (
   }
 
   if ('service' in mutable && isNonEmptyInput(mutable.service)) {
-    const requestLocale: QuoteLocale = mutable.locale === 'en' ? 'en' : 'ar'
+    const requestLocale: QuoteLocale = mutable.locale === 'ar' ? 'ar' : DEFAULT_LOCALE
     const serviceDoc = await verifyRelatedDocExists(
       'services',
       mutable.service,
@@ -485,7 +486,7 @@ export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
         en: 'Submission Locale',
       },
       required: true,
-      defaultValue: 'ar',
+      defaultValue: DEFAULT_LOCALE,
       options: [
         {
           value: 'ar',

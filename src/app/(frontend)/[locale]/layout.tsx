@@ -45,6 +45,36 @@ export function buildEnglishRedirectTarget(pathname: string, search = ''): strin
   return `${switchedPath}${normalizedSearch}`
 }
 
+export async function canServeArabicLocaleForCurrentRequest(): Promise<boolean> {
+  let arabicEnabled = false
+  try {
+    arabicEnabled = await isArabicEnabled()
+  } catch {
+    arabicEnabled = false
+  }
+  if (arabicEnabled) {
+    return true
+  }
+
+  let isDraftMode = false
+  try {
+    const dm = await draftMode()
+    isDraftMode = dm.isEnabled
+  } catch {
+    isDraftMode = false
+  }
+
+  let requestHeaders: { get(name: string): string | null | undefined }
+  try {
+    requestHeaders = await headers()
+  } catch {
+    return false
+  }
+
+  const activeSearch = requestHeaders.get('x-aljazira-search') || ''
+  return isAuthorizedArabicPreviewRequest(requestHeaders, isDraftMode, activeSearch)
+}
+
 export async function enforceArabicEnabledOrRedirect(
   requestHeaders: { get(name: string): string | null | undefined },
   activePathname: string,
@@ -136,6 +166,10 @@ export async function generateMetadata({
         icon: '/icon.svg',
       },
     }
+  }
+
+  if (locale === 'ar' && !(await canServeArabicLocaleForCurrentRequest())) {
+    return {}
   }
 
   try {

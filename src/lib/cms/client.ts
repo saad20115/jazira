@@ -304,10 +304,54 @@ export async function resolvePublicDraftFlag(): Promise<boolean> {
   return ctx.draft
 }
 
+function resolveExpectedRequestOrigin(reqHeaders: {
+  get(name: string): string | null | undefined
+}): string {
+  const rawHost = (reqHeaders.get('x-forwarded-host') || reqHeaders.get('host') || '')
+    .split(',')[0]
+    ?.trim()
+  if (rawHost) {
+    const rawProto =
+      (reqHeaders.get('x-forwarded-proto') || '').split(',')[0]?.trim() ||
+      (rawHost.startsWith('localhost') || rawHost.startsWith('127.0.0.1') ? 'http' : 'https')
+    try {
+      return new URL(`${rawProto}://${rawHost}`).origin
+    } catch {
+      // fall through to configured server URL
+    }
+  }
+  const configuredUrl =
+    process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || 'http://localhost:3000'
+  try {
+    return new URL(configuredUrl).origin
+  } catch {
+    return 'http://localhost:3000'
+  }
+}
+
+export function isSameOriginAdminReferer(
+  referer: string,
+  reqHeaders: { get(name: string): string | null | undefined },
+): boolean {
+  if (!referer) {
+    return false
+  }
+  try {
+    const refUrl = new URL(referer)
+    const expectedOrigin = resolveExpectedRequestOrigin(reqHeaders)
+    return (
+      refUrl.origin === expectedOrigin &&
+      (refUrl.pathname === '/admin' || refUrl.pathname.startsWith('/admin/'))
+    )
+  } catch {
+    return false
+  }
+}
+
 /**
  * Returns `true` when the incoming request is an authenticated `admin` or `editor`
  * previewing Arabic via Next.js `draftMode()` (`/api/preview`) or Payload Live Preview
- * (`<iframe>` / `?livePreview=true` / `?preview=true`) (`handoff/tasks/P3-T12.md` §3).
+ * (`<iframe>` / `?livePreview=true` / `?preview=true`) (`handoff/tasks/P3-T12.md` §3, `R-6`).
  */
 export async function isAuthorizedArabicPreviewRequest(
   reqHeaders: { get(name: string): string | null | undefined },
@@ -322,11 +366,11 @@ export async function isAuthorizedArabicPreviewRequest(
   }
   const secFetchDest = reqHeaders.get('sec-fetch-dest')
   const referer = reqHeaders.get('referer') ?? ''
+  const searchParams = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
+  const hasPreviewParam =
+    searchParams.get('preview') === 'true' || searchParams.get('livePreview') === 'true'
   const isLivePreviewContext =
-    secFetchDest === 'iframe' ||
-    referer.includes('/admin') ||
-    search.includes('livePreview=true') ||
-    search.includes('preview=true')
+    secFetchDest === 'iframe' || isSameOriginAdminReferer(referer, reqHeaders) || hasPreviewParam
   if (!isDraftModeEnabled && !isLivePreviewContext) {
     return false
   }

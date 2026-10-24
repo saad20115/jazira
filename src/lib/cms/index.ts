@@ -27,6 +27,7 @@ export {
   DEFAULT_CMS_QUERY_LIMIT,
   getFallbackLocale,
   isAuthorizedArabicPreviewRequest,
+  isSameOriginAdminReferer,
   MAX_CMS_QUERY_LIMIT,
   resolveAuthenticatedStaffUser,
   resolvePublicDraftContext,

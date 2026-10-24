@@ -8,6 +8,7 @@ import { sectionIntroGroup } from '../fields/groups/sectionIntro'
 import { paragraphRichTextField } from '../fields/richText'
 import { seoGroupField } from '../fields/seo'
 import { createRevalidateGlobalAfterChangeHook } from '../hooks/revalidate'
+import { DEFAULT_LOCALE } from '../i18n'
 import { PAGES_ADMIN_GROUP, withPublishableGlobal } from './_shared/publishableGlobal'
 
 export const INTERACTIVE_SYSTEM_SHOT_VALUES = [
@@ -93,8 +94,10 @@ export const DEFAULT_INTERACTIVE_SYSTEMS_EN: readonly DefaultInteractiveSystemIt
   },
 ] as const
 
-export function getDefaultInteractiveSystems(locale?: string): DefaultInteractiveSystemItem[] {
-  const source = locale === 'en' ? DEFAULT_INTERACTIVE_SYSTEMS_EN : DEFAULT_INTERACTIVE_SYSTEMS_AR
+export function getDefaultInteractiveSystems(
+  locale: string = DEFAULT_LOCALE,
+): DefaultInteractiveSystemItem[] {
+  const source = locale === 'ar' ? DEFAULT_INTERACTIVE_SYSTEMS_AR : DEFAULT_INTERACTIVE_SYSTEMS_EN
   return source.map((item) => ({
     title: item.title,
     text: item.text,
@@ -181,7 +184,7 @@ const validateHomePageBeforeValidate: GlobalBeforeValidateHook = ({ data, origin
       !Array.isArray(origInteractive.systems) ||
       origInteractive.systems.length === 0)
   ) {
-    const reqLocale = typeof req.locale === 'string' ? req.locale : 'ar'
+    const reqLocale = typeof req.locale === 'string' ? req.locale : DEFAULT_LOCALE
     if (interactiveData) {
       interactiveData.systems = getDefaultInteractiveSystems(reqLocale)
     } else {

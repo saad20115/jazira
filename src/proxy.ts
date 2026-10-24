@@ -175,14 +175,14 @@ export function proxy(request: NextRequest): NextResponse {
     return response
   }
 
-  // 2. Redirect `/` -> `308 Permanent Redirect` to `/en` (`DEFAULT_LOCALE`)
+  // 2. Redirect `/` -> `307 Temporary Redirect` to `/en` (`DEFAULT_LOCALE`, `R-5`)
   if (pathname === '/') {
     const redirectUrl = new URL(`/${DEFAULT_LOCALE}${search}`, request.url)
     const redirectCsp = buildPublicCspHeader({
       nonce,
       pathname: `/${DEFAULT_LOCALE}`,
     })
-    const redirectResponse = NextResponse.redirect(redirectUrl, 308)
+    const redirectResponse = NextResponse.redirect(redirectUrl, 307)
     redirectResponse.headers.set('Content-Security-Policy', redirectCsp)
     return redirectResponse
   }

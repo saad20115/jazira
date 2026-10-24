@@ -321,28 +321,66 @@ async function main() {
 
   const probeRootOff = await formatHttpProbe(baseUrl, '/')
   curlLogLines.push(probeRootOff.textBlock, '')
-  if (probeRootOff.res.status !== 308 || probeRootOff.res.headers.get('location') !== '/en') {
+  if (probeRootOff.res.status !== 307 || probeRootOff.res.headers.get('location') !== '/en') {
     throw new Error(
-      `Expected / -> 308 /en when off, got ${String(probeRootOff.res.status)} ${String(probeRootOff.res.headers.get('location'))}`,
+      `Expected / -> 307 /en when off, got ${String(probeRootOff.res.status)} ${String(probeRootOff.res.headers.get('location'))}`,
     )
   }
 
   const probeArOff = await formatHttpProbe(baseUrl, '/ar')
-  curlLogLines.push(probeArOff.textBlock, '')
+  const arOff307Body = await probeArOff.res.text()
+  const arOff307ArabicChars = (arOff307Body.match(/[\u0600-\u06FF]/g) || []).length
+  curlLogLines.push(
+    probeArOff.textBlock,
+    `redirect_307_body_arabic_char_count: ${String(arOff307ArabicChars)}`,
+    '',
+  )
   if (probeArOff.res.status !== 307 || probeArOff.res.headers.get('location') !== '/en') {
     throw new Error(
       `Expected /ar -> 307 /en when off, got ${String(probeArOff.res.status)} ${String(probeArOff.res.headers.get('location'))}`,
     )
   }
+  if (arOff307ArabicChars > 0) {
+    throw new Error(
+      `Expected 0 Arabic characters in /ar 307 redirect body (R-1), got ${String(arOff307ArabicChars)}`,
+    )
+  }
 
   const probeArSubOff = await formatHttpProbe(baseUrl, '/ar/services?q=hvac')
-  curlLogLines.push(probeArSubOff.textBlock, '')
+  const arSubOff307Body = await probeArSubOff.res.text()
+  const arSubOff307ArabicChars = (arSubOff307Body.match(/[\u0600-\u06FF]/g) || []).length
+  curlLogLines.push(
+    probeArSubOff.textBlock,
+    `redirect_307_body_arabic_char_count: ${String(arSubOff307ArabicChars)}`,
+    '',
+  )
   if (
     probeArSubOff.res.status !== 307 ||
     probeArSubOff.res.headers.get('location') !== '/en/services?q=hvac'
   ) {
     throw new Error(
       `Expected /ar/services?q=hvac -> 307 /en/services?q=hvac when off, got ${String(probeArSubOff.res.status)} ${String(probeArSubOff.res.headers.get('location'))}`,
+    )
+  }
+  if (arSubOff307ArabicChars > 0) {
+    throw new Error(
+      `Expected 0 Arabic characters in /ar/services?q=hvac 307 redirect body (R-1), got ${String(arSubOff307ArabicChars)}`,
+    )
+  }
+
+  const probeArRscOff = await formatHttpProbe(baseUrl, '/ar?_rsc=1', {
+    headers: { RSC: '1' },
+  })
+  const arRscOffBody = await probeArRscOff.res.text()
+  const arRscOffArabicChars = (arRscOffBody.match(/[\u0600-\u06FF]/g) || []).length
+  curlLogLines.push(
+    probeArRscOff.textBlock,
+    `rsc_payload_arabic_char_count: ${String(arRscOffArabicChars)}`,
+    '',
+  )
+  if (arRscOffArabicChars > 0) {
+    throw new Error(
+      `Expected 0 Arabic characters in /ar?_rsc=1 payload when off (R-1), got ${String(arRscOffArabicChars)}`,
     )
   }
 

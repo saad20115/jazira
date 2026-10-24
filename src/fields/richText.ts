@@ -19,6 +19,7 @@ import {
   ValidationError,
 } from 'payload'
 
+import { DEFAULT_LOCALE } from '../i18n'
 import { validateExternalUrl, validateInternalPath } from './link'
 
 /**
@@ -531,7 +532,7 @@ export function bodyMediaField(bodyFieldName = 'body'): RelationshipField {
           const operationLocale =
             typeof req.locale === 'string' && req.locale !== 'all' && req.locale.length > 0
               ? req.locale
-              : 'ar'
+              : DEFAULT_LOCALE
           const siblingRecord = siblingData as Record<string, unknown> | undefined
           const dataRecord = data as Record<string, unknown> | undefined
           const originalRecord = originalDoc as Record<string, unknown> | undefined

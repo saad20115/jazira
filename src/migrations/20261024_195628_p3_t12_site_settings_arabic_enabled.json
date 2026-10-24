@@ -5486,7 +5486,7 @@
           "typeSchema": "public",
           "primaryKey": false,
           "notNull": true,
-          "default": "'ar'"
+          "default": "'en'"
         },
         "source_page": {
           "name": "source_page",

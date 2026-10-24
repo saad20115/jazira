@@ -33,7 +33,7 @@ import { type CmsLinkDataLike, resolveSafeCmsLinkData } from '@/lib/link-safety'
 import type { HomePage, Project, Stat, Video } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
-import { enforceArabicEnabledOrRedirect } from './layout'
+import { canServeArabicLocaleForCurrentRequest, enforceArabicEnabledOrRedirect } from './layout'
 import styles from './page.module.css'
 
 interface LocaleHomePageProps {
@@ -276,6 +276,9 @@ export async function generateMetadata({ params }: LocaleHomePageProps): Promise
       title: dict.errors.notFoundTitle,
       description: dict.errors.notFoundDescription,
     }
+  }
+  if (locale === 'ar' && !(await canServeArabicLocaleForCurrentRequest())) {
+    return {}
   }
   const [siteSettings, homePage] = await Promise.all([
     getSiteSettings(locale).catch(() => null),

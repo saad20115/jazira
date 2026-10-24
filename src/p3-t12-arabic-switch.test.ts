@@ -3,10 +3,13 @@ import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { QuoteRequests } from '@/collections/QuoteRequests'
 import { Footer } from '@/components/Footer'
 import { Navbar } from '@/components/Navbar'
+import { DEFAULT_INTERACTIVE_SYSTEMS_EN, getDefaultInteractiveSystems } from '@/globals/HomePage'
 import { SiteSettings } from '@/globals/SiteSettings'
 import { buildHreflangAlternates, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/i18n'
+import { isSameOriginAdminReferer } from '@/lib/cms/client'
 import type { HomePage, Navigation, SiteSetting } from '@/payload-types'
 import { DEFAULT_ADMIN_LANG, proxy } from '@/proxy'
 
@@ -84,9 +87,13 @@ vi.mock('@/lib/cms', () => ({
     search = '',
   ) => {
     const isIframeRequest = reqHeaders.get('sec-fetch-dest') === 'iframe'
+    const referer = reqHeaders.get('referer') ?? ''
+    const searchParams = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
     const hasLivePreviewParam =
-      search.includes('livePreview=true') || search.includes('preview=true')
-    if (!isDraftModeEnabled && !isIframeRequest && !hasLivePreviewParam) {
+      searchParams.get('preview') === 'true' || searchParams.get('livePreview') === 'true'
+    const isLivePreviewContext =
+      isIframeRequest || isSameOriginAdminReferer(referer, reqHeaders) || hasLivePreviewParam
+    if (!isDraftModeEnabled && !isLivePreviewContext) {
       return false
     }
     const staff = await mockStaffUser()
@@ -138,17 +145,26 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
     )
   })
 
-  describe('1. Default Locale & Proxy (`/` -> `308 /en`, `payload-lng=en`)', () => {
-    it('sets DEFAULT_LOCALE = "en", SUPPORTED_LOCALES = ["en", "ar"], and DEFAULT_ADMIN_LANG = "en"', () => {
+  describe('1. Default Locale & Proxy (`/` -> `307 /en`, `payload-lng=en`, `R-4`, `R-5`)', () => {
+    it('sets DEFAULT_LOCALE = "en", SUPPORTED_LOCALES = ["en", "ar"], DEFAULT_ADMIN_LANG = "en", and uses DEFAULT_LOCALE in QuoteRequests and HomePage (R-4)', () => {
       expect(DEFAULT_LOCALE).toBe('en')
       expect(SUPPORTED_LOCALES).toEqual(['en', 'ar'])
       expect(DEFAULT_ADMIN_LANG).toBe('en')
+
+      const quoteLocaleField = QuoteRequests.fields.find((f) => 'name' in f && f.name === 'locale')
+      expect(
+        quoteLocaleField && 'defaultValue' in quoteLocaleField
+          ? quoteLocaleField.defaultValue
+          : null,
+      ).toBe('en')
+
+      expect(getDefaultInteractiveSystems()).toEqual(DEFAULT_INTERACTIVE_SYSTEMS_EN)
     })
 
-    it('redirects / -> 308 /en preserving query parameters', () => {
+    it('redirects / -> 307 /en preserving query parameters (R-5)', () => {
       const req = new NextRequest('http://localhost:3000/?q=hvac&src=hero')
       const res = proxy(req)
-      expect(res.status).toBe(308)
+      expect(res.status).toBe(307)
       expect(res.headers.get('location')).toBe('http://localhost:3000/en?q=hvac&src=hero')
     })
 
@@ -336,6 +352,40 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
       expect(layoutHtml).toContain('"inLanguage":"en"')
       expect(layoutHtml).not.toContain('href="/ar"')
     })
+
+    it('gates generateMetadata on /ar when arabicEnabled = false so zero Arabic metadata leaks into 307 bodies or RSC payloads (R-1)', async () => {
+      const arSettingsWithArabicCopy: SiteSetting = {
+        ...makeBaseSiteSettings(false),
+        companyName: 'شركة الجزيرة للإمداد الذكي',
+        tagline: 'حلول الكهروميكانيك والهندسة الذكية',
+        defaultSeo: {
+          title: 'شركة الجزيرة للإمداد الذكي — مقاولات الكهروميكانيك',
+          description: 'مقاولات متكاملة في الأنظمة الكهروميكانيكية',
+        },
+      }
+      mockSiteSettings.mockResolvedValue(arSettingsWithArabicCopy)
+      mockHomePage.mockResolvedValue({
+        id: 1,
+        meta: {
+          title: 'الصفحة الرئيسية — شركة الجزيرة',
+          description: 'وصف الصفحة الرئيسية بالعربية',
+        },
+      })
+
+      const arLayoutMetaOff = await generateLayoutMetadata({
+        params: Promise.resolve({ locale: 'ar' }),
+      })
+      const arHomeMetaOff = await generateHomeMetadata({
+        params: Promise.resolve({ locale: 'ar' }),
+      })
+
+      expect(arLayoutMetaOff).toEqual({})
+      expect(arHomeMetaOff).toEqual({})
+      expect(/[\u0600-\u06FF]/.test(JSON.stringify(arLayoutMetaOff))).toBe(false)
+      expect(/[\u0600-\u06FF]/.test(JSON.stringify(arHomeMetaOff))).toBe(false)
+      // And mockHomePage should not even have been called for an unauthorized /ar metadata request
+      expect(mockHomePage).not.toHaveBeenCalled()
+    })
   })
 
   describe('4. Staff Preview Exception (`draftMode` & Live Preview `iframe`) when `arabicEnabled = false`', () => {
@@ -398,6 +448,81 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
       await expect(
         enforceArabicEnabledOrRedirect(spoofedHeaders, '/ar/projects', '?livePreview=true'),
       ).rejects.toThrow('NEXT_REDIRECT:/en/projects?livePreview=true')
+    })
+
+    it('strictly parses preview/livePreview query params via URLSearchParams and requires same-origin /admin referer (R-6)', async () => {
+      mockDraftMode.mockResolvedValue({ isEnabled: false })
+      mockStaffUser.mockResolvedValue({
+        id: 2,
+        email: 'editor@aljazira.co',
+        role: 'editor',
+      })
+
+      // 1. Substring spoof ?preview=true_fake or ?not_preview=true must be rejected -> redirects to /en
+      const fakePreviewHeaders = new Headers({
+        host: 'localhost:3000',
+        'x-aljazira-pathname': '/ar',
+        'x-aljazira-search': '?preview=true_fake',
+      })
+      await expect(
+        enforceArabicEnabledOrRedirect(fakePreviewHeaders, '/ar', '?preview=true_fake'),
+      ).rejects.toThrow('NEXT_REDIRECT:/en?preview=true_fake')
+
+      // 2. Cross-origin referer https://evil.example/admin must be rejected -> redirects to /en
+      const crossOriginRefererHeaders = new Headers({
+        host: 'localhost:3000',
+        referer: 'https://evil.example/admin/globals/home-page',
+      })
+      expect(
+        isSameOriginAdminReferer(
+          'https://evil.example/admin/globals/home-page',
+          crossOriginRefererHeaders,
+        ),
+      ).toBe(false)
+      await expect(
+        enforceArabicEnabledOrRedirect(crossOriginRefererHeaders, '/ar', ''),
+      ).rejects.toThrow('NEXT_REDIRECT:/en')
+
+      // 3. Same-origin non-admin referer http://localhost:3000/en/about?from=/admin must be rejected
+      const nonAdminRefererHeaders = new Headers({
+        host: 'localhost:3000',
+        referer: 'http://localhost:3000/en/about?from=/admin',
+      })
+      expect(
+        isSameOriginAdminReferer(
+          'http://localhost:3000/en/about?from=/admin',
+          nonAdminRefererHeaders,
+        ),
+      ).toBe(false)
+      await expect(
+        enforceArabicEnabledOrRedirect(nonAdminRefererHeaders, '/ar', ''),
+      ).rejects.toThrow('NEXT_REDIRECT:/en')
+
+      // 4. Same-origin /admin referer http://localhost:3000/admin/globals/home-page is accepted for authenticated staff
+      const validAdminRefererHeaders = new Headers({
+        host: 'localhost:3000',
+        referer: 'http://localhost:3000/admin/globals/home-page',
+      })
+      expect(
+        isSameOriginAdminReferer(
+          'http://localhost:3000/admin/globals/home-page',
+          validAdminRefererHeaders,
+        ),
+      ).toBe(true)
+      await expect(
+        enforceArabicEnabledOrRedirect(validAdminRefererHeaders, '/ar', ''),
+      ).resolves.toBeUndefined()
+
+      // 5. Exact ?preview=true or ?livePreview=true query param is accepted for authenticated staff
+      const exactPreviewHeaders = new Headers({
+        host: 'localhost:3000',
+      })
+      await expect(
+        enforceArabicEnabledOrRedirect(exactPreviewHeaders, '/ar', '?preview=true'),
+      ).resolves.toBeUndefined()
+      await expect(
+        enforceArabicEnabledOrRedirect(exactPreviewHeaders, '/ar', '?livePreview=true'),
+      ).resolves.toBeUndefined()
     })
   })
 
