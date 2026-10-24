@@ -352,6 +352,11 @@ The reference viewer stops the fan on reduced motion, a hidden tab, or when off-
 
 ## 16. v022 pivot reported by the 3D lead (2026-10-25): maquette on a turntable, daylight studio
 - **Reported as the owner's decision. The site CTO is confirming it directly with the owner.**
+- **The owner's words, as relayed by the 3D lead:** "خلينا نعمل حل جذري. اعتبر البرج ماكيت على قرص
+  دوار داخل غرفة مضاءة، ويلتف حوله دوار (مسار السيارات)، والإضاءة بيضاء نهارية. كده لا حاجة للمدينة."
+  The city work is stopped, and v020 stays pinned. A blockout mock and an orbit sheet go to the owner
+  first. **The site CTO still waits for the owner's own confirmation** before changing the site's
+  contract.
 - The tower becomes an architectural maquette on a turntable plinth in a lit studio room, with the
   roundabout track around it, in white daylight. No city.
 - **Render-contract changes:**
