@@ -1,0 +1,183 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+$ git rev-parse HEAD
+8a239fcdcd6efce98333b7a75f42a1c1be71defb
+
+=== Console, Hydration, CSP, CLS & Layout/SEO Audit (/ar and /en across 1440, 768, 390) ===
+consoleErrors: 0
+pageErrors: 0
+hydrationWarnings: 0
+cspViolations: 0
+maxCls: 0.00076
+{
+  "clsReport": {
+    "ar-1440": 0,
+    "ar-768": 0.00076,
+    "ar-390": 0.00015,
+    "en-1440": 0,
+    "en-768": 0,
+    "en-390": 0
+  },
+  "layoutAndSeoAudit": {
+    "ar-1440": {
+      "carouselStartInset": 140,
+      "slide4BleedsInlineEnd": true,
+      "statsGridCols": 4,
+      "expandedAccordionBg": "rgb(255, 255, 255)",
+      "heroCtaPaddingTop": "0px",
+      "whoPhotoMarginTop": "8px",
+      "whoPhotoMarginInlineStart": "8px",
+      "liveModelControlCount": 0,
+      "h1Text": "نبني المستقبل بحلول هندسية ذكية",
+      "ctaH2Text": "هل أنت مستعد لبناء مشروعك القادم؟",
+      "hreflangXDefault": "http://localhost:3000/ar",
+      "ogSiteName": "شركة الجزيرة للإمداد الذكي",
+      "ogUrl": "http://localhost:3000/ar",
+      "ogImage": "http://localhost:3000/api/media/file/hero-city-7-1200x630.webp",
+      "headerNavLabels": [
+        "خدماتنا",
+        "من نحن",
+        "مشاريعنا",
+        "تواصل معنا",
+        "خدماتنا",
+        "من نحن",
+        "مشاريعنا",
+        "تواصل معنا"
+      ]
+    },
+    "ar-768": {
+      "carouselStartInset": 24,
+      "slide4BleedsInlineEnd": false,
+      "statsGridCols": 2,
+      "expandedAccordionBg": "rgb(255, 255, 255)",
+      "heroCtaPaddingTop": "0px",
+      "whoPhotoMarginTop": "8px",
+      "whoPhotoMarginInlineStart": "8px",
+      "liveModelControlCount": 0,
+      "h1Text": "نبني المستقبل بحلول هندسية ذكية",
+      "ctaH2Text": "هل أنت مستعد لبناء مشروعك القادم؟",
+      "hreflangXDefault": "http://localhost:3000/ar",
+      "ogSiteName": "شركة الجزيرة للإمداد الذكي",
+      "ogUrl": "http://localhost:3000/ar",
+      "ogImage": "http://localhost:3000/api/media/file/hero-city-7-1200x630.webp",
+      "headerNavLabels": [
+        "خدماتنا",
+        "من نحن",
+        "مشاريعنا",
+        "تواصل معنا",
+        "خدماتنا",
+        "من نحن",
+        "مشاريعنا",
+        "تواصل معنا"
+      ]
+    },
+    "ar-390": {
+      "carouselStartInset": 16,
+      "slide4BleedsInlineEnd": false,
+      "statsGridCols": 1,
+      "expandedAccordionBg": "rgb(255, 255, 255)",
+      "heroCtaPaddingTop": "0px",
+      "whoPhotoMarginTop": "0px",
+      "whoPhotoMarginInlineStart": "0px",
+      "liveModelControlCount": 0,
+      "h1Text": "نبني المستقبل بحلول هندسية ذكية",
+      "ctaH2Text": "هل أنت مستعد لبناء مشروعك القادم؟",
+      "hreflangXDefault": "http://localhost:3000/ar",
+      "ogSiteName": "شركة الجزيرة للإمداد الذكي",
+      "ogUrl": "http://localhost:3000/ar",
+      "ogImage": "http://localhost:3000/api/media/file/hero-city-7-1200x630.webp",
+      "headerNavLabels": [
+        "خدماتنا",
+        "من نحن",
+        "مشاريعنا",
+        "تواصل معنا",
+        "خدماتنا",
+        "من نحن",
+        "مشاريعنا",
+        "تواصل معنا"
+      ]
+    },
+    "en-1440": {
+      "carouselStartInset": 140,
+      "slide4BleedsInlineEnd": true,
+      "statsGridCols": 4,
+      "expandedAccordionBg": "rgb(255, 255, 255)",
+      "heroCtaPaddingTop": "0px",
+      "whoPhotoMarginTop": "8px",
+      "whoPhotoMarginInlineStart": "8px",
+      "liveModelControlCount": 0,
+      "h1Text": "Building the Future with Smart Solutions",
+      "ctaH2Text": "Ready to Build Your Next Project?",
+      "hreflangXDefault": "http://localhost:3000/ar",
+      "ogSiteName": "Al Jazira for Imdad Smart Co.",
+      "ogUrl": "http://localhost:3000/en",
+      "ogImage": "http://localhost:3000/api/media/file/hero-city-7-1200x630.webp",
+      "headerNavLabels": [
+        "Services",
+        "About Us",
+        "Projects",
+        "Contact Us",
+        "Services",
+        "About Us",
+        "Projects",
+        "Contact Us"
+      ]
+    },
+    "en-768": {
+      "carouselStartInset": 24,
+      "slide4BleedsInlineEnd": false,
+      "statsGridCols": 2,
+      "expandedAccordionBg": "rgb(255, 255, 255)",
+      "heroCtaPaddingTop": "0px",
+      "whoPhotoMarginTop": "8px",
+      "whoPhotoMarginInlineStart": "8px",
+      "liveModelControlCount": 0,
+      "h1Text": "Building the Future with Smart Solutions",
+      "ctaH2Text": "Ready to Build Your Next Project?",
+      "hreflangXDefault": "http://localhost:3000/ar",
+      "ogSiteName": "Al Jazira for Imdad Smart Co.",
+      "ogUrl": "http://localhost:3000/en",
+      "ogImage": "http://localhost:3000/api/media/file/hero-city-7-1200x630.webp",
+      "headerNavLabels": [
+        "Services",
+        "About Us",
+        "Projects",
+        "Contact Us",
+        "Services",
+        "About Us",
+        "Projects",
+        "Contact Us"
+      ]
+    },
+    "en-390": {
+      "carouselStartInset": 16,
+      "slide4BleedsInlineEnd": false,
+      "statsGridCols": 1,
+      "expandedAccordionBg": "rgb(255, 255, 255)",
+      "heroCtaPaddingTop": "0px",
+      "whoPhotoMarginTop": "0px",
+      "whoPhotoMarginInlineStart": "0px",
+      "liveModelControlCount": 0,
+      "h1Text": "Building the Future with Smart Solutions",
+      "ctaH2Text": "Ready to Build Your Next Project?",
+      "hreflangXDefault": "http://localhost:3000/ar",
+      "ogSiteName": "Al Jazira for Imdad Smart Co.",
+      "ogUrl": "http://localhost:3000/en",
+      "ogImage": "http://localhost:3000/api/media/file/hero-city-7-1200x630.webp",
+      "headerNavLabels": [
+        "Services",
+        "About Us",
+        "Projects",
+        "Contact Us",
+        "Services",
+        "About Us",
+        "Projects",
+        "Contact Us"
+      ]
+    }
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "hydrationWarnings": [],
+  "cspViolations": []
+}

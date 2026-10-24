@@ -1,0 +1,30 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+$ git rev-parse HEAD
+8a239fcdcd6efce98333b7a75f42a1c1be71defb
+$ pnpm payload migrate && echo Y | pnpm payload migrate:down && pnpm payload migrate
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[16:10:27] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507\src\migrations[39m
+[16:10:27] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:10:33] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507\src\migrations[39m
+[16:10:33] [32mINFO[39m: [36mRolling back batch 2 consisting of 8 migration(s).[39m
+[16:10:33] [32mINFO[39m: [36mMigrating down: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[16:10:33] [32mINFO[39m: [36mMigrated down:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (32ms)[39m
+[16:10:33] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[16:10:39] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507\src\migrations[39m
+[16:10:39] [32mINFO[39m: [36mMigrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[16:10:39] [32mINFO[39m: [36mMigrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (67ms)[39m
+[16:10:39] [32mINFO[39m: [36mDone.[39m
+
+[exit_code=0]

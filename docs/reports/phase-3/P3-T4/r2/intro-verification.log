@@ -1,0 +1,62 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+$ git rev-parse HEAD
+8a239fcdcd6efce98333b7a75f42a1c1be71defb
+
+=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3, R-4 SSR pre-paint, R-9 inert + focus) ===
+{
+  "ssrContainsIntroStartEn": true,
+  "ssrContainsIntroStartAr": true,
+  "introStateByLocale": {
+    "en": {
+      "startVisible": true,
+      "revealStateAttr": "reveal",
+      "htmlDataIntro": "active",
+      "overlayDisplay": "flex",
+      "overlayOpacity": "1",
+      "headerInert": true,
+      "homeContentInert": true,
+      "footerInert": true,
+      "fabInert": true,
+      "activeElementIsSkip": true
+    },
+    "ar": {
+      "startVisible": true,
+      "revealStateAttr": "reveal",
+      "htmlDataIntro": "active",
+      "overlayDisplay": "flex",
+      "overlayOpacity": "1",
+      "headerInert": true,
+      "homeContentInert": true,
+      "footerInert": true,
+      "fabInert": true,
+      "activeElementIsSkip": true
+    }
+  },
+  "videoMetricsByLocale": {
+    "en": {
+      "h1RenderedDuringIntro": true,
+      "totalElapsedMs": 1153,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "ar": {
+      "h1RenderedDuringIntro": true,
+      "totalElapsedMs": 1259,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    }
+  },
+  "visibleBeforeEscape": true,
+  "visibleAfterEscape": false,
+  "rmDataIntro": "seen",
+  "visibleWithReducedMotion": false
+}

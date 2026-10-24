@@ -1,0 +1,13 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r2-20261024-160507
+$ git rev-parse HEAD
+8a239fcdcd6efce98333b7a75f42a1c1be71defb
+$ git rev-parse HEAD && git status -s && git log -n 5 --oneline
+8a239fcdcd6efce98333b7a75f42a1c1be71defb
+8a239fc fix(styles): add weight-specific Arabic fallback font-face metrics for zero-reflow swap
+e39b0a6 docs(cto): A-1 v021 N-6 premium facade/glass/lighting (owner)
+541d8c7 fix(home): refine intro timing and headless-shell lighthouse runner for P3-T4 r2
+49e4b15 fix(evidence): check R-9 inert and focus attributes after intro hydration
+96ce47f docs(cto): A-1 v021 N-5 overall darkness (owner)
+
+[exit_code=0]

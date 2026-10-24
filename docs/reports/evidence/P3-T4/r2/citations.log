@@ -1,0 +1,119 @@
+$ git grep -n -e '--gutter-tablet' -- scripts/generate-tokens.mjs
+scripts/generate-tokens.mjs:377:  lines.push('  --gutter-tablet: 24px;')
+scripts/generate-tokens.mjs:457:  lines.push('    --container-gutter: var(--gutter-tablet);')
+
+$ git grep -n -e '.viewport' -- src/components/ServicesCarousel.module.css
+src/components/ServicesCarousel.module.css:31:.viewport {
+src/components/ServicesCarousel.module.css:42:.viewportDragging {
+
+$ git grep -n -e 'ctaFields' -- src/fields/groups/cta.ts
+src/fields/groups/cta.ts:32:export function ctaFields(options: CtaFieldsOptions = {}): Field[] {
+src/fields/groups/cta.ts:187:    fields: ctaFields(fieldOptions),
+
+$ git grep -n -e 'HomePage' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:125:const validateHomePageBeforeValidate: GlobalBeforeValidateHook = ({ data, originalDoc, req }) => {
+src/globals/HomePage.ts:227:export const HomePage: GlobalConfig = withPublishableGlobal({
+src/globals/HomePage.ts:242:    beforeValidate: [validateHomePageBeforeValidate],
+
+$ git grep -n -e 'home_page_locales' -- src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:6:  ALTER TABLE "home_page_locales" ADD COLUMN "hero_title_accent" varchar;
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:7:  ALTER TABLE "home_page_locales" ADD COLUMN "cta_title_accent" varchar;
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:20:  -- Backfill hero_title / hero_title_accent on home_page_locales and _home_page_v_locales (R-2)
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:21:  UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:54:  UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:113:   UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:121:   UPDATE "home_page_locales"
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:136:  ALTER TABLE "home_page_locales" DROP COLUMN "hero_title_accent";
+src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:137:  ALTER TABLE "home_page_locales" DROP COLUMN "cta_title_accent";
+
+$ git grep -n -e 'titleAccent' -- src/fields/groups/groups.test.ts
+src/fields/groups/groups.test.ts:84:    it('includes enabled checkbox, localized title/titleAccent/text, primary button, secondaryButton, and backgroundImage, and wraps in collapsibleSection', () => {
+src/fields/groups/groups.test.ts:97:        'titleAccent',
+
+$ git grep -n -e 'titleAccent' -- src/p3-t4-home.test.ts
+src/p3-t4-home.test.ts:223:      titleAccent: 'Solutions for Mega Projects',
+src/p3-t4-home.test.ts:333:      titleAccent: 'Next Project?',
+src/p3-t4-home.test.ts:508:      // Verifies Hero content + scroll hint button + R-2/R-8 space between title and titleAccent spans
+
+$ git grep -n -e 'whatsappPulseRing' -- src/components/WhatsAppFab.module.css
+src/components/WhatsAppFab.module.css:85:@keyframes whatsappPulseRing {
+src/components/WhatsAppFab.module.css:102:  animation: whatsappPulseRing 2.4s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+
+$ git grep -n -e 'size-adjust' -- src/styles/globals.css
+src/styles/globals.css:6: * Separate regular/medium (`100 500`) and semibold/bold (`600 900`) `size-adjust` and
+src/styles/globals.css:16:  size-adjust: 125%;
+src/styles/globals.css:26:  size-adjust: 144%;
+src/styles/globals.css:49:  text-size-adjust: 100%;
+
+$ git grep -n -e 'notoKufiArabic' -- src/styles/fonts.ts
+src/styles/fonts.ts:21:export const notoKufiArabic = Noto_Kufi_Arabic({
+src/styles/fonts.ts:37:  return locale === 'ar' ? notoKufiArabic.variable : poppins.variable
+src/styles/fonts.ts:40:export const fontVariablesClassName = `${poppins.variable} ${notoKufiArabic.variable}`
+
+$ git grep -n -e 'extractLocaleFontPreloadsFromCss' -- src/styles/font-preload.ts
+src/styles/font-preload.ts:21:export function extractLocaleFontPreloadsFromCss(cssContent: string): LocaleFontPreloadMap {
+src/styles/font-preload.ts:82:        const extracted = extractLocaleFontPreloadsFromCss(cssContent)
+
+$ git grep -n -e 'IntroSplash' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:8:import styles from './IntroSplash.module.css'
+src/components/IntroSplash.tsx:18: * so the SSR `<IntroSplash>` overlay is visible at frame 0 (`0 ms`) on a fresh tab and
+src/components/IntroSplash.tsx:24:export type IntroSplashPhase = 'hidden' | 'start' | 'reveal' | 'exiting'
+src/components/IntroSplash.tsx:26:export interface IntroSplashProps {
+src/components/IntroSplash.tsx:62:export function shouldSkipIntroSplash(win: Window | undefined): boolean {
+src/components/IntroSplash.tsx:91:export function markIntroSplashSeen(win: Window | undefined): void {
+src/components/IntroSplash.tsx:114:export function IntroSplash({
+src/components/IntroSplash.tsx:120:}: IntroSplashProps): ReactElement | null {
+src/components/IntroSplash.tsx:122:  const [phase, setPhase] = useState<IntroSplashPhase>(() => (forceState ? forceState : 'start'))
+src/components/IntroSplash.tsx:142:      markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:153:    if (prePaintState === 'seen' || shouldSkipIntroSplash(window)) {
+src/components/IntroSplash.tsx:166:    markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:208:  const effectivePhase: IntroSplashPhase = forceState ?? phase
+
+$ git grep -n -e 'INTRO_PREPAINT_INLINE_SCRIPT' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:22:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';d.setAttribute('data-intro',rm||seen?'seen':'active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+
+$ git grep -n -e 'data-intro' -- src/components/IntroSplash.module.css
+src/components/IntroSplash.module.css:24::global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']) {
+
+$ git grep -n -e 'runLighthouseAudit' -- scripts/evidence/run-lighthouse.mjs
+scripts/evidence/run-lighthouse.mjs:244:export async function runLighthouseAudit(opts) {
+scripts/evidence/run-lighthouse.mjs:270:  runLighthouseAudit({ url, locale, outLogPath, outJsonPath })
+
+$ git grep -n -e 'runLighthouseAudit' -- scripts/evidence/p3-t4-evidence.mjs
+scripts/evidence/p3-t4-evidence.mjs:8:import { runLighthouseAudit } from './run-lighthouse.mjs'
+scripts/evidence/p3-t4-evidence.mjs:2162:      await runLighthouseAudit({
+
+$ git grep -n -e 'STANDALONE_FILE_PATH_REGEX' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:104:const STANDALONE_FILE_PATH_REGEX =
+scripts/check-citations.mjs:235:    STANDALONE_FILE_PATH_REGEX.lastIndex = 0
+scripts/check-citations.mjs:237:    while ((fileMatch = STANDALONE_FILE_PATH_REGEX.exec(remainder)) !== null) {
+
+$ git grep -n -e 'verifyCitations' -- tests/unit/scripts-guard.test.ts
+tests/unit/scripts-guard.test.ts:13:  verifyCitations,
+tests/unit/scripts-guard.test.ts:103:      const validRes = verifyCitations({
+tests/unit/scripts-guard.test.ts:117:      const wrongLineRes = verifyCitations({
+tests/unit/scripts-guard.test.ts:133:      const missingFileRefRes = verifyCitations({
+
+$ git grep -n -e 'deriveGlobalTargetReferences' -- src/collections/Media.ts
+src/collections/Media.ts:238:export function deriveGlobalTargetReferences(
+src/collections/Media.ts:512:  const globalChecks = deriveGlobalTargetReferences(req.payload.globals.config, 'media')
+
+$ git grep -n -e 'setBackgroundInert' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:41:function setBackgroundInert(inert: boolean): void {
+src/components/IntroSplash.tsx:140:    setBackgroundInert(false)
+src/components/IntroSplash.tsx:155:      setBackgroundInert(false)
+src/components/IntroSplash.tsx:167:    setBackgroundInert(true)
+src/components/IntroSplash.tsx:179:      setBackgroundInert(false)
+src/components/IntroSplash.tsx:188:      setBackgroundInert(false)
+
+$ git grep -n -e 'savedNavAr' -- scripts/evidence/p3-t4-evidence.mjs
+scripts/evidence/p3-t4-evidence.mjs:659:  const savedNavAr = await apiRequest(baseUrl, token, '/api/globals/navigation', {
+scripts/evidence/p3-t4-evidence.mjs:696:  const navHeaderList = savedNavAr?.result?.header || savedNavAr?.header || []
+scripts/evidence/p3-t4-evidence.mjs:697:  const navFooterCol0 = (savedNavAr?.result?.footer || savedNavAr?.footer || [])[0]
+
+$ git grep -n -e 'migrations' -- src/migrations/index.ts
+src/migrations/index.ts:10:export const migrations = [
+
+$ git grep -n -e 'runP3T4Evidence' -- scripts/evidence/p3-t4-evidence.mjs
+scripts/evidence/p3-t4-evidence.mjs:1124:export async function runP3T4Evidence({
+scripts/evidence/p3-t4-evidence.mjs:2198:  runP3T4Evidence({
