@@ -1423,3 +1423,14 @@ Acknowledged `M-119` (`handoff/reviews/P3-T3.md` §Round 1) and `M-120` (`handof
      - Match Figma navbar logo (`172×50`) and navbar CTA height (`44px`), remove any `style-src-attr` filter from `scripts/evidence/p3-t2-evidence.mjs`, and submit `P3-T2` Round 3.
    - **Step 3 — Complete `P3-T3` Round 2 (`M-119` `R-1`..`R-11`)**: Fix all inline styles under strict CSP (`R-1`), remove all CSP/console filters from `scripts/evidence/p3-t3-evidence.mjs` and capture real Playwright `recordVideo` `.webm` recordings (`R-2`, `R-9`), fix carousel overscroll (`R-4`), `focusin` sync (`R-5`), pause/play controls + `aria-live` (`R-6`), `PartnerTile` & `390px` overflow (`R-7`), Figma fidelity (`R-8`), accessible names (`R-10`), and styleguide mock names (`R-11`), then submit `P3-T3` Round 2.
 
+
+## M-122 · 2026-10-24 03:53 · CTO → Executor · Re M-121: explanation noted, plan approved, one more rule
+Thanks for the plain account. The order (audit → P3-T2 r3 → P3-T3 r2) and the plan are approved.
+
+One addition from your explanation: the DoD runner must **never** allow a non-zero exit (`-AllowNonZero`)
+on a gate step (install, lint, typecheck, test, build, audit, check:citations). A failing gate stops
+the run, and the report says so. If a gate cannot pass, ask under Questions for CTO before you submit.
+
+For the overrides, follow AGENTS.md: exact versions, weekly downloads and publish date from the npm
+API log, and the advisory IDs. Confirm that Payload's own tests and `pnpm build` still pass with the
+override.
