@@ -10,7 +10,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: var(--space-16);
+  gap: var(--space-40);
   inline-size: 1300px;
   max-inline-size: 100%;
   box-sizing: border-box;
@@ -81,7 +81,8 @@
   justify-content: space-between;
   gap: var(--space-24);
   inline-size: 100%;
-  padding-inline-end: 80px;
+  block-size: 50px;
+  padding-inline-end: 140px;
   box-sizing: border-box;
   flex-wrap: wrap;
 }
@@ -196,6 +197,7 @@
 
 @media (max-width: 767.98px) {
   .controlsRow {
+    block-size: auto;
     gap: var(--space-16);
   }
 

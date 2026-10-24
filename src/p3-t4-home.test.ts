@@ -6,6 +6,7 @@ import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
+  INTRO_HARD_CAP_MS,
   INTRO_PREPAINT_INLINE_SCRIPT,
   INTRO_SPLASH_STORAGE_KEY,
   INTRO_TOTAL_DURATION_MS,
@@ -33,6 +34,19 @@ const mockProjects = vi.fn<
 >()
 const mockBrands = vi.fn<() => Promise<Brand[]>>()
 
+vi.mock('server-only', () => ({}))
+
+vi.mock('next/headers', () => ({
+  draftMode: () => Promise.resolve({ isEnabled: false }),
+  headers: () =>
+    Promise.resolve(
+      new Map([
+        ['x-nonce', 'test-csp-nonce-r4'],
+        ['x-aljazira-pathname', '/en'],
+      ]),
+    ),
+}))
+
 vi.mock('next/navigation', () => ({
   notFound: () => {
     throw new Error('NEXT_NOT_FOUND')
@@ -40,8 +54,22 @@ vi.mock('next/navigation', () => ({
   usePathname: () => '/en',
 }))
 
+vi.mock('@/styles/font-preload', () => ({
+  preloadLocaleFonts: (locale: string) =>
+    locale === 'ar'
+      ? ['/_next/static/media/noto-kufi-arabic.woff2']
+      : ['/_next/static/media/poppins.woff2'],
+}))
+
+vi.mock('@/styles/fonts', () => ({
+  fontVariablesClassName: 'font-poppins font-noto-kufi',
+  getLocaleFontClassName: (locale: string) => (locale === 'ar' ? 'font-noto-kufi' : 'font-poppins'),
+}))
+
 vi.mock('@/lib/cms', () => ({
   getSiteSettings: () => mockSiteSettings(),
+  getNavigation: () => Promise.resolve(null),
+  resolveAuthenticatedStaffUser: () => Promise.resolve(null),
   getHomePage: () => mockHomePage(),
   getServices: () => mockServices(),
   getStats: () => mockStats(),
@@ -49,6 +77,7 @@ vi.mock('@/lib/cms', () => ({
   getBrands: () => mockBrands(),
 }))
 
+import LocaleRootLayout from '@/app/(frontend)/[locale]/layout'
 import LocaleHomePage, {
   extractLexicalParagraphs,
   generateMetadata,
@@ -676,6 +705,74 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         'Fallback',
       )
       expect(resolved?.url).toBe('/api/media/file/hero-city-1376x768.webp')
+    })
+
+    it('enforces R-1 carousel padding-inline-start/end, R-20 430px/1300px geometry, R-4 pre-paint inline script in LocaleRootLayout <head>, R-14 default hidden overlay, and R-15 <=1.6s navigationStart hard cap', async () => {
+      // 1. R-4 + R-20: Render LocaleRootLayout and verify <head> injects the nonce-bearing INTRO_PREPAINT_INLINE_SCRIPT
+      //    (fails immediately if INTRO_PREPAINT_INLINE_SCRIPT is removed from src/app/(frontend)/[locale]/layout.tsx)
+      const layoutElement = await LocaleRootLayout({
+        children: React.createElement('div', { 'data-testid': 'home-child' }, 'Child'),
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      const layoutProps = layoutElement.props as {
+        children: Array<React.ReactElement<{ children?: React.ReactNode }> | null>
+      }
+      const headElement = layoutProps.children.find((el) => el && el.type === 'head')
+      expect(headElement).toBeDefined()
+      const headMarkup = renderToStaticMarkup(headElement as React.ReactElement)
+      expect(headMarkup).toContain('nonce="test-csp-nonce-r4"')
+      expect(headMarkup).toContain(INTRO_SPLASH_STORAGE_KEY)
+      expect(headMarkup).toContain("setAttribute('data-intro','active')")
+
+      // 2. R-1 + R-20: Verify .carouselOuter in page.module.css has padding-inline-start: var(--container-gutter)
+      //    and ServicesCarousel.module.css has 430px height (340 + 40 + 50) and 140px inline-end padding
+      const pageModuleCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/app/(frontend)/[locale]/page.module.css'),
+        'utf8',
+      )
+      const carouselOuterMatch = pageModuleCss.match(/\.carouselOuter\s*\{([^}]*)\}/)
+      expect(carouselOuterMatch).not.toBeNull()
+      expect(carouselOuterMatch?.[1]).toMatch(
+        /padding-inline-start\s*:\s*var\(--container-gutter\)/,
+      )
+
+      const servicesCarouselCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/components/ServicesCarousel.module.css'),
+        'utf8',
+      )
+      const carouselBlock = servicesCarouselCss.match(/\.carousel\s*\{([^}]*)\}/)?.[1] ?? ''
+      const viewportBlock = servicesCarouselCss.match(/\.viewport\s*\{([^}]*)\}/)?.[1] ?? ''
+      const trackBlock = servicesCarouselCss.match(/\.track\s*\{([^}]*)\}/)?.[1] ?? ''
+      const controlsRowBlock = servicesCarouselCss.match(/\.controlsRow\s*\{([^}]*)\}/)?.[1] ?? ''
+
+      expect(carouselBlock).toMatch(/inline-size\s*:\s*1300px/)
+      expect(carouselBlock).toMatch(/gap\s*:\s*var\(--space-40\)/)
+      expect(viewportBlock).toMatch(/block-size\s*:\s*340px/)
+      expect(trackBlock).toMatch(/padding-inline-end\s*:\s*140px/)
+      expect(controlsRowBlock).toMatch(/padding-inline-end\s*:\s*140px/)
+      expect(controlsRowBlock).toMatch(/block-size\s*:\s*50px/)
+      expect(servicesCarouselCss).toMatch(
+        /@media\s*\(max-width:\s*1279\.98px\)\s*\{[\s\S]*?\.track,\s*\.controlsRow\s*\{[\s\S]*?padding-inline-end\s*:\s*var\(--container-gutter\)/,
+      )
+
+      // 3. R-14: Verify .overlay in IntroSplash.module.css is display: none by default (no-JS safe)
+      //    and display: flex only when html[data-intro='active'] or [data-intro-forced='true']
+      const introSplashCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/components/IntroSplash.module.css'),
+        'utf8',
+      )
+      const overlayRule = introSplashCss.match(/\.overlay\s*\{([^}]*)\}/)?.[1] ?? ''
+      expect(overlayRule).toMatch(/display\s*:\s*none/)
+      expect(overlayRule).not.toMatch(/display\s*:\s*flex/)
+      expect(introSplashCss).toMatch(
+        /:global\(html\[data-intro='active'\]\)\s+\.overlay[\s\S]*?display\s*:\s*flex/,
+      )
+
+      // 4. R-15: Verify INTRO_TOTAL_DURATION_MS and INTRO_HARD_CAP_MS are <= 1600ms and timed from performance.now()
+      expect(INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(1600)
+      expect(INTRO_HARD_CAP_MS).toBeLessThanOrEqual(1600)
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('performance.now()')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain(`${String(INTRO_HARD_CAP_MS)}-now`)
     })
   })
 })

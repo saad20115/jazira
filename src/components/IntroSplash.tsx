@@ -9,17 +9,19 @@ import styles from './IntroSplash.module.css'
 
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
 export const INTRO_REVEAL_DELAY_MS = 90
-export const INTRO_EXIT_DELAY_MS = 800
-export const INTRO_TOTAL_DURATION_MS = 1080
+export const INTRO_EXIT_DELAY_MS = 950
+export const INTRO_TOTAL_DURATION_MS = 1250
+export const INTRO_HARD_CAP_MS = 1400
 
 /**
- * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`).
- * Sets `document.documentElement.dataset.intro = 'seen' | 'active'` before first paint
- * so the SSR `<IntroSplash>` overlay is visible at frame 0 (`0 ms`) on a fresh tab and
- * hidden before first paint when already seen in `sessionStorage` or when
- * `prefers-reduced-motion: reduce` is active.
+ * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-15`).
+ * - Without JavaScript, `data-intro` is absent and `.overlay` stays `display: none` (`R-14`).
+ * - With JavaScript, sets `document.documentElement.dataset.intro = 'seen' | 'active'` before first
+ *   paint and schedules phase transitions + a hard cap (`<= 1400ms < 1.6s`) relative to
+ *   `navigationStart` (`performance.now()`) so the overlay is guaranteed gone by `<= 1.6s` after
+ *   `navigationStart` regardless of when React hydration completes (`R-15`).
  */
-export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';d.setAttribute('data-intro',rm||seen?'seen':'active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';if(rm||seen){d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');return;}window.__aljaziraIntroOrigin=0;d.setAttribute('data-intro','active');d.setAttribute('data-intro-phase','start');try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var done=false;function setInert(v){var ns=document.querySelectorAll('header,[data-home-content="true"],footer,[data-component="whatsapp-fab"]');for(var i=0;i<ns.length;i++){if(v)ns[i].setAttribute('inert','');else ns[i].removeAttribute('inert');}}function setOverlayState(s){var el=document.querySelector('[data-component="intro-splash"]');if(el)el.setAttribute('data-intro-state',s);}function finish(){if(done)return;done=true;d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');setInert(false);}if(now>=${INTRO_TOTAL_DURATION_MS}){finish();return;}window.addEventListener('DOMContentLoaded',function(){if(done)return;setInert(true);var btn=document.querySelector('[data-intro-skip="true"]');if(btn&&typeof btn.focus==='function')btn.focus({preventScroll:true});},{once:true});window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}},Math.max(16,${INTRO_REVEAL_DELAY_MS}-now));window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}},Math.max(60,${INTRO_EXIT_DELAY_MS}-now));window.setTimeout(finish,Math.max(80,${INTRO_TOTAL_DURATION_MS}-now));window.setTimeout(finish,Math.max(100,${INTRO_HARD_CAP_MS}-now));window.addEventListener('keydown',function(ev){if(ev.key==='Escape')finish();},{once:true});document.addEventListener('click',function(ev){var t=ev.target;if(t&&typeof t.closest==='function'&&t.closest('[data-component="intro-splash"]'))finish();});}catch(e){document.documentElement.setAttribute('data-intro','seen');document.documentElement.setAttribute('data-intro-phase','hidden');}})();`
 
 export type IntroSplashPhase = 'hidden' | 'start' | 'reveal' | 'exiting'
 
@@ -102,9 +104,12 @@ export function markIntroSplashSeen(win: Window | undefined): void {
 /**
  * Figma Intro Splash (`28:1609` Start -> `28:1615` Reveal, `docs/05-design.md` §"CTO decisions" #3).
  *
- * - SSR-rendered in initial `start` state (`R-4`) so the overlay is present from `t = 0 ms` before first paint.
+ * - Hidden by default (`display: none`) so without JavaScript the page is immediately usable (`R-14`).
+ * - Pre-paint inline script opts in (`data-intro="active"`) on a fresh tab so the overlay is present
+ *   from frame 0 (`t = 0 ms`) before first paint (`R-4`).
  * - Plays once per browser session (`sessionStorage` key `aljazira_intro_seen`).
- * - Total duration `1450ms` (`<= 1.6s`).
+ * - Timed from `navigationStart` (`performance.now()`) with `INTRO_TOTAL_DURATION_MS = 1250` and
+ *   hard cap `INTRO_HARD_CAP_MS = 1400` (`<= 1.6s`, `R-15`).
  * - Sets `inert` on background content and focuses the `"Skip Intro"` button while active (`R-9`).
  * - Click anywhere or press `Escape` (or activate the `>= 44×44px` skip button) to dismiss immediately.
  * - Never shown when `prefers-reduced-motion: reduce` is enabled.
@@ -141,6 +146,7 @@ export function IntroSplash({
     if (typeof window !== 'undefined') {
       markIntroSplashSeen(window)
       document.documentElement.setAttribute('data-intro', 'seen')
+      document.documentElement.setAttribute('data-intro-phase', 'hidden')
     }
     setPhase('hidden')
   }, [forceState, clearScheduledTimers])
@@ -150,8 +156,22 @@ export function IntroSplash({
       return
     }
     const prePaintState = document.documentElement.getAttribute('data-intro')
-    if (prePaintState === 'seen' || shouldSkipIntroSplash(window)) {
+    const winWithOrigin = window as Window & { __aljaziraIntroOrigin?: number }
+    const elapsedSinceNavStart =
+      typeof winWithOrigin.__aljaziraIntroOrigin === 'number' &&
+      typeof performance !== 'undefined' &&
+      typeof performance.now === 'function'
+        ? performance.now() - winWithOrigin.__aljaziraIntroOrigin
+        : 0
+
+    const shouldSkip =
+      prePaintState === 'seen' ||
+      elapsedSinceNavStart >= INTRO_TOTAL_DURATION_MS ||
+      (prePaintState !== 'active' && shouldSkipIntroSplash(window))
+
+    if (shouldSkip) {
       document.documentElement.setAttribute('data-intro', 'seen')
+      document.documentElement.setAttribute('data-intro-phase', 'hidden')
       setBackgroundInert(false)
       const skipTimer = window.setTimeout(() => {
         setPhase('hidden')
@@ -167,21 +187,32 @@ export function IntroSplash({
     setBackgroundInert(true)
     skipButtonRef.current?.focus({ preventScroll: true })
 
+    const scheduledTimers: number[] = []
+    const remainingReveal = Math.max(0, Math.round(INTRO_REVEAL_DELAY_MS - elapsedSinceNavStart))
+    const remainingExit = Math.max(0, Math.round(INTRO_EXIT_DELAY_MS - elapsedSinceNavStart))
+    const remainingHide = Math.max(0, Math.round(INTRO_TOTAL_DURATION_MS - elapsedSinceNavStart))
+
     const revealTimer = window.setTimeout(() => {
+      document.documentElement.setAttribute('data-intro-phase', 'reveal')
       setPhase('reveal')
-    }, INTRO_REVEAL_DELAY_MS)
+    }, remainingReveal)
+    scheduledTimers.push(revealTimer)
 
     const exitTimer = window.setTimeout(() => {
+      document.documentElement.setAttribute('data-intro-phase', 'exiting')
       setPhase('exiting')
-    }, INTRO_EXIT_DELAY_MS)
+    }, remainingExit)
+    scheduledTimers.push(exitTimer)
 
     const hideTimer = window.setTimeout(() => {
       setBackgroundInert(false)
       document.documentElement.setAttribute('data-intro', 'seen')
+      document.documentElement.setAttribute('data-intro-phase', 'hidden')
       setPhase('hidden')
-    }, INTRO_TOTAL_DURATION_MS)
+    }, remainingHide)
+    scheduledTimers.push(hideTimer)
 
-    timersRef.current = [revealTimer, exitTimer, hideTimer]
+    timersRef.current = scheduledTimers
 
     return () => {
       clearScheduledTimers()

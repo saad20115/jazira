@@ -2,17 +2,16 @@
 @import './breakpoints.css';
 
 /*
- * Metric-matched fallback font rules for `Noto Kufi Arabic` (`R-3`):
+ * Metric-matched fallback font rules for `Noto Kufi Arabic` (`R-3`, `R-19`):
  * Separate regular/medium (`100 500`) and semibold/bold (`600 900`) `size-adjust` and
- * vertical metric overrides so Arabic display headings (`700`), CTA buttons (`600`), and
- * body copy (`400`) wrap to the exact same line counts and heights (`h1 = 172px`,
- * `subtitle = 114px`, `ctaGroup = 124px` at `412x823`) before and after `Noto Kufi Arabic`
- * finishes downloading on slow 4G.
+ * vertical metric overrides across Windows, Android, macOS, and Linux fallback faces.
  */
 @font-face {
   font-family: 'Noto Kufi Arabic Metric Fallback';
   font-weight: 100 500;
-  src: local('Arial'), local('Tahoma'), local('Segoe UI'), local('sans-serif');
+  src:
+    local('Arial'), local('Tahoma'), local('Segoe UI'), local('Roboto'), local('Noto Sans Arabic'),
+    local('DejaVu Sans'), local('sans-serif');
   size-adjust: 125%;
   ascent-override: 95%;
   descent-override: 30%;
@@ -22,10 +21,13 @@
 @font-face {
   font-family: 'Noto Kufi Arabic Metric Fallback';
   font-weight: 600 900;
-  src: local('Arial'), local('Tahoma'), local('Segoe UI'), local('sans-serif');
-  size-adjust: 144%;
-  ascent-override: 82%;
-  descent-override: 25%;
+  src:
+    local('Arial Bold'), local('Tahoma Bold'), local('Segoe UI Bold'), local('Roboto Bold'),
+    local('Noto Sans Arabic Bold'), local('DejaVu Sans Bold'), local('Arial'), local('Tahoma'),
+    local('sans-serif');
+  size-adjust: 152%;
+  ascent-override: 78%;
+  descent-override: 22%;
   line-gap-override: 0%;
 }
 
