@@ -1676,8 +1676,8 @@ export async function runP3T4Evidence({
         const vpAudit = await page.evaluate(
           ({ vpWidth, isRtl }) => {
             const carouselEl = document.querySelector('[data-component="services-carousel"]')
-            const controlsRow = document.querySelector(
-              '[data-component="services-carousel"] [class*="controlsRow"]',
+            const actionsGroup = document.querySelector(
+              '[data-component="services-carousel"] [class*="actionsGroup"]',
             )
             const slide0 = document.querySelector(
               '[data-component="services-carousel"] [data-slide-index="0"]',
@@ -1686,7 +1686,7 @@ export async function runP3T4Evidence({
               '[data-component="services-carousel"] [data-slide-index="4"]',
             )
             const cRect = carouselEl ? carouselEl.getBoundingClientRect() : null
-            const ctrlRect = controlsRow ? controlsRow.getBoundingClientRect() : null
+            const ctrlRect = actionsGroup ? actionsGroup.getBoundingClientRect() : null
             const s0Rect = slide0 ? slide0.getBoundingClientRect() : null
             const s4Rect = slide4 ? slide4.getBoundingClientRect() : null
             const carouselStartInset = s0Rect
