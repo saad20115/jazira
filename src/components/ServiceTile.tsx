@@ -56,7 +56,7 @@ export function ServiceTile({
     >
       <div className={styles.topGroup}>
         <span className={styles.iconBox}>
-          <ServiceIcon name={service.icon} size={variant === 'carousel' ? 24 : 22} />
+          <ServiceIcon name={service.icon} size={20} />
         </span>
         <div className={styles.textBlock}>
           <h3 className={`${styles.title} t-h4`}>{service.title}</h3>
@@ -68,8 +68,9 @@ export function ServiceTile({
 
       <CmsLink href={resolvedHref} className={`${styles.linkRow} t-label-link`}>
         <span>{resolvedLinkLabel}</span>
+        <span className="sr-only">{` — ${service.title}`}</span>
         <span className={styles.linkIcon}>
-          <ArrowRightIcon size={variant === 'carousel' ? 16 : 14} />
+          <ArrowRightIcon size={14} />
         </span>
       </CmsLink>
     </article>

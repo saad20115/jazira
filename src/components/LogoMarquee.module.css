@@ -74,10 +74,49 @@
   animation-name: logoMarqueeEndRtl;
 }
 
-.marquee:hover .track,
-.marquee:focus-within .track,
-.marquee[data-offscreen='true'] .track {
+.rowViewport:hover .track,
+.rowViewport:focus-within .track,
+.marquee[data-offscreen='true'] .track,
+.marquee[data-paused='true'] .track {
   animation-play-state: paused;
+}
+
+.controlsBar {
+  display: flex;
+  justify-content: flex-end;
+  padding-inline: var(--space-16);
+  z-index: 3;
+}
+
+.pauseButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-pill);
+  background-color: var(--white);
+  border: 1.5px solid var(--border);
+  color: var(--navy-950);
+  cursor: pointer;
+  box-sizing: border-box;
+  box-shadow: var(--shadow-card-rest);
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    color 200ms ease;
+}
+
+.pauseButton:hover,
+.pauseButton[aria-pressed='true'] {
+  background-color: var(--navy-950);
+  border-color: var(--navy-950);
+  color: var(--white);
+}
+
+.pauseButton:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: var(--space-2);
 }
 
 .group {

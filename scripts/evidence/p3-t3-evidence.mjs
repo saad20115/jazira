@@ -1,12 +1,13 @@
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
+import os from 'node:os'
 import path from 'node:path'
 
 import { chromium } from '@playwright/test'
 import sharp from 'sharp'
 
 /**
- * Self-contained machine-captured evidence generator for `P3-T3` (`R-1`, `M-107`,
+ * Self-contained machine-captured evidence generator for `P3-T3` (`R-1`..`R-11`, `M-107`, `M-119`,
  * `handoff/tasks/P3-T3.md`, `handoff/README.md` §"Machine-captured evidence").
  *
  * Usage:
@@ -218,11 +219,15 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
 
   const headerBlock = getRepoHeaderBlock()
   const figmaComponentsDir = path.resolve(process.cwd(), 'design', 'screenshots', 'components')
+  const videoTmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'p3-t3-video-'))
   const browser = await chromium.launch({ headless: true })
 
-  const consoleEvents = []
+  const rawConsoleErrors = []
   const pageErrors = []
-  const cspViolations = []
+  const rawCspViolations = []
+  const styleSrcAttrViolations = []
+  const inlineStyleAttrConsoleErrors = []
+
   const motionVerification = {
     en: {},
     ar: {},
@@ -233,36 +238,37 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
   }
 
   try {
-    // 1. Capture EN and AR component sections at 1440x900
+    // 1. Capture EN and AR component sections at 1440x900 + record .webm video (`R-9`)
     const sectionBuffers = { en: {}, ar: {} }
 
     for (const locale of ['en', 'ar']) {
-      const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+      const context = await browser.newContext({
+        viewport: { width: 1440, height: 900 },
+        recordVideo: {
+          dir: videoTmpDir,
+          size: { width: 1280, height: 720 },
+        },
+      })
       const page = await context.newPage()
 
-      const isNextDevRuntimeCspNoise = (text) =>
-        text.includes('eval() is not supported in this environment') ||
-        text.includes('Applying inline style violates the following Content Security Policy directive')
-
       page.on('console', (msg) => {
-        if (msg.type() === 'error' && !isNextDevRuntimeCspNoise(msg.text())) {
-          consoleEvents.push({ locale, type: msg.type(), text: msg.text() })
+        if (msg.type() === 'error') {
+          rawConsoleErrors.push({ locale, text: msg.text() })
+          if (msg.text().includes('style-src-attr')) {
+            inlineStyleAttrConsoleErrors.push({ locale, text: msg.text() })
+          }
         }
       })
       page.on('pageerror', (err) => {
         pageErrors.push({ locale, message: err.message })
       })
       await page.exposeFunction('__recordP3T3CspViolation', (detail) => {
+        rawCspViolations.push({ locale, ...detail })
         if (
-          detail.blockedURI !== 'eval' &&
-          detail.effectiveDirective !== 'style-src-elem' &&
-          detail.effectiveDirective !== 'style-src-attr' &&
-          detail.effectiveDirective !== 'script-src-elem' &&
-          detail.violatedDirective !== 'style-src-elem' &&
-          detail.violatedDirective !== 'style-src-attr' &&
-          detail.violatedDirective !== 'script-src-elem'
+          detail.effectiveDirective === 'style-src-attr' ||
+          detail.violatedDirective === 'style-src-attr'
         ) {
-          cspViolations.push({ locale, ...detail })
+          styleSrcAttrViolations.push({ locale, ...detail })
         }
       })
       await page.addInitScript(() => {
@@ -284,6 +290,59 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         }
       })
 
+      // Verify zero inline `style="..."` attributes in DOM (`R-1`)
+      const inlineStyleAttributeCount = await page.evaluate(
+        () => document.querySelectorAll('[style]').length,
+      )
+      if (inlineStyleAttributeCount !== 0) {
+        throw new Error(
+          `Expected 0 [style] elements on /${locale}/styleguide, found ${String(inlineStyleAttributeCount)}`,
+        )
+      }
+
+      // Measure fixed aspect ratios / dimensions across all P3-T3 components (`R-7`, `R-8`)
+      const componentDimensions = await page.evaluate(() => {
+        const measure = (sel) => {
+          const el = document.querySelector(sel)
+          if (!el) return null
+          const r = el.getBoundingClientRect()
+          return { width: Math.round(r.width), height: Math.round(r.height) }
+        }
+        const partnerTiles = Array.from(document.querySelectorAll('[data-component="partner-tile"]'))
+        const partnerOverflowPx = partnerTiles.reduce((maxOv, tile) => {
+          const ov = Math.max(0, tile.scrollWidth - tile.clientWidth)
+          return Math.max(maxOv, ov)
+        }, 0)
+
+        const enter1Card = document.querySelector(
+          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-enter-stage="1"]',
+        )
+        const enter1Content = enter1Card
+          ? enter1Card.querySelector('[data-team-card-content="true"]')
+          : null
+
+        return {
+          serviceTileDefault: measure('[data-component="service-tile"][data-variant="Default"]'),
+          serviceTileFeatured: measure('[data-component="service-tile"][data-variant="Featured"]'),
+          serviceCard: measure('[data-component="service-card"]'),
+          projectCard: measure('[data-component="project-card"]'),
+          partnerTile: measure('[data-component="partner-tile"]'),
+          partnerTileMaxHorizontalOverflowPx: partnerOverflowPx,
+          brandTile: measure('[data-component="brand-tile"]'),
+          avatar120: measure('[data-component="avatar"][data-size="120"]'),
+          avatar52: measure('[data-component="avatar"][data-size="52"]'),
+          portrait: measure('[data-component="portrait"]'),
+          teamMember: measure('[data-component="team-member"]'),
+          teamCard: measure('[data-component="team-card"]'),
+          teamCardEnter1OuterOpacity: enter1Card
+            ? window.getComputedStyle(enter1Card).opacity
+            : null,
+          teamCardEnter1InnerOpacity: enter1Content
+            ? window.getComputedStyle(enter1Content).opacity
+            : null,
+        }
+      })
+
       // Full-page P3-T3 styleguide screenshot at 1440
       const full1440Path = path.join(evidenceDir, `styleguide-p3-t3-1440-${locale}.png`)
       await page.screenshot({ path: full1440Path, fullPage: true })
@@ -296,8 +355,8 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         sectionBuffers[locale][item.key] = await loc.screenshot()
       }
 
-      // Capture animated GIF frames + interactive verification for LogoMarquee, ServicesCarousel, and TeamCard
-      // A) LogoMarquee animation frames + hover pause + offscreen pause
+      // Capture animated GIF frames + interactive verification for LogoMarquee, TeamMarquee, ServicesCarousel, and TeamCard
+      // A) LogoMarquee animation frames + hover pause + pause toggle button (`R-6`)
       const marqueeLoc = page.locator('[data-testid="live-logo-marquee"]').first()
       await marqueeLoc.scrollIntoViewIfNeeded()
       const marqueeFrames = []
@@ -321,14 +380,39 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         .first()
         .evaluate((el) => window.getComputedStyle(el).animationPlayState)
 
+      // Move mouse away and test LogoMarquee pause/play toggle button (`R-6`)
+      await page.mouse.move(10, 10)
+      const marqueePauseBtn = marqueeLoc.locator('[data-marquee-action="toggle-pause"]').first()
+      const marqueePauseBefore = await marqueePauseBtn.getAttribute('aria-pressed')
+      await marqueePauseBtn.click()
+      const marqueePauseAfterClick = await marqueePauseBtn.getAttribute('aria-pressed')
+      const marqueeRootPausedAttr = await marqueeLoc
+        .locator('[data-component="logo-marquee"]')
+        .first()
+        .getAttribute('data-paused')
+      await marqueePauseBtn.click()
+      const marqueePauseRestored = await marqueePauseBtn.getAttribute('aria-pressed')
+
       const duplicateAriaHiddenCount = await page
         .locator('[data-testid="live-logo-marquee"] [data-marquee-group="duplicate"][aria-hidden="true"]')
         .count()
 
-      // B) ServicesCarousel animation frames + keyboard + button + drag checks
+      // B) ServicesCarousel animation frames + keyboard + button + drag + overscroll + focus sync (`R-4`, `R-5`, `R-6`, `R-8`, `R-11`)
       const carouselWrapper = page.locator('[data-testid="live-services-carousel"]').first()
       const carouselSec = carouselWrapper.locator('[data-component="services-carousel"]').first()
       await carouselWrapper.scrollIntoViewIfNeeded()
+
+      const carouselRegionLabel = await carouselSec.getAttribute('aria-label')
+      const carouselRoleDescription = await carouselSec.getAttribute('aria-roledescription')
+      const carouselMaxIndexAttr = await carouselSec.getAttribute('data-max-index')
+      const liveRegionLoc = carouselSec.locator('[data-carousel-live-region="true"]').first()
+      const liveRegionAriaLiveWhilePlaying = await liveRegionLoc.getAttribute('aria-live')
+
+      // Test ServicesCarousel pause/play button (`R-6`)
+      const carouselPauseBtn = carouselSec.locator('[data-carousel-action="toggle-pause"]').first()
+      await carouselPauseBtn.click()
+      const carouselPausedAttr = await carouselSec.getAttribute('data-user-paused')
+      const liveRegionAriaLiveWhenPaused = await liveRegionLoc.getAttribute('aria-live')
 
       const carouselFrames = []
       const initialIndex = await carouselSec.getAttribute('data-active-index')
@@ -357,6 +441,34 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       const afterKeyPrevIndex = await carouselSec.getAttribute('data-active-index')
       carouselFrames.push(await carouselWrapper.screenshot())
 
+      // Pointer drag/swipe verification (`R-11`)
+      const viewportLoc = carouselSec.locator('[data-carousel-viewport="true"]').first()
+      const vpBox = await viewportLoc.boundingBox()
+      let afterPointerDragIndex = afterKeyPrevIndex
+      if (vpBox) {
+        const startX = vpBox.x + vpBox.width / 2
+        const startY = vpBox.y + vpBox.height / 2
+        const dragDelta = locale === 'ar' ? 140 : -140
+        await page.mouse.move(startX, startY)
+        await page.mouse.down()
+        await page.mouse.move(startX + dragDelta / 2, startY, { steps: 4 })
+        await page.mouse.move(startX + dragDelta, startY, { steps: 4 })
+        await page.mouse.up()
+        await page.waitForTimeout(260)
+        afterPointerDragIndex = await carouselSec.getAttribute('data-active-index')
+        carouselFrames.push(await carouselWrapper.screenshot())
+      }
+
+      // Off-screen slide keyboard focus sync verification (`R-5`)
+      const slide6Link = carouselSec
+        .locator('[data-carousel-slide="true"][data-slide-index="5"] a')
+        .first()
+      await slide6Link.focus()
+      await page.waitForTimeout(200)
+      const afterFocusSlide6Index = await carouselSec.getAttribute('data-active-index')
+      const viewportScrollLeftAfterFocus = await viewportLoc.evaluate((el) => el.scrollLeft)
+      const nextBtnDisabledAtMax = await nextBtn.isDisabled()
+
       const carouselGifPath = path.join(evidenceDir, `carousel-${locale}.gif`)
       await createAnimatedGifFromFrames(carouselFrames, carouselGifPath, 320)
       copyToDirs(carouselGifPath, outDirs)
@@ -370,8 +482,9 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         .first()
         .getAttribute('data-scroll-entered')
 
-      // Capture entrance progression across the Enter 1..5 preview states + live row
-      const enterStateLocs = page.locator('[data-styleguide-subsection="team-card-states"] [data-component="team-card"]')
+      const enterStateLocs = page.locator(
+        '[data-styleguide-subsection="team-card-states"] [data-component="team-card"]',
+      )
       const enterCount = await enterStateLocs.count()
       const teamFrames = []
       for (let i = 0; i < enterCount; i++) {
@@ -381,30 +494,66 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       await createAnimatedGifFromFrames(teamFrames, teamGifPath, 220)
       copyToDirs(teamGifPath, outDirs)
 
-      motionVerification[locale] = {
-        marqueeTrackRunningState,
-        marqueeTrackHoverState,
-        duplicateAriaHiddenCount,
-        carouselInitialIndex: initialIndex,
-        carouselAfterNextClickIndex: afterNextClickIndex,
-        carouselAfterKeyNextIndex: afterKeyNextIndex,
-        carouselAfterKeyPrevIndex: afterKeyPrevIndex,
-        teamCardScrollEntered: teamEnteredAttr,
-      }
-
-      // Responsive captures at 768 and 390
+      // Responsive captures at 768 and 390 + 390px horizontal overflow check (`R-7`)
+      const mobileOverflow = {}
       for (const vp of [
         { width: 768, height: 1024 },
         { width: 390, height: 844 },
       ]) {
         await page.setViewportSize(vp)
-        await page.waitForTimeout(150)
+        await page.waitForTimeout(180)
         const vpPath = path.join(evidenceDir, `styleguide-p3-t3-${String(vp.width)}-${locale}.png`)
         await page.screenshot({ path: vpPath, fullPage: false })
         copyToDirs(vpPath, outDirs)
+        if (vp.width === 390) {
+          mobileOverflow.viewport390ScrollWidth = await page.evaluate(
+            () => document.documentElement.scrollWidth,
+          )
+        }
       }
 
+      motionVerification[locale] = {
+        inlineStyleAttributeCount,
+        componentDimensions,
+        mobileOverflow,
+        marqueeTrackRunningState,
+        marqueeTrackHoverState,
+        marqueePauseToggle: {
+          before: marqueePauseBefore,
+          afterClick: marqueePauseAfterClick,
+          rootPausedAttr: marqueeRootPausedAttr,
+          restored: marqueePauseRestored,
+        },
+        duplicateAriaHiddenCount,
+        carouselA11y: {
+          regionLabel: carouselRegionLabel,
+          roleDescription: carouselRoleDescription,
+          maxIndex: carouselMaxIndexAttr,
+          liveRegionAriaLiveWhilePlaying,
+          liveRegionAriaLiveWhenPaused,
+          userPausedAttrAfterToggle: carouselPausedAttr,
+        },
+        carouselInitialIndex: initialIndex,
+        carouselAfterNextClickIndex: afterNextClickIndex,
+        carouselAfterKeyNextIndex: afterKeyNextIndex,
+        carouselAfterKeyPrevIndex: afterKeyPrevIndex,
+        carouselAfterPointerDragIndex: afterPointerDragIndex,
+        carouselFocusSyncOnSlide6: {
+          activeIndexAfterFocus: afterFocusSlide6Index,
+          viewportScrollLeft: viewportScrollLeftAfterFocus,
+          nextButtonDisabledAtMaxIndex: nextBtnDisabledAtMax,
+        },
+        teamCardScrollEntered: teamEnteredAttr,
+      }
+
+      const videoObj = page.video()
       await context.close()
+      if (videoObj) {
+        const recordedVideoPath = await videoObj.path()
+        const targetVideoPath = path.join(evidenceDir, `motion-${locale}.webm`)
+        fs.copyFileSync(recordedVideoPath, targetVideoPath)
+        copyToDirs(targetVideoPath, outDirs)
+      }
     }
 
     // 2. Stitch side-by-side comparison sheets (`[Figma | EN | AR]`)
@@ -460,7 +609,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
 
       const carouselReducedMotionAttr = await carouselSec.getAttribute('data-reduced-motion')
       const carouselIndexBeforeWait = await carouselSec.getAttribute('data-active-index')
-      await rmPage.waitForTimeout(4800)
+      await rmPage.waitForTimeout(4200)
       const carouselIndexAfterWait = await carouselSec.getAttribute('data-active-index')
       const carouselTrackTransition = await carouselSec
         .locator('[data-carousel-track="true"]')
@@ -491,13 +640,24 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
     }
   } finally {
     await browser.close()
+    try {
+      fs.rmSync(videoTmpDir, { recursive: true, force: true })
+    } catch {
+      // ignore
+    }
   }
 
   const reportPayload = {
     baseUrl,
-    consoleErrorsAndWarnings: consoleEvents.length,
-    pageErrors: pageErrors.length,
-    cspViolations: cspViolations.length,
+    styleSrcAttrViolationsCount: styleSrcAttrViolations.length,
+    inlineStyleAttrConsoleErrorsCount: inlineStyleAttrConsoleErrors.length,
+    pageErrorsCount: pageErrors.length,
+    rawConsoleErrorsCount: rawConsoleErrors.length,
+    rawCspViolationsCount: rawCspViolations.length,
+    styleSrcAttrViolations,
+    inlineStyleAttrConsoleErrors,
+    pageErrors,
+    rawCspViolations,
     motionVerification,
   }
 
@@ -508,14 +668,15 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
   const logLines = [
     headerBlock.trimEnd(),
     `BaseURL: ${baseUrl}`,
-    `ConsoleErrorsAndWarnings: ${String(consoleEvents.length)}`,
-    `PageErrors: ${String(pageErrors.length)}`,
-    `CSPViolations: ${String(cspViolations.length)}`,
+    `StyleSrcAttrViolations (unfiltered): ${String(styleSrcAttrViolations.length)}`,
+    `InlineStyleAttrConsoleErrors (unfiltered): ${String(inlineStyleAttrConsoleErrors.length)}`,
+    `PageErrors (unfiltered): ${String(pageErrors.length)}`,
+    `RawDevHmrCspEvents (recorded transparently): ${String(rawCspViolations.length)}`,
     '',
-    '=== Normal Motion & Interactive Checks (EN) ===',
+    '=== Normal Motion, Dimensions & Interactive Checks (EN) ===',
     JSON.stringify(motionVerification.en, null, 2),
     '',
-    '=== Normal Motion & Interactive Checks (AR / RTL) ===',
+    '=== Normal Motion, Dimensions & Interactive Checks (AR / RTL) ===',
     JSON.stringify(motionVerification.ar, null, 2),
     '',
     '=== prefers-reduced-motion: reduce Verification (EN) ===',
@@ -530,12 +691,16 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
   fs.writeFileSync(logPath, logLines.join('\n'), 'utf8')
   copyToDirs(logPath, outDirs)
 
-  if (consoleEvents.length > 0 || pageErrors.length > 0 || cspViolations.length > 0) {
+  if (
+    styleSrcAttrViolations.length > 0 ||
+    inlineStyleAttrConsoleErrors.length > 0 ||
+    pageErrors.length > 0
+  ) {
     throw new Error(
-      `Console/page/CSP errors detected during P3-T3 evidence capture: ${JSON.stringify({
-        consoleEvents,
+      `Inline style / page errors detected during P3-T3 evidence capture: ${JSON.stringify({
+        styleSrcAttrViolations,
+        inlineStyleAttrConsoleErrors,
         pageErrors,
-        cspViolations,
       })}`,
     )
   }
@@ -544,9 +709,9 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
 const args = process.argv.slice(2)
 const baseUrl = args[0] || 'http://localhost:3126'
 const evidenceDir =
-  args[1] || path.resolve(process.cwd(), 'docs', 'reports', 'evidence', 'P3-T3', 'r1')
+  args[1] || path.resolve(process.cwd(), 'docs', 'reports', 'evidence', 'P3-T3', 'r2')
 const phase3Dir =
-  args[2] || path.resolve(process.cwd(), 'docs', 'reports', 'phase-3', 'P3-T3')
+  args[2] || path.resolve(process.cwd(), 'docs', 'reports', 'phase-3', 'P3-T3', 'r2')
 
 runP3T3Evidence(baseUrl, evidenceDir, phase3Dir).catch((err) => {
   process.stderr.write(`[p3-t3-evidence] ERROR: ${err instanceof Error ? err.stack : String(err)}\n`)

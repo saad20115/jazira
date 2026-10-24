@@ -42,6 +42,8 @@ export interface ServicesCarouselProps {
 }
 
 const CARD_STEP_PX = 310 // 290px card + 20px gap
+const CARD_GAP_PX = 20
+const DEFAULT_DESKTOP_VISIBLE_CARDS = 4
 const SWIPE_THRESHOLD_PX = 40
 
 function subscribeReducedMotion(onStoreChange: () => void): () => void {
@@ -68,14 +70,15 @@ function getReducedMotionServerSnapshot(): boolean {
 
 /**
  * Figma component `ServicesCarousel` (`175:3714`, `design/context/components/services-carousel.md`).
- * Zero-dependency interactive services carousel with auto-advance (`4500ms`), pause on hover/focus/offscreen,
+ * Zero-dependency interactive services carousel (`1300px` viewport with 5th card peeking) with auto-advance (`3500ms`),
+ * visible WCAG 2.2.2 pause/play control, `aria-live` polite/off region, pause on hover/focus/offscreen,
  * pointer/touch drag & swipe, RTL-aware keyboard arrows (`ArrowLeft`/`ArrowRight`), and `prefers-reduced-motion: reduce` support.
  */
 export function ServicesCarousel({
   services,
   locale = DEFAULT_LOCALE,
   position,
-  autoAdvanceMs = 4500,
+  autoAdvanceMs = 3500,
   viewAllHref,
   viewAllLabel,
   learnMoreLabel,
@@ -84,12 +87,21 @@ export function ServicesCarousel({
   const dict = getDictionary(locale)
   const isRtl = locale === 'ar'
   const totalSlides = services.length
-  const maxIndex = Math.max(0, totalSlides - 1)
+
+  const [visibleCount, setVisibleCount] = useState<number>(() =>
+    totalSlides >= 8 ? DEFAULT_DESKTOP_VISIBLE_CARDS : 1,
+  )
+
+  const maxIndex =
+    position !== undefined
+      ? Math.max(0, Math.min(totalSlides - 1, Math.max(4, totalSlides - visibleCount)))
+      : Math.max(0, totalSlides - visibleCount)
 
   const initialIndex = position ? Math.min(maxIndex, Math.max(0, position - 1)) : 0
   const [activeIndex, setActiveIndex] = useState<number>(initialIndex)
   const [isHovered, setIsHovered] = useState<boolean>(false)
-  const [isFocusedWithin, setIsFocusedWithin] = useState<boolean>(false)
+  const [isSlideFocused, setIsSlideFocused] = useState<boolean>(false)
+  const [isUserPaused, setIsUserPaused] = useState<boolean>(false)
   const [isOffscreen, setIsOffscreen] = useState<boolean>(false)
   const prefersReducedMotion = useSyncExternalStore(
     subscribeReducedMotion,
@@ -100,7 +112,40 @@ export function ServicesCarousel({
   const [isDragging, setIsDragging] = useState<boolean>(false)
 
   const sectionRef = useRef<HTMLElement | null>(null)
+  const viewportRef = useRef<HTMLDivElement | null>(null)
   const dragStartXRef = useRef<number | null>(null)
+
+  const clampedActiveIndex = Math.min(activeIndex, maxIndex)
+
+  useEffect(() => {
+    const viewportNode = viewportRef.current
+    if (!viewportNode) {
+      return
+    }
+
+    const measureViewport = (): void => {
+      const width = viewportNode.clientWidth
+      if (width <= 0) {
+        return
+      }
+      const fits = Math.max(1, Math.floor((width + CARD_GAP_PX) / CARD_STEP_PX))
+      setVisibleCount(Math.min(totalSlides, fits))
+    }
+
+    measureViewport()
+
+    if (typeof ResizeObserver === 'undefined') {
+      return
+    }
+
+    const resizeObserver = new ResizeObserver(() => {
+      measureViewport()
+    })
+    resizeObserver.observe(viewportNode)
+    return () => {
+      resizeObserver.disconnect()
+    }
+  }, [totalSlides])
 
   useEffect(() => {
     const node = sectionRef.current
@@ -124,24 +169,32 @@ export function ServicesCarousel({
   }, [])
 
   const goToNext = useCallback(() => {
-    setActiveIndex((prev) => (prev >= maxIndex ? 0 : prev + 1))
+    setActiveIndex((prev) => {
+      const current = Math.min(prev, maxIndex)
+      return current >= maxIndex ? 0 : current + 1
+    })
   }, [maxIndex])
 
   const goToPrev = useCallback(() => {
-    setActiveIndex((prev) => (prev <= 0 ? maxIndex : prev - 1))
+    setActiveIndex((prev) => {
+      const current = Math.min(prev, maxIndex)
+      return current <= 0 ? maxIndex : current - 1
+    })
   }, [maxIndex])
 
+  const isAutoPlaying =
+    position === undefined &&
+    autoAdvanceMs > 0 &&
+    maxIndex > 0 &&
+    !prefersReducedMotion &&
+    !isUserPaused &&
+    !isHovered &&
+    !isSlideFocused &&
+    !isOffscreen &&
+    !isDragging
+
   useEffect(() => {
-    if (
-      position !== undefined ||
-      autoAdvanceMs <= 0 ||
-      totalSlides <= 1 ||
-      prefersReducedMotion ||
-      isHovered ||
-      isFocusedWithin ||
-      isOffscreen ||
-      isDragging
-    ) {
+    if (!isAutoPlaying) {
       return
     }
 
@@ -152,17 +205,7 @@ export function ServicesCarousel({
     return () => {
       window.clearInterval(timer)
     }
-  }, [
-    position,
-    autoAdvanceMs,
-    totalSlides,
-    prefersReducedMotion,
-    isHovered,
-    isFocusedWithin,
-    isOffscreen,
-    isDragging,
-    goToNext,
-  ])
+  }, [isAutoPlaying, autoAdvanceMs, goToNext])
 
   if (totalSlides === 0) {
     return null
@@ -239,16 +282,23 @@ export function ServicesCarousel({
     }
   }
 
-  const directionMultiplier = isRtl ? 1 : -1
-  const baseTranslatePx = activeIndex * CARD_STEP_PX * directionMultiplier
-  const totalTranslatePx = baseTranslatePx + dragOffsetPx
-
-  // Progress bar thumb offset (`107.5px` per step in Figma `175:3714` 5-position track)
-  const thumbStepPx = maxIndex > 0 ? 430 / maxIndex : 0
-  const thumbTranslatePx = activeIndex * thumbStepPx * (isRtl ? -1 : 1)
+  const handleSlideFocus = (slideIdx: number): void => {
+    setIsSlideFocused(true)
+    setActiveIndex(Math.min(maxIndex, Math.max(0, slideIdx)))
+    if (viewportRef.current && viewportRef.current.scrollLeft !== 0) {
+      viewportRef.current.scrollLeft = 0
+    }
+  }
 
   const resolvedViewAllHref = viewAllHref ?? `/${locale}/services`
   const resolvedViewAllLabel = viewAllLabel ?? dict.cards.viewAllServicesButton
+  const activeService = services[clampedActiveIndex] ?? services[0]
+  const liveAnnouncement = `${formatStepCounter(
+    dict.carousel.slideOfTotal,
+    clampedActiveIndex + 1,
+    totalSlides,
+  )} — ${activeService.title}`
+  const pauseToggleLabel = isUserPaused ? dict.carousel.playAutoPlay : dict.carousel.pauseAutoPlay
 
   const rootClasses = [styles.carousel, className ?? ''].filter(Boolean).join(' ')
   const viewportClasses = [styles.viewport, isDragging ? styles.viewportDragging : '']
@@ -271,34 +321,45 @@ export function ServicesCarousel({
       onMouseLeave={() => {
         setIsHovered(false)
       }}
-      onFocusCapture={() => {
-        setIsFocusedWithin(true)
-      }}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) {
-          setIsFocusedWithin(false)
-        }
-      }}
       className={rootClasses}
       data-component="services-carousel"
-      data-active-index={activeIndex}
-      data-position={position ?? activeIndex + 1}
+      data-active-index={clampedActiveIndex}
+      data-max-index={maxIndex}
+      data-visible-count={visibleCount}
+      data-position={position ?? clampedActiveIndex + 1}
+      data-paused={isUserPaused ? 'true' : 'false'}
       data-offscreen={isOffscreen ? 'true' : 'false'}
       data-reduced-motion={prefersReducedMotion ? 'true' : 'false'}
     >
       <div
+        className="sr-only"
+        aria-live={isAutoPlaying ? 'off' : 'polite'}
+        aria-atomic="true"
+        data-carousel-live-region="true"
+      >
+        {liveAnnouncement}
+      </div>
+
+      <div
+        ref={viewportRef}
         className={viewportClasses}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={finishDrag}
         onPointerCancel={finishDrag}
         onPointerLeave={finishDrag}
+        onScroll={(event) => {
+          if (event.currentTarget.scrollLeft !== 0) {
+            event.currentTarget.scrollLeft = 0
+          }
+        }}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setIsSlideFocused(false)
+          }
+        }}
       >
-        <div
-          className={trackClasses}
-          style={{ transform: `translate3d(${String(totalTranslatePx)}px, 0, 0)` }}
-          data-carousel-track="true"
-        >
+        <div className={trackClasses} data-carousel-track="true">
           {services.map((service, idx) => {
             const slideAriaLabel = formatStepCounter(
               dict.carousel.slideOfTotal,
@@ -314,6 +375,9 @@ export function ServicesCarousel({
                 aria-label={slideAriaLabel}
                 className={styles.slide}
                 data-slide-index={idx}
+                onFocusCapture={() => {
+                  handleSlideFocus(idx)
+                }}
               >
                 <ServiceTile
                   service={service}
@@ -330,15 +394,32 @@ export function ServicesCarousel({
 
       <div className={styles.controlsRow}>
         <div className={styles.progressTrack} aria-hidden="true">
-          <div
-            className={styles.progressThumb}
-            style={{ transform: `translate3d(${String(thumbTranslatePx)}px, 0, 0)` }}
-            data-carousel-thumb="true"
-          />
+          <div className={styles.progressThumb} data-carousel-thumb="true" />
         </div>
 
         <div className={styles.actionsGroup}>
           <div className={styles.arrowPair}>
+            <button
+              type="button"
+              onClick={() => {
+                setIsUserPaused((prev) => !prev)
+              }}
+              aria-pressed={isUserPaused}
+              aria-label={pauseToggleLabel}
+              className={`${styles.arrowButton} ${styles.pauseButton}`}
+              data-carousel-action="toggle-pause"
+            >
+              {isUserPaused ? (
+                <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <path d="M3.5 2.5L11.5 7L3.5 11.5V2.5Z" fill="currentColor" />
+                </svg>
+              ) : (
+                <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                  <rect x="3" y="2.5" width="2.75" height="9" rx="1" fill="currentColor" />
+                  <rect x="8.25" y="2.5" width="2.75" height="9" rx="1" fill="currentColor" />
+                </svg>
+              )}
+            </button>
             <button
               type="button"
               onClick={goToPrev}

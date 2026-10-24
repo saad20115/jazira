@@ -50,6 +50,7 @@ export function Avatar({
           alt={photoAsset.alt}
           width={size}
           height={size}
+          style={{ color: undefined }}
           className={styles.photo}
         />
       ) : fallbackMode === 'initials' && initials ? (

@@ -18,6 +18,12 @@
   isolation: isolate;
 }
 
+.card:hover,
+.card:focus-within,
+.stateHover {
+  box-shadow: var(--shadow-panel-xl);
+}
+
 .mediaLayer {
   position: absolute;
   inset: 0;
@@ -98,6 +104,7 @@
   background-color: var(--overlay-navy-70);
   border: 1px solid var(--glass-border-white-22);
   color: var(--white);
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -111,6 +118,7 @@
   background-color: var(--success-bg);
   border: 1px solid var(--success-border);
   color: var(--success-text);
+  text-transform: none;
   white-space: nowrap;
 }
 
@@ -199,9 +207,13 @@
   z-index: 4;
   block-size: var(--space-4);
   background-color: var(--gold-500);
-  transform-origin: inline-start;
+  transform-origin: 0% 50%;
   transform: scaleX(0);
   transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:global([dir='rtl']) .progressBar {
+  transform-origin: 100% 50%;
 }
 
 .card:hover .progressBar,

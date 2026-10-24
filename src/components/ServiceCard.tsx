@@ -42,7 +42,6 @@ export function ServiceCard({
   const resolvedCtaLabel = ctaLabel ?? dict.cards.viewAllServices
   const mediaAsset = resolveMediaAsset(service.image, service.title, 'card')
   const imageSrc = mediaAsset?.url ?? fallbackImageUrl ?? null
-  const imageAlt = mediaAsset?.alt ?? service.title
   const hasDescription = Boolean(service.shortDescription && service.shortDescription.trim().length > 0)
 
   const cardClasses = [
@@ -65,9 +64,11 @@ export function ServiceCard({
         {imageSrc ? (
           <Image
             src={imageSrc}
-            alt={imageAlt}
-            fill
+            alt=""
+            width={275}
+            height={360}
             sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 275px"
+            style={{ color: undefined }}
             className={styles.photo}
           />
         ) : null}

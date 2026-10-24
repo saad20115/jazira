@@ -6,11 +6,17 @@
   block-size: 360px;
   border-radius: var(--radius-3xl);
   background-color: var(--navy-900);
-  box-shadow: var(--shadow-card-raised);
+  box-shadow: var(--shadow-card-hover);
   overflow: hidden;
   text-decoration: none;
   box-sizing: border-box;
   isolation: isolate;
+}
+
+.card:hover,
+.card:focus-within,
+.stateHover {
+  box-shadow: var(--shadow-panel-xl);
 }
 
 .mediaLayer {

@@ -27,6 +27,7 @@ export function BrandTile({ brand, className }: BrandTileProps): ReactElement {
           alt={logoAsset.alt}
           width={152}
           height={46}
+          style={{ color: undefined }}
           className={styles.logoImage}
         />
       ) : (

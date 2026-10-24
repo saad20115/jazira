@@ -38,34 +38,33 @@ export function Portrait({
         <Image
           src={imageSrc}
           alt={imageAlt}
-          fill
+          width={264}
+          height={340}
           sizes="(max-width: 767px) 100vw, 264px"
+          style={{ color: undefined }}
           className={styles.photo}
         />
       ) : (
-        <>
-          <div className={styles.cornerGlow} aria-hidden="true" />
-          <svg
-            width={264}
-            height={340}
-            viewBox="0 0 264 340"
-            fill="none"
-            aria-hidden="true"
-            focusable="false"
-            className={styles.silhouetteSvg}
-          >
-            <path
-              d="M132 168C157.405 168 178 147.405 178 122C178 96.5949 157.405 76 132 76C106.595 76 86 96.5949 86 122C86 147.405 106.595 168 132 168Z"
-              fill="currentColor"
-              fillOpacity={0.16}
-            />
-            <path
-              d="M40 340C44 266 84 222 132 222C180 222 220 266 224 340H40Z"
-              fill="currentColor"
-              fillOpacity={0.16}
-            />
-          </svg>
-        </>
+        <svg
+          width={264}
+          height={340}
+          viewBox="0 0 264 340"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+          className={styles.silhouetteSvg}
+        >
+          <path
+            d="M132 168C157.405 168 178 147.405 178 122C178 96.5949 157.405 76 132 76C106.595 76 86 96.5949 86 122C86 147.405 106.595 168 132 168Z"
+            fill="currentColor"
+            fillOpacity={0.16}
+          />
+          <path
+            d="M40 340C44 266 84 222 132 222C180 222 220 266 224 340H40Z"
+            fill="currentColor"
+            fillOpacity={0.16}
+          />
+        </svg>
       )}
     </div>
   )

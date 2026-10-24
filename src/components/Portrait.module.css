@@ -16,17 +16,6 @@
   block-size: 100%;
 }
 
-.cornerGlow {
-  position: absolute;
-  inset-block-start: -40px;
-  inset-inline-end: -40px;
-  inline-size: 200px;
-  block-size: 200px;
-  border-radius: var(--radius-pill);
-  background-image: var(--gradient-portrait-glow);
-  pointer-events: none;
-}
-
 .silhouetteSvg {
   display: block;
   inline-size: 100%;

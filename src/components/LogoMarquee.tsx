@@ -44,6 +44,7 @@ export function LogoMarquee({
   const dict = getDictionary(locale)
   const containerRef = useRef<HTMLElement | null>(null)
   const [isOffscreen, setIsOffscreen] = useState(false)
+  const [isUserPaused, setIsUserPaused] = useState(false)
 
   useEffect(() => {
     const node = containerRef.current
@@ -97,6 +98,7 @@ export function LogoMarquee({
     .join(' ')
 
   const rootClasses = [styles.marquee, className ?? ''].filter(Boolean).join(' ')
+  const pauseLabel = isUserPaused ? dict.marquee.playMarquee : dict.marquee.pauseMarquee
 
   return (
     <section
@@ -106,7 +108,34 @@ export function LogoMarquee({
       data-component="logo-marquee"
       data-position={position ?? 'live'}
       data-offscreen={isOffscreen ? 'true' : 'false'}
+      data-paused={isUserPaused ? 'true' : 'false'}
     >
+      {position === undefined ? (
+        <div className={styles.controlsBar}>
+          <button
+            type="button"
+            onClick={() => {
+              setIsUserPaused((prev) => !prev)
+            }}
+            aria-pressed={isUserPaused}
+            aria-label={pauseLabel}
+            className={styles.pauseButton}
+            data-marquee-action="toggle-pause"
+          >
+            {isUserPaused ? (
+              <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <path d="M3.5 2.5L11.5 7L3.5 11.5V2.5Z" fill="currentColor" />
+              </svg>
+            ) : (
+              <svg width={14} height={14} viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                <rect x="3" y="2.5" width="2.75" height="9" rx="1" fill="currentColor" />
+                <rect x="8.25" y="2.5" width="2.75" height="9" rx="1" fill="currentColor" />
+              </svg>
+            )}
+          </button>
+        </div>
+      ) : null}
+
       <div className={styles.rowViewport} data-row="1">
         <div className={row1TrackClass}>
           <div className={styles.group} data-marquee-group="primary">

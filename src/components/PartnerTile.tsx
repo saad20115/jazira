@@ -52,6 +52,7 @@ export function PartnerTile({
             alt={logoAsset.alt}
             width={150}
             height={52}
+            style={{ color: undefined }}
             className={styles.logoImage}
           />
         ) : (

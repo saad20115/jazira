@@ -10,7 +10,7 @@
   border-radius: var(--radius-2xl);
   background-color: var(--white);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-card-soft);
+  box-shadow: var(--shadow-card-rest);
   box-sizing: border-box;
   flex-shrink: 0;
 }

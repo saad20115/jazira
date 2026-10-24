@@ -46,7 +46,6 @@ export function ProjectCard({
   const resolvedCtaLabel = ctaLabel ?? dict.cards.viewProject
   const mediaAsset = resolveMediaAsset(project.coverImage, project.title, 'card')
   const imageSrc = mediaAsset?.url ?? fallbackImageUrl ?? null
-  const imageAlt = mediaAsset?.alt ?? project.title
 
   const cardClasses = [
     styles.card,
@@ -68,9 +67,11 @@ export function ProjectCard({
         {imageSrc ? (
           <Image
             src={imageSrc}
-            alt={imageAlt}
-            fill
+            alt=""
+            width={370}
+            height={280}
             sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 370px"
+            style={{ color: undefined }}
             className={styles.photo}
           />
         ) : null}

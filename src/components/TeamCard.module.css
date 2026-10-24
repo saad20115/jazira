@@ -5,10 +5,28 @@
   block-size: 340px;
   border-radius: var(--radius-3xl);
   background-color: var(--navy-950);
-  box-shadow: var(--shadow-card-hover);
+  border: 1px solid var(--glass-border-white-8);
+  box-shadow: var(--shadow-card-raised);
   overflow: hidden;
   box-sizing: border-box;
   isolation: isolate;
+  transition:
+    border-color 320ms ease,
+    box-shadow 320ms ease;
+}
+
+.card:hover,
+.card:focus-within,
+.stateHover {
+  border-color: var(--gold-500);
+  box-shadow: var(--shadow-team-card-hover);
+}
+
+.content {
+  position: absolute;
+  inset: 0;
+  inline-size: 100%;
+  block-size: 100%;
   opacity: 1;
   transform: translateY(0);
   transition:
@@ -16,48 +34,59 @@
     transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.card::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: var(--radius-3xl);
-  box-shadow: var(--shadow-team-card-hover);
-  opacity: 0;
-  pointer-events: none;
-  z-index: 5;
-  transition: opacity 320ms ease;
+.card[data-enter-delay='80'] .content {
+  transition-delay: 80ms;
 }
 
-.card:hover::after,
-.card:focus-within::after,
-.stateHover::after {
-  opacity: 1;
+.card[data-enter-delay='120'] .content {
+  transition-delay: 120ms;
 }
 
-/* Entrance states matching Figma `150:596` (`Enter 1` .. `Enter 5`) */
-.stateEnter1,
-.scrollPending {
+.card[data-enter-delay='160'] .content {
+  transition-delay: 160ms;
+}
+
+.card[data-enter-delay='240'] .content {
+  transition-delay: 240ms;
+}
+
+.card[data-enter-delay='320'] .content {
+  transition-delay: 320ms;
+}
+
+.card[data-enter-delay='360'] .content {
+  transition-delay: 360ms;
+}
+
+.card[data-enter-delay='480'] .content {
+  transition-delay: 480ms;
+}
+
+/* Entrance states matching Figma `150:596` (`Enter 1` .. `Enter 5`):
+ * Outer navy-950 card stays visible while `.content` fades up 28px. */
+.stateEnter1 .content,
+.scrollPending .content {
   opacity: 0;
   transform: translateY(28px);
 }
 
-.stateEnter2 {
+.stateEnter2 .content {
   opacity: 0.25;
   transform: translateY(21px);
 }
 
-.stateEnter3 {
+.stateEnter3 .content {
   opacity: 0.55;
   transform: translateY(12px);
 }
 
-.stateEnter4 {
+.stateEnter4 .content {
   opacity: 0.85;
   transform: translateY(4px);
 }
 
-.stateEnter5,
-.scrollEntered {
+.stateEnter5 .content,
+.scrollEntered .content {
   opacity: 1;
   transform: translateY(0);
 }
@@ -75,14 +104,14 @@
 .card:hover .portraitLayer,
 .card:focus-within .portraitLayer,
 .stateHover .portraitLayer {
-  transform: scale(1.04);
+  transform: scale(1.06);
 }
 
 .bottomOverlay {
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
-  block-size: 168px;
+  block-size: 200px;
   background-image: var(--gradient-team-card-overlay);
   pointer-events: none;
   z-index: 1;
@@ -92,12 +121,17 @@
   position: absolute;
   inset-block-start: var(--space-16);
   inset-inline-start: var(--space-16);
-  inline-size: var(--space-16);
-  block-size: var(--space-16);
-  opacity: 0.55;
+  inline-size: 34px;
+  block-size: 34px;
+  color: var(--gold-500);
+  opacity: 0.9;
   pointer-events: none;
   z-index: 3;
   transition: opacity 240ms ease;
+}
+
+:global([dir='rtl']) .cornerBracket {
+  transform: scaleX(-1);
 }
 
 .card:hover .cornerBracket,
@@ -106,42 +140,24 @@
   opacity: 1;
 }
 
-.bracketHorizontal {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  inline-size: var(--space-16);
-  block-size: var(--space-2);
-  background-color: var(--gold-500);
-}
-
-.bracketVertical {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
-  inline-size: var(--space-2);
-  block-size: var(--space-16);
-  background-color: var(--gold-500);
-}
-
 .linkedinBadge {
   position: absolute;
-  inset-block-start: var(--space-14);
-  inset-inline-end: var(--space-14);
+  inset-block-start: var(--space-16);
+  inset-inline-end: var(--space-16);
   z-index: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  inline-size: 36px;
-  block-size: 36px;
+  inline-size: 34px;
+  block-size: 34px;
   border-radius: var(--radius-pill);
   background-color: var(--glass-white-14);
-  border: 1px solid var(--glass-border-white-28);
+  border: 1px solid var(--glass-border-white-30);
   color: var(--white);
   text-decoration: none;
   box-sizing: border-box;
   opacity: 0;
-  transform: translateY(-6px);
+  transform: translateY(-12px);
   transition:
     opacity 260ms ease,
     transform 280ms cubic-bezier(0.22, 1, 0.36, 1);
@@ -157,20 +173,12 @@
 .caption {
   position: absolute;
   inset-inline: var(--space-24);
-  inset-block-end: var(--space-20);
+  inset-block-end: 28px;
   z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-6);
-  transform: translateY(0);
-  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.card:hover .caption,
-.card:focus-within .caption,
-.stateHover .caption {
-  transform: translateY(-4px);
+  gap: var(--space-4);
 }
 
 .name {
@@ -189,11 +197,16 @@
   inline-size: 216px;
   max-inline-size: 100%;
   block-size: var(--space-2);
-  margin-block-start: var(--space-4);
+  margin-block-start: var(--space-10);
+  border-radius: 1px;
   background-color: var(--gold-500);
-  transform-origin: inline-start;
+  transform-origin: 0% 50%;
   transform: scaleX(0.14815);
   transition: transform 340ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:global([dir='rtl']) .accentLine {
+  transform-origin: 100% 50%;
 }
 
 .card:hover .accentLine,
@@ -204,16 +217,15 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .card::after,
+  .content,
   .portraitLayer,
   .cornerBracket,
   .linkedinBadge,
-  .caption,
   .accentLine {
     transition: none;
   }
 
-  .scrollPending {
+  .scrollPending .content {
     opacity: 1;
     transform: translateY(0);
   }

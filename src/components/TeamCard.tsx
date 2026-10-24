@@ -5,7 +5,6 @@ import {
   useRef,
   useState,
   useSyncExternalStore,
-  type CSSProperties,
   type ReactElement,
 } from 'react'
 
@@ -127,51 +126,58 @@ export function TeamCard({
     .filter(Boolean)
     .join(' ')
 
-  const inlineStyle: CSSProperties | undefined =
-    animateOnScroll && enterDelayMs > 0 ? { transitionDelay: `${String(enterDelayMs)}ms` } : undefined
-
   const linkedinLabel = `${member.name} — ${dict.cards.linkedinProfile}`
 
   return (
     <article
       ref={cardRef}
       className={cardClasses}
-      style={inlineStyle}
       data-component="team-card"
       data-state={state}
+      data-enter-delay={animateOnScroll && enterDelayMs > 0 ? String(enterDelayMs) : undefined}
       data-scroll-entered={animateOnScroll ? String(effectiveEntered) : undefined}
     >
-      <Portrait
-        member={member}
-        fallbackImageUrl={fallbackImageUrl}
-        className={styles.portraitLayer}
-      />
+      <div className={styles.content} data-team-card-content="true">
+        <Portrait
+          member={member}
+          fallbackImageUrl={fallbackImageUrl}
+          className={styles.portraitLayer}
+        />
 
-      <div className={styles.bottomOverlay} aria-hidden="true" />
+        <div className={styles.bottomOverlay} aria-hidden="true" />
 
-      <div className={styles.cornerBracket} aria-hidden="true">
-        <span className={styles.bracketHorizontal} />
-        <span className={styles.bracketVertical} />
-      </div>
-
-      {member.linkedin ? (
-        <CmsLink
-          href={member.linkedin}
-          aria-label={linkedinLabel}
-          className={styles.linkedinBadge}
+        <svg
+          width={34}
+          height={34}
+          viewBox="0 0 34 34"
+          fill="none"
+          aria-hidden="true"
+          focusable="false"
+          className={styles.cornerBracket}
         >
-          <SocialIcon name="linkedin" size={16} />
-        </CmsLink>
-      ) : (
-        <span className={styles.linkedinBadge} aria-hidden="true">
-          <SocialIcon name="linkedin" size={16} />
-        </span>
-      )}
+          <path d="M0 0H34L22 6H0V0Z" fill="currentColor" />
+          <path d="M0 0V34L6 22V0H0Z" fill="currentColor" />
+        </svg>
 
-      <div className={styles.caption}>
-        <h3 className={`${styles.name} t-h4`}>{member.name}</h3>
-        <p className={`${styles.role} t-label-caps`}>{member.position}</p>
-        <div className={styles.accentLine} aria-hidden="true" />
+        {member.linkedin ? (
+          <CmsLink
+            href={member.linkedin}
+            aria-label={linkedinLabel}
+            className={styles.linkedinBadge}
+          >
+            <SocialIcon name="linkedin" size={16} />
+          </CmsLink>
+        ) : (
+          <span className={styles.linkedinBadge} aria-hidden="true">
+            <SocialIcon name="linkedin" size={16} />
+          </span>
+        )}
+
+        <div className={styles.caption}>
+          <h3 className={`${styles.name} t-h4`}>{member.name}</h3>
+          <p className={`${styles.role} t-label-caps`}>{member.position}</p>
+          <div className={styles.accentLine} aria-hidden="true" />
+        </div>
       </div>
     </article>
   )

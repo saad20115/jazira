@@ -219,10 +219,12 @@ describe('P3-T3 — Cards & motion components', () => {
       expect(completedHtml).toContain('data-status="completed"')
       expect(completedHtml).toContain('data-state="Default"')
       expect(completedHtml).toContain('MEP')
-      expect(completedHtml).toContain('COMPLETED')
+      expect(completedHtml).toContain('Completed')
       expect(completedHtml).toContain('Sofitel Hotel &amp; Towers — Makkah')
       expect(completedHtml).toContain('Makkah')
       expect(completedHtml).toContain('VIEW PROJECT')
+      expect(completedHtml).toContain('alt=""')
+      expect(completedHtml).not.toContain('style=')
 
       const inProgressArHtml = renderToStaticMarkup(
         React.createElement(ProjectCard, {
@@ -359,7 +361,9 @@ describe('P3-T3 — Cards & motion components', () => {
         expect(html).toContain(`data-state="${state}"`)
         expect(html).toContain('Eng. Ahmed Al-Harbi')
         expect(html).toContain('CHIEF EXECUTIVE OFFICER')
-        expect(html).toContain('transition-delay:240ms')
+        expect(html).toContain('data-enter-delay="240"')
+        expect(html).toContain('data-team-card-content="true"')
+        expect(html).not.toContain('style=')
         expect(html).toContain('href="https://www.linkedin.com/in/ahmed"')
       }
 
@@ -429,14 +433,17 @@ describe('P3-T3 — Cards & motion components', () => {
       )
       expect(enHtml).toContain('data-component="services-carousel"')
       expect(enHtml).toContain('aria-roledescription="carousel"')
+      expect(enHtml).toContain('aria-label="Services"')
       expect(enHtml).toContain('aria-roledescription="slide"')
       expect(enHtml).toContain('aria-label="1 of 3"')
       expect(enHtml).toContain('aria-label="2 of 3"')
       expect(enHtml).toContain('data-active-index="1"')
-      expect(enHtml).toContain('translate3d(-310px, 0, 0)')
+      expect(enHtml).toContain('data-carousel-live-region="true"')
+      expect(enHtml).toContain('data-carousel-action="toggle-pause"')
       expect(enHtml).toContain('data-carousel-action="prev"')
       expect(enHtml).toContain('data-carousel-action="next"')
       expect(enHtml).toContain('View All Services')
+      expect(enHtml).not.toContain('style=')
 
       const arHtml = renderToStaticMarkup(
         React.createElement(ServicesCarousel, {
@@ -446,9 +453,11 @@ describe('P3-T3 — Cards & motion components', () => {
         }),
       )
       expect(arHtml).toContain('aria-roledescription="معرض متحرك"')
+      expect(arHtml).toContain('aria-label="الخدمات"')
       expect(arHtml).toContain('aria-label="1 من 3"')
-      expect(arHtml).toContain('translate3d(310px, 0, 0)')
+      expect(arHtml).toContain('data-active-index="1"')
       expect(arHtml).toContain('عرض جميع الخدمات')
+      expect(arHtml).not.toContain('style=')
     })
   })
 
@@ -516,6 +525,7 @@ describe('P3-T3 — Cards & motion components', () => {
       for (const locale of ['ar', 'en'] as const) {
         const el = await StyleguidePage({ params: Promise.resolve({ locale }) })
         const html = renderToStaticMarkup(el)
+        expect(html).not.toContain('style="')
         for (const section of p3t3Sections) {
           expect(html).toContain(`data-styleguide-section="${section}"`)
         }
