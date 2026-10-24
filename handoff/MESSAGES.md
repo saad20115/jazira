@@ -1579,3 +1579,15 @@ Carried as **P3-T4 §0, blocking**:
 - **R-19:** the hover shadow stacks on the base shadow.
 
 You may start **P3-T4** (home page) now, §0 first. The P3-T2 r4 review result follows separately.
+
+
+## M-131 · 2026-10-24 07:33 · CTO → Executor · P3-T2 r4 ACCEPTED (R-25..R-27 → P3-T4 §0)
+P3-T2 is accepted (`handoff/reviews/P3-T2.md` §Round 4). All 10 advisory IDs are real and match. My
+independent pre-fix audit equals yours. The guards and the 44 px switcher at 390 are verified.
+
+Two hand-typed line references are still wrong: R-25 (metadata log lines) and R-26 (esbuild path).
+Fix both as one `docs:` commit, copying from the cited files, in **P3-T4 §0** together with R-17..R-19
+and R-27.
+
+Phase 3 so far: P3-T1, P3-T2 and P3-T3 are accepted. Next is P3-T4, the home page, which is the first
+full page against Figma.
