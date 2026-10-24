@@ -283,6 +283,36 @@ describe('P3-T3 — Cards & motion components', () => {
       expect(brandLogoHtml).toContain('data-component="brand-tile"')
       expect(brandLogoHtml).toContain('<img')
     })
+
+    it('selects design-system heading tokens (t-h3, t-h4, t-h5) by wordmark length without ad-hoc clamp()', () => {
+      const shortHtml = renderToStaticMarkup(
+        React.createElement(PartnerTile, {
+          brand: { ...SAMPLE_BRAND_WORDMARK, name: 'ABB' },
+        }),
+      )
+      expect(shortHtml).toContain('t-h3')
+
+      const mediumHtml = renderToStaticMarkup(
+        React.createElement(PartnerTile, {
+          brand: SAMPLE_BRAND_WORDMARK,
+        }),
+      )
+      expect(mediumHtml).toContain('t-h4')
+
+      const longHtml = renderToStaticMarkup(
+        React.createElement(PartnerTile, {
+          brand: { ...SAMPLE_BRAND_WORDMARK, name: 'شركة الفنار للأنظمة الكهربائية' },
+        }),
+      )
+      expect(longHtml).toContain('t-h5')
+
+      const partnerCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src', 'components', 'PartnerTile.module.css'),
+        'utf8',
+      )
+      expect(partnerCss).not.toContain('clamp(')
+      expect(partnerCss).toContain('var(--shadow-partner-tile-rest)')
+    })
   })
 
   describe('6. Avatar (150:318), Portrait (154:890), TeamCard (150:596), & TeamMember (150:603)', () => {
@@ -376,6 +406,28 @@ describe('P3-T3 — Cards & motion components', () => {
       expect(memberHtml).toContain('Eng. Ahmed Al-Harbi')
       expect(memberHtml).toContain('CHIEF EXECUTIVE OFFICER')
     })
+
+    it('supports arbitrary TeamCard stagger delays (e.g. 600ms on a 6th card) via --team-enter-delay custom property and uses ::after opacity overlay instead of border/shadow transitions', () => {
+      const sixthCardHtml = renderToStaticMarkup(
+        React.createElement(TeamCard, {
+          member: SAMPLE_TEAM_MEMBER,
+          locale: 'en',
+          animateOnScroll: true,
+          enterDelayMs: 600,
+        }),
+      )
+      expect(sixthCardHtml).toContain('data-enter-delay="600"')
+      expect(sixthCardHtml).not.toContain('style=')
+
+      const teamCardCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src', 'components', 'TeamCard.module.css'),
+        'utf8',
+      )
+      expect(teamCardCss).toContain('var(--team-enter-delay, 0ms)')
+      expect(teamCardCss).not.toContain("data-enter-delay='")
+      expect(teamCardCss).toContain('.card::after')
+      expect(teamCardCss).not.toMatch(/transition:\s*[^;]*(?:border-color|box-shadow)/)
+    })
   })
 
   describe('7. LogoMarquee (18:576) & TeamMarquee (151:964)', () => {
@@ -458,6 +510,47 @@ describe('P3-T3 — Cards & motion components', () => {
       expect(arHtml).toContain('data-active-index="1"')
       expect(arHtml).toContain('عرض جميع الخدمات')
       expect(arHtml).not.toContain('style=')
+    })
+
+    it('computes maxIndex and single calc() CSS custom properties (--index, --max-index, --drag-x) for 12 and 20 services without fixed-index selector limits', () => {
+      const services12 = Array.from({ length: 12 }, (_, idx) => ({
+        ...SAMPLE_SERVICE,
+        id: idx + 1,
+        slug: `service-${String(idx + 1)}`,
+      }))
+      const services20 = Array.from({ length: 20 }, (_, idx) => ({
+        ...SAMPLE_SERVICE,
+        id: idx + 1,
+        slug: `service-${String(idx + 1)}`,
+      }))
+
+      const html12 = renderToStaticMarkup(
+        React.createElement(ServicesCarousel, {
+          services: services12,
+          locale: 'en',
+        }),
+      )
+      expect(html12).toContain('data-max-index="8"')
+      expect(html12).toContain('aria-label="12 of 12"')
+
+      const html20 = renderToStaticMarkup(
+        React.createElement(ServicesCarousel, {
+          services: services20,
+          locale: 'ar',
+        }),
+      )
+      expect(html20).toContain('data-max-index="16"')
+      expect(html20).toContain('aria-label="20 من 20"')
+
+      const carouselCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src', 'components', 'ServicesCarousel.module.css'),
+        'utf8',
+      )
+      expect(carouselCss).not.toContain("data-active-index='")
+      expect(carouselCss).not.toContain("data-max-index='")
+      expect(carouselCss).toContain('var(--drag-x, 0px)')
+      expect(carouselCss).toContain('var(--index, 0)')
+      expect(carouselCss).toContain('var(--max-index, 4)')
     })
   })
 

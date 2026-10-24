@@ -86,6 +86,18 @@ export function TeamCard({
   const [hasEntered, setHasEntered] = useState<boolean>(!animateOnScroll)
 
   useEffect(() => {
+    const node = cardRef.current
+    if (!node) {
+      return
+    }
+    if (animateOnScroll && enterDelayMs > 0) {
+      node.style.setProperty('--team-enter-delay', `${String(enterDelayMs)}ms`)
+    } else {
+      node.style.removeProperty('--team-enter-delay')
+    }
+  }, [animateOnScroll, enterDelayMs])
+
+  useEffect(() => {
     if (!animateOnScroll || prefersReducedMotion || hasEntered) {
       return
     }

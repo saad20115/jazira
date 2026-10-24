@@ -304,19 +304,19 @@ function writeContrastReport(evidenceDir, headerBlock) {
     },
     {
       label: 'Light-surface focus-visible ring on white',
-      foregroundToken: '--navy-900',
+      foregroundToken: '--navy-950',
       backgroundToken: '--white',
       minRequired: 3.0,
     },
     {
       label: 'Light-surface focus-visible ring on surface',
-      foregroundToken: '--navy-900',
+      foregroundToken: '--navy-950',
       backgroundToken: '--surface',
       minRequired: 3.0,
     },
     {
       label: 'Light-surface focus-visible ring on gold-50',
-      foregroundToken: '--navy-900',
+      foregroundToken: '--navy-950',
       backgroundToken: '--gold-50',
       minRequired: 3.0,
     },
@@ -359,7 +359,7 @@ function writeContrastReport(evidenceDir, headerBlock) {
 
   const lines = [
     headerBlock.trimEnd(),
-    `=== WCAG 2.1 Contrast Verification (parsed from ${path.relative(process.cwd(), tokensPath)}, R-12, R-18) ===`,
+    `=== WCAG 2.1 Contrast Verification (parsed from ${path.relative(process.cwd(), tokensPath)}, R-12, R-18, R-22) ===`,
     ...pairs.map(
       (p) =>
         `- [PASS] ${p.label}: ${p.foregroundToken} (${p.foregroundHex}) on ${p.backgroundToken} (${p.backgroundHex}) -> ${String(p.ratio)}:1 (required >= ${String(p.minRequired)}:1)`,
@@ -433,6 +433,53 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       await footer2ColLocator.screenshot({ path: footer2ColPath })
       copyToDirs(footer2ColPath, outDirs)
 
+      // R-23: Inspect all `document.body.querySelectorAll('[style]')` across the entire body (including fixed elements like WhatsAppFab outside <main>)
+      const bodyStyleInspection = await page.evaluate(() => {
+        const frameworkAllowlistSelectors = ['next-route-announcer', 'nextjs-portal']
+        const allStyledInBody = Array.from(document.body.querySelectorAll('[style]'))
+        const frameworkStyledNodes = []
+        const cssomCustomPropNodes = []
+        const nonCustomPropAppNodes = []
+
+        for (const el of allStyledInBody) {
+          const matchedFramework = frameworkAllowlistSelectors.find(
+            (sel) => el.matches(sel) || el.closest(sel) !== null,
+          )
+          if (matchedFramework) {
+            frameworkStyledNodes.push({
+              tag: el.tagName.toLowerCase(),
+              matchedAllowlistSelector: matchedFramework,
+              styleAttr: el.getAttribute('style'),
+            })
+            continue
+          }
+          const props = Array.from(el.style)
+          if (props.length > 0 && props.every((p) => p.startsWith('--'))) {
+            cssomCustomPropNodes.push({
+              tag: el.tagName.toLowerCase(),
+              dataComponent: el.getAttribute('data-component'),
+              customProps: props,
+            })
+          } else {
+            nonCustomPropAppNodes.push({
+              tag: el.tagName.toLowerCase(),
+              dataComponent: el.getAttribute('data-component'),
+              styleAttr: el.getAttribute('style'),
+            })
+          }
+        }
+
+        return {
+          frameworkAllowlist: frameworkAllowlistSelectors,
+          totalBodyStyleElementsCount: allStyledInBody.length,
+          frameworkAllowedStyleElementsCount: frameworkStyledNodes.length,
+          cssomCustomPropOnlyElementsCount: cssomCustomPropNodes.length,
+          nonCustomPropAppInlineStyleCount: nonCustomPropAppNodes.length,
+          frameworkStyledNodes,
+          nonCustomPropAppNodes,
+        }
+      })
+
       const cspViolations = await page.evaluate(() => window.__cspViolations || [])
       // Never filter style-src-attr or inline style attribute violations (`R-2` / `M-119`)
       const styleSrcAttrViolations = cspViolations.filter(
@@ -448,6 +495,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       consoleAndCspRoutes.push({
         route: `/${locale}/styleguide`,
         status: res ? res.status() : null,
+        bodyStyleInspection,
         styleSrcAttrViolationsCount: styleSrcAttrViolations.length,
         inlineStyleAttrConsoleErrorsCount: inlineStyleAttrConsoleErrors.length,
         pageErrorsCount: pageErrors.length,
@@ -643,7 +691,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
     })
     await geoContext.close()
 
-    // Mobile 390px hit-target verification (`R-10`)
+    // Mobile 390px hit-target verification (`R-10`, `R-21`)
     const mobileGeoContext = await browser.newContext({ viewport: { width: 390, height: 844 } })
     const mobileGeoPage = await mobileGeoContext.newPage()
     await mobileGeoPage.goto(`${baseUrl}/ar/styleguide`, {
@@ -655,10 +703,14 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       .first()
       .click()
     await mobileGeoPage.locator('[data-navbar-drawer="open"]').waitFor({ state: 'visible' })
-    const mobileHitTargets = await mobileGeoPage.evaluate(() => {
+    const arMobileHitTargets = await mobileGeoPage.evaluate(() => {
       const drawerLink = document.querySelector('[data-navbar-drawer="open"] nav a')
       const socialBtn = document.querySelector('footer[data-component="footer"] ul a')
       const footerQuickLink = document.querySelector('footer[data-component="footer"] nav a')
+      const footerLangSwitcher = document.querySelector(
+        'footer[data-component="footer"] [data-testid="footer-language-switcher"]',
+      )
+      const lsRect = footerLangSwitcher ? footerLangSwitcher.getBoundingClientRect() : null
       return {
         drawerLinkHeight: drawerLink ? Math.round(drawerLink.getBoundingClientRect().height) : null,
         socialButtonWidth: socialBtn ? Math.round(socialBtn.getBoundingClientRect().width) : null,
@@ -666,9 +718,40 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
         footerQuickLinkHeight: footerQuickLink
           ? Math.round(footerQuickLink.getBoundingClientRect().height)
           : null,
+        arFooterLanguageSwitcherWidth: lsRect ? Math.round(lsRect.width) : null,
+        arFooterLanguageSwitcherHeight: lsRect ? Math.round(lsRect.height) : null,
       }
     })
+    await mobileGeoPage.goto(`${baseUrl}/en/styleguide`, {
+      waitUntil: 'networkidle',
+      timeout: 60000,
+    })
+    const enMobileHitTargets = await mobileGeoPage.evaluate(() => {
+      const footerLangSwitcher = document.querySelector(
+        'footer[data-component="footer"] [data-testid="footer-language-switcher"]',
+      )
+      const lsRect = footerLangSwitcher ? footerLangSwitcher.getBoundingClientRect() : null
+      return {
+        enFooterLanguageSwitcherWidth: lsRect ? Math.round(lsRect.width) : null,
+        enFooterLanguageSwitcherHeight: lsRect ? Math.round(lsRect.height) : null,
+      }
+    })
+    const mobileHitTargets = {
+      ...arMobileHitTargets,
+      ...enMobileHitTargets,
+    }
     await mobileGeoContext.close()
+
+    if (
+      (mobileHitTargets.arFooterLanguageSwitcherWidth ?? 0) < 44 ||
+      (mobileHitTargets.arFooterLanguageSwitcherHeight ?? 0) < 44 ||
+      (mobileHitTargets.enFooterLanguageSwitcherWidth ?? 0) < 44 ||
+      (mobileHitTargets.enFooterLanguageSwitcherHeight ?? 0) < 44
+    ) {
+      throw new Error(
+        `Footer language switcher at 390px is smaller than 44x44px (R-21): ${JSON.stringify(mobileHitTargets)}`,
+      )
+    }
 
     const geometryPayload = {
       baseUrl,
@@ -698,7 +781,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       `- Footer Bottom-Bar Language Switcher (R-15): href="${String(styleguideEnMetrics.footerLanguageSwitcherHref)}", lang="${String(styleguideEnMetrics.footerLanguageSwitcherLang)}", dir="${String(styleguideEnMetrics.footerLanguageSwitcherDir)}"`,
       `- Footer 2-Column Layout Contact Width (R-16): EN=${String(styleguideEnMetrics.footer2ColContactWidth)}px, AR=${String(rtlFabMetrics.arFooter2ColContactWidth)}px (expected >= 220px)`,
       `- RTL WhatsApp FAB Pulse Ring Center: (${String(rtlFabMetrics.ringCenterX)}, ${String(rtlFabMetrics.ringCenterY)}) vs Button Center: (${String(rtlFabMetrics.buttonCenterX)}, ${String(rtlFabMetrics.buttonCenterY)})`,
-      `- Mobile 390px Hit Targets: drawerLinkHeight=${String(mobileHitTargets.drawerLinkHeight)}px, socialButton=${String(mobileHitTargets.socialButtonWidth)}x${String(mobileHitTargets.socialButtonHeight)}px, footerQuickLinkHeight=${String(mobileHitTargets.footerQuickLinkHeight)}px`,
+      `- Mobile 390px Hit Targets (R-10, R-21): drawerLinkHeight=${String(mobileHitTargets.drawerLinkHeight)}px, socialButton=${String(mobileHitTargets.socialButtonWidth)}x${String(mobileHitTargets.socialButtonHeight)}px, footerQuickLinkHeight=${String(mobileHitTargets.footerQuickLinkHeight)}px, footerLanguageSwitcher AR=${String(mobileHitTargets.arFooterLanguageSwitcherWidth)}x${String(mobileHitTargets.arFooterLanguageSwitcherHeight)}px, EN=${String(mobileHitTargets.enFooterLanguageSwitcherWidth)}x${String(mobileHitTargets.enFooterLanguageSwitcherHeight)}px`,
       '',
     ]
     fs.writeFileSync(
@@ -873,14 +956,39 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       'utf8',
     )
 
+    const cspLogLines = [
+      headerBlock.trimEnd(),
+      `BaseURL: ${baseUrl}`,
+      `FrameworkInlineStyleAllowlist (R-23): ["next-route-announcer", "nextjs-portal"]`,
+      '',
+      ...consoleAndCspRoutes.flatMap((r) => [
+        `=== Route: ${r.route} (HTTP ${String(r.status)}) ===`,
+        `TotalBodyStyleElements (document.body.querySelectorAll('[style]')): ${String(r.bodyStyleInspection.totalBodyStyleElementsCount)}`,
+        `FrameworkAllowedStyleElements (${JSON.stringify(r.bodyStyleInspection.frameworkAllowlist)}): ${String(r.bodyStyleInspection.frameworkAllowedStyleElementsCount)}`,
+        `CssomCustomPropOnlyElements (--*): ${String(r.bodyStyleInspection.cssomCustomPropOnlyElementsCount)}`,
+        `NonCustomPropAppInlineStyleCount (R-23): ${String(r.bodyStyleInspection.nonCustomPropAppInlineStyleCount)}`,
+        `StyleSrcAttrViolations (unfiltered): ${String(r.styleSrcAttrViolationsCount)}`,
+        `InlineStyleAttrConsoleErrors (unfiltered): ${String(r.inlineStyleAttrConsoleErrorsCount)}`,
+        `PageErrors (unfiltered): ${String(r.pageErrorsCount)}`,
+        `RawDevHmrCspEvents: ${String(r.rawCspViolationsCount)}`,
+        '',
+      ]),
+    ]
+    fs.writeFileSync(
+      path.join(evidenceDir, 'styleguide-console-csp-network.log'),
+      `${cspLogLines.join('\n')}\n`,
+      'utf8',
+    )
+
     for (const r of consoleAndCspRoutes) {
       if (
+        r.bodyStyleInspection.nonCustomPropAppInlineStyleCount > 0 ||
         r.styleSrcAttrViolationsCount > 0 ||
         r.inlineStyleAttrConsoleErrorsCount > 0 ||
         r.pageErrorsCount > 0
       ) {
         throw new Error(
-          `Styleguide route ${r.route} had inline style/page errors: styleSrcAttrViolations=${String(r.styleSrcAttrViolationsCount)}, inlineStyleAttrConsoleErrors=${String(r.inlineStyleAttrConsoleErrorsCount)}, pageErrors=${String(r.pageErrorsCount)}`,
+          `Styleguide route ${r.route} had inline style/page errors: nonCustomPropAppInlineStyleCount=${String(r.bodyStyleInspection.nonCustomPropAppInlineStyleCount)}, styleSrcAttrViolations=${String(r.styleSrcAttrViolationsCount)}, inlineStyleAttrConsoleErrors=${String(r.inlineStyleAttrConsoleErrorsCount)}, pageErrors=${String(r.pageErrorsCount)}`,
         )
       }
     }
@@ -897,8 +1005,8 @@ async function main() {
   const flags = new Set(process.argv.slice(2).filter((a) => a.startsWith('--')))
   const args = process.argv.slice(2).filter((a) => !a.startsWith('--'))
   const baseUrl = (args[0] || process.env.BASE_URL || 'http://localhost:3000').replace(/\/+$/, '')
-  const evidenceDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T2/r3')
-  const phase3Dir = path.resolve(process.cwd(), args[2] || 'docs/reports/phase-3/P3-T2/r3')
+  const evidenceDir = path.resolve(process.cwd(), args[1] || 'docs/reports/evidence/P3-T2/r4')
+  const phase3Dir = path.resolve(process.cwd(), args[2] || 'docs/reports/phase-3/P3-T2/r4')
 
   if (flags.has('--prod')) {
     await runProd404AndCspCheck(baseUrl, evidenceDir)

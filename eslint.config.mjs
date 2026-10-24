@@ -78,6 +78,24 @@ export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
       message:
         'Importing or re-exporting "@/payload.config.ts" is forbidden outside the server allow-list (Z6, R-12, R-21).',
     },
+    {
+      name: 'happy-dom',
+      allowTypeImports: false,
+      message:
+        'Importing "happy-dom" is forbidden across the repository (R-24 waiver guard).',
+    },
+    {
+      name: '@lexical/headless',
+      allowTypeImports: false,
+      message:
+        'Importing "@lexical/headless" is forbidden across the repository (R-24 waiver guard).',
+    },
+    {
+      name: '@lexical/headless/dom',
+      allowTypeImports: false,
+      message:
+        'Importing "@lexical/headless/dom" is forbidden across the repository (R-24 waiver guard).',
+    },
   ],
   patterns: [
     {
@@ -91,6 +109,12 @@ export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
       allowTypeImports: false,
       message:
         'Importing or re-exporting payload.config is forbidden outside the server allow-list (Z6, R-12, R-21).',
+    },
+    {
+      group: ['happy-dom/*', '@lexical/headless/*'],
+      allowTypeImports: false,
+      message:
+        'Importing "happy-dom/*" or "@lexical/headless/*" is forbidden across the repository (R-24 waiver guard).',
     },
   ],
 }
@@ -117,12 +141,33 @@ export const RESTRICTED_PAYLOAD_IMPORTS_JS_CONFIG = {
       message:
         'Importing or re-exporting "@/payload.config.ts" is forbidden outside the server allow-list (Z6, R-12, R-21).',
     },
+    {
+      name: 'happy-dom',
+      message:
+        'Importing "happy-dom" is forbidden across the repository (R-24 waiver guard).',
+    },
+    {
+      name: '@lexical/headless',
+      message:
+        'Importing "@lexical/headless" is forbidden across the repository (R-24 waiver guard).',
+    },
+    {
+      name: '@lexical/headless/dom',
+      message:
+        'Importing "@lexical/headless/dom" is forbidden across the repository (R-24 waiver guard).',
+    },
   ],
   patterns: [
     {
-      group: ['payload/*', '**/payload.config', '**/payload.config.*'],
+      group: [
+        'payload/*',
+        '**/payload.config',
+        '**/payload.config.*',
+        'happy-dom/*',
+        '@lexical/headless/*',
+      ],
       message:
-        'Importing or re-exporting Payload modules or payload.config is forbidden outside the server allow-list (Z6, R-12, R-21).',
+        'Importing or re-exporting Payload modules, payload.config, happy-dom, or @lexical/headless is forbidden (Z6, R-12, R-21, R-24).',
     },
   ],
 }

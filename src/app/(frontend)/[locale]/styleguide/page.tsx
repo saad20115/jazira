@@ -883,6 +883,37 @@ export default async function StyleguidePage({
             </div>
           </div>
         </section>
+
+        {/* 18b. ServicesCarousel 12 & 20 Services Scale Proof (R-12) */}
+        <section
+          className={styles.sectionCard}
+          data-styleguide-section="services-carousel-scale"
+          id="styleguide-services-carousel-scale"
+        >
+          <div className={styles.carouselStack}>
+            <div className={styles.carouselFrame} data-testid="services-carousel-12">
+              <div className={styles.frameLabelBar} dir="ltr">
+                {NODE_IDS.servicesCarousel}
+              </div>
+              <ServicesCarousel
+                autoAdvanceMs={0}
+                locale={resolvedLocale}
+                services={sg.mockCarouselServices12}
+              />
+            </div>
+
+            <div className={styles.carouselFrame} data-testid="services-carousel-20">
+              <div className={styles.frameLabelBar} dir="ltr">
+                {NODE_IDS.servicesCarousel}
+              </div>
+              <ServicesCarousel
+                autoAdvanceMs={0}
+                locale={resolvedLocale}
+                services={sg.mockCarouselServices20}
+              />
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   )

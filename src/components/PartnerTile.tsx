@@ -30,6 +30,8 @@ export function PartnerTile({
   const logoAsset = resolveMediaAsset(brand.logo, brand.name, 'thumb')
   const resolvedWordmark = wordmark ?? brand.name.toUpperCase()
   const resolvedSubtitle = subtitle ?? brand.origin ?? ''
+  const wordmarkTokenClass =
+    resolvedWordmark.length > 20 ? 't-h5' : resolvedWordmark.length > 10 ? 't-h4' : 't-h3'
 
   const tileClasses = [
     styles.tile,
@@ -55,7 +57,7 @@ export function PartnerTile({
             className={styles.logoImage}
           />
         ) : (
-          <span className={`${styles.wordmark} t-h3`}>{resolvedWordmark}</span>
+          <span className={`${styles.wordmark} ${wordmarkTokenClass}`}>{resolvedWordmark}</span>
         )}
       </div>
       <p className={`${styles.name} t-h5`}>{brand.name}</p>

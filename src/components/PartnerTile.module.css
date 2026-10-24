@@ -12,7 +12,7 @@
   border-radius: var(--radius-2xl);
   background-color: var(--white);
   border: 1px solid var(--border);
-  box-shadow: var(--shadow-card-rest);
+  box-shadow: var(--shadow-partner-tile-rest);
   box-sizing: border-box;
   overflow: hidden;
   text-decoration: none;
@@ -63,8 +63,6 @@
 
 .wordmark {
   color: var(--navy-800);
-  font-size: clamp(1.125rem, 2vw, 1.5rem);
-  line-height: 1.2;
   white-space: normal;
   overflow-wrap: break-word;
   text-align: center;

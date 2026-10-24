@@ -394,7 +394,7 @@
   opacity: 1;
 }
 
-/* R-10: Ensure touch targets >= 44px on mobile/tablet viewports */
+/* R-10 & R-21: Ensure touch targets >= 44px on mobile/tablet viewports */
 @media (max-width: 1023px) {
   .quickLinksList {
     gap: 4px;
@@ -406,6 +406,14 @@
     min-block-size: 44px;
     display: inline-flex;
     align-items: center;
+  }
+
+  .bottomLink {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    block-size: auto;
+    justify-content: center;
+    padding-inline: var(--space-8);
   }
 
   .contactIconWrap {

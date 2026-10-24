@@ -144,60 +144,6 @@ async function createTriSideBySideImage(figmaBuffer, enBuffer, arBuffer, outPath
 }
 
 /**
- * Creates an animated `.gif` from an array of PNG frame buffers using `sharp` (`pageHeight`).
- *
- * @param {Buffer[]} frameBuffers
- * @param {string} outPath
- * @param {number} delayMs
- */
-async function createAnimatedGifFromFrames(frameBuffers, outPath, delayMs = 180) {
-  if (frameBuffers.length === 0) {
-    return
-  }
-  const firstMeta = await sharp(frameBuffers[0]).metadata()
-  const targetW = Math.min(960, firstMeta.width ?? 800)
-  const resizedFirst = await sharp(frameBuffers[0]).resize({ width: targetW }).png().toBuffer()
-  const rMeta = await sharp(resizedFirst).metadata()
-  const frameW = rMeta.width ?? targetW
-  const frameH = rMeta.height ?? 300
-
-  const normalizedFrames = []
-  for (const buf of frameBuffers) {
-    const norm = await sharp(buf)
-      .resize(frameW, frameH, { fit: 'cover', position: 'left top' })
-      .png()
-      .toBuffer()
-    normalizedFrames.push(norm)
-  }
-
-  const totalH = frameH * normalizedFrames.length
-  const compositeOps = normalizedFrames.map((buf, idx) => ({
-    input: buf,
-    left: 0,
-    top: idx * frameH,
-  }))
-
-  const spriteBuffer = await sharp({
-    create: {
-      width: frameW,
-      height: totalH,
-      channels: 4,
-      background: { r: 246, g: 248, b: 251, alpha: 1 },
-    },
-  })
-    .composite(compositeOps)
-    .png()
-    .toBuffer()
-
-  await sharp(spriteBuffer, { animated: true, pageHeight: frameH })
-    .gif({
-      loop: 0,
-      delay: Array(normalizedFrames.length).fill(delayMs),
-    })
-    .toFile(outPath)
-}
-
-/**
  * @param {string} srcFile
  * @param {string[]} destDirs
  */
@@ -290,17 +236,52 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         }
       })
 
-      // Verify zero inline `style="..."` attributes in app DOM (`R-1`)
-      const inlineStyleAttributeCount = await page.evaluate(
-        () => document.querySelectorAll('header [style], main [style], footer [style]').length,
-      )
-      if (inlineStyleAttributeCount !== 0) {
+      // Verify zero non-custom-property inline `style="..."` attributes in app DOM (`R-1`, `R-12`, `R-13`, `R-14`)
+      const ssrHtml = await (await fetch(`${baseUrl}/${locale}/styleguide`)).text()
+      const ssrInlineStyleAttributeCount = (ssrHtml.match(/\sstyle="/g) ?? []).length
+      if (ssrInlineStyleAttributeCount !== 0) {
         throw new Error(
-          `Expected 0 [style] elements in header/main/footer on /${locale}/styleguide, found ${String(inlineStyleAttributeCount)}`,
+          `Expected 0 style=" attributes in SSR HTML on /${locale}/styleguide, found ${String(ssrInlineStyleAttributeCount)}`,
         )
       }
 
-      // Measure fixed aspect ratios / dimensions across all P3-T3 components (`R-7`, `R-8`)
+      const domStyleInspection = await page.evaluate(() => {
+        const frameworkAllowlistSelectors = ['next-route-announcer', 'nextjs-portal']
+        const allStyledInBody = Array.from(document.body.querySelectorAll('[style]'))
+        let frameworkCount = 0
+        let cssomCustomPropCount = 0
+        let nonCustomPropCount = 0
+        for (const el of allStyledInBody) {
+          if (
+            frameworkAllowlistSelectors.some(
+              (sel) => el.matches(sel) || el.closest(sel) !== null,
+            )
+          ) {
+            frameworkCount += 1
+            continue
+          }
+          const props = Array.from(el.style)
+          if (props.length > 0 && props.every((p) => p.startsWith('--'))) {
+            cssomCustomPropCount += 1
+          } else {
+            nonCustomPropCount += 1
+          }
+        }
+        return {
+          frameworkAllowlist: frameworkAllowlistSelectors,
+          totalBodyStyleElementsCount: allStyledInBody.length,
+          frameworkAllowedStyleElementsCount: frameworkCount,
+          nonCustomPropInlineStyleCount: nonCustomPropCount,
+          cssomCustomPropElementCount: cssomCustomPropCount,
+        }
+      })
+      if (domStyleInspection.nonCustomPropInlineStyleCount !== 0) {
+        throw new Error(
+          `Expected 0 non-custom-property [style] elements in document.body on /${locale}/styleguide, found ${String(domStyleInspection.nonCustomPropInlineStyleCount)}`,
+        )
+      }
+
+      // Measure fixed aspect ratios / dimensions across all P3-T3 components (`R-7`, `R-8`, `R-13`, `R-15`, `R-16`)
       const componentDimensions = await page.evaluate(() => {
         const measure = (sel) => {
           const el = document.querySelector(sel)
@@ -315,19 +296,47 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         }, 0)
 
         const enter1Card = document.querySelector(
-          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-enter-stage="1"]',
+          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-state="Enter 1"]',
         )
         const enter1Content = enter1Card
           ? enter1Card.querySelector('[data-team-card-content="true"]')
           : null
 
+        const sixthTeamCardContent = document.querySelector(
+          '[data-testid="live-team-cards"] [data-component="team-card"][data-enter-delay="600"] [data-team-card-content="true"]',
+        )
+        const defaultTeamCard = document.querySelector(
+          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-state="Default"]',
+        )
+        const hoverTeamCard = document.querySelector(
+          '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-state="Hover"]',
+        )
+        const defaultPartnerTile = document.querySelector(
+          '[data-styleguide-subsection="partner-tile"] [data-component="partner-tile"][data-state="Default"]',
+        )
+        const partnerWordmarkSpan = defaultPartnerTile
+          ? defaultPartnerTile.querySelector('span')
+          : null
+
         return {
-          serviceTileDefault: measure('[data-component="service-tile"][data-variant="Default"]'),
-          serviceTileFeatured: measure('[data-component="service-tile"][data-variant="Featured"]'),
+          serviceTileDefault: measure(
+            '[data-component="service-tile"][data-state="Default"][data-variant="grid"]',
+          ),
+          serviceTileFeatured: measure(
+            '[data-component="service-tile"][data-state="Featured"][data-variant="grid"]',
+          ),
+          serviceTileCarousel: measure('[data-component="service-tile"][data-variant="carousel"]'),
           serviceCard: measure('[data-component="service-card"]'),
           projectCard: measure('[data-component="project-card"]'),
           partnerTile: measure('[data-component="partner-tile"]'),
           partnerTileMaxHorizontalOverflowPx: partnerOverflowPx,
+          partnerTileDefaultShadow: defaultPartnerTile
+            ? window.getComputedStyle(defaultPartnerTile).boxShadow
+            : null,
+          partnerTileWordmarkClassName: partnerWordmarkSpan ? partnerWordmarkSpan.className : null,
+          partnerTileWordmarkFontSize: partnerWordmarkSpan
+            ? window.getComputedStyle(partnerWordmarkSpan).fontSize
+            : null,
           brandTile: measure('[data-component="brand-tile"]'),
           avatar120: measure('[data-component="avatar"][data-size="120"]'),
           avatar52: measure('[data-component="avatar"][data-size="52"]'),
@@ -339,6 +348,18 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
             : null,
           teamCardEnter1InnerOpacity: enter1Content
             ? window.getComputedStyle(enter1Content).opacity
+            : null,
+          teamCardSixthStaggerTransitionDelay: sixthTeamCardContent
+            ? window.getComputedStyle(sixthTeamCardContent).transitionDelay
+            : null,
+          teamCardOuterTransitionProperty: defaultTeamCard
+            ? window.getComputedStyle(defaultTeamCard).transitionProperty
+            : null,
+          teamCardHoverAfterShadow: hoverTeamCard
+            ? window.getComputedStyle(hoverTeamCard, '::after').boxShadow
+            : null,
+          teamCardHoverAfterOpacity: hoverTeamCard
+            ? window.getComputedStyle(hoverTeamCard, '::after').opacity
             : null,
         }
       })
@@ -355,18 +376,12 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         sectionBuffers[locale][item.key] = await loc.screenshot()
       }
 
-      // Capture animated GIF frames + interactive verification for LogoMarquee, TeamMarquee, ServicesCarousel, and TeamCard
-      // A) LogoMarquee animation frames + hover pause + pause toggle button (`R-6`)
+      // Interactive verification for LogoMarquee, TeamMarquee, ServicesCarousel, and TeamCard
+      // A) LogoMarquee hover pause + pause toggle button (`R-6`)
       const marqueeLoc = page.locator('[data-testid="live-logo-marquee"]').first()
       await marqueeLoc.scrollIntoViewIfNeeded()
-      const marqueeFrames = []
-      for (let i = 0; i < 6; i++) {
-        marqueeFrames.push(await marqueeLoc.screenshot())
-        await page.waitForTimeout(220)
-      }
-      const marqueeGifPath = path.join(evidenceDir, `marquee-${locale}.gif`)
-      await createAnimatedGifFromFrames(marqueeFrames, marqueeGifPath, 180)
-      copyToDirs(marqueeGifPath, outDirs)
+      await page.mouse.move(1, 1)
+      await page.waitForTimeout(150)
 
       const marqueeTrackRunningState = await page
         .locator('[data-testid="live-logo-marquee"] [data-row="1"] > div')
@@ -381,7 +396,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         .evaluate((el) => window.getComputedStyle(el).animationPlayState)
 
       // Move mouse away and test LogoMarquee pause/play toggle button (`R-6`)
-      await page.mouse.move(10, 10)
+      await page.mouse.move(1, 1)
       const marqueePauseBtn = marqueeLoc.locator('[data-marquee-action="toggle-pause"]').first()
       const marqueePauseBefore = await marqueePauseBtn.getAttribute('aria-pressed')
       await marqueePauseBtn.click()
@@ -397,10 +412,34 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         .locator('[data-testid="live-logo-marquee"] [data-marquee-group="duplicate"][aria-hidden="true"]')
         .count()
 
-      // B) ServicesCarousel animation frames + keyboard + button + drag + overscroll + focus sync (`R-4`, `R-5`, `R-6`, `R-8`, `R-11`)
+      // B) ServicesCarousel thumb geometry + keyboard + button + mid-drag + overscroll + focus sync + 12/20 services (`R-4`, `R-5`, `R-6`, `R-8`, `R-12`, `R-14`, `R-16`)
+      const carouselThumbGeometry = await page.evaluate(() => {
+        const staticCarousels = Array.from(
+          document.querySelectorAll(
+            '[data-styleguide-section="services-carousel"] [data-component="services-carousel"]',
+          ),
+        ).slice(0, 5)
+        const positions = staticCarousels.map((c) => {
+          const thumb = c.querySelector('[data-carousel-thumb="true"]')
+          const track = thumb ? thumb.parentElement : null
+          const thumbRect = thumb ? thumb.getBoundingClientRect() : null
+          const trackRect = track ? track.getBoundingClientRect() : null
+          const m = thumb ? new DOMMatrixReadOnly(window.getComputedStyle(thumb).transform) : null
+          return {
+            position: c.getAttribute('data-position'),
+            trackWidth: trackRect ? Math.round(trackRect.width) : null,
+            thumbWidth: thumbRect ? Math.round(thumbRect.width) : null,
+            thumbTranslateX: m ? Math.round(m.m41) : null,
+          }
+        })
+        return positions
+      })
+
       const carouselWrapper = page.locator('[data-testid="live-services-carousel"]').first()
       const carouselSec = carouselWrapper.locator('[data-component="services-carousel"]').first()
       await carouselWrapper.scrollIntoViewIfNeeded()
+      await page.mouse.move(1, 1)
+      await page.waitForTimeout(220)
 
       const carouselRegionLabel = await carouselSec.getAttribute('aria-label')
       const carouselRoleDescription = await carouselSec.getAttribute('aria-roledescription')
@@ -414,38 +453,39 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       const carouselPausedAttr = await carouselSec.getAttribute('data-paused')
       const liveRegionAriaLiveWhenPaused = await liveRegionLoc.getAttribute('aria-live')
 
-      const carouselFrames = []
       const initialIndex = await carouselSec.getAttribute('data-active-index')
-      carouselFrames.push(await carouselWrapper.screenshot())
 
       // Click Next button twice to capture slide progression
       const nextBtn = carouselSec.locator('[data-carousel-action="next"]').first()
       await nextBtn.click()
       await page.waitForTimeout(260)
       const afterNextClickIndex = await carouselSec.getAttribute('data-active-index')
-      carouselFrames.push(await carouselWrapper.screenshot())
 
       await nextBtn.click()
       await page.waitForTimeout(260)
-      carouselFrames.push(await carouselWrapper.screenshot())
 
       // Keyboard navigation check (ArrowRight / ArrowLeft)
       await carouselSec.focus()
       await page.keyboard.press(locale === 'ar' ? 'ArrowLeft' : 'ArrowRight')
       await page.waitForTimeout(260)
       const afterKeyNextIndex = await carouselSec.getAttribute('data-active-index')
-      carouselFrames.push(await carouselWrapper.screenshot())
 
       await page.keyboard.press(locale === 'ar' ? 'ArrowRight' : 'ArrowLeft')
-      await page.waitForTimeout(260)
+      await page.waitForTimeout(480)
       const afterKeyPrevIndex = await carouselSec.getAttribute('data-active-index')
-      carouselFrames.push(await carouselWrapper.screenshot())
 
-      // Pointer drag/swipe verification (`R-11`)
+      // Pointer drag/swipe verification + mid-drag visual feedback (`R-11`, `R-14`)
       const trackLoc = carouselSec.locator('[data-carousel-track="true"]').first()
       const vpBox = await carouselSec.boundingBox()
       let afterPointerDragIndex = afterKeyPrevIndex
+      let trackTranslateXBeforeDrag = 0
+      let trackTranslateXMidDrag = 0
+      let midDragDeltaPx = 0
       if (vpBox) {
+        trackTranslateXBeforeDrag = await trackLoc.evaluate((el) => {
+          const m = new DOMMatrixReadOnly(window.getComputedStyle(el).transform)
+          return Math.round(m.m41)
+        })
         const startX = vpBox.x + vpBox.width / 2
         const startY = vpBox.y + 150
         const dragDelta = locale === 'ar' ? 140 : -140
@@ -453,10 +493,14 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         await page.mouse.down()
         await page.mouse.move(startX + dragDelta / 2, startY, { steps: 4 })
         await page.mouse.move(startX + dragDelta, startY, { steps: 4 })
+        trackTranslateXMidDrag = await trackLoc.evaluate((el) => {
+          const m = new DOMMatrixReadOnly(window.getComputedStyle(el).transform)
+          return Math.round(m.m41)
+        })
+        midDragDeltaPx = trackTranslateXMidDrag - trackTranslateXBeforeDrag
         await page.mouse.up()
         await page.waitForTimeout(260)
         afterPointerDragIndex = await carouselSec.getAttribute('data-active-index')
-        carouselFrames.push(await carouselWrapper.screenshot())
       }
 
       // Off-screen slide keyboard focus sync verification (`R-5`)
@@ -471,11 +515,49 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       )
       const nextBtnDisabledAtMax = await nextBtn.isDisabled()
 
-      const carouselGifPath = path.join(evidenceDir, `carousel-${locale}.gif`)
-      await createAnimatedGifFromFrames(carouselFrames, carouselGifPath, 320)
-      copyToDirs(carouselGifPath, outDirs)
+      // Verify 12-service and 20-service carousels (`R-12`)
+      const scaleProof = {}
+      for (const count of [12, 20]) {
+        const scaleSec = page
+          .locator(`[data-testid="services-carousel-${String(count)}"] [data-component="services-carousel"]`)
+          .first()
+        await scaleSec.scrollIntoViewIfNeeded()
+        await scaleSec.focus()
+        await page.keyboard.press('End')
+        await page.waitForTimeout(480)
+        scaleProof[`services${String(count)}`] = await scaleSec.evaluate((el) => {
+          const track = el.querySelector('[data-carousel-track="true"]')
+          const thumb = el.querySelector('[data-carousel-thumb="true"]')
+          const progressTrack = thumb ? thumb.parentElement : null
+          const trackMatrix = track
+            ? new DOMMatrixReadOnly(window.getComputedStyle(track).transform)
+            : null
+          const thumbMatrix = thumb
+            ? new DOMMatrixReadOnly(window.getComputedStyle(thumb).transform)
+            : null
+          const thumbRect = thumb ? thumb.getBoundingClientRect() : null
+          const progressRect = progressTrack ? progressTrack.getBoundingClientRect() : null
+          const overshootPx =
+            thumbRect && progressRect
+              ? Math.max(
+                  0,
+                  Math.round(thumbRect.right - progressRect.right),
+                  Math.round(progressRect.left - thumbRect.left),
+                )
+              : null
+          return {
+            activeIndexAtEnd: el.getAttribute('data-active-index'),
+            maxIndex: el.getAttribute('data-max-index'),
+            trackTranslateXAtEnd: trackMatrix ? Math.round(trackMatrix.m41) : null,
+            thumbTranslateXAtEnd: thumbMatrix ? Math.round(thumbMatrix.m41) : null,
+            thumbWidth: thumbRect ? Math.round(thumbRect.width) : null,
+            progressTrackWidth: progressRect ? Math.round(progressRect.width) : null,
+            thumbOvershootPx: overshootPx,
+          }
+        })
+      }
 
-      // C) TeamCard entrance animation frames
+      // C) TeamCard scroll-triggered entrance verification (`R-13`)
       const teamRowLoc = page.locator('[data-testid="live-team-cards"]').first()
       await teamRowLoc.scrollIntoViewIfNeeded()
       await page.waitForTimeout(300)
@@ -483,18 +565,10 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         .locator('[data-component="team-card"]')
         .first()
         .getAttribute('data-scroll-entered')
-
-      const enterStateLocs = page.locator(
-        '[data-styleguide-subsection="team-card-states"] [data-component="team-card"]',
-      )
-      const enterCount = await enterStateLocs.count()
-      const teamFrames = []
-      for (let i = 0; i < enterCount; i++) {
-        teamFrames.push(await enterStateLocs.nth(i).screenshot())
-      }
-      const teamGifPath = path.join(evidenceDir, `team-card-entrance-${locale}.gif`)
-      await createAnimatedGifFromFrames(teamFrames, teamGifPath, 220)
-      copyToDirs(teamGifPath, outDirs)
+      const sixthTeamCardEnteredAttr = await teamRowLoc
+        .locator('[data-component="team-card"][data-enter-delay="600"]')
+        .first()
+        .getAttribute('data-scroll-entered')
 
       // Responsive captures at 768 and 390 + 390px horizontal overflow check (`R-7`)
       const mobileOverflow = {}
@@ -515,7 +589,12 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       }
 
       motionVerification[locale] = {
-        inlineStyleAttributeCount,
+        ssrInlineStyleAttributeCount,
+        frameworkAllowlist: domStyleInspection.frameworkAllowlist,
+        totalBodyStyleElementsCount: domStyleInspection.totalBodyStyleElementsCount,
+        frameworkAllowedStyleElementsCount: domStyleInspection.frameworkAllowedStyleElementsCount,
+        nonCustomPropInlineStyleCount: domStyleInspection.nonCustomPropInlineStyleCount,
+        cssomCustomPropElementCount: domStyleInspection.cssomCustomPropElementCount,
         componentDimensions,
         mobileOverflow,
         marqueeTrackRunningState,
@@ -527,6 +606,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
           restored: marqueePauseRestored,
         },
         duplicateAriaHiddenCount,
+        carouselThumbGeometry,
         carouselA11y: {
           regionLabel: carouselRegionLabel,
           roleDescription: carouselRoleDescription,
@@ -539,13 +619,20 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         carouselAfterNextClickIndex: afterNextClickIndex,
         carouselAfterKeyNextIndex: afterKeyNextIndex,
         carouselAfterKeyPrevIndex: afterKeyPrevIndex,
-        carouselAfterPointerDragIndex: afterPointerDragIndex,
+        carouselPointerDrag: {
+          trackTranslateXBeforeDrag,
+          trackTranslateXMidDrag,
+          midDragDeltaPx,
+          activeIndexAfterRelease: afterPointerDragIndex,
+        },
         carouselFocusSyncOnSlide6: {
           activeIndexAfterFocus: afterFocusSlide6Index,
           viewportScrollLeft: viewportScrollLeftAfterFocus,
           nextButtonDisabledAtMaxIndex: nextBtnDisabledAtMax,
         },
+        carouselScaleProof: scaleProof,
         teamCardScrollEntered: teamEnteredAttr,
+        sixthTeamCardScrollEntered: sixthTeamCardEnteredAttr,
       }
 
       const videoObj = page.video()
@@ -711,9 +798,9 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
 const args = process.argv.slice(2)
 const baseUrl = args[0] || 'http://localhost:3126'
 const evidenceDir =
-  args[1] || path.resolve(process.cwd(), 'docs', 'reports', 'evidence', 'P3-T3', 'r2')
+  args[1] || path.resolve(process.cwd(), 'docs', 'reports', 'evidence', 'P3-T3', 'r3')
 const phase3Dir =
-  args[2] || path.resolve(process.cwd(), 'docs', 'reports', 'phase-3', 'P3-T3', 'r2')
+  args[2] || path.resolve(process.cwd(), 'docs', 'reports', 'phase-3', 'P3-T3', 'r3')
 
 runP3T3Evidence(baseUrl, evidenceDir, phase3Dir).catch((err) => {
   process.stderr.write(`[p3-t3-evidence] ERROR: ${err instanceof Error ? err.stack : String(err)}\n`)

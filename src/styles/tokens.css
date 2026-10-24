@@ -88,7 +88,9 @@
   --shadow-dark-elevated: 0 10px 12px rgba(1, 16, 37, 0.2);
   --shadow-navbar-light: 0 2px 8px 0 rgba(1, 16, 37, 0.06);
   --shadow-button-dark-hover: 0 10px 12px 0 rgba(1, 16, 37, 0.25);
-  --shadow-team-card-hover: 0 22px 44px 0 rgba(1, 16, 37, 0.28);
+  --shadow-team-card-hover: 0 26px 48px 0 rgba(1, 16, 37, 0.28);
+  --shadow-partner-tile-rest: 0 4px 6px rgba(1, 16, 37, 0.03);
+  --shadow-partner-tile-hover: 0 18px 18px rgba(1, 16, 37, 0.12);
 
   /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */
   --radius-pill: 100px;

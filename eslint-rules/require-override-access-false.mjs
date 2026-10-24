@@ -244,6 +244,25 @@ export function isSrcFile(filename) {
 }
 
 /**
+ * Returns true when `sourceValue` points to `happy-dom`, `happy-dom/*`, `@lexical/headless`, or `@lexical/headless/*` (`R-24`).
+ *
+ * @param {unknown} sourceValue
+ * @returns {boolean}
+ */
+export function isForbiddenHappyDomOrLexicalHeadlessSource(sourceValue) {
+  if (typeof sourceValue !== 'string') {
+    return false
+  }
+  const trimmed = sourceValue.trim().replace(/\\/g, '/')
+  return (
+    trimmed === 'happy-dom' ||
+    trimmed.startsWith('happy-dom/') ||
+    trimmed === '@lexical/headless' ||
+    trimmed.startsWith('@lexical/headless/')
+  )
+}
+
+/**
  * Returns true when `sourceValue` points to `scripts/**` or `tests/**` (`R-13`).
  *
  * @param {unknown} sourceValue
@@ -726,6 +745,8 @@ export const requireOverrideAccessFalseRule = {
         'Importing server module "{{source}}" is forbidden in `src/app/(frontend)/**`, `src/components/**`, and `src/lib/**` (R-3, R-13).',
       forbiddenScriptsOrTestsImport:
         'Importing "{{source}}" from `scripts/**` or `tests/**` is forbidden inside `src/**` (R-13).',
+      forbiddenHappyDomImport:
+        'Importing, re-exporting, or requiring "{{source}}" (`happy-dom` / `@lexical/headless`) is forbidden across the repository (R-24 waiver guard).',
       forbiddenUnlistedLibImport:
         'Importing unlisted `src/lib` module "{{source}}" is forbidden. Only `src/lib/cms/client.ts` and listed pure modules (`EXPLICIT_PURE_LIB_FILES`) are allowed (R-13).',
       forbiddenGetPayloadValue:
@@ -829,6 +850,16 @@ export const requireOverrideAccessFalseRule = {
     return {
       ImportDeclaration(node) {
         const sourceVal = node.source?.value
+
+        // R-24: Repo-wide ban on `happy-dom`, `happy-dom/*`, `@lexical/headless`, `@lexical/headless/*`
+        if (isForbiddenHappyDomOrLexicalHeadlessSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenHappyDomImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
 
         // R-13: Ban importing `scripts/**` or `tests/**` from any file in `src/**`
         if (inSrc && isForbiddenScriptsOrTestsSource(sourceVal)) {
@@ -982,6 +1013,14 @@ export const requireOverrideAccessFalseRule = {
 
       ExportNamedDeclaration(node) {
         const sourceVal = node.source?.value
+        if (isForbiddenHappyDomOrLexicalHeadlessSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenHappyDomImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
         if (inSrc && isForbiddenScriptsOrTestsSource(sourceVal)) {
           context.report({
             node,
@@ -1055,6 +1094,14 @@ export const requireOverrideAccessFalseRule = {
 
       ExportAllDeclaration(node) {
         const sourceVal = node.source?.value
+        if (isForbiddenHappyDomOrLexicalHeadlessSource(sourceVal)) {
+          context.report({
+            node,
+            messageId: 'forbiddenHappyDomImport',
+            data: { source: String(sourceVal) },
+          })
+          return
+        }
         if (inSrc && isForbiddenScriptsOrTestsSource(sourceVal)) {
           context.report({
             node,
@@ -1108,6 +1155,18 @@ export const requireOverrideAccessFalseRule = {
       },
 
       ImportExpression(node) {
+        if (
+          node.source?.type === 'Literal' &&
+          isForbiddenHappyDomOrLexicalHeadlessSource(node.source.value)
+        ) {
+          context.report({
+            node,
+            messageId: 'forbiddenHappyDomImport',
+            data: { source: String(node.source.value) },
+          })
+          return
+        }
+
         // R-22 & R-13: Ban non-literal dynamic `import()` in `src/app/**`, `src/components/**`, and `src/lib/**`
         if (
           inAppOrComponents &&
@@ -1248,6 +1307,14 @@ export const requireOverrideAccessFalseRule = {
           callee.name === 'require' &&
           node.arguments[0]?.type === 'Literal'
         ) {
+          if (isForbiddenHappyDomOrLexicalHeadlessSource(node.arguments[0].value)) {
+            context.report({
+              node,
+              messageId: 'forbiddenHappyDomImport',
+              data: { source: String(node.arguments[0].value) },
+            })
+            return
+          }
           if (inSrc && isForbiddenScriptsOrTestsSource(node.arguments[0].value)) {
             context.report({
               node,

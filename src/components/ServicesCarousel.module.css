@@ -2,8 +2,11 @@
   --carousel-dir: -1;
   --carousel-thumb-dir: 1;
   --carousel-step: 310px;
-  --carousel-index: 0;
-  --carousel-steps: 5;
+  --index: 0;
+  --max-index: 4;
+  --drag-x: 0px;
+  --track-width: 806px;
+  --thumb-width: 290px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -17,68 +20,6 @@
 :global([dir='rtl']) .carousel {
   --carousel-dir: 1;
   --carousel-thumb-dir: -1;
-}
-
-.carousel[data-active-index='0'] {
-  --carousel-index: 0;
-}
-.carousel[data-active-index='1'] {
-  --carousel-index: 1;
-}
-.carousel[data-active-index='2'] {
-  --carousel-index: 2;
-}
-.carousel[data-active-index='3'] {
-  --carousel-index: 3;
-}
-.carousel[data-active-index='4'] {
-  --carousel-index: 4;
-}
-.carousel[data-active-index='5'] {
-  --carousel-index: 5;
-}
-.carousel[data-active-index='6'] {
-  --carousel-index: 6;
-}
-.carousel[data-active-index='7'] {
-  --carousel-index: 7;
-}
-.carousel[data-active-index='8'] {
-  --carousel-index: 8;
-}
-.carousel[data-active-index='9'] {
-  --carousel-index: 9;
-}
-
-.carousel[data-max-index='0'] {
-  --carousel-steps: 1;
-}
-.carousel[data-max-index='1'] {
-  --carousel-steps: 2;
-}
-.carousel[data-max-index='2'] {
-  --carousel-steps: 3;
-}
-.carousel[data-max-index='3'] {
-  --carousel-steps: 4;
-}
-.carousel[data-max-index='4'] {
-  --carousel-steps: 5;
-}
-.carousel[data-max-index='5'] {
-  --carousel-steps: 6;
-}
-.carousel[data-max-index='6'] {
-  --carousel-steps: 7;
-}
-.carousel[data-max-index='7'] {
-  --carousel-steps: 8;
-}
-.carousel[data-max-index='8'] {
-  --carousel-steps: 9;
-}
-.carousel[data-max-index='9'] {
-  --carousel-steps: 10;
 }
 
 .carousel:focus-visible {
@@ -114,14 +55,18 @@
   box-sizing: border-box;
   will-change: transform;
   transform: translate3d(
-    calc(var(--carousel-dir, -1) * var(--carousel-index, 0) * var(--carousel-step, 310px)),
+    calc(
+      var(--carousel-dir, -1) * var(--index, 0) * var(--carousel-step, 310px) +
+        var(--drag-x, 0px)
+    ),
     0,
     0
   );
   transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.trackDragging {
+.trackDragging,
+.carousel[data-dragging='true'] .track {
   transition: none;
 }
 
@@ -137,16 +82,18 @@
   justify-content: space-between;
   gap: var(--space-24);
   inline-size: 100%;
-  padding-inline-end: 140px;
+  padding-inline-end: 80px;
   box-sizing: border-box;
   flex-wrap: wrap;
 }
 
 .progressTrack {
   position: relative;
-  flex: 1 1 280px;
+  inline-size: 806px;
+  flex: 0 0 806px;
+  max-inline-size: 100%;
   block-size: var(--space-4);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
   background-color: var(--border);
   overflow: hidden;
 }
@@ -155,13 +102,18 @@
   position: absolute;
   inset-block-start: 0;
   inset-inline-start: 0;
-  inline-size: calc(100% / var(--carousel-steps, 5));
+  inline-size: 290px;
+  max-inline-size: 50%;
   block-size: var(--space-4);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-xs);
   background-color: var(--gold-500);
   will-change: transform;
   transform: translate3d(
-    calc(var(--carousel-thumb-dir, 1) * var(--carousel-index, 0) * 100%),
+    calc(
+      var(--carousel-thumb-dir, 1) *
+        (var(--track-width, 806px) - var(--thumb-width, 290px)) *
+        var(--index, 0) / var(--max-index, 4)
+    ),
     0,
     0
   );
@@ -236,6 +188,11 @@
   .track,
   .controlsRow {
     padding-inline-end: 0;
+  }
+
+  .progressTrack {
+    inline-size: auto;
+    flex: 1 1 240px;
   }
 }
 

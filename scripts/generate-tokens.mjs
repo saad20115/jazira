@@ -300,7 +300,9 @@ export function buildTokensCss(tokens) {
   }
   lines.push('  --shadow-navbar-light: 0 2px 8px 0 rgba(1, 16, 37, 0.06);')
   lines.push('  --shadow-button-dark-hover: 0 10px 12px 0 rgba(1, 16, 37, 0.25);')
-  lines.push('  --shadow-team-card-hover: 0 22px 44px 0 rgba(1, 16, 37, 0.28);')
+  lines.push('  --shadow-team-card-hover: 0 26px 48px 0 rgba(1, 16, 37, 0.28);')
+  lines.push('  --shadow-partner-tile-rest: 0 4px 6px rgba(1, 16, 37, 0.03);')
+  lines.push('  --shadow-partner-tile-hover: 0 18px 18px rgba(1, 16, 37, 0.12);')
 
   lines.push('')
   lines.push('  /* === 5. Border Radii (`design/tokens.json` -> `radius`, CTO §15) === */')

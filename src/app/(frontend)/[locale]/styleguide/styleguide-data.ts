@@ -78,6 +78,8 @@ export interface StyleguideStrings {
   mockTeamMarqueeRow1: readonly MarqueeTeamItem[]
   mockTeamMarqueeRow2: readonly MarqueeTeamItem[]
   mockCarouselServices: readonly CarouselServiceItem[]
+  mockCarouselServices12: readonly CarouselServiceItem[]
+  mockCarouselServices20: readonly CarouselServiceItem[]
 }
 
 const PREVIEW_SOCIAL_LINKS: readonly FooterSocialItem[] = [
@@ -522,6 +524,22 @@ const STYLEGUIDE_AR: StyleguideStrings = {
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
+    {
+      id: 5,
+      name: 'الاسم الكامل',
+      position: 'المسمى الوظيفي',
+      photo: null,
+      linkedin: 'https://www.linkedin.com',
+      bio: null,
+    },
+    {
+      id: 6,
+      name: 'الاسم الكامل',
+      position: 'المسمى الوظيفي',
+      photo: null,
+      linkedin: 'https://www.linkedin.com',
+      bio: null,
+    },
   ],
   mockTeamMember: {
     name: 'الاسم الكامل',
@@ -531,6 +549,22 @@ const STYLEGUIDE_AR: StyleguideStrings = {
   mockTeamMarqueeRow1: MOCK_TEAM_MARQUEE_ROW1_AR,
   mockTeamMarqueeRow2: MOCK_TEAM_MARQUEE_ROW2_AR,
   mockCarouselServices: MOCK_CAROUSEL_SERVICES_AR,
+  mockCarouselServices12: Array.from({ length: 12 }, (_, idx) => {
+    const base = MOCK_CAROUSEL_SERVICES_AR[idx % MOCK_CAROUSEL_SERVICES_AR.length]
+    return {
+      ...base,
+      id: idx + 1,
+      slug: `${base.slug}-${String(idx + 1)}`,
+    }
+  }),
+  mockCarouselServices20: Array.from({ length: 20 }, (_, idx) => {
+    const base = MOCK_CAROUSEL_SERVICES_AR[idx % MOCK_CAROUSEL_SERVICES_AR.length]
+    return {
+      ...base,
+      id: idx + 1,
+      slug: `${base.slug}-${String(idx + 1)}`,
+    }
+  }),
 }
 
 const STYLEGUIDE_EN: StyleguideStrings = {
@@ -707,6 +741,22 @@ const STYLEGUIDE_EN: StyleguideStrings = {
       linkedin: 'https://www.linkedin.com',
       bio: null,
     },
+    {
+      id: 5,
+      name: 'Full Name',
+      position: 'ROLE / POSITION',
+      photo: null,
+      linkedin: 'https://www.linkedin.com',
+      bio: null,
+    },
+    {
+      id: 6,
+      name: 'Full Name',
+      position: 'ROLE / POSITION',
+      photo: null,
+      linkedin: 'https://www.linkedin.com',
+      bio: null,
+    },
   ],
   mockTeamMember: {
     name: 'Full Name',
@@ -716,6 +766,22 @@ const STYLEGUIDE_EN: StyleguideStrings = {
   mockTeamMarqueeRow1: MOCK_TEAM_MARQUEE_ROW1_EN,
   mockTeamMarqueeRow2: MOCK_TEAM_MARQUEE_ROW2_EN,
   mockCarouselServices: MOCK_CAROUSEL_SERVICES_EN,
+  mockCarouselServices12: Array.from({ length: 12 }, (_, idx) => {
+    const base = MOCK_CAROUSEL_SERVICES_EN[idx % MOCK_CAROUSEL_SERVICES_EN.length]
+    return {
+      ...base,
+      id: idx + 1,
+      slug: `${base.slug}-${String(idx + 1)}`,
+    }
+  }),
+  mockCarouselServices20: Array.from({ length: 20 }, (_, idx) => {
+    const base = MOCK_CAROUSEL_SERVICES_EN[idx % MOCK_CAROUSEL_SERVICES_EN.length]
+    return {
+      ...base,
+      id: idx + 1,
+      slug: `${base.slug}-${String(idx + 1)}`,
+    }
+  }),
 }
 
 export function getStyleguideStrings(locale: SupportedLocale): StyleguideStrings {

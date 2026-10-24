@@ -661,4 +661,33 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       }
     }
   })
+
+  it('enforces R-24: bans importing, re-exporting, dynamic-importing, or requiring happy-dom and @lexical/headless/dom across all frontend and server files', () => {
+    const forbiddenSnippets = [
+      "import { Window } from 'happy-dom'\nexport const w = Window",
+      "import { Window } from 'happy-dom/lib/window/Window.js'\nexport const w = Window",
+      "import { withDOM } from '@lexical/headless/dom'\nexport const d = withDOM",
+      "import { createHeadlessEditor } from '@lexical/headless'\nexport const e = createHeadlessEditor",
+      "export { withDOM } from '@lexical/headless/dom'",
+      "export * from 'happy-dom'",
+      "export async function loadDom() { return import('@lexical/headless/dom') }",
+      "export function reqDom() { return require('happy-dom') }",
+    ]
+
+    for (const snippet of forbiddenSnippets) {
+      for (const targetFile of [
+        'src/app/(frontend)/[locale]/page.tsx',
+        'src/components/Navbar.tsx',
+        'src/lib/cms/client.ts',
+        'src/collections/Projects.ts',
+        'src/payload.config.ts',
+      ]) {
+        const msgs = lintSnippet(snippet, targetFile)
+        expect(
+          msgs.some((m) => m.message.includes('R-24 waiver guard')),
+          `Expected R-24 ban in ${targetFile} for: ${snippet}`,
+        ).toBe(true)
+      }
+    }
+  })
 })

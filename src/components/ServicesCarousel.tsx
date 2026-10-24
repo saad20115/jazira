@@ -113,9 +113,21 @@ export function ServicesCarousel({
 
   const sectionRef = useRef<HTMLElement | null>(null)
   const viewportRef = useRef<HTMLDivElement | null>(null)
+  const progressTrackRef = useRef<HTMLDivElement | null>(null)
+  const progressThumbRef = useRef<HTMLDivElement | null>(null)
   const dragStartXRef = useRef<number | null>(null)
 
   const clampedActiveIndex = Math.min(activeIndex, maxIndex)
+
+  useEffect(() => {
+    const node = sectionRef.current
+    if (!node) {
+      return
+    }
+    node.style.setProperty('--index', String(clampedActiveIndex))
+    node.style.setProperty('--max-index', String(Math.max(1, maxIndex)))
+    node.style.setProperty('--drag-x', `${String(dragOffsetPx)}px`)
+  }, [clampedActiveIndex, maxIndex, dragOffsetPx])
 
   useEffect(() => {
     const viewportNode = viewportRef.current
@@ -125,11 +137,19 @@ export function ServicesCarousel({
 
     const measureViewport = (): void => {
       const width = viewportNode.clientWidth
-      if (width <= 0) {
-        return
+      if (width > 0) {
+        const fits = Math.max(1, Math.floor((width + CARD_GAP_PX) / CARD_STEP_PX))
+        setVisibleCount(Math.min(totalSlides, fits))
       }
-      const fits = Math.max(1, Math.floor((width + CARD_GAP_PX) / CARD_STEP_PX))
-      setVisibleCount(Math.min(totalSlides, fits))
+      const sectionNode = sectionRef.current
+      const trackNode = progressTrackRef.current
+      const thumbNode = progressThumbRef.current
+      if (sectionNode && trackNode && trackNode.clientWidth > 0) {
+        sectionNode.style.setProperty('--track-width', `${String(trackNode.clientWidth)}px`)
+        if (thumbNode && thumbNode.clientWidth > 0) {
+          sectionNode.style.setProperty('--thumb-width', `${String(thumbNode.clientWidth)}px`)
+        }
+      }
     }
 
     measureViewport()
@@ -142,6 +162,9 @@ export function ServicesCarousel({
       measureViewport()
     })
     resizeObserver.observe(viewportNode)
+    if (progressTrackRef.current) {
+      resizeObserver.observe(progressTrackRef.current)
+    }
     return () => {
       resizeObserver.disconnect()
     }
@@ -246,6 +269,10 @@ export function ServicesCarousel({
     dragStartXRef.current = event.clientX
     setIsDragging(true)
     setDragOffsetPx(0)
+    if (sectionRef.current) {
+      sectionRef.current.setAttribute('data-dragging', 'true')
+      sectionRef.current.style.setProperty('--drag-x', '0px')
+    }
   }
 
   const handlePointerMove = (event: PointerEvent<HTMLDivElement>): void => {
@@ -254,6 +281,9 @@ export function ServicesCarousel({
     }
     const deltaX = event.clientX - dragStartXRef.current
     setDragOffsetPx(deltaX)
+    if (sectionRef.current) {
+      sectionRef.current.style.setProperty('--drag-x', `${String(deltaX)}px`)
+    }
   }
 
   const finishDrag = (): void => {
@@ -264,6 +294,10 @@ export function ServicesCarousel({
     dragStartXRef.current = null
     setIsDragging(false)
     setDragOffsetPx(0)
+    if (sectionRef.current) {
+      sectionRef.current.setAttribute('data-dragging', 'false')
+      sectionRef.current.style.setProperty('--drag-x', '0px')
+    }
 
     if (Math.abs(delta) >= SWIPE_THRESHOLD_PX) {
       if (isRtl) {
@@ -393,8 +427,12 @@ export function ServicesCarousel({
       </div>
 
       <div className={styles.controlsRow}>
-        <div className={styles.progressTrack} aria-hidden="true">
-          <div className={styles.progressThumb} data-carousel-thumb="true" />
+        <div ref={progressTrackRef} className={styles.progressTrack} aria-hidden="true">
+          <div
+            ref={progressThumbRef}
+            className={styles.progressThumb}
+            data-carousel-thumb="true"
+          />
         </div>
 
         <div className={styles.actionsGroup}>
