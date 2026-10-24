@@ -1252,7 +1252,7 @@ export async function runP3T4Evidence({
           javaScriptEnabled: false,
         })
         const noJsPage = await noJsCtx.newPage()
-        await noJsPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        await noJsPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'load' })
         const overlayVisibleNoJs = await noJsPage
           .locator('[data-component="intro-splash"]')
           .isVisible()
@@ -1471,12 +1471,20 @@ export async function runP3T4Evidence({
             const style = overlay ? window.getComputedStyle(overlay) : null
             const display = overlay ? style.display : 'detached'
             const opacity = overlay ? Number(Number(style.opacity).toFixed(2)) : 0
-            window.__aljaziraIntroFrames.push({
-              tMs: now,
-              htmlIntro,
-              display,
-              opacity,
-            })
+            const prev = window.__aljaziraIntroFrames[window.__aljaziraIntroFrames.length - 1]
+            if (
+              !prev ||
+              prev.htmlIntro !== htmlIntro ||
+              prev.display !== display ||
+              Math.abs(prev.opacity - opacity) >= 0.05
+            ) {
+              window.__aljaziraIntroFrames.push({
+                tMs: now,
+                htmlIntro,
+                display,
+                opacity,
+              })
+            }
             return now
           }
           const sample = () => {
