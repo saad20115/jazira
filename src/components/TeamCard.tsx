@@ -50,7 +50,7 @@ function subscribeReducedMotion(onStoreChange: () => void): () => void {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {}
   const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
   mql.addEventListener('change', onStoreChange)
-  return () => mql.removeEventListener('change', onStoreChange)
+  return () => { mql.removeEventListener('change', onStoreChange) }
 }
 
 function getReducedMotionSnapshot(): boolean {
