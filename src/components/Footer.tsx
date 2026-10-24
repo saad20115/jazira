@@ -413,6 +413,7 @@ export function Footer({
               aria-label={dict.nav.languageSwitcherAriaLabel}
               className={styles.bottomLink}
               data-testid="footer-language-switcher"
+              dir={alternateLocale === 'ar' ? 'rtl' : 'ltr'}
               href={languageSwitchHref}
               hrefLang={alternateLocale}
               lang={alternateLocale}

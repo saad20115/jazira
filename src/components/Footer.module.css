@@ -13,7 +13,7 @@
   margin-inline: auto;
   padding-inline: var(--container-gutter);
   padding-block-start: 88px;
-  padding-block-end: 36px;
+  padding-block-end: 35px;
   display: flex;
   flex-direction: column;
   gap: 56px;
@@ -449,6 +449,9 @@
 }
 
 .bottomLink {
+  display: inline-flex;
+  align-items: center;
+  block-size: 22px;
   font-family: var(--font-sans);
   font-weight: var(--t-body-s-weight);
   font-size: var(--t-body-s-size);

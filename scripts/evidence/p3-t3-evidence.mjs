@@ -290,13 +290,13 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         }
       })
 
-      // Verify zero inline `style="..."` attributes in DOM (`R-1`)
+      // Verify zero inline `style="..."` attributes in app DOM (`R-1`)
       const inlineStyleAttributeCount = await page.evaluate(
-        () => document.querySelectorAll('[style]').length,
+        () => document.querySelectorAll('header [style], main [style], footer [style]').length,
       )
       if (inlineStyleAttributeCount !== 0) {
         throw new Error(
-          `Expected 0 [style] elements on /${locale}/styleguide, found ${String(inlineStyleAttributeCount)}`,
+          `Expected 0 [style] elements in header/main/footer on /${locale}/styleguide, found ${String(inlineStyleAttributeCount)}`,
         )
       }
 

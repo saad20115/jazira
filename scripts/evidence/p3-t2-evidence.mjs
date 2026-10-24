@@ -567,7 +567,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
       const headingEl = footerEl ? footerEl.querySelector('h2') : null
       const ctaTitleEl = footerEl ? footerEl.querySelector('[class*="ctaTitle"]') : null
       const ctaBodyEl = footerEl ? footerEl.querySelector('[class*="ctaBody"]') : null
-      const dividerEl = footerEl ? footerEl.querySelector('[class*="divider"]') : null
+      const dividerEl = footerEl ? footerEl.querySelector('[class*="bottomBar"]') : null
       const langSwitcherEl = footerEl
         ? footerEl.querySelector('[data-testid="footer-language-switcher"]')
         : null
