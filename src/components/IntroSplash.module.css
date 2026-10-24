@@ -53,7 +53,7 @@
 }
 
 :global(html) {
-  --intro-exit-delay: 1050ms;
+  --intro-exit-delay: 850ms;
 }
 
 .overlay {

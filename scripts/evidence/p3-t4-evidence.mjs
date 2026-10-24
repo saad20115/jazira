@@ -1493,7 +1493,10 @@ export async function runP3T4Evidence({
             firstHiddenFrameMs: firstHiddenAfterVisible?.tMs ?? null,
             finalHtmlDataIntro: document.documentElement.dataset.intro ?? null,
             finalDisplay,
-            sampledFrames: frames.filter((_, idx) => idx % 4 === 0 || idx === frames.length - 1),
+            sampledFrames:
+              frames.length <= 40
+                ? frames
+                : frames.filter((_, idx) => idx % 2 === 0 || idx === frames.length - 1),
           }
         })
         throttledRafTimelineByLocale[loc] = timeline
