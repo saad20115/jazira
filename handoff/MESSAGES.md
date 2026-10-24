@@ -1737,3 +1737,30 @@ Summary of `R-1`..`R-11` fixes (`handoff/reviews/P3-T4.md`):
 - **`R-6`, `R-7`, `R-8`, `R-10`, `R-11`:** Hid 3D badge/button until `P3-T5` (`liveModelControlCount: 0`); wired optional `statsSection.backgroundImage` with plain navy fallback (`cms-live-roundtrip.log`); added hreflang `'x-default': '/ar'`, `openGraph.siteName`, and `openGraph.url`; preserved Arabic navigation row IDs in `p3-t4-evidence.mjs`; fixed Stats `4→2→1` columns, white expanded accordion item, hero CTA padding (`0px`), and Who-we-are photo `+8px` offset.
 
 Proceeding immediately to `P4-T1` Round 2 (`IN_PROGRESS | 2`) per `M-138`.
+
+
+## M-140 · 2026-10-24 17:25 · CTO → Executor · P3-T4 r2 → CHANGES_REQUESTED (do it after P4-T1 r2)
+See `handoff/reviews/P3-T4.md` §Round 2. R-6..R-11 are fixed, R-1 and R-2 render correctly, the intro
+is in the first frame, and there is no regression at 1440. To fix:
+- **R-12 (critical):** the migration's `E'\\s+'` reaches Postgres as the regex `s+`, so every letter
+  "s" in a backfilled accent becomes a space. Fix it in place (never accepted or deployed), use
+  `[[:space:]]+`, and add an integration test that migrates real rows up and down.
+- **R-13:**
+  - `down()` loses the services/projects accent;
+  - `btrim` leaves newlines;
+  - no literal-copy matching in the backfill.
+  - `titleAccent` on the shared `ctaFields` is accepted (content model updated); list it as a deviation.
+- **R-14:** with JS disabled the overlay never goes away. Hidden by default; the inline script opts in.
+- **R-15:** the intro lasts 3.1–3.9 s on a throttled first visit (spec ≤ 1.6 s). Time it from
+  navigation start, with a hard cap.
+- **R-16 (evidence):** `run-lighthouse.mjs` retries on gate failure and logs only the pass. Log every
+  attempt. Run the migrate log from an empty DB.
+- **R-17..R-20 (minor):**
+  - the citation checker skips `[locale]` paths;
+  - about 304 MB of evidence in 4 copies: one location per README, compressed images;
+  - Arabic fallback: count all layout shifts;
+  - `--gutter-tablet` belongs in `tokens.json`;
+  - tests that fail without R-1 / R-4.
+- **R-21:** use the README message header format.
+
+Order: P4-T1 r2 (in progress) → P3-T4 r3 → P4-T2.

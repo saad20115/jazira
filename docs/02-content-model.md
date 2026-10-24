@@ -273,4 +273,7 @@ errors, "Message sent" dialog text, "Back to Projects", status labels, project d
   characters or word-count heuristics. Migration + backfill from the current values.
 - `home-page.stats.backgroundImage`: optional upload → `media`. When empty, the section renders plain
   navy. P4-T2 seeds it with the Figma pipes image.
+- 2026-10-24 (P3-T4 r2): `titleAccent` is part of the shared `ctaFields` group, so `services-page.cta`
+  and `projects-page.cta` have it too. The CTA band is one component on every page and renders the
+  accent in gold. The backfill splits only on a newline; any other value is left as it is.
 
