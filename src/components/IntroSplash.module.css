@@ -77,7 +77,8 @@
 }
 
 :global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) {
-  animation: introOverlayExit 250ms cubic-bezier(0.22, 1, 0.36, 1) 950ms forwards;
+  animation: introOverlayExit 220ms cubic-bezier(0.22, 1, 0.36, 1) var(--intro-exit-delay, 850ms)
+    forwards;
 }
 
 .overlayExiting,

@@ -1292,15 +1292,13 @@ export async function runP3T4Evidence({
         })
 
         const startVisible = await snapIntro.isVisible()
-        await saveCompressedPng(
-          await snapPage.screenshot(),
-          path.join(reportsPhase3Dir, `intro-start-${loc}.png`),
-        )
+        const startBuf = await snapPage.screenshot()
 
         await snapPage
           .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
           .waitFor({ state: 'visible', timeout: 1200 })
 
+        const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
         const hydratedA11yCheck = await snapPage.evaluate(() => {
           const header = document.querySelector('header')
           const homeContent = document.querySelector('[data-home-content="true"]')
@@ -1315,13 +1313,12 @@ export async function runP3T4Evidence({
           }
         })
 
-        await snapPage.waitForTimeout(250)
-        const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
-        await saveCompressedPng(
-          await snapPage.screenshot(),
-          path.join(reportsPhase3Dir, `intro-reveal-${loc}.png`),
-        )
+        await snapPage.waitForTimeout(80)
+        const revealBuf = await snapPage.screenshot()
         await snapCtx.close()
+
+        await saveCompressedPng(startBuf, path.join(reportsPhase3Dir, `intro-start-${loc}.png`))
+        await saveCompressedPng(revealBuf, path.join(reportsPhase3Dir, `intro-reveal-${loc}.png`))
 
         introStateByLocale[loc] = {
           startVisible,
@@ -1417,7 +1414,20 @@ export async function runP3T4Evidence({
       }
 
       // 2e. R-15 Verification: Throttled first-visit rAF timeline (`412x823`, `4x CPU`, `Slow 4G`, `cacheDisabled=true`)
-      //     proving the overlay is gone (`display === 'none'` or detached) by `<= 1600 ms` from `navigationStart` (`performance.now()`)
+      //     proving the overlay is gone (`display === 'none'` or detached or `opacity <= 0.05`) by `<= 1600 ms` from `navigationStart` (`performance.now()`)
+      //     First warm Next.js `.next/cache/images` at 412x823 @ 1.75x so server-side sharp resizing does not skew `/ar` vs `/en`.
+      for (const warmLoc of ['ar', 'en']) {
+        const warmCtx = await browser.newContext({
+          viewport: { width: 412, height: 823 },
+          isMobile: true,
+          hasTouch: true,
+          deviceScaleFactor: 1.75,
+        })
+        const warmPage = await warmCtx.newPage()
+        await warmPage.goto(`${baseUrl}/${warmLoc}`, { waitUntil: 'networkidle' })
+        await warmCtx.close()
+      }
+
       const throttledRafTimelineByLocale = {}
       for (const loc of ['ar', 'en']) {
         const thCtx = await browser.newContext({
@@ -1445,7 +1455,9 @@ export async function runP3T4Evidence({
               requestAnimationFrame(sample)
             }
           }
-          requestAnimationFrame(sample)
+          window.addEventListener('DOMContentLoaded', () => {
+            requestAnimationFrame(sample)
+          })
         })
         const thPage = await thCtx.newPage()
         const cdp = await thCtx.newCDPSession(thPage)

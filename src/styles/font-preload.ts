@@ -2,7 +2,6 @@ import 'server-only'
 
 import fs from 'node:fs'
 import path from 'node:path'
-import { preload } from 'react-dom'
 
 import type { SupportedLocale } from '@/i18n'
 
@@ -103,18 +102,11 @@ function getLocaleFontPreloadMap(): LocaleFontPreloadMap {
 }
 
 /**
- * Emits `<link rel="preload" as="font" type="font/woff2" crossorigin="anonymous">` tags
- * only for the active locale's font weights (`R-11`).
+ * Returns locale-specific `.woff2` font preload URLs for the active locale (`R-11`, `R-3`).
+ * Rendered by `LocaleRootLayout` immediately after `<head>` stylesheets so render-blocking CSS
+ * is fetched first on the initial connection while the active locale font preloads in parallel.
  */
 export function preloadLocaleFonts(locale: SupportedLocale): string[] {
   const map = getLocaleFontPreloadMap()
-  const urls = map[locale]
-  for (const href of urls) {
-    preload(href, {
-      as: 'font',
-      type: 'font/woff2',
-      crossOrigin: 'anonymous',
-    })
-  }
-  return urls
+  return map[locale]
 }

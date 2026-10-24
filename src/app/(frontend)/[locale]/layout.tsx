@@ -281,6 +281,8 @@ export default async function LocaleRootLayout({
           nonce={cspNonce}
           dangerouslySetInnerHTML={{ __html: INTRO_PREPAINT_INLINE_SCRIPT }}
         />
+      </head>
+      <body>
         {fontPreloadUrls.map((href) => (
           <link
             as="font"
@@ -291,8 +293,6 @@ export default async function LocaleRootLayout({
             type="font/woff2"
           />
         ))}
-      </head>
-      <body>
         <a href="#main-content" className={`${gridStyles.skipLink} t-label-button`}>
           {dict.a11y.skipToMainContent}
         </a>
