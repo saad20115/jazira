@@ -48,6 +48,14 @@ function makeLexical(paragraphs, direction = 'ltr') {
   }
 }
 
+async function saveCompressedPng(inputBuffer, outPath, maxWidth = 1440) {
+  fs.mkdirSync(path.dirname(outPath), { recursive: true })
+  await sharp(inputBuffer)
+    .resize({ width: maxWidth, withoutEnlargement: true })
+    .png({ compressionLevel: 9, palette: true, quality: 85 })
+    .toFile(outPath)
+}
+
 async function createSideBySideImage(buffers, outPath) {
   const metas = await Promise.all(buffers.map((b) => sharp(b).metadata()))
   const gap = 24
@@ -64,7 +72,7 @@ async function createSideBySideImage(buffers, outPath) {
     return item
   })
 
-  await sharp({
+  const rawCompositeBuffer = await sharp({
     create: {
       width: totalW,
       height: totalH,
@@ -74,19 +82,9 @@ async function createSideBySideImage(buffers, outPath) {
   })
     .composite(composites)
     .png()
-    .toFile(outPath)
-}
+    .toBuffer()
 
-function copyToDirs(srcFile, destDirs) {
-  const baseName = path.basename(srcFile)
-  for (const dir of destDirs) {
-    if (!dir) continue
-    fs.mkdirSync(dir, { recursive: true })
-    const dest = path.join(dir, baseName)
-    if (path.resolve(srcFile) !== path.resolve(dest)) {
-      fs.copyFileSync(srcFile, dest)
-    }
-  }
+  await saveCompressedPng(rawCompositeBuffer, outPath, 1440)
 }
 
 async function ensureAdminAuthToken(baseUrl) {
@@ -1123,17 +1121,13 @@ const HOME_SECTION_COMPARISONS = [
 
 export async function runP3T4Evidence({
   baseUrl = process.env.EVIDENCE_BASE_URL || 'http://localhost:3000',
-  evidenceDir = path.resolve(process.cwd(), 'docs/evidence/P3-T4'),
-  phase3Dir = path.resolve(process.cwd(), 'docs/evidence/phase-3'),
-  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r2'),
-  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r2'),
+  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r3'),
+  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r3'),
   mode = 'all',
   skipBrands = false,
 } = {}) {
-  const destDirs = [evidenceDir, phase3Dir, reportsEvidenceDir, reportsPhase3Dir]
-  for (const d of destDirs) {
-    fs.mkdirSync(d, { recursive: true })
-  }
+  fs.mkdirSync(reportsEvidenceDir, { recursive: true })
+  fs.mkdirSync(reportsPhase3Dir, { recursive: true })
   const headerBlock = getRepoHeaderBlock()
 
   let token = null
@@ -1166,9 +1160,10 @@ export async function runP3T4Evidence({
         )
         .first()
       await enter2Locator.scrollIntoViewIfNeeded()
-      const enter2PngPath = path.join(evidenceDir, 'team-card-enter-2-clipped.png')
-      await enter2Locator.screenshot({ path: enter2PngPath })
-      copyToDirs(enter2PngPath, destDirs)
+      await saveCompressedPng(
+        await enter2Locator.screenshot(),
+        path.join(reportsPhase3Dir, 'team-card-enter-2-clipped.png'),
+      )
 
       const hoverEnLocator = page
         .locator(
@@ -1176,9 +1171,10 @@ export async function runP3T4Evidence({
         )
         .first()
       await hoverEnLocator.scrollIntoViewIfNeeded()
-      const hoverEnPngPath = path.join(evidenceDir, 'team-card-hover-shadow-en.png')
-      await hoverEnLocator.screenshot({ path: hoverEnPngPath })
-      copyToDirs(hoverEnPngPath, destDirs)
+      await saveCompressedPng(
+        await hoverEnLocator.screenshot(),
+        path.join(reportsPhase3Dir, 'team-card-hover-shadow-en.png'),
+      )
 
       await page.goto(`${baseUrl}/ar/styleguide`, { waitUntil: 'networkidle' })
       await page.evaluate(() => document.fonts.ready)
@@ -1188,9 +1184,10 @@ export async function runP3T4Evidence({
         )
         .first()
       await hoverArLocator.scrollIntoViewIfNeeded()
-      const hoverArPngPath = path.join(evidenceDir, 'team-card-hover-shadow-ar.png')
-      await hoverArLocator.screenshot({ path: hoverArPngPath })
-      copyToDirs(hoverArPngPath, destDirs)
+      await saveCompressedPng(
+        await hoverArLocator.screenshot(),
+        path.join(reportsPhase3Dir, 'team-card-hover-shadow-ar.png'),
+      )
 
       const r17Audit = await page.evaluate(() => {
         const card = document.querySelector(
@@ -1222,19 +1219,19 @@ export async function runP3T4Evidence({
         JSON.stringify(r17Audit, null, 2),
         '',
       ].join('\n')
-      const r17LogPath = path.join(evidenceDir, 'r17-r19-team-card.log')
-      fs.writeFileSync(r17LogPath, r17Log, 'utf8')
-      copyToDirs(r17LogPath, destDirs)
+      fs.writeFileSync(path.join(reportsEvidenceDir, 'r17-r19-team-card.log'), r17Log, 'utf8')
       await ctx.close()
 
       if (mode === 'dev-styleguide') {
-        console.log(`[P3-T4 Evidence] dev-styleguide artifacts generated in ${evidenceDir}`)
+        console.log(
+          `[P3-T4 Evidence] dev-styleguide artifacts generated in ${reportsEvidenceDir} and ${reportsPhase3Dir}`,
+        )
         return
       }
     }
 
     // =========================================================================
-    // 2. Intro Splash Recording & Verification (`28:1609` -> `28:1615`, CTO §3, R-4, R-9)
+    // 2. Intro Splash Recording & Verification (`28:1609` -> `28:1615`, CTO §3, R-4, R-9, R-14, R-15)
     // =========================================================================
     {
       // 2a. Verify SSR HTML already includes `[data-component="intro-splash"][data-intro-state="start"]` (R-4)
@@ -1247,7 +1244,34 @@ export async function runP3T4Evidence({
         ssrArHtml.includes('data-component="intro-splash"') &&
         ssrArHtml.includes('data-intro-state="start"')
 
-      // 2b. Capture `intro-start-en.png`, `intro-reveal-en.png`, `intro-start-ar.png`, `intro-reveal-ar.png`
+      // 2b. R-14 Verification: JavaScript disabled -> overlay is display:none and page is usable
+      const noJsVerification = {}
+      for (const loc of ['ar', 'en']) {
+        const noJsCtx = await browser.newContext({
+          viewport: { width: 1440, height: 900 },
+          javaScriptEnabled: false,
+        })
+        const noJsPage = await noJsCtx.newPage()
+        await noJsPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        const overlayVisibleNoJs = await noJsPage
+          .locator('[data-component="intro-splash"]')
+          .isVisible()
+          .catch(() => false)
+        const h1VisibleNoJs = await noJsPage.locator('h1').isVisible()
+        const primaryCtaVisibleNoJs = await noJsPage
+          .locator('[data-home-section="hero"] a')
+          .first()
+          .isVisible()
+        noJsVerification[loc] = {
+          javaScriptEnabled: false,
+          overlayVisibleNoJs,
+          h1VisibleNoJs,
+          primaryCtaVisibleNoJs,
+        }
+        await noJsCtx.close()
+      }
+
+      // 2c. Capture `intro-start-en.png`, `intro-reveal-en.png`, `intro-start-ar.png`, `intro-reveal-ar.png`
       //     and verify R-4 (dataset.intro === 'active', opacity === '1' at domcontentloaded) and R-9 (`inert` + focus)
       const introStateByLocale = {}
       for (const loc of ['en', 'ar']) {
@@ -1268,9 +1292,10 @@ export async function runP3T4Evidence({
         })
 
         const startVisible = await snapIntro.isVisible()
-        const startPngPath = path.join(evidenceDir, `intro-start-${loc}.png`)
-        await snapPage.screenshot({ path: startPngPath })
-        copyToDirs(startPngPath, destDirs)
+        await saveCompressedPng(
+          await snapPage.screenshot(),
+          path.join(reportsPhase3Dir, `intro-start-${loc}.png`),
+        )
 
         await snapPage
           .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
@@ -1290,11 +1315,12 @@ export async function runP3T4Evidence({
           }
         })
 
-        await snapPage.waitForTimeout(300)
+        await snapPage.waitForTimeout(250)
         const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
-        const revealPngPath = path.join(evidenceDir, `intro-reveal-${loc}.png`)
-        await snapPage.screenshot({ path: revealPngPath })
-        copyToDirs(revealPngPath, destDirs)
+        await saveCompressedPng(
+          await snapPage.screenshot(),
+          path.join(reportsPhase3Dir, `intro-reveal-${loc}.png`),
+        )
         await snapCtx.close()
 
         introStateByLocale[loc] = {
@@ -1314,29 +1340,25 @@ export async function runP3T4Evidence({
         process.cwd(),
         'design/screenshots/pages/00-intro-reveal.png',
       )
-      const startEnPngPath = path.join(evidenceDir, 'intro-start-en.png')
-      const revealEnPngPath = path.join(evidenceDir, 'intro-reveal-en.png')
+      const startEnPngPath = path.join(reportsPhase3Dir, 'intro-start-en.png')
+      const revealEnPngPath = path.join(reportsPhase3Dir, 'intro-reveal-en.png')
       if (fs.existsSync(figmaIntroStart) && fs.existsSync(startEnPngPath)) {
-        const sbsStart = path.join(evidenceDir, 'side-by-side-00-intro-start.png')
         await createSideBySideImage(
           [fs.readFileSync(figmaIntroStart), fs.readFileSync(startEnPngPath)],
-          sbsStart,
+          path.join(reportsPhase3Dir, 'side-by-side-00-intro-start.png'),
         )
-        copyToDirs(sbsStart, destDirs)
       }
       if (fs.existsSync(figmaIntroReveal) && fs.existsSync(revealEnPngPath)) {
-        const sbsReveal = path.join(evidenceDir, 'side-by-side-00-intro-reveal.png')
         await createSideBySideImage(
           [fs.readFileSync(figmaIntroReveal), fs.readFileSync(revealEnPngPath)],
-          sbsReveal,
+          path.join(reportsPhase3Dir, 'side-by-side-00-intro-reveal.png'),
         )
-        copyToDirs(sbsReveal, destDirs)
       }
 
-      // 2c. Record uninterrupted live intro videos on fresh sessions (/en and /ar) and measure duration
+      // 2d. Record uninterrupted live intro videos on fresh sessions (/en and /ar) and measure duration
       const videoMetricsByLocale = {}
       for (const loc of ['en', 'ar']) {
-        const videoTmpDir = path.join(evidenceDir, `_video_tmp_${loc}`)
+        const videoTmpDir = path.join(reportsPhase3Dir, `_video_tmp_${loc}`)
         fs.mkdirSync(videoTmpDir, { recursive: true })
         const videoCtx = await browser.newContext({
           viewport: { width: 1440, height: 900 },
@@ -1353,7 +1375,7 @@ export async function runP3T4Evidence({
           return Boolean(h1 && h1.textContent && h1.textContent.trim().length > 0)
         })
 
-        await introLocator.waitFor({ state: 'detached', timeout: 2200 })
+        await introLocator.waitFor({ state: 'detached', timeout: 2000 })
         const totalElapsedMs = Date.now() - t0
         const afterDismissCheck = await videoPage.evaluate(() => ({
           storageAfterFirstLoad: window.sessionStorage.getItem('aljazira_intro_seen'),
@@ -1380,12 +1402,8 @@ export async function runP3T4Evidence({
         await videoCtx.close()
         if (recordedVideo) {
           const videoSrcPath = await recordedVideo.path()
-          const shortNamePath = path.join(evidenceDir, `intro-${loc}.webm`)
-          const splashNamePath = path.join(evidenceDir, `intro-splash-${loc}.webm`)
+          const shortNamePath = path.join(reportsPhase3Dir, `intro-${loc}.webm`)
           fs.copyFileSync(videoSrcPath, shortNamePath)
-          fs.copyFileSync(videoSrcPath, splashNamePath)
-          copyToDirs(shortNamePath, destDirs)
-          copyToDirs(splashNamePath, destDirs)
         }
         fs.rmSync(videoTmpDir, { recursive: true, force: true })
 
@@ -1398,7 +1416,81 @@ export async function runP3T4Evidence({
         }
       }
 
-      // 2d. Verify Escape key skip in a fresh session
+      // 2e. R-15 Verification: Throttled first-visit rAF timeline (`412x823`, `4x CPU`, `Slow 4G`, `cacheDisabled=true`)
+      //     proving the overlay is gone (`display === 'none'` or detached) by `<= 1600 ms` from `navigationStart` (`performance.now()`)
+      const throttledRafTimelineByLocale = {}
+      for (const loc of ['ar', 'en']) {
+        const thCtx = await browser.newContext({
+          viewport: { width: 412, height: 823 },
+          isMobile: true,
+          hasTouch: true,
+          deviceScaleFactor: 1.75,
+        })
+        await thCtx.addInitScript(() => {
+          window.__aljaziraIntroFrames = []
+          const sample = () => {
+            const now = Math.round(performance.now())
+            const htmlIntro = document.documentElement?.dataset?.intro ?? null
+            const overlay = document.querySelector('[data-component="intro-splash"]')
+            const style = overlay ? window.getComputedStyle(overlay) : null
+            const display = overlay ? style.display : 'detached'
+            const opacity = overlay ? Number(Number(style.opacity).toFixed(2)) : 0
+            window.__aljaziraIntroFrames.push({
+              tMs: now,
+              htmlIntro,
+              display,
+              opacity,
+            })
+            if (now < 2200) {
+              requestAnimationFrame(sample)
+            }
+          }
+          requestAnimationFrame(sample)
+        })
+        const thPage = await thCtx.newPage()
+        const cdp = await thCtx.newCDPSession(thPage)
+        await cdp.send('Network.enable')
+        await cdp.send('Network.setCacheDisabled', { cacheDisabled: true })
+        await cdp.send('Network.emulateNetworkConditions', {
+          offline: false,
+          latency: 150,
+          downloadThroughput: Math.floor((1.6 * 1024 * 1024) / 8),
+          uploadThroughput: Math.floor((750 * 1024) / 8),
+        })
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
+
+        await thPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        await thPage.waitForTimeout(2300)
+
+        const timeline = await thPage.evaluate(() => {
+          const frames = window.__aljaziraIntroFrames || []
+          const firstVisible = frames.find((f) => f.display === 'flex' && f.opacity > 0) || null
+          const lastVisible =
+            [...frames].reverse().find((f) => f.display === 'flex' && f.opacity > 0.05) || null
+          const firstHiddenAfterVisible = firstVisible
+            ? frames.find(
+                (f) =>
+                  f.tMs > firstVisible.tMs &&
+                  (f.display === 'none' || f.display === 'detached' || f.opacity <= 0.05),
+              ) || null
+            : null
+          const overlayNow = document.querySelector('[data-component="intro-splash"]')
+          const finalDisplay = overlayNow ? window.getComputedStyle(overlayNow).display : 'detached'
+          return {
+            frameCount: frames.length,
+            firstVisibleFrameMs: firstVisible?.tMs ?? null,
+            lastVisibleFrameMs: lastVisible?.tMs ?? null,
+            firstHiddenFrameMs: firstHiddenAfterVisible?.tMs ?? null,
+            finalHtmlDataIntro: document.documentElement.dataset.intro ?? null,
+            finalDisplay,
+            sampledFrames: frames.filter((_, idx) => idx % 4 === 0 || idx === frames.length - 1),
+          }
+        })
+        throttledRafTimelineByLocale[loc] = timeline
+        await thCtx.close()
+      }
+
+      // 2f. Verify Escape key skip in a fresh session
       const escCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const escPage = await escCtx.newPage()
       await escPage.goto(`${baseUrl}/ar`, { waitUntil: 'domcontentloaded' })
@@ -1410,7 +1502,7 @@ export async function runP3T4Evidence({
       const visibleAfterEscape = await escIntro.isVisible().catch(() => false)
       await escCtx.close()
 
-      // 2e. Verify prefers-reduced-motion: reduce suppresses intro completely pre-paint
+      // 2g. Verify prefers-reduced-motion: reduce suppresses intro completely pre-paint
       const rmCtx = await browser.newContext({
         viewport: { width: 1440, height: 900 },
         reducedMotion: 'reduce',
@@ -1428,8 +1520,10 @@ export async function runP3T4Evidence({
       const introAudit = {
         ssrContainsIntroStartEn,
         ssrContainsIntroStartAr,
+        noJsVerification,
         introStateByLocale,
         videoMetricsByLocale,
+        throttledRafTimelineByLocale,
         visibleBeforeEscape,
         visibleAfterEscape,
         rmDataIntro,
@@ -1437,18 +1531,21 @@ export async function runP3T4Evidence({
       }
       const introLog = [
         headerBlock,
-        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3, R-4 SSR pre-paint, R-9 inert + focus) ===',
+        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3, R-4 SSR pre-paint, R-9 inert + focus, R-14 No-JS, R-15 <=1.6s Throttled Cap) ===',
         JSON.stringify(introAudit, null, 2),
         '',
       ].join('\n')
-      const introLogPath = path.join(evidenceDir, 'intro-verification.log')
-      fs.writeFileSync(introLogPath, introLog, 'utf8')
-      copyToDirs(introLogPath, destDirs)
+      fs.writeFileSync(path.join(reportsEvidenceDir, 'intro-verification.log'), introLog, 'utf8')
 
       for (const loc of ['en', 'ar']) {
         const st = introStateByLocale[loc]
         const vm = videoMetricsByLocale[loc]
+        const nj = noJsVerification[loc]
+        const tl = throttledRafTimelineByLocale[loc]
         if (
+          nj.overlayVisibleNoJs ||
+          !nj.h1VisibleNoJs ||
+          !nj.primaryCtaVisibleNoJs ||
           !st.startVisible ||
           st.revealStateAttr !== 'reveal' ||
           st.htmlDataIntro !== 'active' ||
@@ -1463,7 +1560,11 @@ export async function runP3T4Evidence({
           vm.headerInertAfterDismiss ||
           vm.homeContentInertAfterDismiss ||
           vm.htmlDataIntroOnReload !== 'seen' ||
-          vm.visibleOnSecondVisit
+          vm.visibleOnSecondVisit ||
+          tl.firstVisibleFrameMs === null ||
+          tl.firstHiddenFrameMs === null ||
+          tl.firstHiddenFrameMs > 1600 ||
+          tl.finalHtmlDataIntro !== 'seen'
         ) {
           throw new Error(
             `Intro splash verification failed for ${loc}: ${JSON.stringify(introAudit)}`,
@@ -1484,8 +1585,8 @@ export async function runP3T4Evidence({
 
     // =========================================================================
     // 3. Full-page Screenshots (1440 / 768 / 390 in ar & en), Section Side-by-Sides,
-    //    Console/Hydration/CSP Audit, R-1 Carousel Gutter/Bleed Audit, R-6/R-8/R-10/R-11 Audits,
-    //    R-27 44x44px Touch Target Audit, and CLS
+    //    Console/Hydration/CSP Audit, R-1/R-20 Carousel Gutter/Bleed/Height Audit,
+    //    R-6/R-8/R-10/R-11 Audits, R-27 44x44px Touch Target Audit, and CLS
     // =========================================================================
     const consoleErrors = []
     const pageErrors = []
@@ -1522,9 +1623,7 @@ export async function runP3T4Evidence({
           try {
             const obs = new PerformanceObserver((list) => {
               for (const entry of list.getEntries()) {
-                if (!entry.hadRecentInput) {
-                  window.__aljaziraClsValue += entry.value
-                }
+                window.__aljaziraClsValue += entry.value
               }
             })
             obs.observe({ type: 'layout-shift', buffered: true })
@@ -1554,29 +1653,35 @@ export async function runP3T4Evidence({
         await page.evaluate(() => document.fonts.ready)
         await page.waitForTimeout(200)
 
-        const fullScreenshotPath = path.join(evidenceDir, `home-${locale}-${vp.label}.png`)
-        await page.screenshot({ path: fullScreenshotPath, fullPage: true })
-        copyToDirs(fullScreenshotPath, destDirs)
+        const fullScreenshotBuf = await page.screenshot({ fullPage: true })
+        await saveCompressedPng(
+          fullScreenshotBuf,
+          path.join(reportsPhase3Dir, `home-${locale}-${vp.label}.png`),
+        )
 
-        if (vp.width === 1440) {
-          const alt1440Path = path.join(evidenceDir, `home-1440-${locale}.png`)
-          fs.copyFileSync(fullScreenshotPath, alt1440Path)
-          copyToDirs(alt1440Path, destDirs)
-        }
-
-        // Audit R-1, R-6, R-8, R-10, R-11 on this locale & viewport
+        // Audit R-1, R-20, R-6, R-8, R-10, R-11 on this locale & viewport
         const vpAudit = await page.evaluate(
           ({ vpWidth, isRtl }) => {
+            const carouselEl = document.querySelector('[data-component="services-carousel"]')
+            const controlsRow = document.querySelector(
+              '[data-component="services-carousel"] [class*="controlsRow"]',
+            )
             const slide0 = document.querySelector(
               '[data-component="services-carousel"] [data-slide-index="0"]',
             )
             const slide4 = document.querySelector(
               '[data-component="services-carousel"] [data-slide-index="4"]',
             )
+            const cRect = carouselEl ? carouselEl.getBoundingClientRect() : null
+            const ctrlRect = controlsRow ? controlsRow.getBoundingClientRect() : null
             const s0Rect = slide0 ? slide0.getBoundingClientRect() : null
             const s4Rect = slide4 ? slide4.getBoundingClientRect() : null
             const carouselStartInset = s0Rect
               ? Math.round(isRtl ? vpWidth - s0Rect.right : s0Rect.left)
+              : null
+            const carouselHeight = cRect ? Math.round(cRect.height) : null
+            const controlsInlineEndCoord = ctrlRect
+              ? Math.round(isRtl ? ctrlRect.left : ctrlRect.right)
               : null
             const slide4BleedsInlineEnd = s4Rect
               ? isRtl
@@ -1642,6 +1747,8 @@ export async function runP3T4Evidence({
 
             return {
               carouselStartInset,
+              carouselHeight,
+              controlsInlineEndCoord,
               slide4BleedsInlineEnd,
               statsGridCols,
               expandedAccordionBg,
@@ -1666,6 +1773,9 @@ export async function runP3T4Evidence({
         if (
           vpAudit.carouselStartInset !== vp.expectedGutter ||
           (vp.width === 1440 && !vpAudit.slide4BleedsInlineEnd) ||
+          (vp.width === 1440 && vpAudit.carouselHeight !== 430) ||
+          (vp.width === 1440 &&
+            vpAudit.controlsInlineEndCoord !== (locale === 'ar' ? 140 : 1300)) ||
           vpAudit.statsGridCols !== vp.expectedStatsCols ||
           vpAudit.expandedAccordionBg !== 'rgb(255, 255, 255)' ||
           vpAudit.heroCtaPaddingTop !== '0px' ||
@@ -1734,9 +1844,10 @@ export async function runP3T4Evidence({
               await page.waitForTimeout(50)
               const buf = await loc.screenshot()
               sectionBuffersByLocale[locale][sec.key] = buf
-              const secPath = path.join(evidenceDir, `section-${sec.key}-${locale}-1440.png`)
-              fs.writeFileSync(secPath, buf)
-              copyToDirs(secPath, destDirs)
+              await saveCompressedPng(
+                buf,
+                path.join(reportsPhase3Dir, `section-${sec.key}-${locale}-1440.png`),
+              )
             }
           }
         }
@@ -1784,38 +1895,37 @@ export async function runP3T4Evidence({
       }
     }
 
-    // Stitch 1440 section side-by-side images (`Figma | EN | AR`)
+    // Stitch 1440 section side-by-side images (`Figma | EN | AR`, scaled to <= 1440px width)
     const figmaSectionsDir = path.resolve(process.cwd(), 'design/screenshots/sections/01-home')
     for (const sec of HOME_SECTION_COMPARISONS) {
       const figmaPath = path.join(figmaSectionsDir, sec.figmaFile)
       const enBuf = sectionBuffersByLocale.en[sec.key]
       const arBuf = sectionBuffersByLocale.ar[sec.key]
       if (fs.existsSync(figmaPath) && enBuf && arBuf) {
-        const outPath = path.join(evidenceDir, sec.outName)
-        await createSideBySideImage([fs.readFileSync(figmaPath), enBuf, arBuf], outPath)
-        copyToDirs(outPath, destDirs)
+        await createSideBySideImage(
+          [fs.readFileSync(figmaPath), enBuf, arBuf],
+          path.join(reportsPhase3Dir, sec.outName),
+        )
       }
     }
 
-    // Stitch full-page 1440 comparison (`Figma 01-home.png | EN 1440 | AR 1440`)
+    // Stitch full-page 1440 comparison (`Figma 01-home.png | EN 1440 | AR 1440`, scaled to <= 1440px width)
     const figmaFullHomePath = path.resolve(process.cwd(), 'design/screenshots/pages/01-home.png')
-    const enFull1440Path = path.join(evidenceDir, 'home-en-1440.png')
-    const arFull1440Path = path.join(evidenceDir, 'home-ar-1440.png')
+    const enFull1440Path = path.join(reportsPhase3Dir, 'home-en-1440.png')
+    const arFull1440Path = path.join(reportsPhase3Dir, 'home-ar-1440.png')
     if (
       fs.existsSync(figmaFullHomePath) &&
       fs.existsSync(enFull1440Path) &&
       fs.existsSync(arFull1440Path)
     ) {
-      const outFullSbs = path.join(evidenceDir, 'side-by-side-home-1440.png')
       await createSideBySideImage(
         [
           fs.readFileSync(figmaFullHomePath),
           fs.readFileSync(enFull1440Path),
           fs.readFileSync(arFull1440Path),
         ],
-        outFullSbs,
+        path.join(reportsPhase3Dir, 'side-by-side-home-1440.png'),
       )
-      copyToDirs(outFullSbs, destDirs)
     }
 
     // Save R-27 Touch Target log
@@ -1840,16 +1950,14 @@ export async function runP3T4Evidence({
       ),
       '',
     ].join('\n')
-    const touchLogPath = path.join(evidenceDir, 'r27-touch-targets-390.log')
-    fs.writeFileSync(touchLogPath, touchLog, 'utf8')
-    copyToDirs(touchLogPath, destDirs)
+    fs.writeFileSync(path.join(reportsEvidenceDir, 'r27-touch-targets-390.log'), touchLog, 'utf8')
     if (undersizedControls.length > 0) {
       throw new Error(
         `R-27 violation: found ${undersizedControls.length} controls < 44x44px at 390px: ${JSON.stringify(undersizedControls)}`,
       )
     }
 
-    // Save Console / Hydration / CSP / CLS / R-1 / R-6 / R-8 / R-10 / R-11 log
+    // Save Console / Hydration / CSP / CLS / R-1 / R-20 / R-6 / R-8 / R-10 / R-11 log
     const maxCls = Math.max(...Object.values(clsReport), 0)
     const runtimeLog = [
       headerBlock,
@@ -1873,9 +1981,7 @@ export async function runP3T4Evidence({
       ),
       '',
     ].join('\n')
-    const runtimeLogPath = path.join(evidenceDir, 'runtime-csp-cls.log')
-    fs.writeFileSync(runtimeLogPath, runtimeLog, 'utf8')
-    copyToDirs(runtimeLogPath, destDirs)
+    fs.writeFileSync(path.join(reportsEvidenceDir, 'runtime-csp-cls.log'), runtimeLog, 'utf8')
 
     if (
       consoleErrors.length > 0 ||
@@ -1960,7 +2066,7 @@ export async function runP3T4Evidence({
         !anonAfterPublishEnHtml.includes('bg-pipes') &&
         !anonAfterPublishEnHtml.includes('statsBgLayer')
 
-      // Capture screenshots of the live edits and disabled partners section (`R-5`)
+      // Capture screenshots of the live edits and disabled partners section (`R-5`, `R-18`)
       const cmsCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       await cmsCtx.addInitScript(() => {
         window.sessionStorage.setItem('aljazira_intro_seen', '1')
@@ -1968,19 +2074,22 @@ export async function runP3T4Evidence({
       const cmsPage = await cmsCtx.newPage()
       await cmsPage.goto(`${baseUrl}/en`, { waitUntil: 'networkidle' })
       await cmsPage.evaluate(() => document.fonts.ready)
-      const cmsEditEnPath = path.join(evidenceDir, 'cms-live-edit-en.png')
-      await cmsPage.screenshot({ path: cmsEditEnPath })
-      copyToDirs(cmsEditEnPath, destDirs)
+      await saveCompressedPng(
+        await cmsPage.screenshot(),
+        path.join(reportsPhase3Dir, 'cms-live-edit-en.png'),
+      )
 
-      const cmsToggleDisabledPath = path.join(evidenceDir, 'cms-toggle-partners-disabled-en.png')
-      await cmsPage.screenshot({ path: cmsToggleDisabledPath, fullPage: true })
-      copyToDirs(cmsToggleDisabledPath, destDirs)
+      await saveCompressedPng(
+        await cmsPage.screenshot({ fullPage: true }),
+        path.join(reportsPhase3Dir, 'cms-toggle-partners-disabled-en.png'),
+      )
 
       await cmsPage.goto(`${baseUrl}/ar`, { waitUntil: 'networkidle' })
       await cmsPage.evaluate(() => document.fonts.ready)
-      const cmsEditArPath = path.join(evidenceDir, 'cms-live-edit-ar.png')
-      await cmsPage.screenshot({ path: cmsEditArPath })
-      copyToDirs(cmsEditArPath, destDirs)
+      await saveCompressedPng(
+        await cmsPage.screenshot(),
+        path.join(reportsPhase3Dir, 'cms-live-edit-ar.png'),
+      )
       await cmsCtx.close()
 
       // Restore original published state in both locales
@@ -2046,9 +2155,7 @@ export async function runP3T4Evidence({
         JSON.stringify(cmsRoundtripAudit, null, 2),
         '',
       ].join('\n')
-      const cmsLogPath = path.join(evidenceDir, 'cms-live-roundtrip.log')
-      fs.writeFileSync(cmsLogPath, cmsLog, 'utf8')
-      copyToDirs(cmsLogPath, destDirs)
+      fs.writeFileSync(path.join(reportsEvidenceDir, 'cms-live-roundtrip.log'), cmsLog, 'utf8')
 
       if (
         draftLeakedToAnon ||
@@ -2064,7 +2171,8 @@ export async function runP3T4Evidence({
     }
 
     // =========================================================================
-    // 5. Cold-Cache Throttled Mobile CLS Audit (`412x823`, `4x CPU`, `Slow 4G`) (R-3)
+    // 5. Cold-Cache Throttled Mobile CLS Audit (`412x823`, `4x CPU`, `Slow 4G`) (R-3, R-19)
+    //    Counts ALL `layout-shift` entries (both `hadRecentInput: false` and `hadRecentInput: true`)
     // =========================================================================
     {
       const throttledClsByLocale = {}
@@ -2081,20 +2189,19 @@ export async function runP3T4Evidence({
           try {
             const obs = new PerformanceObserver((list) => {
               for (const entry of list.getEntries()) {
-                if (!entry.hadRecentInput) {
-                  window.__aljaziraShifts.push({
-                    value: Number(entry.value.toFixed(5)),
-                    startTime: Math.round(entry.startTime),
-                    sources: (entry.sources || []).map((s) => ({
-                      node: s.node
-                        ? s.node.tagName +
-                          (s.node.className ? '.' + String(s.node.className).split(' ')[0] : '')
-                        : null,
-                      previousRect: s.previousRect,
-                      currentRect: s.currentRect,
-                    })),
-                  })
-                }
+                window.__aljaziraShifts.push({
+                  value: Number(entry.value.toFixed(5)),
+                  hadRecentInput: Boolean(entry.hadRecentInput),
+                  startTime: Math.round(entry.startTime),
+                  sources: (entry.sources || []).map((s) => ({
+                    node: s.node
+                      ? s.node.tagName +
+                        (s.node.className ? '.' + String(s.node.className).split(' ')[0] : '')
+                      : null,
+                    previousRect: s.previousRect,
+                    currentRect: s.currentRect,
+                  })),
+                })
               }
             })
             obs.observe({ type: 'layout-shift', buffered: true })
@@ -2119,7 +2226,15 @@ export async function runP3T4Evidence({
         await clsPage.waitForTimeout(500)
 
         const shifts = await clsPage.evaluate(() => window.__aljaziraShifts || [])
-        const totalCls = Number(shifts.reduce((acc, s) => acc + (s.value || 0), 0).toFixed(5))
+        const totalClsAllEntries = Number(
+          shifts.reduce((acc, s) => acc + (s.value || 0), 0).toFixed(5),
+        )
+        const totalClsWithoutInput = Number(
+          shifts
+            .filter((s) => !s.hadRecentInput)
+            .reduce((acc, s) => acc + (s.value || 0), 0)
+            .toFixed(5),
+        )
         const h1Height = await clsPage.evaluate(() => {
           const h1 = document.querySelector('h1')
           return h1 ? Math.round(h1.getBoundingClientRect().height) : null
@@ -2128,36 +2243,35 @@ export async function runP3T4Evidence({
           viewport: '412x823',
           cpuThrottlingRate: 4,
           network: 'Slow 4G (150ms RTT, 1.6Mbps down, cacheDisabled=true)',
-          totalCls,
+          totalClsAllEntries,
+          totalClsWithoutInput,
           h1Height,
           shifts,
         }
         await clsCtx.close()
 
-        if (totalCls > 0.05) {
+        if (totalClsAllEntries > 0.05) {
           throw new Error(
-            `R-3 throttled mobile CLS exceeded 0.05 on /${loc}: ${JSON.stringify(throttledClsByLocale[loc])}`,
+            `R-3/R-19 throttled mobile CLS (all entries) exceeded 0.05 on /${loc}: ${JSON.stringify(throttledClsByLocale[loc])}`,
           )
         }
       }
 
       const r3ClsLog = [
         headerBlock,
-        '=== R-3 Throttled Cold-Cache Mobile CLS Verification (/ar and /en at 412x823, 4x CPU, Slow 4G) ===',
+        '=== R-3 & R-19 Throttled Cold-Cache Mobile CLS Verification (/ar and /en at 412x823, 4x CPU, Slow 4G, all layout-shift entries counted) ===',
         JSON.stringify(throttledClsByLocale, null, 2),
         '',
       ].join('\n')
-      const r3ClsLogPath = path.join(evidenceDir, 'r3-mobile-cls.log')
-      fs.writeFileSync(r3ClsLogPath, r3ClsLog, 'utf8')
-      copyToDirs(r3ClsLogPath, destDirs)
+      fs.writeFileSync(path.join(reportsEvidenceDir, 'r3-mobile-cls.log'), r3ClsLog, 'utf8')
     }
 
     // =========================================================================
-    // 6. Official Google Lighthouse Mobile Audits on `/ar` and `/en` (R-5, DoD)
+    // 6. Official Google Lighthouse Mobile Audits on `/ar` and `/en` (R-5, R-16, DoD)
     // =========================================================================
     for (const loc of ['ar', 'en']) {
-      const lhLogPath = path.join(evidenceDir, `lighthouse-mobile-${loc}.log`)
-      const lhJsonPath = path.join(evidenceDir, `lighthouse-mobile-${loc}.json`)
+      const lhLogPath = path.join(reportsEvidenceDir, `lighthouse-mobile-${loc}.log`)
+      const lhJsonPath = path.join(reportsEvidenceDir, `lighthouse-mobile-${loc}.json`)
       console.log(`[P3-T4 Evidence] Running Google Lighthouse mobile audit on ${baseUrl}/${loc}...`)
       await runLighthouseAudit({
         url: `${baseUrl}/${loc}`,
@@ -2166,14 +2280,14 @@ export async function runP3T4Evidence({
         outLogPath: lhLogPath,
         outJsonPath: lhJsonPath,
       })
-      copyToDirs(lhLogPath, destDirs)
-      copyToDirs(lhJsonPath, destDirs)
     }
   } finally {
     await browser.close()
   }
 
-  console.log(`[P3-T4 Evidence] All P3-T4 evidence artifacts generated in ${evidenceDir}`)
+  console.log(
+    `[P3-T4 Evidence] All P3-T4 r3 evidence generated in ${reportsEvidenceDir} (logs) and ${reportsPhase3Dir} (images/videos)`,
+  )
 }
 
 if (
@@ -2188,17 +2302,13 @@ if (
   const posArgs = rawArgs.filter((a) => !a.startsWith('--'))
 
   const baseUrl = posArgs[0] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
-  const evidenceDir = posArgs[1] || path.resolve(process.cwd(), 'docs/evidence/P3-T4')
-  const phase3Dir = posArgs[2] || path.resolve(process.cwd(), 'docs/evidence/phase-3')
   const reportsEvidenceDir =
-    posArgs[3] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r2')
+    posArgs[1] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r3')
   const reportsPhase3Dir =
-    posArgs[4] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r2')
+    posArgs[2] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r3')
 
   runP3T4Evidence({
     baseUrl,
-    evidenceDir,
-    phase3Dir,
     reportsEvidenceDir,
     reportsPhase3Dir,
     mode,
