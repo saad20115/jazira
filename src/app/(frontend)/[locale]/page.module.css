@@ -19,14 +19,13 @@
 
 /*
  * While the full-viewport SSR intro splash (`html[data-intro='active']`) covers the screen,
- * defer style, layout, and text shaping of below-the-fold sections (`y >= 1788px`) so First Paint
- * (`preFCP`) only lays out `<IntroSplash>`, `<Navbar>`, `<section id="hero">`, and `<section id="who-we-are">`.
+ * defer layout and text shaping of below-the-fold sections (`y >= 1788px`, below `hero` + `who-we-are`)
+ * so First Paint (`preFCP`) only lays out above-the-fold content without triggering `contain-intrinsic-size` shifts.
  */
 :global(html[data-intro='active'])
   .homeContent
   > :not([data-home-section='hero']):not([data-home-section='who-we-are']) {
-  content-visibility: hidden;
-  contain-intrinsic-size: auto 600px;
+  display: none;
 }
 
 .goldText {

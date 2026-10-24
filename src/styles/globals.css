@@ -137,6 +137,5 @@ nextjs-portal {
 }
 
 html[data-intro='active'] body > footer {
-  content-visibility: hidden;
-  contain-intrinsic-size: auto 503px;
+  display: none;
 }
