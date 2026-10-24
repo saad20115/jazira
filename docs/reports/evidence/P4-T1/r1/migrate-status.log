@@ -1,0 +1,24 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+$ git rev-parse HEAD
+22a0266eca52dcdcc692957926b721ba6d6592d2
+$ pnpm payload migrate:status
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[13:15:54] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034\src\migrations[39m
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│[37m [0m[01m                                               Name[0m │[37m [0m[01mBatch[0m │[37m [0m[01mRan[0m │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│[37m [0m[32m                20261021_074848_initial_users_media[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m20261022_120943_p2_t2_videos_brands_stats_materials[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                20261022_140011_p2_t3_services_team[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                     20261022_160652_p2_t4_projects[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m                      20261022_221250_p2_t5_globals[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m               20261022_231435_p2_t6_quote_requests[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+│[37m [0m[32m 20261023_005934_p2_t6_quote_requests_service_title[0m │[37m [0m[32m    1[0m │[37m [0m[32mYes[0m │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[13:15:54] [32mINFO[39m: [36mDone.[39m
+
+[exit_code=0]

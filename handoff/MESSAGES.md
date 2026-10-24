@@ -1671,3 +1671,27 @@ good. To fix:
   - the expanded-item background.
 
 Order: continue P4-T1, then P3-T4 r2, then P4-T2 (the seed needs the new fields from R-2/R-7).
+
+
+### M-136 · 2026-10-24 11:25 · Executor → CTO · Ack M-134 & M-135 — starting `P4-T1` (`IN_PROGRESS | 1`), then `P3-T4` Round 2 (`R-1`..`R-11`), then `P4-T2`
+Acknowledged `M-134` (`P4-T1` and `P4-T2` order) and `M-135` (`handoff/reviews/P3-T4.md` §Round 1 `R-1`..`R-11` and `docs/02-content-model.md` §"CTO additions 2026-10-24"). Following your exact execution order:
+
+1. **`P4-T1` (`IN_PROGRESS | 1` now)**:
+   - Implement `pnpm seed` entry (`src/seed/index.ts`, server-only, refuses to run when `NODE_ENV === 'production'` unless `--force-production` is passed explicitly).
+   - Parse `seed/materials.raw.json` verbatim (`73` rows: `20` electrical, `37` mechanical, `8` structural, `8` architectural), split multi-brand cells, normalize strictly with the explicit typo mapping table from `docs/02-content-model.md` + case/whitespace normalization, translate country names to Arabic via a fixed table, seed rows `58`–`73` (`alternativeRaw`) as second brands with `origin` empty, upsert `brands` by normalized `name` and `materials` by `itemNo`, prove idempotency across two consecutive runs (`0 created, 0 updated`, identical `updatedAt`), and submit `handoff/reports/P4-T1.md` with full normalization, `needsClientReview`, and Arabic draft tables.
+2. **`P3-T4` Round 2 (`IN_PROGRESS | 2` immediately after `P4-T1` submission)**:
+   - Fix `R-1` (`.carouselOuter` `padding-inline-start: var(--container-gutter)` bleeding at inline-end), `R-2` (`hero.title` + `hero.titleAccent` and `cta.title` + `cta.titleAccent` localized fields + migration + backfill), `R-3` (locale font preload + fallback metrics + `transform`-only `pulseRing` + cold-cache throttled mobile CLS proof), `R-4` (SSR IntroSplash overlay with nonce-protected inline script setting `data-intro` on `<html>` before first paint), `R-5` (`lighthouse` devDependency with full AGENTS.md dependency listing + committed Lighthouse runner + `check:citations` file-existence check + `intro-ar.webm`), and `R-6`..`R-11` (hide 3D link/badge until `P3-T5`, `statsSection.backgroundImage` upload field + migration, hreflang `x-default` + merged `openGraph` with `og:site_name`/`og:url` + span whitespace, `inert` background & focus on `"Skip Intro"`, bilingual nav labels in seed, `2`/`1` stats grid columns at `768`/`390`, white expanded Accordion item background, Hero CTA row spacing & Who-we-are photo offset).
+3. **`P4-T2` (`IN_PROGRESS | 1` after `P3-T4` Round 2)**:
+   - Seed `site-settings`, `stats`, `services`, page globals (including the new `titleAccent` and `statsSection.backgroundImage` fields from `R-2`/`R-7`), and `[placeholder]` draft docs, and produce `docs/reports/phase-4.md`.
+
+
+### M-137 · 2026-10-24 13:37 · Executor → CTO · P4-T1 r1 ready for review
+- **Report**: `handoff/reports/P4-T1.md`
+- **Evidence**: `docs/reports/evidence/P4-T1/r1/` (`commit.log`, `install.log`, `migrate-up-down-up.log`, `migrate-status.log`, `lint.log`, `typecheck.log`, `format-check.log`, `tokens-check.log`, `test.log`, `build.log`, `audit.log`, `seed-run-1.log`, `seed-run-2.log`, `seed-production-guard.log`, `seed-query-verification.log`, `seed-tables.md`, `citations.log`, and `home-ar-1440.png`..`home-en-390.png`)
+- **Head commit**: `22a0266eca52dcdcc692957926b721ba6d6592d2` (`22a0266`)
+- **Highlights**:
+  1. Implemented `pnpm seed` (`scripts/seed.ts`, `src/seed/materials.ts`) using the Payload Local API (`overrideAccess: false`, `user: SEED_ADMIN_USER`) with a production guard (`assertSeedEnvironmentAllowed`) that exits `1` when `NODE_ENV=production` without `--force-production`.
+  2. Normalized all `73` rows of `seed/materials.raw.json` (`20` electrical, `37` mechanical, `8` structural, `8` architectural) and `83` deduplicated brands (`20` marquee brands with `showInMarquee: true`), translated country names to Arabic, split second suppliers in rows `58–73` (`alternativeRaw`) into brand links with empty `origin`, and drafted all `73` Arabic material descriptions.
+  3. Verified two-run idempotency in fresh-clone DoD: Run 1 creates `83` brands and `73` materials; Run 2 creates `0`, updates `0`, leaves `83` brands and `73` materials unchanged, and preserves `updatedAtDigestSha256: 78ea52e0abbb0182a49d497ef18cc16b80321718ce4482e0bde1fed907bc7ffe`.
+  4. Extended `scripts/check-citations.mjs` (`R-5`) to verify standalone backtick-quoted repo file paths exist on disk (`34` paired citations + `56` referenced file paths verified with `0` errors in `citations.log`) and fixed `scripts/evidence/p3-t4-evidence.mjs` (`R-10`) to preserve `navigation` array row IDs across `ar` and `en`.
+- **Questions for CTO**: None.

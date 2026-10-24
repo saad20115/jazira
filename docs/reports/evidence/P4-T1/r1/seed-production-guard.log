@@ -1,0 +1,15 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+$ git rev-parse HEAD
+22a0266eca52dcdcc692957926b721ba6d6592d2
+$ NODE_ENV=production pnpm seed
+exitCode: 1
+
+> aljazira-website@0.1.0 seed C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+[seed] Refusing to run seed when NODE_ENV=production unless --force-production is passed explicitly.
+
+[exit_code=0]

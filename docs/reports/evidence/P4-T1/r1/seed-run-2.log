@@ -1,0 +1,19 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+$ git rev-parse HEAD
+22a0266eca52dcdcc692957926b721ba6d6592d2
+
+> aljazira-website@0.1.0 seed C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===
+brands: created=0, updated=0, unchanged=83, total=83
+materials: created=0, updated=0, unchanged=73, total=73
+systemCounts: electrical=20, mechanical=37, structural=8, architectural=8
+everyMaterialHasAtLeastOneBrand: true (minBrandsPerMaterial=1)
+normalizationsApplied: 122 distinct rule applications
+needsClientReview: 29 rows flagged
+arabicDrafts: 73 rows drafted
+updatedAtDigestSha256: 78ea52e0abbb0182a49d497ef18cc16b80321718ce4482e0bde1fed907bc7ffe
+
+[exit_code=0]

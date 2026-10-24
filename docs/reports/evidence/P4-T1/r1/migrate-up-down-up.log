@@ -1,0 +1,54 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+$ git rev-parse HEAD
+22a0266eca52dcdcc692957926b721ba6d6592d2
+$ pnpm payload migrate && echo Y | pnpm payload migrate:down && pnpm payload migrate
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[13:15:35] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034\src\migrations[39m
+[13:15:35] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[13:15:41] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034\src\migrations[39m
+[13:15:41] [32mINFO[39m: [36mRolling back batch 1 consisting of 7 migration(s).[39m
+[13:15:41] [32mINFO[39m: [36mMigrating down: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[13:15:41] [32mINFO[39m: [36mMigrated down:  20261023_005934_p2_t6_quote_requests_service_title (8ms)[39m
+[13:15:41] [32mINFO[39m: [36mMigrating down: 20261022_231435_p2_t6_quote_requests[39m
+[13:15:41] [32mINFO[39m: [36mMigrated down:  20261022_231435_p2_t6_quote_requests (9ms)[39m
+[13:15:41] [32mINFO[39m: [36mMigrating down: 20261022_221250_p2_t5_globals[39m
+[13:15:41] [32mINFO[39m: [36mMigrated down:  20261022_221250_p2_t5_globals (146ms)[39m
+[13:15:41] [32mINFO[39m: [36mMigrating down: 20261022_160652_p2_t4_projects[39m
+[13:15:41] [32mINFO[39m: [36mMigrated down:  20261022_160652_p2_t4_projects (39ms)[39m
+[13:15:41] [32mINFO[39m: [36mMigrating down: 20261022_140011_p2_t3_services_team[39m
+[13:15:42] [32mINFO[39m: [36mMigrated down:  20261022_140011_p2_t3_services_team (30ms)[39m
+[13:15:42] [32mINFO[39m: [36mMigrating down: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[13:15:42] [32mINFO[39m: [36mMigrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (32ms)[39m
+[13:15:42] [32mINFO[39m: [36mMigrating down: 20261021_074848_initial_users_media[39m
+[13:15:42] [32mINFO[39m: [36mMigrated down:  20261021_074848_initial_users_media (25ms)[39m
+[13:15:42] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[13:15:48] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034\src\migrations[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (72ms)[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (43ms)[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (60ms)[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (88ms)[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (314ms)[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (21ms)[39m
+[13:15:48] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[13:15:48] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (6ms)[39m
+[13:15:48] [32mINFO[39m: [36mDone.[39m
+
+[exit_code=0]

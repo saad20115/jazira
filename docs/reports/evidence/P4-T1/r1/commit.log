@@ -1,0 +1,13 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r1-20261024-131034
+$ git rev-parse HEAD
+22a0266eca52dcdcc692957926b721ba6d6592d2
+$ git rev-parse HEAD && git status -s && git log -n 5 --oneline
+22a0266eca52dcdcc692957926b721ba6d6592d2
+22a0266 fix(seed): seed home baseline after pnpm seed on live server for P4-T1 evidence
+789f75d docs(cto): A-1 v021 request (paste-ready for the 3D session)
+d2a6d5d fix(seed): reuse payload singleton across P4-T1 evidence cleanup and verification
+c715c58 feat(seed): implement idempotent P4-T1 materials and brands seed with Local API and citation path checks
+8324f8f docs(cto): P3-T4 round 1 changes requested; content-model additions (titleAccent, stats bg); M-135
+
+[exit_code=0]

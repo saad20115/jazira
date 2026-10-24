@@ -1,0 +1,153 @@
+$ git grep -n -e 'assertSeedEnvironmentAllowed' -- src/seed/materials.ts
+src/seed/materials.ts:14: * 3. Runtime `typeof window !== 'undefined'` check in `assertSeedEnvironmentAllowed`.
+src/seed/materials.ts:128:export function assertSeedEnvironmentAllowed(
+src/seed/materials.ts:914:  assertSeedEnvironmentAllowed(options?.nodeEnv, options?.argv)
+
+$ git grep -n -e 'buildMaterialsSeedPlan' -- src/seed/materials.ts
+src/seed/materials.ts:635:export function buildMaterialsSeedPlan(
+src/seed/materials.ts:916:  const plan = buildMaterialsSeedPlan(options?.rawRows)
+
+$ git grep -n -e 'SPEC_DESCRIPTION_TYPO_MAP' -- src/seed/materials.ts
+src/seed/materials.ts:146:export const SPEC_DESCRIPTION_TYPO_MAP: Readonly<Record<string, string>> = {
+src/seed/materials.ts:424: * Normalizes an English material description using `SPEC_DESCRIPTION_TYPO_MAP` plus Title Case
+src/seed/materials.ts:440:    const typoTarget = SPEC_DESCRIPTION_TYPO_MAP[cleanAlpha]
+
+$ git grep -n -e 'SPEC_BRAND_TYPO_MAP' -- src/seed/materials.ts
+src/seed/materials.ts:158:export const SPEC_BRAND_TYPO_MAP: Readonly<Record<string, string>> = {
+src/seed/materials.ts:459: * Normalizes a single brand token using `SPEC_BRAND_TYPO_MAP` plus case/whitespace normalization.
+src/seed/materials.ts:472:  const specMapped = SPEC_BRAND_TYPO_MAP[upperKey]
+
+$ git grep -n -e 'normalizeMaterialDescriptionEn' -- src/seed/materials.ts
+src/seed/materials.ts:427:export function normalizeMaterialDescriptionEn(rawDescription: string): {
+src/seed/materials.ts:698:    const descResult = normalizeMaterialDescriptionEn(row.description)
+
+$ git grep -n -e 'normalizeBrandName' -- src/seed/materials.ts
+src/seed/materials.ts:461:export function normalizeBrandName(rawBrandToken: string): {
+src/seed/materials.ts:595:    const normBrand = normalizeBrandName(rawBrand).normalized.toLowerCase()
+src/seed/materials.ts:604:        const pNorm = normalizeBrandName(p.brandKey).normalized.toLowerCase()
+src/seed/materials.ts:741:      const brandNorm = normalizeBrandName(rawToken)
+
+$ git grep -n -e 'needsClientReview' -- src/seed/materials.ts
+src/seed/materials.ts:24:  needsClientReview?: string
+src/seed/materials.ts:55:  needsClientReviewReason: string | null
+src/seed/materials.ts:69:  needsClientReview: boolean
+src/seed/materials.ts:88:  needsClientReview: ClientReviewItem[]
+src/seed/materials.ts:313: * Every Arabic draft string is listed in the P4-T1 report for client confirmation (`needsClientReview`).
+src/seed/materials.ts:670:  const needsClientReview: ClientReviewItem[] = []
+src/seed/materials.ts:803:          needsClientReviewReason: null,
+src/seed/materials.ts:817:      needsClientReview.push({
+src/seed/materials.ts:827:        if (b && !b.needsClientReviewReason) {
+src/seed/materials.ts:828:          b.needsClientReviewReason = reason
+src/seed/materials.ts:833:      needsClientReview.push({
+src/seed/materials.ts:846:        if (b && !b.needsClientReviewReason) {
+src/seed/materials.ts:847:          b.needsClientReviewReason = note
+src/seed/materials.ts:865:      needsClientReview: Boolean(isStructuralOrArch || UNCERTAIN_MEP_BRAND_NOTES[row.no]),
+src/seed/materials.ts:887:    needsClientReview,
+src/seed/materials.ts:1221:    `needsClientReview: ${String(summary.plan.needsClientReview.length)} rows flagged`,
+
+$ git grep -n -e 'COUNTRY_TRANSLATION_TABLE' -- src/seed/materials.ts
+src/seed/materials.ts:212:export const COUNTRY_TRANSLATION_TABLE: Readonly<
+src/seed/materials.ts:544:    const lookup = COUNTRY_TRANSLATION_TABLE[trimmedOrigin.toLowerCase()]
+src/seed/materials.ts:556:    const lookup = COUNTRY_TRANSLATION_TABLE[rawCountry.toLowerCase()]
+src/seed/materials.ts:586:    const lookup = COUNTRY_TRANSLATION_TABLE[countryPart.toLowerCase()]
+
+$ git grep -n -e 'alternativeRaw' -- src/seed/materials.ts
+src/seed/materials.ts:21:  alternativeRaw?: string
+src/seed/materials.ts:732:      ? [row.brandRaw, ...(row.alternativeRaw?.trim() ? [row.alternativeRaw.trim()] : [])]
+src/seed/materials.ts:809:      const altText = row.alternativeRaw?.trim() || '(empty)'
+src/seed/materials.ts:812:          ? ' (both brandRaw and alternativeRaw are "Al-rajhi Steel" — deduplicated to 1 brand link)'
+src/seed/materials.ts:821:        rawBrandOrOrigin: `brandRaw="${row.brandRaw}" | alternativeRaw="${row.alternativeRaw ?? ''}"`,
+src/seed/materials.ts:861:        ? (row.alternativeRaw ?? '')
+
+$ git grep -n -e 'MATERIAL_ARABIC_DRAFT_MAP' -- src/seed/materials.ts
+src/seed/materials.ts:315:export const MATERIAL_ARABIC_DRAFT_MAP: Readonly<Record<number, string>> = {
+src/seed/materials.ts:721:      MATERIAL_ARABIC_DRAFT_MAP[row.no] ?? `${descResult.normalized} (مسودة)`
+
+$ git grep -n -e 'arabicDrafts' -- src/seed/materials.ts
+src/seed/materials.ts:79:  arabicDrafts: Array<{
+src/seed/materials.ts:671:  const arabicDrafts: MaterialsSeedPlan['arabicDrafts'] = []
+src/seed/materials.ts:722:    arabicDrafts.push({
+src/seed/materials.ts:888:    arabicDrafts,
+src/seed/materials.ts:1222:    `arabicDrafts: ${String(summary.plan.arabicDrafts.length)} rows drafted`,
+
+$ git grep -n -e 'MARQUEE_PARTNER_BRAND_ORDER' -- src/seed/materials.ts
+src/seed/materials.ts:288:export const MARQUEE_PARTNER_BRAND_ORDER: Readonly<Record<string, number>> = {
+src/seed/materials.ts:796:            MARQUEE_PARTNER_BRAND_ORDER,
+src/seed/materials.ts:873:    const marqueeOrder = MARQUEE_PARTNER_BRAND_ORDER[brand.name]
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- src/seed/materials.ts
+src/seed/materials.ts:906:export async function seedMaterialsAndBrands(
+
+$ git grep -n -e 'SEED_ADMIN_USER' -- src/seed/materials.ts
+src/seed/materials.ts:114:export const SEED_ADMIN_USER: User = {
+src/seed/materials.ts:904: * with `overrideAccess: false` and `SEED_ADMIN_USER` (`handoff/tasks/P4-T1.md`, `M-134`).
+src/seed/materials.ts:935:      user: SEED_ADMIN_USER,
+src/seed/materials.ts:952:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:965:          user: SEED_ADMIN_USER,
+src/seed/materials.ts:980:      user: SEED_ADMIN_USER,
+src/seed/materials.ts:1007:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:1023:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:1055:      user: SEED_ADMIN_USER,
+src/seed/materials.ts:1073:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:1086:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:1099:      user: SEED_ADMIN_USER,
+src/seed/materials.ts:1134:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:1151:        user: SEED_ADMIN_USER,
+src/seed/materials.ts:1167:      user: SEED_ADMIN_USER,
+src/seed/materials.ts:1176:      user: SEED_ADMIN_USER,
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- scripts/seed.ts
+scripts/seed.ts:7:  seedMaterialsAndBrands,
+scripts/seed.ts:21:    const summary = await seedMaterialsAndBrands(payload, { nodeEnv, argv })
+
+$ git grep -n -e 'seed.ts' -- package.json
+package.json:25:    "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts",
+
+$ git grep -n -e 'buildMaterialsSeedPlan' -- src/seed/materials.test.ts
+src/seed/materials.test.ts:7:  buildMaterialsSeedPlan,
+src/seed/materials.test.ts:175:    const plan = buildMaterialsSeedPlan(rawRows)
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- tests/int/p4-t1.int.test.ts
+tests/int/p4-t1.int.test.ts:7:import { SEED_ADMIN_USER, seedMaterialsAndBrands } from '../../src/seed/materials'
+tests/int/p4-t1.int.test.ts:37:    const run1 = await seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:62:    const run2 = await seedMaterialsAndBrands(payload, {
+
+$ git grep -n -e 'STANDALONE_FILE_PATH_REGEX' -- scripts/check-citations.mjs
+scripts/check-citations.mjs:104:const STANDALONE_FILE_PATH_REGEX =
+scripts/check-citations.mjs:235:    STANDALONE_FILE_PATH_REGEX.lastIndex = 0
+scripts/check-citations.mjs:237:    while ((fileMatch = STANDALONE_FILE_PATH_REGEX.exec(remainder)) !== null) {
+
+$ git grep -n -e 'missingFileRefRes' -- tests/unit/scripts-guard.test.ts
+tests/unit/scripts-guard.test.ts:133:      const missingFileRefRes = verifyCitations({
+tests/unit/scripts-guard.test.ts:146:      expect(missingFileRefRes.ok).toBe(false)
+tests/unit/scripts-guard.test.ts:147:      expect(missingFileRefRes.errors).toHaveLength(1)
+tests/unit/scripts-guard.test.ts:148:      expect(missingFileRefRes.errors[0]).toContain(
+
+$ git grep -n -e 'navHeaderList' -- scripts/evidence/p3-t4-evidence.mjs
+scripts/evidence/p3-t4-evidence.mjs:694:  const navHeaderList = savedNavAr?.result?.header || savedNavAr?.header || []
+scripts/evidence/p3-t4-evidence.mjs:704:          id: navHeaderList[0]?.id,
+scripts/evidence/p3-t4-evidence.mjs:709:          id: navHeaderList[1]?.id,
+scripts/evidence/p3-t4-evidence.mjs:714:          id: navHeaderList[2]?.id,
+scripts/evidence/p3-t4-evidence.mjs:719:          id: navHeaderList[3]?.id,
+
+$ git grep -n -e 'materialsEn' -- tests/int/p4-t1.int.test.ts
+tests/int/p4-t1.int.test.ts:81:    const [materialsEn, materialsAr, brandsEn, brandsAr] = await Promise.all([
+tests/int/p4-t1.int.test.ts:120:    expect(materialsEn.totalDocs).toBe(73)
+tests/int/p4-t1.int.test.ts:125:    const mat1En = materialsEn.docs.find((m) => m.itemNo === 1)
+tests/int/p4-t1.int.test.ts:130:    const mat7En = materialsEn.docs.find((m) => m.itemNo === 7)
+tests/int/p4-t1.int.test.ts:133:    const mat30En = materialsEn.docs.find((m) => m.itemNo === 30)
+tests/int/p4-t1.int.test.ts:136:    const mat34En = materialsEn.docs.find((m) => m.itemNo === 34)
+
+$ git grep -n -e 'isAllowedPayloadServerFile' -- eslint-rules/require-override-access-false.mjs
+eslint-rules/require-override-access-false.mjs:10: *    - Runtime value imports of `payload` / `payload/*` are allowed only in `isAllowedPayloadServerFile`
+eslint-rules/require-override-access-false.mjs:208:export function isAllowedPayloadServerFile(filename) {
+eslint-rules/require-override-access-false.mjs:414:  return !isAllowedPayloadServerFile(filename)
+
+$ git grep -n -e 'SEED_SERVER_ONLY_SENTINEL' -- src/seed/materials.ts
+src/seed/materials.ts:12: * 1. `SEED_SERVER_ONLY_SENTINEL` checked against `.next/static` by `scripts/check-client-bundle-sentinels.mjs`
+src/seed/materials.ts:16:export const SEED_SERVER_ONLY_SENTINEL = '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_SEED__'
+src/seed/materials.ts:133:    throw new Error(SEED_SERVER_ONLY_SENTINEL)
+
+$ git grep -n -e 'FORBIDDEN_CLIENT_BUNDLE_SENTINELS' -- scripts/check-client-bundle-sentinels.mjs
+scripts/check-client-bundle-sentinels.mjs:16:export const FORBIDDEN_CLIENT_BUNDLE_SENTINELS = [
+scripts/check-client-bundle-sentinels.mjs:56:  ...FORBIDDEN_CLIENT_BUNDLE_SENTINELS,
