@@ -12,6 +12,7 @@ import {
   markIntroSplashSeen,
   shouldSkipIntroSplash,
 } from '@/components/IntroSplash'
+import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-utils'
 import type { Brand, HomePage, Media, Project, Service, SiteSetting, Stat } from '@/payload-types'
 
 const mockSiteSettings = vi.fn<() => Promise<SiteSetting | null>>()
@@ -641,6 +642,24 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           expect(definedVars.has(varName), `${relPath} references undefined ${varName}`).toBe(true)
         }
       }
+    })
+
+    it('normalizes local Payload serverURL media URLs to relative paths for next/image localPatterns', () => {
+      expect(
+        normalizeLocalMediaUrl('http://localhost:3000/api/media/file/hero-city-1376x768.webp'),
+      ).toBe('/api/media/file/hero-city-1376x768.webp')
+      expect(normalizeLocalMediaUrl('/api/media/file/hero-city.png')).toBe(
+        '/api/media/file/hero-city.png',
+      )
+      const resolved = resolveMediaAsset(
+        makeMedia(
+          99,
+          'http://localhost:3000/api/media/file/hero-city-1376x768.webp',
+          'Riyadh skyline',
+        ),
+        'Fallback',
+      )
+      expect(resolved?.url).toBe('/api/media/file/hero-city-1376x768.webp')
     })
   })
 })

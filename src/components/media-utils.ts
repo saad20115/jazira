@@ -8,6 +8,27 @@ export interface ResolvedMediaAsset {
 }
 
 /**
+ * Strips any leading HTTP(S) origin from local Payload upload or public asset paths
+ * (`/api/media/file/**`, `/api/videos/file/**`, `/media/**`, `/videos/**`, `/images/**`, `/brand/**`)
+ * so `next/image` resolves them against `images.localPatterns` instead of rejecting `serverURL`
+ * hostnames under `images.remotePatterns: []`.
+ */
+export function normalizeLocalMediaUrl(rawUrl: string): string {
+  const trimmed = rawUrl.trim()
+  if (!trimmed) {
+    return ''
+  }
+  const match =
+    /^https?:\/\/[^/]+(\/(?:api\/(?:media|videos)\/file|media|videos|images|brand)\/.*)$/i.exec(
+      trimmed,
+    )
+  if (match && match[1]) {
+    return match[1]
+  }
+  return trimmed
+}
+
+/**
  * Safely extracts a populated `Media` asset from a Payload upload relationship field
  * (`number | Media | null | undefined`), preferring the `card` or `thumb` size when requested.
  */
@@ -21,7 +42,7 @@ export function resolveMediaAsset(
   }
 
   const sizeEntry = preferredSize ? media.sizes?.[preferredSize] : undefined
-  const url = (sizeEntry?.url ?? media.url ?? '').trim()
+  const url = normalizeLocalMediaUrl(sizeEntry?.url ?? media.url ?? '')
   if (!url) {
     return null
   }

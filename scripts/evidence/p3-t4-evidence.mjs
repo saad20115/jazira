@@ -1072,6 +1072,7 @@ export async function runP3T4Evidence({
   phase3Dir = path.resolve(process.cwd(), 'docs/evidence/phase-3'),
   reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1'),
   reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1'),
+  mode = 'all',
 } = {}) {
   const destDirs = [evidenceDir, phase3Dir, reportsEvidenceDir, reportsPhase3Dir]
   for (const d of destDirs) {
@@ -1079,10 +1080,13 @@ export async function runP3T4Evidence({
   }
   const headerBlock = getRepoHeaderBlock()
 
-  console.log(`[P3-T4 Evidence] Seeding CMS via Payload REST API at ${baseUrl}...`)
-  const token = await ensureAdminAuthToken(baseUrl)
-  await seedHomePageData(baseUrl, token)
-  console.log(`[P3-T4 Evidence] CMS seeded and published in ar and en.`)
+  let token = null
+  if (mode === 'all' || mode === 'prod-home') {
+    console.log(`[P3-T4 Evidence] Seeding CMS via Payload REST API at ${baseUrl}...`)
+    token = await ensureAdminAuthToken(baseUrl)
+    await seedHomePageData(baseUrl, token)
+    console.log(`[P3-T4 Evidence] CMS seeded and published in ar and en.`)
+  }
 
   const browser = await chromium.launch({ headless: true })
 
@@ -1090,7 +1094,7 @@ export async function runP3T4Evidence({
     // =========================================================================
     // 1. R-17 & R-19 Verification: TeamCard Enter 2 clipping & hover shadow fade
     // =========================================================================
-    {
+    if (mode === 'all' || mode === 'dev-styleguide') {
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const page = await ctx.newPage()
       await page.goto(`${baseUrl}/en/styleguide`, { waitUntil: 'networkidle' })
@@ -1140,6 +1144,11 @@ export async function runP3T4Evidence({
       fs.writeFileSync(r17LogPath, r17Log, 'utf8')
       copyToDirs(r17LogPath, destDirs)
       await ctx.close()
+
+      if (mode === 'dev-styleguide') {
+        console.log(`[P3-T4 Evidence] dev-styleguide artifacts generated in ${evidenceDir}`)
+        return
+      }
     }
 
     // =========================================================================
@@ -1682,13 +1691,18 @@ if (
   Array.isArray(process.argv) &&
   process.argv[1]?.replace(/\\/g, '/').endsWith('scripts/evidence/p3-t4-evidence.mjs')
 ) {
-  const baseUrl = process.argv[2] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
-  const evidenceDir = process.argv[3] || path.resolve(process.cwd(), 'docs/evidence/P3-T4')
-  const phase3Dir = process.argv[4] || path.resolve(process.cwd(), 'docs/evidence/phase-3')
+  const rawArgs = process.argv.slice(2)
+  const modeArg = rawArgs.find((a) => a.startsWith('--mode='))
+  const mode = modeArg ? modeArg.slice('--mode='.length) : process.env.EVIDENCE_MODE || 'all'
+  const posArgs = rawArgs.filter((a) => !a.startsWith('--'))
+
+  const baseUrl = posArgs[0] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
+  const evidenceDir = posArgs[1] || path.resolve(process.cwd(), 'docs/evidence/P3-T4')
+  const phase3Dir = posArgs[2] || path.resolve(process.cwd(), 'docs/evidence/phase-3')
   const reportsEvidenceDir =
-    process.argv[5] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1')
+    posArgs[3] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1')
   const reportsPhase3Dir =
-    process.argv[6] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1')
+    posArgs[4] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1')
 
   runP3T4Evidence({
     baseUrl,
@@ -1696,6 +1710,7 @@ if (
     phase3Dir,
     reportsEvidenceDir,
     reportsPhase3Dir,
+    mode,
   }).catch((err) => {
     console.error('[P3-T4 Evidence] ERROR:', err)
     process.exit(1)

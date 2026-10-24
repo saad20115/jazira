@@ -11,7 +11,7 @@ import { HomeScrollHintButton } from '@/components/HomeScrollHintButton'
 import { ArrowUpRightIcon, CornerBracketIcon, CubeIcon } from '@/components/icons'
 import { IntroSplash } from '@/components/IntroSplash'
 import { LogoMarquee } from '@/components/LogoMarquee'
-import { resolveMediaAsset } from '@/components/media-utils'
+import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-utils'
 import { ProjectCard } from '@/components/ProjectCard'
 import { ServicesCarousel } from '@/components/ServicesCarousel'
 import { DEFAULT_LOCALE, getDictionary, isSupportedLocale } from '@/i18n'
@@ -286,7 +286,7 @@ function resolveVideoUrl(video: number | Video | null | undefined): string | nul
   if (!video || typeof video !== 'object') {
     return null
   }
-  const url = typeof video.url === 'string' ? video.url.trim() : ''
+  const url = typeof video.url === 'string' ? normalizeLocalMediaUrl(video.url) : ''
   return url.length > 0 ? url : null
 }
 
