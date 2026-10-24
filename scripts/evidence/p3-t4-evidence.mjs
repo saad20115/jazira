@@ -178,7 +178,7 @@ async function ensureMediaUploaded(baseUrl, token, filePath, altEn, altAr) {
   return docId
 }
 
-async function seedHomePageData(baseUrl, token) {
+async function seedHomePageData(baseUrl, token, { skipBrands = false } = {}) {
   const imagesDir = path.resolve(process.cwd(), 'design/assets/images')
   const mediaFiles = [
     ['hero-city.png', 'Riyadh skyline at dusk', 'أفق الرياض عند الغسق'],
@@ -579,33 +579,35 @@ async function seedHomePageData(baseUrl, token) {
     ['Al Rajhi Steel', 'Saudi Arabia', 'المملكة العربية السعودية'],
     ['Obeikan Glass', 'Saudi Arabia', 'المملكة العربية السعودية'],
   ]
-  const existingBrands = await apiRequest(baseUrl, token, '/api/brands?limit=50')
-  for (let i = 0; i < brandsSpec.length; i++) {
-    const [name, originEn, originAr] = brandsSpec[i]
-    const order = i + 1
-    const found = (existingBrands.docs || []).find((d) => d.name === name)
-    if (found) {
-      await apiRequest(baseUrl, token, `/api/brands/${found.id}`, {
-        method: 'PATCH',
-        locale: 'ar',
-        body: { name, origin: originAr, logo: null, showInMarquee: true, order },
-      })
-      await apiRequest(baseUrl, token, `/api/brands/${found.id}`, {
-        method: 'PATCH',
-        locale: 'en',
-        body: { name, origin: originEn, logo: null, showInMarquee: true, order },
-      })
-    } else {
-      const created = await apiRequest(baseUrl, token, '/api/brands', {
-        method: 'POST',
-        locale: 'ar',
-        body: { name, origin: originAr, logo: null, showInMarquee: true, order },
-      })
-      await apiRequest(baseUrl, token, `/api/brands/${created.doc.id}`, {
-        method: 'PATCH',
-        locale: 'en',
-        body: { name, origin: originEn },
-      })
+  if (!skipBrands) {
+    const existingBrands = await apiRequest(baseUrl, token, '/api/brands?limit=50')
+    for (let i = 0; i < brandsSpec.length; i++) {
+      const [name, originEn, originAr] = brandsSpec[i]
+      const order = i + 1
+      const found = (existingBrands.docs || []).find((d) => d.name === name)
+      if (found) {
+        await apiRequest(baseUrl, token, `/api/brands/${found.id}`, {
+          method: 'PATCH',
+          locale: 'ar',
+          body: { name, origin: originAr, logo: null, showInMarquee: true, order },
+        })
+        await apiRequest(baseUrl, token, `/api/brands/${found.id}`, {
+          method: 'PATCH',
+          locale: 'en',
+          body: { name, origin: originEn, logo: null, showInMarquee: true, order },
+        })
+      } else {
+        const created = await apiRequest(baseUrl, token, '/api/brands', {
+          method: 'POST',
+          locale: 'ar',
+          body: { name, origin: originAr, logo: null, showInMarquee: true, order },
+        })
+        await apiRequest(baseUrl, token, `/api/brands/${created.doc.id}`, {
+          method: 'PATCH',
+          locale: 'en',
+          body: { name, origin: originEn },
+        })
+      }
     }
   }
 
@@ -1118,6 +1120,7 @@ export async function runP3T4Evidence({
   reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r1'),
   reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r1'),
   mode = 'all',
+  skipBrands = false,
 } = {}) {
   const destDirs = [evidenceDir, phase3Dir, reportsEvidenceDir, reportsPhase3Dir]
   for (const d of destDirs) {
@@ -1129,7 +1132,7 @@ export async function runP3T4Evidence({
   if (mode === 'all' || mode === 'prod-home' || mode === 'seed-only') {
     console.log(`[P3-T4 Evidence] Seeding CMS via Payload REST API at ${baseUrl}...`)
     token = await ensureAdminAuthToken(baseUrl)
-    await seedHomePageData(baseUrl, token)
+    await seedHomePageData(baseUrl, token, { skipBrands })
     console.log(`[P3-T4 Evidence] CMS seeded and published in ar and en.`)
     if (mode === 'seed-only') {
       return
@@ -1759,6 +1762,7 @@ if (
   const rawArgs = process.argv.slice(2)
   const modeArg = rawArgs.find((a) => a.startsWith('--mode='))
   const mode = modeArg ? modeArg.slice('--mode='.length) : process.env.EVIDENCE_MODE || 'all'
+  const skipBrands = rawArgs.includes('--skip-brands')
   const posArgs = rawArgs.filter((a) => !a.startsWith('--'))
 
   const baseUrl = posArgs[0] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
@@ -1776,6 +1780,7 @@ if (
     reportsEvidenceDir,
     reportsPhase3Dir,
     mode,
+    skipBrands,
   }).catch((err) => {
     console.error('[P3-T4 Evidence] ERROR:', err)
     process.exit(1)

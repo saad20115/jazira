@@ -88,28 +88,7 @@ async function run() {
   const port = 3141
   const baseUrl = `http://localhost:${String(port)}`
 
-  // 1. Seed Home page baseline (media, stats, services, projects, site-settings, bilingual navigation)
-  const seedServer = spawn(process.execPath, [nextBin, 'start', '-p', String(port)], {
-    cwd: process.cwd(),
-    env: { ...process.env, NODE_ENV: 'production', PORT: String(port) },
-    stdio: 'pipe',
-  })
-  try {
-    await waitForServer(`${baseUrl}/ar`)
-    execFileSync(
-      process.execPath,
-      ['scripts/evidence/p3-t4-evidence.mjs', baseUrl, '--mode=seed-only'],
-      {
-        cwd: process.cwd(),
-        encoding: 'utf8',
-      },
-    )
-  } finally {
-    seedServer.kill('SIGTERM')
-    await new Promise((r) => setTimeout(r, 1500))
-  }
-
-  // 2. Clean materials and brands in DB so Run 1 starts from 0 materials and 0 brands
+  // 1. Clean materials and brands in DB so Run 1 starts from 0 materials and 0 brands
   const payload = await getPayload({ config: payloadConfig })
   await payload.delete({
     collection: 'materials',
@@ -122,7 +101,7 @@ async function run() {
     overrideAccess: true,
   })
 
-  // 3. Run 1: pnpm seed
+  // 2. Run 1: pnpm seed
   const run1Out = execFileSync(pnpmCmd, ['seed'], {
     cwd: process.cwd(),
     encoding: 'utf8',
@@ -131,7 +110,7 @@ async function run() {
   fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-1.log'), run1Out, 'utf8')
   process.stdout.write(run1Out)
 
-  // 4. Run 2: consecutive pnpm seed (idempotent: 0 created, 0 updated)
+  // 3. Run 2: consecutive pnpm seed (idempotent: 0 created, 0 updated)
   const run2Out = execFileSync(pnpmCmd, ['seed'], {
     cwd: process.cwd(),
     encoding: 'utf8',
@@ -140,7 +119,7 @@ async function run() {
   fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-2.log'), run2Out, 'utf8')
   process.stdout.write(run2Out)
 
-  // 5. Verify NODE_ENV=production guard without --force-production
+  // 4. Verify NODE_ENV=production guard without --force-production
   const prodGuardRes = spawnSync(pnpmCmd, ['seed'], {
     cwd: process.cwd(),
     encoding: 'utf8',
@@ -158,11 +137,33 @@ async function run() {
     throw new Error('Expected NODE_ENV=production pnpm seed without --force-production to fail!')
   }
 
-  // 6. Query verification via Local API (`overrideAccess: false`, `user: SEED_ADMIN_USER`)
-  const payloadVerify = payload
+  // 5. Start production server (`next start` on port 3141), seed Home page baseline (--skip-brands so the 83 seeded brands remain untouched), verify DB via Local API, and capture Home page screenshots in ar & en at 1440, 768, 390
+  const serverProc = spawn(process.execPath, [nextBin, 'start', '-p', String(port)], {
+    cwd: process.cwd(),
+    env: {
+      ...process.env,
+      NODE_ENV: 'production',
+      NODE_OPTIONS: '--no-deprecation',
+      PORT: String(port),
+    },
+    stdio: 'pipe',
+  })
+
   try {
-    const [materialsEn, materialsAr, brandsEn, brandsAr] = await Promise.all([
-      payloadVerify.find({
+    await waitForServer(`${baseUrl}/icon.svg`)
+    execFileSync(
+      process.execPath,
+      ['scripts/evidence/p3-t4-evidence.mjs', baseUrl, '--mode=seed-only', '--skip-brands'],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        env: { ...process.env, NODE_OPTIONS: '--no-deprecation' },
+      },
+    )
+
+    // 6. Query verification via Local API (`overrideAccess: false`, `user: SEED_ADMIN_USER`)
+    const [materialsEn, materialsAr, brandsEn, brandsAr, navAr, navEn] = await Promise.all([
+      payload.find({
         collection: 'materials',
         sort: 'itemNo',
         limit: 200,
@@ -171,7 +172,7 @@ async function run() {
         overrideAccess: false,
         user: SEED_ADMIN_USER,
       }),
-      payloadVerify.find({
+      payload.find({
         collection: 'materials',
         sort: 'itemNo',
         limit: 200,
@@ -180,21 +181,35 @@ async function run() {
         overrideAccess: false,
         user: SEED_ADMIN_USER,
       }),
-      payloadVerify.find({
+      payload.find({
         collection: 'brands',
-        sort: 'order',
+        sort: 'name',
         limit: 200,
         depth: 0,
         locale: 'en',
         overrideAccess: false,
         user: SEED_ADMIN_USER,
       }),
-      payloadVerify.find({
+      payload.find({
         collection: 'brands',
-        sort: 'order',
+        sort: 'name',
         limit: 200,
         depth: 0,
         locale: 'ar',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+      payload.findGlobal({
+        slug: 'navigation',
+        locale: 'ar',
+        depth: 0,
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+      payload.findGlobal({
+        slug: 'navigation',
+        locale: 'en',
+        depth: 0,
         overrideAccess: false,
         user: SEED_ADMIN_USER,
       }),
@@ -212,12 +227,14 @@ async function run() {
     }
 
     const updatedAtDigest = [
-      ...[...brandsEn.docs]
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((b) => `brand:${b.name}:${b.updatedAt}`),
+      ...brandsEn.docs.map((b) => `brand:${b.name}:${b.updatedAt}`),
       ...materialsEn.docs.map((m) => `material:${String(m.itemNo)}:${m.updatedAt}`),
     ].join('\n')
     const digestSha256 = crypto.createHash('sha256').update(updatedAtDigest, 'utf8').digest('hex')
+
+    const sortedBrandsByOrder = [...brandsEn.docs].sort(
+      (a, b) => (a.order ?? 999) - (b.order ?? 999),
+    )
 
     const queryLines = [
       '=== P4-T1 DATABASE QUERY VERIFICATION (Payload Local API, overrideAccess: false) ===',
@@ -228,10 +245,12 @@ async function run() {
       `marqueeBrandsCount (showInMarquee=true): ${String(brandsEn.docs.filter((b) => b.showInMarquee).length)}`,
       `systemCounts: electrical=${String(sysCounts.electrical)}, mechanical=${String(sysCounts.mechanical)}, structural=${String(sysCounts.structural)}, architectural=${String(sysCounts.architectural)}`,
       `everyMaterialHasAtLeastOneBrand: ${String(materialsEn.totalDocs === 73 && minBrands >= 1)} (minBrandsPerMaterial=${String(minBrands)})`,
+      `navigation.header (ar): [${(navAr.header || []).map((h) => h.label).join(', ')}]`,
+      `navigation.header (en): [${(navEn.header || []).map((h) => h.label).join(', ')}]`,
       `updatedAtDigestSha256: ${digestSha256}`,
       '',
       '--- ALL 83 SEEDED BRANDS (order | name | origin_en | origin_ar | showInMarquee | updatedAt) ---',
-      ...brandsEn.docs.map((b) => {
+      ...sortedBrandsByOrder.map((b) => {
         const bAr = arBrandById.get(b.id)
         return `${String(b.order).padStart(2, '0')} | ${b.name} | en=${b.origin ?? '(empty)'} | ar=${bAr?.origin ?? '(empty)'} | marquee=${String(Boolean(b.showInMarquee))} | updatedAt=${b.updatedAt}`
       }),
@@ -255,23 +274,8 @@ async function run() {
       generateMarkdownTables(plan),
       'utf8',
     )
-  } finally {
-    if (typeof payloadVerify.db.destroy === 'function') {
-      await payloadVerify.db.destroy()
-    }
-  }
 
-  // 7. Start fresh production server (`next start` on port 3142) and capture Home page screenshots in ar & en at 1440, 768, 390
-  const screenshotPort = 3142
-  const screenshotBaseUrl = `http://localhost:${String(screenshotPort)}`
-  const serverProc = spawn(process.execPath, [nextBin, 'start', '-p', String(screenshotPort)], {
-    cwd: process.cwd(),
-    env: { ...process.env, NODE_ENV: 'production', PORT: String(screenshotPort) },
-    stdio: 'pipe',
-  })
-
-  try {
-    await waitForServer(`${screenshotBaseUrl}/ar`)
+    // 7. Capture Home page screenshots in ar & en at 1440, 768, 390 on the same live server
     const browser = await chromium.launch()
     try {
       const viewports = [
@@ -288,7 +292,17 @@ async function run() {
             window.sessionStorage.setItem('aljazira_intro_seen', '1')
           })
           const page = await context.newPage()
-          await page.goto(`${screenshotBaseUrl}/${locale}`, { waitUntil: 'networkidle' })
+          await page.goto(`${baseUrl}/${locale}`, { waitUntil: 'networkidle' })
+          await page.locator('[data-home-section="partners"]').waitFor({
+            state: 'visible',
+            timeout: 15000,
+          })
+          const sectionCount = await page.locator('[data-home-section]').count()
+          if (sectionCount !== 8) {
+            throw new Error(
+              `Expected 8 [data-home-section] elements on /${locale} (${vp.label}), found ${String(sectionCount)}`,
+            )
+          }
           await page.evaluate(async () => {
             await document.fonts.ready
           })
@@ -303,7 +317,11 @@ async function run() {
       await browser.close()
     }
   } finally {
+    if (typeof payload.db.destroy === 'function') {
+      await payload.db.destroy()
+    }
     serverProc.kill('SIGTERM')
+    await new Promise((r) => setTimeout(r, 1500))
   }
 }
 
