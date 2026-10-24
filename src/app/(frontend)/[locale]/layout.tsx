@@ -275,7 +275,13 @@ export default async function LocaleRootLayout({
     : getLocaleFontClassName(resolvedLocale)
 
   return (
-    <html lang={resolvedLocale} dir={dir} className={htmlFontClass} suppressHydrationWarning>
+    <html
+      lang={resolvedLocale}
+      dir={dir}
+      className={htmlFontClass}
+      data-font-preloads={fontPreloadUrls.join(',')}
+      suppressHydrationWarning
+    >
       <head>
         <script
           nonce={cspNonce}
@@ -283,16 +289,6 @@ export default async function LocaleRootLayout({
         />
       </head>
       <body>
-        {fontPreloadUrls.map((href) => (
-          <link
-            as="font"
-            crossOrigin="anonymous"
-            href={href}
-            key={href}
-            rel="preload"
-            type="font/woff2"
-          />
-        ))}
         <a href="#main-content" className={`${gridStyles.skipLink} t-label-button`}>
           {dict.a11y.skipToMainContent}
         </a>

@@ -10,18 +10,18 @@ import styles from './IntroSplash.module.css'
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
 export const INTRO_REVEAL_DELAY_MS = 90
 export const INTRO_EXIT_DELAY_MS = 950
-export const INTRO_TOTAL_DURATION_MS = 1250
-export const INTRO_HARD_CAP_MS = 1400
+export const INTRO_TOTAL_DURATION_MS = 1350
+export const INTRO_HARD_CAP_MS = 1520
 
 /**
  * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-15`).
  * - Without JavaScript, `data-intro` is absent and `.overlay` stays `display: none` (`R-14`).
  * - With JavaScript, sets `document.documentElement.dataset.intro = 'seen' | 'active'` before first
- *   paint and schedules phase transitions + a hard cap (`<= 1400ms < 1.6s`) relative to
+ *   paint and schedules phase transitions + a hard cap (`<= 1520ms < 1.6s`) relative to
  *   `navigationStart` (`performance.now()`) so the overlay is guaranteed gone by `<= 1.6s` after
  *   `navigationStart` regardless of when React hydration completes (`R-15`).
  */
-export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';if(rm||seen){d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');return;}window.__aljaziraIntroOrigin=0;d.setAttribute('data-intro','active');d.setAttribute('data-intro-phase','start');try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;d.style.setProperty('--intro-exit-delay',Math.max(120,${String(INTRO_EXIT_DELAY_MS)}-Math.round(now))+'ms');var done=false;var syncedFp=false;function setInert(v){var ns=document.querySelectorAll('header,[data-home-content="true"],footer,[data-component="whatsapp-fab"]');for(var i=0;i<ns.length;i++){if(v)ns[i].setAttribute('inert','');else ns[i].removeAttribute('inert');}}function setOverlayState(s){var el=document.querySelector('[data-component="intro-splash"]');if(el)el.setAttribute('data-intro-state',s);}function finish(){if(done)return;done=true;d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');d.removeAttribute('style');setInert(false);}if(now>=${String(INTRO_TOTAL_DURATION_MS)}){finish();return;}function rafCheck(){if(done)return;var t=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;if(!syncedFp){syncedFp=true;d.style.setProperty('--intro-exit-delay',Math.max(120,${String(INTRO_EXIT_DELAY_MS)}-Math.round(t))+'ms');}if(t>=${String(INTRO_TOTAL_DURATION_MS)}){finish();return;}if(t>=${String(INTRO_EXIT_DELAY_MS)}){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}else if(t>=${String(INTRO_REVEAL_DELAY_MS)}){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);window.addEventListener('DOMContentLoaded',function(){if(done)return;setInert(true);var btn=document.querySelector('[data-intro-skip="true"]');if(btn&&typeof btn.focus==='function')btn.focus({preventScroll:true});},{once:true});window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}},Math.max(16,${String(INTRO_REVEAL_DELAY_MS)}-now));window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}},Math.max(60,${String(INTRO_EXIT_DELAY_MS)}-now));window.setTimeout(finish,Math.max(80,${String(INTRO_TOTAL_DURATION_MS)}-now));window.setTimeout(finish,Math.max(100,${String(INTRO_HARD_CAP_MS)}-now));window.addEventListener('keydown',function(ev){if(ev.key==='Escape')finish();},{once:true});document.addEventListener('click',function(ev){var t=ev.target;if(t&&typeof t.closest==='function'&&t.closest('[data-component="intro-splash"]'))finish();});}catch(e){document.documentElement.setAttribute('data-intro','seen');document.documentElement.setAttribute('data-intro-phase','hidden');}})();`
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var fontsLoaded=false;function preloadFonts(){if(fontsLoaded)return;fontsLoaded=true;var fp=(d.getAttribute('data-font-preloads')||'').split(',');for(var fi=0;fi<fp.length;fi++){var fh=fp[fi];if(fh&&document.head){var lk=document.createElement('link');lk.rel='preload';lk.as='font';lk.type='font/woff2';lk.crossOrigin='anonymous';lk.href=fh;document.head.appendChild(lk);}}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';if(rm||seen){preloadFonts();d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');return;}window.__aljaziraIntroOrigin=0;d.setAttribute('data-intro','active');d.setAttribute('data-intro-phase','start');try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;d.style.setProperty('--intro-exit-delay',Math.max(120,${String(INTRO_EXIT_DELAY_MS)}-Math.round(now))+'ms');var done=false;var syncedFp=false;var firstFrameMs=null;function setInert(v){var ns=document.querySelectorAll('header,[data-home-content="true"],footer,[data-component="whatsapp-fab"]');for(var i=0;i<ns.length;i++){if(v)ns[i].setAttribute('inert','');else ns[i].removeAttribute('inert');}}function setOverlayState(s){var el=document.querySelector('[data-component="intro-splash"]');if(el)el.setAttribute('data-intro-state',s);}function finish(){if(done)return;done=true;preloadFonts();d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');d.removeAttribute('style');setInert(false);}if(now>=${String(INTRO_HARD_CAP_MS)}){finish();return;}function rafCheck(){if(done)return;var t=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;if(!syncedFp){syncedFp=true;firstFrameMs=t;preloadFonts();d.style.setProperty('--intro-exit-delay',Math.max(80,${String(INTRO_EXIT_DELAY_MS)}-Math.round(t))+'ms');}var targetEnd=firstFrameMs!==null?Math.min(${String(INTRO_HARD_CAP_MS)},Math.max(firstFrameMs+120,${String(INTRO_TOTAL_DURATION_MS)})):${String(INTRO_HARD_CAP_MS)};if(t>=targetEnd){finish();return;}if(t>=${String(INTRO_EXIT_DELAY_MS)}){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}else if(t>=${String(INTRO_REVEAL_DELAY_MS)}){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);window.addEventListener('DOMContentLoaded',function(){if(done)return;setInert(true);var btn=document.querySelector('[data-intro-skip="true"]');if(btn&&typeof btn.focus==='function')btn.focus({preventScroll:true});},{once:true});window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}},Math.max(16,${String(INTRO_REVEAL_DELAY_MS)}-now));window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}},Math.max(60,${String(INTRO_EXIT_DELAY_MS)}-now));window.setTimeout(function(){if(!done&&firstFrameMs!==null)finish();},Math.max(80,${String(INTRO_TOTAL_DURATION_MS)}-now));window.setTimeout(finish,Math.max(100,${String(INTRO_HARD_CAP_MS)}-now));window.addEventListener('keydown',function(ev){if(ev.key==='Escape')finish();},{once:true});document.addEventListener('click',function(ev){var t=ev.target;if(t&&typeof t.closest==='function'&&t.closest('[data-component="intro-splash"]'))finish();});}catch(e){document.documentElement.setAttribute('data-intro','seen');document.documentElement.setAttribute('data-intro-phase','hidden');}})();`
 
 export type IntroSplashPhase = 'hidden' | 'start' | 'reveal' | 'exiting'
 
@@ -108,8 +108,8 @@ export function markIntroSplashSeen(win: Window | undefined): void {
  * - Pre-paint inline script opts in (`data-intro="active"`) on a fresh tab so the overlay is present
  *   from frame 0 (`t = 0 ms`) before first paint (`R-4`).
  * - Plays once per browser session (`sessionStorage` key `aljazira_intro_seen`).
- * - Timed from `navigationStart` (`performance.now()`) with `INTRO_TOTAL_DURATION_MS = 1250` and
- *   hard cap `INTRO_HARD_CAP_MS = 1400` (`<= 1.6s`, `R-15`).
+ * - Timed from `navigationStart` (`performance.now()`) with `INTRO_TOTAL_DURATION_MS = 1350` and
+ *   hard cap `INTRO_HARD_CAP_MS = 1520` (`<= 1.6s`, `R-15`).
  * - Sets `inert` on background content and focuses the `"Skip Intro"` button while active (`R-9`).
  * - Click anywhere or press `Escape` (or activate the `>= 44×44px` skip button) to dismiss immediately.
  * - Never shown when `prefers-reduced-motion: reduce` is enabled.
@@ -166,7 +166,7 @@ export function IntroSplash({
 
     const shouldSkip =
       prePaintState === 'seen' ||
-      elapsedSinceNavStart >= INTRO_TOTAL_DURATION_MS ||
+      elapsedSinceNavStart >= INTRO_HARD_CAP_MS ||
       (prePaintState !== 'active' && shouldSkipIntroSplash(window))
 
     if (shouldSkip) {
@@ -190,7 +190,11 @@ export function IntroSplash({
     const scheduledTimers: number[] = []
     const remainingReveal = Math.max(0, Math.round(INTRO_REVEAL_DELAY_MS - elapsedSinceNavStart))
     const remainingExit = Math.max(0, Math.round(INTRO_EXIT_DELAY_MS - elapsedSinceNavStart))
-    const remainingHide = Math.max(0, Math.round(INTRO_TOTAL_DURATION_MS - elapsedSinceNavStart))
+    const targetHideMs = Math.min(
+      INTRO_HARD_CAP_MS,
+      Math.max(elapsedSinceNavStart + 80, INTRO_TOTAL_DURATION_MS),
+    )
+    const remainingHide = Math.max(0, Math.round(targetHideMs - elapsedSinceNavStart))
 
     const revealTimer = window.setTimeout(() => {
       document.documentElement.setAttribute('data-intro-phase', 'reveal')

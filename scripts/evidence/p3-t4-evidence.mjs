@@ -1455,9 +1455,7 @@ export async function runP3T4Evidence({
               requestAnimationFrame(sample)
             }
           }
-          window.addEventListener('DOMContentLoaded', () => {
-            requestAnimationFrame(sample)
-          })
+          requestAnimationFrame(sample)
         })
         const thPage = await thCtx.newPage()
         const cdp = await thCtx.newCDPSession(thPage)
