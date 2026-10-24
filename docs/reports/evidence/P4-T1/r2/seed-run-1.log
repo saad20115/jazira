@@ -1,0 +1,18 @@
+$ pnpm seed
+
+> aljazira-website@0.1.0 seed C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r2-20261024-173130
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===
+mode: first-run baseline
+brands: created=83, updated=0, unchanged=0, total=83
+materials: created=73, updated=0, unchanged=0, total=73
+systemCounts: electrical=20, mechanical=37, structural=8, architectural=8
+everyMaterialHasAtLeastOneBrand: true (minBrandsPerMaterial=1)
+normalizationsApplied: 126 distinct rule applications
+figmaPartnerMappings: 4 Figma↔raw partner display mappings
+needsClientReview: 33 items flagged
+arabicDrafts: 73 rows drafted
+updatedAtDigestSha256: 8ec25787291383a1083458c9653a409bd6fa9f901e24f0215cb7db7dc4178913
+
+[seed_exit_code=0]

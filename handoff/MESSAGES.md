@@ -1764,3 +1764,17 @@ is in the first frame, and there is no regression at 1440. To fix:
 - **R-21:** use the README message header format.
 
 Order: P4-T1 r2 (in progress) → P3-T4 r3 → P4-T2.
+
+
+### M-141 · 2026-10-24 17:54 · Executor → CTO · P4-T1 r2 ready for review
+- **Report**: `handoff/reports/P4-T1.md`
+- **Evidence**: `docs/reports/evidence/P4-T1/r2/` (`commit.log`, `dod-timing.log`, `install.log`, `migrate-up-down-up.log`, `migrate-status.log`, `lint.log`, `typecheck.log`, `format-check.log`, `tokens-check.log`, `test.log`, `build.log`, `audit.log`, `p4-t1-evidence.log`, `seed-run-1.log`, `seed-non-empty-refused.log`, `seed-reseed-dev.log`, `seed-production-guard.log`, `seed-reseed-production-guard.log`, `seed-query-verification.log`, `seed-tables.md`, `citations.log`, and `home-{ar,en}-{1440,768,390}.png`)
+- **Code commit**: `8355c0cef030f7cf7ce8c1668d1c316f44b0f0e8` (`8355c0c`, fresh-clone DoD `HEAD` `d7df2110c5c35d92d09bf49e0cd68a8d96d3048b`)
+- **Highlights**:
+  1. **`R-1` (`Hi-Tech` origin preserved)**: Updated hyphen pair-splitting regex in `resolveBrandOriginsFromCell` (`src/seed/materials.ts:691`) so hyphens are split only when preceded by `: <Country>`, preserving `Hi-Tech` origin `United States` / `الولايات المتحدة` (`seed-query-verification.log:57`).
+  2. **`R-2` (Uncertain description typos flagged & translated literally)**: Added `UNCERTAIN_DESCRIPTION_TYPO_NOTES` (`src/seed/materials.ts:404`) for rows `13` (`DISCONNECTED SWITCH` → `'Disconnected Switch'` / `'مفتاح مفصول'`), `21` (`FIREPIPES` → `'Firepipes'` / `'مواسير حريق'`), `27` (`TEMPER SWITCH` → `'Temper Switch'` / `'مفتاح تقسية'`), and `54` (`OUT LET GRILL` → `'Out Let Grill'` / `'شبكة مخرج'`), flagging them in `needsClientReview` and persisting bilingual review notes on each material.
+  3. **`R-3` (Literal Arabic drafts)**: Updated `MATERIAL_ARABIC_DRAFT_MAP` (`src/seed/materials.ts:465`) so every Arabic description translates strictly what the English says (`#16` `'إنارة'`, `#18` `'إنارة'`, `#23` `'قطع اتصال مخددة'`, `#24` `'قطع اتصال مسننة'`, `#35` `'نوفيك (NOVEC)'`, `#47` `'خزان طرد للمرحاض (WC)'`, `#53` `'مواسير DX'`, `#68` `'إضافات اللياسة'`).
+  4. **`R-4` (First-run baseline seed & dev-only `--reseed`)**: `pnpm seed` seeds `83` brands and `73` materials on an empty DB (`seed-run-1.log`, `[seed_exit_code=0]`), refuses on a non-empty DB preserving editor edits (`seed-non-empty-refused.log`, `[seed_exit_code=1]`, `tests/int/p4-t1.int.test.ts:37`), rebuilds on dev `pnpm seed -- --reseed` (`seed-reseed-dev.log`, `[seed_exit_code=0]`), and refuses `--reseed` in production even with `--force-production` (`seed-reseed-production-guard.log`, `[seed_exit_code=1]`).
+  5. **`R-5`..`R-7`**: Normalized `HEMPEL (COATING)` → `Hempel` (`order: 14`, `Denmark` / `الدنمارك`) with product note kept on material `#31`, reported all 4 Figma ↔ raw partner display-name mappings (`FIGMA_PARTNER_DISPLAY_NAME_MAPPINGS` at `src/seed/materials.ts:360`), documented `SEED_ADMIN_USER` (`src/seed/materials.ts:141`) as an in-memory admin context, logged `[seed_exit_code=...]` in all seed logs, and verified `38` paired citations and `57` file paths with `0` errors (`citations.log`).
+- **Questions for CTO**: None.
+

@@ -1,0 +1,171 @@
+=== P4-T1 DATABASE QUERY VERIFICATION (Payload Local API, overrideAccess: false) ===
+materials.totalDocs (en): 73
+materials.totalDocs (ar): 73
+brands.totalDocs (en): 83
+brands.totalDocs (ar): 83
+marqueeBrandsCount (showInMarquee=true): 20
+systemCounts: electrical=20, mechanical=37, structural=8, architectural=8
+everyMaterialHasAtLeastOneBrand: true (minBrandsPerMaterial=1)
+navigation.header (ar): [خدماتنا, من نحن, مشاريعنا, تواصل معنا]
+navigation.header (en): [Services, About Us, Projects, Contact Us]
+updatedAtDigestSha256: 2eb3d30a547acb716705f59d22563f4f097473256dd33791ac6b408bbc39a094
+
+--- ALL 83 SEEDED BRANDS (order | name | origin_en | origin_ar | showInMarquee | updatedAt) ---
+01 | Alfanar | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=true | updatedAt=2026-10-24T14:43:14.998Z
+02 | Legrand | en=France | ar=فرنسا | marquee=true | updatedAt=2026-10-24T14:43:15.039Z
+03 | Belden | en=United States | ar=الولايات المتحدة | marquee=true | updatedAt=2026-10-24T14:43:15.070Z
+04 | CommScope | en=United States | ar=الولايات المتحدة | marquee=true | updatedAt=2026-10-24T14:43:15.103Z
+05 | Tridonic | en=Austria | ar=النمسا | marquee=true | updatedAt=2026-10-24T14:43:15.134Z
+06 | Cooper | en=United States | ar=الولايات المتحدة | marquee=true | updatedAt=2026-10-24T14:43:15.162Z
+07 | Tyco | en=United States | ar=الولايات المتحدة | marquee=true | updatedAt=2026-10-24T14:43:15.188Z
+08 | Grohe | en=Germany | ar=ألمانيا | marquee=true | updatedAt=2026-10-24T14:43:15.218Z
+09 | Ariston | en=Italy | ar=إيطاليا | marquee=true | updatedAt=2026-10-24T14:43:15.249Z
+10 | Watts | en=United States | ar=الولايات المتحدة | marquee=true | updatedAt=2026-10-24T14:43:15.281Z
+11 | Zamil | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=true | updatedAt=2026-10-24T14:43:15.309Z
+12 | SKM | en=UAE | ar=الإمارات العربية المتحدة | marquee=true | updatedAt=2026-10-24T14:43:15.335Z
+13 | System Air | en=Sweden | ar=السويد | marquee=true | updatedAt=2026-10-24T14:43:15.364Z
+14 | Hempel | en=Denmark | ar=الدنمارك | marquee=true | updatedAt=2026-10-24T14:43:15.391Z
+15 | Jazeera Paints | en=(empty) | ar=(empty) | marquee=true | updatedAt=2026-10-24T14:43:15.402Z
+16 | Saudi Ceramics | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=true | updatedAt=2026-10-24T14:43:15.424Z
+17 | Tahweel | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=true | updatedAt=2026-10-24T14:43:15.447Z
+18 | Bahra Cables | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=true | updatedAt=2026-10-24T14:43:15.471Z
+19 | Al-Rajhi Steel | en=(empty) | ar=(empty) | marquee=true | updatedAt=2026-10-24T14:43:15.481Z
+20 | Obeikan Glass | en=(empty) | ar=(empty) | marquee=true | updatedAt=2026-10-24T14:43:15.491Z
+21 | Al Rouf | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.516Z
+22 | EGA | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.544Z
+23 | United Technology Group | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.571Z
+24 | Jeddah Cables | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.599Z
+25 | MESC | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.626Z
+26 | Bahra | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.654Z
+27 | Ultra Light | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.683Z
+28 | Siera | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.713Z
+29 | Avanger | en=United Kingdom | ar=المملكة المتحدة | marquee=false | updatedAt=2026-10-24T14:43:15.743Z
+30 | Effective Power - ASSTTE | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:15.770Z
+31 | Aljazirah (Oman-Saudi) | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:15.783Z
+32 | Aljazera | en=Saudi Arabia / Oman | ar=المملكة العربية السعودية / عُمان | marquee=false | updatedAt=2026-10-24T14:43:15.811Z
+33 | Junt | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:15.839Z
+34 | JTPR UL-FM | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:15.865Z
+35 | Jihanzi - UL/FM | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:15.894Z
+36 | Karishma Steel | en=India | ar=الهند | marquee=false | updatedAt=2026-10-24T14:43:15.923Z
+37 | Shandong Lede Machinery | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:15.950Z
+38 | JMC | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:15.979Z
+39 | Giacomini | en=Italy | ar=إيطاليا | marquee=false | updatedAt=2026-10-24T14:43:16.008Z
+40 | SEFECO | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.036Z
+41 | Ashcroft | en=United States | ar=الولايات المتحدة | marquee=false | updatedAt=2026-10-24T14:43:16.064Z
+42 | Jazeera (Primer) | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.092Z
+43 | Bristol | en=UAE | ar=الإمارات العربية المتحدة | marquee=false | updatedAt=2026-10-24T14:43:16.120Z
+44 | Hi-Tech | en=United States | ar=الولايات المتحدة | marquee=false | updatedAt=2026-10-24T14:43:16.147Z
+45 | Look | en=United Kingdom | ar=المملكة المتحدة | marquee=false | updatedAt=2026-10-24T14:43:16.173Z
+46 | SRI | en=Malaysia | ar=ماليزيا | marquee=false | updatedAt=2026-10-24T14:43:16.199Z
+47 | Fire Pro | en=Cyprus | ar=قبرص | marquee=false | updatedAt=2026-10-24T14:43:16.222Z
+48 | Aerofoam | en=UAE | ar=الإمارات العربية المتحدة | marquee=false | updatedAt=2026-10-24T14:43:16.256Z
+49 | Armaflex | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.269Z
+50 | Gulf Pipes | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.299Z
+51 | Nepro Plast | en=UAE | ar=الإمارات العربية المتحدة | marquee=false | updatedAt=2026-10-24T14:43:16.327Z
+52 | Geberit | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.338Z
+53 | Al-Muhaidb National | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.365Z
+54 | Pedrollo | en=Italy | ar=إيطاليا | marquee=false | updatedAt=2026-10-24T14:43:16.393Z
+55 | LEO | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:16.422Z
+56 | Water Horse | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:16.452Z
+57 | Local Fabrication | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.484Z
+58 | AFICO | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.515Z
+59 | Luvata | en=Italy | ar=إيطاليا | marquee=false | updatedAt=2026-10-24T14:43:16.544Z
+60 | Camlee | en=China | ar=الصين | marquee=false | updatedAt=2026-10-24T14:43:16.573Z
+61 | Al-Nasseriah | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.602Z
+62 | Black Horse | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.627Z
+63 | Aldurrah-Fuji | en=Saudi Arabia | ar=المملكة العربية السعودية | marquee=false | updatedAt=2026-10-24T14:43:16.651Z
+64 | Saudi Ready Mix | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.664Z
+65 | Nesma Concrete Solutions | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.674Z
+66 | Arabian Cement Co. | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.684Z
+67 | Yanbu Cement | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.695Z
+68 | Bitumat | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.707Z
+69 | Awazel | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.717Z
+70 | Arnon XPS | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.728Z
+71 | Saudi Ready Mix - Block | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.736Z
+72 | Jeddah Block Factory | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.743Z
+73 | Saudi Anfal | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.753Z
+74 | Al-Dorais Doors Factory | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.761Z
+75 | ALUPCO | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.769Z
+76 | Al-Tahweel Aluminium | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.777Z
+77 | Mada Gypsum | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.787Z
+78 | Saveto | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.799Z
+79 | Alfanar Cermics | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.825Z
+80 | Al-Mulhem Marble | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.834Z
+81 | Saudi Marble | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.841Z
+82 | Ritver Paints | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.849Z
+83 | Local Jeddah GRC Factory | en=(empty) | ar=(empty) | marquee=false | updatedAt=2026-10-24T14:43:16.857Z
+
+--- ALL 73 SEEDED MATERIALS (itemNo | system | description_en | description_ar | notes_en | brandCount | brands | updatedAt) ---
+#01 | electrical    | en="EMT Conduit" | ar="مواسير EMT" | brands(1)=[Al Rouf] | updatedAt=2026-10-24T14:43:16.917Z
+#02 | electrical    | en="Electric Box" | ar="علبة كهربائية" | brands(2)=[Al Rouf, Alfanar] | updatedAt=2026-10-24T14:43:16.961Z
+#03 | electrical    | en="Electrical Steel Box" | ar="علبة كهربائية فولاذية" | brands(1)=[Alfanar] | updatedAt=2026-10-24T14:43:17.012Z
+#04 | electrical    | en="PVC Electric Conduit" | ar="مواسير كهربائية PVC" | brands(1)=[EGA] | updatedAt=2026-10-24T14:43:17.061Z
+#05 | electrical    | en="Cable Tray" | ar="حامل كابلات" | brands(1)=[United Technology Group] | updatedAt=2026-10-24T14:43:17.109Z
+#06 | electrical    | en="Cable Trunk" | ar="مجرى كابلات" | brands(1)=[United Technology Group] | updatedAt=2026-10-24T14:43:17.152Z
+#07 | electrical    | en="Electric Cables" | ar="كابلات كهربائية" | brands(2)=[Jeddah Cables, Bahra Cables] | updatedAt=2026-10-24T14:43:17.189Z
+#08 | electrical    | en="Wires" | ar="أسلاك" | brands(1)=[Bahra Cables] | updatedAt=2026-10-24T14:43:17.229Z
+#09 | electrical    | en="Fire Alarm Cables" | ar="كابلات إنذار الحريق" | brands(1)=[MESC] | updatedAt=2026-10-24T14:43:17.267Z
+#10 | electrical    | en="Floor Box Data Cable" | ar="كابل بيانات لعلبة الأرضية" | brands(3)=[Belden, CommScope, MESC] | updatedAt=2026-10-24T14:43:17.307Z
+#11 | electrical    | en="Grounding and Earthing" | ar="التأريض والاتصال الأرضي" | brands(1)=[Bahra] | updatedAt=2026-10-24T14:43:17.348Z
+#12 | electrical    | en="Wiring Devices" | ar="أدوات التوصيل الكهربائي" | brands(1)=[Ultra Light] | updatedAt=2026-10-24T14:43:17.390Z
+#13 | electrical    | en="Disconnected Switch" | ar="مفتاح مفصول" | notes_en="Client review needed: raw description is "DISCONNECTED SWITCH" (translated literally to Arabic "مفتاح مفصول") — confirm whether "Disconnect Switch" was intended." | brands(1)=[Legrand] | updatedAt=2026-10-24T14:43:17.438Z
+#14 | electrical    | en="Floor Box" | ar="علبة أرضية" | brands(2)=[Ultra Light, Siera] | updatedAt=2026-10-24T14:43:17.499Z
+#15 | electrical    | en="Emergency Lighting Battery" | ar="بطارية إنارة الطوارئ" | brands(2)=[Tridonic, Siera] | updatedAt=2026-10-24T14:43:17.550Z
+#16 | electrical    | en="Lighting" | ar="إنارة" | brands(2)=[Ultra Light, Siera] | updatedAt=2026-10-24T14:43:17.599Z
+#17 | electrical    | en="Outdoor Lighting" | ar="إنارة خارجية" | brands(1)=[Ultra Light] | updatedAt=2026-10-24T14:43:17.648Z
+#18 | electrical    | en="Lighting" | ar="إنارة" | brands(2)=[Ultra Light, Siera] | updatedAt=2026-10-24T14:43:17.693Z
+#19 | electrical    | en="Fire Alarm System" | ar="نظام إنذار الحريق" | brands(2)=[Cooper, Avanger] | updatedAt=2026-10-24T14:43:17.739Z
+#20 | electrical    | en="Panel Board" | ar="لوحة توزيع" | brands(1)=[Effective Power - ASSTTE] | updatedAt=2026-10-24T14:43:17.786Z
+#21 | mechanical    | en="Firepipes" | ar="مواسير حريق" | notes_en="Client review needed: raw description is single-word "FIREPIPES" (translated literally to Arabic "مواسير حريق") — confirm whether "Fire Pipes" was intended." | brands(1)=[Aljazirah (Oman-Saudi)] | updatedAt=2026-10-24T14:43:17.836Z
+#22 | mechanical    | en="Galvanized Pipe" | ar="مواسير مجلفنة" | brands(1)=[Aljazera] | updatedAt=2026-10-24T14:43:17.873Z
+#23 | mechanical    | en="Grooved Fitting" | ar="قطع اتصال مخددة" | brands(2)=[Junt, JTPR UL-FM] | updatedAt=2026-10-24T14:43:17.915Z
+#24 | mechanical    | en="Threaded Fitting" | ar="قطع اتصال مسننة" | brands(1)=[Jihanzi - UL/FM] | updatedAt=2026-10-24T14:43:17.959Z
+#25 | mechanical    | en="Lined Split Clamp & Clevis Hanger" | ar="مربط مشطور مبطن وعلاقة كليفس" | brands(1)=[Karishma Steel] | updatedAt=2026-10-24T14:43:18.003Z
+#26 | mechanical    | en="ZCV for Fire" | ar="صمام ZCV للحريق" | brands(1)=[Shandong Lede Machinery] | updatedAt=2026-10-24T14:43:18.044Z
+#27 | mechanical    | en="Temper Switch" | ar="مفتاح تقسية" | notes_en="Client review needed: raw description is "TEMPER SWITCH" (translated literally to Arabic "مفتاح تقسية") — confirm whether "Tamper Switch" was intended." | brands(1)=[JMC] | updatedAt=2026-10-24T14:43:18.083Z
+#28 | mechanical    | en="Test & Drain Valve" | ar="صمام اختبار وتصريف" | brands(2)=[Giacomini, SEFECO] | updatedAt=2026-10-24T14:43:18.122Z
+#29 | mechanical    | en="Flow Switch" | ar="مفتاح تدفق" | brands(1)=[JMC] | updatedAt=2026-10-24T14:43:18.169Z
+#30 | mechanical    | en="Pressure Gauge" | ar="مقياس ضغط" | brands(2)=[Tyco, Ashcroft] | updatedAt=2026-10-24T14:43:18.212Z
+#31 | mechanical    | en="Fire Pipes Paints" | ar="دهانات مواسير الحريق" | notes_en="Product notes from brand cell: Hempel (Coating); Jazeera (Primer)." | brands(2)=[Jazeera (Primer), Hempel] | updatedAt=2026-10-24T14:43:18.260Z
+#32 | mechanical    | en="Fire Pump" | ar="مضخة حريق" | brands(1)=[Bristol] | updatedAt=2026-10-24T14:43:18.309Z
+#33 | mechanical    | en="Fire Hose Cabinet Steel" | ar="صندوق خرطوم حريق فولاذي" | brands(1)=[SEFECO] | updatedAt=2026-10-24T14:43:18.356Z
+#34 | mechanical    | en="Fire Extinguisher" | ar="طفاية حريق" | brands(1)=[SEFECO] | updatedAt=2026-10-24T14:43:18.401Z
+#35 | mechanical    | en="Novec" | ar="نوفيك (NOVEC)" | brands(3)=[Hi-Tech, Look, SRI] | updatedAt=2026-10-24T14:43:18.451Z
+#36 | mechanical    | en="Aerosol" | ar="أيروسول (Aerosol)" | brands(1)=[Fire Pro] | updatedAt=2026-10-24T14:43:18.509Z
+#37 | mechanical    | en="PPR Pipe" | ar="مواسير PPR" | brands(1)=[Tahweel] | updatedAt=2026-10-24T14:43:18.554Z
+#38 | mechanical    | en="Fittings" | ar="قطع اتصال (وصلات)" | brands(1)=[Tahweel] | updatedAt=2026-10-24T14:43:18.597Z
+#39 | mechanical    | en="Plumbing Valves" | ar="صمامات سباكة" | brands(1)=[Tahweel] | updatedAt=2026-10-24T14:43:18.643Z
+#40 | mechanical    | en="Water Hammer Arrestor" | ar="مانع المطرقة المائية" | brands(1)=[Watts] | updatedAt=2026-10-24T14:43:18.686Z
+#41 | mechanical    | en="Hose Bibs" | ar="حنفيات خراطيم" | brands(1)=[Watts] | updatedAt=2026-10-24T14:43:18.733Z
+#42 | mechanical    | en="Plumbing Insulation" | ar="عزل السباكة" | brands(2)=[Aerofoam, Armaflex] | updatedAt=2026-10-24T14:43:18.781Z
+#43 | mechanical    | en="Waste Pipe" | ar="ماسورة صرف" | brands(1)=[Tahweel] | updatedAt=2026-10-24T14:43:18.824Z
+#44 | mechanical    | en="AC Drain Pipes" | ar="مواسير صرف التكييف" | brands(2)=[Gulf Pipes, Tahweel] | updatedAt=2026-10-24T14:43:18.863Z
+#45 | mechanical    | en="Drain, Waste Pipe" | ar="ماسورة تصريف وصرف" | brands(1)=[Tahweel] | updatedAt=2026-10-24T14:43:18.908Z
+#46 | mechanical    | en="Waste Pipes" | ar="مواسير صرف" | brands(2)=[Nepro Plast, Tahweel] | updatedAt=2026-10-24T14:43:18.957Z
+#47 | mechanical    | en="Flush Tank for WC" | ar="خزان طرد للمرحاض (WC)" | brands(2)=[Grohe, Geberit] | updatedAt=2026-10-24T14:43:19.003Z
+#48 | mechanical    | en="Water Tank" | ar="خزان مياه" | brands(1)=[Al-Muhaidb National] | updatedAt=2026-10-24T14:43:19.045Z
+#49 | mechanical    | en="Water Heater" | ar="سخان مياه" | brands(2)=[Ariston, Saudi Ceramics] | updatedAt=2026-10-24T14:43:19.088Z
+#50 | mechanical    | en="Booster Pump" | ar="مضخة تقوية" | brands(3)=[Pedrollo, LEO, Water Horse] | updatedAt=2026-10-24T14:43:19.136Z
+#51 | mechanical    | en="Duct Sheet" | ar="صاج مجاري الهواء" | brands(1)=[Local Fabrication] | updatedAt=2026-10-24T14:43:19.181Z
+#52 | mechanical    | en="Duct Insulation" | ar="عزل مجاري الهواء" | brands(1)=[AFICO] | updatedAt=2026-10-24T14:43:19.224Z
+#53 | mechanical    | en="DX Pipe" | ar="مواسير DX" | brands(2)=[Luvata, Camlee] | updatedAt=2026-10-24T14:43:19.269Z
+#54 | mechanical    | en="Out Let Grill" | ar="شبكة مخرج" | notes_en="Client review needed: raw description is "OUT LET GRILL" (translated literally to Arabic "شبكة مخرج") — confirm whether "Outlet Grill" / "Outlet Grille" was intended." | brands(1)=[Al-Nasseriah] | updatedAt=2026-10-24T14:43:19.313Z
+#55 | mechanical    | en="AC Units" | ar="وحدات تكييف" | brands(2)=[SKM, Zamil] | updatedAt=2026-10-24T14:43:19.361Z
+#56 | mechanical    | en="Fan" | ar="مروحة" | brands(2)=[System Air, Black Horse] | updatedAt=2026-10-24T14:43:19.411Z
+#57 | mechanical    | en="Elevators" | ar="مصاعد" | brands(1)=[Aldurrah-Fuji] | updatedAt=2026-10-24T14:43:19.460Z
+#58 | structural    | en="Ready Mix Concrete" | ar="خرسانة جاهزة" | brands(2)=[Saudi Ready Mix, Nesma Concrete Solutions] | updatedAt=2026-10-24T14:43:19.509Z
+#59 | structural    | en="Cement" | ar="أسمنت" | brands(2)=[Arabian Cement Co., Yanbu Cement] | updatedAt=2026-10-24T14:43:19.553Z
+#60 | structural    | en="Reinforcing Steel Bars" | ar="قضبان حديد التسليح" | brands(1)=[Al-Rajhi Steel] | updatedAt=2026-10-24T14:43:19.596Z
+#61 | structural    | en="Waterproofing Membranes" | ar="أغشية العزل المائي" | brands(2)=[Bitumat, Awazel] | updatedAt=2026-10-24T14:43:19.634Z
+#62 | structural    | en="Roof Thermal Insulation" | ar="العزل الحراري للأسطح" | brands(1)=[Arnon XPS] | updatedAt=2026-10-24T14:43:19.670Z
+#63 | structural    | en="Concrete Masonry Units" | ar="وحدات البناء الخرسانية" | brands(2)=[Saudi Ready Mix - Block, Jeddah Block Factory] | updatedAt=2026-10-24T14:43:19.704Z
+#64 | structural    | en="Wooden Doors & Frames" | ar="أبواب وإطارات خشبية" | brands(2)=[Saudi Anfal, Al-Dorais Doors Factory] | updatedAt=2026-10-24T14:43:19.748Z
+#65 | structural    | en="Aluminium Systems" | ar="أنظمة الألمنيوم" | brands(2)=[ALUPCO, Al-Tahweel Aluminium] | updatedAt=2026-10-24T14:43:19.793Z
+#66 | architectural | en="Glass" | ar="زجاج" | brands(1)=[Obeikan Glass] | updatedAt=2026-10-24T14:43:19.836Z
+#67 | architectural | en="Gypsum Board" | ar="ألواح جبس" | brands(1)=[Mada Gypsum] | updatedAt=2026-10-24T14:43:19.883Z
+#68 | architectural | en="Plaster Additives" | ar="إضافات اللياسة" | brands(1)=[Saveto] | updatedAt=2026-10-24T14:43:19.931Z
+#69 | architectural | en="Porcelain" | ar="بورسلين" | brands(2)=[Saudi Ceramics, Alfanar Cermics] | updatedAt=2026-10-24T14:43:19.966Z
+#70 | architectural | en="Marble" | ar="رخام" | brands(2)=[Al-Mulhem Marble, Saudi Marble] | updatedAt=2026-10-24T14:43:20.003Z
+#71 | architectural | en="Paints" | ar="دهانات" | brands(2)=[Jazeera Paints, Ritver Paints] | updatedAt=2026-10-24T14:43:20.039Z
+#72 | architectural | en="GRC Cladding" | ar="تكسية GRC" | brands(1)=[Local Jeddah GRC Factory] | updatedAt=2026-10-24T14:43:20.073Z
+#73 | architectural | en="Wrought Iron Balustrade" | ar="درابزين حديد مشغول" | brands(1)=[Local Fabrication] | updatedAt=2026-10-24T14:43:20.107Z

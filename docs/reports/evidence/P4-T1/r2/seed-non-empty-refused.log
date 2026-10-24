@@ -1,0 +1,10 @@
+$ pnpm seed
+
+> aljazira-website@0.1.0 seed C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r2-20261024-173130
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+[seed] Refusing to run seed on a non-empty database (brands=83, materials=73). The seed is a first-run baseline and never overwrites existing data. Pass --reseed in development to clear and rebuild brands and materials.
+
+[seed_exit_code=1]

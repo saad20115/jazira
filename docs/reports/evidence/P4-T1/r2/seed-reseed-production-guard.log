@@ -1,0 +1,10 @@
+$ NODE_ENV=production pnpm seed -- --force-production --reseed
+
+> aljazira-website@0.1.0 seed C:\Users\User21.CSE\AppData\Local\Temp\jazira-p4-t1-r2-20261024-173130
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts "--" "--force-production" "--reseed"
+
+ ELIFECYCLE  Command failed with exit code 1.
+
+[seed] Refusing to run --reseed when NODE_ENV=production. --reseed is a development-only flag and is never allowed in production.
+
+[seed_exit_code=1]
