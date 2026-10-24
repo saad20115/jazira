@@ -1,0 +1,8 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+$ git rev-parse HEAD
+f52b25d70e3fff9dcfd4c216ec8485860c3545cb
+$ pnpm audit --prod
+
+No known vulnerabilities found
+

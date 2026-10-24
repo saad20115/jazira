@@ -1,0 +1,54 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+$ git rev-parse HEAD
+f52b25d70e3fff9dcfd4c216ec8485860c3545cb
+
+=== STATE 1: site-settings.arabicEnabled = false (Default) ===
+
+$ curl -I "http://localhost:3112/"
+HTTP/1.1 308 Permanent Redirect
+location: /en
+
+$ curl -I "http://localhost:3112/ar"
+HTTP/1.1 307 Temporary Redirect
+location: /en
+content-type: text/html; charset=utf-8
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+
+$ curl -I "http://localhost:3112/ar/services?q=hvac"
+HTTP/1.1 307 Temporary Redirect
+location: /en/services?q=hvac
+content-type: text/html; charset=utf-8
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+
+$ curl -I "http://localhost:3112/en"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+html_open_tag: <html lang="en" dir="ltr" class="_TgnAG_variable">
+hreflang_links: [{"hreflang":"en","href":"http://localhost:3112/en"},{"hreflang":"x-default","href":"http://localhost:3112/en"}]
+og_locale: en_US
+organization_json_ld: {"@context":"https://schema.org","@type":"Organization","name":"Al Jazira for Imdad Smart Co.","url":"http://localhost:3112/en","inLanguage":"en"}
+contains_ar_switcher_href: false
+
+=== STATE 2: site-settings.arabicEnabled = true (Enabled by Admin) ===
+
+$ curl -I "http://localhost:3112/"
+HTTP/1.1 308 Permanent Redirect
+location: /en
+
+$ curl -I "http://localhost:3112/ar"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+html_open_tag: <html lang="ar" dir="rtl" class="KQeM3W_variable">
+contains_en_switcher_href: true
+
+$ curl -I "http://localhost:3112/en"
+HTTP/1.1 200 OK
+content-type: text/html; charset=utf-8
+cache-control: private, no-cache, no-store, max-age=0, must-revalidate
+html_open_tag: <html lang="en" dir="ltr" class="_TgnAG_variable">
+hreflang_links: [{"hreflang":"en","href":"http://localhost:3112/en"},{"hreflang":"ar","href":"http://localhost:3112/ar"},{"hreflang":"x-default","href":"http://localhost:3112/en"}]
+contains_ar_switcher_href: true
+

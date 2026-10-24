@@ -1902,3 +1902,15 @@ Also R-24/R-25: report accuracy, the token fallback, the Arabic fallback metrics
 row.
 
 **Order:** finish P3-T12 (in progress) → P3-T4 r4 → P4-T2.
+
+
+## M-149 · 2026-10-25 00:04 · Executor → CTO · P3-T12 r1 ready for review — starting P3-T4 r4
+- **Report**: `handoff/reports/P3-T12.md`
+- **Evidence**: `docs/reports/evidence/P3-T12/r1/` (`commit.log`, `install.log`, `migrate-up-down-up.log`, `lint.log`, `typecheck.log`, `test.log`, `build.log`, `audit.log`, `evidence-run.log`, `curl-headers-both-states.log`, `sitemap-both-states.log`, `anon-crawl-toggle-and-rbac.log`, `citations.log`, `citations-check.log`) and `docs/reports/phase-3/P3-T12/r1/` (`admin-site-settings-arabic-switch-en.png`, `admin-site-settings-arabic-switch-ar.png`, `admin-site-settings-editor-readonly.png`, `en-switcher-off-1440.png`, `en-switcher-off-390.png`, `en-switcher-on-1440.png`, `en-switcher-on-390.png`, `ar-live-200-rtl-1440.png`)
+- **Head commit**: `f52b25d70e3fff9dcfd4c216ec8485860c3545cb` (`f52b25d`)
+- **Highlights**:
+  1. Set English (`en`) as the default locale across Payload (`src/payload.config.ts:50`, `src/payload.config.ts:73`), `src/i18n/index.ts:4`, `src/proxy.ts:12` (`/` → `308 /en` and default admin UI cookie `en`), preview routes (`src/lib/preview.ts:30`, `src/app/api/preview/exit/route.ts:13`), and `seedMaterialsAndBrands` (`src/seed/materials.ts:1130`).
+  2. Added `site-settings.arabicEnabled` (`type: 'checkbox'`, `defaultValue: false`, field-level `update: isAdminFieldLevel` at `src/globals/SiteSettings.ts:36`) with migration `src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts` (`migrate-up-down-up.log`), `rootPaths: ['/sitemap.xml']` revalidation, and immediate `{ expire: 0 }` tag expiration (`src/hooks/revalidate.ts:42`).
+  3. Added cached server-only `isArabicEnabled` (`src/lib/cms/globals.ts:71`) and `isAuthorizedArabicPreviewRequest` (`src/lib/cms/client.ts:312`): when `arabicEnabled` is `false`, anonymous `/ar` and `/ar/*` requests return `307 Temporary Redirect` to `/en` / `/en/*` (preserving query string), the language switcher is hidden in desktop/mobile `Navbar` and `Footer`, `/sitemap.xml` and `hreflang` omit `/ar` (`x-default` = `/en`), while logged-in `admin`/`editor` staff can still preview `/ar` in draft mode or Live Preview. When toggled `true` by an admin, `/ar` returns `200 OK` RTL and the switcher appears on the very next request (`anon-crawl-toggle-and-rbac.log`).
+  4. Verified `47` test files / `291` tests passing (`test.log`) and `71` paired citations / `51` file paths with `0` errors (`citations-check.log`).
+- **Next**: Acknowledged `M-148` (`handoff/reviews/P3-T4.md` §Round 3 `R-22`..`R-25`). Starting **`P3-T4` Round 4 (`IN_PROGRESS | 4`)** immediately, followed by `P4-T2`.

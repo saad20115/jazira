@@ -1,0 +1,49 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+$ git rev-parse HEAD
+f52b25d70e3fff9dcfd4c216ec8485860c3545cb
+$ pnpm payload migrate && (echo y| pnpm payload migrate:down) && pnpm payload migrate && pnpm payload migrate:status
+
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[23:48:35] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod\src\migrations[39m
+[23:48:35] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[23:48:42] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod\src\migrations[39m
+[23:48:42] [32mINFO[39m: [36mRolling back batch 2 consisting of 9 migration(s).[39m
+[23:48:42] [32mINFO[39m: [36mMigrating down: 20261024_195628_p3_t12_site_settings_arabic_enabled[39m
+[23:48:42] [32mINFO[39m: [36mMigrated down:  20261024_195628_p3_t12_site_settings_arabic_enabled (8ms)[39m
+[23:48:42] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[23:48:48] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod\src\migrations[39m
+[23:48:48] [32mINFO[39m: [36mMigrating: 20261024_195628_p3_t12_site_settings_arabic_enabled[39m
+[23:48:48] [32mINFO[39m: [36mMigrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (8ms)[39m
+[23:48:48] [32mINFO[39m: [36mDone.[39m
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[23:48:54] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t12-dod\src\migrations[39m
+â”Œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”€â”€â”¬â”€â”€â”€â”€â”€â”گ
+â”‚[37m [0m[01m                                               Name[0m â”‚[37m [0m[01mBatch[0m â”‚[37m [0m[01mRan[0m â”‚
+â”œâ”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”€â”€â”¼â”€â”€â”€â”€â”€â”¤
+â”‚[37m [0m[32m                20261021_074848_initial_users_media[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m20261022_120943_p2_t2_videos_brands_stats_materials[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m                20261022_140011_p2_t3_services_team[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m                     20261022_160652_p2_t4_projects[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m                      20261022_221250_p2_t5_globals[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m               20261022_231435_p2_t6_quote_requests[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m 20261023_005934_p2_t6_quote_requests_service_title[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[0m â”‚[37m [0m[32m    1[0m â”‚[37m [0m[32mYes[0m â”‚
+â”‚[37m [0m[32m20261024_195628_p3_t12_site_settings_arabic_enabled[0m â”‚[37m [0m[32m    2[0m â”‚[37m [0m[32mYes[0m â”‚
+â””â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”€â”€â”´â”€â”€â”€â”€â”€â”ک
+[23:48:55] [32mINFO[39m: [36mDone.[39m
+
