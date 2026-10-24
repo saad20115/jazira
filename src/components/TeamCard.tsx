@@ -1,6 +1,13 @@
 'use client'
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactElement } from 'react'
+import {
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+  type CSSProperties,
+  type ReactElement,
+} from 'react'
 
 import { CmsLink } from '@/components/CmsLink'
 import { SocialIcon } from '@/components/icons'
@@ -39,18 +46,20 @@ const STATE_CLASS_MAP: Record<TeamCardState, string> = {
   'Enter 5': styles.stateEnter5,
 }
 
-function getInitialEnteredState(animateOnScroll: boolean): boolean {
-  if (!animateOnScroll) {
-    return true
-  }
-  if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      return true
-    }
-  }
-  if (typeof window !== 'undefined' && typeof IntersectionObserver === 'undefined') {
-    return true
-  }
+function subscribeReducedMotion(onStoreChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {}
+  const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+  mql.addEventListener('change', onStoreChange)
+  return () => mql.removeEventListener('change', onStoreChange)
+}
+
+function getReducedMotionSnapshot(): boolean {
+  return typeof window !== 'undefined' && typeof window.matchMedia === 'function'
+    ? window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    : false
+}
+
+function getReducedMotionServerSnapshot(): boolean {
   return false
 }
 
@@ -70,12 +79,15 @@ export function TeamCard({
 }: TeamCardProps): ReactElement {
   const dict = getDictionary(locale)
   const cardRef = useRef<HTMLElement | null>(null)
-  const [hasEntered, setHasEntered] = useState<boolean>(() =>
-    getInitialEnteredState(animateOnScroll),
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot,
   )
+  const [hasEntered, setHasEntered] = useState<boolean>(!animateOnScroll)
 
   useEffect(() => {
-    if (!animateOnScroll || hasEntered) {
+    if (!animateOnScroll || prefersReducedMotion || hasEntered) {
       return
     }
 
@@ -101,9 +113,9 @@ export function TeamCard({
     return () => {
       observer.disconnect()
     }
-  }, [animateOnScroll, hasEntered])
+  }, [animateOnScroll, prefersReducedMotion, hasEntered])
 
-  const effectiveEntered = !animateOnScroll || hasEntered
+  const effectiveEntered = !animateOnScroll || prefersReducedMotion || hasEntered
   const stateClass = STATE_CLASS_MAP[state]
   const scrollClass = animateOnScroll
     ? effectiveEntered

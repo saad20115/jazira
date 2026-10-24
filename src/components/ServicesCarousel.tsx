@@ -5,6 +5,7 @@ import {
   useEffect,
   useRef,
   useState,
+  useSyncExternalStore,
   type KeyboardEvent,
   type PointerEvent,
   type ReactElement,
@@ -43,10 +44,25 @@ export interface ServicesCarouselProps {
 const CARD_STEP_PX = 310 // 290px card + 20px gap
 const SWIPE_THRESHOLD_PX = 40
 
-function getInitialReducedMotion(): boolean {
+function subscribeReducedMotion(onStoreChange: () => void): () => void {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return () => {}
+  }
+  const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
+  mql.addEventListener('change', onStoreChange)
+  return () => {
+    mql.removeEventListener('change', onStoreChange)
+  }
+}
+
+function getReducedMotionSnapshot(): boolean {
   if (typeof window !== 'undefined' && typeof window.matchMedia === 'function') {
     return window.matchMedia('(prefers-reduced-motion: reduce)').matches
   }
+  return false
+}
+
+function getReducedMotionServerSnapshot(): boolean {
   return false
 }
 
@@ -75,26 +91,16 @@ export function ServicesCarousel({
   const [isHovered, setIsHovered] = useState<boolean>(false)
   const [isFocusedWithin, setIsFocusedWithin] = useState<boolean>(false)
   const [isOffscreen, setIsOffscreen] = useState<boolean>(false)
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState<boolean>(getInitialReducedMotion)
+  const prefersReducedMotion = useSyncExternalStore(
+    subscribeReducedMotion,
+    getReducedMotionSnapshot,
+    getReducedMotionServerSnapshot,
+  )
   const [dragOffsetPx, setDragOffsetPx] = useState<number>(0)
   const [isDragging, setIsDragging] = useState<boolean>(false)
 
   const sectionRef = useRef<HTMLElement | null>(null)
   const dragStartXRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-      return
-    }
-    const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const onChange = (event: MediaQueryListEvent): void => {
-      setPrefersReducedMotion(event.matches)
-    }
-    mql.addEventListener('change', onChange)
-    return () => {
-      mql.removeEventListener('change', onChange)
-    }
-  }, [])
 
   useEffect(() => {
     const node = sectionRef.current

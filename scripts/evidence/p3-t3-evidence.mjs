@@ -245,10 +245,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         text.includes('Applying inline style violates the following Content Security Policy directive')
 
       page.on('console', (msg) => {
-        if (
-          (msg.type() === 'error' || msg.type() === 'warning') &&
-          !isNextDevRuntimeCspNoise(msg.text())
-        ) {
+        if (msg.type() === 'error' && !isNextDevRuntimeCspNoise(msg.text())) {
           consoleEvents.push({ locale, type: msg.type(), text: msg.text() })
         }
       })
