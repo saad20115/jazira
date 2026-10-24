@@ -14,18 +14,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const rawParams = Object.fromEntries(request.nextUrl.searchParams.entries())
   const parsed = previewExitQuerySchema.safeParse(rawParams)
   if (!parsed.success) {
-    return NextResponse.json(
-      { error: 'Invalid exit-preview parameters.' },
-      { status: 400 },
-    )
+    return NextResponse.json({ error: 'Invalid exit-preview parameters.' }, { status: 400 })
   }
 
   const candidate = parsed.data.returnTo ?? '/ar'
   if (!isValidInternalCmsPath(candidate)) {
-    return NextResponse.json(
-      { error: 'Unsafe returnTo path.' },
-      { status: 400 },
-    )
+    return NextResponse.json({ error: 'Unsafe returnTo path.' }, { status: 400 })
   }
 
   const dm = await draftMode()

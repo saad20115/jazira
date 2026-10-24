@@ -42,7 +42,9 @@ export function ServiceCard({
   const resolvedCtaLabel = ctaLabel ?? dict.cards.viewAllServices
   const mediaAsset = resolveMediaAsset(service.image, service.title, 'card')
   const imageSrc = mediaAsset?.url ?? fallbackImageUrl ?? null
-  const hasDescription = Boolean(service.shortDescription && service.shortDescription.trim().length > 0)
+  const hasDescription = Boolean(
+    service.shortDescription && service.shortDescription.trim().length > 0,
+  )
 
   const cardClasses = [
     styles.card,

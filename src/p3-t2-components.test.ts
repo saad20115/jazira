@@ -7,12 +7,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import StyleguidePage from '@/app/(frontend)/[locale]/styleguide/page'
 import { Accordion, AccordionItem } from '@/components/Accordion'
-import {
-  Button,
-  BUTTON_SIZES,
-  BUTTON_STATES,
-  BUTTON_VARIANTS,
-} from '@/components/Button'
+import { Button, BUTTON_SIZES, BUTTON_STATES, BUTTON_VARIANTS } from '@/components/Button'
 import { Eyebrow, EYEBROW_TONES } from '@/components/Eyebrow'
 import {
   buildDefaultFooterQuickLinks,
@@ -28,12 +23,7 @@ import {
   SOCIAL_ICON_KEYS,
   SocialIcon,
 } from '@/components/icons'
-import {
-  getLogoAssetSrc,
-  Logo,
-  LOGO_COLORS,
-  LOGO_TYPES,
-} from '@/components/Logo'
+import { getLogoAssetSrc, Logo, LOGO_COLORS, LOGO_TYPES } from '@/components/Logo'
 import {
   buildDefaultNavbarItems,
   buildLanguageSwitchHref,
@@ -41,15 +31,8 @@ import {
   Navbar,
   trapDrawerFocusOnTab,
 } from '@/components/Navbar'
-import {
-  NAV_LINK_STATES,
-  NAV_LINK_THEMES,
-  NavLink,
-} from '@/components/NavLink'
-import {
-  WhatsAppFab,
-  WHATSAPP_FAB_STATES,
-} from '@/components/WhatsAppFab'
+import { NAV_LINK_STATES, NAV_LINK_THEMES, NavLink } from '@/components/NavLink'
+import { WhatsAppFab, WHATSAPP_FAB_STATES } from '@/components/WhatsAppFab'
 import { getDictionary, switchLocaleInPathname } from '@/i18n'
 
 let mockedPathname = '/ar/services'
@@ -71,7 +54,11 @@ function relativeLuminance(hex: string): number {
   const r = Number.parseInt(clean.slice(0, 2), 16)
   const g = Number.parseInt(clean.slice(2, 4), 16)
   const b = Number.parseInt(clean.slice(4, 6), 16)
-  return 0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b)
+  return (
+    0.2126 * srgbChannelToLinear(r) +
+    0.7152 * srgbChannelToLinear(g) +
+    0.0722 * srgbChannelToLinear(b)
+  )
 }
 
 function wcagContrastRatio(hexA: string, hexB: string): number {
@@ -387,9 +374,7 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       expect(normalizeWhatsappDigits('00966502255688')).toBe('00966502255688')
       expect(normalizeWhatsappDigits('')).toBe('')
 
-      expect(
-        renderToStaticMarkup(React.createElement(WhatsAppFab, { locale: 'ar' })),
-      ).toBe('')
+      expect(renderToStaticMarkup(React.createElement(WhatsAppFab, { locale: 'ar' }))).toBe('')
 
       for (const state of WHATSAPP_FAB_STATES) {
         const html = renderToStaticMarkup(
@@ -473,17 +458,13 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       expect(SERVICE_ICON_OPTIONS.map((o) => o.value)).toEqual([...SERVICE_ICON_KEYS])
 
       for (const iconKey of SERVICE_ICON_KEYS) {
-        const html = renderToStaticMarkup(
-          React.createElement(ServiceIcon, { name: iconKey }),
-        )
+        const html = renderToStaticMarkup(React.createElement(ServiceIcon, { name: iconKey }))
         expect(html).toContain(`data-icon="service-${iconKey}"`)
         expect(html).toContain('viewBox="0 0 20 20"')
       }
 
       for (const socialKey of SOCIAL_ICON_KEYS) {
-        const html = renderToStaticMarkup(
-          React.createElement(SocialIcon, { name: socialKey }),
-        )
+        const html = renderToStaticMarkup(React.createElement(SocialIcon, { name: socialKey }))
         expect(html).toContain(`data-icon="social-${socialKey}"`)
         expect(html).toContain('viewBox="0 0 20 20"')
       }

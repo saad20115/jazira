@@ -70,10 +70,7 @@ export async function getServices(
     return queryServicesDirect(locale, options)
   }
 
-  const tags = [
-    ...buildCollectionTags('services'),
-    `collection:services:${locale}`,
-  ]
+  const tags = [...buildCollectionTags('services'), `collection:services:${locale}`]
   const keyParts = [
     'cms-services',
     locale,
@@ -194,10 +191,7 @@ export async function getProjects(
     return queryProjectsDirect(locale, options)
   }
 
-  const tags = [
-    ...buildCollectionTags('projects'),
-    `collection:projects:${locale}`,
-  ]
+  const tags = [...buildCollectionTags('projects'), `collection:projects:${locale}`]
   const keyParts = [
     'cms-projects',
     locale,
@@ -374,10 +368,6 @@ export async function getTeamMembers(
   }
 
   const tags = [...buildCollectionTags('team'), `collection:team:${locale}`]
-  const cachedGetter = withCmsCache(
-    fetchDirect,
-    ['cms-team', locale, options.tier ?? 'all'],
-    tags,
-  )
+  const cachedGetter = withCmsCache(fetchDirect, ['cms-team', locale, options.tier ?? 'all'], tags)
   return cachedGetter()
 }

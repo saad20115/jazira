@@ -4,11 +4,7 @@ import type { Metadata } from 'next'
 import { draftMode, headers } from 'next/headers'
 import type React from 'react'
 
-import {
-  Footer,
-  type FooterColumnItem,
-  type FooterSocialItem,
-} from '@/components/Footer'
+import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
 import {
@@ -77,8 +73,7 @@ export async function generateMetadata({
     const siteSettings = await getSiteSettings(locale)
     const companyName = siteSettings.companyName || ''
     const defaultTitle = siteSettings.defaultSeo?.title || companyName
-    const defaultDescription =
-      siteSettings.defaultSeo?.description || siteSettings.tagline || ''
+    const defaultDescription = siteSettings.defaultSeo?.description || siteSettings.tagline || ''
 
     return {
       metadataBase,

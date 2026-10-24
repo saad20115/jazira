@@ -26,11 +26,7 @@ export function getDictionary(locale: SupportedLocale): UiDictionary {
   return DICTIONARIES[locale]
 }
 
-export function formatStepCounter(
-  template: string,
-  current: number,
-  total: number,
-): string {
+export function formatStepCounter(template: string, current: number, total: number): string {
   return template.replace('{current}', String(current)).replace('{total}', String(total))
 }
 
@@ -38,10 +34,7 @@ export function formatStepCounter(
  * Replaces the leading locale segment (`/ar/...` or `/en/...`) in a pathname with `targetLocale`,
  * keeping the rest of the path intact (`handoff/tasks/P3-T2.md` §5).
  */
-export function switchLocaleInPathname(
-  pathname: string,
-  targetLocale: SupportedLocale,
-): string {
+export function switchLocaleInPathname(pathname: string, targetLocale: SupportedLocale): string {
   const clean = pathname.trim() || '/'
   const [pathOnly, queryPart] = clean.split('?')
   const segments = (pathOnly || '/').split('/').filter(Boolean)

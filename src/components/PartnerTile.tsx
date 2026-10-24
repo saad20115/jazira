@@ -33,20 +33,12 @@ export function PartnerTile({
   const wordmarkTokenClass =
     resolvedWordmark.length > 20 ? 't-h5' : resolvedWordmark.length > 10 ? 't-h4' : 't-h3'
 
-  const tileClasses = [
-    styles.tile,
-    state === 'Hover' ? styles.stateHover : '',
-    className ?? '',
-  ]
+  const tileClasses = [styles.tile, state === 'Hover' ? styles.stateHover : '', className ?? '']
     .filter(Boolean)
     .join(' ')
 
   return (
-    <article
-      className={tileClasses}
-      data-component="partner-tile"
-      data-state={state}
-    >
+    <article className={tileClasses} data-component="partner-tile" data-state={state}>
       <div className={styles.logoSlot}>
         {logoAsset ? (
           <CspSafeImage

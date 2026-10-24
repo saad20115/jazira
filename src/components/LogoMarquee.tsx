@@ -77,22 +77,14 @@ export function LogoMarquee({
 
   const row1TrackClass = [
     styles.track,
-    position === 'A'
-      ? styles.posARow1
-      : position === 'B'
-        ? styles.posBRow1
-        : styles.trackRow1Live,
+    position === 'A' ? styles.posARow1 : position === 'B' ? styles.posBRow1 : styles.trackRow1Live,
   ]
     .filter(Boolean)
     .join(' ')
 
   const row2TrackClass = [
     styles.track,
-    position === 'A'
-      ? styles.posARow2
-      : position === 'B'
-        ? styles.posBRow2
-        : styles.trackRow2Live,
+    position === 'A' ? styles.posARow2 : position === 'B' ? styles.posBRow2 : styles.trackRow2Live,
   ]
     .filter(Boolean)
     .join(' ')

@@ -49,7 +49,11 @@ export function isValidInternalCmsPath(rawPath: string): boolean {
     nonEmptySegments[0] === 'ar' || nonEmptySegments[0] === 'en'
       ? nonEmptySegments[1]
       : nonEmptySegments[0]
-  if (firstNonLocaleSeg === 'admin' || firstNonLocaleSeg === 'api' || firstNonLocaleSeg === '_next') {
+  if (
+    firstNonLocaleSeg === 'admin' ||
+    firstNonLocaleSeg === 'api' ||
+    firstNonLocaleSeg === '_next'
+  ) {
     return false
   }
 
@@ -169,12 +173,10 @@ export interface CmsLinkDataLike {
   type?: ('internal' | 'external') | null
   internalRoute?: string | null
   internalPath?: string | null
-  reference?:
-    | {
-        relationTo: 'services' | 'projects'
-        value: number | string | { slug?: string | null }
-      }
-    | null
+  reference?: {
+    relationTo: 'services' | 'projects'
+    value: number | string | { slug?: string | null }
+  } | null
   url?: string | null
   newTab?: boolean | null
 }

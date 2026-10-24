@@ -12,8 +12,10 @@ export type NavLinkTheme = (typeof NAV_LINK_THEMES)[number]
 export const NAV_LINK_STATES = ['Default', 'Hover', 'Active'] as const
 export type NavLinkState = (typeof NAV_LINK_STATES)[number]
 
-export interface NavLinkProps
-  extends Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'children' | 'href'> {
+export interface NavLinkProps extends Omit<
+  AnchorHTMLAttributes<HTMLAnchorElement>,
+  'children' | 'href'
+> {
   active?: boolean
   children?: ReactNode
   className?: string

@@ -479,14 +479,10 @@ export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCo
     overrideAccess: false,
   })
   const observedCount = Math.max(result.docs.length, result.totalDocs)
-  const wasCapped = assertSmallCollectionNotTruncated(
-    options.collection,
-    observedCount,
-    (msg) => {
-      payload.logger.warn(msg)
-      console.warn(msg)
-    },
-  )
+  const wasCapped = assertSmallCollectionNotTruncated(options.collection, observedCount, (msg) => {
+    payload.logger.warn(msg)
+    console.warn(msg)
+  })
   if (wasCapped || result.docs.length > MAX_CMS_QUERY_LIMIT) {
     const cappedDocs = result.docs.slice(0, MAX_CMS_QUERY_LIMIT)
     return {

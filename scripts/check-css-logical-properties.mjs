@@ -168,7 +168,9 @@ function collectCssFiles(dirPath) {
     return []
   }
   const resolvedDir = path.resolve(dirPath)
-  if (EXCLUDED_SUBPATHS.some((ex) => resolvedDir === ex || resolvedDir.startsWith(`${ex}${path.sep}`))) {
+  if (
+    EXCLUDED_SUBPATHS.some((ex) => resolvedDir === ex || resolvedDir.startsWith(`${ex}${path.sep}`))
+  ) {
     return []
   }
 

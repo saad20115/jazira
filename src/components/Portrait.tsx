@@ -17,11 +17,7 @@ export interface PortraitProps {
  * Renders a `264×340` leadership portrait (`next/image` when `member.photo` is populated,
  * or the navy gradient + executive silhouette placeholder `154:890`).
  */
-export function Portrait({
-  member,
-  fallbackImageUrl,
-  className,
-}: PortraitProps): ReactElement {
+export function Portrait({ member, fallbackImageUrl, className }: PortraitProps): ReactElement {
   const photoAsset = resolveMediaAsset(member?.photo, member?.name ?? '', 'card')
   const imageSrc = photoAsset?.url ?? fallbackImageUrl ?? null
   const imageAlt = photoAsset?.alt ?? member?.name ?? ''

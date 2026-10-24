@@ -56,8 +56,7 @@
   will-change: transform;
   transform: translate3d(
     calc(
-      var(--carousel-dir, -1) * var(--index, 0) * var(--carousel-step, 310px) +
-        var(--drag-x, 0px)
+      var(--carousel-dir, -1) * var(--index, 0) * var(--carousel-step, 310px) + var(--drag-x, 0px)
     ),
     0,
     0
@@ -110,8 +109,7 @@
   will-change: transform;
   transform: translate3d(
     calc(
-      var(--carousel-thumb-dir, 1) *
-        (var(--track-width, 806px) - var(--thumb-width, 290px)) *
+      var(--carousel-thumb-dir, 1) * (var(--track-width, 806px) - var(--thumb-width, 290px)) *
         var(--index, 0) / var(--max-index, 4)
     ),
     0,

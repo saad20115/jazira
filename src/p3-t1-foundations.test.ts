@@ -22,11 +22,7 @@ import {
   getLocaleDirection,
   isSupportedLocale,
 } from './i18n'
-import {
-  isValidInternalCmsPath,
-  resolveSafeCmsLinkData,
-  sanitizeCmsHref,
-} from './lib/link-safety'
+import { isValidInternalCmsPath, resolveSafeCmsLinkData, sanitizeCmsHref } from './lib/link-safety'
 import {
   getPreviewSecret,
   previewExitQuerySchema,
@@ -208,9 +204,7 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
 
     expect(Object.keys(getDictionary('ar'))).toEqual(Object.keys(getDictionary('en')))
     for (const sectionKey of Object.keys(arDictionary) as Array<keyof typeof arDictionary>) {
-      expect(Object.keys(arDictionary[sectionKey])).toEqual(
-        Object.keys(enDictionary[sectionKey]),
-      )
+      expect(Object.keys(arDictionary[sectionKey])).toEqual(Object.keys(enDictionary[sectionKey]))
     }
 
     expect(formatStepCounter(arDictionary.quoteForm.stepOfTotal, 2, 4)).toBe('2 / 4')
@@ -275,8 +269,12 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
 
     expect(lintJsxSnippet(goodCode, 'src/app/(frontend)/[locale]/page.tsx')).toEqual([])
     expect(lintJsxSnippet(badCode, 'src/components/admin/Logo.tsx')).toEqual([])
-    expect(lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/[locale]/_specimen/page.tsx')).toEqual([])
-    expect(lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/[locale]/styleguide/page.tsx')).toEqual([])
+    expect(
+      lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/[locale]/_specimen/page.tsx'),
+    ).toEqual([])
+    expect(
+      lintJsxSnippet(r6BypassVectors, 'src/app/(frontend)/[locale]/styleguide/page.tsx'),
+    ).toEqual([])
   })
 })
 
@@ -303,7 +301,9 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     expect(isHomePagePath('/en/services')).toBe(false)
 
     const homeCsp = buildPublicCspHeader({ nonce, pathname: '/ar' })
-    expect(homeCsp).toContain(`script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`)
+    expect(homeCsp).toContain(
+      `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`,
+    )
     expect(homeCsp).toContain(`style-src 'self' 'nonce-${nonce}'`)
     expect(homeCsp).toContain("worker-src 'self' blob:")
     expect(homeCsp).toContain(`frame-src ${I4_VIDEO_FRAME_SOURCES.join(' ')}`)
@@ -365,9 +365,10 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
       '/draco_decoder.wasm',
       '/meshopt_decoder.wasm',
     ]) {
-      expect(isPassthroughRootOrPublicPath(passthroughPath), `${passthroughPath} should pass through`).toBe(
-        true,
-      )
+      expect(
+        isPassthroughRootOrPublicPath(passthroughPath),
+        `${passthroughPath} should pass through`,
+      ).toBe(true)
       const ptReq = new NextRequest(`http://localhost:3000${passthroughPath}`)
       const ptRes = proxy(ptReq)
       expect(

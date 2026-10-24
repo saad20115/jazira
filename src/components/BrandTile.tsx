@@ -32,9 +32,7 @@ export function BrandTile({ brand, className }: BrandTileProps): ReactElement {
       ) : (
         <>
           <p className={`${styles.name} t-h5`}>{brand.name}</p>
-          {brand.origin ? (
-            <p className={`${styles.origin} t-caption-s`}>{brand.origin}</p>
-          ) : null}
+          {brand.origin ? <p className={`${styles.origin} t-caption-s`}>{brand.origin}</p> : null}
         </>
       )}
     </div>

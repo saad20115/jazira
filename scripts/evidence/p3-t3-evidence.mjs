@@ -257,9 +257,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         let nonCustomPropCount = 0
         for (const el of allStyledInBody) {
           if (
-            frameworkAllowlistSelectors.some(
-              (sel) => el.matches(sel) || el.closest(sel) !== null,
-            )
+            frameworkAllowlistSelectors.some((sel) => el.matches(sel) || el.closest(sel) !== null)
           ) {
             frameworkCount += 1
             continue
@@ -293,7 +291,9 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
           const r = el.getBoundingClientRect()
           return { width: Math.round(r.width), height: Math.round(r.height) }
         }
-        const partnerTiles = Array.from(document.querySelectorAll('[data-component="partner-tile"]'))
+        const partnerTiles = Array.from(
+          document.querySelectorAll('[data-component="partner-tile"]'),
+        )
         const partnerOverflowPx = partnerTiles.reduce((maxOv, tile) => {
           const ov = Math.max(0, tile.scrollWidth - tile.clientWidth)
           return Math.max(maxOv, ov)
@@ -413,7 +413,9 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       const marqueePauseRestored = await marqueePauseBtn.getAttribute('aria-pressed')
 
       const duplicateAriaHiddenCount = await page
-        .locator('[data-testid="live-logo-marquee"] [data-marquee-group="duplicate"][aria-hidden="true"]')
+        .locator(
+          '[data-testid="live-logo-marquee"] [data-marquee-group="duplicate"][aria-hidden="true"]',
+        )
         .count()
 
       // B) ServicesCarousel thumb geometry + keyboard + button + mid-drag + overscroll + focus sync + 12/20 services (`R-4`, `R-5`, `R-6`, `R-8`, `R-12`, `R-14`, `R-16`)
@@ -508,9 +510,7 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       }
 
       // Off-screen slide keyboard focus sync verification (`R-5`)
-      const slide6Link = carouselSec
-        .locator('[data-slide-index="5"] a')
-        .first()
+      const slide6Link = carouselSec.locator('[data-slide-index="5"] a').first()
       await slide6Link.focus()
       await page.waitForTimeout(200)
       const afterFocusSlide6Index = await carouselSec.getAttribute('data-active-index')
@@ -523,7 +523,9 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
       const scaleProof = {}
       for (const count of [12, 20]) {
         const scaleSec = page
-          .locator(`[data-testid="services-carousel-${String(count)}"] [data-component="services-carousel"]`)
+          .locator(
+            `[data-testid="services-carousel-${String(count)}"] [data-component="services-carousel"]`,
+          )
           .first()
         await scaleSec.scrollIntoViewIfNeeded()
         await scaleSec.focus()
@@ -715,7 +717,10 @@ async function runP3T3Evidence(baseUrl, evidenceDir, phase3Dir) {
         .evaluate((el) => window.getComputedStyle(el).transitionDuration)
 
       const rmShotPath = path.join(evidenceDir, `reduced-motion-${locale}.png`)
-      await rmPage.locator('[data-testid="live-logo-marquee"]').first().screenshot({ path: rmShotPath })
+      await rmPage
+        .locator('[data-testid="live-logo-marquee"]')
+        .first()
+        .screenshot({ path: rmShotPath })
       copyToDirs(rmShotPath, outDirs)
 
       motionVerification.reducedMotion[locale] = {
@@ -807,6 +812,8 @@ const phase3Dir =
   args[2] || path.resolve(process.cwd(), 'docs', 'reports', 'phase-3', 'P3-T3', 'r3')
 
 runP3T3Evidence(baseUrl, evidenceDir, phase3Dir).catch((err) => {
-  process.stderr.write(`[p3-t3-evidence] ERROR: ${err instanceof Error ? err.stack : String(err)}\n`)
+  process.stderr.write(
+    `[p3-t3-evidence] ERROR: ${err instanceof Error ? err.stack : String(err)}\n`,
+  )
   process.exit(1)
 })

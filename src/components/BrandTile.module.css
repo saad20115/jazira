@@ -14,7 +14,9 @@
   box-shadow: var(--shadow-card-rest);
   box-sizing: border-box;
   flex-shrink: 0;
-  transition: transform 200ms ease, opacity 200ms ease;
+  transition:
+    transform 200ms ease,
+    opacity 200ms ease;
 }
 
 .tile:hover {

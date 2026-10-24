@@ -2,14 +2,9 @@ import Link from 'next/link'
 import React from 'react'
 
 import type { SupportedLocale } from '@/i18n'
-import {
-  type CmsLinkDataLike,
-  resolveSafeCmsLinkData,
-  sanitizeCmsHref,
-} from '@/lib/link-safety'
+import { type CmsLinkDataLike, resolveSafeCmsLinkData, sanitizeCmsHref } from '@/lib/link-safety'
 
-export interface CmsLinkProps
-  extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> {
+export interface CmsLinkProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> {
   href?: string | null | undefined
   link?: CmsLinkDataLike | null | undefined
   locale?: SupportedLocale | undefined
@@ -56,18 +51,11 @@ export function CmsLink({
 
   const openInNewTab = newTab !== null && newTab !== undefined ? newTab : resolved.newTab
   const target = openInNewTab ? '_blank' : rest.target
-  const rel =
-    resolved.isExternal || openInNewTab ? 'noopener noreferrer' : rest.rel
+  const rel = resolved.isExternal || openInNewTab ? 'noopener noreferrer' : rest.rel
 
   if (resolved.isExternal || openInNewTab) {
     return (
-      <a
-        {...rest}
-        href={resolved.href}
-        target={target}
-        rel={rel}
-        className={className}
-      >
+      <a {...rest} href={resolved.href} target={target} rel={rel} className={className}>
         {content}
       </a>
     )

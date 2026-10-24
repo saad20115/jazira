@@ -17,11 +17,7 @@ import { CloseIcon, MenuIcon } from '@/components/icons'
 import { Logo } from '@/components/Logo'
 import { NavLink } from '@/components/NavLink'
 import { getAlternateLocale, getDictionary, type SupportedLocale } from '@/i18n'
-import {
-  type CmsLinkDataLike,
-  resolveSafeCmsLinkData,
-  sanitizeCmsHref,
-} from '@/lib/link-safety'
+import { type CmsLinkDataLike, resolveSafeCmsLinkData, sanitizeCmsHref } from '@/lib/link-safety'
 
 import styles from './Navbar.module.css'
 
@@ -139,10 +135,7 @@ export function isNavItemActive(
   return cleanPathname === cleanHref || cleanPathname.startsWith(`${cleanHref}/`)
 }
 
-export function buildLanguageSwitchHref(
-  pathname: string,
-  currentLocale: SupportedLocale,
-): string {
+export function buildLanguageSwitchHref(pathname: string, currentLocale: SupportedLocale): string {
   const targetLocale = getAlternateLocale(currentLocale)
   const clean = pathname.trim() || `/${currentLocale}`
   if (clean === `/${currentLocale}`) {
@@ -224,11 +217,7 @@ export function Navbar({
     process.env.NODE_ENV !== 'production' &&
     (staticPreview || currentPath === '/ar/styleguide' || currentPath === '/en/styleguide')
   const navItems: readonly NavbarNavItem[] =
-    items && items.length > 0
-      ? items
-      : isDevStyleguideShell
-        ? buildDefaultNavbarItems(locale)
-        : []
+    items && items.length > 0 ? items : isDevStyleguideShell ? buildDefaultNavbarItems(locale) : []
   const resolvedCtaLabel = (
     ctaLabel ||
     ctaLink?.label ||

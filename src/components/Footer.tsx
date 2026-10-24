@@ -2,12 +2,7 @@ import type { ReactElement } from 'react'
 
 import { Button } from '@/components/Button'
 import { CmsLink } from '@/components/CmsLink'
-import {
-  MailIcon,
-  MapPinIcon,
-  PhoneIcon,
-  SocialIcon,
-} from '@/components/icons'
+import { MailIcon, MapPinIcon, PhoneIcon, SocialIcon } from '@/components/icons'
 import { Logo } from '@/components/Logo'
 import {
   getAlternateLocale,
@@ -15,11 +10,7 @@ import {
   switchLocaleInPathname,
   type SupportedLocale,
 } from '@/i18n'
-import {
-  type CmsLinkDataLike,
-  resolveSafeCmsLinkData,
-  sanitizeCmsHref,
-} from '@/lib/link-safety'
+import { type CmsLinkDataLike, resolveSafeCmsLinkData, sanitizeCmsHref } from '@/lib/link-safety'
 
 import styles from './Footer.module.css'
 
@@ -168,10 +159,7 @@ export function Footer({
   const dict = getDictionary(locale)
   const brandAriaLabel = siteName || dict.nav.brandName
   const alternateLocale = getAlternateLocale(locale)
-  const languageSwitchHref = switchLocaleInPathname(
-    currentPath || `/${locale}`,
-    alternateLocale,
-  )
+  const languageSwitchHref = switchLocaleInPathname(currentPath || `/${locale}`, alternateLocale)
 
   // R-3 & R-4: Render all CMS `navigation.footer` columns with their CMS `title`;
   // never fall back to invented dictionary links when CMS is empty.
@@ -188,8 +176,8 @@ export function Footer({
           ]
         : []
 
-  const validSocials = (socialLinks ?? []).filter(
-    (s) => Boolean(s.url && s.url.trim().length > 0 && s.platform && s.platform.trim().length > 0),
+  const validSocials = (socialLinks ?? []).filter((s) =>
+    Boolean(s.url && s.url.trim().length > 0 && s.platform && s.platform.trim().length > 0),
   )
 
   const validPhones = (phones ?? []).filter((p) => p.trim().length > 0)
@@ -208,9 +196,7 @@ export function Footer({
   const hasCtaButton = Boolean(resolvedCtaBtnLabel && (ctaButtonLink || resolvedCtaBtnHref))
 
   // R-3: Do NOT render the CTA card when only `whatsapp` is set from `SiteSettings`.
-  const hasCtaCard = Boolean(
-    ctaEyebrow || ctaTitle || ctaBody || hasCtaButton || ctaWhatsappLabel,
-  )
+  const hasCtaCard = Boolean(ctaEyebrow || ctaTitle || ctaBody || hasCtaButton || ctaWhatsappLabel)
 
   const resolvedPrivacyHref = resolveSafeCmsLinkData(privacyLink, { locale })?.href
   const hasPrivacyLink = Boolean(privacyLink && resolvedPrivacyHref)
@@ -267,10 +253,7 @@ export function Footer({
             const colLinks = col.links ?? []
             const colHeading = col.title || quickLinksTitle || dict.footer.quickLinksTitle
             return (
-              <div
-                className={styles.linksColumn}
-                key={col.id ?? `footer-col-${String(colIdx)}`}
-              >
+              <div className={styles.linksColumn} key={col.id ?? `footer-col-${String(colIdx)}`}>
                 {colHeading ? <h2 className={styles.columnHeading}>{colHeading}</h2> : null}
                 {colLinks.length > 0 ? (
                   <nav aria-label={colHeading || dict.a11y.footerNavigation}>
@@ -401,11 +384,7 @@ export function Footer({
           {copyright ? <p className={styles.copyright}>{copyright}</p> : <span />}
           <div className={styles.bottomLinks}>
             {hasPrivacyLink ? (
-              <CmsLink
-                className={styles.bottomLink}
-                link={privacyLink}
-                locale={locale}
-              >
+              <CmsLink className={styles.bottomLink} link={privacyLink} locale={locale}>
                 {privacyLink?.label || dict.footer.privacyPolicy}
               </CmsLink>
             ) : null}

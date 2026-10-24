@@ -98,7 +98,11 @@ const COMPONENT_SECTION_MAP = [
   { sectionId: 'nav-link', figmaPng: 'nav-link.png', outName: 'side-by-side-nav-link.png' },
   { sectionId: 'navbar', figmaPng: 'navbar.png', outName: 'side-by-side-navbar.png' },
   { sectionId: 'footer', figmaPng: 'footer.png', outName: 'side-by-side-footer.png' },
-  { sectionId: 'whatsapp-fab', figmaPng: 'whatsapp-fab.png', outName: 'side-by-side-whatsapp-fab.png' },
+  {
+    sectionId: 'whatsapp-fab',
+    figmaPng: 'whatsapp-fab.png',
+    outName: 'side-by-side-whatsapp-fab.png',
+  },
   {
     sectionId: 'accordion-item',
     figmaPng: 'accordion-item.png',
@@ -161,11 +165,7 @@ async function runProd404AndCspCheck(baseUrl, evidenceDir) {
   const headerBlock = getRepoHeaderBlock()
   const routes = ['/ar/styleguide', '/en/styleguide', '/ar/_specimen', '/en/_specimen']
   const results = []
-  const logLines = [
-    headerBlock.trimEnd(),
-    `BaseURL (production next start): ${baseUrl}`,
-    '',
-  ]
+  const logLines = [headerBlock.trimEnd(), `BaseURL (production next start): ${baseUrl}`, '']
 
   for (const route of routes) {
     const res = await fetch(`${baseUrl}${route}`, { redirect: 'manual' })
@@ -491,9 +491,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
           v.effectiveDirective === 'style-src-attr' || v.violatedDirective === 'style-src-attr',
       )
       const inlineStyleAttrConsoleErrors = consoleMessages.filter(
-        (m) =>
-          m.type === 'error' &&
-          m.text.includes('style-src-attr'),
+        (m) => m.type === 'error' && m.text.includes('style-src-attr'),
       )
 
       consoleAndCspRoutes.push({
@@ -611,9 +609,7 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
 
       const footerEl = document.querySelector('footer[data-component="footer"]')
       const footerRect = footerEl ? footerEl.getBoundingClientRect() : null
-      const quickLinksCol = footerEl
-        ? footerEl.querySelectorAll('[class*="linksColumn"]')[0]
-        : null
+      const quickLinksCol = footerEl ? footerEl.querySelectorAll('[class*="linksColumn"]')[0] : null
       const contactCol = footerEl ? footerEl.querySelector('[class*="contactColumn"]') : null
       const descEl = footerEl ? footerEl.querySelector('[class*="description"]') : null
       const headingEl = footerEl ? footerEl.querySelector('h2') : null
@@ -848,9 +844,15 @@ async function runDevCapture(baseUrl, evidenceDir, phase3Dir) {
 
     const mobileDrawerSteps = []
     await kbPage.keyboard.press('Tab')
-    mobileDrawerSteps.push({ step: 'Tab 1 (skip link)', active: await readActiveElementInfo(kbPage) })
+    mobileDrawerSteps.push({
+      step: 'Tab 1 (skip link)',
+      active: await readActiveElementInfo(kbPage),
+    })
     await kbPage.keyboard.press('Tab')
-    mobileDrawerSteps.push({ step: 'Tab 2 (brand logo)', active: await readActiveElementInfo(kbPage) })
+    mobileDrawerSteps.push({
+      step: 'Tab 2 (brand logo)',
+      active: await readActiveElementInfo(kbPage),
+    })
     await kbPage.keyboard.press('Tab')
     mobileDrawerSteps.push({
       step: 'Tab 3 (hamburger button closed)',

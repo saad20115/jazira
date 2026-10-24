@@ -174,7 +174,10 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       'tests/int/barrel.ts',
     ]) {
       const directMsgs = lintSnippet(barrelDirectReExport, file)
-      expect(directMsgs.length, `Expected direct re-export failure in ${file}`).toBeGreaterThanOrEqual(2)
+      expect(
+        directMsgs.length,
+        `Expected direct re-export failure in ${file}`,
+      ).toBeGreaterThanOrEqual(2)
       expect(directMsgs.every((m) => m.message.includes('Re-exporting'))).toBe(true)
 
       const indirectMsgs = lintSnippet(barrelImportThenExport, file)
@@ -230,13 +233,18 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
         ).length,
       ).toBeGreaterThanOrEqual(1)
       expect(
-        lintSnippet("import cfg from '@payload-config'\nexport function f() { return cfg }", allowedFile).length,
+        lintSnippet(
+          "import cfg from '@payload-config'\nexport function f() { return cfg }",
+          allowedFile,
+        ).length,
       ).toBeGreaterThanOrEqual(1)
     }
 
     // 3. `*.test.*` inside `src/app/**` or `src/components/**` is NOT exempt from the Payload runtime import ban
     expect(lintSnippet(runtimeValidationImport, 'src/app/(frontend)/page.test.tsx')).toHaveLength(1)
-    expect(lintSnippet(runtimeValidationImport, 'src/components/ProjectCard.test.tsx')).toHaveLength(1)
+    expect(
+      lintSnippet(runtimeValidationImport, 'src/components/ProjectCard.test.tsx'),
+    ).toHaveLength(1)
     // Outside `src/app/**` and `src/components/**`, `*.test.*` remains exempt for unit testing field validators/errors
     expect(lintSnippet(runtimeValidationImport, 'src/fields/link.test.ts')).toEqual([])
   })
@@ -267,7 +275,9 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       ),
     ).toBe(true)
     expect(
-      consumerMsgs.some((m) => m.message.includes('must pass an un-overridden "{ overrideAccess: false }"')),
+      consumerMsgs.some((m) =>
+        m.message.includes('must pass an un-overridden "{ overrideAccess: false }"'),
+      ),
     ).toBe(true)
 
     // R-3 proof case 2: namespace import + member reference P.getPayload in src/collections/x.ts
@@ -337,12 +347,17 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
       'src/fields/order.ts',
       'src/security/emailAdapter.ts',
     ]) {
-      expect(lintSnippet(typeOnlyImports, file), `Type-only import should pass in ${file}`).toEqual([])
+      expect(lintSnippet(typeOnlyImports, file), `Type-only import should pass in ${file}`).toEqual(
+        [],
+      )
     }
 
     // Mixed value + type import from 'payload' must still fail in forbidden files
-    const mixedImport = "import { type Where, getPayload } from 'payload'\nexport const g = getPayload"
-    expect(lintSnippet(mixedImport, 'src/app/(frontend)/[locale]/page.tsx').length).toBeGreaterThanOrEqual(1)
+    const mixedImport =
+      "import { type Where, getPayload } from 'payload'\nexport const g = getPayload"
+    expect(
+      lintSnippet(mixedImport, 'src/app/(frontend)/[locale]/page.tsx').length,
+    ).toBeGreaterThanOrEqual(1)
 
     // Non-literal dynamic import() in src/app/** and src/components/** must fail
     const nonLiteralDynamicImports = [
@@ -361,9 +376,9 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     ]) {
       const msgs = lintSnippet(nonLiteralDynamicImports, appOrCompFile)
       expect(msgs, `Expected 3 non-literal import() errors in ${appOrCompFile}`).toHaveLength(3)
-      expect(msgs.every((m) => m.message.includes('Non-literal dynamic `import()` is forbidden'))).toBe(
-        true,
-      )
+      expect(
+        msgs.every((m) => m.message.includes('Non-literal dynamic `import()` is forbidden')),
+      ).toBe(true)
     }
 
     // Static literal import of a safe frontend module is allowed
@@ -497,9 +512,7 @@ describe('local/require-override-access-false ESLint rule & Z6 typed wrapper (P2
     )
     expect(warnings).toHaveLength(0)
 
-    expect(assertSmallCollectionNotTruncated('brands', 101, (msg) => warnings.push(msg))).toBe(
-      true,
-    )
+    expect(assertSmallCollectionNotTruncated('brands', 101, (msg) => warnings.push(msg))).toBe(true)
     expect(warnings).toHaveLength(1)
     expect(warnings[0]).toContain('Collection "brands" has at least 101 documents')
     expect(warnings[0]).toContain('Rendering the first 100 documents')

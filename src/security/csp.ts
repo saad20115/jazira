@@ -17,7 +17,8 @@ export interface PublicCspOptions {
  * route allowed to receive the `H3a` 3D viewer WebAssembly & blob worker directives.
  */
 export function isHomePagePath(pathname: string): boolean {
-  const normalized = pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname
+  const normalized =
+    pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname
   return normalized === '/ar' || normalized === '/en'
 }
 
@@ -104,12 +105,14 @@ export const ADMIN_CSP_RELAXATIONS = [
   {
     directive: 'media-src',
     value: "'self' data: blob:",
-    reason: 'Payload Admin video/media upload fields preview local files via blob: and data: URLs before save.',
+    reason:
+      'Payload Admin video/media upload fields preview local files via blob: and data: URLs before save.',
   },
   {
     directive: 'frame-src',
     value: "'self'",
-    reason: 'Payload Live Preview embeds the same-origin frontend preview route inside an iframe in /admin.',
+    reason:
+      'Payload Live Preview embeds the same-origin frontend preview route inside an iframe in /admin.',
   },
 ] as const
 

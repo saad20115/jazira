@@ -538,16 +538,8 @@ async function main() {
       'utf8',
     )
 
-    const consoleLogLines = [
-      headerBlock.trimEnd(),
-      `BaseURL: ${baseUrl}`,
-      '',
-    ]
-    const fontLogLines = [
-      headerBlock.trimEnd(),
-      `BaseURL: ${baseUrl}`,
-      '',
-    ]
+    const consoleLogLines = [headerBlock.trimEnd(), `BaseURL: ${baseUrl}`, '']
+    const fontLogLines = [headerBlock.trimEnd(), `BaseURL: ${baseUrl}`, '']
 
     for (const r of [arReport, enReport]) {
       consoleLogLines.push(`=== Route ${r.route} (HTTP ${String(r.status)}) ===`)

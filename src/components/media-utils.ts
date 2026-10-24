@@ -26,7 +26,8 @@ export function resolveMediaAsset(
     return null
   }
 
-  const alt = typeof media.alt === 'string' && media.alt.trim().length > 0 ? media.alt.trim() : fallbackAlt
+  const alt =
+    typeof media.alt === 'string' && media.alt.trim().length > 0 ? media.alt.trim() : fallbackAlt
 
   return {
     url,
@@ -40,9 +41,7 @@ export function resolveMediaAsset(
  * Extracts 1–2 uppercase initials from a person's name (supporting both Arabic and Latin scripts).
  */
 export function extractInitials(name: string): string {
-  const cleaned = name
-    .replace(/^(Eng\.|Dr\.|Mr\.|Ms\.|Mrs\.|م\.|د\.|أ\.)\s*/i, '')
-    .trim()
+  const cleaned = name.replace(/^(Eng\.|Dr\.|Mr\.|Ms\.|Mrs\.|م\.|د\.|أ\.)\s*/i, '').trim()
   if (!cleaned) {
     return ''
   }
@@ -65,4 +64,3 @@ export function formatServiceNumber(num: number): string {
   const safe = Math.max(1, Math.floor(num))
   return String(safe).padStart(2, '0')
 }
-

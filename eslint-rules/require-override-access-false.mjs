@@ -144,9 +144,7 @@ export function isAllowedPayloadReExportFile(filename) {
     return false
   }
   const normalized = filename.replace(/\\/g, '/')
-  return (
-    /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) || isCmsClientFile(normalized)
-  )
+  return /(?:^|\/)src\/payload\.config\.[cm]?[jt]s$/.test(normalized) || isCmsClientFile(normalized)
 }
 
 /**
@@ -971,7 +969,10 @@ export const requireOverrideAccessFalseRule = {
 
       MemberExpression(node) {
         const propName = getMemberMethodName(node)
-        if (!allowGetPayloadEntry && (propName === 'getPayload' || propName === 'getPayloadClient')) {
+        if (
+          !allowGetPayloadEntry &&
+          (propName === 'getPayload' || propName === 'getPayloadClient')
+        ) {
           context.report({
             node,
             messageId: 'forbiddenGetPayloadValue',
@@ -1073,8 +1074,7 @@ export const requireOverrideAccessFalseRule = {
                 node: spec,
                 messageId: 'forbiddenPayloadReExport',
                 data: {
-                  source:
-                    importedPayloadValueBindings.get(localName) || exportedName || localName,
+                  source: importedPayloadValueBindings.get(localName) || exportedName || localName,
                 },
               })
             }
@@ -1325,7 +1325,10 @@ export const requireOverrideAccessFalseRule = {
             })
             return
           }
-          if (inFrontendOrComponents && isForbiddenFrontendServerDirSource(node.arguments[0].value, filename)) {
+          if (
+            inFrontendOrComponents &&
+            isForbiddenFrontendServerDirSource(node.arguments[0].value, filename)
+          ) {
             context.report({
               node,
               messageId: 'forbiddenFrontendServerDirImport',
@@ -1456,8 +1459,11 @@ export const requireOverrideAccessFalseRule = {
           return
         }
 
-        const { hasUnclobberedLiteralFalse, overridePropNode, userPropNode } =
-          inspectOptionsObject(optionsArg, trackedObjectExpressions, isCmsClient)
+        const { hasUnclobberedLiteralFalse, overridePropNode, userPropNode } = inspectOptionsObject(
+          optionsArg,
+          trackedObjectExpressions,
+          isCmsClient,
+        )
 
         if (userPropNode) {
           context.report({

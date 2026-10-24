@@ -220,16 +220,12 @@ describe('scripts/check-client-bundle-sentinels.mjs, scripts/generate-tokens.mjs
   it('redacts preview secrets in p3-t1-evidence.mjs URLs and headers while keeping non-secret wrong-secret-00000000 visible (R-14)', () => {
     const liveSecret = 'deadbeefcafebabe0123456789abcdef0123456789abcdef0123456789abcdef'
     expect(
-      redactSecretValues(
-        `/api/preview?secret=${liveSecret}&locale=ar&path=/ar`,
-        [liveSecret],
-      ),
+      redactSecretValues(`/api/preview?secret=${liveSecret}&locale=ar&path=/ar`, [liveSecret]),
     ).toBe('/api/preview?secret=<REDACTED_PREVIEW_SECRET>&locale=ar&path=/ar')
     expect(
-      redactSecretValues(
-        '/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar',
-        [liveSecret],
-      ),
+      redactSecretValues('/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar', [
+        liveSecret,
+      ]),
     ).toBe('/api/preview?secret=wrong-secret-00000000&locale=ar&path=/ar')
   })
 
@@ -261,7 +257,9 @@ describe('scripts/check-client-bundle-sentinels.mjs, scripts/generate-tokens.mjs
       '  text-align: start;',
       '}',
     ].join('\n')
-    expect(scanCssForPhysicalProperties(justifiedCss, 'src/components/Sample.module.css')).toEqual([])
+    expect(scanCssForPhysicalProperties(justifiedCss, 'src/components/Sample.module.css')).toEqual(
+      [],
+    )
 
     const repoCheck = checkAllPublicCssLogicalProperties()
     expect(repoCheck.scannedFileCount).toBeGreaterThanOrEqual(20)

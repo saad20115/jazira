@@ -79,9 +79,7 @@ export function isGuardedPublicJsxFile(filename) {
     return false
   }
 
-  return (
-    normalized.includes('/src/app/(frontend)/') || normalized.includes('/src/components/')
-  )
+  return normalized.includes('/src/app/(frontend)/') || normalized.includes('/src/components/')
 }
 
 /**
@@ -109,8 +107,7 @@ function isExemptValueAttributeOnElement(jsxAttributeNode, attrName) {
   if (!openingEl || openingEl.type !== 'JSXOpeningElement') {
     return false
   }
-  const elName =
-    openingEl.name?.type === 'JSXIdentifier' ? openingEl.name.name : ''
+  const elName = openingEl.name?.type === 'JSXIdentifier' ? openingEl.name.name : ''
   if (elName === 'option') {
     return true
   }
@@ -265,7 +262,11 @@ export const noJsxStringLiteralsRule = {
 
           case 'CallExpression': {
             const callee = cur.callee
-            if (callee?.type === 'MemberExpression' && !callee.computed && callee.property?.type === 'Identifier') {
+            if (
+              callee?.type === 'MemberExpression' &&
+              !callee.computed &&
+              callee.property?.type === 'Identifier'
+            ) {
               const method = callee.property.name
               if (
                 method === 'join' ||

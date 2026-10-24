@@ -4,16 +4,9 @@ import type { ReactElement } from 'react'
 import { Accordion, AccordionItem } from '@/components/Accordion'
 import { Avatar } from '@/components/Avatar'
 import { BrandTile } from '@/components/BrandTile'
-import {
-  Button,
-  BUTTON_STATES,
-  BUTTON_VARIANTS,
-} from '@/components/Button'
+import { Button, BUTTON_STATES, BUTTON_VARIANTS } from '@/components/Button'
 import { Eyebrow } from '@/components/Eyebrow'
-import {
-  Footer,
-  getSocialAriaLabel,
-} from '@/components/Footer'
+import { Footer, getSocialAriaLabel } from '@/components/Footer'
 import {
   ArrowRightIcon,
   SERVICE_ICON_OPTIONS,
@@ -21,42 +14,21 @@ import {
   SOCIAL_ICON_KEYS,
   SocialIcon,
 } from '@/components/icons'
-import {
-  Logo,
-  LOGO_COLORS,
-  LOGO_TYPES,
-} from '@/components/Logo'
+import { Logo, LOGO_COLORS, LOGO_TYPES } from '@/components/Logo'
 import { LogoMarquee, type LogoMarqueePosition } from '@/components/LogoMarquee'
-import {
-  Navbar,
-  type NavbarPage,
-  type NavbarTheme,
-} from '@/components/Navbar'
-import {
-  NAV_LINK_STATES,
-  NavLink,
-} from '@/components/NavLink'
+import { Navbar, type NavbarPage, type NavbarTheme } from '@/components/Navbar'
+import { NAV_LINK_STATES, NavLink } from '@/components/NavLink'
 import { PartnerTile, type PartnerTileState } from '@/components/PartnerTile'
 import { Portrait } from '@/components/Portrait'
 import { ProjectCard, type ProjectCardState } from '@/components/ProjectCard'
 import { ServiceCard, type ServiceCardState } from '@/components/ServiceCard'
-import {
-  ServicesCarousel,
-  type ServicesCarouselPosition,
-} from '@/components/ServicesCarousel'
+import { ServicesCarousel, type ServicesCarouselPosition } from '@/components/ServicesCarousel'
 import { ServiceTile, type ServiceTileState } from '@/components/ServiceTile'
 import { TeamCard, type TeamCardState } from '@/components/TeamCard'
 import { TeamMarquee, type TeamMarqueePosition } from '@/components/TeamMarquee'
 import { TeamMember } from '@/components/TeamMember'
-import {
-  WhatsAppFab,
-  WHATSAPP_FAB_STATES,
-} from '@/components/WhatsAppFab'
-import {
-  getDictionary,
-  isSupportedLocale,
-  type SupportedLocale,
-} from '@/i18n'
+import { WhatsAppFab, WHATSAPP_FAB_STATES } from '@/components/WhatsAppFab'
+import { getDictionary, isSupportedLocale, type SupportedLocale } from '@/i18n'
 
 import { getStyleguideStrings } from './styleguide-data'
 import styles from './styleguide.module.css'
@@ -166,11 +138,7 @@ export default async function StyleguidePage({
 
       <div className={`${styles.container} ${styles.sectionsStack}`}>
         {/* 1. Logo (100:515) */}
-        <section
-          className={styles.sectionCard}
-          data-styleguide-section="logo"
-          id="styleguide-logo"
-        >
+        <section className={styles.sectionCard} data-styleguide-section="logo" id="styleguide-logo">
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>{sg.sectionLogo}</h2>
             <span className={styles.nodeBadge} dir="ltr">
@@ -188,11 +156,7 @@ export default async function StyleguidePage({
                     className={`${styles.logoCell} ${isOnDark ? styles.logoCellDark : ''}`}
                     key={`${logoType}-${logoColor}`}
                   >
-                    <Logo
-                      alt={dict.nav.brandName}
-                      color={logoColor}
-                      type={logoType}
-                    />
+                    <Logo alt={dict.nav.brandName} color={logoColor} type={logoType} />
                     <span className={styles.cellCaption} dir="ltr">
                       {caption}
                     </span>
@@ -772,11 +736,7 @@ export default async function StyleguidePage({
           <div className={styles.cardsRow} data-styleguide-subsection="team-card-states">
             {TEAM_CARD_STATES.map((tcState) => (
               <div className={styles.cardStateCol} key={tcState}>
-                <TeamCard
-                  locale={resolvedLocale}
-                  member={sg.mockTeamCardMember}
-                  state={tcState}
-                />
+                <TeamCard locale={resolvedLocale} member={sg.mockTeamCardMember} state={tcState} />
                 <span className={styles.cellCaption} dir="ltr">
                   {`State=${tcState}`}
                 </span>
@@ -784,10 +744,7 @@ export default async function StyleguidePage({
             ))}
           </div>
 
-          <div
-            className={styles.cardsRow}
-            data-testid="live-team-cards"
-          >
+          <div className={styles.cardsRow} data-testid="live-team-cards">
             {sg.mockTeamRowMembers.map((leadMember, idx) => (
               <div className={styles.cardStateCol} key={leadMember.id}>
                 <TeamCard
@@ -876,10 +833,7 @@ export default async function StyleguidePage({
               <div className={styles.frameLabelBar} dir="ltr">
                 {NODE_IDS.servicesCarousel}
               </div>
-              <ServicesCarousel
-                locale={resolvedLocale}
-                services={sg.mockCarouselServices}
-              />
+              <ServicesCarousel locale={resolvedLocale} services={sg.mockCarouselServices} />
             </div>
           </div>
         </section>

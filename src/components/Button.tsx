@@ -16,8 +16,7 @@ export type ButtonState = (typeof BUTTON_STATES)[number]
 export const BUTTON_SIZES = ['sm', 'md', 'lg'] as const
 export type ButtonSize = (typeof BUTTON_SIZES)[number]
 
-export interface ButtonProps
-  extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
+export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> {
   children?: ReactNode
   className?: string
   disabled?: boolean

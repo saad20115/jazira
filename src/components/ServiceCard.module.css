@@ -81,7 +81,9 @@
   border: 1px solid var(--glass-border-white-24);
   color: var(--white);
   box-sizing: border-box;
-  transition: opacity 240ms ease, transform 240ms ease;
+  transition:
+    opacity 240ms ease,
+    transform 240ms ease;
 }
 
 .card:hover .numberBadge,
@@ -197,7 +199,9 @@
   background-color: transparent;
   color: var(--white);
   box-sizing: border-box;
-  transition: transform 240ms ease, opacity 240ms ease;
+  transition:
+    transform 240ms ease,
+    opacity 240ms ease;
 }
 
 .card:hover .ctaCircle,

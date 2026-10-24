@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-  type ReactElement,
-} from 'react'
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactElement } from 'react'
 
 import { CmsLink } from '@/components/CmsLink'
 import { SocialIcon } from '@/components/icons'
@@ -17,13 +11,7 @@ import type { Team } from '@/payload-types'
 import styles from './TeamCard.module.css'
 
 export type TeamCardState =
-  | 'Default'
-  | 'Hover'
-  | 'Enter 1'
-  | 'Enter 2'
-  | 'Enter 3'
-  | 'Enter 4'
-  | 'Enter 5'
+  'Default' | 'Hover' | 'Enter 1' | 'Enter 2' | 'Enter 3' | 'Enter 4' | 'Enter 5'
 
 export interface TeamCardProps {
   animateOnScroll?: boolean
@@ -49,7 +37,9 @@ function subscribeReducedMotion(onStoreChange: () => void): () => void {
   if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return () => {}
   const mql = window.matchMedia('(prefers-reduced-motion: reduce)')
   mql.addEventListener('change', onStoreChange)
-  return () => { mql.removeEventListener('change', onStoreChange) }
+  return () => {
+    mql.removeEventListener('change', onStoreChange)
+  }
 }
 
 function getReducedMotionSnapshot(): boolean {

@@ -14,12 +14,7 @@ import {
 import { Button } from '@/components/Button'
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/icons'
 import { ServiceTile } from '@/components/ServiceTile'
-import {
-  DEFAULT_LOCALE,
-  formatStepCounter,
-  getDictionary,
-  type SupportedLocale,
-} from '@/i18n'
+import { DEFAULT_LOCALE, formatStepCounter, getDictionary, type SupportedLocale } from '@/i18n'
 import type { Service } from '@/payload-types'
 
 import styles from './ServicesCarousel.module.css'
@@ -447,11 +442,7 @@ export function ServicesCarousel({
 
       <div className={styles.controlsRow}>
         <div ref={progressTrackRef} className={styles.progressTrack} aria-hidden="true">
-          <div
-            ref={progressThumbRef}
-            className={styles.progressThumb}
-            data-carousel-thumb="true"
-          />
+          <div ref={progressThumbRef} className={styles.progressThumb} data-carousel-thumb="true" />
         </div>
 
         <div className={styles.actionsGroup}>

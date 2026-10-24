@@ -81,8 +81,7 @@ export const RESTRICTED_PAYLOAD_IMPORTS_CONFIG = {
     {
       name: 'happy-dom',
       allowTypeImports: false,
-      message:
-        'Importing "happy-dom" is forbidden across the repository (R-24 waiver guard).',
+      message: 'Importing "happy-dom" is forbidden across the repository (R-24 waiver guard).',
     },
     {
       name: '@lexical/headless',
@@ -143,8 +142,7 @@ export const RESTRICTED_PAYLOAD_IMPORTS_JS_CONFIG = {
     },
     {
       name: 'happy-dom',
-      message:
-        'Importing "happy-dom" is forbidden across the repository (R-24 waiver guard).',
+      message: 'Importing "happy-dom" is forbidden across the repository (R-24 waiver guard).',
     },
     {
       name: '@lexical/headless',
@@ -287,8 +285,7 @@ export default defineConfig([
                 '@/tests/*',
               ],
               allowTypeImports: false,
-              message:
-                'Importing from scripts/** or tests/** inside src/** is forbidden (R-13).',
+              message: 'Importing from scripts/** or tests/** inside src/** is forbidden (R-13).',
             },
           ],
         },

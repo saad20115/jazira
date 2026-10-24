@@ -108,10 +108,7 @@ const SAMPLE_BRAND_WITH_LOGO: Pick<Brand, 'id' | 'name' | 'origin' | 'logo' | 'w
   website: 'https://global.abb',
 }
 
-const SAMPLE_TEAM_MEMBER: Pick<
-  Team,
-  'id' | 'name' | 'position' | 'photo' | 'linkedin' | 'bio'
-> = {
+const SAMPLE_TEAM_MEMBER: Pick<Team, 'id' | 'name' | 'position' | 'photo' | 'linkedin' | 'bio'> = {
   id: 1,
   name: 'Eng. Ahmed Al-Harbi',
   position: 'CHIEF EXECUTIVE OFFICER',
@@ -474,9 +471,7 @@ describe('P3-T3 — Cards & motion components', () => {
 
   describe('8. ServicesCarousel (175:3714)', () => {
     it('renders accessible carousel slides, progress bar, prev/next buttons, and RTL/LTR transforms', () => {
-      expect(
-        renderToStaticMarkup(React.createElement(ServicesCarousel, { services: [] })),
-      ).toBe('')
+      expect(renderToStaticMarkup(React.createElement(ServicesCarousel, { services: [] }))).toBe('')
 
       const servicesList = [
         { ...SAMPLE_SERVICE, id: 1, featured: true },
@@ -785,7 +780,9 @@ describe('P3-T3 — Cards & motion components', () => {
           const initial = getMetrics()
 
           // Click Next button -> index 1
-          const nextBtn = mountNode.querySelector<HTMLButtonElement>('[data-carousel-action="next"]')
+          const nextBtn = mountNode.querySelector<HTMLButtonElement>(
+            '[data-carousel-action="next"]',
+          )
           if (!nextBtn) {
             throw new Error('Missing next button')
           }

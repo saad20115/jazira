@@ -331,9 +331,7 @@ export default async function DesignTokenSpecimenPage({
                 <p dir="ltr" className={`${styles.typeSpec} t-caption`}>
                   {locale === 'ar' ? row.specAr : row.specEn}
                 </p>
-                <p className={`${styles.typeSample} ${row.className}`}>
-                  {specimen[row.sampleKey]}
-                </p>
+                <p className={`${styles.typeSample} ${row.className}`}>{specimen[row.sampleKey]}</p>
               </div>
             ))}
           </div>

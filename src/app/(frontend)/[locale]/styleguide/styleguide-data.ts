@@ -52,10 +52,7 @@ export interface StyleguideStrings {
   footerTwoColumnsPreview: Omit<FooterProps, 'locale'>
   whatsappPreviewNumber: string
   mockServiceTile: Pick<Service, 'title' | 'slug' | 'icon' | 'shortDescription' | 'featured'>
-  mockServiceCard: Pick<
-    Service,
-    'title' | 'slug' | 'icon' | 'shortDescription' | 'image' | 'order'
-  >
+  mockServiceCard: Pick<Service, 'title' | 'slug' | 'icon' | 'shortDescription' | 'image' | 'order'>
   mockProjectCompleted: Pick<
     Project,
     'title' | 'slug' | 'category' | 'location' | 'status' | 'coverImage'
@@ -338,8 +335,7 @@ const MOCK_CAROUSEL_SERVICES_AR: readonly CarouselServiceItem[] = [
     title: 'توريد المواد المعتمدة',
     slug: 'approved-material-supply',
     icon: 'supply',
-    shortDescription:
-      'توريد مباشر من المصنّعين العالميين المعتمدين مع ضمان المصنع والدعم الفني.',
+    shortDescription: 'توريد مباشر من المصنّعين العالميين المعتمدين مع ضمان المصنع والدعم الفني.',
     featured: false,
   },
 ]
@@ -350,13 +346,13 @@ const STYLEGUIDE_AR: StyleguideStrings = {
   title: 'مكونات الواجهة الأساسية والبطاقات والحركة التفاعلية',
   subtitle:
     'جميع المتغيرات والحالات التفاعلية مطابقة لملفات Figma المرجعية مع دعم كامل للغة العربية (RTL) والخصائص المنطقية (بيانات تجريبية خاصة بدليل المكونات فقط).',
-  sectionLogo: '1. الشعار (Logo — Full / Compact / Icon × Primary / Reversed / Dark / Navy / White)',
+  sectionLogo:
+    '1. الشعار (Logo — Full / Compact / Icon × Primary / Reversed / Dark / Navy / White)',
   sectionButton:
     '2. الأزرار (Button — Gold / Dark / Glass / Outline × Default / Hover / Focus-Visible / Disabled)',
   sectionEyebrow: '3. شارة القسم (Eyebrow — Light / Dark)',
   sectionNavLink: '4. روابط التنقل (NavLink — Light / Dark × Default / Hover / Active)',
-  sectionNavbar:
-    '5. شريط التنقل العلوي (Navbar — Light & Dark × 5 Active Pages + Mobile Drawer)',
+  sectionNavbar: '5. شريط التنقل العلوي (Navbar — Light & Dark × 5 Active Pages + Mobile Drawer)',
   sectionFooter: '6. تذييل الصفحة (Footer — 4 Columns + Icon-Only Socials + Bottom Bar)',
   sectionWhatsappFab: '7. زر واتساب العائم (WhatsAppFab — Idle / Pulse / Hover)',
   sectionAccordion: '8. الأكورديون (Accordion — Collapsed & Expanded)',
@@ -398,8 +394,7 @@ const STYLEGUIDE_AR: StyleguideStrings = {
     whatsapp: '+966573534185',
     socialLinks: PREVIEW_SOCIAL_LINKS,
     ctaTitle: 'هل لديك مشروع قيد الدراسة؟',
-    ctaBody:
-      'أرسل لنا المخططات أو جداول الكميات وسيقوم مهندسونا بالتواصل معك خلال يوم عمل واحد.',
+    ctaBody: 'أرسل لنا المخططات أو جداول الكميات وسيقوم مهندسونا بالتواصل معك خلال يوم عمل واحد.',
     ctaButtonLabel: 'اطلب عرض سعر',
     ctaButtonHref: '/ar/contact#quote',
     copyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
@@ -431,8 +426,7 @@ const STYLEGUIDE_AR: StyleguideStrings = {
     whatsapp: '+966573534185',
     socialLinks: PREVIEW_SOCIAL_LINKS,
     ctaTitle: 'هل لديك مشروع قيد الدراسة؟',
-    ctaBody:
-      'أرسل لنا المخططات أو جداول الكميات وسيقوم مهندسونا بالتواصل معك خلال يوم عمل واحد.',
+    ctaBody: 'أرسل لنا المخططات أو جداول الكميات وسيقوم مهندسونا بالتواصل معك خلال يوم عمل واحد.',
     ctaButtonLabel: 'اطلب عرض سعر',
     ctaButtonHref: '/ar/contact#quote',
     copyright: '© 2026 شركة الجزيرة للإمداد الذكي. جميع الحقوق محفوظة.',
@@ -585,8 +579,7 @@ const STYLEGUIDE_EN: StyleguideStrings = {
   sectionIcons: '9. Icons (10 Service Icons + 5 Social Icons + Directional RTL Flip)',
   sectionServiceTile: '10. ServiceTile (Default & Featured · Mock Data)',
   sectionServiceCard: '11. ServiceCard (Default & Hover · Mock Data)',
-  sectionProjectCard:
-    '12. ProjectCard (Completed & In Progress × Default & Hover · Mock Data)',
+  sectionProjectCard: '12. ProjectCard (Completed & In Progress × Default & Hover · Mock Data)',
   sectionPartnerAndBrandTile: '13. PartnerTile & BrandTile (Default & Hover · Mock Data)',
   sectionLogoMarquee: '14. LogoMarquee (Position A, Position B & Live · Mock Data)',
   sectionAvatarPortraitMember: '15. Avatar, Portrait & TeamMember (Placeholders · Mock Data)',
@@ -658,8 +651,7 @@ const STYLEGUIDE_EN: StyleguideStrings = {
     title: 'General Contracting',
     slug: 'general-contracting',
     icon: 'contracting',
-    shortDescription:
-      'Turn-key civil, structural & architectural delivery for major facilities.',
+    shortDescription: 'Turn-key civil, structural & architectural delivery for major facilities.',
     featured: false,
   },
   mockServiceCard: {
