@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CspSafeImage } from '@/components/CspSafeImage'
 import type { ReactElement } from 'react'
 
 import { CmsLink } from '@/components/CmsLink'
@@ -65,13 +65,12 @@ export function ProjectCard({
     >
       <div className={styles.mediaLayer}>
         {imageSrc ? (
-          <Image
+          <CspSafeImage
             src={imageSrc}
             alt=""
             width={370}
             height={280}
             sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 370px"
-            style={{ color: undefined }}
             className={styles.photo}
           />
         ) : null}

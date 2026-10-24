@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CspSafeImage } from '@/components/CspSafeImage'
 import type { ReactElement } from 'react'
 
 import { extractInitials, resolveMediaAsset } from '@/components/media-utils'
@@ -45,12 +45,11 @@ export function Avatar({
       data-fallback={photoAsset ? 'photo' : fallbackMode}
     >
       {photoAsset ? (
-        <Image
+        <CspSafeImage
           src={photoAsset.url}
           alt={photoAsset.alt}
           width={size}
           height={size}
-          style={{ color: undefined }}
           className={styles.photo}
         />
       ) : fallbackMode === 'initials' && initials ? (

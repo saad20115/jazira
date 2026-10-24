@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CspSafeImage } from '@/components/CspSafeImage'
 import type { ReactElement } from 'react'
 
 import { CmsLink } from '@/components/CmsLink'
@@ -62,13 +62,12 @@ export function ServiceCard({
     >
       <div className={styles.mediaLayer}>
         {imageSrc ? (
-          <Image
+          <CspSafeImage
             src={imageSrc}
             alt=""
             width={275}
             height={360}
             sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 275px"
-            style={{ color: undefined }}
             className={styles.photo}
           />
         ) : null}

@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CspSafeImage } from '@/components/CspSafeImage'
 import type { ReactElement } from 'react'
 
 import { resolveMediaAsset } from '@/components/media-utils'
@@ -47,12 +47,11 @@ export function PartnerTile({
     >
       <div className={styles.logoSlot}>
         {logoAsset ? (
-          <Image
+          <CspSafeImage
             src={logoAsset.url}
             alt={logoAsset.alt}
             width={150}
             height={52}
-            style={{ color: undefined }}
             className={styles.logoImage}
           />
         ) : (

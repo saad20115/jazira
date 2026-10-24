@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import { CspSafeImage } from '@/components/CspSafeImage'
 import type { ReactElement } from 'react'
 
 import { resolveMediaAsset } from '@/components/media-utils'
@@ -22,12 +22,11 @@ export function BrandTile({ brand, className }: BrandTileProps): ReactElement {
   return (
     <div className={tileClasses} data-component="brand-tile">
       {logoAsset ? (
-        <Image
+        <CspSafeImage
           src={logoAsset.url}
           alt={logoAsset.alt}
           width={152}
           height={46}
-          style={{ color: undefined }}
           className={styles.logoImage}
         />
       ) : (
