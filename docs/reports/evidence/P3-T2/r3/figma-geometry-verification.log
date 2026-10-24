@@ -1,0 +1,19 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+$ git rev-parse HEAD
+832ca777173d6a592b33b64e3271fe20ad693c10
+=== Figma Geometry, RTL FAB Centering, 2-Column Footer & 390px Hit Target Verification (R-1..R-19, M-120) ===
+- Home Navbar Theme: Light (expected Light), borderBottomWidth=0px (expected 0px)
+- Home Navbar Overlay: navbar y=0..80, <main> y=0 (expected 0)
+- Desktop Navbar Logo Size: 172x50px (expected 172x50px)
+- Desktop Navbar CTA Button Height: 44px (expected 44px)
+- Desktop Navbar Links x-range at 1440px: 500–940 (centred around 720px)
+- Footer Quick Links x=508 (expected 508), Contact Info x=716 (expected 716)
+- Footer Height=505px (expected 503px), Divider y=391px (expected ~388px), Description Width=300px (expected 300px)
+- Footer Column Heading: fontSize=17px, fontWeight=600, textTransform=none
+- Footer CTA Title fontSize=17px, CTA Body=14px/22px
+- Footer Bottom-Bar Language Switcher (R-15): href="/ar", lang="ar", dir="rtl"
+- Footer 2-Column Layout Contact Width (R-16): EN=248px, AR=248px (expected >= 220px)
+- RTL WhatsApp FAB Pulse Ring Center: (1188, 5769) vs Button Center: (1188, 5769)
+- Mobile 390px Hit Targets: drawerLinkHeight=44px, socialButton=44x44px, footerQuickLinkHeight=44px
+

@@ -1,0 +1,8 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+$ git rev-parse HEAD
+832ca777173d6a592b33b64e3271fe20ad693c10
+$ node scripts/evidence/p3-t3-evidence.mjs http://localhost:3132 "D:\jazira\docs\reports\evidence\P3-T3\r2" "D:\jazira\docs\reports\phase-3\P3-T3\r2"
+
+
+[EXIT_CODE=0]

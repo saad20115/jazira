@@ -1,0 +1,38 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+$ git rev-parse HEAD
+832ca777173d6a592b33b64e3271fe20ad693c10
+BaseURL (production next start): http://localhost:3133
+
+=== GET /ar/styleguide ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="ar" dir="rtl" class="dzAZra_variable ZWJS8G_variable">
+Title: الصفحة غير موجودة
+
+=== GET /en/styleguide ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="en" dir="ltr" class="dzAZra_variable ZWJS8G_variable">
+Title: Page Not Found
+
+=== GET /ar/_specimen ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="ar" dir="rtl" class="dzAZra_variable ZWJS8G_variable">
+Title: الصفحة غير موجودة
+
+=== GET /en/_specimen ===
+HTTPStatus: 404 Not Found
+HTMLTag: <html lang="en" dir="ltr" class="dzAZra_variable ZWJS8G_variable">
+Title: Page Not Found
+
+=== Browser Unfiltered CSP & Console Check: /ar (next start) ===
+HTTPStatus: 200
+ConsoleErrors (unfiltered): 0
+PageErrors (unfiltered): 0
+CSPViolations (unfiltered): 0
+
+=== Browser Unfiltered CSP & Console Check: /en (next start) ===
+HTTPStatus: 200
+ConsoleErrors (unfiltered): 0
+PageErrors (unfiltered): 0
+CSPViolations (unfiltered): 0
+

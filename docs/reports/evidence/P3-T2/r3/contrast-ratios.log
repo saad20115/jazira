@@ -1,0 +1,16 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+$ git rev-parse HEAD
+832ca777173d6a592b33b64e3271fe20ad693c10
+=== WCAG 2.1 Contrast Verification (parsed from src\styles\tokens.css, R-12, R-18) ===
+- [PASS] Small gold text on white (Accordion "Show details", ServiceTile "Learn more"): --gold-700 (#8a6410) on --white (#ffffff) -> 5.37:1 (required >= 4.5:1)
+- [PASS] Small gold text on surface (PartnerTile hover subtitle on surface): --gold-700 (#8a6410) on --surface (#f6f8fb) -> 5.05:1 (required >= 4.5:1)
+- [PASS] Small gold text on gold-50 (Eyebrow Light, Accordion expanded badge): --gold-700 (#8a6410) on --gold-50 (#fbf4e3) -> 4.9:1 (required >= 4.5:1)
+- [PASS] Light-surface focus-visible ring on white: --navy-900 (#0b1a33) on --white (#ffffff) -> 17.36:1 (required >= 3:1)
+- [PASS] Light-surface focus-visible ring on surface: --navy-900 (#0b1a33) on --surface (#f6f8fb) -> 16.32:1 (required >= 3:1)
+- [PASS] Light-surface focus-visible ring on gold-50: --navy-900 (#0b1a33) on --gold-50 (#fbf4e3) -> 15.83:1 (required >= 3:1)
+- [PASS] Dark-surface focus-visible ring & Eyebrow Dark text on navy-950: --gold-300 (#efcb76) on --navy-950 (#011025) -> 12.23:1 (required >= 4.5:1)
+- [PASS] Dark-surface focus-visible ring on navy-900: --gold-300 (#efcb76) on --navy-900 (#0b1a33) -> 11.14:1 (required >= 4.5:1)
+- [PASS] Gold Button text (--navy-950) on --gold-500 fill: --navy-950 (#011025) on --gold-500 (#dfa82a) -> 8.87:1 (required >= 4.5:1)
+- [PASS] Body text (--text-body) on --white: --text-body (#5b6475) on --white (#ffffff) -> 5.96:1 (required >= 4.5:1)
+

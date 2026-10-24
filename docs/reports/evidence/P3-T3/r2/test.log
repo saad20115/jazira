@@ -1,0 +1,1557 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+$ git rev-parse HEAD
+832ca777173d6a592b33b64e3271fe20ad693c10
+$ pnpm test
+
+
+> aljazira-website@0.1.0 test C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.5 [39m[90mC:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone[39m
+
+[05:23:26] [32mINFO[39m: [36mDropping database.[39m
+[05:23:26] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:23:26] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:23:26] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (112ms)[39m
+[05:23:26] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:23:26] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (67ms)[39m
+[05:23:26] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:23:26] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (106ms)[39m
+[05:23:26] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:23:27] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (156ms)[39m
+[05:23:27] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:23:27] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (326ms)[39m
+[05:23:27] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:23:27] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (23ms)[39m
+[05:23:27] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:23:27] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (10ms)[39m
+[05:23:29] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:29] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:29] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط±ظˆط§ط¨ط· ط§ظ„ط´ط¨ظƒط§طھ ط§ظ„ط§ط¬طھظ…ط§ط¹ظٹط© 1 > ط±ط§ط¨ط· ط§ظ„ط­ط³ط§ط¨[39m
+[05:23:29] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:29] [32mINFO[39m: [36mThe following field is invalid: header.0.link.url[39m
+[05:23:29] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:30] [32mINFO[39m: [36mThe following field is invalid: hero.backgroundVideo[39m
+[05:23:30] [32mINFO[39m: [36mThe following field is invalid: interactiveSystems.systems[39m
+[05:23:30] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ظ‚ط³ظ… ط§ظ„ط£ظ†ط¸ظ…ط© ط§ظ„ظ‡ظ†ط¯ط³ظٹط© ط§ظ„طھظپط§ط¹ظ„ظٹط© ظˆط§ظ„ظ…ط¬ط³ظ… ط«ظ„ط§ط«ظٹ ط§ظ„ط£ط¨ط¹ط§ط¯ (Interactive Systems) > ط§ظ„ط£ظ†ط¸ظ…ط© ط§ظ„ظ‡ظ†ط¯ط³ظٹط© ط§ظ„طھظپط§ط¹ظ„ظٹط© (5 ط£ظ†ط¸ظ…ط© ط¨ط§ظ„ط¶ط¨ط·)[39m
+[05:23:30] [32mINFO[39m: [36mThe following field is invalid: interactiveSystems.systems[39m
+[05:23:30] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ظ‚ط³ظ… ط£ط±ظ‚ط§ظ…ظ†ط§ ظˆط¥ظ†ط¬ط§ط²ط§طھظ†ط§ â€” ط«ظ‚ط© ط±ظˆط§ط¯ ط§ظ„طµظ†ط§ط¹ط© (Stats Section) > ط§ظ„ط£ط±ظ‚ط§ظ… ظˆط§ظ„ط¥ط­طµط§ط¦ظٹط§طھ ط§ظ„ظ…ط¹ط±ظˆط¶ط© (ط­طھظ‰ 4 ط£ط±ظ‚ط§ظ… ظ…ظ† ظ…ط¬ظ…ظˆط¹ط© ط§ظ„ط£ط±ظ‚ط§ظ…)[39m
+[05:23:30] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ†طµ ط§ظ„طھط¹ط±ظٹظپظٹ (ظپظ‚ط±ط§طھ ظ†طµظٹط© ظپظ‚ط· â€” ط¨ط­ط¯ ط£ظ‚طµظ‰ ظپظ‚ط±طھظٹظ†)[39m
+[05:23:30] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ†طµ ط§ظ„طھط¹ط±ظٹظپظٹ (ظپظ‚ط±ط§طھ ظ†طµظٹط© ظپظ‚ط· â€” ط¨ط­ط¯ ط£ظ‚طµظ‰ ظپظ‚ط±طھظٹظ†)[39m
+[05:23:30] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ†طµ ط§ظ„طھط¹ط±ظٹظپظٹ (ظپظ‚ط±ط§طھ ظ†طµظٹط© ظپظ‚ط· â€” ط¨ط­ط¯ ط£ظ‚طµظ‰ ظپظ‚ط±طھظٹظ†)[39m
+[05:23:31] [32mINFO[39m: [36mThe following field is invalid: hero.background[39m
+[05:23:31] [32mINFO[39m: [36mThe following field is invalid: statsSection.stats[39m
+[05:23:31] [32mINFO[39m: [36mThe following field is invalid: meta.image[39m
+[05:23:31] [32mINFO[39m: [36mThe following fields are invalid: interactiveSystems.systems.0.shot, interactiveSystems.systems.0.disciplines[39m
+[05:23:31] [32mINFO[39m: [36mThe following fields are invalid: office.mapImage, socials.0.platform[39m
+[05:23:32] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (global:home-page). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (global:home-page). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (global:home-page). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1416:36
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:33] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (global:privacy-page). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (global:privacy-page). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (global:privacy-page). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1490:40
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:34] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(ظ…ط´ط±ظˆط¹ ط§ط®طھط¨ط§ط± ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ظ…ط¹ط±ظپ ظپظٹ ط±ط³ط§ظ„ط© ط§ظ„ط­ط°ظپ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(ظ…ط´ط±ظˆط¹ ط§ط®طھط¨ط§ط± ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ظ…ط¹ط±ظپ ظپظٹ ط±ط³ط§ظ„ط© ط§ظ„ط­ط°ظپ)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(ظ…ط´ط±ظˆط¹ ط§ط®طھط¨ط§ط± ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ظ…ط¹ط±ظپ ظپظٹ ط±ط³ط§ظ„ط© ط§ظ„ط­ط°ظپ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(ظ…ط´ط±ظˆط¹ ط§ط®طھط¨ط§ط± ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ظ…ط¹ط±ظپ ظپظٹ ط±ط³ط§ظ„ط© ط§ظ„ط­ط°ظپ)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(ظ…ط´ط±ظˆط¹ ط§ط®طھط¨ط§ط± ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ظ…ط¹ط±ظپ ظپظٹ ط±ط³ط§ظ„ط© ط§ظ„ط­ط°ظپ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(ظ…ط´ط±ظˆط¹ ط§ط®طھط¨ط§ط± ط¹ط¯ظ… طھظƒط±ط§ط± ط§ظ„ظ…ط¹ط±ظپ ظپظٹ ط±ط³ط§ظ„ط© ط§ظ„ط­ط°ظپ)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1547:34
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: cta.button.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: hero.primaryCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: headerCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: cta.button.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: hero.primaryCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: headerCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: cta.button.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: hero.primaryCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: headerCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: cta.button.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: hero.primaryCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: headerCta.link.url[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: cta.button.link.internalPath[39m
+[05:23:34] [32mINFO[39m: [36mThe following field is invalid: cta.button.link.internalPath[39m
+[05:23:35] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¥ط­طµط§ط¦ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ: global:home-page, global:about-page, global:projects-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¥ط­طµط§ط¦ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ: global:home-page, global:about-page, global:projects-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¥ط­طµط§ط¦ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ: global:home-page, global:about-page, global:projects-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventStatDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Stats.ts:46:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1661:31
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:35] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¥ط­طµط§ط¦ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ: global:about-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¥ط­طµط§ط¦ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ: global:about-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¥ط­طµط§ط¦ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ: global:about-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventStatDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Stats.ts:46:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1697:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:35] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظپظٹط¯ظٹظˆ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ: global:home-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظپظٹط¯ظٹظˆ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ: global:home-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظپظٹط¯ظٹظˆ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ: global:home-page. ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventVideoDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Videos.ts:194:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1745:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:36] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظپظٹط¯ظٹظˆ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ: projects(ظ…ط´ط±ظˆط¹ ظ…ط±طھط¨ط· ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this video because it is referenced by: projects(ظ…ط´ط±ظˆط¹ ظ…ط±طھط¨ط· ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹). Remove those references first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظپظٹط¯ظٹظˆ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ: projects(ظ…ط´ط±ظˆط¹ ظ…ط±طھط¨ط· ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this video because it is referenced by: projects(ظ…ط´ط±ظˆط¹ ظ…ط±طھط¨ط· ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹). Remove those references first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ط§ ط§ظ„ظپظٹط¯ظٹظˆ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ: projects(ظ…ط´ط±ظˆط¹ ظ…ط±طھط¨ط· ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this video because it is referenced by: projects(ظ…ط´ط±ظˆط¹ ظ…ط±طھط¨ط· ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹). Remove those references first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventVideoDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Videos.ts:194:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:124:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t5.int.test.ts:1785:36
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ [32mâœ“[39m tests/int/p2-t5.int.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 15378[2mms[22m[39m
+   [32mâœ“[39m P2-T5 integration suite (Globals: site-settings, navigation, home-page, services-page, about-page, projects-page, contact-page, privacy-page) [2m(9)[22m
+     [33m[2mâœ“[22m[39m enforces Z2 on home-page (and all publishable page globals): anonymous REST GET /api/globals/home-page returns published version only while a newer draft exists[33m 581[2mms[22m[39m
+     [33m[2mâœ“[22m[39m enforces home-page invariants (hero.background xor hero.backgroundVideo, unique interactiveSystems.systems[].shot, statsSection max 4, and paragraphRichTextField AST limits)[33m 460[2mms[22m[39m
+     [33m[2mâœ“[22m[39m verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks[33m 623[2mms[22m[39m
+     [33m[2mâœ“[22m[39m prevents deleting media referenced by globals in localized meta.image or richText body upload nodes (R-7)[33m 2903[2mms[22m[39m
+     [33m[2mâœ“[22m[39m rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals (R-1, R-6)[33m 410[2mms[22m[39m
+     [33m[2mâœ“[22m[39m prevents deleting stats and videos referenced by globals or collections across published and draft versions and locales (R-4)[33m 1365[2mms[22m[39m
+[05:23:42] [32mINFO[39m: [36mDropping database.[39m
+[05:23:42] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:23:42] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:23:42] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (96ms)[39m
+[05:23:42] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:23:42] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (63ms)[39m
+[05:23:42] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:23:42] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (69ms)[39m
+[05:23:42] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:23:42] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (100ms)[39m
+[05:23:42] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:23:43] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (313ms)[39m
+[05:23:43] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:23:43] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (26ms)[39m
+[05:23:43] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:23:43] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (13ms)[39m
+[05:23:44] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:44] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:44] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:44] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:44] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:46] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:46] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:47] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:48] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:49] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:50] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:50] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:50] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:50] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:23:51] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[90mstdout[2m | tests/int/p2-t8.int.test.ts[2m > [22m[2mP2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1â€“Z6, R-6..R-9)[2m > [22m[2mexecutes the complete REST Role Matrix across all 8 globals (anonymous / editor / admin أ— read/update) (Z1, Z5)
+[22m[39m=== Z5 COLLECTION ROLE MATRIX ===
+| Target | Anon Read | Anon Create | Anon Update | Anon Delete | Editor Read | Editor Create | Editor Update | Editor Delete | Admin Read | Admin Create | Admin Update | Admin Delete |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `users (self)` | 403 | 403 | 403 | 403 | 200 | 403 | 200 | 403 | 200 | 201 | 200 | 200 |
+| `users (other â€” id & name only for editor per R-11)` | 403 | 403 | 403 | 403 | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 |
+| `media` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `videos` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `brands` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `stats` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `materials` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `services` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `team` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `projects` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `quote-requests` | 403 | 403 | 403 | 403 | 200 | 403 | 200 | 403 | 200 | 403 | 200 | 200 |
+=== Z5 GLOBAL ROLE MATRIX ===
+| Global | Anon Read | Anon Update | Editor Read | Editor Update | Admin Read | Admin Update |
+|---|---|---|---|---|---|---|
+| `site-settings` | 200 | 403 | 200 | 403 | 200 | 200 |
+| `navigation` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `home-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `services-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `about-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `projects-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `contact-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `privacy-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+
+[05:23:51] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:23:51] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:23:51] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:23:52] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (brands(ط¹ظ„ط§ظ…ط© طھط¬ط§ط±ظٹط© طھط®طھط¨ط± ط­ظ…ط§ظٹط© ط§ظ„ظˆط³ط§ط¦ط· ط§ظ„طھظ„ظ‚ط§ط¦ظٹط© R-8)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (brands(ط¹ظ„ط§ظ…ط© طھط¬ط§ط±ظٹط© طھط®طھط¨ط± ط­ظ…ط§ظٹط© ط§ظ„ظˆط³ط§ط¦ط· ط§ظ„طھظ„ظ‚ط§ط¦ظٹط© R-8)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (brands(ط¹ظ„ط§ظ…ط© طھط¬ط§ط±ظٹط© طھط®طھط¨ط± ط­ظ…ط§ظٹط© ط§ظ„ظˆط³ط§ط¦ط· ط§ظ„طھظ„ظ‚ط§ط¦ظٹط© R-8)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (brands(ط¹ظ„ط§ظ…ط© طھط¬ط§ط±ظٹط© طھط®طھط¨ط± ط­ظ…ط§ظٹط© ط§ظ„ظˆط³ط§ط¦ط· ط§ظ„طھظ„ظ‚ط§ط¦ظٹط© R-8)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (brands(ط¹ظ„ط§ظ…ط© طھط¬ط§ط±ظٹط© طھط®طھط¨ط± ط­ظ…ط§ظٹط© ط§ظ„ظˆط³ط§ط¦ط· ط§ظ„طھظ„ظ‚ط§ط¦ظٹط© R-8)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (brands(ط¹ظ„ط§ظ…ط© طھط¬ط§ط±ظٹط© طھط®طھط¨ط± ط­ظ…ط§ظٹط© ط§ظ„ظˆط³ط§ط¦ط· ط§ظ„طھظ„ظ‚ط§ط¦ظٹط© R-8)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t8.int.test.ts:93:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t8.int.test.ts:1623:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:23:53] [32mINFO[39m: [36mThe following field is invalid: headerCta.link.url[39m
+[05:23:53] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ظˆظ‚ط¹ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ[39m
+ [32mâœ“[39m tests/int/p2-t8.int.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 13415[2mms[22m[39m
+   [32mâœ“[39m P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1â€“Z6, R-6..R-9) [2m(6)[22m
+     [33m[2mâœ“[22m[39m executes the complete REST Role Matrix (anonymous / editor / admin أ— every collection أ— read/create/update/delete) with real sessions (Z1, Z3, Z4, Z5)[33m 4945[2mms[22m[39m
+     [33m[2mâœ“[22m[39m executes the complete REST Role Matrix across all 8 globals (anonymous / editor / admin أ— read/update) (Z1, Z5)[33m 1742[2mms[22m[39m
+     [33m[2mâœ“[22m[39m enforces Z2 (draft isolation) across all versioned collections (services, projects) and versioned globals in both REST (?draft=true) and Local API (overrideAccess: false) (Z2, Z5)[33m 889[2mms[22m[39m
+     [33m[2mâœ“[22m[39m verifies R-8 (config-driven collection media guard) and R-9 (http: external links rejected when NODE_ENV === production) over REST[33m 1257[2mms[22m[39m
+[05:23:59] [32mINFO[39m: [36mDropping database.[39m
+[05:23:59] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:23:59] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:23:59] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (87ms)[39m
+[05:23:59] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:23:59] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (53ms)[39m
+[05:23:59] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:23:59] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (75ms)[39m
+[05:23:59] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:24:00] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (97ms)[39m
+[05:24:00] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:24:00] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (324ms)[39m
+[05:24:00] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:24:00] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (24ms)[39m
+[05:24:00] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:24:00] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (9ms)[39m
+[05:24:01] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:01] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:24:02] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:24:02] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:24:02] [32mINFO[39m: [36mRunning 1 jobs.[39m
+    [35mnew[39m: 1
+    [35mretrying[39m: 0
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: videoUrl[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط­ط§ظ„ط© طھظ†ظپظٹط° ط§ظ„ظ…ط´ط±ظˆط¹[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ط¹ط±ظ‘ظپ ط§ظ„ظ†طµظٹ (Slug)[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ط­طھظˆظ‰ (Content) > ط³ظ†ط© ط§ظ„ط¥ظ†ط¬ط§ط²[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ط­طھظˆظ‰ (Content) > ط³ظ†ط© ط§ظ„ط¥ظ†ط¬ط§ط²[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ط­طھظˆظ‰ (Content) > ط³ظ†ط© ط§ظ„ط¥ظ†ط¬ط§ط²[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ط­طھظˆظ‰ (Content) > ظ†ط¨ط°ط© ظ…ط®طھطµط±ط© ط¹ظ† ط§ظ„ظ…ط´ط±ظˆط¹[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„طھظپط§طµظٹظ„ ظˆط§ظ„ظ…ط®ط±ط¬ط§طھ (Details) > ط§ظ„ط±ظƒط§ط¦ط² ظˆط§ظ„طھظپط§طµظٹظ„ ط§ظ„ظپظ†ظٹط© ظ„ظ„ظ…ط´ط±ظˆط¹[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„طھظپط§طµظٹظ„ ظˆط§ظ„ظ…ط®ط±ط¬ط§طھ (Details) > ط§ظ„ظ…ط®ط±ط¬ط§طھ ظˆط§ظ„ط¨ظ†ظˆط¯ ط§ظ„ظ…ط³ظ„ظ…ط©[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظˆط³ط§ط¦ط· (Media) > ظ…ط¹ط±ط¶ طµظˆط± ط§ظ„ظ…ط´ط±ظˆط¹[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: coverImage[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: gallery[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: meta.image[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: video[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: category[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: status[39m
+[05:24:03] [32mINFO[39m: [36mThe following field is invalid: scope[39m
+[05:24:03] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: meta[39m
+[05:24:04] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: meta[39m
+[05:24:04] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: طھظپط§طµظٹظ„ ط§ظ„ظ…ط´ط±ظˆط¹ ظˆط¯ط±ط§ط³ط© ط§ظ„ط­ط§ظ„ط©[39m
+[05:24:04] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: طھظپط§طµظٹظ„ ط§ظ„ظ…ط´ط±ظˆط¹ ظˆط¯ط±ط§ط³ط© ط§ظ„ط­ط§ظ„ط©[39m
+[05:24:04] [32mINFO[39m: [36mThe following field is invalid: gallery[39m
+[05:24:04] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center), projects(ظ…ط´ط±ظˆط¹ ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹ ظپظ‚ط·), projects(ظ…ط´ط±ظˆط¹ ظ…ط³طھظˆط¯ط¹ط§طھ ط§ظ„ط¥ظ…ط¯ط§ط¯ ط§ظ„ظ…ط¬ط¯ظˆظ„ ظ„ظ„ظ†ط´ط±), projects(ظ…ط±ظƒط² ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¥ظ‚ظ„ظٹظ…ظٹ ط¨ط§ظ„ط±ظٹط§ط¶)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(ظ…ط´ط±ظˆط¹ ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹ ظپظ‚ط·), projects(ظ…ط´ط±ظˆط¹ ظ…ط³طھظˆط¯ط¹ط§طھ ط§ظ„ط¥ظ…ط¯ط§ط¯ ط§ظ„ظ…ط¬ط¯ظˆظ„ ظ„ظ„ظ†ط´ط±), projects(ظ…ط±ظƒط² ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¥ظ‚ظ„ظٹظ…ظٹ ط¨ط§ظ„ط±ظٹط§ط¶)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center), projects(ظ…ط´ط±ظˆط¹ ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹ ظپظ‚ط·), projects(ظ…ط´ط±ظˆط¹ ظ…ط³طھظˆط¯ط¹ط§طھ ط§ظ„ط¥ظ…ط¯ط§ط¯ ط§ظ„ظ…ط¬ط¯ظˆظ„ ظ„ظ„ظ†ط´ط±), projects(ظ…ط±ظƒط² ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¥ظ‚ظ„ظٹظ…ظٹ ط¨ط§ظ„ط±ظٹط§ط¶)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(ظ…ط´ط±ظˆط¹ ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹ ظپظ‚ط·), projects(ظ…ط´ط±ظˆط¹ ظ…ط³طھظˆط¯ط¹ط§طھ ط§ظ„ط¥ظ…ط¯ط§ط¯ ط§ظ„ظ…ط¬ط¯ظˆظ„ ظ„ظ„ظ†ط´ط±), projects(ظ…ط±ظƒط² ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¥ظ‚ظ„ظٹظ…ظٹ ط¨ط§ظ„ط±ظٹط§ط¶)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center), projects(ظ…ط´ط±ظˆط¹ ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹ ظپظ‚ط·), projects(ظ…ط´ط±ظˆط¹ ظ…ط³طھظˆط¯ط¹ط§طھ ط§ظ„ط¥ظ…ط¯ط§ط¯ ط§ظ„ظ…ط¬ط¯ظˆظ„ ظ„ظ„ظ†ط´ط±), projects(ظ…ط±ظƒط² ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¥ظ‚ظ„ظٹظ…ظٹ ط¨ط§ظ„ط±ظٹط§ط¶)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(ظ…ط´ط±ظˆط¹ ط¨ظپظٹط¯ظٹظˆ ظ…ط±ظپظˆط¹ ظپظ‚ط·), projects(ظ…ط´ط±ظˆط¹ ظ…ط³طھظˆط¯ط¹ط§طھ ط§ظ„ط¥ظ…ط¯ط§ط¯ ط§ظ„ظ…ط¬ط¯ظˆظ„ ظ„ظ„ظ†ط´ط±), projects(ظ…ط±ظƒط² ط§ظ„ط¨ظٹط§ظ†ط§طھ ط§ظ„ط¥ظ‚ظ„ظٹظ…ظٹ ط¨ط§ظ„ط±ظٹط§ط¶)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:875:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:05] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:979:29
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:05] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:985:33
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:06] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(Riyadh Regional Data Center)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:995:40
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:06] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (services(ط®ط¯ظ…ط© ط§ط®طھط¨ط§ط±ظٹط© ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (services(ط®ط¯ظ…ط© ط§ط®طھط¨ط§ط±ظٹط© ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (services(ط®ط¯ظ…ط© ط§ط®طھط¨ط§ط±ظٹط© ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (services(ط®ط¯ظ…ط© ط§ط®طھط¨ط§ط±ظٹط© ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (services(ط®ط¯ظ…ط© ط§ط®طھط¨ط§ط±ظٹط© ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (services(ط®ط¯ظ…ط© ط§ط®طھط¨ط§ط±ظٹط© ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:1040:39
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:11] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(ظ…ط´ط±ظˆط¹ ط±ظ‚ظ… 105 ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(ظ…ط´ط±ظˆط¹ ط±ظ‚ظ… 105 ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(ظ…ط´ط±ظˆط¹ ط±ظ‚ظ… 105 ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(ظ…ط´ط±ظˆط¹ ط±ظ‚ظ… 105 ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (projects(ظ…ط´ط±ظˆط¹ ط±ظ‚ظ… 105 ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (projects(ظ…ط´ط±ظˆط¹ ط±ظ‚ظ… 105 ط¨طµظˆط±ط© ط¯ط§ط®ظ„ ط§ظ„ظ†طµ ط§ظ„ط؛ظ†ظٹ)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:1099:40
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:12] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¹ظ„ط§ظ…ط© ط§ظ„طھط¬ط§ط±ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ 1 ظ…ط§ط¯ط© ظ…ط¹طھظ…ط¯ط© (ط§ظ„ط¨ظ†ظˆط¯: #991). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„طھظ‡ط§ ظ…ظ† طھظ„ظƒ ط§ظ„ظ…ظˆط§ط¯ ط£ظˆظ„ط§ظ‹. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¹ظ„ط§ظ…ط© ط§ظ„طھط¬ط§ط±ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ 1 ظ…ط§ط¯ط© ظ…ط¹طھظ…ط¯ط© (ط§ظ„ط¨ظ†ظˆط¯: #991). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„طھظ‡ط§ ظ…ظ† طھظ„ظƒ ط§ظ„ظ…ظˆط§ط¯ ط£ظˆظ„ط§ظ‹. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¹ظ„ط§ظ…ط© ط§ظ„طھط¬ط§ط±ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ 1 ظ…ط§ط¯ط© ظ…ط¹طھظ…ط¯ط© (ط§ظ„ط¨ظ†ظˆط¯: #991). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„طھظ‡ط§ ظ…ظ† طھظ„ظƒ ط§ظ„ظ…ظˆط§ط¯ ط£ظˆظ„ط§ظ‹. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventBrandDeletionWhenUsedByMaterials (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Brands.ts:35:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:1329:28
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:12] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot delete the last admin user.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot delete the last admin user.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot delete the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventLastAdminBeforeDelete (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Users.ts:144:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:98:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:1340:32
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:12] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط®ظپط¶ طµظ„ط§ط­ظٹط© ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯ ط¥ظ„ظ‰ ظ…ط­ط±ط±. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot demote the last admin user.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط®ظپط¶ طµظ„ط§ط­ظٹط© ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯ ط¥ظ„ظ‰ ظ…ط­ط±ط±. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot demote the last admin user.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط®ظپط¶ طµظ„ط§ط­ظٹط© ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯ ط¥ظ„ظ‰ ظ…ط­ط±ط±. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot demote the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventLastAdminDemotionBeforeChange (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Users.ts:111:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:96:11)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:12] [31mERROR[39m: [36mظ…ط¹ط±ظ‘ظپ ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± طµط§ظ„ط­. / Invalid user ID.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ…ط¹ط±ظ‘ظپ ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± طµط§ظ„ط­. / Invalid user ID.",
+      "stack":
+          APIError: ظ…ط¹ط±ظ‘ظپ ط§ظ„ظ…ط³طھط®ط¯ظ… ط؛ظٹط± طµط§ظ„ط­. / Invalid user ID.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at handler (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Users.ts:321:17)
+              at handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:32)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:94:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t4.int.test.ts:1362:30
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ [32mâœ“[39m tests/int/p2-t4.int.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 16924[2mms[22m[39m
+   [32mâœ“[39m P2-T4 integration suite (projects) [2m(6)[22m
+     [33m[2mâœ“[22m[39m enforces Z1 & Z2 on projects: anonymous never sees draft projects (REST or Local API overrideAccess:false), sees published projects, and newer draft edits remain hidden until published[33m 476[2mms[22m[39m
+     [33m[2mâœ“[22m[39m supports scheduled publishing via Payload jobs queue (schedulePublish: true): transitions a draft project to published when the scheduled time arrives[33m 688[2mms[22m[39m
+     [33m[2mâœ“[22m[39m enforces mutual exclusion between video and videoUrl (video xor videoUrl), trims videoUrl whitespace, and rejects non-default ports and non-allowlisted hosts on draft and published saves (R-8)[33m 594[2mms[22m[39m
+     [33m[2mâœ“[22m[39m enforces slug uniqueness, required status with no default (R-9), field constraints, draft relationship/enum validation returning 400 (R-6), and media deletion guard across locales and richText upload nodes (R-7)[33m 8097[2mms[22m[39m
+     [33m[2mâœ“[22m[39m wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4)[33m 424[2mms[22m[39m
+[05:24:17] [32mINFO[39m: [36mDropping database.[39m
+[05:24:18] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (72ms)[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (43ms)[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (58ms)[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (79ms)[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (284ms)[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (26ms)[39m
+[05:24:18] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:24:18] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (12ms)[39m
+[05:24:20] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:20] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:20] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:20] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:20] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:20] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:20] [32mINFO[39m: [36mThe following field is invalid: status[39m
+[05:24:20] [32mINFO[39m: [36mThe following field is invalid: assignedTo[39m
+[05:24:22] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:22] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:22] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:23] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:23] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:798:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:23] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:810:32
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:23] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:23] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:23] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:23] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:23] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:73:16)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t6.int.test.ts:855:32
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+ [32mâœ“[39m tests/int/p2-t6.int.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 12079[2mms[22m[39m
+   [32mâœ“[39m P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1) [2m(7)[22m
+     [33m[2mâœ“[22m[39m normalizes phone inputs (0573534185, 057 353 4185, 00966 57 353 4185, +966 57 353 4185) to canonical E.164 +966573534185 (R-3, R-12), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and allows editors to read only id + name of other users (R-5, R-11)[33m 665[2mms[22m[39m
+     [33m[2mâœ“[22m[39m enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19)[33m 2712[2mms[22m[39m
+     [33m[2mâœ“[22m[39m prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8)[33m 1888[2mms[22m[39m
+[05:24:31] [32mINFO[39m: [36mDropping database.[39m
+[05:24:32] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (78ms)[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (64ms)[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (91ms)[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (104ms)[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (274ms)[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (23ms)[39m
+[05:24:32] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:24:32] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (13ms)[39m
+[05:24:33] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:34] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:34] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:34] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:34] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:34] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[05:24:34] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[05:24:34] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[05:24:34] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[05:24:34] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[05:24:34] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[05:24:36] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:36] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:37] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:37] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:37] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:38] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:410:24
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:38] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:419:32
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:24:39] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:39] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:39] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:39] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:39] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:39] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط®ظپط¶ طµظ„ط§ط­ظٹط© ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯ ط¥ظ„ظ‰ ظ…ط­ط±ط±. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot demote the last admin user.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط®ظپط¶ طµظ„ط§ط­ظٹط© ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯ ط¥ظ„ظ‰ ظ…ط­ط±ط±. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot demote the last admin user.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط®ظپط¶ طµظ„ط§ط­ظٹط© ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯ ط¥ظ„ظ‰ ظ…ط­ط±ط±. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot demote the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventLastAdminDemotionBeforeChange (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Users.ts:111:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:24:39] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot delete the last admin user.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot delete the last admin user.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ط¯ظٹط± ط§ظ„ظ†ط¸ط§ظ… ط§ظ„ظˆط­ظٹط¯. ظٹط¬ط¨ ظˆط¬ظˆط¯ ظ…ط¯ظٹط± ظ†ط¸ط§ظ… ظˆط§ط­ط¯ ط¹ظ„ظ‰ ط§ظ„ط£ظ‚ظ„. / Cannot delete the last admin user.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventLastAdminBeforeDelete (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Users.ts:144:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:63:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p1-t3.int.test.ts:580:23
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[90mstdout[2m | tests/int/p1-t3.int.test.ts[2m > [22m[2mP1-T3 integration suite (Postgres test DB via migrations)[2m > [22m[2mreturns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+[22m[39m[A5/R-1 Timing 20+20] known(median=25.65ms, max=41.11ms) vs unknown(median=5.74ms, max=8.3ms) | diff=19.91ms
+
+[05:24:45] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:24:45] [32mINFO[39m: [36mThe following field is invalid: file[39m
+[05:24:45] [32mINFO[39m: [36mThe following field is invalid: file[39m
+ [32mâœ“[39m tests/int/p1-t3.int.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 14419[2mms[22m[39m
+   [32mâœ“[39m P1-T3 integration suite (Postgres test DB via migrations) [2m(9)[22m
+     [33m[2mâœ“[22m[39m registers the first user as admin via /api/users/first-register and blocks any second first-register attempt (A6)[33m 640[2mms[22m[39m
+     [33m[2mâœ“[22m[39m allows admin to create an editor user (defaulting to editor) and prevents editor from escalating role via REST or Local API (Z1, Z3)[33m 817[2mms[22m[39m
+     [33m[2mâœ“[22m[39m enforces the password policy (min 12 chars + common password blocklist) on create, update, and reset-password (A4)[33m 1278[2mms[22m[39m
+     [33m[2mâœ“[22m[39m locks the account after 5 failed login attempts for 15 minutes and refuses the correct password while locked (A1)[33m 2942[2mms[22m[39m
+     [33m[2mâœ“[22m[39m revokes JWT access immediately on user logout and on admin-forced session removal (A2)[33m 1189[2mms[22m[39m
+     [33m[2mâœ“[22m[39m refuses deleting or demoting the last admin user, while allowing deleting a second admin (R-2)[33m 404[2mms[22m[39m
+     [33m[2mâœ“[22m[39m returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)[33m 5239[2mms[22m[39m
+     [33m[2mâœ“[22m[39m rejects anonymous uploads, rejects .svg and disguised HTML renamed .jpg by magic bytes, and accepts a real JPEG generating all 4 webp sizes (I5, Z1)[33m 491[2mms[22m[39m
+ [32mâœ“[39m src/eslint-require-override-access-false.test.ts [2m([22m[2m11 tests[22m[2m)[22m[33m 856[2mms[22m[39m
+   [32mâœ“[39m local/require-override-access-false ESLint rule & Z6 typed wrapper (P2-T8 & P3-T1 آ§0, R-6, R-11, R-12, R-21..R-23) [2m(11)[22m
+     [33m[2mâœ“[22m[39m verifies all existing files in src/app/(frontend), src/components, and src/lib/cms pass Z6[33m 529[2mms[22m[39m
+[05:24:58] [32mINFO[39m: [36mDropping database.[39m
+[05:24:59] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:24:59] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:24:59] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (104ms)[39m
+[05:24:59] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:24:59] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (53ms)[39m
+[05:24:59] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:24:59] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (71ms)[39m
+[05:24:59] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:24:59] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (95ms)[39m
+[05:24:59] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:25:00] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (435ms)[39m
+[05:25:00] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:25:00] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (28ms)[39m
+[05:25:00] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:25:00] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (13ms)[39m
+[05:25:01] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:01] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:25:01] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظˆطµظپ ط§ظ„طھظپطµظٹظ„ظٹ ظ„ظ„ط®ط¯ظ…ط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظˆطµظپ ط§ظ„طھظپطµظٹظ„ظٹ ظ„ظ„ط®ط¯ظ…ط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظˆطµظپ ط§ظ„طھظپطµظٹظ„ظٹ ظ„ظ„ط®ط¯ظ…ط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظˆطµظپ ط§ظ„طھظپطµظٹظ„ظٹ ظ„ظ„ط®ط¯ظ…ط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„طµظˆط±ط© ط§ظ„ط´ط®طµظٹط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„طµظˆط±ط© ط§ظ„ط´ط®طµظٹط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„طµظˆط±ط© ط§ظ„ط´ط®طµظٹط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط±ط§ط¨ط· ظ„ظٹظ†ظƒط¯ط¥ظ† (LinkedIn)[39m
+[05:25:02] [32mINFO[39m: [36mط؛ظٹط± ظ…ظˆط¬ظˆط¯[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط±ط§ط¨ط· ظ„ظٹظ†ظƒط¯ط¥ظ† (LinkedIn)[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط±ط§ط¨ط· ظ„ظٹظ†ظƒط¯ط¥ظ† (LinkedIn)[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط£ظٹظ‚ظˆظ†ط© ط§ظ„ط®ط¯ظ…ط©[39m
+[05:25:02] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: طھطµظ†ظٹظپ ط§ظ„ط®ط¯ظ…ط©[39m
+[05:25:02] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (services(ط§ظ„ط£ط¹ظ…ط§ظ„ ط§ظ„ظƒظ‡ط±ظˆظ…ظٹظƒط§ظ†ظٹظƒظٹط© ط§ظ„ظ…طھظƒط§ظ…ظ„ط©), team(ظ…. ط¹ط¨ط¯ ط§ظ„ظ„ظ‡ ط§ظ„ط´ظ…ط±ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (services(ط§ظ„ط£ط¹ظ…ط§ظ„ ط§ظ„ظƒظ‡ط±ظˆظ…ظٹظƒط§ظ†ظٹظƒظٹط© ط§ظ„ظ…طھظƒط§ظ…ظ„ط©), team(ظ…. ط¹ط¨ط¯ ط§ظ„ظ„ظ‡ ط§ظ„ط´ظ…ط±ظٹ)). Remove the reference first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (services(ط§ظ„ط£ط¹ظ…ط§ظ„ ط§ظ„ظƒظ‡ط±ظˆظ…ظٹظƒط§ظ†ظٹظƒظٹط© ط§ظ„ظ…طھظƒط§ظ…ظ„ط©), team(ظ…. ط¹ط¨ط¯ ط§ظ„ظ„ظ‡ ط§ظ„ط´ظ…ط±ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (services(ط§ظ„ط£ط¹ظ…ط§ظ„ ط§ظ„ظƒظ‡ط±ظˆظ…ظٹظƒط§ظ†ظٹظƒظٹط© ط§ظ„ظ…طھظƒط§ظ…ظ„ط©), team(ظ…. ط¹ط¨ط¯ ط§ظ„ظ„ظ‡ ط§ظ„ط´ظ…ط±ظٹ)). Remove the reference first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ…ظ„ظپ ط§ظ„ظˆط³ط§ط¦ط· ظ‡ط°ط§ ظ„ط£ظ†ظ‡ ظ…ط³طھط®ط¯ظ… ظپظٹ ط³ط¬ظ„ط§طھ ط£ط®ط±ظ‰ (services(ط§ظ„ط£ط¹ظ…ط§ظ„ ط§ظ„ظƒظ‡ط±ظˆظ…ظٹظƒط§ظ†ظٹظƒظٹط© ط§ظ„ظ…طھظƒط§ظ…ظ„ط©), team(ظ…. ط¹ط¨ط¯ ط§ظ„ظ„ظ‡ ط§ظ„ط´ظ…ط±ظٹ)). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„ط© ط§ظ„ط§ط±طھط¨ط§ط· ط£ظˆظ„ط§ظ‹. / Cannot delete this media item because it is referenced by other record(s) (services(ط§ظ„ط£ط¹ظ…ط§ظ„ ط§ظ„ظƒظ‡ط±ظˆظ…ظٹظƒط§ظ†ظٹظƒظٹط© ط§ظ„ظ…طھظƒط§ظ…ظ„ط©), team(ظ…. ط¹ط¨ط¯ ط§ظ„ظ„ظ‡ ط§ظ„ط´ظ…ط±ظٹ)). Remove the reference first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t3.int.test.ts:74:11)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t3.int.test.ts:808:38
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ [32mâœ“[39m tests/int/p2-t3.int.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 7928[2mms[22m[39m
+   [32mâœ“[39m P2-T3 integration suite (services & team) [2m(4)[22m
+     [33m[2mâœ“[22m[39m enforces Z1 & Z2 on services: anonymous never sees draft services (even with ?draft=true), sees published services, and newer draft edits remain hidden until published[33m 396[2mms[22m[39m
+     [33m[2mâœ“[22m[39m verifies P2-T3 R-1..R-6 fixes: staff bio cleared across all locales (R-1), LinkedIn https + path (R-2), LinkFeature enabledCollections (R-3), no silent icon/tier defaults on services (R-4), Arabic SEO field labels (R-5), and media beforeDelete guard (R-6)[33m 665[2mms[22m[39m
+ [32mâœ“[39m src/p3-t2-components.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 333[2mms[22m[39m
+[05:25:10] [32mINFO[39m: [36mDropping database.[39m
+[05:25:10] [32mINFO[39m: [36mReading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\src\migrations[39m
+[05:25:10] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[05:25:10] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (94ms)[39m
+[05:25:10] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[05:25:10] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (56ms)[39m
+[05:25:10] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[05:25:10] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (74ms)[39m
+[05:25:10] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[05:25:10] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (114ms)[39m
+[05:25:10] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[05:25:11] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (317ms)[39m
+[05:25:11] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[05:25:11] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (22ms)[39m
+[05:25:11] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[05:25:11] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (10ms)[39m
+[05:25:12] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:12] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:12] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:12] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:12] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:12] [32mINFO[39m: [36mظ„ط§ ظٹط³ظ…ط­ ظ„ظƒ ط§ظ„ظ‚ظٹط§ظ… ط¨ظ‡ط°ظ‡ ط§ظ„ط¹ظ…ظ„ظٹظ‘ط©.[39m
+[05:25:12] [31mERROR[39m: [36mFile size limit has been reached[39m
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[05:25:13] [32mINFO[39m: [36mThe following field is invalid: file[39m
+[05:25:13] [32mINFO[39m: [36mThe following field is invalid: file[39m
+[05:25:13] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ظ…ظˆظ‚ط¹ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ[39m
+[05:25:13] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط§ظ„ط¹ظ„ط§ظ…ط§طھ ط§ظ„طھط¬ط§ط±ظٹط© ط§ظ„ظ…ط¹طھظ…ط¯ط©[39m
+[05:25:13] [32mINFO[39m: [36mط§ظ„ط­ظ‚ظ„ ط§ظ„طھط§ظ„ظٹ ط؛ظٹط± طµط§ظ„ط­: ط±ظ‚ظ… ط§ظ„ط¨ظ†ط¯[39m
+[05:25:13] [31mERROR[39m: [36mظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¹ظ„ط§ظ…ط© ط§ظ„طھط¬ط§ط±ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ 1 ظ…ط§ط¯ط© ظ…ط¹طھظ…ط¯ط© (ط§ظ„ط¨ظ†ظˆط¯: #1). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„طھظ‡ط§ ظ…ظ† طھظ„ظƒ ط§ظ„ظ…ظˆط§ط¯ ط£ظˆظ„ط§ظ‹. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.[39m
+    err: {
+      "type": "APIError",
+      "message": "ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¹ظ„ط§ظ…ط© ط§ظ„طھط¬ط§ط±ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ 1 ظ…ط§ط¯ط© ظ…ط¹طھظ…ط¯ط© (ط§ظ„ط¨ظ†ظˆط¯: #1). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„طھظ‡ط§ ظ…ظ† طھظ„ظƒ ط§ظ„ظ…ظˆط§ط¯ ط£ظˆظ„ط§ظ‹. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.",
+      "stack":
+          APIError: ظ„ط§ ظٹظ…ظƒظ† ط­ط°ظپ ظ‡ط°ظ‡ ط§ظ„ط¹ظ„ط§ظ…ط© ط§ظ„طھط¬ط§ط±ظٹط© ظ„ط£ظ†ظ‡ط§ ظ…ط³طھط®ط¯ظ…ط© ظپظٹ 1 ظ…ط§ط¯ط© ظ…ط¹طھظ…ط¯ط© (ط§ظ„ط¨ظ†ظˆط¯: #1). ظٹط±ط¬ظ‰ ط¥ط²ط§ظ„طھظ‡ط§ ظ…ظ† طھظ„ظƒ ط§ظ„ظ…ظˆط§ط¯ ط£ظˆظ„ط§ظ‹. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+              at createPublicAPIError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/apiError.ts:26:15)
+              at preventBrandDeletionWhenUsedByMaterials (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/collections/Brands.ts:35:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t2.int.test.ts:65:20)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t2.int.test.ts:473:27
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[05:25:14] [31mERROR[39m: [36mMultipart limit has been reached[39m
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[05:25:14] [31mERROR[39m: [36mMultipart limit has been reached[39m
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+[05:25:15] [32mINFO[39m: [36mThe following field is invalid: file[39m
+[05:25:15] [31mERROR[39m: [36mFile size limit has been reached[39m
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+ [32mâœ“[39m tests/int/p2-t2.int.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 9818[2mms[22m[39m
+   [32mâœ“[39m P2-T2 integration suite (videos, brands, stats, materials) [2m(4)[22m
+     [33m[2mâœ“[22m[39m enforces per-collection upload limits, randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> (R-1), isolates VIDEOS_DIR from MEDIA_DIR (R-6), rejects 101 MB MP4, and rejects disguised HTML (I5, R-9)[33m 1082[2mms[22m[39m
+     [33m[2mâœ“[22m[39m allows editor CRUD on stats, brands, and materials, validates brand website scheme, and blocks deleting a brand referenced by materials[33m 576[2mms[22m[39m
+     [33m[2mâœ“[22m[39m isolates video upload temp dir outside staticDir (R-11), rejects multi-file requests without leaking temp files (R-12), and accepts exact 100 MiB inclusive while rejecting 100 MiB + 1 (R-13)[33m 1704[2mms[22m[39m
+ [32mâœ“[39m src/p3-t1-foundations.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 187[2mms[22m[39m
+ [32mâœ“[39m src/p3-t3-components.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 583[2mms[22m[39m
+   [32mâœ“[39m P3-T3 â€” Cards & motion components [2m(12)[22m
+     [32mâœ“[39m 10. Styleguide route renders all P3-T3 sections in ar and en [2m(1)[22m
+       [33m[2mâœ“[22m[39m renders sections 10..18 on /ar/styleguide and /en/styleguide in development[33m 508[2mms[22m[39m
+ [32mâœ“[39m src/fields/slug.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32mâœ“[39m tests/int/p2-t1-slug.int.test.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 1221[2mms[22m[39m
+   [32mâœ“[39m P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) [2m(4)[22m
+     [33m[2mâœ“[22m[39m stale-payload sequences: resending stale auto-slugs in ar or en saves does not revert or lock the slug (R-14, R-17)[33m 323[2mms[22m[39m
+ [32mâœ“[39m src/hooks/revalidate.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[05:25:31] [33mWARN[39m: [36m[cmsFindAllSmallCollection] Collection "stats" has at least 101 documents, exceeding MAX_CMS_QUERY_LIMIT (100). Rendering the first 100 documents (R-10, R-15, R-23).[39m
+ [32mâœ“[39m tests/int/p3-t1.int.test.ts [2m([22m[2m6 tests[22m[2m)[22m[33m 21947[2mms[22m[39m
+   [32mâœ“[39m P3-T1 Integration â€” Z6 data layer, R-23 pagination/limit caps, draft isolation, and /api/preview [2m(6)[22m
+     [33m[2mâœ“[22m[39m R-15: when 101 docs exist in a small collection (stats), cmsFindAllSmallCollection logs a warning, never throws, and returns the first 100 docs[33m 20275[2mms[22m[39m
+ [32mâœ“[39m src/globals/globals.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32mâœ“[39m src/fields/link.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32mâœ“[39m src/collections/QuoteRequests.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32mâœ“[39m src/access/z1-config-enumeration.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+[05:26:08] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:113:23
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:09] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:122:23
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:09] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:09] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:10] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:10] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:10] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:162:28
+              at async file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/vitest@5.0.5_@types+node@24_e0b93e745720dd9c5a5e45b87ac095cd/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:11] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:190:27
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:11] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:199:27
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:11] [31mERROR[39m: [36mط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.",
+      "stack":
+          AuthenticationError: ط§ظ„ط¨ط±ظٹط¯ ط§ظ„ط¥ظ„ظƒطھط±ظˆظ†ظٹ ط£ظˆ ظƒظ„ظ…ط© ط§ظ„ظ…ط±ظˆط± ط§ظ„ظ…ظ‚ط¯ظ…ط© ط؛ظٹط± طµط­ظٹط­ط©.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:219:29
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[05:26:11] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_fcf87ea60ad48ada2cc9fd1682b9acd8/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:55:15)
+              at C:/Users/User21.CSE/AppData/Local/Temp/jazira-p3-r3-clone/tests/int/p2-t9.int.test.ts:228:29
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+ [32mâœ“[39m tests/int/p2-t9.int.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 4570[2mms[22m[39m
+   [32mâœ“[39m P2-T9 Login enumeration hardening integration suite (A1, A5 spirit) [2m(2)[22m
+     [33m[2mâœ“[22m[39m returns identical 401 status and byte-identical JSON body for unknown email, wrong password (attempts 1..5), and locked account (wrong or right password) in both ar and en; locks on the 5th failure for 15 min; and allows correct password after the lock window expires[33m 4108[2mms[22m[39m
+ [32mâœ“[39m tests/unit/scripts-guard.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 36[2mms[22m[39m
+ [32mâœ“[39m src/env.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32mâœ“[39m src/security/loginEnumeration.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 782[2mms[22m[39m
+   [32mâœ“[39m P2-T9 Login enumeration hardening unit tests (A1, A5 spirit) [2m(5)[22m
+     [33m[2mâœ“[22m[39m runs the dummy PBKDF2 hash and throws generic AuthenticationError (401) for unknown emails and locked accounts in hardenLoginEnumerationBeforeOperation[33m 515[2mms[22m[39m
+ [32mâœ“[39m src/fields/richText.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32mâœ“[39m src/eslint-no-server-in-client.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 125[2mms[22m[39m
+ [32mâœ“[39m src/fields/videoUrl.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32mâœ“[39m src/security/uploadValidation.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32mâœ“[39m src/fields/groups/groups.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32mâœ“[39m src/lib/quote/schema.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32mâœ“[39m src/jobs/shouldAutoRun.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32mâœ“[39m src/access/publishedOrLoggedIn.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32mâœ“[39m src/lib/ipHash.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32mâœ“[39m src/fields/groups/pillar.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32mâœ“[39m src/security/apiError.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32mâœ“[39m src/access/adminOrSelf.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32mâœ“[39m src/fields/order.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32mâœ“[39m src/security/passwordPolicy.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32mâœ“[39m src/collections/_shared/publishable.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32mâœ“[39m src/access/isAdminFieldLevel.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32mâœ“[39m src/access/isAdminOrEditor.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32mâœ“[39m src/access/isAdmin.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m41 passed[39m[22m[90m (41)[39m
+[2m      Tests [22m [1m[32m252 passed[39m[22m[90m (252)[39m
+[2m   Start at [22m 05:23:18
+[2m   Duration [22m 192.96s[2m (tests 65%, import 33%, transform 1%)[22m
+(node:42876) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:40248) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+
+[EXIT_CODE=0]

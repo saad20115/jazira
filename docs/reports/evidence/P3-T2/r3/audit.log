@@ -1,0 +1,9 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-r3-clone
+$ git rev-parse HEAD
+832ca777173d6a592b33b64e3271fe20ad693c10
+$ pnpm audit --prod
+
+No known vulnerabilities found
+
+[EXIT_CODE=0]
