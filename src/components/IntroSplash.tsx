@@ -21,7 +21,7 @@ export const INTRO_HARD_CAP_MS = 1520
  *   `navigationStart` (`performance.now()`) so the overlay is guaranteed gone by `<= 1.6s` after
  *   `navigationStart` regardless of when React hydration completes (`R-15`).
  */
-export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';if(rm||seen){d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');return;}window.__aljaziraIntroOrigin=0;d.setAttribute('data-intro','active');d.setAttribute('data-intro-phase','start');try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;d.style.setProperty('--intro-exit-delay','1150ms');var done=false;var syncedFp=false;var firstFrameMs=null;function setInert(v){var ns=document.querySelectorAll('header,[data-home-content="true"],footer,[data-component="whatsapp-fab"]');for(var i=0;i<ns.length;i++){if(v)ns[i].setAttribute('inert','');else ns[i].removeAttribute('inert');}}function setOverlayState(s){var el=document.querySelector('[data-component="intro-splash"]');if(el)el.setAttribute('data-intro-state',s);}function finish(){if(done)return;done=true;d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');d.removeAttribute('style');setInert(false);}if(now>=${String(INTRO_HARD_CAP_MS)}){finish();return;}function rafCheck(){if(done)return;var t=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;if(t>=${String(INTRO_HARD_CAP_MS)}){finish();return;}var el=document.querySelector('[data-component="intro-splash"]');if(!el){if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);return;}if(!syncedFp){syncedFp=true;firstFrameMs=t;var exitDelay=t>=700?Math.min(80,Math.max(16,1460-Math.round(t))):Math.max(260,${String(INTRO_EXIT_DELAY_MS)}-Math.round(t));var hideDelay=t>=700?Math.min(140,Math.max(32,1520-Math.round(t))):Math.max(400,${String(INTRO_TOTAL_DURATION_MS)}-Math.round(t));d.style.setProperty('--intro-exit-delay',exitDelay+'ms');if(t>=${String(INTRO_REVEAL_DELAY_MS)}){d.setAttribute('data-intro-phase','reveal');el.setAttribute('data-intro-state','reveal');}window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}},exitDelay);window.setTimeout(finish,hideDelay);if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);return;}var exitAt=firstFrameMs>=700?Math.min(firstFrameMs+80,1460):Math.max(firstFrameMs+260,${String(INTRO_EXIT_DELAY_MS)});var targetEnd=firstFrameMs>=700?Math.min(firstFrameMs+140,1520):Math.max(firstFrameMs+400,${String(INTRO_TOTAL_DURATION_MS)});if(t>=targetEnd){finish();return;}if(t>=exitAt){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}else if(t>=${String(INTRO_REVEAL_DELAY_MS)}){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);window.addEventListener('DOMContentLoaded',function(){if(done)return;setInert(true);var btn=document.querySelector('[data-intro-skip="true"]');if(btn&&typeof btn.focus==='function')btn.focus({preventScroll:true});},{once:true});window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}},Math.max(16,${String(INTRO_REVEAL_DELAY_MS)}-now));window.setTimeout(finish,Math.max(100,${String(INTRO_HARD_CAP_MS)}-now));window.addEventListener('keydown',function(ev){if(ev.key==='Escape')finish();},{once:true});document.addEventListener('click',function(ev){var t=ev.target;if(t&&typeof t.closest==='function'&&t.closest('[data-component="intro-splash"]'))finish();});}catch(e){document.documentElement.setAttribute('data-intro','seen');document.documentElement.setAttribute('data-intro-phase','hidden');}})();`
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';if(rm||seen){d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');return;}window.__aljaziraIntroOrigin=0;d.setAttribute('data-intro','active');d.setAttribute('data-intro-phase','start');try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var initExit=now>=300?80:Math.max(260,${String(INTRO_EXIT_DELAY_MS)}-Math.round(now));d.style.setProperty('--intro-exit-delay',initExit+'ms');var done=false;var syncedFp=false;var firstFrameMs=null;function setInert(v){var ns=document.querySelectorAll('header,[data-home-content="true"],footer,[data-component="whatsapp-fab"]');for(var i=0;i<ns.length;i++){if(v)ns[i].setAttribute('inert','');else ns[i].removeAttribute('inert');}}function setOverlayState(s){var el=document.querySelector('[data-component="intro-splash"]');if(el)el.setAttribute('data-intro-state',s);}function finish(){if(done)return;done=true;d.setAttribute('data-intro','seen');d.setAttribute('data-intro-phase','hidden');d.removeAttribute('style');setInert(false);}if(now>=${String(INTRO_HARD_CAP_MS)}){finish();return;}function syncWhenPresent(){if(done)return true;var t=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;if(t>=${String(INTRO_HARD_CAP_MS)}){finish();return true;}var el=document.querySelector('[data-component="intro-splash"]');if(!el)return false;if(!syncedFp){syncedFp=true;firstFrameMs=t;var exitDelay=t>=700?16:Math.max(260,${String(INTRO_EXIT_DELAY_MS)}-Math.round(t));var hideDelay=t>=700?32:Math.max(400,${String(INTRO_TOTAL_DURATION_MS)}-Math.round(t));d.style.setProperty('--intro-exit-delay',exitDelay+'ms');if(t>=${String(INTRO_REVEAL_DELAY_MS)}){d.setAttribute('data-intro-phase','reveal');el.setAttribute('data-intro-state','reveal');}window.setTimeout(function(){if(!done){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}},exitDelay);window.setTimeout(finish,hideDelay);return false;}var exitAt=firstFrameMs>=700?firstFrameMs+16:Math.max(firstFrameMs+260,${String(INTRO_EXIT_DELAY_MS)});var targetEnd=firstFrameMs>=700?firstFrameMs+32:Math.max(firstFrameMs+400,${String(INTRO_TOTAL_DURATION_MS)});if(t>=targetEnd){finish();return true;}if(t>=exitAt){d.setAttribute('data-intro-phase','exiting');setOverlayState('exiting');}else if(t>=${String(INTRO_REVEAL_DELAY_MS)}){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}return false;}function rafCheck(){if(syncWhenPresent())return;if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);}if(typeof requestAnimationFrame==='function')requestAnimationFrame(rafCheck);window.addEventListener('DOMContentLoaded',function(){if(done)return;setInert(true);var btn=document.querySelector('[data-intro-skip="true"]');if(btn&&typeof btn.focus==='function')btn.focus({preventScroll:true});syncWhenPresent();},{once:true});window.setTimeout(function(){if(!done&&d.getAttribute('data-intro-phase')!=='exiting'){d.setAttribute('data-intro-phase','reveal');setOverlayState('reveal');}},Math.max(16,${String(INTRO_REVEAL_DELAY_MS)}-now));window.setTimeout(finish,Math.max(60,${String(INTRO_HARD_CAP_MS)}-now));window.addEventListener('keydown',function(ev){if(ev.key==='Escape')finish();},{once:true});document.addEventListener('click',function(ev){var t=ev.target;if(t&&typeof t.closest==='function'&&t.closest('[data-component="intro-splash"]'))finish();});}catch(e){document.documentElement.setAttribute('data-intro','seen');document.documentElement.setAttribute('data-intro-phase','hidden');}})();`
 
 export type IntroSplashPhase = 'hidden' | 'start' | 'reveal' | 'exiting'
 
@@ -189,23 +189,35 @@ export function IntroSplash({
 
     const scheduledTimers: number[] = []
     const remainingReveal = Math.max(0, Math.round(INTRO_REVEAL_DELAY_MS - elapsedSinceNavStart))
-    const targetExitMs = Math.min(1300, Math.max(elapsedSinceNavStart + 80, INTRO_EXIT_DELAY_MS))
+    const targetExitMs =
+      elapsedSinceNavStart >= 700
+        ? elapsedSinceNavStart + 16
+        : Math.min(1300, Math.max(elapsedSinceNavStart + 80, INTRO_EXIT_DELAY_MS))
     const remainingExit = Math.max(0, Math.round(targetExitMs - elapsedSinceNavStart))
-    const targetHideMs = Math.min(
-      INTRO_HARD_CAP_MS,
-      Math.max(elapsedSinceNavStart + 180, INTRO_TOTAL_DURATION_MS),
-    )
+    const targetHideMs =
+      elapsedSinceNavStart >= 700
+        ? Math.min(INTRO_HARD_CAP_MS, elapsedSinceNavStart + 32)
+        : Math.min(INTRO_HARD_CAP_MS, Math.max(elapsedSinceNavStart + 180, INTRO_TOTAL_DURATION_MS))
     const remainingHide = Math.max(0, Math.round(targetHideMs - elapsedSinceNavStart))
 
     const revealTimer = window.setTimeout(() => {
-      document.documentElement.setAttribute('data-intro-phase', 'reveal')
-      setPhase('reveal')
+      const curPhase = document.documentElement.getAttribute('data-intro-phase')
+      if (
+        document.documentElement.getAttribute('data-intro') !== 'seen' &&
+        curPhase !== 'exiting' &&
+        curPhase !== 'hidden'
+      ) {
+        document.documentElement.setAttribute('data-intro-phase', 'reveal')
+        setPhase('reveal')
+      }
     }, remainingReveal)
     scheduledTimers.push(revealTimer)
 
     const exitTimer = window.setTimeout(() => {
-      document.documentElement.setAttribute('data-intro-phase', 'exiting')
-      setPhase('exiting')
+      if (document.documentElement.getAttribute('data-intro') !== 'seen') {
+        document.documentElement.setAttribute('data-intro-phase', 'exiting')
+        setPhase('exiting')
+      }
     }, remainingExit)
     scheduledTimers.push(exitTimer)
 

@@ -1453,7 +1453,18 @@ export async function runP3T4Evidence({
         })
         await thCtx.addInitScript(() => {
           window.__aljaziraIntroFrames = []
+          let moAttached = false
           const recordFrame = () => {
+            if (!moAttached && document.documentElement && typeof MutationObserver === 'function') {
+              moAttached = true
+              const mo = new MutationObserver(() => {
+                recordFrame()
+              })
+              mo.observe(document.documentElement, {
+                attributes: true,
+                attributeFilter: ['data-intro', 'data-intro-phase'],
+              })
+            }
             const now = Math.round(performance.now())
             const htmlIntro = document.documentElement?.dataset?.intro ?? null
             const overlay = document.querySelector('[data-component="intro-splash"]')
@@ -1479,15 +1490,6 @@ export async function runP3T4Evidence({
             'DOMContentLoaded',
             () => {
               recordFrame()
-              if (document.documentElement && typeof MutationObserver === 'function') {
-                const mo = new MutationObserver(() => {
-                  recordFrame()
-                })
-                mo.observe(document.documentElement, {
-                  attributes: true,
-                  attributeFilter: ['data-intro', 'data-intro-phase'],
-                })
-              }
             },
             { once: true },
           )
