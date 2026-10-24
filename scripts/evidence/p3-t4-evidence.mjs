@@ -1260,19 +1260,10 @@ export async function runP3T4Evidence({
         const initialDomCheck = await snapPage.evaluate(() => {
           const overlay = document.querySelector('[data-component="intro-splash"]')
           const style = overlay ? window.getComputedStyle(overlay) : null
-          const header = document.querySelector('header')
-          const homeContent = document.querySelector('[data-home-content="true"]')
-          const footer = document.querySelector('footer')
-          const fab = document.querySelector('[data-component="whatsapp-fab"]')
           return {
             htmlDataIntro: document.documentElement.dataset.intro ?? null,
             overlayDisplay: style?.display ?? null,
             overlayOpacity: style?.opacity ?? null,
-            headerInert: Boolean(header?.hasAttribute('inert')),
-            homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
-            footerInert: Boolean(footer?.hasAttribute('inert')),
-            fabInert: Boolean(fab?.hasAttribute('inert')),
-            activeElementIsSkip: document.activeElement?.getAttribute('data-intro-skip') === 'true',
           }
         })
 
@@ -1284,6 +1275,21 @@ export async function runP3T4Evidence({
         await snapPage
           .locator('[data-component="intro-splash"][data-intro-state="reveal"]')
           .waitFor({ state: 'visible', timeout: 1200 })
+
+        const hydratedA11yCheck = await snapPage.evaluate(() => {
+          const header = document.querySelector('header')
+          const homeContent = document.querySelector('[data-home-content="true"]')
+          const footer = document.querySelector('footer')
+          const fab = document.querySelector('[data-component="whatsapp-fab"]')
+          return {
+            headerInert: Boolean(header?.hasAttribute('inert')),
+            homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
+            footerInert: Boolean(footer?.hasAttribute('inert')),
+            fabInert: Boolean(fab?.hasAttribute('inert')),
+            activeElementIsSkip: document.activeElement?.getAttribute('data-intro-skip') === 'true',
+          }
+        })
+
         await snapPage.waitForTimeout(300)
         const revealStateAttr = await snapIntro.getAttribute('data-intro-state')
         const revealPngPath = path.join(evidenceDir, `intro-reveal-${loc}.png`)
@@ -1295,6 +1301,7 @@ export async function runP3T4Evidence({
           startVisible,
           revealStateAttr,
           ...initialDomCheck,
+          ...hydratedA11yCheck,
         }
       }
 
