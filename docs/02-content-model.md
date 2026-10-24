@@ -187,6 +187,9 @@ relationship fields (written below as "stat" / "stats").
 - Access: read public; create/update/delete admin + editor. `useAsTitle`: label.
 
 ### `site-settings` — additions
+- `arabicEnabled` (checkbox, default `false`, **update: admin only**, read: public). This is the
+  public Arabic switch: see `docs/01-architecture.md` "Arabic switch". The admin description reads:
+  "Show the Arabic version of the website to visitors".
 - `tagline` (L) — intro splash and footer.
 - `office` — `title` (L), `address` (L), `mapImage` (upload), `mapUrl` (URL).
 - `workingHours` (L), `phone`, `email`, `whatsapp`, `whatsappLabel` (L, "Chat with an engineer").

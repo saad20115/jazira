@@ -4,7 +4,7 @@ Status: **approved by CTO, 2026-10-21.** Changing anything here requires a writt
 phase report and CTO approval.
 
 ## 1. What we are building
-A bilingual (Arabic default, RTL / English) marketing website for **Al Jazira for Imdad Smart Co.**
+A bilingual (English default / Arabic RTL, switchable on by an admin) marketing website for **Al Jazira for Imdad Smart Co.**
 (MEP contractor, Makkah, KSA), with a dashboard where non-technical staff manage all content:
 projects, services, team, brands, approved materials, media (images, video), contact details,
 and home-page sections. Quote requests from the site are stored in the dashboard and emailed to the
@@ -46,9 +46,19 @@ version above. If the template pins something different, the table wins — repo
 - Rendering: static/ISR for public pages, revalidated on content change via Payload `afterChange`
   / `afterDelete` hooks calling `revalidateTag` / `revalidatePath`. Drafts + **Live Preview** for
   editors.
-- Localization: Payload `localization` with locales `ar` (default, `rtl: true`) and `en`,
-  `fallback: true`. URLs: `/ar/...` and `/en/...`; `/` redirects to `/ar`.
-- Admin UI language: Arabic and English (`@payloadcms/translations` `ar`, `en`).
+- Localization: Payload `localization` with locales `en` (**default**) and `ar` (`rtl: true`),
+  `fallback: true`. URLs: `/en/...` and `/ar/...`; `/` redirects to `/en`.
+- **Arabic switch (owner decision 2026-10-24):** `site-settings.arabicEnabled` (checkbox, default
+  **off**, admin-only update).
+  - **Off:** `/ar/*` answers with a temporary 307 redirect to the same `/en/*` path. The language
+    switcher is hidden. `hreflang` lists `en` + `x-default` (`/en`) only. The sitemap has `en` URLs
+    only.
+  - **On:** today's bilingual behaviour, with `ar` in `hreflang` and the sitemap and the switcher shown.
+  - Saving the setting revalidates the public cache, so the change is live without a redeploy.
+  - The flag is read through a cached call, never one DB query per request.
+  - Arabic content is still written and reviewed. Every task still builds and tests `ar` with the
+    flag on, so switching it on later is safe.
+- Admin UI language: English by default, Arabic available per user (`@payloadcms/translations` `en`, `ar`).
 - Next.js 16 note: request interception lives in **`proxy.ts`** (formerly `middleware.ts`).
 - `next.config`: `output: 'standalone'`, `poweredByHeader: false`, `images.remotePatterns` limited
   to our own domain only.

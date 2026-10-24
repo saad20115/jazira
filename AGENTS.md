@@ -49,7 +49,10 @@ Do not guess on architecture, security, data model, or dependencies.
 - **Do not touch the production server, Odoo, or its database.** Deployment is a separate,
   CTO-approved phase. Everything before it runs locally.
 - **Do not weaken a check to make it pass** (tests, lint, types, CSP, access rules). Fix the cause.
-- Arabic is the default locale and is RTL. Every public page must work in `ar` (RTL) and `en`.
+- **English is the default locale** (owner decision 2026-10-24). Arabic (RTL) is built, seeded and
+  tested on every page, but it is **switched off for the public** until an admin enables it in
+  `site-settings` (see `docs/01-architecture.md`). Every public page must still work in `ar` (RTL)
+  and `en`.
 
 ## Definition of done (every phase)
 All of these pass locally, and the outputs are pasted (trimmed) into the phase report:

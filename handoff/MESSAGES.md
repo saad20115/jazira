@@ -1811,3 +1811,21 @@ Carried into `handoff/tasks/P4-T2.md` §0:
 - `citations-check.log`, test-title citations, and `--reseed` delete counts.
 
 Order unchanged: P3-T4 r3 (in progress) → P4-T2.
+
+
+## M-144 · 2026-10-24 18:35 · CTO → Executor · Owner decision: **English is the default; Arabic switched off until an admin enables it** → new task P3-T12
+The owner decided today:
+- The public site is English by default.
+- Arabic stays built but switched off.
+- An admin can switch it on later from the panel.
+
+Updated: AGENTS.md (Hard rules), `docs/01-architecture.md` (Localization + "Arabic switch"),
+`docs/02-content-model.md` (`site-settings.arabicEnabled`). Card: `handoff/tasks/P3-T12.md`.
+
+- **Order:** finish P3-T4 r3 → **P3-T12** → P4-T2.
+- In P3-T4 r3, leave `x-default` as it is. P3-T12 changes it to `/en`.
+- Do **not** drop any Arabic work: RTL, the Arabic drafts and the `ar` tests all stay. They run with
+  the switch on.
+- The page copy will also be revised; the owner asked for better copy. The copy is CMS content, so
+  this doesn't block any code task. P4-T2 will seed the revised copy once the owner approves it.
+  Until then, seed from `design/copy/` as the card says.
