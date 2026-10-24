@@ -191,6 +191,12 @@ says so in the review.
     A failing step is reported as failing.
   - Motion evidence is a real recording (Playwright `recordVideo`) or a timestamped frame strip,
     produced by a committed script.
+- (added 2026-10-24, P3-T2 R-20 — no hand-written facts)
+  - Advisory IDs, severities, affected ranges, versions, download counts and dates are **copied from
+    saved tool output** (`pnpm audit --json`, the lockfile, the npm API) that is committed in the
+    evidence folder. Never write them from memory.
+  - The reviewer checks every advisory ID against the GitHub advisory database. An ID that does not
+    exist is treated as fabricated evidence.
 
 ### Migrations (added 2026-10-23)
 - Never edit a committed migration, merged or not. Every schema change is a new migration; add a
