@@ -349,3 +349,19 @@ The reference viewer stops the fan on reduced motion, a hidden tab, or when off-
 **Announced next: v022** (realism: city backdrop, paving, palms).
 - Same extras schema plus a city card (+3–5 draw calls, one unlit BLEND material).
 - Caps: full ≤ 7.6 MB, lite ≤ 2.4 MB, lite ≤ 60 calls including post.
+
+## 16. v022 pivot reported by the 3D lead (2026-10-25): maquette on a turntable, daylight studio
+- **Reported as the owner's decision. The site CTO is confirming it directly with the owner.**
+- The tower becomes an architectural maquette on a turntable plinth in a lit studio room, with the
+  roundabout track around it, in white daylight. No city.
+- **Render-contract changes:**
+  - the dusk `sky` extras are replaced by a studio environment block (room background + PMREM);
+  - idle animation: the plinth root rotates, not the camera, and user orbit stays;
+  - bloom probably off, no night trails, low window emission.
+- **Unchanged:**
+  - system enter/exit, section clipping, fans, hotspots, variants, KTX2/meshopt;
+  - budgets: 8 MB / 2.5 MB.
+- **The visual reference changes** from the Figma dusk render to "professional physical
+  architectural-model photo" quality. The home-page card still is re-rendered in the studio.
+- **P3-T5:** hold the sky/environment wiring until the contract delta and the updated
+  `extras-schema.md` arrive. The rest of the schema stands.
