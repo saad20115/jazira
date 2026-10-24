@@ -152,6 +152,103 @@ describe('scripts/check-citations.mjs mechanical citation checker (P2-T8 R-13)',
       fs.rmSync(tmpDir, { recursive: true, force: true })
     }
   })
+
+  it('checks bracketed [locale] paths and verifies against committed HEAD rather than uncommitted working-tree files (R-17)', () => {
+    const parsed = parseReportCitations(
+      [
+        'Paired: `LocaleHomePage` (`src/app/(frontend)/[locale]/page.tsx:114`).',
+        'Bare: `src/app/(frontend)/[locale]/page.tsx:9999`.',
+        'Standalone: `src/app/(frontend)/[locale]/missing.tsx`.',
+      ].join('\n'),
+      'r17.md',
+    )
+    expect(parsed.paired).toEqual([
+      {
+        identifier: 'LocaleHomePage',
+        filePath: 'src/app/(frontend)/[locale]/page.tsx',
+        lineNumber: 114,
+        reportLine: 1,
+        reportLabel: 'r17.md',
+      },
+    ])
+    expect(parsed.unpaired).toEqual([
+      {
+        rawRef: 'src/app/(frontend)/[locale]/page.tsx:9999',
+        reportLine: 2,
+        reportLabel: 'r17.md',
+      },
+    ])
+    expect(parsed.referencedFiles).toEqual([
+      {
+        filePath: 'src/app/(frontend)/[locale]/missing.tsx',
+        reportLine: 3,
+        reportLabel: 'r17.md',
+      },
+    ])
+
+    const citationsLogText = [
+      "$ git grep -n -e 'LocaleHomePage' -- src/app/(frontend)/[locale]/page.tsx",
+      'src/app/(frontend)/[locale]/page.tsx:9999:export default async function LocaleHomePage(',
+    ].join('\n')
+
+    // 1. Out-of-range line on src/app/(frontend)/[locale]/page.tsx:9999 MUST fail
+    const outOfRangeRes = verifyCitations({
+      repoRoot: process.cwd(),
+      reports: [
+        {
+          reportPath: 'r17-out-of-range.md',
+          markdown: 'Bad line `LocaleHomePage` (`src/app/(frontend)/[locale]/page.tsx:9999`).',
+        },
+      ],
+      citationsLogText,
+    })
+    expect(outOfRangeRes.ok).toBe(false)
+    expect(outOfRangeRes.errors.join('\n')).toContain(
+      'cited line src/app/(frontend)/[locale]/page.tsx:9999 is out of range',
+    )
+
+    // 2. Nonexistent [locale] file MUST fail
+    const missingLocaleFileRes = verifyCitations({
+      repoRoot: process.cwd(),
+      reports: [
+        {
+          reportPath: 'r17-missing-locale.md',
+          markdown: 'Missing file `src/app/(frontend)/[locale]/nonexistent.tsx`.',
+        },
+      ],
+      citationsLogText,
+    })
+    expect(missingLocaleFileRes.ok).toBe(false)
+    expect(missingLocaleFileRes.errors.join('\n')).toContain(
+      'referenced file "src/app/(frontend)/[locale]/nonexistent.tsx" does not exist in commit HEAD',
+    )
+
+    // 3. Uncommitted working-tree file in src/app/(frontend)/[locale]/ MUST fail against HEAD
+    const untrackedRelPath = 'src/app/(frontend)/[locale]/__r17_uncommitted_probe__.tsx'
+    const untrackedAbsPath = path.resolve(process.cwd(), untrackedRelPath)
+    fs.writeFileSync(untrackedAbsPath, 'export const R17_UNCOMMITTED_PROBE = true\n', 'utf8')
+    try {
+      const uncommittedRes = verifyCitations({
+        repoRoot: process.cwd(),
+        reports: [
+          {
+            reportPath: 'r17-uncommitted.md',
+            markdown: `Uncommitted \`R17_UNCOMMITTED_PROBE\` (\`${untrackedRelPath}:1\`).`,
+          },
+        ],
+        citationsLogText: [
+          `$ git grep -n -e 'R17_UNCOMMITTED_PROBE' -- ${untrackedRelPath}`,
+          `${untrackedRelPath}:1:export const R17_UNCOMMITTED_PROBE = true`,
+        ].join('\n'),
+      })
+      expect(uncommittedRes.ok).toBe(false)
+      expect(uncommittedRes.errors.join('\n')).toContain(
+        `cited file "${untrackedRelPath}" does not exist in commit HEAD`,
+      )
+    } finally {
+      fs.rmSync(untrackedAbsPath, { force: true })
+    }
+  })
 })
 
 describe('scripts/check-client-bundle-sentinels.mjs, scripts/generate-tokens.mjs, & scripts/evidence/p3-t1-evidence.mjs (P3-T1 §9, R-4, R-14)', () => {

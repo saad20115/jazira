@@ -96,13 +96,43 @@ export const FORBIDDEN_COMMON_WORD_PATTERNS = new Set([
 ])
 
 const REPO_FILE_LINE_REGEX =
-  /(?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)):(\d+)/g
+  /(?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()[\]-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)):(\d+)/g
 
 const PAIRED_CITATION_REGEX =
-  /`([^`\r\n]+)`\s*\(\s*`?((?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml))):(\d+)`?\s*\)/g
+  /`([^`\r\n]+)`\s*\(\s*`?((?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()[\]-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml))):(\d+)`?\s*\)/g
 
 const STANDALONE_FILE_PATH_REGEX =
-  /`((?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)))`/g
+  /`((?:(?:src|tests|scripts|eslint-rules|docs|handoff|seed|design|public|\.github)\/[A-Za-z0-9_./()[\]-]+\.[A-Za-z0-9]+|(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)))`/g
+
+const COMMITTED_SOURCE_PATH_PREFIX_REGEX =
+  /^(?:src|tests|scripts|eslint-rules|seed|design|public|\.github)\/|^(?:package\.json|eslint\.config\.mjs|next\.config\.ts|tsconfig\.json|vitest\.config\.ts|playwright\.config\.ts|Dockerfile|docker-compose\.yml)$/
+
+function hasGitCommit(repoRoot, gitRef = 'HEAD') {
+  if (!gitRef || !fs.existsSync(path.join(repoRoot, '.git'))) {
+    return false
+  }
+  try {
+    execFileSync('git', ['rev-parse', '--verify', gitRef], {
+      cwd: repoRoot,
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+    return true
+  } catch {
+    return false
+  }
+}
+
+function readCommittedFileContent(repoRoot, filePath, gitRef = 'HEAD') {
+  try {
+    return execFileSync('git', ['cat-file', '-p', `${gitRef}:${filePath}`], {
+      cwd: repoRoot,
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    })
+  } catch {
+    return null
+  }
+}
 
 /**
  * @param {string} identifier
@@ -327,18 +357,45 @@ export function parseCitationsLog(citationsLogText) {
 }
 
 /**
- * Verifies parsed report citations against disk files and `citations.log`.
+ * Verifies parsed report citations against committed `HEAD` files (or disk files when `gitRef: null`
+ * or outside a git repository) and `citations.log` (`R-17`).
  *
  * @param {object} params
  * @param {string} params.repoRoot
  * @param {Array<{ reportPath: string; markdown: string }>} params.reports
  * @param {string} params.citationsLogText
+ * @param {string | null} [params.gitRef]
  */
-export function verifyCitations({ repoRoot, reports, citationsLogText }) {
+export function verifyCitations({ repoRoot, reports, citationsLogText, gitRef = 'HEAD' }) {
   /** @type {string[]} */
   const errors = []
   const parsedLog = parseCitationsLog(citationsLogText)
   errors.push(...parsedLog.errors)
+
+  const checkAgainstGit = Boolean(gitRef && hasGitCommit(repoRoot, gitRef))
+  /** @type {Map<string, string[] | null>} */
+  const fileLinesCache = new Map()
+
+  function getFileLines(filePath) {
+    if (fileLinesCache.has(filePath)) {
+      return fileLinesCache.get(filePath)
+    }
+    if (checkAgainstGit && COMMITTED_SOURCE_PATH_PREFIX_REGEX.test(filePath)) {
+      const committedContent = readCommittedFileContent(repoRoot, filePath, gitRef)
+      const lines =
+        committedContent !== null ? committedContent.replace(/\r\n/g, '\n').split('\n') : null
+      fileLinesCache.set(filePath, lines)
+      return lines
+    }
+    const absFile = path.resolve(repoRoot, filePath)
+    if (!fs.existsSync(absFile)) {
+      fileLinesCache.set(filePath, null)
+      return null
+    }
+    const lines = fs.readFileSync(absFile, 'utf8').replace(/\r\n/g, '\n').split('\n')
+    fileLinesCache.set(filePath, lines)
+    return lines
+  }
 
   let totalPairedCitations = 0
   let totalUnpairedCitations = 0
@@ -357,6 +414,15 @@ export function verifyCitations({ repoRoot, reports, citationsLogText }) {
     }
 
     for (const refFile of referencedFiles) {
+      if (checkAgainstGit && COMMITTED_SOURCE_PATH_PREFIX_REGEX.test(refFile.filePath)) {
+        const committedLines = getFileLines(refFile.filePath)
+        if (!committedLines) {
+          errors.push(
+            `${refFile.reportLabel}:${String(refFile.reportLine)}: referenced file "${refFile.filePath}" does not exist in commit ${String(gitRef)}.`,
+          )
+        }
+        continue
+      }
       const absRef = path.resolve(repoRoot, refFile.filePath)
       if (!fs.existsSync(absRef)) {
         errors.push(
@@ -374,15 +440,14 @@ export function verifyCitations({ repoRoot, reports, citationsLogText }) {
         continue
       }
 
-      const absFile = path.resolve(repoRoot, c.filePath)
-      if (!fs.existsSync(absFile)) {
+      const fileLines = getFileLines(c.filePath)
+      if (!fileLines) {
         errors.push(
-          `${c.reportLabel}:${String(c.reportLine)}: cited file "${c.filePath}" does not exist.`,
+          `${c.reportLabel}:${String(c.reportLine)}: cited file "${c.filePath}" does not exist${checkAgainstGit && COMMITTED_SOURCE_PATH_PREFIX_REGEX.test(c.filePath) ? ` in commit ${String(gitRef)}` : ''}.`,
         )
         continue
       }
 
-      const fileLines = fs.readFileSync(absFile, 'utf8').replace(/\r\n/g, '\n').split('\n')
       if (c.lineNumber < 1 || c.lineNumber > fileLines.length) {
         errors.push(
           `${c.reportLabel}:${String(c.reportLine)}: cited line ${c.filePath}:${String(c.lineNumber)} is out of range (file has ${String(fileLines.length)} lines).`,
@@ -429,18 +494,25 @@ export function verifyCitations({ repoRoot, reports, citationsLogText }) {
 
 /**
  * Generates a clean per-identifier `citations.log` from one or more markdown reports
- * by running `git grep -n -e '<identifier>' -- <filePath>` for each unique pair.
+ * by running `git grep -n -e '<identifier>' HEAD -- <filePath>` for each unique pair.
  *
  * @param {object} params
  * @param {string} params.repoRoot
  * @param {string[]} params.reportPaths
  * @param {string} params.outPath
+ * @param {string | null} [params.gitRef]
  */
-export function generateCitationsLogFromReports({ repoRoot, reportPaths, outPath }) {
+export function generateCitationsLogFromReports({
+  repoRoot,
+  reportPaths,
+  outPath,
+  gitRef = 'HEAD',
+}) {
   /** @type {Map<string, { identifier: string; filePath: string }>} */
   const uniquePairs = new Map()
   /** @type {string[]} */
   const preflightErrors = []
+  const useGitRef = Boolean(gitRef && hasGitCommit(repoRoot, gitRef))
 
   for (const relOrAbsPath of reportPaths) {
     const absReport = path.resolve(repoRoot, relOrAbsPath)
@@ -475,12 +547,23 @@ export function generateCitationsLogFromReports({ repoRoot, reportPaths, outPath
 
   const outBlocks = []
   for (const { identifier, filePath } of uniquePairs.values()) {
-    const stdout = execFileSync('git', ['grep', '-n', '-e', identifier, '--', filePath], {
+    const grepArgs =
+      useGitRef && COMMITTED_SOURCE_PATH_PREFIX_REGEX.test(filePath)
+        ? ['--literal-pathspecs', 'grep', '-n', '-e', identifier, gitRef, '--', filePath]
+        : ['--literal-pathspecs', 'grep', '-n', '-e', identifier, '--', filePath]
+    const rawStdout = execFileSync('git', grepArgs, {
       cwd: repoRoot,
       encoding: 'utf8',
     })
       .replace(/\r\n/g, '\n')
       .trimEnd()
+    const stdout =
+      useGitRef && COMMITTED_SOURCE_PATH_PREFIX_REGEX.test(filePath)
+        ? rawStdout
+            .split('\n')
+            .map((line) => (line.startsWith(`${gitRef}:`) ? line.slice(`${gitRef}:`.length) : line))
+            .join('\n')
+        : rawStdout
     outBlocks.push(`$ git grep -n -e '${identifier}' -- ${filePath}\n${stdout}`)
   }
 
