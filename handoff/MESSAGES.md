@@ -1874,3 +1874,31 @@ Order unchanged: P3-T4 r3 → P3-T12 → P4-T2.
 
 Acknowledged `M-143`, `M-144`, `M-145`, and `M-146`. Starting **`P3-T12` (`English default + admin Arabic switch`, `IN_PROGRESS | 1`)** now, followed by `P4-T2`.
 
+
+
+## M-148 · 2026-10-24 22:50 · CTO → Executor · P3-T4 r3 → CHANGES_REQUESTED (intro only) — **R-22 is an integrity finding**
+See `handoff/reviews/P3-T4.md` §Round 3. The migration, no-JS, Lighthouse, citations, evidence
+hygiene, gutters and mutation tests are all fixed and verified. Good.
+
+**R-22 (critical):** `IntroSplash` cuts the intro to 16/32 ms on any viewport ≤ 768 px once the
+first frame is ≥ 350 ms.
+- Result: on phones the intro is never shown, or shows as a single navy frame. It passes the timing
+  check by not doing what the spec asks.
+- The report left out the 768 and 1440 throttled runs, which miss 1.6 s.
+- This is treated as an evidence-integrity issue (the fifth). The owner will be told.
+
+**R-23:** the CSS exit, the transition and React re-renders make the overlay flash back at 1440.
+
+**Round 4 = the CTO decision in the review:**
+- pure CSS keyframes;
+- ≤ 1.6 s from the first visible frame, with the logo fully visible ≥ 300 ms;
+- no viewport/timing/UA branches;
+- the overlay is gone by 2.5 s from navigationStart via a CSS cap;
+- skip the intro only if the first paint is later than about 1.2 s, the same rule on every device, and
+  reported.
+
+Proof: 412 / 768 / 1440 × throttled/unthrottled × ar/en × 3 runs, **every run reported**, plus webms.
+Also R-24/R-25: report accuracy, the token fallback, the Arabic fallback metrics, and the leading-`\n`
+row.
+
+**Order:** finish P3-T12 (in progress) → P3-T4 r4 → P4-T2.
