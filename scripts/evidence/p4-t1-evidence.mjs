@@ -9,7 +9,11 @@ import { getPayload } from 'payload'
 import payloadConfig from '../../src/payload.config.ts'
 import { buildMaterialsSeedPlan, SEED_ADMIN_USER } from '../../src/seed/materials.ts'
 
-const EVIDENCE_DIR = path.resolve(process.cwd(), 'docs/reports/evidence/P4-T1/r1')
+const outDirArg = process.argv.find((a) => a.startsWith('--out-dir='))
+const EVIDENCE_DIR = path.resolve(
+  process.cwd(),
+  outDirArg ? outDirArg.slice('--out-dir='.length) : 'docs/reports/evidence/P4-T1/r2',
+)
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true })
@@ -52,11 +56,26 @@ function generateMarkdownTables(plan) {
 
   lines.push('')
   lines.push(
-    '### 2. Rows & Brands Flagged for Client Confirmation (`needsClientReview`, incl. rows 58–73)',
+    '### 2. Figma ↔ Raw Partner Display Name Mappings (`R-5`, `design/copy/01-home.md` `18:579`)',
   )
   lines.push('')
   lines.push(
-    '| Row # | System | Category | Raw Input (`brandRaw` / `originRaw` / `alternativeRaw`) | Seeded Normalized Brands | Client Confirmation Needed |',
+    '| Marquee Order | Figma Partner Display Name (`18:579`) | Raw Value (`seed/materials.raw.json`) | Seeded `brands.name` | Row Numbers | Client Confirmation Needed |',
+  )
+  lines.push('| :--- | :--- | :--- | :--- | :--- | :--- |')
+  plan.figmaPartnerMappings.forEach((m) => {
+    lines.push(
+      `| ${String(m.marqueeOrder)} | \`${escapeMd(m.figmaDisplayName)}\` | \`${escapeMd(m.rawBrandValue)}\` | \`${escapeMd(m.seededBrandName)}\` | ${m.rowNumbers.join(', ')} | ${escapeMd(m.confirmationNeeded)} |`,
+    )
+  })
+
+  lines.push('')
+  lines.push(
+    '### 3. Rows & Brands Flagged for Client Confirmation (`needsClientReview`, incl. Uncertain Description Typos `R-2` & Rows 58–73)',
+  )
+  lines.push('')
+  lines.push(
+    '| Row # | System | Category | Raw Input (`description` / `brandRaw` / `originRaw` / `alternativeRaw`) | Seeded Normalized Brands | Client Confirmation Needed |',
   )
   lines.push('| :--- | :--- | :--- | :--- | :--- | :--- |')
   plan.needsClientReview.forEach((item) => {
@@ -66,15 +85,17 @@ function generateMarkdownTables(plan) {
   })
 
   lines.push('')
-  lines.push('### 3. Drafted Arabic Material Descriptions (All 73 Rows — `needsClientReview`)')
+  lines.push(
+    '### 4. Drafted Arabic Material Descriptions (All 73 Rows — Literal Translations `R-3` & Review Notes `R-2`)',
+  )
   lines.push('')
   lines.push(
-    '| Item # | System | Raw English (`seed/materials.raw.json`) | Normalized English (`description` en) | Drafted Arabic (`description` ar — `needsClientReview`) | Linked Normalized Brands |',
+    '| Item # | System | Raw English (`seed/materials.raw.json`) | Normalized English (`description` en) | Drafted Arabic (`description` ar — `needsClientReview`) | Review Note (`R-2` / `R-5`) | Linked Normalized Brands |',
   )
-  lines.push('| :--- | :--- | :--- | :--- | :--- | :--- |')
+  lines.push('| :--- | :--- | :--- | :--- | :--- | :--- | :--- |')
   plan.materials.forEach((mat) => {
     lines.push(
-      `| ${String(mat.itemNo)} | \`${mat.system}\` | \`${escapeMd(mat.rawDescription)}\` | ${escapeMd(mat.descriptionEn)} | ${escapeMd(mat.descriptionAr)} | ${mat.brandNames.map((b) => `\`${escapeMd(b)}\``).join(', ')} |`,
+      `| ${String(mat.itemNo)} | \`${mat.system}\` | \`${escapeMd(mat.rawDescription)}\` | ${escapeMd(mat.descriptionEn)} | ${escapeMd(mat.descriptionAr)} | ${escapeMd(mat.notesEn ?? '—')} | ${mat.brandNames.map((b) => `\`${escapeMd(b)}\``).join(', ')} |`,
     )
   })
 
@@ -101,25 +122,77 @@ async function run() {
     overrideAccess: true,
   })
 
-  // 2. Run 1: pnpm seed
-  const run1Out = execFileSync(pnpmCmd, ['seed'], {
+  // 2. Run 1: First-run baseline on an empty DB (`pnpm seed` -> seed_exit_code=0)
+  const run1Res = spawnSync(pnpmCmd, ['seed'], {
     cwd: process.cwd(),
     encoding: 'utf8',
     shell: process.platform === 'win32',
   })
-  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-1.log'), run1Out, 'utf8')
-  process.stdout.write(run1Out)
+  const run1Log = [
+    '$ pnpm seed',
+    run1Res.stdout || '',
+    run1Res.stderr || '',
+    `[seed_exit_code=${String(run1Res.status)}]`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-1.log'), `${run1Log}\n`, 'utf8')
+  process.stdout.write(`${run1Log}\n`)
+  if (run1Res.status !== 0) {
+    throw new Error(
+      `Expected first-run pnpm seed on empty DB to exit 0, got ${String(run1Res.status)}`,
+    )
+  }
 
-  // 3. Run 2: consecutive pnpm seed (idempotent: 0 created, 0 updated)
-  const run2Out = execFileSync(pnpmCmd, ['seed'], {
+  // 3. Run 2: Rerun `pnpm seed` on a non-empty DB without --reseed (`R-4` -> seed_exit_code=1)
+  const nonEmptyRefusedRes = spawnSync(pnpmCmd, ['seed'], {
     cwd: process.cwd(),
     encoding: 'utf8',
     shell: process.platform === 'win32',
   })
-  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-2.log'), run2Out, 'utf8')
-  process.stdout.write(run2Out)
+  const nonEmptyRefusedLog = [
+    '$ pnpm seed',
+    nonEmptyRefusedRes.stdout || '',
+    nonEmptyRefusedRes.stderr || '',
+    `[seed_exit_code=${String(nonEmptyRefusedRes.status)}]`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  fs.writeFileSync(
+    path.join(EVIDENCE_DIR, 'seed-non-empty-refused.log'),
+    `${nonEmptyRefusedLog}\n`,
+    'utf8',
+  )
+  process.stdout.write(`${nonEmptyRefusedLog}\n`)
+  if (nonEmptyRefusedRes.status !== 1) {
+    throw new Error(
+      `Expected pnpm seed on non-empty DB without --reseed to exit 1, got ${String(nonEmptyRefusedRes.status)}`,
+    )
+  }
 
-  // 4. Verify NODE_ENV=production guard without --force-production
+  // 4. Run 3: `pnpm seed -- --reseed` in development (`R-4` -> seed_exit_code=0)
+  const reseedDevRes = spawnSync(pnpmCmd, ['seed', '--', '--reseed'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    shell: process.platform === 'win32',
+  })
+  const reseedDevLog = [
+    '$ pnpm seed -- --reseed',
+    reseedDevRes.stdout || '',
+    reseedDevRes.stderr || '',
+    `[seed_exit_code=${String(reseedDevRes.status)}]`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-reseed-dev.log'), `${reseedDevLog}\n`, 'utf8')
+  process.stdout.write(`${reseedDevLog}\n`)
+  if (reseedDevRes.status !== 0) {
+    throw new Error(
+      `Expected pnpm seed -- --reseed in development to exit 0, got ${String(reseedDevRes.status)}`,
+    )
+  }
+
+  // 5. Verify NODE_ENV=production guard without --force-production (`R-7` -> seed_exit_code=1)
   const prodGuardRes = spawnSync(pnpmCmd, ['seed'], {
     cwd: process.cwd(),
     encoding: 'utf8',
@@ -127,14 +200,46 @@ async function run() {
     env: { ...process.env, NODE_ENV: 'production' },
   })
   const prodGuardLog = [
-    `$ NODE_ENV=production pnpm seed`,
-    `exitCode: ${String(prodGuardRes.status)}`,
+    '$ NODE_ENV=production pnpm seed',
     prodGuardRes.stdout || '',
     prodGuardRes.stderr || '',
-  ].join('\n')
-  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-production-guard.log'), prodGuardLog, 'utf8')
-  if (prodGuardRes.status === 0) {
-    throw new Error('Expected NODE_ENV=production pnpm seed without --force-production to fail!')
+    `[seed_exit_code=${String(prodGuardRes.status)}]`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  fs.writeFileSync(
+    path.join(EVIDENCE_DIR, 'seed-production-guard.log'),
+    `${prodGuardLog}\n`,
+    'utf8',
+  )
+  if (prodGuardRes.status !== 1) {
+    throw new Error('Expected NODE_ENV=production pnpm seed without --force-production to exit 1!')
+  }
+
+  // 6. Verify NODE_ENV=production refuses --reseed even with --force-production (`R-4` & `R-7` -> seed_exit_code=1)
+  const prodReseedGuardRes = spawnSync(pnpmCmd, ['seed', '--', '--force-production', '--reseed'], {
+    cwd: process.cwd(),
+    encoding: 'utf8',
+    shell: process.platform === 'win32',
+    env: { ...process.env, NODE_ENV: 'production' },
+  })
+  const prodReseedGuardLog = [
+    '$ NODE_ENV=production pnpm seed -- --force-production --reseed',
+    prodReseedGuardRes.stdout || '',
+    prodReseedGuardRes.stderr || '',
+    `[seed_exit_code=${String(prodReseedGuardRes.status)}]`,
+  ]
+    .filter(Boolean)
+    .join('\n')
+  fs.writeFileSync(
+    path.join(EVIDENCE_DIR, 'seed-reseed-production-guard.log'),
+    `${prodReseedGuardLog}\n`,
+    'utf8',
+  )
+  if (prodReseedGuardRes.status !== 1) {
+    throw new Error(
+      'Expected NODE_ENV=production pnpm seed -- --force-production --reseed to exit 1!',
+    )
   }
 
   // 5. Start production server (`next start` on port 3141), seed Home page baseline (--skip-brands so the 83 seeded brands remain untouched), verify DB via Local API, and capture Home page screenshots in ar & en at 1440, 768, 390
@@ -255,11 +360,12 @@ async function run() {
         return `${String(b.order).padStart(2, '0')} | ${b.name} | en=${b.origin ?? '(empty)'} | ar=${bAr?.origin ?? '(empty)'} | marquee=${String(Boolean(b.showInMarquee))} | updatedAt=${b.updatedAt}`
       }),
       '',
-      '--- ALL 73 SEEDED MATERIALS (itemNo | system | description_en | description_ar | brandCount | brands | updatedAt) ---',
+      '--- ALL 73 SEEDED MATERIALS (itemNo | system | description_en | description_ar | notes_en | brandCount | brands | updatedAt) ---',
       ...materialsEn.docs.map((m) => {
         const mAr = arMatByItemNo.get(m.itemNo)
         const brandNames = (m.brands || []).map((b) => (typeof b === 'object' ? b.name : String(b)))
-        return `#${String(m.itemNo).padStart(2, '0')} | ${m.system.padEnd(13, ' ')} | en="${m.description}" | ar="${mAr?.description ?? ''}" | brands(${String(brandNames.length)})=[${brandNames.join(', ')}] | updatedAt=${m.updatedAt}`
+        const notesSuffix = m.notes ? ` | notes_en="${m.notes}"` : ''
+        return `#${String(m.itemNo).padStart(2, '0')} | ${m.system.padEnd(13, ' ')} | en="${m.description}" | ar="${mAr?.description ?? ''}"${notesSuffix} | brands(${String(brandNames.length)})=[${brandNames.join(', ')}] | updatedAt=${m.updatedAt}`
       }),
     ]
     fs.writeFileSync(

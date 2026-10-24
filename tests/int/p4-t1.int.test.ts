@@ -8,11 +8,11 @@ import { SEED_ADMIN_USER, seedMaterialsAndBrands } from '../../src/seed/material
 
 let payload: Payload
 
-describe('P4-T1 Integration — Materials + brands seed (73 rows, idempotency, Local API)', () => {
+describe('P4-T1 Integration — Materials + brands seed (73 rows, first-run baseline, --reseed, Local API)', () => {
   beforeAll(async () => {
     payload = await getPayload({ config: payloadConfig })
 
-    // Ensure a clean starting state before Run 1
+    // Ensure a clean starting state before first-run baseline test
     await payload.delete({
       collection: 'materials',
       where: {
@@ -33,12 +33,13 @@ describe('P4-T1 Integration — Materials + brands seed (73 rows, idempotency, L
     })
   })
 
-  it('seeds all 73 materials and 83 normalized brands on Run 1, and changes 0 rows / 0 updatedAt timestamps on Run 2', async () => {
+  it('seeds all 73 materials and 83 normalized brands on an empty DB, refuses on a non-empty DB preserving editor changes, refuses --reseed in production, and rebuilds on dev --reseed (R-4)', async () => {
     const run1 = await seedMaterialsAndBrands(payload, {
       nodeEnv: 'test',
       argv: ['node', 'scripts/seed.ts'],
     })
 
+    expect(run1.reseeded).toBe(false)
     expect(run1.materialsCreated).toBe(73)
     expect(run1.materialsUpdated).toBe(0)
     expect(run1.materialsUnchanged).toBe(0)
@@ -58,26 +59,116 @@ describe('P4-T1 Integration — Materials + brands seed (73 rows, idempotency, L
       architectural: 8,
     })
 
-    // Consecutive Run 2: must create 0, update 0, and leave every updatedAt timestamp identical
-    const run2 = await seedMaterialsAndBrands(payload, {
-      nodeEnv: 'test',
-      argv: ['node', 'scripts/seed.ts'],
+    // Simulate editor changes in the CMS (`handoff/reviews/P4-T1.md` R-4):
+    // 1. Rename "Tyco" -> "Tyco Fire" and toggle showInMarquee -> false
+    // 2. Edit material #1 Arabic description and note
+    const tycoRes = await payload.find({
+      collection: 'brands',
+      where: { name: { equals: 'Tyco' } },
+      limit: 1,
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    const tycoDoc = tycoRes.docs[0]
+    expect(tycoDoc).toBeDefined()
+
+    await payload.update({
+      collection: 'brands',
+      id: tycoDoc.id,
+      data: {
+        name: 'Tyco Fire',
+        showInMarquee: false,
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
     })
 
-    expect(run2.materialsCreated).toBe(0)
-    expect(run2.materialsUpdated).toBe(0)
-    expect(run2.materialsUnchanged).toBe(73)
-    expect(run2.materialsTotal).toBe(73)
+    const mat1Res = await payload.find({
+      collection: 'materials',
+      where: { itemNo: { equals: 1 } },
+      limit: 1,
+      locale: 'ar',
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    const mat1Doc = mat1Res.docs[0]
+    expect(mat1Doc).toBeDefined()
 
-    expect(run2.brandsCreated).toBe(0)
-    expect(run2.brandsUpdated).toBe(0)
-    expect(run2.brandsUnchanged).toBe(83)
-    expect(run2.brandsTotal).toBe(83)
+    await payload.update({
+      collection: 'materials',
+      id: mat1Doc.id,
+      locale: 'ar',
+      data: {
+        description: 'مواسير EMT معتمدة من المحرر',
+        notes: 'ملاحظة خاصة بالمحرر',
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
 
-    expect(run2.updatedAtDigest).toBe(run1.updatedAtDigest)
+    // Rerun without --reseed on a non-empty DB MUST refuse (exit 1 in CLI) and leave editor edits untouched
+    await expect(
+      seedMaterialsAndBrands(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts'],
+      }),
+    ).rejects.toThrow(/Refusing to run seed on a non-empty database \(brands=83, materials=73\)/)
+
+    // Verify editor changes were NOT overwritten and no duplicate "Tyco" was created
+    const [afterRefusalBrands, afterRefusalMat1Ar] = await Promise.all([
+      payload.find({
+        collection: 'brands',
+        limit: 200,
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+      payload.findByID({
+        collection: 'materials',
+        id: mat1Doc.id,
+        locale: 'ar',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+    ])
+    expect(afterRefusalBrands.totalDocs).toBe(83)
+    expect(afterRefusalBrands.docs.find((b) => b.name === 'Tyco')).toBeUndefined()
+    const tycoFireAfter = afterRefusalBrands.docs.find((b) => b.name === 'Tyco Fire')
+    expect(tycoFireAfter).toBeDefined()
+    expect(tycoFireAfter?.showInMarquee).toBe(false)
+    expect(afterRefusalBrands.docs.filter((b) => b.showInMarquee)).toHaveLength(19)
+    expect(afterRefusalMat1Ar.description).toBe('مواسير EMT معتمدة من المحرر')
+    expect(afterRefusalMat1Ar.notes).toBe('ملاحظة خاصة بالمحرر')
+
+    // --reseed MUST be refused when NODE_ENV=production (with or without --force-production)
+    await expect(
+      seedMaterialsAndBrands(payload, {
+        nodeEnv: 'production',
+        argv: ['node', 'scripts/seed.ts', '--reseed'],
+      }),
+    ).rejects.toThrow(/Refusing to run --reseed when NODE_ENV=production/)
+
+    await expect(
+      seedMaterialsAndBrands(payload, {
+        nodeEnv: 'production',
+        argv: ['node', 'scripts/seed.ts', '--force-production', '--reseed'],
+      }),
+    ).rejects.toThrow(/Refusing to run --reseed when NODE_ENV=production/)
+
+    // --reseed in development/test rebuilds the clean baseline (83 brands, 73 materials, 20 marquee)
+    const reseedRun = await seedMaterialsAndBrands(payload, {
+      nodeEnv: 'test',
+      argv: ['node', 'scripts/seed.ts', '--reseed'],
+    })
+    expect(reseedRun.reseeded).toBe(true)
+    expect(reseedRun.brandsCreated).toBe(83)
+    expect(reseedRun.brandsTotal).toBe(83)
+    expect(reseedRun.materialsCreated).toBe(73)
+    expect(reseedRun.materialsTotal).toBe(73)
   }, 120000)
 
-  it('persists localized en/ar descriptions, normalized brand names, and localized country origins accurately', async () => {
+  it('persists localized en/ar descriptions, Hi-Tech origin (R-1), uncertain typo review notes (R-2), literal Arabic drafts (R-3), and Hempel normalization (R-5)', async () => {
     const [materialsEn, materialsAr, brandsEn, brandsAr] = await Promise.all([
       payload.find({
         collection: 'materials',
@@ -121,11 +212,12 @@ describe('P4-T1 Integration — Materials + brands seed (73 rows, idempotency, L
     expect(materialsAr.totalDocs).toBe(73)
     expect(brandsEn.totalDocs).toBe(83)
     expect(brandsAr.totalDocs).toBe(83)
+    expect(brandsEn.docs.filter((b) => b.showInMarquee)).toHaveLength(20)
 
     const mat1En = materialsEn.docs.find((m) => m.itemNo === 1)
     const mat1Ar = materialsAr.docs.find((m) => m.itemNo === 1)
     expect(mat1En?.description).toBe('EMT Conduit')
-    expect(mat1Ar?.description).toBe('مواسير كهربائية معدنية (EMT)')
+    expect(mat1Ar?.description).toBe('مواسير EMT')
 
     const mat7En = materialsEn.docs.find((m) => m.itemNo === 7)
     expect(mat7En?.description).toBe('Electric Cables')
@@ -135,6 +227,54 @@ describe('P4-T1 Integration — Materials + brands seed (73 rows, idempotency, L
 
     const mat34En = materialsEn.docs.find((m) => m.itemNo === 34)
     expect(mat34En?.description).toBe('Fire Extinguisher')
+
+    // R-1: Hi-Tech origin is United States / الولايات المتحدة
+    const hiTechEn = brandsEn.docs.find((b) => b.name === 'Hi-Tech')
+    const hiTechAr = brandsAr.docs.find((b) => b.name === 'Hi-Tech')
+    expect(hiTechEn?.origin).toBe('United States')
+    expect(hiTechAr?.origin).toBe('الولايات المتحدة')
+
+    // R-2: Uncertain description typos left as-is in English, translated literally in Arabic, with review notes
+    const mat13En = materialsEn.docs.find((m) => m.itemNo === 13)
+    const mat13Ar = materialsAr.docs.find((m) => m.itemNo === 13)
+    expect(mat13En?.description).toBe('Disconnected Switch')
+    expect(mat13Ar?.description).toBe('مفتاح مفصول')
+    expect(mat13En?.notes).toContain('DISCONNECTED SWITCH')
+    expect(mat13Ar?.notes).toContain('DISCONNECTED SWITCH')
+
+    const mat27En = materialsEn.docs.find((m) => m.itemNo === 27)
+    const mat27Ar = materialsAr.docs.find((m) => m.itemNo === 27)
+    expect(mat27En?.description).toBe('Temper Switch')
+    expect(mat27Ar?.description).toBe('مفتاح تقسية')
+    expect(mat27En?.notes).toContain('TEMPER SWITCH')
+
+    const mat54En = materialsEn.docs.find((m) => m.itemNo === 54)
+    const mat54Ar = materialsAr.docs.find((m) => m.itemNo === 54)
+    expect(mat54En?.description).toBe('Out Let Grill')
+    expect(mat54Ar?.description).toBe('شبكة مخرج')
+    expect(mat54En?.notes).toContain('OUT LET GRILL')
+
+    // R-3: Literal Arabic drafts with zero invented specs
+    expect(materialsAr.docs.find((m) => m.itemNo === 16)?.description).toBe('إنارة')
+    expect(materialsAr.docs.find((m) => m.itemNo === 18)?.description).toBe('إنارة')
+    expect(materialsAr.docs.find((m) => m.itemNo === 23)?.description).toBe('قطع اتصال مخددة')
+    expect(materialsAr.docs.find((m) => m.itemNo === 24)?.description).toBe('قطع اتصال مسننة')
+    expect(materialsAr.docs.find((m) => m.itemNo === 35)?.description).toBe('نوفيك (NOVEC)')
+    expect(materialsAr.docs.find((m) => m.itemNo === 47)?.description).toBe('خزان طرد للمرحاض (WC)')
+    expect(materialsAr.docs.find((m) => m.itemNo === 53)?.description).toBe('مواسير DX')
+    expect(materialsAr.docs.find((m) => m.itemNo === 68)?.description).toBe('إضافات اللياسة')
+
+    // R-5: Hempel (Coating) -> Hempel, with note preserved on material #31
+    const hempelEn = brandsEn.docs.find((b) => b.name === 'Hempel')
+    const hempelAr = brandsAr.docs.find((b) => b.name === 'Hempel')
+    expect(hempelEn).toBeDefined()
+    expect(hempelEn?.origin).toBe('Denmark')
+    expect(hempelAr?.origin).toBe('الدنمارك')
+    expect(hempelEn?.showInMarquee).toBe(true)
+    expect(hempelEn?.order).toBe(14)
+
+    const mat31En = materialsEn.docs.find((m) => m.itemNo === 31)
+    expect(mat31En?.notes).toContain('Hempel (Coating)')
 
     // Structural row 58: Saudi Ready Mix & Nesma Concrete Solutions have empty origins
     const saudiReadyMixEn = brandsEn.docs.find((b) => b.name === 'Saudi Ready Mix')

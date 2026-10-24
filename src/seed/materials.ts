@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import path from 'node:path'
 import type { Payload } from 'payload'
 
-import type { Brand, Material, User } from '@/payload-types'
+import type { Material, User } from '@/payload-types'
 
 /**
  * Note on S4 (`server-only`): `src/seed/materials.ts` is executed directly under Node/tsx by the
@@ -28,7 +28,14 @@ export interface RawMaterialSeedRow {
 }
 
 export interface NormalizationRecord {
-  category: 'brand-typo' | 'brand-case-whitespace' | 'description-typo' | 'description-case' | 'country'
+  category:
+    | 'brand-typo'
+    | 'brand-product-note'
+    | 'brand-case-whitespace'
+    | 'description-typo'
+    | 'description-case'
+    | 'country'
+    | 'figma-partner-display-mapping'
   field: 'brandRaw' | 'description' | 'originRaw'
   normalizedValue: string
   rawValue: string
@@ -39,14 +46,25 @@ export interface NormalizationRecord {
 export interface ClientReviewItem {
   category:
     | 'structural-architectural-second-supplier'
+    | 'uncertain-description-typo'
     | 'uncertain-brand-spelling-or-split'
     | 'missing-brand-origin'
+    | 'figma-partner-display-mapping'
     | 'arabic-material-draft'
   details: string
   normalizedBrands: string[]
   rawBrandOrOrigin: string
   rowNo: number
   system: MaterialSystemSlug
+}
+
+export interface FigmaPartnerDisplayMapping {
+  confirmationNeeded: string
+  figmaDisplayName: string
+  marqueeOrder: number
+  rawBrandValue: string
+  rowNumbers: number[]
+  seededBrandName: string
 }
 
 export interface PlannedBrandSeed {
@@ -81,9 +99,11 @@ export interface MaterialsSeedPlan {
     descriptionEn: string
     itemNo: number
     rawDescription: string
+    reviewNote: string | null
     system: MaterialSystemSlug
   }>
   brands: PlannedBrandSeed[]
+  figmaPartnerMappings: FigmaPartnerDisplayMapping[]
   materials: PlannedMaterialSeed[]
   needsClientReview: ClientReviewItem[]
   normalizationsApplied: NormalizationRecord[]
@@ -102,14 +122,21 @@ export interface MaterialsSeedRunSummary {
   materialsUpdated: number
   minBrandsPerMaterial: number
   plan: MaterialsSeedPlan
+  reseeded: boolean
   systemCounts: Record<MaterialSystemSlug, number>
   updatedAtDigest: string
 }
 
 /**
- * Synthetic admin user passed to Local API calls with `overrideAccess: false` so every
- * `payload.find`, `payload.create`, and `payload.update` executes through the collection's
- * configured `isAdminOrEditor` access-control function (`M-134`).
+ * In-memory synthetic admin `User` context (`id: 0, role: 'admin'`) passed to Payload Local API
+ * calls (`payload.count`, `payload.find`, `payload.create`, `payload.delete`, `payload.update`)
+ * with `overrideAccess: false`.
+ *
+ * Architectural note (`R-7`): `SEED_ADMIN_USER` is NOT a persisted row in the PostgreSQL `users`
+ * table (`brands` and `materials` have no foreign-key reference to `users`). Passing this
+ * in-memory `User` object with `overrideAccess: false` ensures every Local API operation in the
+ * server-only seed script is evaluated through the collection's configured `isAdminOrEditor`
+ * access-control function without inserting a dummy admin account into the database.
  */
 export const SEED_ADMIN_USER: User = {
   id: 0,
@@ -122,15 +149,27 @@ export const SEED_ADMIN_USER: User = {
 }
 
 /**
- * Refuses to run when `NODE_ENV === 'production'` unless `--force-production` is passed explicitly
- * (`handoff/tasks/P4-T1.md` §Scope 1, `docs/02-content-model.md` §"Seed data rules").
+ * Validates that the seed script is running in an allowed server environment (`handoff/tasks/P4-T1.md` §Scope 1,
+ * `docs/02-content-model.md` §"Seed data rules", `handoff/reviews/P4-T1.md` `R-4`):
+ * 1. Never runs in a browser context (`SEED_SERVER_ONLY_SENTINEL`).
+ * 2. `--reseed` is strictly development-only and is ALWAYS refused when `NODE_ENV === 'production'`
+ *    (even if `--force-production` is also passed).
+ * 3. First-run baseline seed is refused when `NODE_ENV === 'production'` unless `--force-production`
+ *    is passed explicitly.
  */
 export function assertSeedEnvironmentAllowed(
   nodeEnv: string | undefined = process.env.NODE_ENV,
   argv: readonly string[] = process.argv,
+  reseedOption?: boolean,
 ): void {
   if (typeof window !== 'undefined') {
     throw new Error(SEED_SERVER_ONLY_SENTINEL)
+  }
+  const hasReseedFlag = reseedOption === true || argv.includes('--reseed')
+  if (nodeEnv === 'production' && hasReseedFlag) {
+    throw new Error(
+      '[seed] Refusing to run --reseed when NODE_ENV=production. --reseed is a development-only flag and is never allowed in production.',
+    )
   }
   if (nodeEnv === 'production' && !argv.includes('--force-production')) {
     throw new Error(
@@ -283,7 +322,8 @@ export const COUNTRY_TRANSLATION_TABLE: Readonly<
 }
 
 /**
- * Partner brands featured in the Home page Trusted Partners marquee (`design/copy/01-home.md` `18:579`).
+ * Partner brands featured in the Home page Trusted Partners marquee (`design/copy/01-home.md` `18:579`,
+ * `docs/02-content-model.md` §"Seed data rules" CTO additions 2026-10-24).
  */
 export const MARQUEE_PARTNER_BRAND_ORDER: Readonly<Record<string, number>> = {
   Alfanar: 1,
@@ -299,7 +339,7 @@ export const MARQUEE_PARTNER_BRAND_ORDER: Readonly<Record<string, number>> = {
   Zamil: 11,
   SKM: 12,
   'System Air': 13,
-  'Hempel (Coating)': 14,
+  Hempel: 14,
   'Jazeera Paints': 15,
   'Saudi Ceramics': 16,
   Tahweel: 17,
@@ -309,83 +349,193 @@ export const MARQUEE_PARTNER_BRAND_ORDER: Readonly<Record<string, number>> = {
 }
 
 /**
- * Arabic drafted material descriptions for all 73 rows (`handoff/tasks/P4-T1.md` §Scope 5).
- * Every Arabic draft string is listed in the P4-T1 report for client confirmation (`needsClientReview`).
+ * Figma Trusted Partners display-name mappings (`design/copy/01-home.md` `18:579` ↔ `seed/materials.raw.json`,
+ * `docs/02-content-model.md` lines 152–156, `handoff/reviews/P4-T1.md` `R-5`).
+ * Per `docs/02-content-model.md`:
+ * - `Hempel (Coating)` -> brand `Hempel` (parenthetical product note stripped from brand name and kept on material #31).
+ * - `Eaton Cooper`↔`Cooper`, `Systemair`↔`System Air`, `Al Rajhi Steel`↔`Al-Rajhi Steel`: the seeded brand name
+ *   stays the raw/normalized one (`Cooper`, `System Air`, `Al-Rajhi Steel`), and the mapping is reported for client
+ *   confirmation of display names.
  */
-export const MATERIAL_ARABIC_DRAFT_MAP: Readonly<Record<number, string>> = {
-  1: 'مواسير كهربائية معدنية (EMT)',
-  2: 'علب كهربائية',
-  3: 'علب كهربائية فولاذية',
-  4: 'مواسير كهربائية بلاستيكية (PVC)',
-  5: 'حوامل كابلات (Cable Tray)',
-  6: 'مجاري كابلات (Cable Trunk)',
+export const FIGMA_PARTNER_DISPLAY_NAME_MAPPINGS: readonly FigmaPartnerDisplayMapping[] = [
+  {
+    marqueeOrder: 6,
+    figmaDisplayName: 'Eaton Cooper',
+    rawBrandValue: 'COOPER',
+    seededBrandName: 'Cooper',
+    rowNumbers: [19],
+    confirmationNeeded:
+      'Figma Trusted Partners (18:579) displays "Eaton Cooper"; raw row 19 has brandRaw="COOPER" and originRaw="COOPER: United States (brand; now Eaton)". Seeded brand name stays raw/normalized "Cooper" — confirm display name with client.',
+  },
+  {
+    marqueeOrder: 13,
+    figmaDisplayName: 'Systemair',
+    rawBrandValue: 'SYSTEM AIR',
+    seededBrandName: 'System Air',
+    rowNumbers: [56],
+    confirmationNeeded:
+      'Figma Trusted Partners (18:579) displays single-word "Systemair"; raw row 56 has two-word "SYSTEM AIR". Seeded brand name stays raw/normalized "System Air" — confirm display name with client.',
+  },
+  {
+    marqueeOrder: 14,
+    figmaDisplayName: 'Hempel',
+    rawBrandValue: 'HEMPEL (COATING)',
+    seededBrandName: 'Hempel',
+    rowNumbers: [31],
+    confirmationNeeded:
+      'Raw row 31 has parenthetical product note "HEMPEL (COATING)"; normalized to brand "Hempel" (matching Figma 18:579) and product note kept on material #31 notes — confirm with client.',
+  },
+  {
+    marqueeOrder: 19,
+    figmaDisplayName: 'Al Rajhi Steel',
+    rawBrandValue: 'Al-rajhi Steel',
+    seededBrandName: 'Al-Rajhi Steel',
+    rowNumbers: [60],
+    confirmationNeeded:
+      'Figma Trusted Partners (18:579) displays unhyphenated "Al Rajhi Steel"; raw row 60 has hyphenated "Al-rajhi Steel". Seeded brand name stays raw/normalized "Al-Rajhi Steel" — confirm display name with client.',
+  },
+]
+
+/**
+ * Uncertain English description typos in `seed/materials.raw.json` (`handoff/reviews/P4-T1.md` `R-2`,
+ * `docs/02-content-model.md` line 150). Left as-is in English (Title Case only), translated literally
+ * in Arabic, and flagged with a review note on the material and in the report for client confirmation.
+ */
+export const UNCERTAIN_DESCRIPTION_TYPO_NOTES: Readonly<
+  Record<
+    number,
+    | {
+        arReviewNote: string
+        enReviewNote: string
+        literalArabicExplanation: string
+        rawDescription: string
+        suspectedIntendedEnglish: string
+      }
+    | undefined
+  >
+> = {
+  13: {
+    rawDescription: 'DISCONNECTED SWITCH',
+    suspectedIntendedEnglish: 'Disconnect Switch',
+    literalArabicExplanation:
+      'Raw English "DISCONNECTED SWITCH" is left as "Disconnected Switch" and translated literally as "مفتاح مفصول"; confirm with client whether "Disconnect Switch" ("مفتاح فصل") was intended.',
+    enReviewNote:
+      'Client review needed: raw description is "DISCONNECTED SWITCH" (translated literally to Arabic "مفتاح مفصول") — confirm whether "Disconnect Switch" was intended.',
+    arReviewNote:
+      'يرجى مراجعة العميل: الوصف الإنجليزي الأصلي "DISCONNECTED SWITCH" تُرجم حرفياً إلى "مفتاح مفصول" — يرجى تأكيد ما إذا كان المقصود "مفتاح فصل" (Disconnect Switch).',
+  },
+  21: {
+    rawDescription: 'FIREPIPES',
+    suspectedIntendedEnglish: 'Fire Pipes',
+    literalArabicExplanation:
+      'Raw English single-word "FIREPIPES" is left as "Firepipes" and translated literally as "مواسير حريق"; confirm with client whether two-word "Fire Pipes" was intended.',
+    enReviewNote:
+      'Client review needed: raw description is single-word "FIREPIPES" (translated literally to Arabic "مواسير حريق") — confirm whether "Fire Pipes" was intended.',
+    arReviewNote:
+      'يرجى مراجعة العميل: الوصف الإنجليزي الأصلي "FIREPIPES" ورد ككلمة واحدة وتُرجم حرفياً إلى "مواسير حريق" — يرجى تأكيد ما إذا كان المقصود "Fire Pipes".',
+  },
+  27: {
+    rawDescription: 'TEMPER SWITCH',
+    suspectedIntendedEnglish: 'Tamper Switch',
+    literalArabicExplanation:
+      'Raw English "TEMPER SWITCH" is left as "Temper Switch" and translated literally as "مفتاح تقسية"; confirm with client whether "Tamper Switch" ("مفتاح مراقبة العبث") was intended.',
+    enReviewNote:
+      'Client review needed: raw description is "TEMPER SWITCH" (translated literally to Arabic "مفتاح تقسية") — confirm whether "Tamper Switch" was intended.',
+    arReviewNote:
+      'يرجى مراجعة العميل: الوصف الإنجليزي الأصلي "TEMPER SWITCH" تُرجم حرفياً إلى "مفتاح تقسية" — يرجى تأكيد ما إذا كان المقصود "مفتاح مراقبة العبث" (Tamper Switch).',
+  },
+  54: {
+    rawDescription: 'OUT LET GRILL',
+    suspectedIntendedEnglish: 'Outlet Grill / Outlet Grille',
+    literalArabicExplanation:
+      'Raw English "OUT LET GRILL" is left as "Out Let Grill" and translated literally as "شبكة مخرج"; confirm with client whether "Outlet Grill" / "Outlet Grille" was intended.',
+    enReviewNote:
+      'Client review needed: raw description is "OUT LET GRILL" (translated literally to Arabic "شبكة مخرج") — confirm whether "Outlet Grill" / "Outlet Grille" was intended.',
+    arReviewNote:
+      'يرجى مراجعة العميل: الوصف الإنجليزي الأصلي "OUT LET GRILL" تُرجم حرفياً إلى "شبكة مخرج" — يرجى تأكيد ما إذا كان المقصود "Outlet Grill".',
+  },
+}
+
+/**
+ * Arabic drafted material descriptions for all 73 rows (`handoff/tasks/P4-T1.md` §Scope 5,
+ * `docs/02-content-model.md` line 161, `handoff/reviews/P4-T1.md` `R-2` & `R-3`).
+ * Every Arabic draft translates strictly what the English description says with zero added specs,
+ * and is listed in the P4-T1 report for client confirmation (`needsClientReview`).
+ */
+export const MATERIAL_ARABIC_DRAFT_MAP: Readonly<Record<number, string | undefined>> = {
+  1: 'مواسير EMT',
+  2: 'علبة كهربائية',
+  3: 'علبة كهربائية فولاذية',
+  4: 'مواسير كهربائية PVC',
+  5: 'حامل كابلات',
+  6: 'مجرى كابلات',
   7: 'كابلات كهربائية',
-  8: 'أسلاك كهربائية',
+  8: 'أسلاك',
   9: 'كابلات إنذار الحريق',
-  10: 'كابلات بيانات لعلب الأرضيات',
-  11: 'أنظمة التأريض والحماية الأرضية',
-  12: 'مفاتيح وأفياش كهربائية (Wiring Devices)',
-  13: 'مفاتيح فصل وتشغيل (Disconnect Switch)',
-  14: 'علب أرضيات كهربائية (Floor Box)',
-  15: 'بطاريات إنارة الطوارئ',
-  16: 'وحدات إنارة داخلية',
-  17: 'وحدات إنارة خارجية',
-  18: 'وحدات إنارة',
+  10: 'كابل بيانات لعلبة الأرضية',
+  11: 'التأريض والاتصال الأرضي',
+  12: 'أدوات التوصيل الكهربائي',
+  13: 'مفتاح مفصول',
+  14: 'علبة أرضية',
+  15: 'بطارية إنارة الطوارئ',
+  16: 'إنارة',
+  17: 'إنارة خارجية',
+  18: 'إنارة',
   19: 'نظام إنذار الحريق',
-  20: 'لوحات توزيع كهربائية (Panel Board)',
-  21: 'مواسير شبكة إطفاء الحريق',
-  22: 'مواسير فولاذية مجلفنة',
-  23: 'قطع اتصال مخددة لمكافحة الحريق (Grooved Fittings)',
-  24: 'قطع اتصال مسننة لمكافحة الحريق (Threaded Fittings)',
-  25: 'مرابط وعلاقات مواسير مبطنة (Split Clamp & Clevis Hanger)',
-  26: 'صمامات تحكم المناطق لمكافحة الحريق (ZCV)',
-  27: 'مفاتيح مراقبة الصمامات (Tamper Switch)',
-  28: 'صمامات اختبار وتصريف (Test & Drain Valve)',
-  29: 'مفاتيح تدفق المياه (Flow Switch)',
-  30: 'مقاييس ضغط (Pressure Gauge)',
-  31: 'دهانات وطلاءات مواسير الحريق (أساس وطلاء نهائي)',
-  32: 'مضخات إطفاء الحريق',
-  33: 'صناديق خراطيم الحريق الفولاذية',
-  34: 'طفايات الحريق',
-  35: 'نظام الإطفاء بالغاز النظيف (NOVEC)',
-  36: 'نظام الإطفاء بالأيروسول (Aerosol)',
-  37: 'مواسير تغذية المياه البلاستيكية (PPR)',
-  38: 'قطع ووصلات مواسير التغذية (Fittings)',
-  39: 'محابس وصمامات السباكة',
-  40: 'مانعات المطرقة المائية (Water Hammer Arrestor)',
-  41: 'حنفيات الخدمة الخارجية (Hose Bibs)',
-  42: 'عزل مواسير السباكة',
-  43: 'مواسير الصرف الصحي',
-  44: 'مواسير تصريف تكثيف التكييف',
-  45: 'مواسير التصريف والصرف',
-  46: 'شبكات مواسير الصرف',
-  47: 'خزانات طرد مخفية للمراحيض',
-  48: 'خزانات المياه',
-  49: 'سخانات المياه',
-  50: 'مضخات تقوية ضغط المياه (Booster Pump)',
-  51: 'صاج مجاري الهواء (Duct Sheet)',
-  52: 'عزل مجاري الهواء (Duct Insulation)',
-  53: 'مواسير النحاس للتبريد المباشر (DX Pipe)',
-  54: 'مخارج وناشرات الهواء (Outlet Grill)',
-  55: 'وحدات التكييف (AC Units)',
-  56: 'مراوح التهوية',
-  57: 'المصاعد الكهربائية',
+  20: 'لوحة توزيع',
+  21: 'مواسير حريق',
+  22: 'مواسير مجلفنة',
+  23: 'قطع اتصال مخددة',
+  24: 'قطع اتصال مسننة',
+  25: 'مربط مشطور مبطن وعلاقة كليفس',
+  26: 'صمام ZCV للحريق',
+  27: 'مفتاح تقسية',
+  28: 'صمام اختبار وتصريف',
+  29: 'مفتاح تدفق',
+  30: 'مقياس ضغط',
+  31: 'دهانات مواسير الحريق',
+  32: 'مضخة حريق',
+  33: 'صندوق خرطوم حريق فولاذي',
+  34: 'طفاية حريق',
+  35: 'نوفيك (NOVEC)',
+  36: 'أيروسول (Aerosol)',
+  37: 'مواسير PPR',
+  38: 'قطع اتصال (وصلات)',
+  39: 'صمامات سباكة',
+  40: 'مانع المطرقة المائية',
+  41: 'حنفيات خراطيم',
+  42: 'عزل السباكة',
+  43: 'ماسورة صرف',
+  44: 'مواسير صرف التكييف',
+  45: 'ماسورة تصريف وصرف',
+  46: 'مواسير صرف',
+  47: 'خزان طرد للمرحاض (WC)',
+  48: 'خزان مياه',
+  49: 'سخان مياه',
+  50: 'مضخة تقوية',
+  51: 'صاج مجاري الهواء',
+  52: 'عزل مجاري الهواء',
+  53: 'مواسير DX',
+  54: 'شبكة مخرج',
+  55: 'وحدات تكييف',
+  56: 'مروحة',
+  57: 'مصاعد',
   58: 'خرسانة جاهزة',
   59: 'أسمنت',
-  60: 'حديد التسليح',
+  60: 'قضبان حديد التسليح',
   61: 'أغشية العزل المائي',
   62: 'العزل الحراري للأسطح',
-  63: 'بلوك خرساني',
+  63: 'وحدات البناء الخرسانية',
   64: 'أبواب وإطارات خشبية',
   65: 'أنظمة الألمنيوم',
-  66: 'الزجاج المعماري',
-  67: 'ألواح الجبس (Gypsum Board)',
-  68: 'إضافات اللياسة والمونة',
-  69: 'بلاط البورسلين',
-  70: 'الرخام',
-  71: 'الدهانات المعمارية',
-  72: 'تكسية واجهات خرسانية مسلحة بالألياف (GRC)',
-  73: 'درابزين حديد مشغول (Wrought Iron)',
+  66: 'زجاج',
+  67: 'ألواح جبس',
+  68: 'إضافات اللياسة',
+  69: 'بورسلين',
+  70: 'رخام',
+  71: 'دهانات',
+  72: 'تكسية GRC',
+  73: 'درابزين حديد مشغول',
 }
 
 function capitalizeWordToken(token: string, index: number): string {
@@ -445,8 +595,8 @@ export function normalizeMaterialDescriptionEn(rawDescription: string): {
     return capitalizeWordToken(word, idx)
   })
 
-  // Join "OUT LET GRILL" -> "Outlet Grill" only? No: spec says only known typos + case/whitespace normalization!
-  // So "OUT LET GRILL" becomes "Out Let Grill".
+  // Uncertain typos ("DISCONNECTED SWITCH", "FIREPIPES", "TEMPER SWITCH", "OUT LET GRILL")
+  // are left as-is (Title Case only) and flagged for client review (`R-2`).
   const normalized = words.join(' ')
   return {
     normalized,
@@ -456,11 +606,14 @@ export function normalizeMaterialDescriptionEn(rawDescription: string): {
 }
 
 /**
- * Normalizes a single brand token using `SPEC_BRAND_TYPO_MAP` plus case/whitespace normalization.
+ * Normalizes a single brand token using `SPEC_BRAND_TYPO_MAP`, parenthetical product-note
+ * stripping for `HEMPEL (COATING)` -> `Hempel` (`docs/02-content-model.md` line 152, `R-5`),
+ * plus case/whitespace normalization.
  */
 export function normalizeBrandName(rawBrandToken: string): {
   caseOrWhitespaceNormalized: boolean
   normalized: string
+  productNoteStripped?: boolean
   specTypoApplied: boolean
 } {
   const collapsed = rawBrandToken
@@ -469,6 +622,15 @@ export function normalizeBrandName(rawBrandToken: string): {
     .replace(/\s*-\s*/g, (match) => (match.includes(' ') ? ' - ' : '-'))
 
   const upperKey = collapsed.toUpperCase()
+  if (upperKey === 'HEMPEL (COATING)') {
+    return {
+      normalized: 'Hempel',
+      specTypoApplied: false,
+      productNoteStripped: true,
+      caseOrWhitespaceNormalized: true,
+    }
+  }
+
   const specMapped = SPEC_BRAND_TYPO_MAP[upperKey]
   if (specMapped) {
     return {
@@ -523,7 +685,8 @@ export function splitBrandCell(brandRaw: string, originRaw?: string): string[] {
 }
 
 /**
- * Resolves per-brand `{ en, ar }` country of origin from `originRaw` (`handoff/tasks/P4-T1.md` §Scope 3).
+ * Resolves per-brand `{ en, ar }` country of origin from `originRaw` (`handoff/tasks/P4-T1.md` §Scope 3,
+ * `handoff/reviews/P4-T1.md` `R-1`).
  */
 export function resolveBrandOriginsFromCell(
   rawBrands: readonly string[],
@@ -561,10 +724,11 @@ export function resolveBrandOriginsFromCell(
     return result
   }
 
-  // Case 3: One or more `Brand: Country` pairs (separated by `|`, `,`, `/`, `-`, or space before next uppercase key)
+  // Case 3: One or more `Brand: Country` pairs (separated by `|`, `,`, `/`, or `-` after a `: Country` value
+  // before the next `Brand:` key — never splitting on a hyphen inside a brand key like `HI-TECH: United States`, `R-1`).
   const normalizedPairsText = trimmedOrigin
     .replace(/\)\s*:\s*([A-Za-z ]+?)\s+(?=[A-Z]+\s*\()/g, '): $1 | ')
-    .replace(/([A-Za-z])\s*-\s*(?=[A-Za-z ]+\s*:)/g, '$1 | ')
+    .replace(/:\s*([A-Za-z][A-Za-z ]*?)\s*-\s*(?=[A-Za-z][A-Za-z ]*\s*:)/g, ': $1 | ')
 
   const pairChunks = normalizedPairsText
     .split(/\s*(?:\||,)\s*|\s+\/(?=[A-Za-z]+\s*:)/)
@@ -678,17 +842,17 @@ export function buildMaterialsSeedPlan(
 
   const UNCERTAIN_MEP_BRAND_NOTES: Readonly<Record<number, string>> = {
     11: 'Raw brand is "Bahra" (without "Cables"); left as-is and separate from "Bahra Cables" (rows 7, 8) pending client confirmation.',
-    19: 'originRaw notes "COOPER: United States (brand; now Eaton) | AVANGER: United Kingdom"; left as "Cooper" and "Avanger" pending client confirmation on "Eaton Cooper" / "Avenger" spelling.',
+    19: 'originRaw notes "COOPER: United States (brand; now Eaton) | AVANGER: United Kingdom"; left as "Cooper" (Figma 18:579 displays "Eaton Cooper") and "Avanger" pending client confirmation on display name and "Avenger" spelling.',
     20: 'brandRaw has "EFFECTIVE POWER - ASSTTE" while originRaw has "(EFFECTIVE POWER-ASTTE): Saudi Arabia"; left as "Effective Power - ASSTTE" pending client confirmation on spelling.',
     21: 'brandRaw is "ALJAZIRAH (OMAN-SAUDI)" and originRaw is "ALJAZIRAH (OMAN-SAUDI):" (empty country after colon); left as-is with empty origin pending client confirmation (compare row 22 "ALJAZERA").',
     22: 'brandRaw is "ALJAZERA" with originRaw "ALJAZERA: Saudi Arabia / Oman"; left as "Aljazera" pending client confirmation whether rows 21 and 22 are the same manufacturer (Al Jazeera Steel Products Co.).',
     23: 'brandRaw is "Junt / JTPR UL-FM" (includes UL-FM certification suffix on JTPR); left as "Junt" and "JTPR UL-FM" pending client confirmation.',
     24: 'brandRaw is "JIHANZI -UL/FM" (UL/FM certification suffix with slash); kept as single brand "Jihanzi -UL/FM" (China) pending client confirmation.',
-    31: 'brandRaw is "JAZEERA (PRIMER) HEMPEL (COATING)" and originRaw has two Brand: Country pairs ("JAZEERA (PRIMER):Saudi arbia HEMPEL (COATING): Denmark"); split into "Jazeera (Primer)" and "Hempel (Coating)" pending client confirmation.',
+    31: 'brandRaw is "JAZEERA (PRIMER) HEMPEL (COATING)" and originRaw has two Brand: Country pairs ("JAZEERA (PRIMER):Saudi arbia HEMPEL (COATING): Denmark"); "HEMPEL (COATING)" normalized to brand "Hempel" with product note kept on material #31, and "Jazeera (Primer)" kept pending client confirmation whether to merge with "Jazeera Paints" (row 71).',
     42: 'originRaw is "AEROFOAM: UAE" without a country for second brand "arma flex" ("Armaflex"); seeded "Armaflex" with empty origin pending client confirmation.',
     47: 'originRaw is "GROHE: Germany" without a country for second brand "GEBRIT" ("Geberit"); seeded "Geberit" with empty origin pending client confirmation.',
     53: 'brandRaw is "LUVATA-CAMLEE" joined by hyphen while originRaw has two Brand: Country pairs ("LUVATA :ITALY /CAMLEE: CHINA"); split into "Luvata" (Italy) and "Camlee" (China) pending client confirmation.',
-    56: 'brandRaw is "SYSTEM AIR/BLACK HORSE"; left as "System Air" (two words) pending client confirmation whether to merge with single-word "Systemair" in Figma.',
+    56: 'brandRaw is "SYSTEM AIR/BLACK HORSE"; left as "System Air" (two words) pending client confirmation on display name vs single-word "Systemair" in Figma (18:579).',
     57: 'brandRaw is "ALDURRAH-fuji" with originRaw "ALDURRAH: Saudi Arabia"; kept as "Aldurrah-Fuji" (Saudi Arabia) pending client confirmation whether Fuji is a separate partner brand.',
   }
 
@@ -717,6 +881,7 @@ export function buildMaterialsSeedPlan(
       )
     }
 
+    const uncertainDescTypo = UNCERTAIN_DESCRIPTION_TYPO_NOTES[row.no]
     const descriptionAr =
       MATERIAL_ARABIC_DRAFT_MAP[row.no] ?? `${descResult.normalized} (مسودة)`
     arabicDrafts.push({
@@ -725,6 +890,7 @@ export function buildMaterialsSeedPlan(
       rawDescription: row.description,
       descriptionEn: descResult.normalized,
       descriptionAr,
+      reviewNote: uncertainDescTypo ? uncertainDescTypo.literalArabicExplanation : null,
     })
 
     const isStructuralOrArch = row.no >= 58 && row.no <= 73
@@ -739,7 +905,16 @@ export function buildMaterialsSeedPlan(
     const rowBrandNames: string[] = []
     for (const rawToken of rawBrandTokens) {
       const brandNorm = normalizeBrandName(rawToken)
-      if (brandNorm.specTypoApplied) {
+      if (brandNorm.productNoteStripped) {
+        addNormalization(
+          'brand-product-note',
+          'brandRaw',
+          rawToken,
+          brandNorm.normalized,
+          'Parenthetical product note "(COATING)" stripped from brand name and kept on material #31 notes (docs/02-content-model.md)',
+          row.no,
+        )
+      } else if (brandNorm.specTypoApplied) {
         addNormalization(
           'brand-typo',
           'brandRaw',
@@ -805,11 +980,22 @@ export function buildMaterialsSeedPlan(
       }
     }
 
+    if (uncertainDescTypo) {
+      needsClientReview.push({
+        rowNo: row.no,
+        system: row.system,
+        category: 'uncertain-description-typo',
+        rawBrandOrOrigin: `description="${row.description}"`,
+        normalizedBrands: rowBrandNames,
+        details: uncertainDescTypo.literalArabicExplanation,
+      })
+    }
+
     if (isStructuralOrArch) {
       const altText = row.alternativeRaw?.trim() || '(empty)'
       const extraNote =
         row.no === 60
-          ? ' (both brandRaw and alternativeRaw are "Al-rajhi Steel" — deduplicated to 1 brand link)'
+          ? ' (both brandRaw and alternativeRaw are "Al-rajhi Steel" — deduplicated to 1 brand link; Figma 18:579 displays "Al Rajhi Steel")'
           : row.no === 69
             ? ' ("Saudi cermics" normalized via spec map to "Saudi Ceramics"; "Alfanar Cermics" left as-is pending client confirmation)'
             : ''
@@ -849,6 +1035,18 @@ export function buildMaterialsSeedPlan(
       }
     }
 
+    const row31NotesEn =
+      row.no === 31
+        ? 'Product notes from brand cell: Hempel (Coating); Jazeera (Primer).'
+        : null
+    const row31NotesAr =
+      row.no === 31
+        ? 'ملاحظات المنتج من حقل العلامة التجارية: همبل (طلاء نهائي / Coating)؛ الجزيرة (أساس / Primer).'
+        : null
+
+    const notesEn = uncertainDescTypo ? uncertainDescTypo.enReviewNote : row31NotesEn
+    const notesAr = uncertainDescTypo ? uncertainDescTypo.arReviewNote : row31NotesAr
+
     materials.push({
       itemNo: row.no,
       system: row.system,
@@ -860,10 +1058,26 @@ export function buildMaterialsSeedPlan(
       rawOriginOrAlternative: isStructuralOrArch
         ? (row.alternativeRaw ?? '')
         : (row.originRaw ?? ''),
-      notesEn: null,
-      notesAr: null,
-      needsClientReview: Boolean(isStructuralOrArch || UNCERTAIN_MEP_BRAND_NOTES[row.no]),
+      notesEn,
+      notesAr,
+      needsClientReview: Boolean(
+        isStructuralOrArch || UNCERTAIN_MEP_BRAND_NOTES[row.no] || uncertainDescTypo,
+      ),
     })
+  }
+
+  // Record Figma Trusted Partners (18:579) ↔ raw brand display-name mappings (`R-5`, `docs/02-content-model.md:154-156`)
+  for (const mapping of FIGMA_PARTNER_DISPLAY_NAME_MAPPINGS) {
+    for (const rowNo of mapping.rowNumbers) {
+      addNormalization(
+        'figma-partner-display-mapping',
+        'brandRaw',
+        `Figma "${mapping.figmaDisplayName}" ↔ raw "${mapping.rawBrandValue}"`,
+        mapping.seededBrandName,
+        mapping.confirmationNeeded,
+        rowNo,
+      )
+    }
   }
 
   // Assign deterministic order values: marquee brands get 1..20 in Figma order, remaining get 21..N in first-seen order
@@ -883,6 +1097,7 @@ export function buildMaterialsSeedPlan(
   return {
     brands: allBrands,
     materials,
+    figmaPartnerMappings: [...FIGMA_PARTNER_DISPLAY_NAME_MAPPINGS],
     normalizationsApplied: Array.from(normalizationsMap.values()),
     needsClientReview,
     arabicDrafts,
@@ -900,8 +1115,17 @@ function extractNumericBrandIdsFromDoc(rawBrands: Material['brands']): number[] 
 }
 
 /**
- * Executes the idempotent `P4-T1` Materials + Brands seed via the Payload Local API
- * with `overrideAccess: false` and `SEED_ADMIN_USER` (`handoff/tasks/P4-T1.md`, `M-134`).
+ * Executes the first-run baseline `P4-T1` Materials + Brands seed via the Payload Local API
+ * with `overrideAccess: false` and `SEED_ADMIN_USER` (`handoff/tasks/P4-T1.md`, `M-134`,
+ * `docs/02-content-model.md` lines 157–160, `handoff/reviews/P4-T1.md` `R-4`).
+ *
+ * Behavior (`R-4`):
+ * - Runs on an empty `brands` and `materials` database (`brands === 0 && materials === 0`).
+ * - Refuses to run (throws Error -> CLI exits 1) on a non-empty database unless `--reseed`
+ *   (`options?.reseed` or `argv.includes('--reseed')`) is passed explicitly.
+ * - Always refuses `--reseed` when `NODE_ENV === 'production'`.
+ * - Never overwrites editor changes or creates duplicate brands after a rename unless `--reseed`
+ *   is explicitly invoked in development.
  */
 export async function seedMaterialsAndBrands(
   payload: Payload,
@@ -909,114 +1133,94 @@ export async function seedMaterialsAndBrands(
     argv?: readonly string[]
     nodeEnv?: string
     rawRows?: readonly RawMaterialSeedRow[]
+    reseed?: boolean
   },
 ): Promise<MaterialsSeedRunSummary> {
-  assertSeedEnvironmentAllowed(options?.nodeEnv, options?.argv)
+  const effectiveNodeEnv = options?.nodeEnv ?? process.env.NODE_ENV
+  const effectiveArgv = options?.argv ?? process.argv
+  const reseed = options?.reseed === true || effectiveArgv.includes('--reseed')
+
+  assertSeedEnvironmentAllowed(effectiveNodeEnv, effectiveArgv, reseed)
+
+  const [existingBrandsCountRes, existingMaterialsCountRes] = await Promise.all([
+    payload.count({
+      collection: 'brands',
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    }),
+    payload.count({
+      collection: 'materials',
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    }),
+  ])
+
+  const existingBrandsCount = existingBrandsCountRes.totalDocs
+  const existingMaterialsCount = existingMaterialsCountRes.totalDocs
+
+  if ((existingBrandsCount > 0 || existingMaterialsCount > 0) && !reseed) {
+    throw new Error(
+      `[seed] Refusing to run seed on a non-empty database (brands=${String(existingBrandsCount)}, materials=${String(existingMaterialsCount)}). The seed is a first-run baseline and never overwrites existing data. Pass --reseed in development to clear and rebuild brands and materials.`,
+    )
+  }
+
+  let reseeded = false
+  if ((existingBrandsCount > 0 || existingMaterialsCount > 0) && reseed) {
+    // Delete materials first (since materials.brands references brands), then brands
+    await payload.delete({
+      collection: 'materials',
+      where: {
+        id: {
+          exists: true,
+        },
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    await payload.delete({
+      collection: 'brands',
+      where: {
+        id: {
+          exists: true,
+        },
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    reseeded = true
+  }
 
   const plan = buildMaterialsSeedPlan(options?.rawRows)
   const brandIdByName = new Map<string, number>()
 
   let brandsCreated = 0
-  let brandsUpdated = 0
-  let brandsUnchanged = 0
+  const brandsUpdated = 0
+  const brandsUnchanged = 0
 
   for (const plannedBrand of plan.brands) {
-    const existingEnRes = await payload.find({
+    const createdAr = await payload.create({
       collection: 'brands',
-      where: {
-        name: {
-          equals: plannedBrand.name,
-        },
-      },
-      locale: 'en',
-      depth: 0,
-      limit: 1,
-      overrideAccess: false,
-      user: SEED_ADMIN_USER,
-    })
-
-    const existingEn = existingEnRes.docs[0] as Brand | undefined
-
-    if (!existingEn) {
-      const createdAr = await payload.create({
-        collection: 'brands',
-        locale: 'ar',
-        data: {
-          name: plannedBrand.name,
-          origin: plannedBrand.originAr,
-          showInMarquee: plannedBrand.showInMarquee,
-          order: plannedBrand.order,
-        },
-        context: { disableRevalidate: true },
-        overrideAccess: false,
-        user: SEED_ADMIN_USER,
-      })
-
-      if (plannedBrand.originEn !== plannedBrand.originAr) {
-        await payload.update({
-          collection: 'brands',
-          id: createdAr.id,
-          locale: 'en',
-          data: {
-            origin: plannedBrand.originEn,
-          },
-          context: { disableRevalidate: true },
-          overrideAccess: false,
-          user: SEED_ADMIN_USER,
-        })
-      }
-
-      brandIdByName.set(plannedBrand.name, createdAr.id)
-      brandsCreated += 1
-      continue
-    }
-
-    const existingAr = await payload.findByID({
-      collection: 'brands',
-      id: existingEn.id,
       locale: 'ar',
-      depth: 0,
+      data: {
+        name: plannedBrand.name,
+        origin: plannedBrand.originAr,
+        showInMarquee: plannedBrand.showInMarquee,
+        order: plannedBrand.order,
+      },
+      context: { disableRevalidate: true },
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
 
-    const enMatches =
-      (existingEn.origin ?? null) === (plannedBrand.originEn ?? null) &&
-      Boolean(existingEn.showInMarquee) === plannedBrand.showInMarquee &&
-      existingEn.order === plannedBrand.order
-    const arMatches = (existingAr.origin ?? null) === (plannedBrand.originAr ?? null)
-
-    if (enMatches && arMatches) {
-      brandIdByName.set(plannedBrand.name, existingEn.id)
-      brandsUnchanged += 1
-      continue
-    }
-
-    if (!arMatches) {
+    if (plannedBrand.originEn !== plannedBrand.originAr) {
       await payload.update({
         collection: 'brands',
-        id: existingEn.id,
-        locale: 'ar',
-        data: {
-          origin: plannedBrand.originAr,
-          showInMarquee: plannedBrand.showInMarquee,
-          order: plannedBrand.order,
-        },
-        context: { disableRevalidate: true },
-        overrideAccess: false,
-        user: SEED_ADMIN_USER,
-      })
-    }
-
-    if (!enMatches) {
-      await payload.update({
-        collection: 'brands',
-        id: existingEn.id,
+        id: createdAr.id,
         locale: 'en',
         data: {
           origin: plannedBrand.originEn,
-          showInMarquee: plannedBrand.showInMarquee,
-          order: plannedBrand.order,
         },
         context: { disableRevalidate: true },
         overrideAccess: false,
@@ -1024,13 +1228,13 @@ export async function seedMaterialsAndBrands(
       })
     }
 
-    brandIdByName.set(plannedBrand.name, existingEn.id)
-    brandsUpdated += 1
+    brandIdByName.set(plannedBrand.name, createdAr.id)
+    brandsCreated += 1
   }
 
   let materialsCreated = 0
-  let materialsUpdated = 0
-  let materialsUnchanged = 0
+  const materialsUpdated = 0
+  const materialsUnchanged = 0
 
   for (const plannedMat of plan.materials) {
     const brandIds = plannedMat.brandNames.map((name) => {
@@ -1041,118 +1245,35 @@ export async function seedMaterialsAndBrands(
       return id
     })
 
-    const existingEnRes = await payload.find({
+    const createdAr = await payload.create({
       collection: 'materials',
-      where: {
-        itemNo: {
-          equals: plannedMat.itemNo,
-        },
-      },
-      locale: 'en',
-      depth: 0,
-      limit: 1,
-      overrideAccess: false,
-      user: SEED_ADMIN_USER,
-    })
-
-    const existingEn = existingEnRes.docs[0] as Material | undefined
-
-    if (!existingEn) {
-      const createdAr = await payload.create({
-        collection: 'materials',
-        locale: 'ar',
-        data: {
-          itemNo: plannedMat.itemNo,
-          system: plannedMat.system,
-          description: plannedMat.descriptionAr,
-          brands: brandIds,
-          notes: plannedMat.notesAr,
-        },
-        context: { disableRevalidate: true },
-        overrideAccess: false,
-        user: SEED_ADMIN_USER,
-      })
-
-      await payload.update({
-        collection: 'materials',
-        id: createdAr.id,
-        locale: 'en',
-        data: {
-          description: plannedMat.descriptionEn,
-          notes: plannedMat.notesEn,
-        },
-        context: { disableRevalidate: true },
-        overrideAccess: false,
-        user: SEED_ADMIN_USER,
-      })
-
-      materialsCreated += 1
-      continue
-    }
-
-    const existingAr = await payload.findByID({
-      collection: 'materials',
-      id: existingEn.id,
       locale: 'ar',
-      depth: 0,
+      data: {
+        itemNo: plannedMat.itemNo,
+        system: plannedMat.system,
+        description: plannedMat.descriptionAr,
+        brands: brandIds,
+        notes: plannedMat.notesAr,
+      },
+      context: { disableRevalidate: true },
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
 
-    const existingBrandIds = extractNumericBrandIdsFromDoc(existingEn.brands)
-    const brandsMatch =
-      existingBrandIds.length === brandIds.length &&
-      existingBrandIds.every((id, idx) => id === brandIds[idx])
+    await payload.update({
+      collection: 'materials',
+      id: createdAr.id,
+      locale: 'en',
+      data: {
+        description: plannedMat.descriptionEn,
+        notes: plannedMat.notesEn,
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
 
-    const enMatches =
-      existingEn.system === plannedMat.system &&
-      existingEn.description === plannedMat.descriptionEn &&
-      (existingEn.notes ?? null) === (plannedMat.notesEn ?? null) &&
-      brandsMatch
-    const arMatches =
-      existingAr.description === plannedMat.descriptionAr &&
-      (existingAr.notes ?? null) === (plannedMat.notesAr ?? null)
-
-    if (enMatches && arMatches) {
-      materialsUnchanged += 1
-      continue
-    }
-
-    if (!arMatches || !brandsMatch || existingEn.system !== plannedMat.system) {
-      await payload.update({
-        collection: 'materials',
-        id: existingEn.id,
-        locale: 'ar',
-        data: {
-          system: plannedMat.system,
-          description: plannedMat.descriptionAr,
-          brands: brandIds,
-          notes: plannedMat.notesAr,
-        },
-        context: { disableRevalidate: true },
-        overrideAccess: false,
-        user: SEED_ADMIN_USER,
-      })
-    }
-
-    if (!enMatches) {
-      await payload.update({
-        collection: 'materials',
-        id: existingEn.id,
-        locale: 'en',
-        data: {
-          system: plannedMat.system,
-          description: plannedMat.descriptionEn,
-          brands: brandIds,
-          notes: plannedMat.notesEn,
-        },
-        context: { disableRevalidate: true },
-        overrideAccess: false,
-        user: SEED_ADMIN_USER,
-      })
-    }
-
-    materialsUpdated += 1
+    materialsCreated += 1
   }
 
   // Query all seeded materials & brands to verify counts, >= 1 brand per material, and updatedAt digest
@@ -1199,6 +1320,7 @@ export async function seedMaterialsAndBrands(
     everyMaterialHasAtLeastOneBrand:
       allMaterialsRes.totalDocs === 73 && minBrandsPerMaterial >= 1,
     minBrandsPerMaterial: Number.isFinite(minBrandsPerMaterial) ? minBrandsPerMaterial : 0,
+    reseeded,
     systemCounts: plan.systemCounts,
     updatedAtDigest,
     plan,
@@ -1213,12 +1335,14 @@ export function formatSeedSummaryLines(summary: MaterialsSeedRunSummary): string
 
   return [
     '=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===',
+    `mode: ${summary.reseeded ? 'reseed (--reseed)' : 'first-run baseline'}`,
     `brands: created=${String(summary.brandsCreated)}, updated=${String(summary.brandsUpdated)}, unchanged=${String(summary.brandsUnchanged)}, total=${String(summary.brandsTotal)}`,
     `materials: created=${String(summary.materialsCreated)}, updated=${String(summary.materialsUpdated)}, unchanged=${String(summary.materialsUnchanged)}, total=${String(summary.materialsTotal)}`,
     `systemCounts: electrical=${String(summary.systemCounts.electrical)}, mechanical=${String(summary.systemCounts.mechanical)}, structural=${String(summary.systemCounts.structural)}, architectural=${String(summary.systemCounts.architectural)}`,
     `everyMaterialHasAtLeastOneBrand: ${String(summary.everyMaterialHasAtLeastOneBrand)} (minBrandsPerMaterial=${String(summary.minBrandsPerMaterial)})`,
     `normalizationsApplied: ${String(summary.plan.normalizationsApplied.length)} distinct rule applications`,
-    `needsClientReview: ${String(summary.plan.needsClientReview.length)} rows flagged`,
+    `figmaPartnerMappings: ${String(summary.plan.figmaPartnerMappings.length)} Figma↔raw partner display mappings`,
+    `needsClientReview: ${String(summary.plan.needsClientReview.length)} items flagged`,
     `arabicDrafts: ${String(summary.plan.arabicDrafts.length)} rows drafted`,
     `updatedAtDigestSha256: ${digestSha256}`,
   ]
