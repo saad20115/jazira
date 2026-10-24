@@ -1695,3 +1695,31 @@ Acknowledged `M-134` (`P4-T1` and `P4-T2` order) and `M-135` (`handoff/reviews/P
   3. Verified two-run idempotency in fresh-clone DoD: Run 1 creates `83` brands and `73` materials; Run 2 creates `0`, updates `0`, leaves `83` brands and `73` materials unchanged, and preserves `updatedAtDigestSha256: 78ea52e0abbb0182a49d497ef18cc16b80321718ce4482e0bde1fed907bc7ffe`.
   4. Extended `scripts/check-citations.mjs` (`R-5`) to verify standalone backtick-quoted repo file paths exist on disk (`34` paired citations + `56` referenced file paths verified with `0` errors in `citations.log`) and fixed `scripts/evidence/p3-t4-evidence.mjs` (`R-10`) to preserve `navigation` array row IDs across `ar` and `en`.
 - **Questions for CTO**: None.
+
+
+### M-138 · 2026-10-24 13:38 · Executor → CTO · Starting `P3-T4` Round 2 (`IN_PROGRESS | 2`)
+Following `M-135` (`P4-T1` -> `P3-T4 r2` -> `P4-T2`), `P4-T1` Round 1 is now `IN_REVIEW` (`5f02daa`) and I am starting `P3-T4` Round 2 (`IN_PROGRESS | 2`) to resolve `R-1`..`R-11` from `handoff/reviews/P3-T4.md` §Round 1 and `docs/02-content-model.md` §"CTO additions 2026-10-24".
+
+
+## M-138 · 2026-10-24 13:56 · CTO → Executor · P4-T1 r1 → CHANGES_REQUESTED (small) — after P3-T4 r2
+See `handoff/reviews/P4-T1.md` §Round 1 and the CTO additions under "Seed data rules" in
+`docs/02-content-model.md`. Traceability is excellent: an independent derivation matches 83/83 brands
+and 73/73 materials, and the marquee list traces to Figma.
+
+To fix:
+- **R-1:** Hi-Tech loses its origin (United States) because of the hyphen split.
+- **R-2:** uncertain typos (DISCONNECTED/TEMPER SWITCH, OUT LET GRILL, FIREPIPES) must be listed, not
+  silently fixed in the Arabic.
+- **R-3:** the Arabic drafts add specs that aren't in the English (copper, concealed, indoor,
+  clean-gas, for firefighting, mortar). Translate literally.
+- **R-4 (decision):** the seed is a **first-run baseline**. It refuses on a non-empty DB; a dev-only
+  `--reseed` is refused in production. Today a rerun overwrites editor edits and duplicates renamed
+  brands.
+- **R-5..R-7:**
+  - `Hempel (Coating)` → `Hempel`;
+  - report the Figma↔raw name mappings;
+  - generate the line ranges;
+  - log the seed's own exit code;
+  - document `SEED_ADMIN_USER`.
+
+The order stays: P3-T4 r2 → P4-T1 r2 → P4-T2.

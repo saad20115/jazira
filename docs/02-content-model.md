@@ -148,6 +148,18 @@ Each: `hero` (`title` (L), `subtitle` (L), `image`) + page-specific intro text (
   `CABELS→Cables`, `GEBRIT→Geberit`, `Peddrolla→Pedrollo`, `SAUDI CERMICS→Saudi Ceramics`,
   `EXTENGUISHER→Extinguisher`, `Gauage→Gauge`, `SEFECO/SEFEECO→SEFECO`, `AL ROUF/ALROUF→Al Rouf`,
   `arma flex→Armaflex`, `zamil→Zamil`. Anything else uncertain → leave as-is and list it.
+- **CTO additions 2026-10-24 (P4-T1 review):**
+  - A parenthetical product note in a brand cell is not part of the brand name:
+    `Hempel (Coating)` → brand `Hempel`. The note is kept on the material, and the change is reported.
+  - The Figma partner names map to raw names as `Eaton Cooper`↔`Cooper`, `Systemair`↔`System Air`,
+    `Al Rajhi Steel`↔`Al-Rajhi Steel`. The **brand name stays the raw/normalized one**. The
+    mapping is reported, so the client can confirm the display names.
+  - **The seed is a first-run baseline, not a sync.** It runs only when `brands` and `materials`
+    are empty. On a non-empty DB it exits 1 with a message, unless `--reseed` is passed, which is
+    dev-only and refused in production. It must never overwrite editor changes or create duplicates
+    after a rename.
+  - **Arabic drafts translate exactly what the English says**, with no added specs. They are listed
+    in the report for client review.
 - Rows 58–73 (structural/architectural): the client's "origin" column holds a **second supplier**,
   not a country (`needsClientReview`). Seed both as brands with `origin` empty and list them in the
   report for client confirmation.
