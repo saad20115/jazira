@@ -1,0 +1,25 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r1-20261024-102140
+$ git rev-parse HEAD
+b4341dee50f79c929cd47eb33246adf980074d20
+
+=== Console, Hydration, CSP & CLS Audit (/ar and /en across 1440, 768, 390) ===
+consoleErrors: 0
+pageErrors: 0
+hydrationWarnings: 0
+cspViolations: 0
+maxCls: 0.00537
+{
+  "clsReport": {
+    "ar-1440": 0.00022,
+    "ar-768": 0.00003,
+    "ar-390": 0.00537,
+    "en-1440": 0.00001,
+    "en-768": 0.00004,
+    "en-390": 0.00005
+  },
+  "consoleErrors": [],
+  "pageErrors": [],
+  "hydrationWarnings": [],
+  "cspViolations": []
+}

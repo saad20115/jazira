@@ -1,0 +1,128 @@
+$ git grep -n -e 'clipFrame' -- src/components/TeamCard.module.css
+src/components/TeamCard.module.css:51:.clipFrame {
+
+$ git grep -n -e 'content' -- src/components/TeamCard.module.css
+src/components/TeamCard.module.css:14:  content: '';
+src/components/TeamCard.module.css:33:  content: '';
+src/components/TeamCard.module.css:62:.content {
+src/components/TeamCard.module.css:77: * Outer navy-950 card stays visible while `.content` fades up 28px. */
+src/components/TeamCard.module.css:78:.stateEnter1 .content,
+src/components/TeamCard.module.css:79:.scrollPending .content {
+src/components/TeamCard.module.css:84:.stateEnter2 .content {
+src/components/TeamCard.module.css:89:.stateEnter3 .content {
+src/components/TeamCard.module.css:94:.stateEnter4 .content {
+src/components/TeamCard.module.css:99:.stateEnter5 .content,
+src/components/TeamCard.module.css:100:.scrollEntered .content {
+src/components/TeamCard.module.css:161:  justify-content: center;
+src/components/TeamCard.module.css:232:  .content,
+src/components/TeamCard.module.css:240:  .scrollPending .content {
+
+$ git grep -n -e 'TeamCard' -- src/components/TeamCard.tsx
+src/components/TeamCard.tsx:11:import styles from './TeamCard.module.css'
+src/components/TeamCard.tsx:13:export type TeamCardState =
+src/components/TeamCard.tsx:16:export interface TeamCardProps {
+src/components/TeamCard.tsx:23:  state?: TeamCardState
+src/components/TeamCard.tsx:26:const STATE_CLASS_MAP: Record<TeamCardState, string> = {
+src/components/TeamCard.tsx:56: * Figma component `TeamCard` (`150:596`, `design/context/components/team-card.md`).
+src/components/TeamCard.tsx:60:export function TeamCard({
+src/components/TeamCard.tsx:68:}: TeamCardProps): ReactElement {
+
+$ git grep -n -e 'card' -- src/components/TeamCard.module.css
+src/components/TeamCard.module.css:1:.card {
+src/components/TeamCard.module.css:13:.card::before {
+src/components/TeamCard.module.css:19:  box-shadow: var(--shadow-card-raised);
+src/components/TeamCard.module.css:26:.card:hover::before,
+src/components/TeamCard.module.css:27:.card:focus-within::before,
+src/components/TeamCard.module.css:32:.card::after {
+src/components/TeamCard.module.css:38:  box-shadow: var(--shadow-team-card-hover);
+src/components/TeamCard.module.css:45:.card:hover::after,
+src/components/TeamCard.module.css:46:.card:focus-within::after,
+src/components/TeamCard.module.css:77: * Outer navy-950 card stays visible while `.content` fades up 28px. */
+src/components/TeamCard.module.css:115:.card:hover .portraitLayer,
+src/components/TeamCard.module.css:116:.card:focus-within .portraitLayer,
+src/components/TeamCard.module.css:126:  background-image: var(--gradient-team-card-overlay);
+src/components/TeamCard.module.css:148:.card:hover .cornerBracket,
+src/components/TeamCard.module.css:149:.card:focus-within .cornerBracket,
+src/components/TeamCard.module.css:177:.card:hover .linkedinBadge,
+src/components/TeamCard.module.css:178:.card:focus-within .linkedinBadge,
+src/components/TeamCard.module.css:223:.card:hover .accentLine,
+src/components/TeamCard.module.css:224:.card:focus-within .accentLine,
+src/components/TeamCard.module.css:230:  .card::before,
+src/components/TeamCard.module.css:231:  .card::after,
+src/components/TeamCard.module.css:245:  .card:hover .portraitLayer,
+src/components/TeamCard.module.css:246:  .card:focus-within .portraitLayer,
+
+$ git grep -n -e 'ServicesCarousel' -- src/components/ServicesCarousel.tsx
+src/components/ServicesCarousel.tsx:20:import styles from './ServicesCarousel.module.css'
+src/components/ServicesCarousel.tsx:22:export type ServicesCarouselPosition = 1 | 2 | 3 | 4 | 5
+src/components/ServicesCarousel.tsx:28:export interface ServicesCarouselProps {
+src/components/ServicesCarousel.tsx:33:  position?: ServicesCarouselPosition
+src/components/ServicesCarousel.tsx:67: * Figma component `ServicesCarousel` (`175:3714`, `design/context/components/services-carousel.md`).
+src/components/ServicesCarousel.tsx:72:export function ServicesCarousel({
+src/components/ServicesCarousel.tsx:81:}: ServicesCarouselProps): ReactElement | null {
+
+$ git grep -n -e 'buildCollectionTags' -- src/lib/cms/tags.ts
+src/lib/cms/tags.ts:9:export function buildCollectionTags(
+
+$ git grep -n -e 'buildGlobalTags' -- src/lib/cms/tags.ts
+src/lib/cms/tags.ts:35:export function buildGlobalTags(globalSlug: string): string[] {
+
+$ git grep -n -e 'safeRevalidateTag' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:40:export function safeRevalidateTag(tag: string, logger?: MinimalLogger): void {
+src/hooks/revalidate.ts:652:        safeRevalidateTag(tag, logger)
+src/hooks/revalidate.ts:694:        safeRevalidateTag(tag, logger)
+src/hooks/revalidate.ts:744:        safeRevalidateTag(tag, logger)
+src/hooks/revalidate.ts:749:          safeRevalidateTag(extraTag, logger)
+src/hooks/revalidate.ts:751:            safeRevalidateTag(`${extraTag}:${locale}`, logger)
+
+$ git grep -n -e 'CMS_CLIENT_SERVER_ONLY_SENTINEL' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:10:export const CMS_CLIENT_SERVER_ONLY_SENTINEL =
+src/lib/cms/client.ts:14:export const CMS_SERVER_ONLY_SENTINEL = CMS_CLIENT_SERVER_ONLY_SENTINEL
+src/lib/cms/client.ts:232:      `CMS Local API client must never execute in the browser (${CMS_CLIENT_SERVER_ONLY_SENTINEL}).`,
+
+$ git grep -n -e 'linkRow' -- src/components/ServiceTile.module.css
+src/components/ServiceTile.module.css:112:.linkRow {
+src/components/ServiceTile.module.css:124:.stateDefault .linkRow {
+src/components/ServiceTile.module.css:128:.stateFeatured .linkRow,
+src/components/ServiceTile.module.css:129:.tile:hover .linkRow,
+src/components/ServiceTile.module.css:130:.tile:focus-within .linkRow {
+src/components/ServiceTile.module.css:134:.linkRow:focus-visible {
+src/components/ServiceTile.module.css:158:  .linkRow {
+src/components/ServiceTile.module.css:167:  .linkRow,
+
+$ git grep -n -e 'shouldSkipIntroSplash' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:30:export function shouldSkipIntroSplash(win: Window | undefined): boolean {
+src/components/IntroSplash.tsx:115:    if (shouldSkipIntroSplash(window)) {
+
+$ git grep -n -e 'markIntroSplashSeen' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:59:export function markIntroSplashSeen(win: Window | undefined): void {
+src/components/IntroSplash.tsx:106:      markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:119:    markIntroSplashSeen(window)
+
+$ git grep -n -e 'IntroSplash' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:8:import styles from './IntroSplash.module.css'
+src/components/IntroSplash.tsx:15:export type IntroSplashPhase = 'hidden' | 'start' | 'reveal' | 'exiting'
+src/components/IntroSplash.tsx:17:export interface IntroSplashProps {
+src/components/IntroSplash.tsx:30:export function shouldSkipIntroSplash(win: Window | undefined): boolean {
+src/components/IntroSplash.tsx:59:export function markIntroSplashSeen(win: Window | undefined): void {
+src/components/IntroSplash.tsx:80:export function IntroSplash({
+src/components/IntroSplash.tsx:86:}: IntroSplashProps): ReactElement | null {
+src/components/IntroSplash.tsx:88:  const [phase, setPhase] = useState<IntroSplashPhase>(() => (forceState ? forceState : 'hidden'))
+src/components/IntroSplash.tsx:106:      markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:115:    if (shouldSkipIntroSplash(window)) {
+src/components/IntroSplash.tsx:119:    markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:159:  const effectivePhase: IntroSplashPhase = forceState ?? phase
+
+$ git grep -n -e 'overlay' -- src/components/IntroSplash.module.css
+src/components/IntroSplash.module.css:1:.overlay {
+src/components/IntroSplash.module.css:19:.overlayExiting {
+src/components/IntroSplash.module.css:166:  .overlay {
+
+$ git grep -n -e 'HomeScrollHintButton' -- src/components/HomeScrollHintButton.tsx
+src/components/HomeScrollHintButton.tsx:7:export interface HomeScrollHintButtonProps {
+src/components/HomeScrollHintButton.tsx:15:export function HomeScrollHintButton({
+src/components/HomeScrollHintButton.tsx:21:}: HomeScrollHintButtonProps): ReactElement {
+
+$ git grep -n -e 'normalizeLocalMediaUrl' -- src/components/media-utils.ts
+src/components/media-utils.ts:16:export function normalizeLocalMediaUrl(rawUrl: string): string {
+src/components/media-utils.ts:45:  const url = normalizeLocalMediaUrl(sizeEntry?.url ?? media.url ?? '')

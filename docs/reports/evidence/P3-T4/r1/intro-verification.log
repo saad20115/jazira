@@ -1,0 +1,17 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r1-20261024-102140
+$ git rev-parse HEAD
+b4341dee50f79c929cd47eb33246adf980074d20
+
+=== Intro Splash Verification (28:1609 -> 28:1615, CTO decision §3) ===
+{
+  "startVisible": true,
+  "revealStateAttr": "reveal",
+  "h1RenderedDuringIntro": true,
+  "totalElapsedMs": 1387,
+  "storageAfterFirstLoad": "1",
+  "visibleOnSecondVisit": false,
+  "visibleBeforeEscape": true,
+  "visibleAfterEscape": false,
+  "visibleWithReducedMotion": false
+}

@@ -1,0 +1,17 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r1-20261024-102140
+$ git rev-parse HEAD
+b4341dee50f79c929cd47eb33246adf980074d20
+
+=== R-17 & R-19 TeamCard Enter 2 Clipping & Shadow Fade Audit ===
+{
+  "found": true,
+  "cardWidth": 264,
+  "cardHeight": 340,
+  "clipFrameOverflow": "hidden",
+  "clipFrameBorderRadius": "18px",
+  "contentTransform": "matrix(1, 0, 0, 1, 0, 21)",
+  "beforeBoxShadow": "rgba(1, 16, 37, 0.12) 0px 14px 32px 0px",
+  "beforeOpacity": "1",
+  "afterOpacity": "0"
+}

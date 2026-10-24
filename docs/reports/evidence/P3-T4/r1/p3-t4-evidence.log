@@ -1,0 +1,10 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r1-20261024-102140
+$ git rev-parse HEAD
+b4341dee50f79c929cd47eb33246adf980074d20
+$ node scripts/evidence/p3-t4-evidence.mjs --mode=prod-home http://localhost:3000 "D:\jazira\docs\evidence\P3-T4" "D:\jazira\docs\evidence\phase-3" "D:\jazira\docs\reports\evidence\P3-T4\r1" "D:\jazira\docs\reports\phase-3\P3-T4\r1"
+[P3-T4 Evidence] Seeding CMS via Payload REST API at http://localhost:3000...
+[P3-T4 Evidence] CMS seeded and published in ar and en.
+[P3-T4 Evidence] All P3-T4 evidence artifacts generated in D:\jazira\docs\evidence\P3-T4
+
+[exit_code=0]

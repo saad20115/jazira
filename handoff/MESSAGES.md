@@ -1602,3 +1602,26 @@ Thank you for accepting `P3-T3` (Round 3) and `P3-T2` (Round 4). Set `P3-T4` to 
    - **`R-20` (from `P3-T1` review)**: Extracting `buildCollectionTags` and `buildGlobalTags` into one pure shared module (`src/lib/cms/tags.ts`) imported by both `src/hooks/revalidate.ts` and `src/lib/cms/client.ts`, with unit tests across all collection and global slugs.
    - **`R-27`**: Ensuring every interactive/locale/CTA control on the Home page is `>= 44×44px` at `390px`.
 3. Proceeding immediately to `P3-T4 §0` and then the full Home page + Intro splash (`handoff/tasks/P3-T4.md`).
+
+
+
+### M-133 · 2026-10-24 10:48 · Executor → CTO · `P3-T4` Round 1 submitted (`IN_REVIEW | 1`, fresh-clone code `HEAD` `b4341dee50f79c929cd47eb33246adf980074d20`)
+`P3-T4` (`Home page + intro splash`, including `§0` items `R-17`..`R-20`, `R-25`..`R-27`) is complete and submitted for review on `phase-3-frontend` (fresh-clone code `HEAD` `b4341dee50f79c929cd47eb33246adf980074d20`, report `handoff/reports/P3-T4.md`, evidence logs in `docs/reports/evidence/P3-T4/r1/`, screenshots & `.webm` videos in `docs/reports/phase-3/P3-T4/r1/`):
+
+1. **`§0` Items (`R-17`..`R-20`, `R-25`..`R-27`)**:
+   - **`R-25` & `R-26`**: Fixed in commit `9c2b048`.
+   - **`R-17` & `R-19`**: Added `.clipFrame` (`overflow: hidden; border-radius: var(--radius-3xl)`) inside `TeamCard` (`src/components/TeamCard.tsx:60`, `src/components/TeamCard.module.css:51`) and moved resting border/shadow onto `.card::before` (`opacity: 1` -> `0` on hover while `.card::after` fades `0` -> `1`), verified in `docs/reports/evidence/P3-T4/r1/r17-r19-team-card.log` and `docs/reports/phase-3/P3-T4/r1/team-card-enter-2-{en,ar}.png`.
+   - **`R-18`**: Added real Chromium DOM test in `src/p3-t3-components.test.ts` (lines 559–824) asserting CSSOM `--index` `setProperty` and `calc()` track/thumb geometry (`trackDeltaPx: -310` on next click, `trackDeltaPx: -2480` & `thumbLeftPx: 516` on `End`).
+   - **`R-20`**: De-duplicated `buildCollectionTags` (`src/lib/cms/tags.ts:9`) and `buildGlobalTags` (`src/lib/cms/tags.ts:35`) into `src/lib/cms/tags.ts` with parity test in `src/hooks/revalidate.test.ts` (lines 71–115).
+   - **`R-27`**: Verified all 35 interactive controls on `/ar` and 35 on `/en` at `390×844` are `>= 44×44px` (`undersized controls (< 44x44px): 0` in `docs/reports/evidence/P3-T4/r1/r27-touch-targets-390.log`).
+
+2. **Home Page + Intro Splash (`handoff/tasks/P3-T4.md`)**:
+   - Built all 8 sections in `LocaleHomePage` (`src/app/(frontend)/[locale]/page.tsx:360`) + `IntroSplash` (`src/components/IntroSplash.tsx:80`) + `generateMetadata` (`src/app/(frontend)/[locale]/page.tsx:309`).
+   - Verified on `pnpm start` (`next start`) with zero event filtering:
+     - `docs/reports/evidence/P3-T4/r1/runtime-csp-cls.log`: `consoleErrors: 0`, `pageErrors: 0`, `hydrationWarnings: 0`, `cspViolations: 0`, `maxCls: 0.00537`.
+     - `docs/reports/evidence/P3-T4/r1/intro-verification.log`: `startVisible: true`, `revealStateAttr: "reveal"`, `h1RenderedDuringIntro: true`, `totalElapsedMs: 1387`, `storageAfterFirstLoad: "1"`, `visibleOnSecondVisit: false`, `visibleBeforeEscape: true`, `visibleAfterEscape: false`, `visibleWithReducedMotion: false`.
+     - `docs/reports/evidence/P3-T4/r1/cms-live-roundtrip.log`: `draftLeakedToAnon: false`, `publishedTitleVisible: true`, `partnersSectionHiddenWhenDisabled: true`, `partnersSectionRestored: true`.
+     - `docs/reports/evidence/P3-T4/r1/test.log`: `Test Files 42 passed (42)`, `Tests 267 passed (267)`.
+     - `docs/reports/evidence/P3-T4/r1/citations-check.log`: `Verified 21 paired citation(s) ... (0 un-paired citations, 0 errors)`.
+
+Watching `handoff/MESSAGES.md` for your review of `P3-T4` Round 1 and confirmation on the next task (`P2-T7` vs `P4-T1`/`P4-T2` vs `P3-T6`).
