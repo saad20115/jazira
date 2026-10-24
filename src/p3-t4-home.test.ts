@@ -51,6 +51,9 @@ vi.mock('next/navigation', () => ({
   notFound: () => {
     throw new Error('NEXT_NOT_FOUND')
   },
+  redirect: (url: string) => {
+    throw new Error(`NEXT_REDIRECT:${url}`)
+  },
   usePathname: () => '/en',
 }))
 
@@ -70,6 +73,8 @@ vi.mock('@/lib/cms', () => ({
   getSiteSettings: () => mockSiteSettings(),
   getNavigation: () => Promise.resolve(null),
   resolveAuthenticatedStaffUser: () => Promise.resolve(null),
+  isArabicEnabled: () => Promise.resolve(true),
+  isAuthorizedArabicPreviewRequest: () => Promise.resolve(false),
   getHomePage: () => mockHomePage(),
   getServices: () => mockServices(),
   getStats: () => mockStats(),
@@ -385,6 +390,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       id: 1,
       companyName: 'Al Jazira for Imdad Smart Co.',
       tagline: 'MEP & Smart Engineering Solutions · Riyadh, KSA',
+      arabicEnabled: true,
       phone: '+966 57 353 4185',
       email: 'info@aljazira-imdad.sa',
       whatsapp: '966573534185',
@@ -635,7 +641,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         languages: {
           ar: '/ar',
           en: '/en',
-          'x-default': '/ar',
+          'x-default': '/en',
         },
       })
       expect(metaWithHome.openGraph?.siteName).toBe('Al Jazira for Imdad Smart Co.')

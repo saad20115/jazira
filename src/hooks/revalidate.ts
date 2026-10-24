@@ -39,7 +39,7 @@ export function isOutsideNextRuntimeError(err: unknown): boolean {
 
 export function safeRevalidateTag(tag: string, logger?: MinimalLogger): void {
   try {
-    revalidateTag(tag, 'max')
+    revalidateTag(tag, { expire: 0 })
   } catch (err) {
     if (!isOutsideNextRuntimeError(err)) {
       logger?.warn?.({ err, tag }, 'revalidateTag failed; continuing without throwing')
@@ -714,6 +714,7 @@ export interface RevalidateGlobalHookOptions {
   globalSlug?: string
   layoutPaths?: readonly string[]
   localizedPaths?: readonly string[]
+  rootPaths?: readonly string[]
 }
 
 export function createRevalidateGlobalAfterChangeHook(
@@ -767,6 +768,12 @@ export function createRevalidateGlobalAfterChangeHook(
             const normalizedRel = rel === '/' ? '' : rel.startsWith('/') ? rel : `/${rel}`
             safeRevalidatePath(`/${locale}${normalizedRel}`, 'layout', logger)
           }
+        }
+      }
+
+      if (options.rootPaths) {
+        for (const rootPath of options.rootPaths) {
+          safeRevalidatePath(rootPath, undefined, logger)
         }
       }
     } catch (err) {

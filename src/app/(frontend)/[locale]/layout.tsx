@@ -2,6 +2,7 @@ import '@/styles/globals.css'
 
 import type { Metadata } from 'next'
 import { draftMode, headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 import type React from 'react'
 
 import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
@@ -9,13 +10,21 @@ import { INTRO_PREPAINT_INLINE_SCRIPT } from '@/components/IntroSplash'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
 import {
+  buildHreflangAlternates,
   DEFAULT_LOCALE,
   getDictionary,
   getLocaleDirection,
   isSupportedLocale,
+  switchLocaleInPathname,
   type SupportedLocale,
 } from '@/i18n'
-import { getNavigation, getSiteSettings, resolveAuthenticatedStaffUser } from '@/lib/cms'
+import {
+  getNavigation,
+  getSiteSettings,
+  isArabicEnabled,
+  isAuthorizedArabicPreviewRequest,
+  resolveAuthenticatedStaffUser,
+} from '@/lib/cms'
 import type { Navigation, SiteSetting } from '@/payload-types'
 import { preloadLocaleFonts } from '@/styles/font-preload'
 import { fontVariablesClassName, getLocaleFontClassName } from '@/styles/fonts'
@@ -24,6 +33,65 @@ import gridStyles from '@/styles/grid.module.css'
 interface LocaleLayoutProps {
   children: React.ReactNode
   params: Promise<{ locale: string }>
+}
+
+export function buildEnglishRedirectTarget(pathname: string, search = ''): string {
+  const cleanPath = pathname.trim() || '/ar'
+  const switchedPath = switchLocaleInPathname(cleanPath, 'en')
+  if (!search) {
+    return switchedPath
+  }
+  const normalizedSearch = search.startsWith('?') ? search : `?${search}`
+  return `${switchedPath}${normalizedSearch}`
+}
+
+export async function enforceArabicEnabledOrRedirect(
+  requestHeaders: { get(name: string): string | null | undefined },
+  activePathname: string,
+  activeSearch = '',
+): Promise<void> {
+  let arabicEnabled = false
+  try {
+    arabicEnabled = await isArabicEnabled()
+  } catch {
+    arabicEnabled = false
+  }
+  if (arabicEnabled) {
+    return
+  }
+
+  let isDraftMode = false
+  try {
+    const dm = await draftMode()
+    isDraftMode = dm.isEnabled
+  } catch {
+    isDraftMode = false
+  }
+
+  const canPreview = await isAuthorizedArabicPreviewRequest(
+    requestHeaders,
+    isDraftMode,
+    activeSearch,
+  )
+  if (!canPreview) {
+    redirect(buildEnglishRedirectTarget(activePathname, activeSearch))
+  }
+}
+
+function buildOrganizationJsonLd(
+  siteSettings: SiteSetting | null,
+  locale: SupportedLocale,
+  arabicEnabled: boolean,
+): string {
+  const effectiveLocale: SupportedLocale = locale === 'ar' && arabicEnabled ? 'ar' : 'en'
+  const baseUrl = resolveMetadataBaseUrl().origin.replace(/\/+$/, '')
+  return JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: siteSettings?.companyName || 'Al Jazira for Imdad Smart Co.',
+    url: `${baseUrl}/${effectiveLocale}`,
+    inLanguage: effectiveLocale,
+  })
 }
 
 function resolveMetadataBaseUrl(): URL {
@@ -72,6 +140,8 @@ export async function generateMetadata({
 
   try {
     const siteSettings = await getSiteSettings(locale)
+    const arabicEnabled = siteSettings.arabicEnabled === true
+    const effectiveLocale: SupportedLocale = locale === 'ar' && arabicEnabled ? 'ar' : 'en'
     const companyName = siteSettings.companyName || ''
     const defaultTitle = siteSettings.defaultSeo?.title || companyName
     const defaultDescription = siteSettings.defaultSeo?.description || siteSettings.tagline || ''
@@ -89,18 +159,14 @@ export async function generateMetadata({
         icon: '/icon.svg',
       },
       alternates: {
-        canonical: `/${locale}`,
-        languages: {
-          ar: '/ar',
-          en: '/en',
-          'x-default': '/ar',
-        },
+        canonical: `/${effectiveLocale}`,
+        languages: buildHreflangAlternates('/', arabicEnabled),
       },
       openGraph: {
         title: defaultTitle || undefined,
         description: defaultDescription || undefined,
         siteName: companyName || undefined,
-        locale: locale === 'ar' ? 'ar_SA' : 'en_US',
+        locale: effectiveLocale === 'ar' ? 'ar_SA' : 'en_US',
         type: 'website',
       },
     }
@@ -111,12 +177,8 @@ export async function generateMetadata({
         icon: '/icon.svg',
       },
       alternates: {
-        canonical: `/${locale}`,
-        languages: {
-          ar: '/ar',
-          en: '/en',
-          'x-default': '/ar',
-        },
+        canonical: '/en',
+        languages: buildHreflangAlternates('/', false),
       },
     }
   }
@@ -125,10 +187,12 @@ export async function generateMetadata({
 async function LocaleShellHeader({
   locale,
   activePathname,
+  cspNonce,
   isDevSpecimenOrStyleguide,
 }: {
   locale: SupportedLocale
   activePathname: string
+  cspNonce?: string | undefined
   isDevSpecimenOrStyleguide: boolean
 }): Promise<React.JSX.Element | null> {
   const dict = getDictionary(locale)
@@ -144,6 +208,7 @@ async function LocaleShellHeader({
     isDraftMode && Boolean(await resolveAuthenticatedStaffUser(requestHeaders))
 
   const { siteSettings, navigation } = shellGlobals
+  const arabicEnabled = Boolean(siteSettings?.arabicEnabled)
 
   const headerNavItems: NavbarNavItem[] | undefined =
     navigation?.header && navigation.header.length > 0
@@ -156,6 +221,13 @@ async function LocaleShellHeader({
 
   return (
     <>
+      <script
+        nonce={cspNonce}
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: buildOrganizationJsonLd(siteSettings, locale, arabicEnabled),
+        }}
+      />
       {isStaffDraftPreview ? (
         <aside className={`${gridStyles.draftBanner} t-body-s-medium`}>
           <span>{dict.draftMode.bannerText}</span>
@@ -173,6 +245,7 @@ async function LocaleShellHeader({
           ctaLink={navigation?.headerCta?.label ? navigation.headerCta.link : undefined}
           items={headerNavItems}
           locale={locale}
+          showLanguageSwitcher={arabicEnabled}
           siteName={siteSettings?.companyName}
         />
       ) : null}
@@ -194,6 +267,7 @@ async function LocaleShellFooter({
   }
 
   const { siteSettings, navigation } = await loadShellGlobals(locale)
+  const arabicEnabled = Boolean(siteSettings?.arabicEnabled)
 
   const footerColumns: FooterColumnItem[] | undefined =
     navigation?.footer && navigation.footer.length > 0
@@ -235,6 +309,7 @@ async function LocaleShellFooter({
         footerColumns={footerColumns}
         locale={locale}
         phones={siteSettings?.phone ? [siteSettings.phone] : undefined}
+        showLanguageSwitcher={arabicEnabled}
         siteName={siteSettings?.companyName}
         socialLinks={socialLinks}
         whatsapp={siteSettings?.whatsapp}
@@ -264,7 +339,12 @@ export default async function LocaleRootLayout({
   // `notFound()` throws in child pages never abort `<html lang={resolvedLocale} dir={dir}>` (`R-7`).
   const requestHeaders = await headers()
   const activePathname = requestHeaders.get('x-aljazira-pathname') || `/${resolvedLocale}`
+  const activeSearch = requestHeaders.get('x-aljazira-search') || ''
   const cspNonce = requestHeaders.get('x-nonce') || undefined
+
+  if (resolvedLocale === 'ar') {
+    await enforceArabicEnabledOrRedirect(requestHeaders, activePathname, activeSearch)
+  }
 
   const isDevSpecimenOrStyleguide =
     activePathname.endsWith('/_specimen') || activePathname.endsWith('/styleguide')
@@ -273,6 +353,20 @@ export default async function LocaleRootLayout({
   const htmlFontClass = isDevSpecimenOrStyleguide
     ? fontVariablesClassName
     : getLocaleFontClassName(resolvedLocale)
+
+  const [headerNode, footerNode] = await Promise.all([
+    LocaleShellHeader({
+      locale: resolvedLocale,
+      activePathname,
+      cspNonce,
+      isDevSpecimenOrStyleguide,
+    }),
+    LocaleShellFooter({
+      locale: resolvedLocale,
+      activePathname,
+      isDevSpecimenOrStyleguide,
+    }),
+  ])
 
   return (
     <html lang={resolvedLocale} dir={dir} className={htmlFontClass} suppressHydrationWarning>
@@ -296,19 +390,11 @@ export default async function LocaleRootLayout({
         <a href="#main-content" className={`${gridStyles.skipLink} t-label-button`}>
           {dict.a11y.skipToMainContent}
         </a>
-        <LocaleShellHeader
-          locale={resolvedLocale}
-          activePathname={activePathname}
-          isDevSpecimenOrStyleguide={isDevSpecimenOrStyleguide}
-        />
+        {headerNode}
         <main id="main-content" tabIndex={-1}>
           {children}
         </main>
-        <LocaleShellFooter
-          locale={resolvedLocale}
-          activePathname={activePathname}
-          isDevSpecimenOrStyleguide={isDevSpecimenOrStyleguide}
-        />
+        {footerNode}
       </body>
     </html>
   )

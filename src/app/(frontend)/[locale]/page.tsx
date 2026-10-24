@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type React from 'react'
 
@@ -13,7 +14,13 @@ import { LogoMarquee } from '@/components/LogoMarquee'
 import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-utils'
 import { ProjectCard } from '@/components/ProjectCard'
 import { ServicesCarousel } from '@/components/ServicesCarousel'
-import { DEFAULT_LOCALE, getDictionary, isSupportedLocale } from '@/i18n'
+import {
+  buildHreflangAlternates,
+  DEFAULT_LOCALE,
+  getDictionary,
+  isSupportedLocale,
+  type SupportedLocale,
+} from '@/i18n'
 import {
   getBrands,
   getHomePage,
@@ -26,6 +33,7 @@ import { type CmsLinkDataLike, resolveSafeCmsLinkData } from '@/lib/link-safety'
 import type { HomePage, Project, Stat, Video } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
+import { enforceArabicEnabledOrRedirect } from './layout'
 import styles from './page.module.css'
 
 interface LocaleHomePageProps {
@@ -273,6 +281,8 @@ export async function generateMetadata({ params }: LocaleHomePageProps): Promise
     getSiteSettings(locale).catch(() => null),
     getHomePage(locale).catch(() => null),
   ])
+  const arabicEnabled = siteSettings?.arabicEnabled === true
+  const effectiveLocale: SupportedLocale = locale === 'ar' && arabicEnabled ? 'ar' : 'en'
   const siteName = siteSettings?.companyName || undefined
   const title = homePage?.meta?.title || siteSettings?.defaultSeo?.title || siteName || undefined
   const description =
@@ -288,19 +298,15 @@ export async function generateMetadata({ params }: LocaleHomePageProps): Promise
     ...(title ? { title: { absolute: title } } : {}),
     ...(description ? { description } : {}),
     alternates: {
-      canonical: `/${locale}`,
-      languages: {
-        ar: '/ar',
-        en: '/en',
-        'x-default': '/ar',
-      },
+      canonical: `/${effectiveLocale}`,
+      languages: buildHreflangAlternates('/', arabicEnabled),
     },
     openGraph: {
       ...(title ? { title } : {}),
       ...(description ? { description } : {}),
       ...(siteName ? { siteName } : {}),
-      url: `/${locale}`,
-      locale: locale === 'ar' ? 'ar_SA' : 'en_US',
+      url: `/${effectiveLocale}`,
+      locale: effectiveLocale === 'ar' ? 'ar_SA' : 'en_US',
       type: 'website',
       ...(ogImageAsset
         ? {
@@ -324,6 +330,13 @@ export default async function LocaleHomePage({
   const { locale } = await params
   if (!isSupportedLocale(locale)) {
     notFound()
+  }
+
+  if (locale === 'ar') {
+    const requestHeaders = await headers()
+    const activePathname = requestHeaders.get('x-aljazira-pathname') || '/ar'
+    const activeSearch = requestHeaders.get('x-aljazira-search') || ''
+    await enforceArabicEnabledOrRedirect(requestHeaders, activePathname, activeSearch)
   }
 
   const dict = getDictionary(locale)

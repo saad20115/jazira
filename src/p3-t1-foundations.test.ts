@@ -191,7 +191,7 @@ describe('P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, 
 
 describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/no-jsx-string-literals', () => {
   it('validates supported locales, RTL/LTR directions, alternate locales, and identical dictionary key trees', () => {
-    expect(DEFAULT_LOCALE).toBe('ar')
+    expect(DEFAULT_LOCALE).toBe('en')
     expect(isSupportedLocale('ar')).toBe(true)
     expect(isSupportedLocale('en')).toBe(true)
     expect(isSupportedLocale('fr')).toBe(false)
@@ -279,12 +279,12 @@ describe('P3-T1 Scope 4 — i18n dictionaries, routing helpers, and local-rules/
 })
 
 describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', () => {
-  it('redirects / -> 308 Permanent Redirect to /ar with strict public CSP header', () => {
+  it('redirects / -> 308 Permanent Redirect to /en with strict public CSP header', () => {
     const req = new NextRequest('http://localhost:3000/?utm=test')
     const res = proxy(req)
 
     expect(res.status).toBe(308)
-    expect(res.headers.get('location')).toBe('http://localhost:3000/ar?utm=test')
+    expect(res.headers.get('location')).toBe('http://localhost:3000/en?utm=test')
     const csp = res.headers.get('Content-Security-Policy') ?? ''
     expect(csp).toContain("default-src 'self'")
     expect(csp).toContain("'strict-dynamic'")
@@ -318,7 +318,7 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     expect(innerPageCsp).not.toContain("'unsafe-inline'")
   })
 
-  it('scopes relaxed Admin CSP strictly to /admin and preserves payload-lng=ar default cookie', () => {
+  it('scopes relaxed Admin CSP strictly to /admin and preserves payload-lng=en default cookie', () => {
     expect(isAdminRoutePath('/admin')).toBe(true)
     expect(isAdminRoutePath('/admin/collections/projects')).toBe(true)
     expect(isAdminRoutePath('/ar/admin')).toBe(false)
@@ -330,16 +330,16 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     const adminReq = new NextRequest('http://localhost:3000/admin/login')
     const adminRes = proxy(adminReq)
     expect(adminRes.headers.get('Content-Security-Policy')).toBe(adminCsp)
-    expect(adminRes.cookies.get('payload-lng')?.value).toBe('ar')
+    expect(adminRes.cookies.get('payload-lng')?.value).toBe('en')
 
     expect(resolveLocaleFromPathname('/en/about')).toBe('en')
     expect(resolveLocaleFromPathname('/ar/services')).toBe('ar')
-    expect(resolveLocaleFromPathname('/fr')).toBe('ar')
+    expect(resolveLocaleFromPathname('/fr')).toBe('en')
 
-    // R-7: Unknown locale prefix (/fr) rewrites to /ar/__not_found__ so global-not-found renders <html lang="ar" dir="rtl">
+    // R-7: Unknown locale prefix (/fr) rewrites to /en/__not_found__ so global-not-found renders <html lang="en" dir="ltr">
     const frReq = new NextRequest('http://localhost:3000/fr')
     const frRes = proxy(frReq)
-    expect(frRes.headers.get('x-middleware-rewrite')).toBe('http://localhost:3000/ar/__not_found__')
+    expect(frRes.headers.get('x-middleware-rewrite')).toBe('http://localhost:3000/en/__not_found__')
     expect(frRes.headers.get('Content-Security-Policy')).toContain("default-src 'self'")
 
     // R-12: /robots.txt, /sitemap.xml, /favicon.ico, /.well-known/*, public asset folders, and root-level 3D transcoder/decoder files are NOT rewritten to /__not_found__
@@ -382,7 +382,7 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
       const nrReq = new NextRequest(`http://localhost:3000${nonRoutePath}`)
       const nrRes = proxy(nrReq)
       expect(nrRes.headers.get('x-middleware-rewrite')).toBe(
-        'http://localhost:3000/ar/__not_found__',
+        'http://localhost:3000/en/__not_found__',
       )
     }
 

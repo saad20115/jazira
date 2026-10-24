@@ -63,6 +63,16 @@ export async function getSiteSettings(locale: SupportedLocale): Promise<SiteSett
   return getCachedOrDraftGlobal('site-settings', locale, [], 2)
 }
 
+/**
+ * Reads `site-settings.arabicEnabled` through the cached, tagged `site-settings` global
+ * (`global:site-settings`) so it never executes a per-request DB query and updates
+ * immediately when `site-settings` is saved (`handoff/tasks/P3-T12.md` §2–§5).
+ */
+export async function isArabicEnabled(): Promise<boolean> {
+  const settings = await getSiteSettings('en')
+  return settings.arabicEnabled === true
+}
+
 export async function getNavigation(locale: SupportedLocale): Promise<Navigation> {
   return getCachedOrDraftGlobal('navigation', locale, [], 2)
 }

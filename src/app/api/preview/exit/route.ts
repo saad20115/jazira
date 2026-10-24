@@ -5,10 +5,10 @@ import { isValidInternalCmsPath } from '@/lib/link-safety'
 import { previewExitQuerySchema } from '@/lib/preview'
 
 /**
- * `GET /api/preview/exit` (`handoff/tasks/P3-T1.md` §7):
+ * `GET /api/preview/exit` (`handoff/tasks/P3-T1.md` §7, `handoff/tasks/P3-T12.md` §1):
  *
  * Disables Next.js `draftMode()` and redirects (`307`) back to the validated internal `returnTo` path
- * (defaulting to `/ar`).
+ * (defaulting to `/en`).
  */
 export async function GET(request: NextRequest): Promise<NextResponse> {
   const rawParams = Object.fromEntries(request.nextUrl.searchParams.entries())
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: 'Invalid exit-preview parameters.' }, { status: 400 })
   }
 
-  const candidate = parsed.data.returnTo ?? '/ar'
+  const candidate = parsed.data.returnTo ?? '/en'
   if (!isValidInternalCmsPath(candidate)) {
     return NextResponse.json({ error: 'Unsafe returnTo path.' }, { status: 400 })
   }

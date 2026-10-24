@@ -1203,6 +1203,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface SiteSetting {
   id: number;
   /**
+   * Show the Arabic version of the website to visitors
+   */
+  arabicEnabled?: boolean | null;
+  /**
    * Official company name in Arabic and English used across header, footer, and metadata.
    */
   companyName: string;
@@ -2046,6 +2050,7 @@ export interface PrivacyPage {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  arabicEnabled?: T;
   companyName?: T;
   tagline?: T;
   email?: T;

@@ -48,8 +48,8 @@ export default buildConfig({
     },
   },
   i18n: {
-    supportedLanguages: { ar, en },
-    fallbackLanguage: 'ar',
+    supportedLanguages: { en, ar },
+    fallbackLanguage: 'en',
   },
   localization: {
     locales: [
@@ -70,7 +70,7 @@ export default buildConfig({
         rtl: false,
       },
     ],
-    defaultLocale: 'ar',
+    defaultLocale: 'en',
     fallback: true,
   },
   collections: [

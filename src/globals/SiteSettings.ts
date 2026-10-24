@@ -1,6 +1,7 @@
 import type { Field, GlobalConfig } from 'payload'
 
 import { isAdmin } from '../access/isAdmin'
+import { isAdminFieldLevel } from '../access/isAdminFieldLevel'
 import { validateExternalUrl } from '../fields/link'
 import { createRevalidateGlobalAfterChangeHook } from '../hooks/revalidate'
 import {
@@ -31,6 +32,25 @@ const ALL_PUBLIC_LOCALIZED_PATHS = [
 ] as const
 
 const siteSettingsFields: Field[] = [
+  {
+    name: 'arabicEnabled',
+    type: 'checkbox',
+    defaultValue: false,
+    access: {
+      read: () => true,
+      update: isAdminFieldLevel,
+    },
+    label: {
+      ar: 'تفعيل النسخة العربية للموقع',
+      en: 'Enable Arabic Website',
+    },
+    admin: {
+      description: {
+        ar: 'إظهار النسخة العربية من الموقع للزوار.',
+        en: 'Show the Arabic version of the website to visitors',
+      },
+    },
+  },
   {
     name: 'companyName',
     type: 'text',
@@ -372,6 +392,7 @@ export const SiteSettings: GlobalConfig = {
         globalSlug: 'site-settings',
         localizedPaths: ALL_PUBLIC_LOCALIZED_PATHS,
         layoutPaths: ['/'],
+        rootPaths: ['/sitemap.xml'],
       }),
     ],
   },

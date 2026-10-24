@@ -26,6 +26,7 @@ export {
   type CmsPaginatedDocs,
   DEFAULT_CMS_QUERY_LIMIT,
   getFallbackLocale,
+  isAuthorizedArabicPreviewRequest,
   MAX_CMS_QUERY_LIMIT,
   resolveAuthenticatedStaffUser,
   resolvePublicDraftContext,
@@ -63,4 +64,5 @@ export {
   getProjectsPage,
   getServicesPage,
   getSiteSettings,
+  isArabicEnabled,
 } from './globals'

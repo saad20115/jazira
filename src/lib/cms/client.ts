@@ -305,6 +305,36 @@ export async function resolvePublicDraftFlag(): Promise<boolean> {
 }
 
 /**
+ * Returns `true` when the incoming request is an authenticated `admin` or `editor`
+ * previewing Arabic via Next.js `draftMode()` (`/api/preview`) or Payload Live Preview
+ * (`<iframe>` / `?livePreview=true` / `?preview=true`) (`handoff/tasks/P3-T12.md` §3).
+ */
+export async function isAuthorizedArabicPreviewRequest(
+  reqHeaders: { get(name: string): string | null | undefined },
+  isDraftModeEnabled: boolean,
+  search = '',
+): Promise<boolean> {
+  const cookieHeader = reqHeaders.get('cookie') ?? ''
+  const hasAuthCookieOrHeader =
+    Boolean(reqHeaders.get('authorization')) || cookieHeader.includes('payload-token=')
+  if (!hasAuthCookieOrHeader && !isDraftModeEnabled) {
+    return false
+  }
+  const secFetchDest = reqHeaders.get('sec-fetch-dest')
+  const referer = reqHeaders.get('referer') ?? ''
+  const isLivePreviewContext =
+    secFetchDest === 'iframe' ||
+    referer.includes('/admin') ||
+    search.includes('livePreview=true') ||
+    search.includes('preview=true')
+  if (!isDraftModeEnabled && !isLivePreviewContext) {
+    return false
+  }
+  const staffUser = await resolveAuthenticatedStaffUser(reqHeaders as Headers)
+  return Boolean(staffUser)
+}
+
+/**
  * Clamps a requested `limit` to `[1, MAX_CMS_QUERY_LIMIT]` (`1..100`) (`R-23`).
  */
 export function clampCmsQueryLimit(

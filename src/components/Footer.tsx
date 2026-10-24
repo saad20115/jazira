@@ -54,6 +54,7 @@ export interface FooterProps {
   privacyLink?: CmsLinkDataLike | null | undefined
   quickLinks?: readonly FooterQuickLinkItem[] | null | undefined
   quickLinksTitle?: string | null | undefined
+  showLanguageSwitcher?: boolean | undefined
   siteName?: string | null | undefined
   socialLinks?: readonly FooterSocialItem[] | null | undefined
   whatsapp?: string | null | undefined
@@ -154,6 +155,7 @@ export function Footer({
   currentPath,
   copyright,
   privacyLink,
+  showLanguageSwitcher = true,
   className,
 }: FooterProps): ReactElement {
   const dict = getDictionary(locale)
@@ -388,18 +390,20 @@ export function Footer({
                 {privacyLink?.label || dict.footer.privacyPolicy}
               </CmsLink>
             ) : null}
-            <CmsLink
-              aria-label={dict.nav.languageSwitcherAriaLabel}
-              className={styles.bottomLink}
-              data-testid="footer-language-switcher"
-              dir={alternateLocale === 'ar' ? 'rtl' : 'ltr'}
-              href={languageSwitchHref}
-              hrefLang={alternateLocale}
-              lang={alternateLocale}
-              locale={alternateLocale}
-            >
-              {dict.nav.languageSwitcherShort}
-            </CmsLink>
+            {showLanguageSwitcher ? (
+              <CmsLink
+                aria-label={dict.nav.languageSwitcherAriaLabel}
+                className={styles.bottomLink}
+                data-testid="footer-language-switcher"
+                dir={alternateLocale === 'ar' ? 'rtl' : 'ltr'}
+                href={languageSwitchHref}
+                hrefLang={alternateLocale}
+                lang={alternateLocale}
+                locale={alternateLocale}
+              >
+                {dict.nav.languageSwitcherShort}
+              </CmsLink>
+            ) : null}
           </div>
         </div>
       </div>

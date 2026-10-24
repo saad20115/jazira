@@ -163,6 +163,18 @@ describe('P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1)', 
       overrideAccess: true,
     })
     serviceId = createdService.id
+
+    await payload.update({
+      collection: 'services',
+      id: serviceId,
+      locale: 'en',
+      data: {
+        title: 'Integrated MEP Works',
+        shortDescription: 'Execution of all HVAC, electrical, and plumbing systems.',
+        _status: 'published',
+      },
+      overrideAccess: true,
+    })
   }, 120_000)
 
   afterAll(async () => {

@@ -45,6 +45,7 @@ export interface NavbarProps {
   locale: SupportedLocale
   page?: NavbarPage | undefined
   pathnameOverride?: string | undefined
+  showLanguageSwitcher?: boolean | undefined
   siteName?: string | null | undefined
   staticPreview?: boolean
   theme?: NavbarTheme | undefined
@@ -189,6 +190,7 @@ export function Navbar({
   ctaLink,
   siteName,
   pathnameOverride,
+  showLanguageSwitcher = true,
   staticPreview = false,
   defaultDrawerOpen = false,
   className,
@@ -352,16 +354,19 @@ export function Navbar({
         ) : null}
 
         <div className={styles.desktopActions}>
-          <CmsLink
-            aria-label={dict.nav.languageSwitcherAriaLabel}
-            className={styles.langSwitch}
-            href={languageSwitchHref}
-            hrefLang={getAlternateLocale(locale)}
-            lang={getAlternateLocale(locale)}
-            locale={getAlternateLocale(locale)}
-          >
-            {dict.nav.languageSwitcherShort}
-          </CmsLink>
+          {showLanguageSwitcher ? (
+            <CmsLink
+              aria-label={dict.nav.languageSwitcherAriaLabel}
+              className={styles.langSwitch}
+              data-testid="navbar-language-switcher"
+              href={languageSwitchHref}
+              hrefLang={getAlternateLocale(locale)}
+              lang={getAlternateLocale(locale)}
+              locale={getAlternateLocale(locale)}
+            >
+              {dict.nav.languageSwitcherShort}
+            </CmsLink>
+          ) : null}
 
           {hasCta ? (
             <Button
@@ -475,19 +480,22 @@ export function Navbar({
             ) : null}
 
             <div className={styles.drawerFooter}>
-              <CmsLink
-                aria-label={dict.nav.languageSwitcherAriaLabel}
-                className={styles.drawerLangSwitch}
-                href={languageSwitchHref}
-                hrefLang={getAlternateLocale(locale)}
-                lang={getAlternateLocale(locale)}
-                locale={getAlternateLocale(locale)}
-                onClick={() => {
-                  closeDrawer(false)
-                }}
-              >
-                {dict.nav.languageSwitcherLabel}
-              </CmsLink>
+              {showLanguageSwitcher ? (
+                <CmsLink
+                  aria-label={dict.nav.languageSwitcherAriaLabel}
+                  className={styles.drawerLangSwitch}
+                  data-testid="drawer-language-switcher"
+                  href={languageSwitchHref}
+                  hrefLang={getAlternateLocale(locale)}
+                  lang={getAlternateLocale(locale)}
+                  locale={getAlternateLocale(locale)}
+                  onClick={() => {
+                    closeDrawer(false)
+                  }}
+                >
+                  {dict.nav.languageSwitcherLabel}
+                </CmsLink>
+              ) : null}
 
               {hasCta ? (
                 <div

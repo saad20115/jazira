@@ -397,7 +397,7 @@ describe('P3-T1 Integration — Z6 data layer, R-23 pagination/limit caps, draft
     }
   })
 
-  it('R-12: /robots.txt, /sitemap.xml, /favicon.ico, /.well-known/*, and public assets pass through proxy without rewriting to /__not_found__', () => {
+  it('R-12: /robots.txt, /sitemap.xml, /favicon.ico, /.well-known/*, and public assets pass through proxy without rewriting to /__not_found__', async () => {
     const robotsCfg = robots()
     expect(robotsCfg.rules).toEqual({
       userAgent: '*',
@@ -405,11 +405,8 @@ describe('P3-T1 Integration — Z6 data layer, R-23 pagination/limit caps, draft
       disallow: ['/admin', '/api'],
     })
 
-    const sitemapEntries = sitemap()
-    expect(sitemapEntries.map((e) => e.url)).toEqual([
-      'http://localhost:3000/ar',
-      'http://localhost:3000/en',
-    ])
+    const sitemapEntries = await sitemap()
+    expect(sitemapEntries.map((e) => e.url)).toEqual(['http://localhost:3000/en'])
 
     expect(fs.existsSync(path.resolve(process.cwd(), 'public/favicon.ico'))).toBe(true)
     expect(fs.existsSync(path.resolve(process.cwd(), 'public/icon.svg'))).toBe(true)

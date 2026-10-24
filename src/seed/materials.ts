@@ -1200,12 +1200,12 @@ export async function seedMaterialsAndBrands(
   const brandsUnchanged = 0
 
   for (const plannedBrand of plan.brands) {
-    const createdAr = await payload.create({
+    const createdEn = await payload.create({
       collection: 'brands',
-      locale: 'ar',
+      locale: 'en',
       data: {
         name: plannedBrand.name,
-        origin: plannedBrand.originAr,
+        origin: plannedBrand.originEn,
         showInMarquee: plannedBrand.showInMarquee,
         order: plannedBrand.order,
       },
@@ -1214,13 +1214,13 @@ export async function seedMaterialsAndBrands(
       user: SEED_ADMIN_USER,
     })
 
-    if (plannedBrand.originEn !== plannedBrand.originAr) {
+    if (plannedBrand.originAr !== plannedBrand.originEn) {
       await payload.update({
         collection: 'brands',
-        id: createdAr.id,
-        locale: 'en',
+        id: createdEn.id,
+        locale: 'ar',
         data: {
-          origin: plannedBrand.originEn,
+          origin: plannedBrand.originAr,
         },
         context: { disableRevalidate: true },
         overrideAccess: false,
@@ -1228,7 +1228,7 @@ export async function seedMaterialsAndBrands(
       })
     }
 
-    brandIdByName.set(plannedBrand.name, createdAr.id)
+    brandIdByName.set(plannedBrand.name, createdEn.id)
     brandsCreated += 1
   }
 
@@ -1245,15 +1245,15 @@ export async function seedMaterialsAndBrands(
       return id
     })
 
-    const createdAr = await payload.create({
+    const createdEn = await payload.create({
       collection: 'materials',
-      locale: 'ar',
+      locale: 'en',
       data: {
         itemNo: plannedMat.itemNo,
         system: plannedMat.system,
-        description: plannedMat.descriptionAr,
+        description: plannedMat.descriptionEn,
         brands: brandIds,
-        notes: plannedMat.notesAr,
+        notes: plannedMat.notesEn,
       },
       context: { disableRevalidate: true },
       overrideAccess: false,
@@ -1262,11 +1262,11 @@ export async function seedMaterialsAndBrands(
 
     await payload.update({
       collection: 'materials',
-      id: createdAr.id,
-      locale: 'en',
+      id: createdEn.id,
+      locale: 'ar',
       data: {
-        description: plannedMat.descriptionEn,
-        notes: plannedMat.notesEn,
+        description: plannedMat.descriptionAr,
+        notes: plannedMat.notesAr,
       },
       context: { disableRevalidate: true },
       overrideAccess: false,

@@ -30,7 +30,7 @@ export function verifyPreviewSecret(candidate: string): boolean {
 export const previewQuerySchema = z
   .object({
     secret: z.string().min(16).max(256),
-    locale: z.enum(['ar', 'en']).optional().default('ar'),
+    locale: z.enum(['en', 'ar']).optional().default('en'),
     path: z.string().min(1).max(256).optional(),
     collection: z.enum(['services', 'projects']).optional(),
     global: z

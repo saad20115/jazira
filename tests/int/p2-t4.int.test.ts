@@ -449,6 +449,21 @@ describe('P2-T4 integration suite (projects)', () => {
     expect(createScheduledDraftRes.status).toBe(201)
     const scheduledId = (createScheduledDraftRes.data.doc as { id: number | string }).id
 
+    // Also populate English (defaultLocale) on the draft before scheduling publish
+    const updateScheduledDraftEnRes = await callJsonApi(
+      'PATCH',
+      `/api/projects/${String(scheduledId)}?locale=en`,
+      {
+        cookie: editorCookie,
+        body: {
+          title: 'Scheduled Supply Warehouses Project',
+          location: 'Jeddah',
+          _status: 'draft',
+        },
+      },
+    )
+    expect(updateScheduledDraftEnRes.status).toBe(200)
+
     // Queue a schedulePublish job 350ms in the future
     const waitUntil = new Date(Date.now() + 350)
     const scheduleInput: Record<string, unknown> = {

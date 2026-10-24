@@ -9,7 +9,7 @@ import { buildAdminCspHeader, buildPublicCspHeader, isAdminRoutePath } from './s
 
 const COOKIE_PREFIX = 'payload'
 const ADMIN_LANG_COOKIE = `${COOKIE_PREFIX}-lng`
-const DEFAULT_ADMIN_LANG = 'ar'
+export const DEFAULT_ADMIN_LANG = 'en'
 const ONE_YEAR_SECONDS = 60 * 60 * 24 * 365
 
 const PASSTHROUGH_EXACT_ROOT_PATHS = new Set([
@@ -104,8 +104,8 @@ export function isPassthroughRootOrPublicPath(pathname: string): boolean {
 }
 
 /**
- * Extracts the locale segment from a public pathname (`/ar/...` -> `'ar'`, `/en/...` -> `'en'`).
- * Defaults to `'ar'` (`DEFAULT_LOCALE`) when no valid locale prefix is present.
+ * Extracts the locale segment from a public pathname (`/en/...` -> `'en'`, `/ar/...` -> `'ar'`).
+ * Defaults to `'en'` (`DEFAULT_LOCALE`) when no valid locale prefix is present.
  */
 export function resolveLocaleFromPathname(pathname: string): SupportedLocale {
   const firstSegment = pathname.split('/').filter(Boolean)[0]
@@ -121,16 +121,17 @@ export function generateCspNonce(): string {
 
 /**
  * Next.js 16 proxy (`src/proxy.ts`, `docs/01-architecture.md` §3, `docs/03-security.md` H3 & H3a,
- * `handoff/tasks/P3-T1.md` §4 & §5, `R-12`):
+ * `handoff/tasks/P3-T1.md` §4 & §5, `handoff/tasks/P3-T12.md` §1, `R-12`):
  *
- * 1. Redirects `/` -> `308 Permanent Redirect` to `/ar` (preserving query parameters if any).
+ * 1. Redirects `/` -> `308 Permanent Redirect` to `/en` (preserving query parameters if any).
  * 2. Generates a fresh cryptographic nonce per request (`x-nonce`) and attaches the strict
  *    public Content-Security-Policy (`H3`, plus `H3a` on `/ar` and `/en` home only).
  * 3. Scopes the documented relaxed admin Content-Security-Policy strictly to `/admin` and
- *    `/admin/:path*`, while preserving the default Arabic (`payload-lng=ar`) admin UI cookie
- *    initialization from Phase 1 (`R-4`).
- * 4. Propagates `x-aljazira-locale` and `x-aljazira-pathname` on request headers so the
- *    `(frontend)` root layout renders `<html lang dir>` matching the active locale.
+ *    `/admin/:path*`, while setting the default English (`payload-lng=en`) admin UI cookie
+ *    when no user preference cookie is present (`P3-T12` §1).
+ * 4. Propagates `x-aljazira-locale`, `x-aljazira-pathname`, and `x-aljazira-search` on request
+ *    headers so the `(frontend)` root layout renders `<html lang dir>` matching the active locale
+ *    and redirects `/ar/*` -> `307 /en/*` when `site-settings.arabicEnabled` is `false`.
  * 5. Rewrites non-locale paths to `/${resolvedLocale}/__not_found__` ONLY when no route and
  *    no public file matches (`!isPassthroughRootOrPublicPath(pathname)`, `R-12`).
  */
@@ -174,12 +175,12 @@ export function proxy(request: NextRequest): NextResponse {
     return response
   }
 
-  // 2. Redirect `/` -> `308 Permanent Redirect` to `/ar`
+  // 2. Redirect `/` -> `308 Permanent Redirect` to `/en` (`DEFAULT_LOCALE`)
   if (pathname === '/') {
-    const redirectUrl = new URL(`/ar${search}`, request.url)
+    const redirectUrl = new URL(`/${DEFAULT_LOCALE}${search}`, request.url)
     const redirectCsp = buildPublicCspHeader({
       nonce,
-      pathname: '/ar',
+      pathname: `/${DEFAULT_LOCALE}`,
     })
     const redirectResponse = NextResponse.redirect(redirectUrl, 308)
     redirectResponse.headers.set('Content-Security-Policy', redirectCsp)
@@ -199,6 +200,7 @@ export function proxy(request: NextRequest): NextResponse {
   requestHeaders.set('x-nonce', nonce)
   requestHeaders.set('x-aljazira-locale', resolvedLocale)
   requestHeaders.set('x-aljazira-pathname', pathname)
+  requestHeaders.set('x-aljazira-search', search)
   requestHeaders.set('Content-Security-Policy', publicCsp)
 
   const isBlockedProdDevRoute =
