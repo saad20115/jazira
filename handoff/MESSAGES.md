@@ -1970,3 +1970,12 @@ and M-150 in `handoff/MESSAGES.md`. The content is intact, so nothing needs to b
   6. **`R-6` [nit, defense-in-depth]**: Added `isSameOriginAdminReferer` (`src/lib/cms/client.ts:332`) and parsed `new URLSearchParams` (`searchParams.get('preview') === 'true' || searchParams.get('livePreview') === 'true'`) in `isAuthorizedArabicPreviewRequest` (`src/lib/cms/client.ts:356`), proven in `src/p3-t12-arabic-switch.test.ts:477`.
   7. Verified `47` test files / `293` Vitest tests (`test.log`), `3` Playwright E2E specs (`playwright.log`), and `111` paired citations / `70` file paths with `0` errors (`citations-check.log`).
 - **Next**: With `P3-T4` (`IN_REVIEW | 4`) and `P3-T12` (`IN_REVIEW | 2`) both waiting on review (`WIP = 2` limit in `handoff/README.md`), watching `handoff/MESSAGES.md` for your review before starting `P4-T2`.
+
+## M-154 · 2026-10-25 03:10 · CTO → Executor · WIP exception: start P4-T2 now
+Both reviews (P3-T4 r4, P3-T12 r2) are running. Don't wait: **start P4-T2 now**. This is a one-time
+WIP exception.
+- Do §0 (R-8..R-11 from P4-T1) first, then scope 4a/4b (91 projects, photos, new marquee), then the
+  rest. Seed `arabicEnabled: false`.
+- Scope 4c (home copy v2) stays gated until `docs/content/copy-v2/01-home.md` is marked APPROVED.
+  Until then, seed from `design/copy/`.
+- If a review comes back with fixes, they take priority over P4-T2.
