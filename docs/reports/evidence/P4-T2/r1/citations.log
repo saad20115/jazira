@@ -1,0 +1,275 @@
+$ git grep -n -e 'normalizeBrandName' -- src/seed/materials.ts
+src/seed/materials.ts:624:export function normalizeBrandName(rawBrandToken: string): {
+src/seed/materials.ts:768:    const normBrand = normalizeBrandName(rawBrand).normalized.toLowerCase()
+src/seed/materials.ts:777:        const pNorm = normalizeBrandName(p.brandKey).normalized.toLowerCase()
+src/seed/materials.ts:916:      const brandNorm = normalizeBrandName(rawToken)
+
+$ git grep -n -e 'buildMaterialsSeedPlan' -- src/seed/materials.test.ts
+src/seed/materials.test.ts:7:  buildMaterialsSeedPlan,
+src/seed/materials.test.ts:264:    const plan = buildMaterialsSeedPlan(rawRows)
+
+$ git grep -n -e 'MATERIAL_ARABIC_DRAFT_MAP' -- src/seed/materials.ts
+src/seed/materials.ts:467:export const MATERIAL_ARABIC_DRAFT_MAP: Readonly<Record<number, string | undefined>> = {
+src/seed/materials.ts:895:      MATERIAL_ARABIC_DRAFT_MAP[row.no] ?? `${descResult.normalized} (مسودة)`
+
+$ git grep -n -e 'UNCERTAIN_MEP_BRAND_NOTES' -- src/seed/materials.ts
+src/seed/materials.ts:852:  const UNCERTAIN_MEP_BRAND_NOTES: Readonly<Record<number, string>> = {
+src/seed/materials.ts:1028:    } else if (UNCERTAIN_MEP_BRAND_NOTES[row.no]) {
+src/seed/materials.ts:1029:      const note = UNCERTAIN_MEP_BRAND_NOTES[row.no] ?? ''
+src/seed/materials.ts:1075:        isStructuralOrArch || UNCERTAIN_MEP_BRAND_NOTES[row.no] || uncertainDescTypo,
+
+$ git grep -n -e 'buildMaterialsSeedPlan' -- src/seed/materials.ts
+src/seed/materials.ts:808:export function buildMaterialsSeedPlan(
+src/seed/materials.ts:1210:  const plan = buildMaterialsSeedPlan(options?.rawRows)
+
+$ git grep -n -e 'formatSeedSummaryLines' -- src/seed/materials.ts
+src/seed/materials.ts:1347:export function formatSeedSummaryLines(summary: MaterialsSeedRunSummary): string[] {
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- tests/int/p4-t1.int.test.ts
+tests/int/p4-t1.int.test.ts:7:import { SEED_ADMIN_USER, seedMaterialsAndBrands } from '../../src/seed/materials'
+tests/int/p4-t1.int.test.ts:53:      seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:102:      seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:137:    const run1 = await seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:213:      seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:246:      seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:253:      seedMaterialsAndBrands(payload, {
+tests/int/p4-t1.int.test.ts:260:    const reseedRun = await seedMaterialsAndBrands(payload, {
+
+$ git grep -n -e 'getFallbackLocale' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:201:export function getFallbackLocale(locale: SupportedCmsLocale): SupportedCmsLocale | false {
+
+$ git grep -n -e 'cmsFind' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:21: * Maximum `limit` allowed on paginated `cmsFind` queries (`R-23`).
+src/lib/cms/client.ts:26: * Fetch limit used by `cmsFindAllSmallCollection` (`MAX_CMS_QUERY_LIMIT + 1 = 101`) so that
+src/lib/cms/client.ts:33: * Default `limit` applied when `limit` is omitted or invalid on `cmsFind` (`R-23`).
+src/lib/cms/client.ts:47: * named helper `cmsFindAllSmallCollection` (`R-23`).
+src/lib/cms/client.ts:60: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`, `R-23`).
+src/lib/cms/client.ts:64: *   `pagination: false` is only available via `cmsFindAllSmallCollection`.
+src/lib/cms/client.ts:81: * Explicit property whitelist for `cmsFindAllSmallCollection` (`R-11`, `R-23`).
+src/lib/cms/client.ts:99: * Options accepted by `cmsFind`.
+src/lib/cms/client.ts:105: * - `cmsFind` unconditionally sets `overrideAccess: false` and resolves `draft` from `draftMode()`.
+src/lib/cms/client.ts:126: * Options accepted by `cmsFindAllSmallCollection` (`R-23`).
+src/lib/cms/client.ts:478:export async function cmsFind<TSlug extends CmsCollectionSlug>(
+src/lib/cms/client.ts:496: * Checks whether a `cmsFindAllSmallCollection` result exceeded `MAX_CMS_QUERY_LIMIT` (`100`)
+src/lib/cms/client.ts:506:    const message = `[cmsFindAllSmallCollection] Collection "${collection}" has at least ${String(docCount)} documents, exceeding MAX_CMS_QUERY_LIMIT (${String(MAX_CMS_QUERY_LIMIT)}). Rendering the first ${String(MAX_CMS_QUERY_LIMIT)} documents (R-10, R-15, R-23).`
+src/lib/cms/client.ts:523:export async function cmsFindAllSmallCollection<TSlug extends SmallUnpaginatedCollectionSlug>(
+src/lib/cms/client.ts:563:export async function cmsFindByID<TSlug extends CmsCollectionSlug>(
+src/lib/cms/client.ts:589:export async function cmsFindGlobal<TSlug extends CmsGlobalSlug>(
+
+$ git grep -n -e 'cmsFindByID' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:60: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`, `R-23`).
+src/lib/cms/client.ts:563:export async function cmsFindByID<TSlug extends CmsCollectionSlug>(
+
+$ git grep -n -e 'cmsFindGlobal' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:60: * Explicit property whitelist for `cmsFind`, `cmsFindByID`, and `cmsFindGlobal` (`R-11`, `R-23`).
+src/lib/cms/client.ts:589:export async function cmsFindGlobal<TSlug extends CmsGlobalSlug>(
+
+$ git grep -n -e 'getFallbackLocale' -- src/p3-t12-arabic-switch.test.ts
+src/p3-t12-arabic-switch.test.ts:13:  getFallbackLocale,
+src/p3-t12-arabic-switch.test.ts:570:    it('never falls back from en to ar in getFallbackLocale, so empty en + filled ar produces 0 Arabic characters on /en (R-7)', async () => {
+src/p3-t12-arabic-switch.test.ts:571:      expect(getFallbackLocale('ar')).toBe('en')
+src/p3-t12-arabic-switch.test.ts:572:      expect(getFallbackLocale('en')).toBe(false)
+
+$ git grep -n -e 'setArabicEnabledViaApi' -- tests/e2e/p3-t12.e2e.spec.ts
+tests/e2e/p3-t12.e2e.spec.ts:3:import { ensureE2EAdminToken, setArabicEnabledViaApi } from './global-setup'
+tests/e2e/p3-t12.e2e.spec.ts:18:      await setArabicEnabledViaApi(baseURL, adminToken, true)
+tests/e2e/p3-t12.e2e.spec.ts:27:    await setArabicEnabledViaApi(baseURL, adminToken, false)
+
+$ git grep -n -e 'isAuthorizedArabicPreviewRequest' -- src/p3-t12-arabic-switch.test.ts
+src/p3-t12-arabic-switch.test.ts:14:  isAuthorizedArabicPreviewRequest,
+src/p3-t12-arabic-switch.test.ts:106:  isAuthorizedArabicPreviewRequest: (
+src/p3-t12-arabic-switch.test.ts:110:  ) => isAuthorizedArabicPreviewRequest(reqHeaders, isDraftModeEnabled, search),
+src/p3-t12-arabic-switch.test.ts:471:      // 1. Substring spoof ?preview=true_fake or ?not_preview=true must be rejected by real isAuthorizedArabicPreviewRequest -> redirects to /en
+src/p3-t12-arabic-switch.test.ts:479:        isAuthorizedArabicPreviewRequest(fakePreviewHeaders, false, '?preview=true_fake'),
+src/p3-t12-arabic-switch.test.ts:501:        isAuthorizedArabicPreviewRequest(crossOriginRefererHeaders, false, ''),
+src/p3-t12-arabic-switch.test.ts:520:        isAuthorizedArabicPreviewRequest(nonAdminRefererHeaders, false, ''),
+src/p3-t12-arabic-switch.test.ts:539:        isAuthorizedArabicPreviewRequest(validAdminRefererHeaders, false, ''),
+src/p3-t12-arabic-switch.test.ts:551:        isAuthorizedArabicPreviewRequest(exactPreviewHeaders, false, '?preview=true'),
+src/p3-t12-arabic-switch.test.ts:560:      // 6. Without payload-token cookie or authorization header when draftMode is off, real isAuthorizedArabicPreviewRequest returns false immediately
+src/p3-t12-arabic-switch.test.ts:566:        isAuthorizedArabicPreviewRequest(missingCookieHeaders, false, '?preview=true'),
+
+$ git grep -n -e 'maxRedirects' -- tests/e2e/p3-t12.e2e.spec.ts
+tests/e2e/p3-t12.e2e.spec.ts:30:    const rootRes = await request.get('/', { maxRedirects: 0 })
+tests/e2e/p3-t12.e2e.spec.ts:35:    const arRedirectRes = await request.get('/ar', { maxRedirects: 0 })
+tests/e2e/p3-t12.e2e.spec.ts:42:      maxRedirects: 0,
+tests/e2e/p3-t12.e2e.spec.ts:50:      maxRedirects: 5,
+
+$ git grep -n -e 'setTimeout' -- tests/e2e/p3-t12.e2e.spec.ts
+tests/e2e/p3-t12.e2e.spec.ts:6:  test.setTimeout(120_000)
+
+$ git grep -n -e 'resolveExpectedRequestOrigin' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:309:export function resolveExpectedRequestOrigin(): string {
+src/lib/cms/client.ts:328:    const expectedOrigin = resolveExpectedRequestOrigin()
+
+$ git grep -n -e 'effectiveCoverImage' -- src/collections/Projects.ts
+src/collections/Projects.ts:300:  const effectiveCoverImage = 'coverImage' in mutable ? mutable.coverImage : orig.coverImage
+src/collections/Projects.ts:301:  if (effectiveStatus === 'published' && !isNonEmptyInput(effectiveCoverImage)) {
+
+$ git grep -n -e 'coverImage' -- src/collections/Projects.ts
+src/collections/Projects.ts:292:  // Verify referenced coverImage exists when provided so invalid IDs fail with 400 instead of 500 FK error (R-6)
+src/collections/Projects.ts:293:  if ('coverImage' in mutable && isNonEmptyInput(mutable.coverImage)) {
+src/collections/Projects.ts:294:    await verifySingleMediaId(mutable.coverImage, 'coverImage', req)
+src/collections/Projects.ts:297:  // CTO 2026-10-24 (docs/02-content-model.md:217): coverImage is required only to publish (_status === 'published').
+src/collections/Projects.ts:300:  const effectiveCoverImage = 'coverImage' in mutable ? mutable.coverImage : orig.coverImage
+src/collections/Projects.ts:306:          path: 'coverImage',
+src/collections/Projects.ts:890:              name: 'coverImage',
+
+$ git grep -n -e 'isAdminOrEditorFieldLevel' -- src/collections/Projects.ts
+src/collections/Projects.ts:10:import { isAdminOrEditor, isAdminOrEditorFieldLevel } from '../access/isAdminOrEditor'
+src/collections/Projects.ts:1169:        read: isAdminOrEditorFieldLevel,
+src/collections/Projects.ts:1170:        create: isAdminOrEditorFieldLevel,
+src/collections/Projects.ts:1171:        update: isAdminOrEditorFieldLevel,
+
+$ git grep -n -e 'isAdminFieldLevel' -- src/collections/Projects.ts
+src/collections/Projects.ts:9:import { isAdminFieldLevel } from '../access/isAdminFieldLevel'
+src/collections/Projects.ts:1191:        read: isAdminFieldLevel,
+src/collections/Projects.ts:1192:        create: isAdminFieldLevel,
+src/collections/Projects.ts:1193:        update: isAdminFieldLevel,
+
+$ git grep -n -e 'editorProjects' -- tests/int/p4-t2.int.test.ts
+tests/int/p4-t2.int.test.ts:413:    const [editorProjects, adminProjects] = await Promise.all([
+tests/int/p4-t2.int.test.ts:431:    expect(editorProjects.docs.length).toBeGreaterThan(0)
+tests/int/p4-t2.int.test.ts:432:    const firstEditorProj = editorProjects.docs[0]
+
+$ git grep -n -e 'maxPixelWidth' -- src/components/ProjectCard.tsx
+src/components/ProjectCard.tsx:56:  const maxPixelWidth =
+src/components/ProjectCard.tsx:58:  const cardSizes = maxPixelWidth
+src/components/ProjectCard.tsx:59:    ? `(max-width: 767px) min(100vw, ${String(maxPixelWidth)}px), (max-width: 1279px) min(50vw, ${String(maxPixelWidth)}px), ${String(Math.min(370, maxPixelWidth))}px`
+
+$ git grep -n -e 'getTeamMembers' -- src/lib/cms/collections.ts
+src/lib/cms/collections.ts:343:export async function getTeamMembers(
+
+$ git grep -n -e 'mapImage' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:523:          mapImage: null,
+src/seed/p4-t2.ts:1261:        mapImage: null,
+
+$ git grep -n -e 'defaultSeo' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:525:        defaultSeo: {
+src/seed/p4-t2.ts:1268:      defaultSeo: {
+src/seed/p4-t2.ts:1297:      defaultSeo: {
+
+$ git grep -n -e 'footerCta' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:1346:      footerCta: {
+src/seed/p4-t2.ts:1391:      footerCta: {
+
+$ git grep -n -e 'SEED_STATS_5' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:215:export const SEED_STATS_5: readonly SeedStatSpec[] = [
+
+$ git grep -n -e 'SEED_SERVICES_10' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:272:export const SEED_SERVICES_10: readonly SeedServiceSpec[] = [
+
+$ git grep -n -e 'DEFAULT_INTERACTIVE_SYSTEMS_EN' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:10:  DEFAULT_INTERACTIVE_SYSTEMS_EN,
+src/seed/p4-t2.ts:555:      locale === 'ar' ? DEFAULT_INTERACTIVE_SYSTEMS_AR : DEFAULT_INTERACTIVE_SYSTEMS_EN
+src/seed/p4-t2.ts:1482:        systems: DEFAULT_INTERACTIVE_SYSTEMS_EN.map((item) => ({
+
+$ git grep -n -e 'DEFAULT_INTERACTIVE_SYSTEMS_AR' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:9:  DEFAULT_INTERACTIVE_SYSTEMS_AR,
+src/seed/p4-t2.ts:555:      locale === 'ar' ? DEFAULT_INTERACTIVE_SYSTEMS_AR : DEFAULT_INTERACTIVE_SYSTEMS_EN
+src/seed/p4-t2.ts:1599:        systems: DEFAULT_INTERACTIVE_SYSTEMS_AR.map((item, idx) => ({
+
+$ git grep -n -e 'relatedProjectsLabel' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:1489:        relatedProjectsLabel: 'Related projects',
+src/seed/p4-t2.ts:1606:        relatedProjectsLabel: 'مشاريع ذات صلة',
+
+$ git grep -n -e 'savedAboutPageEn' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:1841:  const savedAboutPageEn = await payload.updateGlobal({
+src/seed/p4-t2.ts:1969:  const strengthsRowsEn = Array.isArray(savedAboutPageEn.strengths?.items)
+src/seed/p4-t2.ts:1970:    ? savedAboutPageEn.strengths.items
+src/seed/p4-t2.ts:1972:  const missionPillarsEn = Array.isArray(savedAboutPageEn.missionVision?.mission?.pillars)
+src/seed/p4-t2.ts:1973:    ? savedAboutPageEn.missionVision.mission.pillars
+src/seed/p4-t2.ts:1975:  const visionPillarsEn = Array.isArray(savedAboutPageEn.missionVision?.vision?.pillars)
+src/seed/p4-t2.ts:1976:    ? savedAboutPageEn.missionVision.vision.pillars
+
+$ git grep -n -e 'projectsImpactStatsIds' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:1418:  const projectsImpactStatsIds = [
+src/seed/p4-t2.ts:2132:        stats: projectsImpactStatsIds,
+
+$ git grep -n -e 'slugifyProjectTitle' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:187:function slugifyProjectTitle(name: string): string {
+src/seed/p4-t2.ts:284:    const baseSlug = slugifyProjectTitle(titleEn)
+
+$ git grep -n -e 'mapRawProjectScope' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:688:export function mapRawProjectScope(rawScope: string): {
+
+$ git grep -n -e 'OWNER_MARQUEE_BRANDS_20' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:60:export const OWNER_MARQUEE_BRANDS_20: readonly MarqueeBrandSpec[] = [
+
+$ git grep -n -e 'DESIGN_ASSET_IMAGES_9' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:956:export const DESIGN_ASSET_IMAGES_9: readonly DesignAssetImageSpec[] = [
+
+$ git grep -n -e 'PLACEHOLDER_TEAM_MEMBERS_13' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:819:export const PLACEHOLDER_TEAM_MEMBERS_13: readonly PlaceholderTeamMemberSpec[] = [
+
+$ git grep -n -e 'runSeedCli' -- scripts/seed.ts
+scripts/seed.ts:9:export async function runSeedCli(
+scripts/seed.ts:31:    await runSeedCli()
+
+$ git grep -n -e 'seedP4T2Content' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:750:export async function seedP4T2Content(
+
+$ git grep -n -e 'hasAnyP4T2Docs' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:792:  const hasAnyP4T2Docs =
+src/seed/p4-t2.ts:796:  if ((hasAnyP4T2Docs || hasHalfEmptyP4T1) && !reseed) {
+src/seed/p4-t2.ts:815:    (hasAnyP4T2Docs || counts.brands > 0 || counts.materials > 0 || counts.media > 0)
+
+$ git grep -n -e 'hasHalfEmptyP4T1' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:794:  const hasHalfEmptyP4T1 = (counts.brands > 0) !== (counts.materials > 0)
+src/seed/p4-t2.ts:796:  if ((hasAnyP4T2Docs || hasHalfEmptyP4T1) && !reseed) {
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:17:  seedMaterialsAndBrands,
+src/seed/p4-t2.ts:892:    materialsSummary = await seedMaterialsAndBrands(payload, {
+
+$ git grep -n -e 'brandsAfterClean' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:886:  const brandsAfterClean = await payload.count({
+src/seed/p4-t2.ts:891:  if (brandsAfterClean.totalDocs === 0) {
+
+$ git grep -n -e 'reseeded' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:95:  reseeded: boolean
+src/seed/p4-t2.ts:812:  let reseeded = false
+src/seed/p4-t2.ts:881:    reseeded = true
+src/seed/p4-t2.ts:2438:    reseeded,
+src/seed/p4-t2.ts:2492:    `mode: ${summary.reseeded ? `reseed (--reseed, deleted projects=${String(summary.deletedCounts.projects)}, services=${String(summary.deletedCounts.services)}, team=${String(summary.deletedCounts.team)}, stats=${String(summary.deletedCounts.stats)}, materials=${String(summary.deletedCounts.materials)}, brands=${String(summary.deletedCounts.brands)}, media=${String(summary.deletedCounts.media)})` : 'first-run baseline'}`,
+
+$ git grep -n -e 'assertSeedEnvironmentAllowed' -- src/seed/materials.ts
+src/seed/materials.ts:14: * 3. Runtime `typeof window !== 'undefined'` check in `assertSeedEnvironmentAllowed`.
+src/seed/materials.ts:162:export function assertSeedEnvironmentAllowed(
+src/seed/materials.ts:1154:  assertSeedEnvironmentAllowed(effectiveNodeEnv, effectiveArgv, reseed)
+
+$ git grep -n -e 'clearGlobalsReferencesBeforeReseed' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:516:export async function clearGlobalsReferencesBeforeReseed(payload: Payload): Promise<void> {
+src/seed/p4-t2.ts:817:    await clearGlobalsReferencesBeforeReseed(payload)
+
+$ git grep -n -e 'deletedCounts' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:97:  deletedCounts: {
+src/seed/p4-t2.ts:802:  const deletedCounts = {
+src/seed/p4-t2.ts:826:    deletedCounts.projects = delProjects.docs.length
+src/seed/p4-t2.ts:835:    deletedCounts.services = delServices.docs.length
+src/seed/p4-t2.ts:844:    deletedCounts.team = delTeam.docs.length
+src/seed/p4-t2.ts:853:    deletedCounts.stats = delStats.docs.length
+src/seed/p4-t2.ts:862:    deletedCounts.materials = delMaterials.docs.length
+src/seed/p4-t2.ts:871:    deletedCounts.brands = delBrands.docs.length
+src/seed/p4-t2.ts:880:    deletedCounts.media = delMedia.docs.length
+src/seed/p4-t2.ts:2440:    deletedCounts,
+src/seed/p4-t2.ts:2492:    `mode: ${summary.reseeded ? `reseed (--reseed, deleted projects=${String(summary.deletedCounts.projects)}, services=${String(summary.deletedCounts.services)}, team=${String(summary.deletedCounts.team)}, stats=${String(summary.deletedCounts.stats)}, materials=${String(summary.deletedCounts.materials)}, brands=${String(summary.deletedCounts.brands)}, media=${String(summary.deletedCounts.media)})` : 'first-run baseline'}`,
+
+$ git grep -n -e 'seedP4T2Content' -- tests/int/p4-t2.int.test.ts
+tests/int/p4-t2.int.test.ts:17:  seedP4T2Content,
+tests/int/p4-t2.int.test.ts:93:    const summary = await seedP4T2Content(payload, {
+tests/int/p4-t2.int.test.ts:291:      seedP4T2Content(payload, {
+tests/int/p4-t2.int.test.ts:462:    const reseedSummary = await seedP4T2Content(payload, {
+
+$ git grep -n -e 'anonServices' -- tests/int/p4-t2.int.test.ts
+tests/int/p4-t2.int.test.ts:314:    const [anonServices, anonTeam, anonProjects] = await Promise.all([
+tests/int/p4-t2.int.test.ts:332:    expect(anonServices.totalDocs).toBe(0)
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- src/seed/materials.ts
+src/seed/materials.ts:1141:export async function seedMaterialsAndBrands(
+
+$ git grep -n -e 'P4_T2_SEED_SERVER_ONLY_SENTINEL' -- src/seed/p4-t2.ts
+src/seed/p4-t2.ts:38:export const P4_T2_SEED_SERVER_ONLY_SENTINEL =
+
+$ git grep -n -e 'P4_T2_DATA_SERVER_ONLY_SENTINEL' -- src/seed/p4-t2-data.ts
+src/seed/p4-t2-data.ts:10: * 1. `P4_T2_DATA_SERVER_ONLY_SENTINEL` checked against `.next/static` by `scripts/check-client-bundle-sentinels.mjs`
+src/seed/p4-t2-data.ts:13:export const P4_T2_DATA_SERVER_ONLY_SENTINEL =

@@ -1,0 +1,35 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ $ErrorActionPreference = 'Continue'
+$out = pnpm seed 2>&1 | Out-String
+$code = $LASTEXITCODE
+Write-Output $out
+Write-Output "[seed_exit_code=$code]"
+if ($code -eq 0) { throw 'Expected non-zero exit code on non-empty DB' }
+if ($out -notmatch 'Refusing to run seed on a non-empty database') { throw 'Expected Refusing to run seed on a non-empty database message in output' }
+$global:LASTEXITCODE = 0
+
+> aljazira-website@0.1.0 seed D:\aljazira-p4-t2-dod-20261025-233552
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+node.exe : [seed] Refusing to run seed on a non-empty database (brands=99, materials=73, stats=5, services=10, 
+projects=91, team=13). The seed is a first-run baseline and never overwrites existing data. Pass --reseed in 
+development to clear and rebuild.
+At C:\Users\User21.CSE\AppData\Roaming\npm\pnpm.ps1:24 char:5
++     & "node$exe"  "$basedir/../../../../../Program Files/nodejs/node_ ...
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([seed] Refusing...ar and rebuild.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ELIFECYCLE  Command failed with exit code 1.
+
+[seed_exit_code=1]
+
+[exit_code=0]
+GATE: PASS

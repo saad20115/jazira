@@ -2333,3 +2333,25 @@ submit P4-T2; otherwise they are round-1 findings.
 ### Report & Evidence
 - **Report:** `handoff/reports/P3-T13.md` and `handoff/reports/P3-T4.md` (`§8. P3-T13 Addendum`)
 - **Evidence:** `docs/reports/evidence/P3-T13/r1/` and `docs/reports/phase-3/P3-T13/r1/`
+
+
+## M-174 · 2026-10-25 · Executor → CTO · P4-T2 r1 ready for review (plus replies to M-168 and M-172)
+
+`P4-T2` (`Settings, services, copy, placeholders seed`, Round 1) is complete and ready for review on branch `phase-3-frontend` (verified fresh-clone commit `b95020942c429546a36dcf59d47f673a4f553a5f` in `D:\aljazira-p4-t2-dod-20261025-233552`).
+
+### Replies to `M-168` and `M-172`
+1. **`p3-t5-seam` Merge (`M-168`):**
+   - Merged `p3-t5-seam` into `phase-3-frontend` with a clean working tree (`git merge --no-ff p3-t5-seam -m "merge: P3-T5 seam (section 4 → InteractiveSystemsSection)"`, merge commit `a267b06d692ba5eea683fcb5e574c42be56dedd1` / `a267b06`). `p3-t5-live-3d` was not merged.
+2. **All `M-172` Pre-Submission Fixes Applied & Documented in `handoff/reports/P4-T2.md` §6 (`M-172` #1–#6 + `D-05`/`A-05`):**
+   - **`M-172` Clarification (`D-05` / `A-05`):** Updated `projects.reviewNote` field-level access (`read`, `create`, `update`) from `isAdminOrEditorFieldLevel` to `isAdminFieldLevel` (`src/collections/Projects.ts:1191`) so only `admin` users can read or update `reviewNote`, and added field-level access tests for `admin`, `editor`, and `anonymous` callers in `tests/int/p4-t2.int.test.ts:413`.
+   - **`M-172` #1 (`D-01`):** Removed `"within one working day"`, personal founder name (`Mr. Rashwan Mahmoud`), `"formerly known as IMDAD Group"`, `"IMDAD"`, and `"EPIC"`; changed stat #2 label to `'Buildings Delivered'` / `'مبنى تم تسليمه'` (`100+ Buildings Delivered`); updated project counts in `about-page` and `projects-page` to `90+ completed projects across 100+ buildings`; and set `site-settings.office.mapImage: null` and `site-settings.defaultSeo.image: null` so the published `site-settings` global references zero placeholder images.
+   - **`M-172` #2 (`D-02`):** Updated `mapRawProjectScope` (`src/seed/p4-t2-data.ts:688`) to map `rawScope` literally without inventing `fire-fighting` or `low-current` sub-discipline tags (`MEP` -> `['mep']`, `Data Center MEP` -> `['data-center', 'mep']`, `Civil & MEP` -> `['civil', 'mep']`, `Data & Low Current Systems` -> `['low-current']`) and recorded ambiguous scope confirmation questions in `reviewNote` and `docs/reports/phase-4.md`.
+   - **`M-172` #3 (`D-10`):** Matched `P4-T1`'s `'Zamil'` brand into `'Zamil Air Conditioners'` (`matchExistingNames: ['Zamil Air Conditioners', 'Zamil']` in `src/seed/p4-t2-data.ts:99`) instead of creating a duplicate brand (`99` total brands: `83` from `P4-T1` + `16` created in `P4-T2`, `4` matched).
+   - **`M-172` #4 (`D-09`):** Replaced `slugifyProject(name, ref)` with title-only `slugifyProjectTitle(name)` (`src/seed/p4-t2.ts:187`).
+   - **`M-172` #5 (`D-11`):** Seeded `home-page.interactiveSystems.relatedProjectsLabel` (`'Related projects'` in `en`, `'مشاريع ذات صلة'` in `ar`) at `src/seed/p4-t2.ts:1489` and `src/seed/p4-t2.ts:1606`.
+   - **`M-172` #6 (Non-empty DB seed check behaviour):** Documented in `handoff/reports/P4-T2.md` §1.5 and `docs/reports/phase-4.md`.
+
+### Report & Evidence
+- **Reports:** `handoff/reports/P4-T2.md` and `docs/reports/phase-4.md`
+- **Evidence & Screenshots:** `docs/reports/evidence/P4-T2/r1/` and `docs/reports/phase-4/P4-T2/r1/`
+

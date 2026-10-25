@@ -1,0 +1,32 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ cmd.exe /c "pnpm payload run scripts/evidence/p4-t2-evidence.mjs -- --skip-seed-runs http://localhost:3000 D:\jazira\docs\reports\evidence\P4-T2\r1 D:\jazira\docs\reports\phase-4\P4-T2\r1"
+
+> aljazira-website@0.1.0 payload D:\aljazira-p4-t2-dod-20261025-233552
+> cross-env NODE_OPTIONS=--no-deprecation payload "run" "scripts/evidence/p4-t2-evidence.mjs" "--" "--skip-seed-runs" "http://localhost:3000" "D:\\jazira\\docs\\reports\\evidence\\P4-T2\\r1" "D:\\jazira\\docs\\reports\\phase-4\\P4-T2\\r1"
+
+[p4-t2-evidence] Captured home-en-editor-draft-1440.png
+[p4-t2-evidence] Captured home-en-editor-draft-768.png
+[p4-t2-evidence] Captured home-en-editor-draft-390.png
+[p4-t2-evidence] Captured home-ar-editor-draft-1440.png
+[p4-t2-evidence] Captured home-ar-editor-draft-768.png
+[p4-t2-evidence] Captured home-ar-editor-draft-390.png
+[p4-t2-evidence] Captured admin-projects-list.png
+[p4-t2-evidence] Captured admin-brands-marquee.png
+[p4-t2-evidence] Captured admin-services-drafts.png
+[p4-t2-evidence] Captured admin-team-placeholders.png
+[p4-t2-evidence] Captured admin-global-home-page.png
+[p4-t2-evidence] Captured admin-global-services-page.png
+[p4-t2-evidence] Captured admin-global-about-page.png
+[p4-t2-evidence] Captured admin-global-projects-page.png
+[p4-t2-evidence] Captured admin-global-contact-page.png
+[p4-t2-evidence] Captured admin-global-privacy-page.png
+
+[exit_code=0]
+GATE: PASS

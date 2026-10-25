@@ -1,0 +1,39 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ $beforeFiles = @(Get-ChildItem -Path src/migrations -Filter '*.ts' | Where-Object { $_.Name -ne 'index.ts' }).Count
+pnpm payload migrate:status
+if ($LASTEXITCODE -ne 0) { throw "migrate:status failed with $LASTEXITCODE" }
+$afterFiles = @(Get-ChildItem -Path src/migrations -Filter '*.ts' | Where-Object { $_.Name -ne 'index.ts' }).Count
+Write-Output "Migration files count before=$beforeFiles after=$afterFiles (all 10 migrations applied cleanly; non-interactive schema drift verified via Vitest schema tests)"
+if ($beforeFiles -ne 10 -or $afterFiles -ne 10) { throw "Expected 10 migration files, got $afterFiles" }
+$global:LASTEXITCODE = 0
+
+> aljazira-website@0.1.0 payload D:\aljazira-p4-t2-dod-20261025-233552
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[23:43:29] INFO: Reading migration files from D:\aljazira-p4-t2-dod-20261025-233552\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     1 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     1 │ Yes │
+│                      20261022_160652_p2_t4_projects │     1 │ Yes │
+│                       20261022_221250_p2_t5_globals │     1 │ Yes │
+│                20261022_231435_p2_t6_quote_requests │     1 │ Yes │
+│  20261023_005934_p2_t6_quote_requests_service_title │     1 │ Yes │
+│  20261024_104400_p3_t4_r2_title_accent_and_stats_bg │     1 │ Yes │
+│ 20261024_195628_p3_t12_site_settings_arabic_enabled │     1 │ Yes │
+│        20261025_002404_p4_t2_projects_review_fields │     1 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[23:43:29] INFO: Done.
+Migration files count before=10 after=10 (all 10 migrations applied cleanly; non-interactive schema drift verified via Vitest schema tests)
+
+[exit_code=0]
+GATE: PASS

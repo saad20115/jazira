@@ -1,0 +1,43 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ cmd.exe /c "pnpm seed -- --reseed"
+$reseedCode = $LASTEXITCODE
+Write-Output "[seed_exit_code=$reseedCode]"
+if ($reseedCode -ne 0) { throw "pnpm seed --reseed failed with $reseedCode" }
+$global:LASTEXITCODE = 0
+
+> aljazira-website@0.1.0 seed D:\aljazira-p4-t2-dod-20261025-233552
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts "--" "--reseed"
+
+=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===
+mode: first-run baseline
+brands: created=83, deleted=0, updated=0, unchanged=0, total=83
+materials: created=73, deleted=0, updated=0, unchanged=0, total=73
+systemCounts: electrical=20, mechanical=37, structural=8, architectural=8
+everyMaterialHasAtLeastOneBrand: true (minBrandsPerMaterial=1)
+normalizationsApplied: 126 distinct rule applications
+figmaPartnerMappings: 4 Figma↔raw partner display mappings
+needsClientReview: 33 items flagged
+arabicDrafts: 73 rows drafted
+updatedAtDigestSha256: 1c79f85cd97aab4b3f51e771bccc72ae4d4f9f6f1e5cfedeb1befae99586929f
+=== AL JAZIRA SEED SUMMARY (P4-T2: SETTINGS, SERVICES, PROJECTS, MARQUEE, COPY, PLACEHOLDERS) ===
+mode: reseed (--reseed, deleted projects=91, services=10, team=13, stats=5, materials=73, brands=99, media=26)
+media: projectPhotos=17, designAssets=9, total=26
+marqueeBrands: created=16, existingMatched=4, oldCleared=16, totalMarquee=20, totalBrands=99
+stats: created=5
+services: createdDraft=10
+projects: publishedWithPhoto=17, draftWithoutPhoto=74, featured=6, total=91
+teamPlaceholders: createdInactive=13
+globals: site-settings=seeded(arabicEnabled=false), navigation=seeded, draftPageGlobals=home-page,services-page,about-page,projects-page,contact-page,privacy-page
+homeCopySource: design/copy/01-home.md
+p4t2UpdatedAtDigestSha256: f36c3f904c24afd076385955eefa3a019ee98e7a70b60aa01b187d18a4210813
+[seed_exit_code=0]
+
+[exit_code=0]
+GATE: PASS

@@ -1,0 +1,36 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+
+# Prior attempt note (M-161): 2026-10-25 06:13-07:01 interactive 'payload migrate:create noop_check' hung and was killed by CTO (PIDs 24464, 45008). Replaced with non-interactive file-count + migrate:status verification wrapped in Invoke-TimedCmd.
+# Prior attempt note: 2026-10-25 16:31 cross-drive clone on C:\Users\User21.CSE\AppData\Local\Temp timed out during 'pnpm install --frozen-lockfile' at 420s (added 156/765) because pnpm store is on D:\.pnpm-store\v10. Moved fresh clone directory to D:\.
+# Prior attempt note: 2026-10-25 17:12 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-171251 reached 'added 764/765' at 420s when the 420s install timeout fired. Increased install MaxSeconds from 420s to 720s.
+# Prior attempt note: 2026-10-25 17:24 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-172407 passed steps 1-7 and failed in step 8 (p3-t13-prod-intro) because decisionMs was read before style/layout flush (312ms vs firstVisibleMs 497ms). Fixed in commit 063e733.
+# Prior attempt note: 2026-10-25 17:54 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-175407 passed steps 1-9 and timed out in step 10 (p4-t2-evidence-and-queries) at line 637 waiting for 'networkidle' on /admin/collections/projects. Applied M-171 and M-172 pre-submission fixes and changed /admin goto waitUntil to 'domcontentloaded'.
+# Prior attempt note: 2026-10-25 19:13 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-191302 passed steps 1-4 and 304/305 tests in step 5, failing only on deletedCounts.media (27 vs 26) in p4-t2.int.test.ts because an earlier test suite left 1 media row when collection counts were 0. Included counts.media > 0 in the reseed cleanup condition and cleaned leftover test rows in beforeAll.
+# Prior attempt note: 2026-10-25 19:35, 20:13, and 20:46 fresh clones iteratively verified P3-T13 intro splash before P3-T13 submission.
+# Prior attempt note: 2026-10-25 21:20 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-212030 passed all P3-T13 steps 1-8 and P4-T2 seed-run-1, then stopped at p4-t2-seed-non-empty-refused because the PowerShell wrapper matched 'Refusing to seed' instead of '[seed] Refusing to run seed on a non-empty database'. Fixed regex in run-p4-t2-dod.ps1 and re-ran after merging p3-t5-seam (a267b06).
+# Prior attempt note: 2026-10-25 22:07 and 22:24 fresh clones adjusted Invoke-TimedCmd file redirection and exit-code capture.
+# Prior attempt note: 2026-10-25 22:30 fresh clone on D:\aljazira-p4-t2-dod-20261025-223038 passed steps 1-7b and failed in p4-t2-seed-reseed-dev because PowerShell stripped the first '--' in 'pnpm seed -- --reseed'. Wrapped '--' commands in 'cmd.exe /c'.
+# Prior attempt note: 2026-10-25 23:07 fresh clone on D:\aljazira-p4-t2-dod-20261025-230716 passed steps 1-8a and failed in playwright-p3-t12 globalSetup because p4-t2-evidence.mjs left p4t2-editor@aljazira.co as the sole admin user (blocked by preventLastAdminBeforeDelete), preventing first-register. Cleared p4t2-editor@aljazira.co via psql before playwright-p3-t12 and reused the warmed dev server.
+commit                   | start=2026-10-25 23:36:32 | end=2026-10-25 23:36:33 | elapsed=1s | exit=0
+install                  | start=2026-10-25 23:36:33 | end=2026-10-25 23:42:47 | elapsed=373.7s | exit=0
+migrate-up-down-up       | start=2026-10-25 23:42:47 | end=2026-10-25 23:43:13 | elapsed=26.8s | exit=0
+migrate-status           | start=2026-10-25 23:43:14 | end=2026-10-25 23:43:21 | elapsed=8s | exit=0
+migrate-noop             | start=2026-10-25 23:43:22 | end=2026-10-25 23:43:30 | elapsed=8.2s | exit=0
+lint                     | start=2026-10-25 23:43:30 | end=2026-10-25 23:44:35 | elapsed=65.5s | exit=0
+typecheck                | start=2026-10-25 23:44:35 | end=2026-10-25 23:44:52 | elapsed=17.2s | exit=0
+format:check             | start=2026-10-25 23:44:53 | end=2026-10-25 23:45:02 | elapsed=10s | exit=0
+tokens:check             | start=2026-10-25 23:45:03 | end=2026-10-25 23:45:04 | elapsed=1.4s | exit=0
+test                     | start=2026-10-25 23:45:04 | end=2026-10-25 23:51:14 | elapsed=370.3s | exit=0
+build                    | start=2026-10-25 23:51:14 | end=2026-10-25 23:52:53 | elapsed=99.4s | exit=0
+audit                    | start=2026-10-25 23:52:54 | end=2026-10-25 23:52:56 | elapsed=2.4s | exit=0
+p4-t2-seed-run-1         | start=2026-10-25 23:52:56 | end=2026-10-25 23:53:41 | elapsed=44.8s | exit=0
+p4-t2-seed-non-empty-refused | start=2026-10-25 23:53:41 | end=2026-10-25 23:53:49 | elapsed=8.4s | exit=0
+p4-t2-seed-reseed-dev    | start=2026-10-25 23:53:49 | end=2026-10-25 23:54:36 | elapsed=47.2s | exit=0
+p4-t2-seed-production-guard | start=2026-10-25 23:54:37 | end=2026-10-25 23:54:44 | elapsed=7.4s | exit=0
+p4-t2-seed-reseed-production-guard | start=2026-10-25 23:54:44 | end=2026-10-25 23:54:51 | elapsed=7.4s | exit=0
+p4-t2-evidence-and-queries | start=2026-10-25 23:55:06 | end=2026-10-25 23:57:32 | elapsed=146.7s | exit=0
+playwright-p3-t12        | start=2026-10-25 23:57:33 | end=2026-10-25 23:57:54 | elapsed=21.6s | exit=0
+p4-t2-final-state-restore | start=2026-10-25 23:57:56 | end=2026-10-25 23:58:43 | elapsed=46.9s | exit=0

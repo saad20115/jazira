@@ -1,0 +1,34 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ $env:NODE_ENV='production'
+$ErrorActionPreference = 'Continue'
+$out = cmd.exe /c "pnpm seed" 2>&1 | Out-String
+$code = $LASTEXITCODE
+Write-Output $out
+Write-Output "[seed_exit_code=$code]"
+if ($code -eq 0) { throw 'Expected non-zero exit code in production' }
+if ($out -notmatch 'Refusing to run seed when NODE_ENV=production') { throw 'Expected Refusing to run seed when NODE_ENV=production message in output' }
+$global:LASTEXITCODE = 0
+
+> aljazira-website@0.1.0 seed D:\aljazira-p4-t2-dod-20261025-233552
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+cmd.exe : [seed] Refusing to run seed when NODE_ENV=production unless --force-production is passed explicitly.
+At C:\Users\User21.CSE\AppData\Local\Temp\dod-step-64102db9c84c45209be9a0ae568e2dc2.ps1:10 char:8
++ $out = cmd.exe /c "pnpm seed" 2>&1 | Out-String
++        ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([seed] Refusing...sed explicitly.:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ ELIFECYCLE  Command failed with exit code 1.
+
+[seed_exit_code=1]
+
+[exit_code=0]
+GATE: PASS
