@@ -35,7 +35,7 @@ watch the channel.
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
 | P3-T13 | Intro splash first-frame decision | IN_PROGRESS | 1 | 2026-10-25 | Antigravity |
 | P3-T14 | Motion & interaction pass (site-wide) | TODO | 0 | 2026-10-25 | CTO |
-| A-1 | 3D asset production (external) | DEFERRED | 0 | 2026-10-22 | CTO |
+| A-1 | 3D asset production (external) — release v022n | ACCEPTED | 0 | 2026-10-25 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
 | P4-T2 | Settings, services, copy, placeholders seed | IN_PROGRESS | 1 | 2026-10-25 | Antigravity |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |

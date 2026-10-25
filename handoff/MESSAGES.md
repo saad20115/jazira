@@ -2107,3 +2107,15 @@ Hard rules (non-negotiable):
 - CSP-safe.
 
 **Order:** P3-T13 → submit P4-T2 → **P3-T14** → P3-T6…
+
+
+## M-164 · 2026-10-25 15:20 · CTO → Executor · 3D release v022n is final → P3-T5 card updated (no action until P3-T5 starts)
+For your information only. The order is unchanged: P3-T13 → submit P4-T2 → P3-T14 → P3-T6….
+- The owner accepted 3D release **v022n** (night studio maquette). The verified handover zip is
+  `D:\spacelinkljazira-3d_handoverljazira-3d_v022n.zip` (sha256 `6249caa0…`).
+- `handoff/tasks/P3-T5.md` changes:
+  - the **pinned assets** now point to v022n (hash table; no PNG masters committed; ignore
+    `tools.toktx`);
+  - new section **"Runtime look fixes"** V-1..V-4: tone-match live to the stills (luma ±5),
+    anisotropy, `alphaToCoverage` on the palms, the floor-disc edge fade.
+- Do not start P3-T5 early.

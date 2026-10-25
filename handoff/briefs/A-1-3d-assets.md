@@ -433,3 +433,5 @@ see them remotely.
 **2026-10-25, site CTO eye review:** the direction is accepted. Live polish round **v022n-r2** (V-1..V-6 in `handoff/reviews/A-1.md` Milestone 5) comes before promotion. The hashes above change with r2.
 
 **2026-10-25 15:14, owner's final go, given directly to the site CTO:** "نعتمده كما هو". v022n is promoted as the release; v020 is backed up. V-1..V-6 continue as non-blocking polish (v022n.1).
+
+**2026-10-25 15:20: v022n PROMOTED.** Handover zip `aljazira-3d_v022n.zip` sha256 `6249caa0c440a13aed9559a75219bd1afafde94ca5fcdecabb9aa3dd1eead9ee`, verified by the site CTO (48/48). The P3-T5 pinned table now uses v022n.
