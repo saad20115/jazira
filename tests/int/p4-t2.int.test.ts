@@ -46,6 +46,26 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       DELETE FROM "_privacy_page_v";
       DELETE FROM "privacy_page";
     `)
+
+    await clearGlobalsReferencesBeforeReseed(payload)
+    for (const collection of [
+      'projects',
+      'services',
+      'team',
+      'stats',
+      'materials',
+      'brands',
+      'videos',
+      'media',
+    ] as const) {
+      await payload.delete({
+        collection,
+        where: { id: { exists: true } },
+        context: { disableRevalidate: true },
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      })
+    }
   }, 120_000)
 
   afterAll(async () => {

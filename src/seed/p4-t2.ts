@@ -768,6 +768,7 @@ export async function seedP4T2Content(
     existingServicesCountRes,
     existingProjectsCountRes,
     existingTeamCountRes,
+    existingMediaCountRes,
   ] = await Promise.all([
     payload.count({ collection: 'brands', overrideAccess: false, user: SEED_ADMIN_USER }),
     payload.count({ collection: 'materials', overrideAccess: false, user: SEED_ADMIN_USER }),
@@ -775,6 +776,7 @@ export async function seedP4T2Content(
     payload.count({ collection: 'services', overrideAccess: false, user: SEED_ADMIN_USER }),
     payload.count({ collection: 'projects', overrideAccess: false, user: SEED_ADMIN_USER }),
     payload.count({ collection: 'team', overrideAccess: false, user: SEED_ADMIN_USER }),
+    payload.count({ collection: 'media', overrideAccess: false, user: SEED_ADMIN_USER }),
   ])
 
   const counts = {
@@ -784,6 +786,7 @@ export async function seedP4T2Content(
     services: existingServicesCountRes.totalDocs,
     projects: existingProjectsCountRes.totalDocs,
     team: existingTeamCountRes.totalDocs,
+    media: existingMediaCountRes.totalDocs,
   }
 
   const hasAnyP4T2Docs =
@@ -809,7 +812,7 @@ export async function seedP4T2Content(
   let reseeded = false
   if (
     reseed &&
-    (hasAnyP4T2Docs || counts.brands > 0 || counts.materials > 0)
+    (hasAnyP4T2Docs || counts.brands > 0 || counts.materials > 0 || counts.media > 0)
   ) {
     await clearGlobalsReferencesBeforeReseed(payload)
 
