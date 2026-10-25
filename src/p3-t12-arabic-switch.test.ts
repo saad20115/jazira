@@ -38,11 +38,12 @@ vi.mock('payload', async (importOriginal) => {
   const actual = await importOriginal<typeof import('payload')>()
   return {
     ...actual,
-    getPayload: async () => ({
-      auth: async () => ({
-        user: await mockStaffUser(),
+    getPayload: () =>
+      Promise.resolve({
+        auth: async () => ({
+          user: await mockStaffUser(),
+        }),
       }),
-    }),
   }
 })
 
@@ -580,7 +581,7 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
           titleSuffix: '',
           defaultDescription: '',
         },
-      } as SiteSetting)
+      } as unknown as SiteSetting)
       mockHomePage.mockResolvedValue({
         id: 1,
         hero: {
@@ -594,7 +595,7 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
           title: '',
           description: '',
         },
-      } as HomePage)
+      })
       mockHeaders.mockResolvedValue(
         new Headers({
           'x-nonce': 'test-nonce-r7',

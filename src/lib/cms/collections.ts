@@ -344,13 +344,14 @@ export async function getTeamMembers(
   locale: SupportedLocale,
   options: GetTeamOptions = {},
 ): Promise<Team[]> {
-  const fetchDirect = async (): Promise<Team[]> => {
+  const fetchDirect = async (includeInactive = false): Promise<Team[]> => {
     const fallbackLocale = getFallbackLocale(locale)
-    const clauses: Where[] = [{ active: { equals: true } }]
+    const clauses: Where[] = includeInactive ? [] : [{ active: { equals: true } }]
     if (options.tier) {
       clauses.push({ tier: { equals: options.tier } })
     }
-    const where: Where = clauses.length === 1 ? clauses[0] : { and: clauses }
+    const where: Where | undefined =
+      clauses.length === 1 ? clauses[0] : clauses.length > 1 ? { and: clauses } : undefined
     const result = await cmsFindAllSmallCollection({
       collection: 'team',
       locale,
@@ -364,10 +365,14 @@ export async function getTeamMembers(
 
   const isDraft = await resolvePublicDraftFlag()
   if (isDraft) {
-    return fetchDirect()
+    return fetchDirect(true)
   }
 
   const tags = [...buildCollectionTags('team'), `collection:team:${locale}`]
-  const cachedGetter = withCmsCache(fetchDirect, ['cms-team', locale, options.tier ?? 'all'], tags)
+  const cachedGetter = withCmsCache(
+    () => fetchDirect(false),
+    ['cms-team', locale, options.tier ?? 'all'],
+    tags,
+  )
   return cachedGetter()
 }

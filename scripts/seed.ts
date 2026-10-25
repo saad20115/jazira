@@ -1,25 +1,21 @@
 import configPromise from '@payload-config'
 import { getPayload } from 'payload'
 
-import {
-  assertSeedEnvironmentAllowed,
-  formatSeedSummaryLines,
-  seedMaterialsAndBrands,
-  type MaterialsSeedRunSummary,
-} from '../src/seed/materials'
+import { assertSeedEnvironmentAllowed, formatSeedSummaryLines } from '../src/seed/materials'
+import { formatP4T2SummaryLines, type P4T2SeedRunSummary, seedP4T2Content } from '../src/seed/p4-t2'
 
-export { formatSeedSummaryLines }
+export { formatP4T2SummaryLines, formatSeedSummaryLines }
 
 export async function runSeedCli(
   nodeEnv: string | undefined = process.env.NODE_ENV,
   argv: readonly string[] = process.argv,
-): Promise<MaterialsSeedRunSummary> {
+): Promise<P4T2SeedRunSummary> {
   assertSeedEnvironmentAllowed(nodeEnv, argv)
 
   const payload = await getPayload({ config: configPromise })
   try {
-    const summary = await seedMaterialsAndBrands(payload, { nodeEnv, argv })
-    for (const line of formatSeedSummaryLines(summary)) {
+    const summary = await seedP4T2Content(payload, { nodeEnv, argv })
+    for (const line of formatP4T2SummaryLines(summary)) {
       process.stdout.write(`${line}\n`)
     }
     return summary

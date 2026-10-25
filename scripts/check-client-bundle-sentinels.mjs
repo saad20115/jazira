@@ -19,6 +19,8 @@ export const FORBIDDEN_CLIENT_BUNDLE_SENTINELS = [
   '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_CMS_CLIENT__',
   '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_API_ERROR__',
   '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_SEED__',
+  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_P4_T2__',
+  '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_P4_T2_DATA__',
   'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-0001',
   'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-00002',
 ]
