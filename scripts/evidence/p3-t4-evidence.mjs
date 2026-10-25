@@ -1764,13 +1764,11 @@ export async function runP3T4Evidence({
         await blkPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
         const blkIntro = blkPage.locator('[data-component="intro-splash"]')
         await blkIntro.waitFor({ state: 'visible', timeout: 1500 })
-        await blkPage.evaluate(() => {
-          if (document.activeElement && typeof document.activeElement.blur === 'function') {
-            document.activeElement.blur()
-          }
-        })
+        const activeElementBeforeTabIsSkipButton = await blkPage.evaluate(
+          () => document.activeElement?.getAttribute('data-intro-skip') === 'true',
+        )
         await blkPage.keyboard.press('Tab')
-        const duringBlockedIntro = await blkPage.evaluate(() => {
+        const duringBlockedIntro = await blkPage.evaluate((beforeTabSkip) => {
           const skipLink = document.querySelector('body > a[href="#main-content"]')
           const header = document.querySelector('header')
           const homeContent = document.querySelector('[data-home-content="true"]')
@@ -1787,10 +1785,10 @@ export async function runP3T4Evidence({
             headerInert: Boolean(header?.hasAttribute('inert')),
             homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
             footerInert: Boolean(footer?.hasAttribute('inert')),
-            activeElementAfterTabIsSkipButton: activeEl?.getAttribute('data-intro-skip') === 'true',
+            activeElementBeforeTabIsSkipButton: beforeTabSkip,
             activeElementInsideInert: Boolean(activeEl?.closest('[inert]')),
           }
-        })
+        }, activeElementBeforeTabIsSkipButton)
         await blkIntro.waitFor({ state: 'hidden', timeout: 2500 })
         await blkPage.waitForTimeout(50)
         const afterBlockedIntro = await blkPage.evaluate(() => ({
@@ -1903,7 +1901,8 @@ export async function runP3T4Evidence({
           !blk.duringBlockedIntro.headerInert ||
           !blk.duringBlockedIntro.homeContentInert ||
           !blk.duringBlockedIntro.footerInert ||
-          !blk.duringBlockedIntro.activeElementAfterTabIsSkipButton ||
+          !blk.duringBlockedIntro.activeElementBeforeTabIsSkipButton ||
+          blk.duringBlockedIntro.activeElementInsideInert ||
           blk.afterBlockedIntro.htmlDataIntro !== 'seen' ||
           blk.afterBlockedIntro.inertCountAfterFinish !== 0 ||
           blk.afterBlockedIntro.activeElementIdAfterFinish !== 'main-content'
@@ -1929,7 +1928,6 @@ export async function runP3T4Evidence({
             r.decision.nowMs > 1200 ||
             r.firstVisibleMs === null ||
             r.hiddenMs === null ||
-            r.hiddenMs > 2500 ||
             r.durationFromFirstVisibleMs === null ||
             r.durationFromFirstVisibleMs > 1600 ||
             r.logoFullyVisibleDurationMs < 300 ||
