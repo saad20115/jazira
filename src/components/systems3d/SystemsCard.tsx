@@ -329,7 +329,8 @@ export function SystemsCard({
       }
     }
     const onKeyDown = (event: globalThis.KeyboardEvent): void => {
-      if (event.key === 'Escape' && !enteredRef.current) {
+      // An Escape the card already used (to exit a system) must not also deactivate it.
+      if (event.key === 'Escape' && !event.defaultPrevented && !enteredRef.current) {
         deactivate()
       }
     }
@@ -428,6 +429,7 @@ export function SystemsCard({
     <div
       aria-busy={phase === 'loading' ? true : undefined}
       className={className}
+      data-entered={entered ?? 'none'}
       data-interactive-3d-card="true"
       data-viewer-active={active ? 'true' : 'false'}
       data-viewer-state={phase}

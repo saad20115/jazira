@@ -3,7 +3,7 @@
 import { type ReactElement, type RefObject, useEffect, useRef, useState } from 'react'
 
 import { ContractError, parseStillHotspots, type StillHotspot, type SystemId } from './contract'
-import { choosePillSpot, type Rect } from './labelLayout'
+import { anchorClear, choosePillSpot, type Rect } from './labelLayout'
 import styles from './InteractiveSystemsSection.module.css'
 import { HotspotItem } from './HotspotItem'
 import { RELEASE_BASE_PATH } from './renderContract'
@@ -75,7 +75,7 @@ export function StillLabels({ system, cardRef, strings }: StillLabelsProps): Rea
         }
         const x = point.x * side - (side - width) / 2
         const y = point.y * side - (side - height) / 2
-        const inside = x >= 0 && x <= width && y >= 0 && y <= height
+        const inside = x >= 0 && x <= width && y >= 0 && y <= height && anchorClear(x, y, obstacles)
         anchor.style.setProperty('translate', `${x.toFixed(1)}px ${y.toFixed(1)}px`)
         anchor.style.setProperty('visibility', inside ? 'visible' : 'hidden')
         const w = pill.offsetWidth

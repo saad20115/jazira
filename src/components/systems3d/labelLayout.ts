@@ -46,3 +46,20 @@ export function choosePillSpot(
   }
   return null
 }
+
+/**
+ * Half of the 24 px circle that must stay clear around a hotspot dot (WCAG 2.5.8 target spacing).
+ * The card's controls sit above the labels, so a dot under one could be seen but not tapped.
+ */
+export const DOT_CLEARANCE = 12
+
+/** Whether a hotspot dot at (x, y) is clear of every visible obstacle (controls, panel). */
+export function anchorClear(x: number, y: number, obstacles: readonly Rect[]): boolean {
+  const target = {
+    x: x - DOT_CLEARANCE,
+    y: y - DOT_CLEARANCE,
+    w: DOT_CLEARANCE * 2,
+    h: DOT_CLEARANCE * 2,
+  }
+  return !obstacles.some((o) => o.w > 0 && o.h > 0 && overlaps(target, o))
+}

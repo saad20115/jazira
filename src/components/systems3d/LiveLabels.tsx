@@ -4,7 +4,7 @@ import { type ReactElement, type RefObject, useCallback, useEffect, useRef, useS
 
 import styles from './InteractiveSystemsSection.module.css'
 import { HotspotItem } from './HotspotItem'
-import { choosePillSpot, type Rect } from './labelLayout'
+import { anchorClear, choosePillSpot, type Rect } from './labelLayout'
 import { HOTSPOT_LABEL_IDS, type HotspotLabelId, type Systems3dStrings } from './strings'
 import type { ProjectedLabel } from './viewer/systemStage'
 
@@ -51,11 +51,12 @@ export function LiveLabels({ cardRef, sinkRef, strings }: LiveLabelsProps): Reac
         if (!anchor || !pill) {
           continue
         }
+        const shown = label.visible && anchorClear(label.x, label.y, obstacles)
         anchor.style.setProperty('translate', `${label.x.toFixed(1)}px ${label.y.toFixed(1)}px`)
-        anchor.style.setProperty('visibility', label.visible ? 'visible' : 'hidden')
+        anchor.style.setProperty('visibility', shown ? 'visible' : 'hidden')
         const w = pill.offsetWidth
         const h = pill.offsetHeight
-        const spot = label.visible
+        const spot = shown
           ? choosePillSpot(label.x, label.y, w, h, box.width, box.height, [...obstacles, ...placed])
           : null
         if (spot) {

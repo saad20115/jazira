@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { choosePillSpot } from '@/components/systems3d/labelLayout'
+import { anchorClear, choosePillSpot, DOT_CLEARANCE } from '@/components/systems3d/labelLayout'
 
 describe('P3-T5 hotspot label placement', () => {
   it('puts the pill above its anchor when there is room', () => {
@@ -34,5 +34,14 @@ describe('P3-T5 hotspot label placement', () => {
     ).toBe(false)
     expect(choosePillSpot(300, 300, 100, 24, 600, 580, [{ x: 0, y: 0, w: 600, h: 580 }])).toBeNull()
     expect(choosePillSpot(5, 5, 700, 24, 600, 580, [])).toBeNull()
+  })
+
+  it('hides a dot whose 24 px spacing circle meets a control, and ignores zero-size obstacles', () => {
+    const controls = { x: 16, y: 300, w: 200, h: 44 }
+    expect(anchorClear(100, 320, [controls])).toBe(false)
+    expect(anchorClear(100, 300 - DOT_CLEARANCE + 1, [controls])).toBe(false)
+    expect(anchorClear(100, 300 - DOT_CLEARANCE, [controls])).toBe(true)
+    expect(anchorClear(300, 320, [controls])).toBe(true)
+    expect(anchorClear(5, 5, [{ x: -10, y: -10, w: 0, h: 0 }])).toBe(true)
   })
 })
