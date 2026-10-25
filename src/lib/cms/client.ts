@@ -194,10 +194,12 @@ export interface CmsPaginatedDocs<TDoc> {
 }
 
 /**
- * Returns the opposite locale as fallback (`ar` <-> `en`).
+ * Returns `'en'` as fallback for `'ar'`, and `false` (no fallback) for `'en'` (`R-7`).
+ * `en` never falls back to `ar`, so empty `en` fields with filled `ar` fields never leak
+ * Arabic onto `/en`.
  */
-export function getFallbackLocale(locale: SupportedCmsLocale): SupportedCmsLocale {
-  return locale === 'ar' ? 'en' : 'ar'
+export function getFallbackLocale(locale: SupportedCmsLocale): SupportedCmsLocale | false {
+  return locale === 'ar' ? 'en' : false
 }
 
 /**
@@ -304,24 +306,9 @@ export async function resolvePublicDraftFlag(): Promise<boolean> {
   return ctx.draft
 }
 
-function resolveExpectedRequestOrigin(reqHeaders: {
-  get(name: string): string | null | undefined
-}): string {
-  const rawHost = (reqHeaders.get('x-forwarded-host') || reqHeaders.get('host') || '')
-    .split(',')[0]
-    ?.trim()
-  if (rawHost) {
-    const rawProto =
-      (reqHeaders.get('x-forwarded-proto') || '').split(',')[0]?.trim() ||
-      (rawHost.startsWith('localhost') || rawHost.startsWith('127.0.0.1') ? 'http' : 'https')
-    try {
-      return new URL(`${rawProto}://${rawHost}`).origin
-    } catch {
-      // fall through to configured server URL
-    }
-  }
+export function resolveExpectedRequestOrigin(): string {
   const configuredUrl =
-    process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || 'http://localhost:3000'
+    process.env.SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL || 'http://localhost:3000'
   try {
     return new URL(configuredUrl).origin
   } catch {
@@ -331,14 +318,14 @@ function resolveExpectedRequestOrigin(reqHeaders: {
 
 export function isSameOriginAdminReferer(
   referer: string,
-  reqHeaders: { get(name: string): string | null | undefined },
+  _reqHeaders?: { get(name: string): string | null | undefined },
 ): boolean {
   if (!referer) {
     return false
   }
   try {
     const refUrl = new URL(referer)
-    const expectedOrigin = resolveExpectedRequestOrigin(reqHeaders)
+    const expectedOrigin = resolveExpectedRequestOrigin()
     return (
       refUrl.origin === expectedOrigin &&
       (refUrl.pathname === '/admin' || refUrl.pathname.startsWith('/admin/'))

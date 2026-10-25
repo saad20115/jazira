@@ -9,7 +9,12 @@ import { Navbar } from '@/components/Navbar'
 import { DEFAULT_INTERACTIVE_SYSTEMS_EN, getDefaultInteractiveSystems } from '@/globals/HomePage'
 import { SiteSettings } from '@/globals/SiteSettings'
 import { buildHreflangAlternates, DEFAULT_LOCALE, SUPPORTED_LOCALES } from '@/i18n'
-import { isSameOriginAdminReferer } from '@/lib/cms/client'
+import {
+  getFallbackLocale,
+  isAuthorizedArabicPreviewRequest,
+  isSameOriginAdminReferer,
+  resolveExpectedRequestOrigin,
+} from '@/lib/cms/client'
 import type { HomePage, Navigation, SiteSetting } from '@/payload-types'
 import { DEFAULT_ADMIN_LANG, proxy } from '@/proxy'
 
@@ -24,6 +29,22 @@ const mockRevalidateTag = vi.fn()
 const mockRevalidatePath = vi.fn()
 
 vi.mock('server-only', () => ({}))
+
+vi.mock('@payload-config', () => ({
+  default: Promise.resolve({}),
+}))
+
+vi.mock('payload', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('payload')>()
+  return {
+    ...actual,
+    getPayload: async () => ({
+      auth: async () => ({
+        user: await mockStaffUser(),
+      }),
+    }),
+  }
+})
 
 vi.mock('next/cache', () => ({
   revalidateTag: (...args: unknown[]) => {
@@ -81,24 +102,11 @@ vi.mock('@/lib/cms', () => ({
     const s = await mockSiteSettings()
     return s?.arabicEnabled === true
   },
-  isAuthorizedArabicPreviewRequest: async (
+  isAuthorizedArabicPreviewRequest: (
     reqHeaders: Headers,
     isDraftModeEnabled: boolean,
     search = '',
-  ) => {
-    const isIframeRequest = reqHeaders.get('sec-fetch-dest') === 'iframe'
-    const referer = reqHeaders.get('referer') ?? ''
-    const searchParams = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
-    const hasLivePreviewParam =
-      searchParams.get('preview') === 'true' || searchParams.get('livePreview') === 'true'
-    const isLivePreviewContext =
-      isIframeRequest || isSameOriginAdminReferer(referer, reqHeaders) || hasLivePreviewParam
-    if (!isDraftModeEnabled && !isLivePreviewContext) {
-      return false
-    }
-    const staff = await mockStaffUser()
-    return staff !== null
-  },
+  ) => isAuthorizedArabicPreviewRequest(reqHeaders, isDraftModeEnabled, search),
 }))
 
 import LocaleCatchAllNotFoundPage from '@/app/(frontend)/[locale]/[...rest]/page'
@@ -423,6 +431,7 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
         role: 'editor',
       })
       const iframeHeaders = new Headers({
+        cookie: 'payload-token=valid-staff-jwt',
         'x-nonce': 'test-nonce',
         'x-aljazira-pathname': '/ar',
         'x-aljazira-search': '',
@@ -450,7 +459,7 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
       ).rejects.toThrow('NEXT_REDIRECT:/en/projects?livePreview=true')
     })
 
-    it('strictly parses preview/livePreview query params via URLSearchParams and requires same-origin /admin referer (R-6)', async () => {
+    it('strictly parses preview/livePreview query params via URLSearchParams and requires same-origin /admin referer from SERVER_URL (R-6, R-8, R-11)', async () => {
       mockDraftMode.mockResolvedValue({ isEnabled: false })
       mockStaffUser.mockResolvedValue({
         id: 2,
@@ -458,21 +467,29 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
         role: 'editor',
       })
 
-      // 1. Substring spoof ?preview=true_fake or ?not_preview=true must be rejected -> redirects to /en
+      // 1. Substring spoof ?preview=true_fake or ?not_preview=true must be rejected by real isAuthorizedArabicPreviewRequest -> redirects to /en
       const fakePreviewHeaders = new Headers({
+        cookie: 'payload-token=valid-staff-jwt',
         host: 'localhost:3000',
         'x-aljazira-pathname': '/ar',
         'x-aljazira-search': '?preview=true_fake',
       })
       await expect(
+        isAuthorizedArabicPreviewRequest(fakePreviewHeaders, false, '?preview=true_fake'),
+      ).resolves.toBe(false)
+      await expect(
         enforceArabicEnabledOrRedirect(fakePreviewHeaders, '/ar', '?preview=true_fake'),
       ).rejects.toThrow('NEXT_REDIRECT:/en?preview=true_fake')
 
-      // 2. Cross-origin referer https://evil.example/admin must be rejected -> redirects to /en
+      // 2. Cross-origin referer https://evil.example/admin (even with spoofed X-Forwarded-Host: evil.example) must be rejected (R-11)
       const crossOriginRefererHeaders = new Headers({
+        cookie: 'payload-token=valid-staff-jwt',
         host: 'localhost:3000',
+        'x-forwarded-host': 'evil.example',
+        'x-forwarded-proto': 'https',
         referer: 'https://evil.example/admin/globals/home-page',
       })
+      expect(resolveExpectedRequestOrigin()).toBe('http://localhost:3000')
       expect(
         isSameOriginAdminReferer(
           'https://evil.example/admin/globals/home-page',
@@ -480,11 +497,15 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
         ),
       ).toBe(false)
       await expect(
+        isAuthorizedArabicPreviewRequest(crossOriginRefererHeaders, false, ''),
+      ).resolves.toBe(false)
+      await expect(
         enforceArabicEnabledOrRedirect(crossOriginRefererHeaders, '/ar', ''),
       ).rejects.toThrow('NEXT_REDIRECT:/en')
 
       // 3. Same-origin non-admin referer http://localhost:3000/en/about?from=/admin must be rejected
       const nonAdminRefererHeaders = new Headers({
+        cookie: 'payload-token=valid-staff-jwt',
         host: 'localhost:3000',
         referer: 'http://localhost:3000/en/about?from=/admin',
       })
@@ -495,11 +516,15 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
         ),
       ).toBe(false)
       await expect(
+        isAuthorizedArabicPreviewRequest(nonAdminRefererHeaders, false, ''),
+      ).resolves.toBe(false)
+      await expect(
         enforceArabicEnabledOrRedirect(nonAdminRefererHeaders, '/ar', ''),
       ).rejects.toThrow('NEXT_REDIRECT:/en')
 
-      // 4. Same-origin /admin referer http://localhost:3000/admin/globals/home-page is accepted for authenticated staff
+      // 4. Same-origin /admin referer http://localhost:3000/admin/globals/home-page is accepted for authenticated staff with cookie
       const validAdminRefererHeaders = new Headers({
+        cookie: 'payload-token=valid-staff-jwt',
         host: 'localhost:3000',
         referer: 'http://localhost:3000/admin/globals/home-page',
       })
@@ -510,19 +535,92 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
         ),
       ).toBe(true)
       await expect(
+        isAuthorizedArabicPreviewRequest(validAdminRefererHeaders, false, ''),
+      ).resolves.toBe(true)
+      await expect(
         enforceArabicEnabledOrRedirect(validAdminRefererHeaders, '/ar', ''),
       ).resolves.toBeUndefined()
 
-      // 5. Exact ?preview=true or ?livePreview=true query param is accepted for authenticated staff
+      // 5. Exact ?preview=true or ?livePreview=true query param is accepted for authenticated staff with cookie
       const exactPreviewHeaders = new Headers({
+        cookie: 'payload-token=valid-staff-jwt',
         host: 'localhost:3000',
       })
+      await expect(
+        isAuthorizedArabicPreviewRequest(exactPreviewHeaders, false, '?preview=true'),
+      ).resolves.toBe(true)
       await expect(
         enforceArabicEnabledOrRedirect(exactPreviewHeaders, '/ar', '?preview=true'),
       ).resolves.toBeUndefined()
       await expect(
         enforceArabicEnabledOrRedirect(exactPreviewHeaders, '/ar', '?livePreview=true'),
       ).resolves.toBeUndefined()
+
+      // 6. Without payload-token cookie or authorization header when draftMode is off, real isAuthorizedArabicPreviewRequest returns false immediately
+      const missingCookieHeaders = new Headers({
+        host: 'localhost:3000',
+        referer: 'http://localhost:3000/admin/globals/home-page',
+      })
+      await expect(
+        isAuthorizedArabicPreviewRequest(missingCookieHeaders, false, '?preview=true'),
+      ).resolves.toBe(false)
+    })
+
+    it('never falls back from en to ar in getFallbackLocale, so empty en + filled ar produces 0 Arabic characters on /en (R-7)', async () => {
+      expect(getFallbackLocale('ar')).toBe('en')
+      expect(getFallbackLocale('en')).toBe(false)
+
+      // Simulate Payload returning empty en fields when fallbackLocale is false (even though ar is populated in DB)
+      mockSiteSettings.mockResolvedValue({
+        id: 1,
+        companyName: '',
+        tagline: '',
+        arabicEnabled: false,
+        defaultSeo: {
+          titleSuffix: '',
+          defaultDescription: '',
+        },
+      } as SiteSetting)
+      mockHomePage.mockResolvedValue({
+        id: 1,
+        hero: {
+          enabled: true,
+          eyebrow: '',
+          title: '',
+          titleAccent: '',
+          subtitle: '',
+        },
+        meta: {
+          title: '',
+          description: '',
+        },
+      } as HomePage)
+      mockHeaders.mockResolvedValue(
+        new Headers({
+          'x-nonce': 'test-nonce-r7',
+          'x-aljazira-pathname': '/en',
+          'x-aljazira-search': '',
+        }),
+      )
+
+      const layoutMeta = await generateLayoutMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      const homeMeta = await generateHomeMetadata({
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      expect(/[\u0600-\u06FF]/.test(JSON.stringify(layoutMeta))).toBe(false)
+      expect(/[\u0600-\u06FF]/.test(JSON.stringify(homeMeta))).toBe(false)
+
+      const pageEl = await LocaleHomePage({
+        params: Promise.resolve({ locale: 'en' }),
+      })
+      const layoutEl = await LocaleRootLayout({
+        params: Promise.resolve({ locale: 'en' }),
+        children: pageEl,
+      })
+      const html = renderToStaticMarkup(layoutEl)
+      expect(/[\u0600-\u06FF]/.test(html)).toBe(false)
     })
   })
 

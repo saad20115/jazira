@@ -2,7 +2,9 @@ import { expect, test } from '@playwright/test'
 
 import { ensureE2EAdminToken, setArabicEnabledViaApi } from './global-setup'
 
-test.describe('P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5)', () => {
+test.describe('P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5, R-7, R-9, R-10)', () => {
+  test.setTimeout(120_000)
+
   let baseURL = 'http://localhost:3000'
   let adminToken = ''
 
@@ -42,6 +44,121 @@ test.describe('P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R
     })
     const arRscBody = await arRscRes.text()
     expect(/[\u0600-\u06FF]/.test(arRscBody)).toBe(false)
+
+    // R-9: Follow Next's _rsc redirect to /en and assert on the real RSC flight payload
+    const arRscFollowedRes = await request.get('/ar?_rsc=1', {
+      maxRedirects: 5,
+      headers: {
+        RSC: '1',
+        'Next-Router-State-Tree': '%5B%22%22%2C%7B%7D%5D',
+      },
+    })
+    expect(arRscFollowedRes.status()).toBe(200)
+    expect(arRscFollowedRes.headers()['content-type'] ?? '').toContain('text/x-component')
+    const arRscFlightPayload = await arRscFollowedRes.text()
+    expect(arRscFlightPayload.length).toBeGreaterThan(50)
+    expect(arRscFlightPayload).toContain('0:')
+    expect(/[\u0600-\u06FF]/.test(arRscFlightPayload)).toBe(false)
+
+    // R-7: Empty `en` + filled `ar` on site-settings produces 0 Arabic characters on `/en` with switch off
+    const origEnRes = await fetch(`${baseURL}/api/globals/site-settings?locale=en&depth=0`, {
+      headers: { Authorization: `JWT ${adminToken}` },
+    })
+    const origEnSettings = (await origEnRes.json()) as {
+      companyName?: string
+      tagline?: string
+      defaultSeo?: { titleSuffix?: string; defaultDescription?: string }
+    }
+    const origArRes = await fetch(`${baseURL}/api/globals/site-settings?locale=ar&depth=0`, {
+      headers: { Authorization: `JWT ${adminToken}` },
+    })
+    const origArSettings = (await origArRes.json()) as {
+      companyName?: string
+      tagline?: string
+      defaultSeo?: { titleSuffix?: string; defaultDescription?: string }
+    }
+    try {
+      await fetch(`${baseURL}/api/globals/site-settings?locale=ar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${adminToken}`,
+        },
+        body: JSON.stringify({
+          arabicEnabled: false,
+          companyName: 'شركة الجزيرة الإمداد الذكي للاختبار',
+          tagline: 'شريككم الهندسي الموثوق',
+          defaultSeo: {
+            titleSuffix: 'الجزيرة للاختبار',
+            defaultDescription: 'وصف عربي فقط لا يجب أن يظهر في الإنجليزية',
+          },
+        }),
+      })
+      await fetch(`${baseURL}/api/globals/site-settings?locale=en`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${adminToken}`,
+        },
+        body: JSON.stringify({
+          arabicEnabled: false,
+          companyName: 'Al Jazira for Imdad Smart Co.',
+          tagline: '',
+          defaultSeo: {
+            titleSuffix: '',
+            defaultDescription: '',
+          },
+        }),
+      })
+
+      const enHtmlWithEmptyEnRes = await request.get('/en')
+      expect(enHtmlWithEmptyEnRes.status()).toBe(200)
+      const enHtmlWithEmptyEn = await enHtmlWithEmptyEnRes.text()
+      expect(/[\u0600-\u06FF]/.test(enHtmlWithEmptyEn)).toBe(false)
+
+      const enFlightWithEmptyEnRes = await request.get('/en?_rsc=1', {
+        headers: {
+          RSC: '1',
+          'Next-Router-State-Tree': '%5B%22%22%2C%7B%7D%5D',
+        },
+      })
+      expect(enFlightWithEmptyEnRes.status()).toBe(200)
+      const enFlightWithEmptyEn = await enFlightWithEmptyEnRes.text()
+      expect(/[\u0600-\u06FF]/.test(enFlightWithEmptyEn)).toBe(false)
+    } finally {
+      await fetch(`${baseURL}/api/globals/site-settings?locale=ar`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${adminToken}`,
+        },
+        body: JSON.stringify({
+          arabicEnabled: false,
+          companyName: origArSettings.companyName || 'شركة الجزيرة الإمداد الذكي',
+          tagline: origArSettings.tagline ?? '',
+          defaultSeo: {
+            titleSuffix: origArSettings.defaultSeo?.titleSuffix ?? '',
+            defaultDescription: origArSettings.defaultSeo?.defaultDescription ?? '',
+          },
+        }),
+      })
+      await fetch(`${baseURL}/api/globals/site-settings?locale=en`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `JWT ${adminToken}`,
+        },
+        body: JSON.stringify({
+          arabicEnabled: false,
+          companyName: origEnSettings.companyName || 'Al Jazira for Imdad Smart Co.',
+          tagline: origEnSettings.tagline ?? '',
+          defaultSeo: {
+            titleSuffix: origEnSettings.defaultSeo?.titleSuffix ?? '',
+            defaultDescription: origEnSettings.defaultSeo?.defaultDescription ?? '',
+          },
+        }),
+      })
+    }
 
     // Anonymous browser visits /ar -> lands on /en with no language switcher in Navbar or Footer
     const anonContextOff = await browser.newContext({ viewport: { width: 1440, height: 900 } })
