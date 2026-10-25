@@ -116,3 +116,34 @@ for deployment (§4, Phase 6) stay in force.
 | Email | Mailpit (docker compose) | client SMTP (to be provided) |
 | URL | http://localhost:3000 | https://aljazira.co (to be confirmed) |
 | Secrets | `.env` (git-ignored) | `/opt/aljazira/.env` root-owned, `chmod 600` |
+
+## 7. Repository and 3D project (owner 2026-10-25: one private GitHub repo for the whole site; the 3D is part of the site)
+- **`3d/` holds the 3D project's core set** (source: `D:\spacelinkljazira-3d_for_site_repo\`; 178 files,
+  82 MB, with its own `SHA256SUMS.txt`):
+  - the released files in `3d/web/` (GLBs, manifest, stills);
+  - the reference viewer;
+  - the guard and compress tools;
+  - `extras-schema.md`;
+  - the Blender masters and build scripts;
+  - the textures;
+  - the Poly Haven CC0 assets (`LICENCES.md`);
+  - refs and reports.
+
+  **`3d/` is CTO-owned data** (like `seed/`). The executor never edits it. New releases come only from
+  the 3D lead, through the site CTO.
+- **`3d/.gitattributes` stays as delivered:**
+  - `* -text` keeps every byte exact. It overrides the root `* text=auto eol=lf`, and it protects
+    the release hashes and `stills_manifest.derived_from`.
+  - Git LFS handles `.glb`, `.blend`, `.png`, `.jpg`, `.webp`, `.ktx2`, `.exr`, `.hdr`, `.fbx` and
+    `.zip`.
+- **Every clone, CI job and Docker build must run `git lfs pull`.** A checkout without LFS has
+  pointer files instead of GLBs, and the asset hash check must fail loudly on that.
+- **One source of truth for the served 3D:** `3d/web/`.
+  - The site does **not** commit a second copy.
+  - A build step (P3-T5) copies the pinned release files into `public/systems/<version>/`, which is
+    git-ignored. It verifies each file against the pinned SHA-256 table and fails on any mismatch or
+    LFS pointer.
+- **Tooling ignores `3d/`:** Prettier, ESLint, tsc, Vitest and the CSS checks. A formatter must never
+  touch `3d/web/manifest.json`.
+- **No secrets in the history.** Before the first push to GitHub, the site CTO scans the full git
+  history for secrets. Pushing needs the owner's explicit OK.
