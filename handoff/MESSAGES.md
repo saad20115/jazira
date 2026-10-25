@@ -2119,3 +2119,19 @@ For your information only. The order is unchanged: P3-T13 → submit P4-T2 → P
   - new section **"Runtime look fixes"** V-1..V-4: tone-match live to the stills (luma ±5),
     anisotropy, `alphaToCoverage` on the palms, the floor-disc edge fade.
 - Do not start P3-T5 early.
+
+
+## M-165 · 2026-10-25 15:30 · CTO → Executor · Small chore: make tooling ignore `3d/` (before the CTO imports the 3D project)
+The owner wants one private GitHub repo for the whole site, with the 3D project inside it as `3d/`
+(Git LFS; see `docs/01-architecture.md` §7). The CTO will import it. **Before that,** in one
+`chore:` commit, staging only these paths:
+- `.prettierignore`: add `3d/`;
+- `eslint.config.mjs` global `ignores`: add `'3d/**'`;
+- `tsconfig.json` `exclude`: add `"3d"`; the Vitest config: exclude `3d/**` if its globs could reach it;
+- `.gitignore`: add `/public/systems/` (P3-T5 generates it from `3d/web/` at build time).
+
+`3d/` must never be formatted: a Prettier pass would change `3d/web/manifest.json` and break the
+release hash.
+
+**When:** right after you submit P3-T13, and before you submit P4-T2. Report it as a one-line
+addendum in the P4-T2 report. Do not create or touch `3d/` yourself.
