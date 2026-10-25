@@ -4,17 +4,16 @@
     visibility: visible;
     pointer-events: auto;
   }
-  76% {
+  82% {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
   }
-  89.9% {
+  99.9% {
     opacity: 0;
     visibility: visible;
     pointer-events: none;
   }
-  90%,
   100% {
     opacity: 0;
     visibility: hidden;
@@ -27,7 +26,7 @@
     opacity: 0.45;
     transform: scale(0.42);
   }
-  22%,
+  18%,
   100% {
     opacity: 1;
     transform: scale(1);
@@ -36,11 +35,11 @@
 
 @keyframes introLogoTimeline {
   0%,
-  4% {
+  3% {
     opacity: 0;
     transform: scale(0.68);
   }
-  22%,
+  18%,
   100% {
     opacity: 1;
     transform: scale(1);
@@ -49,11 +48,11 @@
 
 @keyframes introRuleTimeline {
   0%,
-  8% {
+  6% {
     opacity: 0;
     transform: scaleX(0);
   }
-  28%,
+  22%,
   100% {
     opacity: 1;
     transform: scaleX(1);
@@ -62,11 +61,11 @@
 
 @keyframes introTaglineTimeline {
   0%,
-  10% {
+  8% {
     opacity: 0;
     transform: translateY(6px);
   }
-  30%,
+  24%,
   100% {
     opacity: 0.7;
     transform: translateY(0);

@@ -1454,6 +1454,7 @@ export async function runP3T4Evidence({
           })
 
           await introLocator.waitFor({ state: 'hidden', timeout: 2500 })
+          await videoPage.waitForTimeout(30)
           const totalElapsedMs = Date.now() - t0
           const afterDismissCheck = await videoPage.evaluate(() => ({
             storageAfterFirstLoad: window.sessionStorage.getItem('aljazira_intro_seen'),
@@ -1759,11 +1760,15 @@ export async function runP3T4Evidence({
       for (const loc of ['en', 'ar']) {
         const blkCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
         const blkPage = await blkCtx.newPage()
-        await blkPage.route('**/_next/static/chunks/**', (route) => route.abort())
+        await blkPage.route('**/_next/static/chunks/**/*.js*', (route) => route.abort())
         await blkPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
-        await blkPage
-          .locator('[data-component="intro-splash"]')
-          .waitFor({ state: 'visible', timeout: 1500 })
+        const blkIntro = blkPage.locator('[data-component="intro-splash"]')
+        await blkIntro.waitFor({ state: 'visible', timeout: 1500 })
+        await blkPage.evaluate(() => {
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur()
+          }
+        })
         await blkPage.keyboard.press('Tab')
         const duringBlockedIntro = await blkPage.evaluate(() => {
           const skipLink = document.querySelector('body > a[href="#main-content"]')
@@ -1771,6 +1776,7 @@ export async function runP3T4Evidence({
           const homeContent = document.querySelector('[data-home-content="true"]')
           const footer = document.querySelector('footer')
           const sections = Array.from(document.querySelectorAll('[data-home-section]'))
+          const activeEl = document.activeElement
           return {
             sectionCount: sections.length,
             hiddenSections: sections.filter((el) => window.getComputedStyle(el).display === 'none')
@@ -1781,11 +1787,12 @@ export async function runP3T4Evidence({
             headerInert: Boolean(header?.hasAttribute('inert')),
             homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
             footerInert: Boolean(footer?.hasAttribute('inert')),
-            activeElementAfterTabIsSkipButton:
-              document.activeElement?.getAttribute('data-intro-skip') === 'true',
+            activeElementAfterTabIsSkipButton: activeEl?.getAttribute('data-intro-skip') === 'true',
+            activeElementInsideInert: Boolean(activeEl?.closest('[inert]')),
           }
         })
-        await blkPage.waitForTimeout(1350)
+        await blkIntro.waitFor({ state: 'hidden', timeout: 2500 })
+        await blkPage.waitForTimeout(50)
         const afterBlockedIntro = await blkPage.evaluate(() => ({
           htmlDataIntro: document.documentElement.dataset.intro ?? null,
           inertCountAfterFinish: document.querySelectorAll('[inert]').length,
