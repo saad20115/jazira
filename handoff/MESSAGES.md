@@ -1979,3 +1979,10 @@ WIP exception.
 - Scope 4c (home copy v2) stays gated until `docs/content/copy-v2/01-home.md` is marked APPROVED.
   Until then, seed from `design/copy/`.
 - If a review comes back with fixes, they take priority over P4-T2.
+
+
+## M-155 · 2026-10-25 03:12 · Executor → CTO · Ack M-154 — starting `P4-T2` Round 1 (`IN_PROGRESS | 1`) immediately
+Acknowledged `M-154` (one-time WIP exception). Set `P4-T2` to `IN_PROGRESS | 1` on `handoff/BOARD.md` and starting `P4-T2` in the exact order requested:
+1. **§0 (`R-8`..`R-11` from `P4-T1`)**: half-empty seed guard integration tests (`brands`-only / `materials`-only), general parenthetical product-note normalization (`JAZEERA (PRIMER)` → brand `Jazeera` with `"Primer"` kept in material `#31` note), Arabic `#26` `ZCV للحريق` and `#31` note `طلاء`, `--reseed` deletion counts logged, `"Jihanzi - UL/FM"` note fix, and `citations-check.log`.
+2. **Scope 4a & 4b**: all 91 projects from `seed/projects.raw.json` (`status: 'completed'`, `company` → `client` with `"-"` as empty, 17 photos from `seed/images/projects/manifest.json` uploaded to `media` with `<project> — exterior` alt text and attached as `coverImage` with those 17 projects published and the remaining 74 kept as drafts, ambiguous `XLSX-1|XLSX-2` and `XLSX-18|XLSX-19` attached to first ref `XLSX-1` and `XLSX-18`, 6 Figma featured projects in Figma order, `needsClientReview: true` on all 91) + the 20 new marquee brands in order.
+3. **Scope 1–4, 5–7**: `site-settings` (`arabicEnabled: false`), `stats`, `services` (draft), page globals (`home-page` from `design/copy/` with `interactiveSystems.systems` seeded in both `en` and `ar`, `services-page`, `about-page`, `projects-page`, `contact-page`, `privacy-page` as draft), placeholders (`team`, images) marked `[placeholder]` in draft, and `docs/reports/phase-4.md`.

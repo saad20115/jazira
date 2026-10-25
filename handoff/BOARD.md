@@ -35,7 +35,7 @@ watch the channel.
 | P3-T12 | English default + admin Arabic switch | IN_REVIEW | 2 | 2026-10-25 | Antigravity |
 | A-1 | 3D asset production (external) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
-| P4-T2 | Settings, services, copy, placeholders seed | TODO | 0 | 2026-10-21 | CTO |
+| P4-T2 | Settings, services, copy, placeholders seed | IN_PROGRESS | 1 | 2026-10-25 | Antigravity |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |
 | P5-T2 | Email job, staff workflow, CSV export, retention | TODO | 0 | 2026-10-21 | CTO |
 | P5-T3 | CANCELLED — Odoo integration removed (owner 2026-10-23) | DEFERRED | 0 | 2026-10-21 | CTO |
