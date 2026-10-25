@@ -2,6 +2,7 @@
 
 import {
   type FocusEvent,
+  type KeyboardEvent,
   type PointerEvent,
   type ReactElement,
   type ReactNode,
@@ -18,6 +19,7 @@ import { ArrowUpRightIcon, CubeIcon } from '@/components/icons'
 
 import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
+import { LiveLabels, type LiveLabelSink } from './LiveLabels'
 import type { SystemRelatedProjects } from './relatedProjects'
 import { DPR_CAP, LIVE_LOOK, type LiveLook, RELEASE_BASE_PATH } from './renderContract'
 import { StillLabels } from './StillLabels'
@@ -30,6 +32,13 @@ type Phase = 'still' | 'loading' | 'live' | 'stills'
 
 /** A start that has not rendered its first frame by then falls back to the stills tier. */
 const START_TIMEOUT_MS = 45_000
+
+/** Keyboard steps (card focused): arrows orbit, +/- zoom. */
+const KEY_ROTATE = 0.15
+const KEY_ZOOM_IN = 0.85
+const KEY_ZOOM_OUT = 1 / KEY_ZOOM_IN
+/** How long the "Drag to rotate" hint stays after the first activation. */
+const HINT_MS = 3200
 
 const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
 const STILL_SIZES = '(max-width: 1279px) 100vw, 600px'
@@ -51,6 +60,8 @@ export interface SystemsCardProps {
   /** The system entered through the accordion or the URL hash, if any. */
   entered: SystemId | null
   onExitSystem: () => void
+  /** Keys 1–5: enter the system of that accordion row. */
+  onSelectRow: (index: number) => void
   related: SystemRelatedProjects | null
   relatedHeading: string
   strings: Systems3dStrings
@@ -127,6 +138,7 @@ export function SystemsCard({
   liveLabel,
   entered,
   onExitSystem,
+  onSelectRow,
   related,
   relatedHeading,
   strings,
@@ -138,6 +150,13 @@ export function SystemsCard({
   const [phase, setPhase] = useState<Phase>('still')
   const [session, setSession] = useState(0)
   const [active, setActive] = useState(false)
+  const [hint, setHint] = useState(false)
+  const hintShownRef = useRef(false)
+  const labelSinkRef = useRef<LiveLabelSink | null>(null)
+  const enteredRef = useRef(entered)
+  useEffect(() => {
+    enteredRef.current = entered
+  }, [entered])
 
   const startLive = useCallback((): void => {
     if (phase !== 'still') {
@@ -197,10 +216,16 @@ export function SystemsCard({
             setPhase('live')
           },
           onFailure: fallBack,
+          onLabels: (labels) => {
+            labelSinkRef.current?.(labels)
+          },
         }),
       )
       .then((handle) => {
         viewerRef.current = handle
+        if (enteredRef.current) {
+          handle.setSystem(enteredRef.current)
+        }
       })
       .catch(() => {
         if (!controller.signal.aborted) {
@@ -214,12 +239,35 @@ export function SystemsCard({
     }
   }, [session])
 
+  // The live view follows the entered system (camera flight); the stills overlay covers the rest.
+  useEffect(() => {
+    if (phase === 'live') {
+      viewerRef.current?.setSystem(entered)
+    }
+  }, [phase, entered])
+
   const activate = useCallback((): void => {
     if (phase === 'live' && !active) {
       setActive(true)
       viewerRef.current?.setActive(true)
+      if (!hintShownRef.current) {
+        hintShownRef.current = true
+        setHint(true)
+      }
     }
   }, [phase, active])
+
+  useEffect(() => {
+    if (!hint) {
+      return
+    }
+    const timer = window.setTimeout(() => {
+      setHint(false)
+    }, HINT_MS)
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [hint])
 
   const deactivate = useCallback((): void => {
     setActive(false)
@@ -236,8 +284,8 @@ export function SystemsCard({
         deactivate()
       }
     }
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
+    const onKeyDown = (event: globalThis.KeyboardEvent): void => {
+      if (event.key === 'Escape' && !enteredRef.current) {
         deactivate()
       }
     }
@@ -265,6 +313,70 @@ export function SystemsCard({
     activate()
   }
 
+  // Keyboard (card focused): arrows rotate, +/- zoom, 0 resets, 1-5 enter systems, Escape exits the
+  // system first and then deactivates. Keys are handled only on the card itself, never on its
+  // buttons or links, so page keyboard navigation is untouched.
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
+    if (event.target !== event.currentTarget) {
+      return
+    }
+    const viewer = phase === 'live' ? viewerRef.current : null
+    const actions: Record<string, (() => void) | undefined> = {
+      ArrowLeft: viewer
+        ? () => {
+            viewer.rotateBy(KEY_ROTATE, 0)
+          }
+        : undefined,
+      ArrowRight: viewer
+        ? () => {
+            viewer.rotateBy(-KEY_ROTATE, 0)
+          }
+        : undefined,
+      ArrowUp: viewer
+        ? () => {
+            viewer.rotateBy(0, -KEY_ROTATE)
+          }
+        : undefined,
+      ArrowDown: viewer
+        ? () => {
+            viewer.rotateBy(0, KEY_ROTATE)
+          }
+        : undefined,
+      '+': viewer
+        ? () => {
+            viewer.zoomBy(KEY_ZOOM_IN)
+          }
+        : undefined,
+      '=': viewer
+        ? () => {
+            viewer.zoomBy(KEY_ZOOM_IN)
+          }
+        : undefined,
+      '-': viewer
+        ? () => {
+            viewer.zoomBy(KEY_ZOOM_OUT)
+          }
+        : undefined,
+      '0': viewer
+        ? () => {
+            viewer.resetView()
+          }
+        : undefined,
+      Escape: entered ? onExitSystem : undefined,
+    }
+    const digit = /^[1-5]$/.test(event.key) ? Number(event.key) - 1 : -1
+    const action =
+      digit >= 0
+        ? () => {
+            onSelectRow(digit)
+          }
+        : actions[event.key]
+    if (action) {
+      event.preventDefault()
+      action()
+    }
+  }
+
   const showCanvas = phase === 'loading' || phase === 'live'
   const showLiveControls = hydrated && phase !== 'stills'
 
@@ -277,6 +389,7 @@ export function SystemsCard({
       data-viewer-state={phase}
       onClick={activate}
       onFocus={onFocus}
+      onKeyDown={onKeyDown}
       onPointerEnter={onPointerEnter}
       ref={cardRef}
       tabIndex={phase === 'live' ? 0 : undefined}
@@ -287,7 +400,10 @@ export function SystemsCard({
       {showCanvas ? (
         <canvas aria-label={liveLabel} className={styles.liveCanvas} ref={canvasRef} role="img" />
       ) : null}
-      {entered ? (
+      {phase === 'live' && entered ? (
+        <LiveLabels cardRef={cardRef} sinkRef={labelSinkRef} strings={strings} />
+      ) : null}
+      {entered && phase !== 'live' ? (
         <div className={styles.enteredLayer} data-entered-system={entered} key={entered}>
           <picture className={styles.stillPicture}>
             <source
@@ -315,29 +431,81 @@ export function SystemsCard({
           {badgeLabel}
         </span>
       ) : null}
-      {entered ? (
-        <button
-          className={`${styles.openModelButton} t-label-button`}
-          data-exit-system="true"
-          data-label-obstacle="true"
-          onClick={(event) => {
-            event.stopPropagation()
-            onExitSystem()
-          }}
-          type="button"
-        >
-          {strings.exitSystem}
-        </button>
-      ) : showLiveControls ? (
-        <button
-          className={`${styles.openModelButton} t-label-button`}
-          data-open-3d-model="true"
-          onClick={onOpen}
-          type="button"
-        >
-          {openLabel}
-          <ArrowUpRightIcon aria-hidden="true" />
-        </button>
+      {entered || showLiveControls ? (
+        <div className={styles.cardControls} data-label-obstacle="true">
+          {entered ? (
+            <button
+              className={`${styles.openModelButton} t-label-button`}
+              data-exit-system="true"
+              onClick={(event) => {
+                event.stopPropagation()
+                onExitSystem()
+              }}
+              type="button"
+            >
+              {strings.exitSystem}
+            </button>
+          ) : (
+            <button
+              className={`${styles.openModelButton} t-label-button`}
+              data-open-3d-model="true"
+              onClick={onOpen}
+              type="button"
+            >
+              {openLabel}
+              <ArrowUpRightIcon aria-hidden="true" />
+            </button>
+          )}
+          {phase === 'live' ? (
+            <>
+              <button
+                aria-label={strings.zoomIn}
+                className={`${styles.viewControl} ${styles.viewControlZoomIn}`}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  viewerRef.current?.zoomBy(KEY_ZOOM_IN)
+                }}
+                type="button"
+              />
+              <button
+                aria-label={strings.zoomOut}
+                className={`${styles.viewControl} ${styles.viewControlZoomOut}`}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  viewerRef.current?.zoomBy(KEY_ZOOM_OUT)
+                }}
+                type="button"
+              />
+              <button
+                aria-label={strings.resetView}
+                className={`${styles.viewControl} ${styles.viewControlReset}`}
+                onClick={(event) => {
+                  event.stopPropagation()
+                  viewerRef.current?.resetView()
+                }}
+                type="button"
+              />
+              {active ? (
+                <button
+                  className={`${styles.doneButton} t-label-button`}
+                  data-done="true"
+                  onClick={(event) => {
+                    event.stopPropagation()
+                    deactivate()
+                  }}
+                  type="button"
+                >
+                  {strings.done}
+                </button>
+              ) : null}
+            </>
+          ) : null}
+        </div>
+      ) : null}
+      {hint ? (
+        <p aria-live="polite" className={`${styles.dragHint} t-caption`} role="status">
+          {strings.dragHint}
+        </p>
       ) : null}
       {entered && related && related.projects.length > 0 ? (
         <aside

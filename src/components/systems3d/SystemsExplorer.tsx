@@ -120,6 +120,9 @@ export function SystemsExplorer({
         entered={entered}
         liveLabel={posterAlt}
         onExitSystem={exitSystem}
+        onSelectRow={(idx) => {
+          toggle(idx, true)
+        }}
         openLabel={openLabel}
         related={entered ? (related[entered] ?? null) : null}
         relatedHeading={relatedHeading}

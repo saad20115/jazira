@@ -28,6 +28,7 @@ import {
   Quaternion,
   Scene,
   ShaderChunk,
+  Spherical,
   SphereGeometry,
   SRGBColorSpace,
   Texture,
@@ -49,6 +50,7 @@ import {
   ContractError,
   type NightGlowExtras,
   SYSTEM_IDS,
+  type SystemId,
   type ValidatedExtras,
   validateExtras,
 } from '../contract'
@@ -74,6 +76,7 @@ import {
   PMREM,
 } from '../renderContract'
 import { inlineBasisuPlugin } from './inlineBasisuPlugin'
+import { createSystemStage, type ProjectedLabel } from './systemStage'
 import { UrlWorkerKTX2Loader } from './UrlWorkerKTX2Loader'
 
 export type ViewerFailure = 'context-lost' | 'render-error'
@@ -98,6 +101,8 @@ export interface ViewerOptions {
   onFirstFrame: () => void
   /** Called on a failure after the first frame (the caller falls back to the stills tier). */
   onFailure: (reason: ViewerFailure) => void
+  /** Projected hotspot labels of the entered system after each frame (null when none). */
+  onLabels?: (labels: ProjectedLabel[] | null) => void
 }
 
 export interface ViewerStats {
@@ -114,6 +119,13 @@ export interface ViewerStats {
 export interface ViewerHandle {
   /** Active = the visitor clicked, tapped or focused the card: drag and zoom go to the camera. */
   setActive: (active: boolean) => void
+  /** Enter a system (camera flight) or go back to the overview (null). */
+  setSystem: (system: SystemId | null) => void
+  resetView: () => void
+  /** Multiplies the camera distance (within the current orbit limits). */
+  zoomBy: (factor: number) => void
+  /** Orbits by these angles in radians (within the current polar limits). */
+  rotateBy: (azimuth: number, polar: number) => void
   stats: () => ViewerStats
   dispose: () => void
 }
@@ -436,9 +448,10 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   options.signal.addEventListener('abort', cleanup, { once: true })
 
   let extras: ValidatedExtras
+  let gltf: GLTF
   let nodes: Map<string, Object3D>
   try {
-    const gltf = await loadWithTranscodeWatchdog(loader, MODEL_FILES[tier])
+    gltf = await loadWithTranscodeWatchdog(loader, MODEL_FILES[tier])
     if (isDisposed()) {
       throw new ContractError('disposed while loading')
     }
@@ -576,8 +589,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
 
   let cssWidth = 1
   let cssHeight = 1
+  let lensShift = cameraLimits.heroShiftY
   const applyViewOffset = (): void => {
-    const view = coverViewOffset(cssWidth, cssHeight, cameraLimits.heroShiftY)
+    const view = coverViewOffset(cssWidth, cssHeight, lensShift)
     camera.aspect = 1
     camera.setViewOffset(
       view.fullWidth,
@@ -654,13 +668,36 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   let wakeTimer = 0
   let lastFrameAt: number | null = null
 
+  let active = false
+  const setTurntableAngle = (angle: number): void => {
+    turntableAngle = angle
+    spin.setFromAxisAngle(yAxis, turntableAngle)
+    turntableNode.quaternion.copy(turntableBase).multiply(spin)
+  }
+  const stage = createSystemStage({
+    gltf,
+    nodes,
+    materials,
+    extras,
+    camera,
+    controls,
+    heroQuaternion,
+    setShift: (shiftY) => {
+      lensShift = shiftY
+      applyViewOffset()
+    },
+    turntable: { getAngle: () => turntableAngle, setAngle: setTurntableAngle },
+    reducedMotion: options.reducedMotion,
+  })
+  let labelsShown = false
+
   const mayTurn = (now: number): boolean =>
     turntableMayTurn({
       reducedMotion: options.reducedMotion,
       tabVisible: document.visibilityState === 'visible',
       onScreen,
-      systemEntered: false,
-      moving: false,
+      systemEntered: stage.entered !== null,
+      moving: stage.moving,
       sinceInputS: (now - lastInputAt) / 1000,
       resumeAfterS: turntable.resumeAfterS,
     })
@@ -672,7 +709,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     }
     const dt = lastFrameAt === null ? 0 : Math.min((now - lastFrameAt) / 1000, 0.1)
     lastFrameAt = now
-    let again = false
+    let again = stage.step(now, dt)
+    controls.enabled = active && !stage.moving
     if (controls.enabled && controls.update(dt)) {
       again = true
     }
@@ -681,9 +719,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       camera.lookAt(controls.target)
     }
     if (mayTurn(now)) {
-      turntableAngle = advanceTurntable(turntableAngle, turntable.rpm, dt)
-      spin.setFromAxisAngle(yAxis, turntableAngle)
-      turntableNode.quaternion.copy(turntableBase).multiply(spin)
+      setTurntableAngle(advanceTurntable(turntableAngle, turntable.rpm, dt))
       again = true
     }
     try {
@@ -691,6 +727,11 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     } catch {
       fail('render-error')
       return
+    }
+    const labels = stage.labels(cssWidth, cssHeight)
+    if (labels || labelsShown) {
+      options.onLabels?.(labels)
+      labelsShown = labels !== null
     }
     if (again) {
       invalidate()
@@ -798,8 +839,57 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
 
   return {
     setActive(next: boolean) {
-      controls.enabled = next
+      active = next
+      controls.enabled = next && !stage.moving
       canvas.style.setProperty('touch-action', next ? 'none' : 'pan-y pinch-zoom')
+      lastInputAt = performance.now()
+      invalidate()
+    },
+    setSystem(system: SystemId | null) {
+      stage.request(system)
+      lastInputAt = performance.now()
+      invalidate()
+    },
+    resetView() {
+      if (stage.moving) {
+        return
+      }
+      const limits = stage.entered ? extras.systems[stage.entered].orbitLimits : null
+      const cam = findCamera(node(stage.entered ? `CAM_${stage.entered}` : 'CAM_hero'))
+      cam.getWorldPosition(camera.position)
+      camera.quaternion.copy(cam.getWorldQuaternion(new Quaternion()))
+      controls.target.copy(
+        limits ? new Vector3(...limits.target) : worldPosition(node('PIVOT_hero')),
+      )
+      lastInputAt = performance.now()
+      invalidate()
+    },
+    zoomBy(factor: number) {
+      if (stage.moving) {
+        return
+      }
+      const offset = camera.position.clone().sub(controls.target)
+      const distance = Math.min(
+        controls.maxDistance,
+        Math.max(controls.minDistance, offset.length() * factor),
+      )
+      camera.position.copy(controls.target).add(offset.setLength(distance))
+      lastInputAt = performance.now()
+      invalidate()
+    },
+    rotateBy(azimuth: number, polar: number) {
+      if (stage.moving) {
+        return
+      }
+      const offset = camera.position.clone().sub(controls.target)
+      const spherical = new Spherical().setFromVector3(offset)
+      spherical.theta += azimuth
+      spherical.phi = Math.min(
+        controls.maxPolarAngle,
+        Math.max(controls.minPolarAngle, spherical.phi + polar),
+      )
+      camera.position.copy(controls.target).add(new Vector3().setFromSpherical(spherical))
+      camera.lookAt(controls.target)
       lastInputAt = performance.now()
       invalidate()
     },
