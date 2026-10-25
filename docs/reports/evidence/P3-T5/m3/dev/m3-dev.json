@@ -1,0 +1,56 @@
+{
+ "provenance": {
+  "head": "188adf58588926ea41d4fdfdd5dd9a261bd78b3b",
+  "dirty": [
+   "M src/components/systems3d/SystemsCard.tsx",
+   " M src/components/systems3d/viewer/createViewer.ts",
+   "?? scripts/evidence/p3-t5-m3-evidence.mjs"
+  ],
+  "mode": "dev",
+  "base": "http://localhost:3170",
+  "startedAt": "2026-10-25T16:36:43.100Z",
+  "endedAt": "2026-10-25T16:38:36.692Z"
+ },
+ "crops": [
+  {
+   "name": "v2-facade-before",
+   "query": "?fixes=-aniso",
+   "state": "live"
+  },
+  {
+   "name": "v2-facade-after",
+   "query": "",
+   "state": "live"
+  },
+  {
+   "name": "v2-crown-before",
+   "query": "?fixes=-aniso",
+   "state": "live"
+  },
+  {
+   "name": "v2-crown-after",
+   "query": "",
+   "state": "live"
+  },
+  {
+   "name": "v3-palms-before",
+   "query": "?fixes=-a2c",
+   "state": "live"
+  },
+  {
+   "name": "v3-palms-after",
+   "query": "",
+   "state": "live"
+  },
+  {
+   "name": "v4-plinth-before",
+   "query": "?look=0.84,1,0.78,0.4,1",
+   "state": "live"
+  },
+  {
+   "name": "v4-plinth-after",
+   "query": "",
+   "state": "live"
+  }
+ ]
+}

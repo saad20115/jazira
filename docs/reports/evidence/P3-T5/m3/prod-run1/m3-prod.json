@@ -1,0 +1,309 @@
+{
+ "provenance": {
+  "head": "188adf58588926ea41d4fdfdd5dd9a261bd78b3b",
+  "dirty": [
+   "M src/components/systems3d/SystemsCard.tsx",
+   " M src/components/systems3d/viewer/createViewer.ts",
+   "?? docs/reports/evidence/P3-T5/m3/",
+   "?? scripts/evidence/p3-t5-m3-evidence.mjs"
+  ],
+  "mode": "prod",
+  "base": "http://localhost:3170",
+  "startedAt": "2026-10-25T16:44:45.532Z",
+  "endedAt": "2026-10-25T16:46:07.146Z"
+ },
+ "swaps": [
+  {
+   "name": "swap-1440-dpr1",
+   "trigger": "hover",
+   "state": "live",
+   "msToOutcome": 3802,
+   "still": {
+    "size": [
+     600,
+     580
+    ],
+    "meanLuma": 70.6,
+    "top": [
+     44.2,
+     53.1,
+     68.7
+    ],
+    "floor": [
+     54,
+     64.4,
+     81.5
+    ]
+   },
+   "live": {
+    "size": [
+     600,
+     580
+    ],
+    "meanLuma": 68.9,
+    "top": [
+     43.3,
+     51.7,
+     66.2
+    ],
+    "floor": [
+     57.7,
+     67.1,
+     84.3
+    ]
+   },
+   "v1": {
+    "dLuma": -1.7,
+    "dTop": [
+     -0.9,
+     -1.4,
+     -2.5
+    ],
+    "dFloor": [
+     3.7,
+     2.7,
+     2.8
+    ]
+   },
+   "alignment": {
+    "dx": 0,
+    "dy": 0,
+    "score": 0.9198
+   },
+   "requests3dBeforeIntent": [],
+   "requestsAfterIntent": [
+    "/_next/static/chunks/1x5qq8ivlnbfr.js",
+    "/_next/static/chunks/2nfhwdtzrd0ln.js",
+    "/systems/v022n/tower-lite.glb",
+    "/systems/v022n/basis/basis_transcoder.wasm",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js"
+   ],
+   "cspViolations": [],
+   "console": [
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[page:warning] THREE.WebGLProgram: Program Info Log: (210,86-138): warning X4122: sum of 0.996094 and -2.98545e-017 cannot be represented accurately in double precision\n(209,39-65): warning X4122: sum of 1 and -1.49272e-017 cannot be represented accurately in double precision\n(210,87-113): warning X4122: sum of 1 and -1.49272e-017 cannot be represented accurately in double precision\n(209,39-65): warning X4122: sum of 1 and -1.66644e-018 cannot be represented accurately in double precision\n(210,87-113): warning X4122: sum of 1 and -1.66644e-018 cannot be represented accurately in double precision"
+   ]
+  },
+  {
+   "name": "swap-1440-dpr2",
+   "trigger": "hover",
+   "state": "live",
+   "msToOutcome": 2138,
+   "still": {
+    "size": [
+     1200,
+     1160
+    ],
+    "meanLuma": 70.6,
+    "top": [
+     44,
+     53.2,
+     68.6
+    ],
+    "floor": [
+     53.9,
+     64.3,
+     81.4
+    ]
+   },
+   "live": {
+    "size": [
+     1200,
+     1160
+    ],
+    "meanLuma": 68.8,
+    "top": [
+     43.3,
+     51.8,
+     66.3
+    ],
+    "floor": [
+     57.7,
+     67.1,
+     84.3
+    ]
+   },
+   "v1": {
+    "dLuma": -1.8,
+    "dTop": [
+     -0.7,
+     -1.4,
+     -2.3
+    ],
+    "dFloor": [
+     3.8,
+     2.8,
+     2.9
+    ]
+   },
+   "alignment": {
+    "dx": 0,
+    "dy": 0,
+    "score": 0.8959
+   },
+   "requests3dBeforeIntent": [],
+   "requestsAfterIntent": [
+    "/_next/static/chunks/1x5qq8ivlnbfr.js",
+    "/_next/static/chunks/2nfhwdtzrd0ln.js",
+    "/systems/v022n/tower-lite.glb",
+    "/systems/v022n/basis/basis_transcoder.wasm",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js"
+   ],
+   "cspViolations": [],
+   "console": [
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js"
+   ]
+  },
+  {
+   "name": "swap-390-phone",
+   "trigger": "tap",
+   "state": "live",
+   "msToOutcome": 1372,
+   "still": {
+    "size": [
+     1074,
+     1080
+    ],
+    "meanLuma": 70.7,
+    "top": [
+     44,
+     53.2,
+     68.6
+    ],
+    "floor": [
+     54.1,
+     64.7,
+     81.7
+    ]
+   },
+   "live": {
+    "size": [
+     1074,
+     1080
+    ],
+    "meanLuma": 69.1,
+    "top": [
+     42.8,
+     51.2,
+     65.6
+    ],
+    "floor": [
+     57.9,
+     67.3,
+     84.5
+    ]
+   },
+   "v1": {
+    "dLuma": -1.6,
+    "dTop": [
+     -1.2,
+     -2,
+     -3
+    ],
+    "dFloor": [
+     3.8,
+     2.6,
+     2.8
+    ]
+   },
+   "alignment": {
+    "dx": 1,
+    "dy": 0,
+    "score": 0.7973
+   },
+   "requests3dBeforeIntent": [],
+   "requestsAfterIntent": [
+    "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fsofitel-makkah-hotel-800x593.webp&w=1200&q=75",
+    "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fal-maqam-towers-800x595.webp&w=1200&q=75",
+    "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fproj-tower-1200x896.webp&w=1200&q=75",
+    "/_next/static/chunks/1x5qq8ivlnbfr.js",
+    "/_next/static/chunks/2nfhwdtzrd0ln.js",
+    "/systems/v022n/tower-lite.glb",
+    "/systems/v022n/basis/basis_transcoder.wasm",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js",
+    "/systems/v022n/basis/ktx2-worker.js"
+   ],
+   "cspViolations": [],
+   "console": [
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+    "[worker:start] /systems/v022n/basis/ktx2-worker.js"
+   ]
+  }
+ ],
+ "systems": {
+  "viewerState": "live",
+  "visits": [
+   {
+    "id": "hvac",
+    "entered": "hvac",
+    "hash": "#systems-hvac",
+    "labels": 5
+   },
+   {
+    "id": "fire",
+    "entered": "hvac",
+    "hash": "#systems-hvac",
+    "labels": 5
+   },
+   {
+    "id": "plumbing",
+    "entered": "fire",
+    "hash": "#systems-fire",
+    "labels": 5
+   },
+   {
+    "id": "power",
+    "entered": "fire",
+    "hash": "#systems-fire",
+    "labels": 5
+   },
+   {
+    "id": "smart",
+    "entered": "plumbing",
+    "hash": "#systems-plumbing",
+    "labels": 3
+   }
+  ],
+  "cspViolations": [],
+  "console": [
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js"
+  ]
+ },
+ "negative": {
+  "workerCsp": "broken on purpose: no 'unsafe-eval' in the worker's own policy",
+  "state": "stills",
+  "msToOutcome": 45091,
+  "canvasesLeft": 0,
+  "posterVisible": true,
+  "cspViolationsOnPage": [],
+  "console": [
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[worker:start] /systems/v022n/basis/ktx2-worker.js",
+   "[page:pageerror] Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'wasm-unsafe-eval'\".\n",
+   "[page:pageerror] Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'wasm-unsafe-eval'\".\n",
+   "[page:pageerror] Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'wasm-unsafe-eval'\".\n",
+   "[page:pageerror] Evaluating a string as JavaScript violates the following Content Security Policy directive because 'unsafe-eval' is not an allowed source of script: script-src 'self' 'wasm-unsafe-eval'\".\n"
+  ]
+ }
+}
