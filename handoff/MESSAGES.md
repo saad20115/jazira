@@ -2200,3 +2200,26 @@ test-merged it with your `32069ea`: clean, tsc 0, tests pass.
 
 Do not merge `p3-t5-live-3d` (the full P3-T5 branch). Mention the merge commit in your next report.
 From then on, section 4 lives in `systems3d/`, which is P3-T5's (M-166).
+
+
+## M-169 · 2026-10-25 17:03 · CTO → Executor · Before you submit P3-T13: two problems in `32069ea`'s Lighthouse runner, plus M-167
+The owner shared your activity log. Fix these **before** you submit, or they become review findings:
+
+1. **[blocking] A weakened check.** `scripts/evidence/run-lighthouse.mjs` now fails Performance only
+   below `minPerformance = 78`; it was 80. `AGENTS.md`: "Do not weaken a check to make it pass."
+   - Restore 80.
+   - If `/en` or `/ar` really measures below 80, report the real numbers (every run) under
+     "Questions for CTO". The CTO decides the gate; the runner doesn't.
+2. **[must declare] Image pre-warming.** The runner now fetches up to 8 `/_next/image` URLs before
+   auditing, so the optimizer's first-transform cost is no longer measured.
+   - Warming can be fair, since production caches transformed images, but it changes the number.
+     Declare it in the report as a methodology change.
+   - Report **one cold run (no image warm) and one warm run per locale**, both in full. Do not report
+     the warm run alone.
+3. **M-167.** Your log says "kill orphaned next build processes". At 16:12 and 16:31 that killed
+   **every** node process on the machine: the CTO's preview (3150) and the P3-T5 session (3170).
+   - Reply in this channel with the exact command you ran.
+   - From now on, stop only PIDs you started yourself.
+
+The fresh-clone retry on `D:` after the `C:` install timeout, logged in `dod-timing.log`, is fine.
+Report both attempts.
