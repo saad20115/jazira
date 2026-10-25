@@ -1,0 +1,2271 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+dd5b90c778f907947c3666314436c96db26cde13
+$ pnpm test:e2e
+
+> aljazira-website@0.1.0 test:e2e C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+> playwright test
+
+
+Running 3 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\admin-smoke.spec.ts:9:3 › Payload Admin Login Smoke (en LTR & ar RTL) › renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language (10.0s)
+  ok 2 [chromium] › tests\e2e\p3-t12.e2e.spec.ts:20:3 › P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5) › switch off redirects /ar -> 307 /en with no switcher and zero Arabic in 307/RSC bodies; admin toggle in /admin/globals/site-settings turns /ar live (200 RTL) with switcher (18.7s)
+  ok 3 [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click (11.7s)
+
+  3 passed (1.6m)
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+(node:1336) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] [browser] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+[WebServer] React will never use eval() in production mode 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] [browser] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+[WebServer] React will never use eval() in production mode 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] [browser] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+[WebServer] React will never use eval() in production mode 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import trace:
+[WebServer]   Client Component Browser:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] [browser] eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for various debugging features like reconstructing callstacks from a different environment.
+[WebServer] React will never use eval() in production mode 
+[WebServer] ⚠ ./src/styles/breakpoints.css:13:14
+[WebServer] Warning: Parsing CSS source code failed
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Unknown at rule: @custom-media
+[WebServer] 
+[WebServer] Generated code of PostCSS transform of file content of src/styles/breakpoints.css:
+[WebServer] ./src/styles/breakpoints.css:13:14
+[WebServer]   11 | @custom-media --bp-below-desktop (max-width: 1279.98px);
+[WebServer]   12 | @custom-media --bp-nav-drawer (max-width: 1023.98px);
+[WebServer] > 13 | @custom-media --bp-mobile (max-width: 767.98px);
+[WebServer]      |              ^
+[WebServer]   14 |
+[WebServer]   15 | :root {
+[WebServer]   16 |   --bp-desktop-min: 1280px;
+[WebServer] 
+[WebServer] Import traces:
+[WebServer]   #1 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/(frontend)/[locale]/layout.tsx [Server Component]
+[WebServer] 
+[WebServer]   #2 [Client Component Browser]:
+[WebServer]     ./src/styles/breakpoints.css [Client Component Browser]
+[WebServer]     ./src/styles/globals.css [Client Component Browser]
+[WebServer]     ./src/app/global-not-found.tsx [Server Component]
+[WebServer] 
+[WebServer] 
+[WebServer] [browser] Encountered a script tag while rendering React component. Scripts inside React components are never executed when rendering on the client. Consider using template tag instead (https://developer.mozilla.org/en-US/docs/Web/HTML/Element/template).
+EXIT_CODE=0 (s)

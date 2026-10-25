@@ -1,0 +1,7 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+dd5b90c778f907947c3666314436c96db26cde13
+$ node scripts/evidence/p3-t12-evidence.mjs http://localhost:3000 docs/reports/evidence/P3-T12/r2 docs/reports/phase-3/P3-T12/r2
+P3-T12 evidence capture completed successfully.
+EXIT_CODE=0 (s)

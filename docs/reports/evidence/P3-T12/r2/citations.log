@@ -1,0 +1,432 @@
+$ git grep -n -e 'canServeArabicLocaleForCurrentRequest' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:48:export async function canServeArabicLocaleForCurrentRequest(): Promise<boolean> {
+src/app/(frontend)/[locale]/layout.tsx:171:  if (locale === 'ar' && !(await canServeArabicLocaleForCurrentRequest())) {
+
+$ git grep -n -e 'isArabicEnabled' -- src/lib/cms/globals.ts
+src/lib/cms/globals.ts:71:export async function isArabicEnabled(): Promise<boolean> {
+
+$ git grep -n -e 'isAuthorizedArabicPreviewRequest' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:356:export async function isAuthorizedArabicPreviewRequest(
+
+$ git grep -n -e 'generateMetadata' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:151:export async function generateMetadata({
+
+$ git grep -n -e 'generateMetadata' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:271:export async function generateMetadata({ params }: LocaleHomePageProps): Promise<Metadata> {
+
+$ git grep -n -e 'canServeArabicLocaleForCurrentRequest' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:36:import { canServeArabicLocaleForCurrentRequest, enforceArabicEnabledOrRedirect } from './layout'
+src/app/(frontend)/[locale]/page.tsx:280:  if (locale === 'ar' && !(await canServeArabicLocaleForCurrentRequest())) {
+
+$ git grep -n -e 'generateLayoutMetadata' -- src/p3-t12-arabic-switch.test.ts
+src/p3-t12-arabic-switch.test.ts:108:  generateMetadata as generateLayoutMetadata,
+src/p3-t12-arabic-switch.test.ts:335:      const layoutMetaOff = await generateLayoutMetadata({
+src/p3-t12-arabic-switch.test.ts:375:      const arLayoutMetaOff = await generateLayoutMetadata({
+
+$ git grep -n -e 'globalSetup' -- tests/e2e/global-setup.ts
+tests/e2e/global-setup.ts:43:    throw new Error('Playwright globalSetup: could not authenticate an admin user')
+tests/e2e/global-setup.ts:122:export default async function globalSetup(config: FullConfig): Promise<void> {
+
+$ git grep -n -e 'ensureE2EAdminToken' -- tests/e2e/global-setup.ts
+tests/e2e/global-setup.ts:12:export async function ensureE2EAdminToken(baseURL: string): Promise<string> {
+tests/e2e/global-setup.ts:129:  const token = await ensureE2EAdminToken(baseURL)
+
+$ git grep -n -e 'setArabicEnabledViaApi' -- tests/e2e/global-setup.ts
+tests/e2e/global-setup.ts:75:export async function setArabicEnabledViaApi(
+tests/e2e/global-setup.ts:131:  await setArabicEnabledViaApi(baseURL, token, true)
+
+$ git grep -n -e 'globalSetup' -- playwright.config.ts
+playwright.config.ts:29:  globalSetup: './tests/e2e/global-setup.ts',
+
+$ git grep -n -e 'DEFAULT_LOCALE' -- src/collections/QuoteRequests.ts
+src/collections/QuoteRequests.ts:11:import { DEFAULT_LOCALE } from '../i18n'
+src/collections/QuoteRequests.ts:151:    locale: locale ?? DEFAULT_LOCALE,
+src/collections/QuoteRequests.ts:152:    fallbackLocale: DEFAULT_LOCALE,
+src/collections/QuoteRequests.ts:300:    const requestLocale: QuoteLocale = mutable.locale === 'ar' ? 'ar' : DEFAULT_LOCALE
+src/collections/QuoteRequests.ts:489:      defaultValue: DEFAULT_LOCALE,
+
+$ git grep -n -e 'enum_quote_requests_locale' -- src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts
+src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts:7:   ALTER TABLE "quote_requests" ALTER COLUMN "locale" SET DEFAULT 'en'::"public"."enum_quote_requests_locale";`)
+src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts:12:   ALTER TABLE "quote_requests" ALTER COLUMN "locale" SET DEFAULT 'ar'::"public"."enum_quote_requests_locale";
+
+$ git grep -n -e 'DEFAULT_LOCALE' -- src/fields/richText.ts
+src/fields/richText.ts:22:import { DEFAULT_LOCALE } from '../i18n'
+src/fields/richText.ts:535:              : DEFAULT_LOCALE
+
+$ git grep -n -e 'getDefaultInteractiveSystems' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:97:export function getDefaultInteractiveSystems(
+src/globals/HomePage.ts:189:      interactiveData.systems = getDefaultInteractiveSystems(reqLocale)
+src/globals/HomePage.ts:193:        systems: getDefaultInteractiveSystems(reqLocale),
+src/globals/HomePage.ts:487:            defaultValue: ({ locale }: { locale?: string }) => getDefaultInteractiveSystems(locale),
+
+$ git grep -n -e 'DEFAULT_LOCALE' -- src/globals/HomePage.ts
+src/globals/HomePage.ts:11:import { DEFAULT_LOCALE } from '../i18n'
+src/globals/HomePage.ts:98:  locale: string = DEFAULT_LOCALE,
+src/globals/HomePage.ts:187:    const reqLocale = typeof req.locale === 'string' ? req.locale : DEFAULT_LOCALE
+
+$ git grep -n -e 'proxy' -- src/proxy.ts
+src/proxy.ts:123: * Next.js 16 proxy (`src/proxy.ts`, `docs/01-architecture.md` §3, `docs/03-security.md` H3 & H3a,
+src/proxy.ts:138:export function proxy(request: NextRequest): NextResponse {
+
+$ git grep -n -e 'NextResponse.redirect' -- src/proxy.ts
+src/proxy.ts:185:    const redirectResponse = NextResponse.redirect(redirectUrl, 307)
+
+$ git grep -n -e 'isSameOriginAdminReferer' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:332:export function isSameOriginAdminReferer(
+src/lib/cms/client.ts:373:    secFetchDest === 'iframe' || isSameOriginAdminReferer(referer, reqHeaders) || hasPreviewParam
+
+$ git grep -n -e 'isSameOriginAdminReferer' -- src/lib/cms/index.ts
+src/lib/cms/index.ts:30:  isSameOriginAdminReferer,
+
+$ git grep -n -e 'isSameOriginAdminReferer' -- src/p3-t12-arabic-switch.test.ts
+src/p3-t12-arabic-switch.test.ts:12:import { isSameOriginAdminReferer } from '@/lib/cms/client'
+src/p3-t12-arabic-switch.test.ts:95:      isIframeRequest || isSameOriginAdminReferer(referer, reqHeaders) || hasLivePreviewParam
+src/p3-t12-arabic-switch.test.ts:477:        isSameOriginAdminReferer(
+src/p3-t12-arabic-switch.test.ts:492:        isSameOriginAdminReferer(
+src/p3-t12-arabic-switch.test.ts:507:        isSameOriginAdminReferer(
+
+$ git grep -n -e 'i18n' -- src/payload.config.ts
+src/payload.config.ts:50:  i18n: {
+
+$ git grep -n -e 'defaultLocale' -- src/payload.config.ts
+src/payload.config.ts:73:    defaultLocale: 'en',
+
+$ git grep -n -e 'localization' -- src/payload.config.ts
+src/payload.config.ts:54:  localization: {
+
+$ git grep -n -e 'SUPPORTED_LOCALES' -- src/i18n/index.ts
+src/i18n/index.ts:4:export const SUPPORTED_LOCALES = ['en', 'ar'] as const
+src/i18n/index.ts:5:export type SupportedLocale = (typeof SUPPORTED_LOCALES)[number]
+
+$ git grep -n -e 'DEFAULT_LOCALE' -- src/i18n/index.ts
+src/i18n/index.ts:6:export const DEFAULT_LOCALE: SupportedLocale = 'en'
+
+$ git grep -n -e 'DEFAULT_ADMIN_LANG' -- src/proxy.ts
+src/proxy.ts:12:export const DEFAULT_ADMIN_LANG = 'en'
+src/proxy.ts:151:      request.cookies.set(ADMIN_LANG_COOKIE, DEFAULT_ADMIN_LANG)
+src/proxy.ts:168:        value: DEFAULT_ADMIN_LANG,
+
+$ git grep -n -e 'DEFAULT_LOCALE' -- src/proxy.ts
+src/proxy.ts:7:import { DEFAULT_LOCALE, isSupportedLocale, type SupportedLocale } from './i18n'
+src/proxy.ts:108: * Defaults to `'en'` (`DEFAULT_LOCALE`) when no valid locale prefix is present.
+src/proxy.ts:112:  return isSupportedLocale(firstSegment) ? firstSegment : DEFAULT_LOCALE
+src/proxy.ts:178:  // 2. Redirect `/` -> `307 Temporary Redirect` to `/en` (`DEFAULT_LOCALE`, `R-5`)
+src/proxy.ts:180:    const redirectUrl = new URL(`/${DEFAULT_LOCALE}${search}`, request.url)
+src/proxy.ts:183:      pathname: `/${DEFAULT_LOCALE}`,
+src/proxy.ts:197:  const resolvedLocale = hasSupportedLocalePrefix ? firstSegment : DEFAULT_LOCALE
+
+$ git grep -n -e 'x-aljazira-search' -- src/proxy.ts
+src/proxy.ts:132: * 4. Propagates `x-aljazira-locale`, `x-aljazira-pathname`, and `x-aljazira-search` on request
+src/proxy.ts:203:  requestHeaders.set('x-aljazira-search', search)
+
+$ git grep -n -e 'previewQuerySchema' -- src/lib/preview.ts
+src/lib/preview.ts:30:export const previewQuerySchema = z
+src/lib/preview.ts:55:export type PreviewQueryInput = z.infer<typeof previewQuerySchema>
+
+$ git grep -n -e 'GET' -- src/app/api/preview/exit/route.ts
+src/app/api/preview/exit/route.ts:8: * `GET /api/preview/exit` (`handoff/tasks/P3-T1.md` §7, `handoff/tasks/P3-T12.md` §1):
+src/app/api/preview/exit/route.ts:13:export async function GET(request: NextRequest): Promise<NextResponse> {
+
+$ git grep -n -e 'seedMaterialsAndBrands' -- src/seed/materials.ts
+src/seed/materials.ts:1130:export async function seedMaterialsAndBrands(
+
+$ git grep -n -e 'brands' -- src/seed/materials.ts
+src/seed/materials.ts:105:  brands: PlannedBrandSeed[]
+src/seed/materials.ts:114:  brandsCreated: number
+src/seed/materials.ts:115:  brandsTotal: number
+src/seed/materials.ts:116:  brandsUnchanged: number
+src/seed/materials.ts:117:  brandsUpdated: number
+src/seed/materials.ts:136: * table (`brands` and `materials` have no foreign-key reference to `users`). Passing this
+src/seed/materials.ts:325: * Partner brands featured in the Home page Trusted Partners marquee (`design/copy/01-home.md` `18:579`,
+src/seed/materials.ts:832:  const brandsMap = new Map<string, PlannedBrandSeed>()
+src/seed/materials.ts:953:      const existingBrand = brandsMap.get(brandNorm.normalized)
+src/seed/materials.ts:966:        brandsMap.set(brandNorm.normalized, {
+src/seed/materials.ts:1012:        const b = brandsMap.get(bName)
+src/seed/materials.ts:1031:        const b = brandsMap.get(bName)
+src/seed/materials.ts:1083:  // Assign deterministic order values: marquee brands get 1..20 in Figma order, remaining get 21..N in first-seen order
+src/seed/materials.ts:1084:  const allBrands = Array.from(brandsMap.values())
+src/seed/materials.ts:1098:    brands: allBrands,
+src/seed/materials.ts:1108:function extractNumericBrandIdsFromDoc(rawBrands: Material['brands']): number[] {
+src/seed/materials.ts:1123: * - Runs on an empty `brands` and `materials` database (`brands === 0 && materials === 0`).
+src/seed/materials.ts:1127: * - Never overwrites editor changes or creates duplicate brands after a rename unless `--reseed`
+src/seed/materials.ts:1147:      collection: 'brands',
+src/seed/materials.ts:1163:      `[seed] Refusing to run seed on a non-empty database (brands=${String(existingBrandsCount)}, materials=${String(existingMaterialsCount)}). The seed is a first-run baseline and never overwrites existing data. Pass --reseed in development to clear and rebuild brands and materials.`,
+src/seed/materials.ts:1169:    // Delete materials first (since materials.brands references brands), then brands
+src/seed/materials.ts:1182:      collection: 'brands',
+src/seed/materials.ts:1198:  let brandsCreated = 0
+src/seed/materials.ts:1199:  const brandsUpdated = 0
+src/seed/materials.ts:1200:  const brandsUnchanged = 0
+src/seed/materials.ts:1202:  for (const plannedBrand of plan.brands) {
+src/seed/materials.ts:1204:      collection: 'brands',
+src/seed/materials.ts:1219:        collection: 'brands',
+src/seed/materials.ts:1232:    brandsCreated += 1
+src/seed/materials.ts:1255:        brands: brandIds,
+src/seed/materials.ts:1279:  // Query all seeded materials & brands to verify counts, >= 1 brand per material, and updatedAt digest
+src/seed/materials.ts:1291:      collection: 'brands',
+src/seed/materials.ts:1302:    const count = extractNumericBrandIdsFromDoc(doc.brands).length
+src/seed/materials.ts:1312:    brandsCreated,
+src/seed/materials.ts:1313:    brandsUpdated,
+src/seed/materials.ts:1314:    brandsUnchanged,
+src/seed/materials.ts:1315:    brandsTotal: allBrandsRes.totalDocs,
+src/seed/materials.ts:1339:    `brands: created=${String(summary.brandsCreated)}, updated=${String(summary.brandsUpdated)}, unchanged=${String(summary.brandsUnchanged)}, total=${String(summary.brandsTotal)}`,
+
+$ git grep -n -e 'materials' -- src/seed/materials.ts
+src/seed/materials.ts:9: * Note on S4 (`server-only`): `src/seed/materials.ts` is executed directly under Node/tsx by the
+src/seed/materials.ts:107:  materials: PlannedMaterialSeed[]
+src/seed/materials.ts:119:  materialsCreated: number
+src/seed/materials.ts:120:  materialsTotal: number
+src/seed/materials.ts:121:  materialsUnchanged: number
+src/seed/materials.ts:122:  materialsUpdated: number
+src/seed/materials.ts:136: * table (`brands` and `materials` have no foreign-key reference to `users`). Passing this
+src/seed/materials.ts:352: * Figma Trusted Partners display-name mappings (`design/copy/01-home.md` `18:579` ↔ `seed/materials.raw.json`,
+src/seed/materials.ts:400: * Uncertain English description typos in `seed/materials.raw.json` (`handoff/reviews/P4-T1.md` `R-2`,
+src/seed/materials.ts:785: * Loads `seed/materials.raw.json` from the repository root.
+src/seed/materials.ts:790:  const filePath = path.resolve(repoRoot, 'seed', 'materials.raw.json')
+src/seed/materials.ts:796: * Deterministically parses `seed/materials.raw.json` into the normalized brand and material seed plan
+src/seed/materials.ts:833:  const materials: PlannedMaterialSeed[] = []
+src/seed/materials.ts:1050:    materials.push({
+src/seed/materials.ts:1099:    materials,
+src/seed/materials.ts:1123: * - Runs on an empty `brands` and `materials` database (`brands === 0 && materials === 0`).
+src/seed/materials.ts:1152:      collection: 'materials',
+src/seed/materials.ts:1163:      `[seed] Refusing to run seed on a non-empty database (brands=${String(existingBrandsCount)}, materials=${String(existingMaterialsCount)}). The seed is a first-run baseline and never overwrites existing data. Pass --reseed in development to clear and rebuild brands and materials.`,
+src/seed/materials.ts:1169:    // Delete materials first (since materials.brands references brands), then brands
+src/seed/materials.ts:1171:      collection: 'materials',
+src/seed/materials.ts:1235:  let materialsCreated = 0
+src/seed/materials.ts:1236:  const materialsUpdated = 0
+src/seed/materials.ts:1237:  const materialsUnchanged = 0
+src/seed/materials.ts:1239:  for (const plannedMat of plan.materials) {
+src/seed/materials.ts:1249:      collection: 'materials',
+src/seed/materials.ts:1264:      collection: 'materials',
+src/seed/materials.ts:1276:    materialsCreated += 1
+src/seed/materials.ts:1279:  // Query all seeded materials & brands to verify counts, >= 1 brand per material, and updatedAt digest
+src/seed/materials.ts:1282:      collection: 'materials',
+src/seed/materials.ts:1316:    materialsCreated,
+src/seed/materials.ts:1317:    materialsUpdated,
+src/seed/materials.ts:1318:    materialsUnchanged,
+src/seed/materials.ts:1319:    materialsTotal: allMaterialsRes.totalDocs,
+src/seed/materials.ts:1340:    `materials: created=${String(summary.materialsCreated)}, updated=${String(summary.materialsUpdated)}, unchanged=${String(summary.materialsUnchanged)}, total=${String(summary.materialsTotal)}`,
+
+$ git grep -n -e 'arabicEnabled' -- docs/02-content-model.md
+docs/02-content-model.md:190:- `arabicEnabled` (checkbox, default `false`, **update: admin only**, read: public). This is the
+
+$ git grep -n -e 'arabicEnabled' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:36:    name: 'arabicEnabled',
+
+$ git grep -n -e 'SiteSettings' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:369:export const SiteSettings: GlobalConfig = {
+
+$ git grep -n -e 'isAdminFieldLevel' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:4:import { isAdminFieldLevel } from '../access/isAdminFieldLevel'
+src/globals/SiteSettings.ts:41:      update: isAdminFieldLevel,
+
+$ git grep -n -e 'label' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:43:    label: {
+src/globals/SiteSettings.ts:61:    label: {
+src/globals/SiteSettings.ts:78:    label: {
+src/globals/SiteSettings.ts:94:    label: {
+src/globals/SiteSettings.ts:105:    label: {
+src/globals/SiteSettings.ts:116:    label: {
+src/globals/SiteSettings.ts:127:    label: {
+src/globals/SiteSettings.ts:144:    label: {
+src/globals/SiteSettings.ts:154:    label: {
+src/globals/SiteSettings.ts:170:    label: {
+src/globals/SiteSettings.ts:184:    label: {
+src/globals/SiteSettings.ts:195:        label: {
+src/globals/SiteSettings.ts:206:        label: {
+src/globals/SiteSettings.ts:217:        label: {
+src/globals/SiteSettings.ts:227:        label: {
+src/globals/SiteSettings.ts:244:    label: {
+src/globals/SiteSettings.ts:248:    labels: {
+src/globals/SiteSettings.ts:270:        label: {
+src/globals/SiteSettings.ts:275:          { label: { ar: 'لينكدإن (LinkedIn)', en: 'LinkedIn' }, value: 'linkedin' },
+src/globals/SiteSettings.ts:276:          { label: { ar: 'إكس (X / Twitter)', en: 'X (Twitter)' }, value: 'x' },
+src/globals/SiteSettings.ts:277:          { label: { ar: 'إنستغرام (Instagram)', en: 'Instagram' }, value: 'instagram' },
+src/globals/SiteSettings.ts:278:          { label: { ar: 'فيسبوك (Facebook)', en: 'Facebook' }, value: 'facebook' },
+src/globals/SiteSettings.ts:279:          { label: { ar: 'يوتيوب (YouTube)', en: 'YouTube' }, value: 'youtube' },
+src/globals/SiteSettings.ts:280:          { label: { ar: 'تيك توك (TikTok)', en: 'TikTok' }, value: 'tiktok' },
+src/globals/SiteSettings.ts:281:          { label: { ar: 'سناب شات (Snapchat)', en: 'Snapchat' }, value: 'snapchat' },
+src/globals/SiteSettings.ts:282:          { label: { ar: 'واتساب (WhatsApp)', en: 'WhatsApp' }, value: 'whatsapp' },
+src/globals/SiteSettings.ts:290:        label: {
+src/globals/SiteSettings.ts:308:    label: {
+src/globals/SiteSettings.ts:319:    label: {
+src/globals/SiteSettings.ts:327:    label: {
+src/globals/SiteSettings.ts:338:        label: {
+src/globals/SiteSettings.ts:349:        label: {
+src/globals/SiteSettings.ts:360:        label: {
+src/globals/SiteSettings.ts:371:  label: {
+
+$ git grep -n -e 'description' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:48:      description: {
+src/globals/SiteSettings.ts:66:      description: {
+src/globals/SiteSettings.ts:83:      description: {
+src/globals/SiteSettings.ts:132:      description: {
+src/globals/SiteSettings.ts:175:      description: {
+src/globals/SiteSettings.ts:344:        name: 'description',
+src/globals/SiteSettings.ts:377:    description: {
+
+$ git grep -n -e 'rootPaths' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:395:        rootPaths: ['/sitemap.xml'],
+
+$ git grep -n -e 'createRevalidateGlobalAfterChangeHook' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:6:import { createRevalidateGlobalAfterChangeHook } from '../hooks/revalidate'
+src/globals/SiteSettings.ts:391:      createRevalidateGlobalAfterChangeHook({
+
+$ git grep -n -e 'rootPaths' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:717:  rootPaths?: readonly string[]
+src/hooks/revalidate.ts:774:      if (options.rootPaths) {
+src/hooks/revalidate.ts:775:        for (const rootPath of options.rootPaths) {
+
+$ git grep -n -e 'createRevalidateGlobalAfterChangeHook' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:720:export function createRevalidateGlobalAfterChangeHook(
+
+$ git grep -n -e 'safeRevalidateTag' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:40:export function safeRevalidateTag(tag: string, logger?: MinimalLogger): void {
+src/hooks/revalidate.ts:652:        safeRevalidateTag(tag, logger)
+src/hooks/revalidate.ts:694:        safeRevalidateTag(tag, logger)
+src/hooks/revalidate.ts:745:        safeRevalidateTag(tag, logger)
+src/hooks/revalidate.ts:750:          safeRevalidateTag(extraTag, logger)
+src/hooks/revalidate.ts:752:            safeRevalidateTag(`${extraTag}:${locale}`, logger)
+
+$ git grep -n -e 'revalidateTag' -- src/hooks/revalidate.ts
+src/hooks/revalidate.ts:1:import { revalidatePath, revalidateTag } from 'next/cache'
+src/hooks/revalidate.ts:26: * thrown when calling `revalidateTag` / `revalidatePath` from CLI scripts, seeds, or tests (R-4).
+src/hooks/revalidate.ts:42:    revalidateTag(tag, { expire: 0 })
+src/hooks/revalidate.ts:45:      logger?.warn?.({ err, tag }, 'revalidateTag failed; continuing without throwing')
+
+$ git grep -n -e 'arabic_enabled' -- src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts
+src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts:5:   ALTER TABLE "site_settings" ADD COLUMN IF NOT EXISTS "arabic_enabled" boolean DEFAULT false;
+src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts:6:   UPDATE "site_settings" SET "arabic_enabled" = false WHERE "arabic_enabled" IS NULL;
+src/migrations/20261024_195628_p3_t12_site_settings_arabic_enabled.ts:13:   ALTER TABLE "site_settings" DROP COLUMN IF EXISTS "arabic_enabled";`)
+
+$ git grep -n -e 'migrations' -- src/migrations/index.ts
+src/migrations/index.ts:11:export const migrations = [
+
+$ git grep -n -e 'SiteSetting' -- src/payload-types.ts
+src/payload-types.ts:109:    'site-settings': SiteSetting;
+src/payload-types.ts:119:    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+src/payload-types.ts:1203:export interface SiteSetting {
+src/payload-types.ts:2052:export interface SiteSettingsSelect<T extends boolean = true> {
+
+$ git grep -n -e 'isArabicEnabled' -- src/lib/cms/index.ts
+src/lib/cms/index.ts:68:  isArabicEnabled,
+
+$ git grep -n -e 'getSiteSettings' -- src/lib/cms/globals.ts
+src/lib/cms/globals.ts:62:export async function getSiteSettings(locale: SupportedLocale): Promise<SiteSetting> {
+src/lib/cms/globals.ts:72:  const settings = await getSiteSettings('en')
+
+$ git grep -n -e 'isAuthorizedArabicPreviewRequest' -- src/lib/cms/index.ts
+src/lib/cms/index.ts:29:  isAuthorizedArabicPreviewRequest,
+
+$ git grep -n -e 'resolveAuthenticatedStaffUser' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:249:export async function resolveAuthenticatedStaffUser(
+src/lib/cms/client.ts:288:    const staffUser = await resolveAuthenticatedStaffUser(reqHeaders)
+src/lib/cms/client.ts:377:  const staffUser = await resolveAuthenticatedStaffUser(reqHeaders as Headers)
+
+$ git grep -n -e 'buildEnglishRedirectTarget' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:38:export function buildEnglishRedirectTarget(pathname: string, search = ''): string {
+src/app/(frontend)/[locale]/layout.tsx:107:    redirect(buildEnglishRedirectTarget(activePathname, activeSearch))
+
+$ git grep -n -e 'enforceArabicEnabledOrRedirect' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:78:export async function enforceArabicEnabledOrRedirect(
+src/app/(frontend)/[locale]/layout.tsx:380:    await enforceArabicEnabledOrRedirect(requestHeaders, activePathname, activeSearch)
+
+$ git grep -n -e 'LocaleRootLayout' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:360:export default async function LocaleRootLayout({
+
+$ git grep -n -e 'LocaleHomePage' -- src/app/(frontend)/[locale]/page.tsx
+src/app/(frontend)/[locale]/page.tsx:39:interface LocaleHomePageProps {
+src/app/(frontend)/[locale]/page.tsx:271:export async function generateMetadata({ params }: LocaleHomePageProps): Promise<Metadata> {
+src/app/(frontend)/[locale]/page.tsx:330:export default async function LocaleHomePage({
+src/app/(frontend)/[locale]/page.tsx:332:}: LocaleHomePageProps): Promise<React.JSX.Element> {
+
+$ git grep -n -e 'LocaleCatchAllNotFoundPage' -- src/app/(frontend)/[locale]/[...rest]/page.tsx
+src/app/(frontend)/[locale]/[...rest]/page.tsx:13:export default async function LocaleCatchAllNotFoundPage({
+
+$ git grep -n -e 'showLanguageSwitcher' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:48:  showLanguageSwitcher?: boolean | undefined
+src/components/Navbar.tsx:193:  showLanguageSwitcher = true,
+src/components/Navbar.tsx:357:          {showLanguageSwitcher ? (
+src/components/Navbar.tsx:483:              {showLanguageSwitcher ? (
+
+$ git grep -n -e 'Navbar' -- src/components/Navbar.tsx
+src/components/Navbar.tsx:22:import styles from './Navbar.module.css'
+src/components/Navbar.tsx:25:export type NavbarTheme = (typeof NAVBAR_THEMES)[number]
+src/components/Navbar.tsx:28:export type NavbarPage = (typeof NAVBAR_PAGES)[number]
+src/components/Navbar.tsx:30:export interface NavbarNavItem {
+src/components/Navbar.tsx:35:  page?: NavbarPage | undefined
+src/components/Navbar.tsx:38:export interface NavbarProps {
+src/components/Navbar.tsx:44:  items?: readonly NavbarNavItem[] | null | undefined
+src/components/Navbar.tsx:46:  page?: NavbarPage | undefined
+src/components/Navbar.tsx:51:  theme?: NavbarTheme | undefined
+src/components/Navbar.tsx:54:export function buildDefaultNavbarItems(locale: SupportedLocale): NavbarNavItem[] {
+src/components/Navbar.tsx:95:export function resolveNavbarPageFromPathname(
+src/components/Navbar.tsx:98:): NavbarPage | undefined {
+src/components/Navbar.tsx:119:  item: NavbarNavItem,
+src/components/Navbar.tsx:183:export function Navbar({
+src/components/Navbar.tsx:197:}: NavbarProps): ReactElement {
+src/components/Navbar.tsx:202:  const resolvedActivePage = page ?? resolveNavbarPageFromPathname(currentPath, locale)
+src/components/Navbar.tsx:204:  const resolvedTheme: NavbarTheme = theme ?? 'Light'
+src/components/Navbar.tsx:221:  const navItems: readonly NavbarNavItem[] =
+src/components/Navbar.tsx:222:    items && items.length > 0 ? items : isDevStyleguideShell ? buildDefaultNavbarItems(locale) : []
+
+$ git grep -n -e 'showLanguageSwitcher' -- src/components/Footer.tsx
+src/components/Footer.tsx:57:  showLanguageSwitcher?: boolean | undefined
+src/components/Footer.tsx:158:  showLanguageSwitcher = true,
+src/components/Footer.tsx:393:            {showLanguageSwitcher ? (
+
+$ git grep -n -e 'Footer' -- src/components/Footer.tsx
+src/components/Footer.tsx:15:import styles from './Footer.module.css'
+src/components/Footer.tsx:17:export interface FooterQuickLinkItem {
+src/components/Footer.tsx:24:export interface FooterColumnItem {
+src/components/Footer.tsx:26:  links?: readonly FooterQuickLinkItem[] | null | undefined
+src/components/Footer.tsx:30:export interface FooterSocialItem {
+src/components/Footer.tsx:37:export interface FooterProps {
+src/components/Footer.tsx:51:  footerColumns?: readonly FooterColumnItem[] | null | undefined
+src/components/Footer.tsx:55:  quickLinks?: readonly FooterQuickLinkItem[] | null | undefined
+src/components/Footer.tsx:59:  socialLinks?: readonly FooterSocialItem[] | null | undefined
+src/components/Footer.tsx:67:export function buildDefaultFooterQuickLinks(locale: SupportedLocale): FooterQuickLinkItem[] {
+src/components/Footer.tsx:136:export function Footer({
+src/components/Footer.tsx:160:}: FooterProps): ReactElement {
+src/components/Footer.tsx:168:  const resolvedColumns: FooterColumnItem[] =
+src/components/Footer.tsx:253:          {/* Column 2+: CMS Footer Link Columns (Quick Links, etc.) */}
+src/components/Footer.tsx:348:          {/* Column 4: Footer CTA Card */}
+
+$ git grep -n -e 'LocaleShellHeader' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:221:async function LocaleShellHeader({
+src/app/(frontend)/[locale]/layout.tsx:372:  // Async DB shell queries run inside `<LocaleShellHeader>` and `<LocaleShellFooter>` so synchronous
+src/app/(frontend)/[locale]/layout.tsx:392:    LocaleShellHeader({
+
+$ git grep -n -e 'LocaleShellFooter' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:290:async function LocaleShellFooter({
+src/app/(frontend)/[locale]/layout.tsx:372:  // Async DB shell queries run inside `<LocaleShellHeader>` and `<LocaleShellFooter>` so synchronous
+src/app/(frontend)/[locale]/layout.tsx:398:    LocaleShellFooter({
+
+$ git grep -n -e 'buildHreflangAlternates' -- src/i18n/index.ts
+src/i18n/index.ts:62:export function buildHreflangAlternates(
+
+$ git grep -n -e 'buildOrganizationJsonLd' -- src/app/(frontend)/[locale]/layout.tsx
+src/app/(frontend)/[locale]/layout.tsx:111:function buildOrganizationJsonLd(
+src/app/(frontend)/[locale]/layout.tsx:262:          __html: buildOrganizationJsonLd(siteSettings, locale, arabicEnabled),
+
+$ git grep -n -e 'sitemap' -- src/app/sitemap.ts
+src/app/sitemap.ts:7:export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+
+$ git grep -n -e 'isAdmin' -- src/globals/SiteSettings.ts
+src/globals/SiteSettings.ts:3:import { isAdmin } from '../access/isAdmin'
+src/globals/SiteSettings.ts:4:import { isAdminFieldLevel } from '../access/isAdminFieldLevel'
+src/globals/SiteSettings.ts:41:      update: isAdminFieldLevel,
+src/globals/SiteSettings.ts:384:    update: isAdmin,
+
+$ git grep -n -e 'updateGlobal' -- tests/int/p3-t12.int.test.ts
+tests/int/p3-t12.int.test.ts:64:    await payload.updateGlobal({
+tests/int/p3-t12.int.test.ts:108:    await payload.updateGlobal({
+tests/int/p3-t12.int.test.ts:126:      payload.updateGlobal({
+tests/int/p3-t12.int.test.ts:140:    const afterAdminEnable = await payload.updateGlobal({
+tests/int/p3-t12.int.test.ts:161:      payload.updateGlobal({
+tests/int/p3-t12.int.test.ts:175:    const afterAdminDisable = await payload.updateGlobal({
+
+$ git grep -n -e 'server-only' -- src/lib/cms/client.ts
+src/lib/cms/client.ts:1:import 'server-only'
+
+$ git grep -n -e 'server-only' -- src/lib/cms/globals.ts
+src/lib/cms/globals.ts:1:import 'server-only'

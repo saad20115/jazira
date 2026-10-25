@@ -1,0 +1,34 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+dd5b90c778f907947c3666314436c96db26cde13
+
+=== 1. Anonymous Visitor Link Crawl on /en (arabicEnabled = false) ===
+Total <a href> elements on /en: 10
+Unique href targets on /en: ["#main-content","/en","/en/services","/en/projects","/en/about","tel:+966573534185","mailto:info@aljazira-imdad.sa","https://wa.me/966573534185"]
+Arabic (/ar or /ar/*) links found on /en: 0 ([])
+  GET /en -> HTTP 200  <html lang="en" dir="ltr" class="_TgnAG_variable">
+  GET /en/services -> HTTP 404  
+  GET /en/projects -> HTTP 404  
+  GET /en/about -> HTTP 404  
+
+=== 2. Editor RBAC Verification (Editor cannot update site-settings.arabicEnabled) ===
+POST /api/globals/site-settings as editor (role="editor") with {"arabicEnabled": true} -> HTTP 403 ({"errors":[{"message":"You are not allowed to perform this action."}]})
+GET /api/globals/site-settings after editor POST: arabicEnabled=false
+
+=== 3. Logged-in Editor Draft Preview & Live Preview of /ar While arabicEnabled = false ===
+GET /api/preview?secret=<hmac>&locale=ar&global=home-page (editor) -> HTTP 307 Location: http://localhost:3000/ar
+GET /ar with editor payload-token + __prerender_bypass (draftMode) -> HTTP 200
+html_open_tag: <html lang="ar" dir="rtl" class="KQeM3W_variable">
+has_draft_banner: true
+GET /ar with editor payload-token + Sec-Fetch-Dest: iframe (Live Preview) -> HTTP 200
+html_open_tag: <html lang="ar" dir="rtl" class="KQeM3W_variable">
+
+=== 4. Live Toggle by Admin: OFF -> ON (Immediate Request #1) -> OFF (Immediate Request #1) ===
+Admin POST /api/globals/site-settings {"arabicEnabled": true} -> HTTP 200 (arabicEnabled=true)
+Immediate Request #1 to /ar (anonymous): HTTP 200 <html lang="ar" dir="rtl" class="KQeM3W_variable">
+Immediate Request #1 to /en (anonymous): HTTP 200 contains_ar_switcher_href=true
+Editor UI /admin/globals/site-settings #field-arabicEnabled isDisabled(): true
+Admin POST /api/globals/site-settings {"arabicEnabled": false} -> HTTP 200 (arabicEnabled=false)
+Immediate Request #1 to /ar after disabling (anonymous): HTTP 307 Location: /en
+Immediate Request #1 to /en after disabling (anonymous): HTTP 200 contains_ar_switcher_href=false

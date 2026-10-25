@@ -1,0 +1,31 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+dd5b90c778f907947c3666314436c96db26cde13
+
+=== STATE 1: GET /sitemap.xml when site-settings.arabicEnabled = false ===
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+<loc>http://localhost:3000/en</loc>
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en" />
+<xhtml:link rel="alternate" hreflang="x-default" href="http://localhost:3000/en" />
+</url>
+</urlset>
+
+=== STATE 2: GET /sitemap.xml when site-settings.arabicEnabled = true ===
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+<url>
+<loc>http://localhost:3000/en</loc>
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en" />
+<xhtml:link rel="alternate" hreflang="ar" href="http://localhost:3000/ar" />
+<xhtml:link rel="alternate" hreflang="x-default" href="http://localhost:3000/en" />
+</url>
+<url>
+<loc>http://localhost:3000/ar</loc>
+<xhtml:link rel="alternate" hreflang="en" href="http://localhost:3000/en" />
+<xhtml:link rel="alternate" hreflang="ar" href="http://localhost:3000/ar" />
+<xhtml:link rel="alternate" hreflang="x-default" href="http://localhost:3000/en" />
+</url>
+</urlset>

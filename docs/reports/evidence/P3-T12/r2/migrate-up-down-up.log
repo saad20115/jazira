@@ -1,0 +1,70 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+$ git rev-parse HEAD
+dd5b90c778f907947c3666314436c96db26cde13
+$ pnpm payload migrate && echo y| pnpm payload migrate:down && pnpm payload migrate && echo n| pnpm payload migrate:create noop_check
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[02:53:51] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\src\migrations
+[02:53:52] INFO: Done.
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[02:54:00] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\src\migrations
+[02:54:00] INFO: Rolling back batch 1 consisting of 9 migration(s).
+[02:54:00] INFO: Migrating down: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[02:54:00] INFO: Migrated down:  20261024_195628_p3_t12_site_settings_arabic_enabled (36ms)
+[02:54:00] INFO: Migrating down: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[02:54:00] INFO: Migrated down:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (86ms)
+[02:54:00] INFO: Migrating down: 20261023_005934_p2_t6_quote_requests_service_title
+[02:54:00] INFO: Migrated down:  20261023_005934_p2_t6_quote_requests_service_title (6ms)
+[02:54:00] INFO: Migrating down: 20261022_231435_p2_t6_quote_requests
+[02:54:00] INFO: Migrated down:  20261022_231435_p2_t6_quote_requests (29ms)
+[02:54:00] INFO: Migrating down: 20261022_221250_p2_t5_globals
+[02:54:00] INFO: Migrated down:  20261022_221250_p2_t5_globals (212ms)
+[02:54:01] INFO: Migrating down: 20261022_160652_p2_t4_projects
+[02:54:01] INFO: Migrated down:  20261022_160652_p2_t4_projects (73ms)
+[02:54:01] INFO: Migrating down: 20261022_140011_p2_t3_services_team
+[02:54:01] INFO: Migrated down:  20261022_140011_p2_t3_services_team (36ms)
+[02:54:02] INFO: Migrating down: 20261022_120943_p2_t2_videos_brands_stats_materials
+[02:54:02] INFO: Migrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (29ms)
+[02:54:02] INFO: Migrating down: 20261021_074848_initial_users_media
+[02:54:02] INFO: Migrated down:  20261021_074848_initial_users_media (21ms)
+[02:54:02] INFO: Done.
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[02:54:08] INFO: Reading migration files from C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400\src\migrations
+[02:54:08] INFO: Migrating: 20261021_074848_initial_users_media
+[02:54:09] INFO: Migrated:  20261021_074848_initial_users_media (215ms)
+[02:54:09] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[02:54:09] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (137ms)
+[02:54:09] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[02:54:09] INFO: Migrated:  20261022_140011_p2_t3_services_team (146ms)
+[02:54:09] INFO: Migrating: 20261022_160652_p2_t4_projects
+[02:54:09] INFO: Migrated:  20261022_160652_p2_t4_projects (246ms)
+[02:54:09] INFO: Migrating: 20261022_221250_p2_t5_globals
+[02:54:10] INFO: Migrated:  20261022_221250_p2_t5_globals (956ms)
+[02:54:10] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[02:54:10] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (43ms)
+[02:54:10] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[02:54:10] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (5ms)
+[02:54:10] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[02:54:10] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (24ms)
+[02:54:10] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[02:54:10] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (7ms)
+[02:54:10] INFO: Done.
+
+> aljazira-website@0.1.0 payload C:\Users\User21.CSE\AppData\Local\Temp\jazira-p3-t4-r4-clean-20261025-004400
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:create" "noop_check"
+
+[02:54:19] INFO: Starting migration: generating UP statements...
+? No schema changes detected. Would you like to create a blank migration file? » (y/N)[02:54:19] INFO: Migration UP complete. Generating DOWN statements...
+[02:54:19] INFO: Migration DOWN statements generation complete.
+√ No schema changes detected. Would you like to create a blank migration file? ... no
+
+EXIT_CODE=0 (s)
