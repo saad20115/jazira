@@ -853,12 +853,10 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         pathname,
         hasOverlay,
         rafTs,
-        readyState = 'interactive',
       }: {
         pathname: string
         hasOverlay: boolean
         rafTs: number
-        readyState?: 'loading' | 'interactive' | 'complete'
       }) => {
         const attrs = new Map<string, string>()
         const dataIntroHistory: string[] = []
@@ -883,9 +881,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         const mainEl = makeEl('main')
         const landmarkEl = makeEl('landmark')
 
-        const dclCallbacks: Array<() => void> = []
         const fakeDoc = {
-          readyState,
           documentElement: {
             style: { setProperty: () => undefined },
             setAttribute: (k: string, v: string) => {
@@ -907,11 +903,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           },
           querySelectorAll: () => [landmarkEl],
           getElementById: (id: string) => (id === 'main-content' ? mainEl : null),
-          addEventListener: (ev: string, cb: () => void) => {
-            if (ev === 'DOMContentLoaded') {
-              dclCallbacks.push(cb)
-            }
-          },
+          addEventListener: () => undefined,
         }
 
         const fakeWin: Record<string, unknown> = {
@@ -935,9 +927,6 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           performance: fakePerf,
         })
 
-        for (const cb of dclCallbacks) {
-          cb()
-        }
         const rafCountAfterSync = rafCallbacks.length
         if (rafCallbacks[0]) {
           rafCallbacks[0](rafTs)
@@ -954,7 +943,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         }
       }
 
-      // 1. Home page (/en) with overlay and rafTs <= 1200 -> active in 1st rAF, no 2nd rAF (R-31, R-32)
+      // 1. Home page (/en) with overlay and rafTs <= 1200 -> active in 1st rAF, no 2nd rAF, never sets 'pending' (R-26, R-31, R-32, M-171 #2)
       const homeFast = runInlineScriptScenario({
         pathname: '/en',
         hasOverlay: true,
@@ -964,23 +953,11 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(homeFast.rafCountAfterFirstFrame).toBe(1)
       expect(homeFast.dataIntro).toBe('active')
       expect(homeFast.dataIntroHistory).toEqual(['active'])
+      expect(homeFast.dataIntroHistory).not.toContain('pending')
       expect(homeFast.seenFlag).toBe('1')
       expect(homeFast.inertApplied).toBe(true)
       expect(homeFast.decision?.action).toBe('active')
       expect(homeFast.decision?.rafMs).toBe(420)
-
-      // 1b. Home page (/en) with readyState: 'loading' -> decides immediately in 1st rAF without ever setting 'pending' (M-171 #2)
-      const homeLoading = runInlineScriptScenario({
-        pathname: '/en',
-        hasOverlay: true,
-        rafTs: 380,
-        readyState: 'loading',
-      })
-      expect(homeLoading.dataIntro).toBe('active')
-      expect(homeLoading.dataIntroHistory).toEqual(['active'])
-      expect(homeLoading.dataIntroHistory).not.toContain('pending')
-      expect(homeLoading.decision?.action).toBe('active')
-      expect(homeLoading.decision?.rafMs).toBe(380)
 
       // 2. Home page (/ar) with overlay and rafTs = 1200 (boundary <= 1200) -> active (R-32)
       const homeBoundary = runInlineScriptScenario({

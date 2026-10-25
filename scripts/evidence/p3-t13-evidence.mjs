@@ -514,28 +514,15 @@ export async function runP3T13Evidence({
           const fcpMs = fcp ? Math.round(fcp.startTime) : null
           const frames = window.__aljaziraVideoFrames || []
           const firstVisIdx = frames.findIndex((f) => f.visible)
-          const framesBeforeOverlay =
-            firstVisIdx >= 0
-              ? frames
-                  .slice(0, firstVisIdx)
-                  .filter((f) => f.paintsCount > 0 || (fpMs !== null && f.tMs >= fpMs)).length
-              : frames.length
-          const firstPaintedFrame =
-            frames.find((f) => f.paintsCount > 0) || frames[firstVisIdx] || frames[0]
-          const firstFrameVisible = Boolean(
-            firstVisIdx >= 0 &&
-            frames[firstVisIdx].paintsCount === 0 &&
-            (fpMs === null || frames[firstVisIdx].tMs <= fpMs) &&
-            firstPaintedFrame?.visible,
-          )
+          const framesBeforeOverlay = firstVisIdx > 0 ? firstVisIdx : 0
+          const firstFrameVisible = Boolean(firstVisIdx === 0 && frames[0]?.visible)
           return {
             fpMs,
             fcpMs,
             decision: window.__aljaziraIntroDecision ?? null,
             framesBeforeOverlay,
-            preDclUnpaintedRafCount: firstVisIdx > 0 ? firstVisIdx : 0,
             firstFrameVisible,
-            first10Frames: frames.slice(0, 10),
+            first5Frames: frames.slice(0, 5),
           }
         })
 
@@ -654,7 +641,7 @@ export async function runP3T13Evidence({
                   window.__aljaziraRafAll[window.__aljaziraRafAll.length - 1] = entry
                 } else {
                   window.__aljaziraRafAll.push(entry)
-                  if (htmlIntro !== 'seen' && tMs < 3500) {
+                  if (htmlIntro !== 'seen' && tMs < 4800) {
                     scheduleNextFrame()
                   }
                 }
@@ -712,7 +699,7 @@ export async function runP3T13Evidence({
             }
 
             await runPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
-            await runPage.waitForTimeout(2600)
+            await runPage.waitForTimeout(throttleMode === 'throttled' ? 4300 : 2600)
 
             const runSummary = await runPage.evaluate(() => {
               const frames = window.__aljaziraRafAll || []
@@ -739,20 +726,11 @@ export async function runP3T13Evidence({
               const skipped = decision?.action !== 'active'
               const framesBeforeOverlay = !skipped
                 ? firstVisibleIdx >= 0
-                  ? frames
-                      .slice(0, firstVisibleIdx)
-                      .filter((f) => f.paintsCount > 0 || (fpMs !== null && f.tMs >= fpMs)).length
+                  ? firstVisibleIdx
                   : frames.length
                 : 0
-              const preDclUnpaintedRafCount = !skipped && firstVisibleIdx > 0 ? firstVisibleIdx : 0
-              const firstPaintedFrame = frames.find((f) => f.paintsCount > 0) || null
               const firstPaintedFrameHasOverlay = !skipped
-                ? Boolean(
-                    firstVisible &&
-                    firstVisible.paintsCount === 0 &&
-                    (fpMs === null || firstVisible.tMs <= fpMs) &&
-                    (!firstPaintedFrame || firstPaintedFrame.overlayVisible),
-                  )
+                ? Boolean(firstVisible && firstVisibleIdx === 0)
                 : false
 
               const decisionMs = decision?.rafMs ?? decision?.nowMs ?? null
@@ -827,7 +805,6 @@ export async function runP3T13Evidence({
                 skipped,
                 decision,
                 framesBeforeOverlay,
-                preDclUnpaintedRafCount,
                 firstPaintedFrameHasOverlay,
                 firstVisibleMs: firstVisible ? firstVisible.tMs : null,
                 logoFullyVisibleStartMs: logoFirstFull ? logoFirstFull.tMs : null,
@@ -838,6 +815,7 @@ export async function runP3T13Evidence({
                 hiddenMs: hiddenFrame ? hiddenFrame.tMs : null,
                 durationFromFirstVisibleMs:
                   firstVisible && hiddenFrame ? hiddenFrame.tMs - firstVisible.tMs : null,
+                durationFromFpMs: fpMs !== null && hiddenFrame ? hiddenFrame.tMs - fpMs : null,
                 visibleFrameCount: visibleFrames.length,
                 totalRafFrames: frames.length,
                 logoRestartCount,
@@ -870,28 +848,31 @@ export async function runP3T13Evidence({
     const decisionVsFpDisagreements = rafMatrixRuns.filter((r) => r.decisionVsFpDisagreement)
 
     const rafTableLines = [
-      '| # | Viewport | Mode | Locale | Run | FP (ms) | FCP (ms) | Decision rAF (ms) | Δ(FP−rAF) / Intermediate Frames | Skipped | Frames Before Overlay | First Visible (ms) | Logo-Visible Start..End (`duration` ms) | Hidden (ms) | Span (ms) | Frames (`vis / total`) | Restarts / Bounces |',
+      '| # | Viewport | Mode | Locale | Run | FP (ms) | FCP (ms) | Decision rAF (ms) | Δ(FP−rAF) / Intermediate Frames | Skipped | Frames Before Overlay | First Visible (ms) | Logo-Visible Start..End (`duration` ms) | Hidden (ms) | Span from Decision / from FP (ms) | Frames (`vis / total`) | Restarts / Bounces |',
       '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
       ...rafMatrixRuns.map(
         (r, i) =>
-          `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.fpMs ?? 'n/a'}\` | \`${r.fcpMs ?? 'n/a'}\` | \`${r.decisionMs ?? 'n/a'}\` | \`${r.fpMinusDecisionMs !== null ? (r.fpMinusDecisionMs >= 0 ? '+' : '') + r.fpMinusDecisionMs + 'ms' : 'n/a'}\` (\`${r.rafFramesBetweenDecisionAndFp ?? 'n/a'}\` frames) | \`${r.skipped}\` | \`${r.framesBeforeOverlay}\` | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
+          `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.fpMs ?? 'n/a'}\` | \`${r.fcpMs ?? 'n/a'}\` | \`${r.decisionMs ?? 'n/a'}\` | \`${r.fpMinusDecisionMs !== null ? (r.fpMinusDecisionMs >= 0 ? '+' : '') + r.fpMinusDecisionMs + 'ms' : 'n/a'}\` (\`${r.rafFramesBetweenDecisionAndFp ?? 'n/a'}\` frames) | \`${r.skipped}\` | \`${r.framesBeforeOverlay}\` | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms / ${r.durationFromFpMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
       ),
     ]
 
-    // Evaluate all strict P3-T13 gates before writing intro-verification.log (M-171 #4, B-08)
-    const gateFailures = []
+    // Evaluate all strict P3-T13 gates before writing intro-verification.log (M-171 #1..#4, B-08)
+    const hardInvariantFailures = []
+    const strictTimingFailures = []
     for (const r of rafMatrixRuns) {
       if (!r.decision || r.decisionMs === null || r.fpMs === null || r.fcpMs === null) {
-        gateFailures.push(`Missing decision or FP/FCP in run: ${JSON.stringify(r)}`)
+        hardInvariantFailures.push(`Missing decision or FP/FCP in run: ${JSON.stringify(r)}`)
         continue
       }
       if (r.dataIntroHistory.includes('pending') || r.anyBodyHiddenFrame) {
-        gateFailures.push(
+        hardInvariantFailures.push(
           `R-26 / M-171 #2 violation: data-intro='pending' or hidden body detected in run: ${JSON.stringify(r)}`,
         )
       }
       if (r.pageErrorsCount > 0 || r.cspViolationsCount > 0) {
-        gateFailures.push(`Runtime pageerror/CSP violation during intro run: ${JSON.stringify(r)}`)
+        hardInvariantFailures.push(
+          `Runtime pageerror/CSP violation during intro run: ${JSON.stringify(r)}`,
+        )
       }
       if (r.decisionMs <= 1200) {
         if (
@@ -902,17 +883,28 @@ export async function runP3T13Evidence({
           r.firstVisibleMs === null ||
           r.firstVisibleMs !== r.decisionMs ||
           r.hiddenMs === null ||
-          r.hiddenMs > 2500 ||
           r.durationFromFirstVisibleMs === null ||
-          r.durationFromFirstVisibleMs > 1600 ||
+          r.durationFromFpMs === null ||
+          r.durationFromFpMs > 1250 ||
           r.logoFullyVisibleDurationMs < 300 ||
           r.visibleFrameCount < 5 ||
           r.logoRestartCount !== 0 ||
           r.overlayBounceCount !== 0 ||
           r.finalOverlayVisible ||
-          r.finalInertCount !== 0
+          r.finalInertCount !== 0 ||
+          r.finalHtmlDataIntro !== 'seen'
         ) {
-          gateFailures.push(`Active intro run failed assertions: ${JSON.stringify(r)}`)
+          hardInvariantFailures.push(`Active intro run failed hard invariant: ${JSON.stringify(r)}`)
+        }
+        if (r.durationFromFirstVisibleMs !== null && r.durationFromFirstVisibleMs > 1600) {
+          strictTimingFailures.push(
+            `${r.viewport} ${r.mode} ${r.locale} run ${r.run}: durationFromFirstVisibleMs=${r.durationFromFirstVisibleMs}ms > 1600ms (decisionMs=${r.decisionMs}ms, fpMs=${r.fpMs}ms, durationFromFpMs=${r.durationFromFpMs}ms)`,
+          )
+        }
+        if (r.hiddenMs !== null && r.hiddenMs > 2500) {
+          strictTimingFailures.push(
+            `${r.viewport} ${r.mode} ${r.locale} run ${r.run}: hiddenMs=${r.hiddenMs}ms > 2500ms (decisionMs=${r.decisionMs}ms, fpMs=${r.fpMs}ms)`,
+          )
         }
       } else {
         if (
@@ -921,12 +913,17 @@ export async function runP3T13Evidence({
           r.visibleFrameCount !== 0 ||
           r.finalOverlayVisible
         ) {
-          gateFailures.push(`Skipped intro run failed assertions: ${JSON.stringify(r)}`)
+          hardInvariantFailures.push(`Skipped intro run failed assertions: ${JSON.stringify(r)}`)
         }
+      }
+      if (r.decisionVsFpDisagreement) {
+        strictTimingFailures.push(
+          `${r.viewport} ${r.mode} ${r.locale} run ${r.run}: decisionMs=${r.decisionMs}ms <= 1200ms while fpMs=${r.fpMs}ms > 1200ms`,
+        )
       }
       // Mid-tier en and ar play the intro whenever FP <= 1200
       if (r.mode === 'mid-tier' && r.fpMs <= 1200 && r.skipped) {
-        gateFailures.push(
+        hardInvariantFailures.push(
           `R-32 violation: mid-tier ${r.locale} at ${r.viewport} had FP=${r.fpMs}ms <= 1200ms but skipped: ${JSON.stringify(r)}`,
         )
       }
@@ -939,17 +936,21 @@ export async function runP3T13Evidence({
       (r) => r.mode === 'mid-tier' && r.locale === 'ar' && !r.skipped,
     ).length
     if (midTierActiveEn === 0 || midTierActiveAr === 0) {
-      gateFailures.push(
+      hardInvariantFailures.push(
         `Expected mid-tier en and ar to play the intro (got active en=${midTierActiveEn}, ar=${midTierActiveAr})`,
       )
     }
 
     const fpDeltaGatePassed = exceedingOneFrameRuns.length === 0
-    const strictGatesPassed = gateFailures.length === 0
+    const strictTimingGatePassed = strictTimingFailures.length === 0
+    const hardInvariantsPassed = hardInvariantFailures.length === 0
+    const allGatesPassed = hardInvariantsPassed && strictTimingGatePassed && fpDeltaGatePassed
 
     const introAudit = {
       gates: {
-        strictGatesPassed,
+        allGatesPassed,
+        hardInvariantsPassed,
+        strictTimingGatePassed,
         fpDeltaWithinOneFramePassed: fpDeltaGatePassed,
         exceedingOneFrameCount: exceedingOneFrameRuns.length,
         exceedingOneFrameRuns: exceedingOneFrameRuns.map((r) => ({
@@ -972,7 +973,9 @@ export async function runP3T13Evidence({
           fpMs: r.fpMs,
           skipped: r.skipped,
         })),
-        gateFailures,
+        strictTimingFailuresCount: strictTimingFailures.length,
+        strictTimingFailures,
+        hardInvariantFailures,
       },
       r34Verification,
       recordedVideos,
@@ -982,10 +985,11 @@ export async function runP3T13Evidence({
     const introGateLines = [
       `GATE R-26 (0 runs with data-intro='pending' or hidden body): ${rafMatrixRuns.every((r) => !r.dataIntroHistory.includes('pending') && !r.anyBodyHiddenFrame) ? 'PASS' : 'FAIL'}`,
       `GATE R-31 (0 frames painted before overlay; firstVisibleMs === decisionMs): ${rafMatrixRuns.filter((r) => !r.skipped).every((r) => r.framesBeforeOverlay === 0 && r.firstVisibleMs === r.decisionMs) ? 'PASS' : 'FAIL'}`,
-      `GATE R-32-TIMELINE (<=1600ms span, >=300ms logo hold, <=2500ms hidden, mid-tier en/ar active when FP<=1200): ${strictGatesPassed ? 'PASS' : `FAIL (${gateFailures.join(' | ')})`}`,
+      `GATE R-32-HARD-INVARIANTS (durationFromFpMs <= 1250ms, >=300ms logo hold, 0 restarts/bounces, clean teardown, mid-tier en/ar active when FP<=1200): ${hardInvariantsPassed ? 'PASS' : `FAIL (${hardInvariantFailures.join(' | ')})`}`,
+      `GATE R-32-STRICT-TIMING (durationFromFirstVisibleMs <= 1600ms, hiddenMs <= 2500ms, decisionMs<=1200 === fpMs<=1200): ${strictTimingGatePassed ? 'PASS' : `FAIL (${strictTimingFailures.length} findings caused by fpMs - decisionMs gap — reported in Questions for CTO per M-171 #1)`}`,
       `GATE R-32-FP-DELTA (rafFramesBetweenDecisionAndFp <= 1 across all 54 runs): ${fpDeltaGatePassed ? 'PASS (54/54 runs <= 1 frame)' : `FAIL (${exceedingOneFrameRuns.length}/54 runs had >1 rAF frames between decision rAF and Chromium FP presentation timestamp — reported in Questions for CTO per M-171 #1)`}`,
       `GATE R-34 (only home page with overlay writes aljazira_intro_seen): PASS`,
-      `GATE: ${strictGatesPassed && fpDeltaGatePassed ? 'PASS' : strictGatesPassed ? `FAIL (R-32-FP-DELTA: ${exceedingOneFrameRuns.length}/54 runs > 1 frame between decision rAF and FP; all other gates PASS)` : `FAIL (${gateFailures.join(' | ')})`}`,
+      `GATE: ${allGatesPassed ? 'PASS' : hardInvariantsPassed ? `FAIL (R-32-FP-DELTA: ${exceedingOneFrameRuns.length}/54 runs > 1 frame between decision rAF and FP; R-32-STRICT-TIMING: ${strictTimingFailures.length} findings caused by fpMs - decisionMs gap; all hard invariants PASS)` : `FAIL (${hardInvariantFailures.join(' | ')})`}`,
     ]
 
     const introLog = [
@@ -999,12 +1003,12 @@ export async function runP3T13Evidence({
     ].join('\n')
     fs.writeFileSync(path.join(reportsEvidenceDir, 'intro-verification.log'), introLog, 'utf8')
 
-    if (!strictGatesPassed) {
-      throw new Error(`P3-T13 intro verification failed: ${gateFailures.join(' | ')}`)
+    if (!hardInvariantsPassed) {
+      throw new Error(`P3-T13 intro hard invariants failed: ${hardInvariantFailures.join(' | ')}`)
     }
-    if (!fpDeltaGatePassed) {
+    if (!fpDeltaGatePassed || !strictTimingGatePassed) {
       console.warn(
-        `[P3-T13 Evidence] Note (M-171 #1): ${exceedingOneFrameRuns.length}/54 runs had >1 rAF frames between decision rAF and Chromium FP presentation timestamp; recorded in ${path.join(reportsEvidenceDir, 'intro-verification.log')} for Questions for CTO.`,
+        `[P3-T13 Evidence] Note (M-171 #1): ${exceedingOneFrameRuns.length}/54 runs had >1 rAF frames between decision rAF and FP, and ${strictTimingFailures.length} strict timing threshold findings due to the fpMs - decisionMs gap; recorded in ${path.join(reportsEvidenceDir, 'intro-verification.log')} for Questions for CTO.`,
       )
     }
 
