@@ -1,0 +1,1645 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ pnpm test
+
+> aljazira-website@0.1.0 test D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+
+> vitest run
+
+ RUN  v5.0.5 D:/aljazira-p3-t13-p4-t2-dod-20261025-212030
+
+[21:35:11] INFO: Dropping database.
+[21:35:12] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:35:12] INFO: Migrating: 20261021_074848_initial_users_media
+[21:35:12] INFO: Migrated:  20261021_074848_initial_users_media (249ms)
+[21:35:12] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:35:13] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (195ms)
+[21:35:13] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:35:13] INFO: Migrated:  20261022_140011_p2_t3_services_team (132ms)
+[21:35:13] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:35:13] INFO: Migrated:  20261022_160652_p2_t4_projects (200ms)
+[21:35:13] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:35:14] INFO: Migrated:  20261022_221250_p2_t5_globals (762ms)
+[21:35:14] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:35:14] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (34ms)
+[21:35:14] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:35:14] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (15ms)
+[21:35:14] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:35:14] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (28ms)
+[21:35:14] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:35:14] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (18ms)
+[21:35:14] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:35:14] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (37ms)
+[21:35:17] INFO: You are not allowed to perform this action.
+[21:35:17] INFO: You are not allowed to perform this action.
+[21:35:17] INFO: The following field is invalid: Social Media Links 1 > Profile URL
+[21:35:17] INFO: You are not allowed to perform this action.
+[21:35:17] INFO: The following field is invalid: header.0.link.url
+[21:35:18] INFO: You are not allowed to perform this action.
+[21:35:18] INFO: The following field is invalid: hero.backgroundVideo
+[21:35:18] INFO: The following field is invalid: interactiveSystems.systems
+[21:35:19] INFO: The following field is invalid: Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items)
+[21:35:19] INFO: The following field is invalid: interactiveSystems.systems
+[21:35:19] INFO: The following field is invalid: Trusted by Industry Leaders (Stats Section) > Displayed Stats (Up to 4 items from Stats collection)
+[21:35:19] INFO: The following field is invalid: Description Text (Paragraphs Only — Max 2 Paragraphs)
+[21:35:19] INFO: The following field is invalid: Description Text (Paragraphs Only — Max 2 Paragraphs)
+[21:35:19] INFO: The following field is invalid: Description Text (Paragraphs Only — Max 2 Paragraphs)
+[21:35:20] INFO: The following field is invalid: hero.background
+[21:35:20] INFO: The following field is invalid: statsSection.stats
+[21:35:20] INFO: The following field is invalid: meta.image
+[21:35:20] INFO: The following fields are invalid: interactiveSystems.systems.0.shot, interactiveSystems.systems.0.disciplines
+[21:35:20] INFO: The following fields are invalid: office.mapImage, socials.0.platform
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+    err: {
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1416:36
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:35:21] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:home-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:home-page). Remove the reference first.",
+      "stack":
+[21:35:22] INFO: The following fields are invalid: Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 1 > System Title, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 1 > System Description, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 2 > System Title, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 2 > System Description, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 3 > System Title, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 3 > System Description, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 4 > System Title, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 4 > System Description, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 5 > System Title, Interactive Systems & 3D Model Section > Interactive Systems (Exactly 5 Design Items) 5 > System Description
+[21:35:23] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.",
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (global:privacy-page). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (global:privacy-page). Remove the reference first.
+      "stack":
+    err: {
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1490:40
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+[21:35:25] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "stack":
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.",
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع اختبار عدم تكرار المعرف في رسالة الحذف)). Remove the reference first.
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1547:34
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:35:25] INFO: The following field is invalid: cta.button.link.url
+[21:35:25] INFO: The following field is invalid: hero.primaryCta.link.url
+[21:35:25] INFO: The following field is invalid: headerCta.link.url
+[21:35:25] INFO: The following field is invalid: cta.button.link.url
+[21:35:25] INFO: The following field is invalid: hero.primaryCta.link.url
+[21:35:25] INFO: The following field is invalid: headerCta.link.url
+[21:35:25] INFO: The following field is invalid: cta.button.link.url
+[21:35:25] INFO: The following field is invalid: hero.primaryCta.link.url
+[21:35:25] INFO: The following field is invalid: headerCta.link.url
+[21:35:25] INFO: The following field is invalid: cta.button.link.url
+[21:35:25] INFO: The following field is invalid: hero.primaryCta.link.url
+[21:35:26] INFO: The following field is invalid: headerCta.link.url
+[21:35:26] INFO: The following field is invalid: cta.button.link.internalPath
+[21:35:26] INFO: The following field is invalid: cta.button.link.internalPath
+[21:35:26] ERROR: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:home-page, global:about-page, global:projects-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:home-page, global:about-page, global:projects-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.",
+      "stack":
+          APIError: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:home-page, global:about-page, global:projects-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:home-page, global:about-page, global:projects-page. Remove those references first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventStatDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Stats.ts:46:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1661:31
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:35:26] ERROR: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:about-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.
+    err: {
+      "message": "لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:about-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.",
+      "type": "APIError",
+      "stack":
+          APIError: لا يمكن حذف هذه الإحصائية لأنها مستخدمة في: global:about-page. يرجى إزالة الارتباط أولاً. / Cannot delete this stat because it is referenced by: global:about-page. Remove those references first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventStatDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Stats.ts:46:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1697:33
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:35:27] ERROR: لا يمكن حذف هذا الفيديو لأنه مستخدم في: global:home-page. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.
+      "type": "APIError",
+      "message": "لا يمكن حذف هذا الفيديو لأنه مستخدم في: global:home-page. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.",
+      "stack":
+          APIError: لا يمكن حذف هذا الفيديو لأنه مستخدم في: global:home-page. يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: global:home-page. Remove those references first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+    err: {
+              at preventVideoDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Videos.ts:194:11)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1745:33
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:35:27] ERROR: لا يمكن حذف هذا الفيديو لأنه مستخدم في: projects(مشروع مرتبط بفيديو مرفوع). يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: projects(مشروع مرتبط بفيديو مرفوع). Remove those references first.
+      "type": "APIError",
+      "stack":
+    err: {
+      "message": "لا يمكن حذف هذا الفيديو لأنه مستخدم في: projects(مشروع مرتبط بفيديو مرفوع). يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: projects(مشروع مرتبط بفيديو مرفوع). Remove those references first.",
+          APIError: لا يمكن حذف هذا الفيديو لأنه مستخدم في: projects(مشروع مرتبط بفيديو مرفوع). يرجى إزالة الارتباط أولاً. / Cannot delete this video because it is referenced by: projects(مشروع مرتبط بفيديو مرفوع). Remove those references first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventVideoDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Videos.ts:194:11)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:124:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t5.int.test.ts:1785:36
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+      "isOperational": true,
+    }
+ ✓ tests/int/p2-t5.int.test.ts (9 tests) 26341ms
+     ✓ allows editor and admin to update navigation, preserves array order, and enforces I3 link validation 330ms
+   ✓ P2-T5 integration suite (Globals: site-settings, navigation, home-page, services-page, about-page, projects-page, contact-page, privacy-page) (9)
+     ✓ enforces Z2 on home-page (and all publishable page globals): anonymous REST GET /api/globals/home-page returns published version only while a newer draft exists 626ms
+     ✓ enforces home-page invariants (hero.background xor hero.backgroundVideo, unique interactiveSystems.systems[].shot, statsSection max 4, and paragraphRichTextField AST limits) 716ms
+     ✓ verifies services-page, about-page, projects-page, contact-page, and privacy-page fields, draft/publish Z2 behaviour, and revalidation hooks 1216ms
+     ✓ returns HTTP 400 with field errors for invalid relationship IDs and enum values on global draft and published saves (R-6) 328ms
+     ✓ prevents deleting media referenced by globals in localized meta.image or richText body upload nodes (R-7) 4321ms
+     ✓ rejects unsafe linkField URLs (javascript:, data:, vbscript:, mixed-case/whitespace schemes, and //host internal paths) on draft, autosave, and publish across globals (R-1, R-6) 801ms
+     ✓ prevents deleting stats and videos referenced by globals or collections across published and draft versions and locales (R-4) 2103ms
+[21:35:39] INFO: Dropping database.
+[21:35:39] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:35:39] INFO: Migrating: 20261021_074848_initial_users_media
+[21:35:39] INFO: Migrated:  20261021_074848_initial_users_media (86ms)
+[21:35:39] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:35:40] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (61ms)
+[21:35:40] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:35:40] INFO: Migrated:  20261022_140011_p2_t3_services_team (76ms)
+[21:35:40] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:35:40] INFO: Migrated:  20261022_160652_p2_t4_projects (103ms)
+[21:35:40] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:35:40] INFO: Migrated:  20261022_221250_p2_t5_globals (553ms)
+[21:35:40] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:35:40] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (33ms)
+[21:35:40] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:35:40] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (14ms)
+[21:35:40] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:35:40] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (31ms)
+[21:35:40] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:35:40] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (18ms)
+[21:35:40] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:35:40] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (18ms)
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:43] INFO: You are not allowed to perform this action.
+[21:35:44] INFO: You are not allowed to perform this action.
+[21:35:44] INFO: You are not allowed to perform this action.
+[21:35:44] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:46] INFO: You are not allowed to perform this action.
+[21:35:47] INFO: You are not allowed to perform this action.
+[21:35:47] INFO: You are not allowed to perform this action.
+[21:35:47] INFO: You are not allowed to perform this action.
+[21:35:47] INFO: You are not allowed to perform this action.
+[21:35:47] INFO: You are not allowed to perform this action.
+[21:35:47] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:48] INFO: You are not allowed to perform this action.
+[21:35:49] INFO: You are not allowed to perform this action.
+[21:35:49] INFO: You are not allowed to perform this action.
+[21:35:49] INFO: You are not allowed to perform this action.
+[21:35:50] INFO: You are not allowed to perform this action.
+[21:35:50] INFO: You are not allowed to perform this action.
+[21:35:50] INFO: You are not allowed to perform this action.
+stdout | tests/int/p2-t8.int.test.ts > P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6..R-9) > executes the complete REST Role Matrix across all 8 globals (anonymous / editor / admin × read/update) (Z1, Z5)
+| `users (other — id & name only for editor per R-11)` | 403 | 403 | 403 | 403 | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 |
+=== Z5 COLLECTION ROLE MATRIX ===
+| Target | Anon Read | Anon Create | Anon Update | Anon Delete | Editor Read | Editor Create | Editor Update | Editor Delete | Admin Read | Admin Create | Admin Update | Admin Delete |
+| `users (self)` | 403 | 403 | 403 | 403 | 200 | 403 | 200 | 403 | 200 | 201 | 200 | 200 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| `media` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `videos` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `brands` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `stats` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `materials` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `team` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `services` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| `quote-requests` | 403 | 403 | 403 | 403 | 200 | 403 | 200 | 403 | 200 | 403 | 200 | 200 |
+| `projects` | 200 | 403 | 403 | 403 | 200 | 201 | 200 | 200 | 200 | 201 | 200 | 200 |
+| Global | Anon Read | Anon Update | Editor Read | Editor Update | Admin Read | Admin Update |
+|---|---|---|---|---|---|---|
+| `site-settings` | 200 | 403 | 200 | 403 | 200 | 200 |
+=== Z5 GLOBAL ROLE MATRIX ===
+| `navigation` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `services-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `about-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `projects-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `contact-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+| `privacy-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+
+| `home-page` | 200 | 403 | 200 | 200 | 200 | 200 |
+[21:35:51] INFO: Not Found
+[21:35:51] INFO: Not Found
+[21:35:51] INFO: Not Found
+[21:35:52] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). Remove the reference first.
+      "type": "APIError",
+    err: {
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). Remove the reference first.",
+      "stack":
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (brands(علامة تجارية تختبر حماية الوسائط التلقائية R-8)). Remove the reference first.
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t8.int.test.ts:93:16)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t8.int.test.ts:1623:24
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:35:53] INFO: The following field is invalid: headerCta.link.url
+[21:35:53] INFO: The following field is invalid: Website URL
+   ✓ P2-T8 Access Control Matrix & Phase 2 Verification Suite (Z1–Z6, R-6..R-9) (6)
+ ✓ tests/int/p2-t8.int.test.ts (6 tests) 18068ms
+     ✓ executes the complete REST Role Matrix (anonymous / editor / admin × every collection × read/create/update/delete) with real sessions (Z1, Z3, Z4, Z5) 6092ms
+     ✓ executes the complete REST Role Matrix across all 8 globals (anonymous / editor / admin × read/update) (Z1, Z5) 2148ms
+     ✓ enforces Z2 (draft isolation) across all versioned collections (services, projects) and versioned globals in both REST (?draft=true) and Local API (overrideAccess: false) (Z2, Z5) 1095ms
+     ✓ verifies R-8 (config-driven collection media guard) and R-9 (http: external links rejected when NODE_ENV === production) over REST 1888ms
+[21:36:04] INFO: Dropping database.
+[21:36:04] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:36:04] INFO: Migrating: 20261021_074848_initial_users_media
+[21:36:05] INFO: Migrated:  20261021_074848_initial_users_media (184ms)
+[21:36:05] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:36:05] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (97ms)
+[21:36:05] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:36:05] INFO: Migrated:  20261022_140011_p2_t3_services_team (220ms)
+[21:36:05] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:36:05] INFO: Migrated:  20261022_160652_p2_t4_projects (218ms)
+[21:36:05] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:36:06] INFO: Migrated:  20261022_221250_p2_t5_globals (821ms)
+[21:36:06] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:36:06] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (28ms)
+[21:36:06] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:36:06] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (11ms)
+[21:36:06] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:36:06] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (20ms)
+[21:36:06] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:36:06] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (18ms)
+[21:36:06] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:36:06] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (15ms)
+[21:36:08] INFO: You are not allowed to perform this action.
+[21:36:09] INFO: Not Found
+[21:36:09] INFO: Not Found
+[21:36:09] INFO: Not Found
+    new: 1
+    retrying: 0
+[21:36:10] INFO: Running 1 jobs.
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: videoUrl
+[21:36:10] INFO: The following field is invalid: Project Execution Status
+[21:36:10] INFO: The following field is invalid: Slug
+[21:36:10] INFO: The following field is invalid: Content > Completion Year
+[21:36:11] INFO: The following field is invalid: Content > Completion Year
+[21:36:11] INFO: The following field is invalid: Content > Completion Year
+[21:36:11] INFO: The following field is invalid: Content > Project Summary
+[21:36:11] INFO: The following field is invalid: Details > Project Details & Pillars
+[21:36:11] INFO: The following field is invalid: Details > Project Deliverables
+[21:36:11] INFO: The following field is invalid: Media > Project Image Gallery
+[21:36:11] INFO: The following field is invalid: coverImage
+[21:36:11] INFO: The following field is invalid: gallery
+[21:36:11] INFO: The following field is invalid: meta.image
+[21:36:11] INFO: The following field is invalid: video
+[21:36:11] INFO: The following field is invalid: category
+[21:36:11] INFO: The following field is invalid: status
+[21:36:11] INFO: The following field is invalid: scope
+[21:36:11] INFO: The following field is invalid: meta
+[21:36:11] INFO: The following field is invalid: meta
+[21:36:11] INFO: The following field is invalid: Project Case Study / Body
+[21:36:11] INFO: The following field is invalid: Project Case Study / Body
+[21:36:11] INFO: The following field is invalid: gallery
+    err: {
+[21:36:11] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center), projects(مشروع بفيديو مرفوع فقط), projects(مشروع مستودعات الإمداد المجدول للنشر), projects(مركز البيانات الإقليمي بالرياض)). Remove the reference first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:890:33
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isPublic": true,
+      "status": 400,
+    }
+      "isOperational": true,
+      "name": "APIError"
+[21:36:13] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:994:29
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:36:13] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+      "type": "APIError",
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1000:33
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:36:14] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(Riyadh Regional Data Center)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(Riyadh Regional Data Center)). Remove the reference first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1010:40
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[21:36:14] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.
+    err: {
+      "stack":
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.",
+      "type": "APIError",
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(خدمة اختبارية بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(خدمة اختبارية بصورة داخل النص الغني)). Remove the reference first.
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1055:39
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "isOperational": true,
+      "isPublic": true,
+      "name": "APIError"
+    }
+      "data": null,
+      "status": 400,
+[21:36:22] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "stack":
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.",
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (projects(مشروع رقم 105 بصورة داخل النص الغني)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (projects(مشروع رقم 105 بصورة داخل النص الغني)). Remove the reference first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1114:40
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "status": 400,
+    }
+      "name": "APIError"
+[21:36:23] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+    err: {
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.",
+      "stack":
+      "type": "APIError",
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #991). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #991). Remove it from those materials first.
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at preventBrandDeletionWhenUsedByMaterials (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Brands.ts:35:11)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1344:28
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+    err: {
+[21:36:23] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventLastAdminBeforeDelete (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Users.ts:144:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      "type": "APIError",
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:98:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1355:32
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+      "isOperational": true,
+    }
+[21:36:23] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventLastAdminDemotionBeforeChange (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Users.ts:111:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:96:11)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+    err: {
+      "type": "APIError",
+[21:36:23] ERROR: معرّف المستخدم غير صالح. / Invalid user ID.
+      "message": "معرّف المستخدم غير صالح. / Invalid user ID.",
+      "stack":
+          APIError: معرّف المستخدم غير صالح. / Invalid user ID.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at handler (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Users.ts:321:17)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:32)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:94:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t4.int.test.ts:1377:30
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "status": 400,
+      "isPublic": true,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t4.int.test.ts (6 tests) 25990ms
+   ✓ P2-T4 integration suite (projects) (6)
+     ✓ enforces Z1 & Z2 on projects: anonymous never sees draft projects (REST or Local API overrideAccess:false), sees published projects, and newer draft edits remain hidden until published 673ms
+     ✓ supports scheduled publishing via Payload jobs queue (schedulePublish: true): transitions a draft project to published when the scheduled time arrives 785ms
+     ✓ enforces mutual exclusion between video and videoUrl (video xor videoUrl), trims videoUrl whitespace, and rejects non-default ports and non-allowlisted hosts on draft and published saves (R-8) 683ms
+     ✓ enforces slug uniqueness, required status with no default (R-9), field constraints, draft relationship/enum validation returning 400 (R-6), and media deletion guard across locales and richText upload nodes (R-7) 11855ms
+     ✓ wires revalidation hooks for publish, unpublish, and featured toggle, while skipping revalidation on draft/autosave edits of published projects (R-4) 705ms
+[21:36:34] INFO: Dropping database.
+[21:36:34] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:36:35] INFO: Migrating: 20261021_074848_initial_users_media
+[21:36:35] INFO: Migrated:  20261021_074848_initial_users_media (139ms)
+[21:36:35] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:36:35] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (109ms)
+[21:36:35] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:36:35] INFO: Migrated:  20261022_140011_p2_t3_services_team (160ms)
+[21:36:35] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:36:35] INFO: Migrated:  20261022_160652_p2_t4_projects (274ms)
+[21:36:35] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:36:36] INFO: Migrated:  20261022_221250_p2_t5_globals (609ms)
+[21:36:36] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:36:36] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (31ms)
+[21:36:36] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:36:36] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (13ms)
+[21:36:36] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:36:36] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (27ms)
+[21:36:36] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:36:36] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (16ms)
+[21:36:36] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:36:36] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (17ms)
+[21:36:38] INFO: You are not allowed to perform this action.
+[21:36:38] INFO: You are not allowed to perform this action.
+[21:36:38] INFO: You are not allowed to perform this action.
+[21:36:38] INFO: You are not allowed to perform this action.
+[21:36:38] INFO: You are not allowed to perform this action.
+[21:36:39] INFO: You are not allowed to perform this action.
+[21:36:39] INFO: The following field is invalid: status
+[21:36:39] INFO: The following field is invalid: assignedTo
+[21:36:41] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:810:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+[21:36:41] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+          AuthenticationError: The email or password provided is incorrect.
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:810:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+      "data": null,
+      "isPublic": true,
+      "status": 401,
+      "isOperational": true,
+      "name": "AuthenticationError"
+    }
+      "type": "AuthenticationError",
+[21:36:42] ERROR: The email or password provided is incorrect.
+    err: {
+      "message": "The email or password provided is incorrect.",
+      "stack":
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+          AuthenticationError: The email or password provided is incorrect.
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:810:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:36:42] ERROR: The email or password provided is incorrect.
+    err: {
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+      "type": "AuthenticationError",
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:810:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "status": 401,
+    }
+      "name": "AuthenticationError"
+      "isPublic": true,
+[21:36:43] ERROR: The email or password provided is incorrect.
+      "type": "AuthenticationError",
+    err: {
+      "stack":
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+      "message": "The email or password provided is incorrect.",
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+          AuthenticationError: The email or password provided is incorrect.
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:810:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:36:43] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:822:32
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+[21:36:43] INFO: You are not allowed to perform this action.
+[21:36:43] INFO: You are not allowed to perform this action.
+[21:36:43] INFO: You are not allowed to perform this action.
+[21:36:43] INFO: You are not allowed to perform this action.
+[21:36:44] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:73:16)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t6.int.test.ts:867:32
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+ ✓ tests/int/p2-t6.int.test.ts (7 tests) 20448ms
+     ✓ normalizes phone inputs (0573534185, 057 353 4185, 00966 57 353 4185, +966 57 353 4185) to canonical E.164 +966573534185 (R-3, R-12), preserves read-only serviceTitle snapshot when the referenced service is deleted (R-4), and allows editors to read only id + name of other users (R-5, R-11) 957ms
+     ✓ enforces Users.access.unlock = isAdmin and disables POST /api/users/verify/:id (404): locks an admin account on the 5th failed login, rejects anonymous/editor unlock (existing, unknown, or self) with 403, allows admin unlock (200), and returns 404 on verify/:id (R-13, R-18, R-19) 4198ms
+   ✓ P2-T6 integration suite (quote-requests collection, Z1, Z4, D2, I1) (7)
+     ✓ executes all required REST probes: anonymous GET -> 403, editor GET -> 200, editor PATCH workflow fields -> 200, editor/admin PATCH customer or system fields -> ignored (stored value unchanged), editor DELETE -> 403, admin DELETE -> 200 461ms
+     ✓ prevents staff and admins from forging createdAt on create (R-10) and from rewriting createdAt via REST PATCH (editor and admin) or Local API update (overrideAccess: false) across all 10 collections (R-2, R-8) 2855ms
+ ✓ src/p3-t4-home.test.ts (11 tests) 160ms
+ ✓ src/p3-t3-components.test.ts (16 tests) 2008ms
+       ✓ renders sections 10..18 on /ar/styleguide and /en/styleguide in development 817ms
+     ✓ 10. Styleguide route renders all P3-T3 sections in ar and en (1)
+     ✓ 8. ServicesCarousel (175:3714) (3)
+   ✓ P3-T3 — Cards & motion components (16)
+       ✓ mounts ServicesCarousel in a real Chromium DOM, sets --index / --max-index / --drag-x via CSSOM setProperty, and moves the track and thumb via calc() (R-18) 998ms
+ ✓ src/eslint-require-override-access-false.test.ts (12 tests) 1944ms
+   ✓ local/require-override-access-false ESLint rule & Z6 typed wrapper (P2-T8 & P3-T1 §0, R-6, R-11, R-12, R-21..R-23) (12)
+     ✓ flags payload.find, payload.findByID, and payload.findGlobal calls in src/app/(frontend) and src/lib/cms when overrideAccess: false is missing or true 395ms
+     ✓ verifies all existing files in src/app/(frontend), src/components, and src/lib/cms pass Z6 1097ms
+[21:37:18] INFO: Dropping database.
+[21:37:18] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:37:19] INFO: Migrating: 20261021_074848_initial_users_media
+[21:37:19] INFO: Migrated:  20261021_074848_initial_users_media (83ms)
+[21:37:19] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:37:19] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (64ms)
+[21:37:19] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:37:19] INFO: Migrated:  20261022_140011_p2_t3_services_team (70ms)
+[21:37:19] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:37:19] INFO: Migrated:  20261022_160652_p2_t4_projects (106ms)
+[21:37:19] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:37:19] INFO: Migrated:  20261022_221250_p2_t5_globals (577ms)
+[21:37:19] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:37:19] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (38ms)
+[21:37:19] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:37:19] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (16ms)
+[21:37:19] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:37:19] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (21ms)
+[21:37:19] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:37:20] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (13ms)
+[21:37:20] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:37:20] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (16ms)
+[21:37:20] INFO: You are not allowed to perform this action.
+[21:37:21] INFO: You are not allowed to perform this action.
+[21:37:21] INFO: You are not allowed to perform this action.
+[21:37:21] INFO: You are not allowed to perform this action.
+[21:37:21] INFO: You are not allowed to perform this action.
+[21:37:21] INFO: The following field is invalid: password
+[21:37:21] INFO: The following field is invalid: password
+[21:37:21] INFO: The following field is invalid: password
+[21:37:21] INFO: The following field is invalid: password
+[21:37:22] INFO: The following field is invalid: password
+[21:37:22] INFO: The following field is invalid: password
+[21:37:24] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "stack":
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+          AuthenticationError: The email or password provided is incorrect.
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+      "message": "The email or password provided is incorrect.",
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:400:24
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+      "message": "The email or password provided is incorrect.",
+[21:37:24] ERROR: The email or password provided is incorrect.
+      "type": "AuthenticationError",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+    err: {
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:37:25] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:400:24
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+    err: {
+[21:37:25] ERROR: The email or password provided is incorrect.
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+          AuthenticationError: The email or password provided is incorrect.
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+[21:37:26] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+      "stack":
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+[21:37:26] ERROR: The email or password provided is incorrect.
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:410:24
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:37:27] ERROR: The email or password provided is incorrect.
+      "type": "AuthenticationError",
+    err: {
+      "stack":
+      "message": "The email or password provided is incorrect.",
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:419:32
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+      "data": null,
+[21:37:27] INFO: You are not allowed to perform this action.
+[21:37:27] INFO: You are not allowed to perform this action.
+[21:37:28] INFO: You are not allowed to perform this action.
+[21:37:28] INFO: You are not allowed to perform this action.
+[21:37:28] INFO: You are not allowed to perform this action.
+[21:37:28] ERROR: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+    err: {
+      "stack":
+      "type": "APIError",
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventLastAdminDemotionBeforeChange (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Users.ts:111:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+    err: {
+      "stack":
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at preventLastAdminBeforeDelete (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Users.ts:144:13)
+      "type": "APIError",
+[21:37:28] ERROR: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:580:23
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p1-t3.int.test.ts:63:15)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "isPublic": true,
+      "status": 400,
+      "data": null,
+    }
+      "name": "APIError"
+      "isOperational": true,
+stdout | tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+[A5/R-1 Timing 20+20] known(median=23.5ms, max=43.31ms) vs unknown(median=5.32ms, max=8.64ms) | diff=18.18ms
+
+[21:37:33] INFO: You are not allowed to perform this action.
+[21:37:33] INFO: The following field is invalid: file
+[21:37:33] INFO: The following field is invalid: file
+ ✓ tests/int/p1-t3.int.test.ts (9 tests) 16468ms
+     ✓ allows admin to create an editor user (defaulting to editor) and prevents editor from escalating role via REST or Local API (Z1, Z3) 981ms
+     ✓ locks the account after 5 failed login attempts for 15 minutes and refuses the correct password while locked (A1) 3700ms
+     ✓ enforces the password policy (min 12 chars + common password blocklist) on create, update, and reset-password (A4) 1432ms
+     ✓ revokes JWT access immediately on user logout and on admin-forced session removal (A2) 1095ms
+     ✓ refuses deleting or demoting the last admin user, while allowing deleting a second admin (R-2) 406ms
+     ✓ registers the first user as admin via /api/users/first-register and blocks any second first-register attempt (A6) 873ms
+     ✓ returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1) 5228ms
+     ✓ rejects anonymous uploads, rejects .svg and disguised HTML renamed .jpg by magic bytes, and accepts a real JPEG generating all 4 webp sizes (I5, Z1) 629ms
+   ✓ P1-T3 integration suite (Postgres test DB via migrations) (9)
+[21:37:42] INFO: Dropping database.
+[21:37:43] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:37:43] INFO: Migrating: 20261021_074848_initial_users_media
+[21:37:43] INFO: Migrated:  20261021_074848_initial_users_media (89ms)
+[21:37:43] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:37:43] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (67ms)
+[21:37:43] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:37:43] INFO: Migrated:  20261022_140011_p2_t3_services_team (115ms)
+[21:37:43] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:37:43] INFO: Migrated:  20261022_160652_p2_t4_projects (151ms)
+[21:37:43] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:37:44] INFO: Migrated:  20261022_221250_p2_t5_globals (835ms)
+[21:37:44] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:37:44] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (209ms)
+[21:37:44] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:37:44] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (55ms)
+[21:37:44] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:37:44] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (74ms)
+[21:37:44] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:37:44] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (48ms)
+[21:37:44] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:37:45] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (57ms)
+[21:37:47] INFO: You are not allowed to perform this action.
+[21:37:47] INFO: Not Found
+[21:37:47] INFO: Not Found
+[21:37:47] INFO: The following field is invalid: Detailed Service Description
+[21:37:47] INFO: The following field is invalid: Detailed Service Description
+[21:37:47] INFO: The following field is invalid: Detailed Service Description
+[21:37:47] INFO: The following field is invalid: Detailed Service Description
+[21:37:47] INFO: The following field is invalid: Photo
+[21:37:47] INFO: The following field is invalid: Photo
+[21:37:47] INFO: The following field is invalid: Photo
+[21:37:47] INFO: The following field is invalid: LinkedIn URL
+[21:37:47] INFO: Not Found
+[21:37:48] INFO: The following field is invalid: LinkedIn URL
+[21:37:48] INFO: The following field is invalid: LinkedIn URL
+[21:37:48] INFO: The following field is invalid: Service Icon
+[21:37:48] INFO: The following field is invalid: Service Tier
+[21:37:48] ERROR: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). Remove the reference first.
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). Remove the reference first.",
+      "stack":
+          APIError: لا يمكن حذف ملف الوسائط هذا لأنه مستخدم في سجلات أخرى (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). يرجى إزالة الارتباط أولاً. / Cannot delete this media item because it is referenced by other record(s) (services(الأعمال الكهروميكانيكية المتكاملة), team(م. عبد الله الشمري)). Remove the reference first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventMediaDeletionWhenReferenced (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Media.ts:540:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t3.int.test.ts:74:11)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t3.int.test.ts:808:38
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t3.int.test.ts (4 tests) 12152ms
+     ✓ enforces Z1 & Z2 on services: anonymous never sees draft services (even with ?draft=true), sees published services, and newer draft edits remain hidden until published 554ms
+   ✓ P2-T3 integration suite (services & team) (4)
+     ✓ verifies P2-T3 R-1..R-6 fixes: staff bio cleared across all locales (R-1), LinkedIn https + path (R-2), LinkFeature enabledCollections (R-3), no silent icon/tier defaults on services (R-4), Arabic SEO field labels (R-5), and media beforeDelete guard (R-6) 905ms
+ ✓ src/p3-t12-arabic-switch.test.ts (15 tests) 89ms
+ ✓ src/p3-t2-components.test.ts (15 tests) 713ms
+   ✓ P3-T2 — Shell & primitives + styleguide route (15)
+     ✓ 10. /[locale]/styleguide route (dev-only; 404 in production) (1)
+       ✓ renders all component sections in development and throws notFound() in production 582ms
+[21:38:04] INFO: Dropping database.
+[21:38:04] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:38:05] INFO: Migrating: 20261021_074848_initial_users_media
+[21:38:05] INFO: Migrated:  20261021_074848_initial_users_media (122ms)
+[21:38:05] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[21:38:05] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (104ms)
+[21:38:05] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[21:38:05] INFO: Migrated:  20261022_140011_p2_t3_services_team (195ms)
+[21:38:05] INFO: Migrating: 20261022_160652_p2_t4_projects
+[21:38:05] INFO: Migrated:  20261022_160652_p2_t4_projects (229ms)
+[21:38:05] INFO: Migrating: 20261022_221250_p2_t5_globals
+[21:38:06] INFO: Migrated:  20261022_221250_p2_t5_globals (681ms)
+[21:38:06] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[21:38:06] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (51ms)
+[21:38:06] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[21:38:06] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (20ms)
+[21:38:06] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[21:38:06] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (47ms)
+[21:38:06] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[21:38:06] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (15ms)
+[21:38:06] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[21:38:06] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (14ms)
+[21:38:08] INFO: You are not allowed to perform this action.
+[21:38:08] INFO: You are not allowed to perform this action.
+[21:38:08] INFO: You are not allowed to perform this action.
+[21:38:08] INFO: You are not allowed to perform this action.
+[21:38:08] INFO: You are not allowed to perform this action.
+[21:38:08] INFO: You are not allowed to perform this action.
+[21:38:09] ERROR: File size limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at FileStream.<anonymous> (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at Multipart._write (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at _write (node:internal/streams/writable:499:10)
+              at file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "data": {
+              at Writable.write (node:internal/streams/writable:508:10)
+      "name": "APIError"
+    }
+[21:38:10] INFO: The following field is invalid: file
+[21:38:10] INFO: The following field is invalid: file
+[21:38:10] INFO: The following field is invalid: Website URL
+[21:38:10] INFO: The following field is invalid: Approved Brands
+[21:38:10] INFO: The following field is invalid: Item No.
+[21:38:10] ERROR: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+    err: {
+      "message": "لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.",
+      "type": "APIError",
+      "stack":
+          APIError: لا يمكن حذف هذه العلامة التجارية لأنها مستخدمة في 1 مادة معتمدة (البنود: #1). يرجى إزالتها من تلك المواد أولاً. / Cannot delete this brand because it is referenced by 1 approved material(s) (items: #1). Remove it from those materials first.
+              at createPublicAPIError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/apiError.ts:26:15)
+              at preventBrandDeletionWhenUsedByMaterials (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/collections/Brands.ts:35:11)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t2.int.test.ts:65:20)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t2.int.test.ts:473:27
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "name": "APIError"
+    }
+      "status": 400,
+[21:38:10] ERROR: Multipart limit has been reached
+    err: {
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+          APIError: Multipart limit has been reached
+              at Multipart.<anonymous> (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+      "stack":
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at feed (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+              at SBMH.push (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "status": 413,
+      "name": "APIError"
+      "isPublic": true,
+    }
+              at limitError (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+    err: {
+[21:38:10] ERROR: Multipart limit has been reached
+      "type": "APIError",
+      "message": "Multipart limit has been reached",
+      "stack":
+          APIError: Multipart limit has been reached
+              at limitError (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:50:28)
+              at Multipart.<anonymous> (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:52:38)
+              at Multipart.emit (node:events:508:28)
+              at HeaderParser.cb (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:343:18)
+              at HeaderParser.push (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:162:20)
+              at SBMH.ssCb [as _cb] (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:394:37)
+              at SBMH.push (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at Multipart._write (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+              at feed (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:200:10)
+[21:38:13] INFO: The following field is invalid: file
+    err: {
+[21:38:13] ERROR: File size limit has been reached
+      "type": "APIError",
+      "message": "File size limit has been reached",
+      "stack":
+          APIError: File size limit has been reached
+              at FileStream.<anonymous> (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:94:26)
+              at FileStream.emit (node:events:508:28)
+              at SBMH.ssCb [as _cb] (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:479:32)
+              at feed (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:248:10)
+              at SBMH.push (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\streamsearch@1.1.0\node_modules\streamsearch\lib\sbmh.js:104:16)
+              at writeOrBuffer (node:internal/streams/writable:570:12)
+              at Multipart._write (D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\node_modules\.pnpm\busboy@1.6.0\node_modules\busboy\lib\types\multipart.js:567:19)
+              at _write (node:internal/streams/writable:499:10)
+              at Writable.write (node:internal/streams/writable:508:10)
+              at file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/uploads/fetchAPI-multipart/processMultipart.js:167:28
+      "data": {
+        "size": 0
+      },
+      "isOperational": true,
+      "isPublic": true,
+      "status": 413,
+      "name": "APIError"
+    }
+ ✓ tests/int/p2-t2.int.test.ts (4 tests) 15957ms
+   ✓ P2-T2 integration suite (videos, brands, stats, materials) (4)
+     ✓ enforces per-collection upload limits, randomizes video filenames to <timestamp>-<16hex>.<mp4|webm> (R-1), isolates VIDEOS_DIR from MEDIA_DIR (R-6), rejects 101 MB MP4, and rejects disguised HTML (I5, R-9) 1500ms
+     ✓ allows editor CRUD on stats, brands, and materials, validates brand website scheme, and blocks deleting a brand referenced by materials 848ms
+     ✓ isolates video upload temp dir outside staticDir (R-11), rejects multi-file requests without leaking temp files (R-12), and accepts exact 100 MiB inclusive while rejecting 100 MiB + 1 (R-13) 2527ms
+ ✓ src/p3-t1-foundations.test.ts (12 tests) 354ms
+ ✓ src/hooks/revalidate.test.ts (9 tests) 46ms
+ ✓ src/seed/materials.test.ts (5 tests) 57ms
+ ✓ src/fields/slug.test.ts (27 tests) 28ms
+ ✓ tests/int/p2-t1-slug.int.test.ts (4 tests) 2676ms
+   ✓ P2-T1 real per-locale slug & slugLocked integration tests (R-2, R-6, R-7, R-9) (4)
+     ✓ real per-locale flow: create in ar -> transliterated; add en title -> English slug; publish; change English title -> slug unchanged (R-2) 748ms
+     ✓ stale-payload sequences: resending stale auto-slugs in ar or en saves does not revert or lock the slug (R-14, R-17) 559ms
+     ✓ resolves unique suffixes without collision when an 80-char title is used 3 times (R-15) 323ms
+[21:38:45] INFO: Reading migration files from D:\aljazira-p3-t13-p4-t2-dod-20261025-212030\src\migrations
+[21:39:23] INFO: You are not allowed to perform this action.
+[21:39:23] INFO: You are not allowed to perform this action.
+[21:39:23] INFO: You are not allowed to perform this action.
+[21:39:23] INFO: You are not allowed to perform this action.
+[21:39:23] INFO: You are not allowed to perform this action.
+[21:39:23] INFO: You are not allowed to perform this action.
+ ✓ tests/int/p4-t2.int.test.ts (4 tests) 108975ms
+     ✓ logs all deleted counts on --reseed when rebuilding a populated Phase 4 database 52579ms
+     ✓ seeds the full Phase 4 baseline (P4-T1 + P4-T2) via --reseed and verifies all counts, locales, marquee order, and home-page interactiveSystems in both en & ar 34788ms
+   ✓ P4-T2 Integration — Settings, services, projects (91 + 17 photos), marquee (20), copy & placeholders seed (4)
+ ✓ tests/int/p4-t1.int.test.ts (3 tests) 13200ms
+   ✓ P4-T1 Integration — Materials + brands seed (73 rows, first-run baseline, --reseed, Local API) (3)
+     ✓ seeds all 73 materials and 83 normalized brands on an empty DB, refuses on a non-empty DB preserving editor changes, refuses --reseed in production, and rebuilds on dev --reseed (R-4, R-11) 12371ms
+ ✓ tests/int/p3-t4-migration.int.test.ts (1 test) 724ms
+   ✓ P3-T4 R2 Migration Integration (R-12, R-13) — 20261024_104400_p3_t4_r2_title_accent_and_stats_bg (1)
+     ✓ migrates pre-R2 rows containing "s", "\n", embedded whitespace, single-line strings, and Arabic across home_page, services_page, projects_page and _v tables up and down without data loss 393ms
+[21:41:08] WARN: [cmsFindAllSmallCollection] Collection "stats" has at least 101 documents, exceeding MAX_CMS_QUERY_LIMIT (100). Rendering the first 100 documents (R-10, R-15, R-23).
+ ✓ tests/int/p3-t1.int.test.ts (6 tests) 26555ms
+   ✓ P3-T1 Integration — Z6 data layer, R-23 pagination/limit caps, draft isolation, and /api/preview (6)
+     ✓ R-15: when 101 docs exist in a small collection (stats), cmsFindAllSmallCollection logs a warning, never throws, and returns the first 100 docs 24592ms
+ ✓ tests/unit/scripts-guard.test.ts (9 tests) 492ms
+   ✓ scripts/check-citations.mjs mechanical citation checker (P2-T8 R-13) (4)
+     ✓ checks bracketed [locale] paths and verifies against committed HEAD rather than uncommitted working-tree files (R-17) 444ms
+ ✓ src/globals/globals.test.ts (6 tests) 44ms
+ ✓ src/fields/link.test.ts (11 tests) 19ms
+ ✓ src/collections/QuoteRequests.test.ts (6 tests) 22ms
+ ✓ src/access/z1-config-enumeration.test.ts (3 tests) 21ms
+[21:42:06] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+      "type": "AuthenticationError",
+    err: {
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:113:23
+      "isOperational": true,
+      "data": null,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:42:06] ERROR: The email or password provided is incorrect.
+    err: {
+      "message": "The email or password provided is incorrect.",
+      "stack":
+      "type": "AuthenticationError",
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:122:23
+      "data": null,
+      "isOperational": true,
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+      "status": 401,
+      "isPublic": true,
+      "name": "AuthenticationError"
+    }
+[21:42:07] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+    err: {
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+[21:42:07] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    err: {
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:42:08] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+      "type": "AuthenticationError",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+    err: {
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:136:26
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "isPublic": true,
+      "status": 401,
+      "data": null,
+      "isOperational": true,
+      "name": "AuthenticationError"
+    }
+[21:42:08] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:136:26
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+      "type": "AuthenticationError",
+[21:42:08] ERROR: The email or password provided is incorrect.
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+    err: {
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:162:28
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at async file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "isOperational": true,
+      "data": null,
+      "isPublic": true,
+      "name": "AuthenticationError"
+    }
+      "status": 401,
+[21:42:09] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+      "stack":
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:190:27
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:42:09] ERROR: The email or password provided is incorrect.
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:199:27
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:42:10] ERROR: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+    err: {
+      "type": "AuthenticationError",
+      "stack":
+      "message": "البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.",
+          AuthenticationError: البريد الإلكتروني أو كلمة المرور المقدمة غير صحيحة.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:219:29
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[21:42:10] ERROR: The email or password provided is incorrect.
+      "stack":
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:88:15)
+              at async buildBeforeOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at hardenLoginEnumerationBeforeOperation (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/src/security/loginEnumeration.ts:140:11)
+    err: {
+              at async loginOperation (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async Object.POST (file:///D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20)
+              at callJsonApi (D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:55:15)
+              at D:/aljazira-p3-t13-p4-t2-dod-20261025-212030/tests/int/p2-t9.int.test.ts:228:29
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+ ✓ tests/int/p2-t9.int.test.ts (2 tests) 6733ms
+   ✓ P2-T9 Login enumeration hardening integration suite (A1, A5 spirit) (2)
+     ✓ returns identical 401 status and byte-identical JSON body for unknown email, wrong password (attempts 1..5), and locked account (wrong or right password) in both ar and en; locks on the 5th failure for 15 min; and allows correct password after the lock window expires 5960ms
+ ✓ src/seed/p4-t2.test.ts (5 tests) 35ms
+ ✓ src/env.test.ts (8 tests) 18ms
+ ✓ src/security/loginEnumeration.test.ts (5 tests) 970ms
+   ✓ P2-T9 Login enumeration hardening unit tests (A1, A5 spirit) (5)
+     ✓ runs the dummy PBKDF2 hash and throws generic AuthenticationError (401) for unknown emails and locked accounts in hardenLoginEnumerationBeforeOperation 668ms
+ ✓ src/fields/richText.test.ts (4 tests) 57ms
+ ✓ src/eslint-no-server-in-client.test.ts (5 tests) 177ms
+ ✓ src/fields/videoUrl.test.ts (5 tests) 12ms
+ ✓ tests/int/p3-t12.int.test.ts (2 tests) 1882ms
+ ✓ src/security/uploadValidation.test.ts (5 tests) 12ms
+ ✓ src/fields/groups/groups.test.ts (5 tests) 14ms
+ ✓ src/lib/quote/schema.test.ts (4 tests) 9ms
+ ✓ src/jobs/shouldAutoRun.test.ts (5 tests) 12ms
+ ✓ src/access/publishedOrLoggedIn.test.ts (4 tests) 7ms
+ ✓ src/lib/ipHash.test.ts (3 tests) 7ms
+ ✓ src/fields/groups/pillar.test.ts (2 tests) 6ms
+ ✓ src/security/apiError.test.ts (2 tests) 5ms
+ ✓ src/access/adminOrSelf.test.ts (3 tests) 5ms
+ ✓ src/fields/order.test.ts (2 tests) 5ms
+ ✓ src/security/passwordPolicy.test.ts (3 tests) 8ms
+ ✓ src/collections/_shared/publishable.test.ts (2 tests) 6ms
+ ✓ src/access/isAdminFieldLevel.test.ts (3 tests) 4ms
+ ✓ src/access/isAdminOrEditor.test.ts (3 tests) 5ms
+ ✓ src/access/isAdmin.test.ts (3 tests) 5ms
+
+ Test Files  49 passed (49)
+      Tests  305 passed (305)
+   Start at  21:34:58
+   Duration  463.50s (tests 68%, import 32%, transform 1%)
+
+    Isolate  49 workers spawned · ~272ms startup each (spawn + environment, per file)
+             at least ~13.07s faster with isolate: false — reuses workers across files instead of one per file
+
+(node:44540) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:41272) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:49396) DeprecationWarning: Calling client.query() when the client is already executing a query is deprecated and will be removed in pg@9.0. Use async/await or an external async flow control mechanism instead.
+
+[exit_code=0]
+GATE: PASS

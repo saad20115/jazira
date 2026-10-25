@@ -1,0 +1,140 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+=== Google Lighthouse v13.5.0 Mobile Audit (en -> http://localhost:3000/en, warmImages=true) [Attempt 1/1, no retry] ===
+Warmed /_next/image URLs (8):
+  [1] status=200 bytes=39681 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=640&q=75
+  [2] status=200 bytes=52886 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=750&q=75
+  [3] status=200 bytes=62788 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=828&q=75
+  [4] status=200 bytes=98303 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=1080&q=75
+  [5] status=200 bytes=116415 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=1200&q=75
+  [6] status=200 bytes=160473 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=1920&q=75
+  [7] status=200 bytes=160473 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=2048&q=75
+  [8] status=200 bytes=160473 url=/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=3840&q=75
+Performance:    84 (gate >= 80; target >= 85)
+Accessibility:  96 (gate >= 95)
+Best Practices: 100 (gate >= 95)
+SEO:            100 (gate >= 95)
+CLS:            0.01037 (gate <= 0.05)
+{
+  "attempt": 1,
+  "totalAttempts": 1,
+  "warmImages": true,
+  "warmedImages": [
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=640&q=75",
+      "status": 200,
+      "bytes": 39681
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=750&q=75",
+      "status": 200,
+      "bytes": 52886
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=828&q=75",
+      "status": 200,
+      "bytes": 62788
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=1080&q=75",
+      "status": 200,
+      "bytes": 98303
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=1200&q=75",
+      "status": 200,
+      "bytes": 116415
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=1920&q=75",
+      "status": 200,
+      "bytes": 160473
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=2048&q=75",
+      "status": 200,
+      "bytes": 160473
+    },
+    {
+      "url": "/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=3840&q=75",
+      "status": 200,
+      "bytes": 160473
+    }
+  ],
+  "gatePassed": true,
+  "gates": {
+    "performance": ">= 80",
+    "accessibility": ">= 95",
+    "bestPractices": ">= 95",
+    "seo": ">= 95",
+    "cls": "<= 0.05"
+  },
+  "lighthouseVersion": "13.5.0",
+  "requestedUrl": "http://localhost:3000/en",
+  "finalDisplayedUrl": "http://localhost:3000/en",
+  "fetchTime": "2026-10-25T18:51:31.320Z",
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "scores": {
+    "performance": 84,
+    "accessibility": 96,
+    "bestPractices": 100,
+    "seo": 100
+  },
+  "clsNumeric": 0.01037,
+  "metrics": {
+    "first-contentful-paint": {
+      "numericValue": 1523.56,
+      "displayValue": "1.5 s",
+      "score": 0.95
+    },
+    "largest-contentful-paint": {
+      "numericValue": 3813.06,
+      "displayValue": "3.8 s",
+      "score": 0.55
+    },
+    "total-blocking-time": {
+      "numericValue": 230.72,
+      "displayValue": "230 ms",
+      "score": 0.86
+    },
+    "cumulative-layout-shift": {
+      "numericValue": 0.0104,
+      "displayValue": "0.01",
+      "score": 1
+    },
+    "speed-index": {
+      "numericValue": 2519.5047,
+      "displayValue": "2.5 s",
+      "score": 0.98
+    },
+    "interactive": {
+      "numericValue": 3911.449,
+      "displayValue": "3.9 s",
+      "score": 0.88
+    }
+  },
+  "failingAudits": [
+    {
+      "category": "accessibility",
+      "id": "color-contrast",
+      "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "score": 0,
+      "displayValue": null
+    }
+  ]
+}
+GATE: PASS (performance >= 80, accessibility >= 95, bestPractices >= 95, seo >= 95, cls <= 0.05)

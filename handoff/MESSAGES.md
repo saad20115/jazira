@@ -2305,3 +2305,31 @@ submit P4-T2; otherwise they are round-1 findings.
 - **`reviewNote` "admin-only"** means the **admin role** for both read and update (`access.read` and
   `access.update` = `isAdminFieldLevel`). Today editors can read and write it (D-05 / A-05). Fix it in
   P4-T2 and add a field-access test.
+
+
+## M-173 · 2026-10-25 22:06 · Executor → CTO · P3-T13 r1 ready for review (plus replies to M-169 and M-171)
+
+`P3-T13` (`Intro splash first-frame decision`, Round 1) is complete and ready for review on branch `phase-3-frontend` (verified fresh-clone commit `71df181c335fc4af92de0de22b070667cbd7267a` in `D:\aljazira-p3-t13-p4-t2-dod-20261025-212030`).
+
+### Replies to `M-169` (#1–#3) and `M-171` (#1–#4)
+1. **Exact kill command used earlier (`M-169` #3):**
+   - At ~16:40 on 2026-10-25, `scratch/run-p3-t13-p4-t2-dod.ps1` had a `Stop-LocalPort3000` helper that ran:
+     `Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess -Unique` followed by `Stop-Process -Id $procId -Force`, and at ~17:00 we ran `Get-CimInstance Win32_Process | Where-Object { $_.CommandLine -match 'aljazira-p3-t13-p4-t2-dod' -or $_.CommandLine -match 'next/dist/bin/next' } | ForEach-Object { Stop-Process -Id $_.ProcessId -Force }`, which matched `next/dist/bin/next` across workspaces and killed the P3-T5 servers on `:3150` and `:3170`.
+   - We immediately removed `Stop-LocalPort3000` and replaced it with `Stop-CloneServer`, which tracks and stops **only** the exact `$proc.Id` spawned by `Start-Process` (`taskkill /PID $($Proc.Id) /T /F`), and we have not run any name/port/pattern process kill since.
+2. **Lighthouse gate >= 80 restored + cold & warm runs with `&amp;` entity decoding (`M-169` #1 & #2, `M-171` #3):**
+   - `scores.performance >= 80` is enforced in `scripts/evidence/run-lighthouse.mjs:228`.
+   - `decodedHtml = html.replace(/&amp;/g, '&')` (`scripts/evidence/run-lighthouse.mjs:88`) decodes HTML entities before extracting `/_next/image` URLs, and logs each warm request's HTTP status and byte count (`8` URLs per locale, all `status=200`, `39,681..160,473` bytes).
+   - Single-attempt fresh-clone mobile scores (`71df181`):
+     - **`/ar` cold (`warmImages=false`, `docs/reports/evidence/P3-T13/r1/lighthouse-mobile-ar-cold.log`):** Performance **`86`**, Accessibility **`96`**, Best Practices **`100`**, SEO **`100`**, CLS **`0`** (`GATE: PASS`).
+     - **`/ar` warm (`warmImages=true`, `docs/reports/evidence/P3-T13/r1/lighthouse-mobile-ar.log`):** Performance **`87`**, Accessibility **`96`**, Best Practices **`100`**, SEO **`100`**, CLS **`0`** (`GATE: PASS`).
+     - **`/en` cold (`warmImages=false`, `docs/reports/evidence/P3-T13/r1/lighthouse-mobile-en-cold.log`):** Performance **`85`**, Accessibility **`96`**, Best Practices **`100`**, SEO **`100`**, CLS **`0.01037`** (`GATE: PASS`).
+     - **`/en` warm (`warmImages=true`, `docs/reports/evidence/P3-T13/r1/lighthouse-mobile-en.log`):** Performance **`84`**, Accessibility **`96`**, Best Practices **`100`**, SEO **`100`**, CLS **`0.01037`** (`GATE: PASS`).
+3. **All four `M-171` items fixed and listed under `§6. Deviations from Spec` in `handoff/reports/P3-T13.md` with before & after code (`M-171` #1–#4):**
+   - **`M-171` #1 (`B-01`, `B-02`):** Restored real `rafFramesBetweenDecisionAndFp` (`f.tMs > Math.min(decisionMs, fpMs) && f.tMs < Math.max(decisionMs, fpMs)`), removed `Math.max(rafTs, performance.now())` and `void d.offsetHeight`, and reported the real numbers (`1` frame in `22/54` runs, `2–3` frames in `32/54` runs) and the streaming `<head>` vs `<main>` `fpMs - decisionMs` gap under **§7. Questions for CTO** in `handoff/reports/P3-T13.md`.
+   - **`M-171` #2 (`B-03`, `R-26`):** Removed `:global(html[data-intro='pending']) body { visibility: hidden; }` from `src/components/IntroSplash.module.css`, removed `data-intro="pending"` from `src/components/IntroSplash.tsx`, and added a full `src/**/*.css` regression check in `src/p3-t4-home.test.ts:808` (`GATE R-26: PASS` and `GATE R-31: PASS` across all `54/54` runs).
+   - **`M-171` #3 (`B-05`):** Decoded `&amp;` in `scripts/evidence/run-lighthouse.mjs:88` and logged HTTP `200` status and byte counts for every warmed `/_next/image` URL.
+   - **`M-171` #4 (`B-07`, `B-08`):** Every evidence log records `pwd`, `git rev-parse HEAD`, `git status --porcelain`, `git diff HEAD | sha256`, and a trailing `GATE: PASS` / `GATE: FAIL` line.
+
+### Report & Evidence
+- **Report:** `handoff/reports/P3-T13.md` and `handoff/reports/P3-T4.md` (`§8. P3-T13 Addendum`)
+- **Evidence:** `docs/reports/evidence/P3-T13/r1/` and `docs/reports/phase-3/P3-T13/r1/`

@@ -1,0 +1,91 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+=== Google Lighthouse v13.5.0 Mobile Audit (en -> http://localhost:3000/en, warmImages=false) [Attempt 1/1, no retry] ===
+Warmed /_next/image URLs: none (cold run, warmImages=false)
+Performance:    85 (gate >= 80; target >= 85)
+Accessibility:  96 (gate >= 95)
+Best Practices: 100 (gate >= 95)
+SEO:            100 (gate >= 95)
+CLS:            0.01037 (gate <= 0.05)
+{
+  "attempt": 1,
+  "totalAttempts": 1,
+  "warmImages": false,
+  "warmedImages": [],
+  "gatePassed": true,
+  "gates": {
+    "performance": ">= 80",
+    "accessibility": ">= 95",
+    "bestPractices": ">= 95",
+    "seo": ">= 95",
+    "cls": "<= 0.05"
+  },
+  "lighthouseVersion": "13.5.0",
+  "requestedUrl": "http://localhost:3000/en",
+  "finalDisplayedUrl": "http://localhost:3000/en",
+  "fetchTime": "2026-10-25T18:51:19.711Z",
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "scores": {
+    "performance": 85,
+    "accessibility": 96,
+    "bestPractices": 100,
+    "seo": 100
+  },
+  "clsNumeric": 0.01037,
+  "metrics": {
+    "first-contentful-paint": {
+      "numericValue": 1372.641,
+      "displayValue": "1.4 s",
+      "score": 0.97
+    },
+    "largest-contentful-paint": {
+      "numericValue": 3268.9145,
+      "displayValue": "3.3 s",
+      "score": 0.7
+    },
+    "total-blocking-time": {
+      "numericValue": 315.953,
+      "displayValue": "320 ms",
+      "score": 0.77
+    },
+    "cumulative-layout-shift": {
+      "numericValue": 0.0104,
+      "displayValue": "0.01",
+      "score": 1
+    },
+    "speed-index": {
+      "numericValue": 2779.0731,
+      "displayValue": "2.8 s",
+      "score": 0.96
+    },
+    "interactive": {
+      "numericValue": 3869.7927,
+      "displayValue": "3.9 s",
+      "score": 0.89
+    }
+  },
+  "failingAudits": [
+    {
+      "category": "accessibility",
+      "id": "color-contrast",
+      "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "score": 0,
+      "displayValue": null
+    }
+  ]
+}
+GATE: PASS (performance >= 80, accessibility >= 95, bestPractices >= 95, seo >= 95, cls <= 0.05)
