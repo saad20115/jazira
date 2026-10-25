@@ -73,24 +73,27 @@ export async function runLighthouseAudit({
   headerBlock = '',
   outLogPath,
   outJsonPath,
-  minPerformance = 78,
+  warmImages = false,
 }) {
-  // Ensure the Next.js server & image optimizer have warmed the route before measuring
+  // Ensure the Next.js server has warmed the route before measuring.
+  // When warmImages === true (declared methodology option), also pre-warm up to 8 /_next/image URLs.
   try {
     const warmRes = await fetch(url)
     const html = await warmRes.text()
-    const origin = new URL(url).origin
-    const imgMatches = [...html.matchAll(/\/_next\/image\?[^"'\s>&]+/g)].map((m) =>
-      m[0].replace(/&amp;/g, '&'),
-    )
-    const uniqueImgs = [...new Set(imgMatches)].slice(0, 8)
-    await Promise.all(
-      uniqueImgs.map((rel) =>
-        fetch(`${origin}${rel}`)
-          .then((r) => r.arrayBuffer())
-          .catch(() => null),
-      ),
-    )
+    if (warmImages) {
+      const origin = new URL(url).origin
+      const imgMatches = [...html.matchAll(/\/_next\/image\?[^"'\s>&]+/g)].map((m) =>
+        m[0].replace(/&amp;/g, '&'),
+      )
+      const uniqueImgs = [...new Set(imgMatches)].slice(0, 8)
+      await Promise.all(
+        uniqueImgs.map((rel) =>
+          fetch(`${origin}${rel}`)
+            .then((r) => r.arrayBuffer())
+            .catch(() => null),
+        ),
+      )
+    }
   } catch {
     // ignore warm-up errors
   }
@@ -206,6 +209,7 @@ export async function runLighthouseAudit({
     const summary = {
       attempt: 1,
       totalAttempts: 1,
+      warmImages: Boolean(warmImages),
       lighthouseVersion: lhr.lighthouseVersion,
       requestedUrl: lhr.requestedUrl,
       finalDisplayedUrl: lhr.finalDisplayedUrl,
@@ -221,7 +225,7 @@ export async function runLighthouseAudit({
 
     const logText = [
       headerBlock ? headerBlock.trimEnd() : '',
-      `=== Google Lighthouse v${lhr.lighthouseVersion} Mobile Audit (${locale} -> ${url}) [Attempt 1/1, no retry] ===`,
+      `=== Google Lighthouse v${lhr.lighthouseVersion} Mobile Audit (${locale} -> ${url}, warmImages=${Boolean(warmImages)}) [Attempt 1/1, no retry] ===`,
       `Performance:    ${scores.performance} (preliminary mobile score; target >= 85)`,
       `Accessibility:  ${scores.accessibility} (gate >= 95)`,
       `Best Practices: ${scores.bestPractices} (gate >= 95)`,
@@ -239,7 +243,7 @@ export async function runLighthouseAudit({
     }
 
     if (
-      scores.performance < minPerformance ||
+      scores.performance < 80 ||
       scores.accessibility < 95 ||
       scores.bestPractices < 95 ||
       scores.seo < 95 ||
