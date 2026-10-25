@@ -1,16 +1,28 @@
 import type React from 'react'
 
 import { Accordion, type AccordionEntry } from '@/components/Accordion'
-import { CspSafeImage } from '@/components/CspSafeImage'
 import { Eyebrow } from '@/components/Eyebrow'
 import { resolveMediaAsset } from '@/components/media-utils'
-import type { SupportedLocale } from '@/i18n'
+import { getDictionary, type SupportedLocale } from '@/i18n'
 import type { HomePage } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
 import styles from './InteractiveSystemsSection.module.css'
+import { RELEASE_BASE_PATH } from './renderContract'
+import { getSystems3dStrings } from './strings'
+import { SystemsCard } from './SystemsCard'
 
 type InteractiveSystemsData = HomePage['interactiveSystems']
+
+const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
+const POSTER_SIZES = '(max-width: 1279px) 100vw, 600px'
+const POSTER_WIDTHS = [828, 1440, 2048] as const
+
+function posterSrcSet(format: 'webp' | 'jpg'): string {
+  return POSTER_WIDTHS.map((w) => `${STILLS_PATH}/hero_${String(w)}.${format} ${String(w)}w`).join(
+    ', ',
+  )
+}
 type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['systems']>[number]
 
 /** Class names of the split section head shared with other home sections (stay in `page.module.css`). */
@@ -57,6 +69,13 @@ export function InteractiveSystemsSection({
   if (!interactiveEnabled || !hasInteractiveContent) {
     return null
   }
+  const dict = getDictionary(locale)
+  const strings = getSystems3dStrings(locale)
+  // The poster is always the pinned release still (CTO Q3, 2026-10-25); the CMS heroImage only
+  // supplies its alt text while a 3D release is pinned.
+  const cmsAlt =
+    typeof data?.heroImage === 'object' && data.heroImage ? data.heroImage.alt.trim() : ''
+  const posterAlt = cmsAlt || strings.posterAlt
 
   const accordionEntries: AccordionEntry[] = interactiveSystemsList.map(
     (sysItem: InteractiveSystemItem, idx: number) => ({
@@ -90,18 +109,28 @@ export function InteractiveSystemsSection({
         </div>
 
         <div className={styles.explorerRow}>
-          <div className={styles.buildingCard} data-interactive-3d-card="true">
-            {interactiveHeroImage ? (
-              <CspSafeImage
-                alt={interactiveHeroImage.alt}
+          <SystemsCard
+            badgeLabel={dict.home.interactive3dBadge}
+            className={styles.buildingCard}
+            liveLabel={posterAlt}
+            openLabel={data?.liveModelLabel?.trim() || dict.actions.openLive3dModel}
+          >
+            <picture>
+              <source sizes={POSTER_SIZES} srcSet={posterSrcSet('webp')} type="image/webp" />
+              {/* A plain <img>: next/image would re-encode the still that the live first frame must match. */}
+              <img
+                alt={posterAlt}
                 className={styles.buildingRender}
-                height={580}
-                sizes="(max-width: 1279px) 100vw, 600px"
-                src={interactiveHeroImage.url}
-                width={600}
+                decoding="async"
+                height={2048}
+                loading="lazy"
+                sizes={POSTER_SIZES}
+                src={`${STILLS_PATH}/hero_1440.jpg`}
+                srcSet={posterSrcSet('jpg')}
+                width={2048}
               />
-            ) : null}
-          </div>
+            </picture>
+          </SystemsCard>
 
           <div className={styles.accordionCol}>
             <Accordion
