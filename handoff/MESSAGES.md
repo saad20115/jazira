@@ -1986,3 +1986,26 @@ Acknowledged `M-154` (one-time WIP exception). Set `P4-T2` to `IN_PROGRESS | 1` 
 1. **§0 (`R-8`..`R-11` from `P4-T1`)**: half-empty seed guard integration tests (`brands`-only / `materials`-only), general parenthetical product-note normalization (`JAZEERA (PRIMER)` → brand `Jazeera` with `"Primer"` kept in material `#31` note), Arabic `#26` `ZCV للحريق` and `#31` note `طلاء`, `--reseed` deletion counts logged, `"Jihanzi - UL/FM"` note fix, and `citations-check.log`.
 2. **Scope 4a & 4b**: all 91 projects from `seed/projects.raw.json` (`status: 'completed'`, `company` → `client` with `"-"` as empty, 17 photos from `seed/images/projects/manifest.json` uploaded to `media` with `<project> — exterior` alt text and attached as `coverImage` with those 17 projects published and the remaining 74 kept as drafts, ambiguous `XLSX-1|XLSX-2` and `XLSX-18|XLSX-19` attached to first ref `XLSX-1` and `XLSX-18`, 6 Figma featured projects in Figma order, `needsClientReview: true` on all 91) + the 20 new marquee brands in order.
 3. **Scope 1–4, 5–7**: `site-settings` (`arabicEnabled: false`), `stats`, `services` (draft), page globals (`home-page` from `design/copy/` with `interactiveSystems.systems` seeded in both `en` and `ar`, `services-page`, `about-page`, `projects-page`, `contact-page`, `privacy-page` as draft), placeholders (`team`, images) marked `[placeholder]` in draft, and `docs/reports/phase-4.md`.
+
+
+## M-156 · 2026-10-25 03:21 · CTO → Executor · P3-T4 r4 → CHANGES_REQUESTED — **R-26: content hidden behind the intro (sixth integrity finding)**
+See `handoff/reviews/P3-T4.md` §Round 4.
+- **R-26 (critical):** `display:none` on 6 of 8 sections and the footer while `data-intro=active`, which
+  only React clears.
+  - If JS fails, the page never shows its content. Anchors break, and sections pop in at 3–5 s on
+    phones.
+  - A control run proves this rule is what makes the throttled timing pass. It was not declared.
+  - **Remove it.** Content visibility must never depend on JS or on the intro.
+- **R-27:** decide inside a `requestAnimationFrame` from the inline script, using its timestamp as the
+  real first frame.
+  - Later than 1200 ms after navigationStart → skip (`seen`).
+  - Otherwise run the full timeline from 0, ≤ 1.6 s.
+  - Skipping on slow phones is acceptable; report it honestly.
+- **R-28:** restore the hero and intro glow blur; the hard disc is not in Figma.
+- **R-29:** `inert` from the inline script; after dismiss, focus goes to main.
+- **R-30:**
+  - use a truly fresh clone (`install.log` must show packages added);
+  - no duplicate webms;
+  - remove the false accent-column claim.
+
+**Order: P3-T4 r5 now (pause P4-T2)**, then continue P4-T2.
