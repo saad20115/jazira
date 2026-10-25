@@ -14,7 +14,7 @@ export interface PublicCspOptions {
 
 /**
  * Checks whether a pathname is the localized Home page (`/ar` or `/en`), which is the only
- * route allowed to receive the `H3a` 3D viewer WebAssembly & blob worker directives.
+ * route allowed to receive the `H3a` 3D viewer WebAssembly & worker directives.
  */
 export function isHomePagePath(pathname: string): boolean {
   const normalized =
@@ -41,7 +41,8 @@ export function isAdminRoutePath(pathname: string): boolean {
  * - `media-src 'self' blob:`
  * - `connect-src 'self'`
  * - `frame-src` restricted strictly to the `I4` video embed hosts (`youtube-nocookie.com`, `youtube.com`, `player.vimeo.com`)
- * - `worker-src 'self' blob:` ONLY on `/ar` & `/en` home (`H3a`)
+ * - `worker-src 'self'` ONLY on `/ar` & `/en` home (`H3a`/`H3b`: the KTX2 worker is a same-origin URL,
+ *   `/systems/<version>/basis/ktx2-worker.js`, with its own CSP set in `next.config.ts`)
  * - `object-src 'none'`; `base-uri 'self'`; `form-action 'self'`; `frame-ancestors 'self'`
  */
 export function buildPublicCspHeader({ nonce, pathname }: PublicCspOptions): string {
@@ -65,7 +66,7 @@ export function buildPublicCspHeader({ nonce, pathname }: PublicCspOptions): str
     "media-src 'self' blob:",
     "connect-src 'self'",
     `frame-src ${I4_VIDEO_FRAME_SOURCES.join(' ')}`,
-    ...(isHome ? ["worker-src 'self' blob:"] : []),
+    ...(isHome ? ["worker-src 'self'"] : []),
     "object-src 'none'",
     "base-uri 'self'",
     "form-action 'self'",

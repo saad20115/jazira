@@ -59,6 +59,7 @@ interface ImageDef {
   name?: string
   bufferView?: number
   mimeType?: string
+  extras?: unknown
 }
 interface SamplerDef {
   magFilter?: number
@@ -99,7 +100,8 @@ export function inlineBasisuPlugin(ktx2: KTX2Loader): (parser: GLTFParser) => GL
         .then((bufferView) => parseKtx2(ktx2, bufferView.slice(0)))
         .then((texture) => {
           texture.flipY = false
-          texture.name = textureDef.name ?? imageDef.name ?? ''
+          // `||` as in three: an empty texture name falls back to the image name.
+          texture.name = textureDef.name || imageDef.name || ''
           texture.magFilter =
             (sampler.magFilter !== undefined && MAG_FILTERS[sampler.magFilter]) || LinearFilter
           texture.minFilter =
@@ -110,6 +112,9 @@ export function inlineBasisuPlugin(ktx2: KTX2Loader): (parser: GLTFParser) => GL
           texture.wrapT =
             (sampler.wrapT !== undefined && WRAPPINGS[sampler.wrapT]) || RepeatWrapping
           texture.generateMipmaps = false
+          if (typeof imageDef.extras === 'object' && imageDef.extras !== null) {
+            Object.assign(texture.userData, imageDef.extras)
+          }
           texture.userData.mimeType = imageDef.mimeType ?? 'image/ktx2'
           parser.associations.set(texture, { textures: textureIndex })
           return texture

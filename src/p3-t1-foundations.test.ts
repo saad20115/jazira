@@ -290,7 +290,7 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     expect(csp).toContain("'strict-dynamic'")
   })
 
-  it('builds strict H3 public CSP with H3a (wasm-unsafe-eval + blob worker) ONLY on /ar and /en home', () => {
+  it('builds strict H3 public CSP with H3a/H3b (wasm-unsafe-eval + same-origin worker) ONLY on /ar and /en home', () => {
     const nonce = generateCspNonce()
     expect(nonce.length).toBeGreaterThan(16)
 
@@ -305,7 +305,8 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
       `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`,
     )
     expect(homeCsp).toContain(`style-src 'self' 'nonce-${nonce}'`)
-    expect(homeCsp).toContain("worker-src 'self' blob:")
+    expect(homeCsp).toContain("worker-src 'self';")
+    expect(homeCsp).not.toMatch(/worker-src[^;]*blob:/)
     expect(homeCsp).toContain(`frame-src ${I4_VIDEO_FRAME_SOURCES.join(' ')}`)
     expect(homeCsp).not.toContain("'unsafe-eval'")
     expect(homeCsp).not.toContain("'unsafe-inline'")

@@ -68,6 +68,22 @@ const nextConfig: NextConfig = {
         headers: baseSecurityHeaders,
       },
       {
+        // Security H3b (P3-T5): the KTX2 transcoding worker, and only it, gets its own CSP. The
+        // proxy skips /systems/, so this is the only CSP on that response.
+        source: '/systems/:release/basis/ktx2-worker.js',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value:
+              "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'",
+          },
+          {
+            key: 'Cross-Origin-Resource-Policy',
+            value: 'same-origin',
+          },
+        ],
+      },
+      {
         source: '/admin',
         headers: [
           {

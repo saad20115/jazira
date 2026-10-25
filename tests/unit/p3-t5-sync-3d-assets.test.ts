@@ -5,11 +5,15 @@ import path from 'node:path'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 
 import {
+  buildKtx2WorkerSource,
   buildSyncPlan,
   isLfsPointer,
+  KTX2_WORKER_PATH,
   parseSha256Sums,
   PINNED_DECODERS,
+  PINNED_KTX2_WORKER,
   PINNED_RELEASE_FILES,
+  readBasisWorkerFromThree,
   RELEASE,
   sha256,
   syncThreeDAssets,
@@ -27,6 +31,17 @@ interface Fixture {
   targetDir: string
   pinnedFiles: Record<string, { bytes: number; sha256: string }>
   pinnedDecoders: { from: string; serveAs: string | null; bytes: number; sha256: string }[]
+  basisWorker: typeof FAKE_BASIS_WORKER
+  pinnedWorker: { bytes: number; sha256: string }
+}
+
+/** A stand-in for three's KTX2Loader.BasisWorker (the real one is checked in the last test). */
+const FAKE_BASIS_WORKER = {
+  fnSource: 'function () {\n\tself.onmessage = () => {}\n}',
+  engineFormat: { RGBAFormat: 1023 },
+  engineType: { UnsignedByteType: 1009 },
+  transcoderFormat: { ETC1: 0 },
+  basisFormat: { ETC1S: 0 },
 }
 
 let fixture: Fixture
@@ -130,11 +145,7 @@ function createFixture(): Fixture {
       'stills/stills_manifest.json': pinOf(stillsManifest),
     },
     pinnedDecoders: [
-      {
-        from: 'basis/basis_transcoder.js',
-        serveAs: 'basis/basis_transcoder.js',
-        ...pinOf('transcoder-js'),
-      },
+      { from: 'basis/basis_transcoder.js', serveAs: null, ...pinOf('transcoder-js') },
       {
         from: 'basis/basis_transcoder.wasm',
         serveAs: 'basis/basis_transcoder.wasm',
@@ -142,6 +153,8 @@ function createFixture(): Fixture {
       },
       { from: 'meshopt_decoder.module.js', serveAs: null, ...pinOf('meshopt') },
     ],
+    basisWorker: FAKE_BASIS_WORKER,
+    pinnedWorker: pinOf(buildKtx2WorkerSource('transcoder-js', FAKE_BASIS_WORKER)),
   }
 }
 
@@ -160,8 +173,8 @@ function listTarget(): string[] {
 }
 
 const EXPECTED_TARGET = [
-  'basis/basis_transcoder.js',
   'basis/basis_transcoder.wasm',
+  'basis/ktx2-worker.js',
   'manifest.json',
   'stills/hero_1440.webp',
   'stills/hero_828.jpg',
@@ -316,13 +329,42 @@ describe('scripts/sync-3d-assets.mjs (P3-T5 E3 step 2)', () => {
     writeFile(path.join(fixture.threeLibsDir, 'basis', 'basis_transcoder.js'), 'transcoder-jsX')
     fixture.pinnedDecoders[0] = {
       from: 'basis/basis_transcoder.js',
-      serveAs: 'basis/basis_transcoder.js',
+      serveAs: null,
       ...pinOf('transcoder-jsX'),
     }
+    fixture.pinnedWorker = pinOf(buildKtx2WorkerSource('transcoder-jsX', FAKE_BASIS_WORKER))
     expect(() => run()).toThrow(
       /runtime\.basisTranscoder\["basis_transcoder\.js"\] \([0-9a-f]{64}\) does not match the decoder pin/,
     )
     expect(fs.existsSync(fixture.targetDir)).toBe(false)
+  })
+
+  it('generates the KTX2 worker like three does and refuses a worker that differs from its pin', () => {
+    const source = buildKtx2WorkerSource('TRANSCODER();', FAKE_BASIS_WORKER)
+    expect(source.split('\n').slice(1, 9)).toEqual([
+      '/* constants */',
+      'let _EngineFormat = {"RGBAFormat":1023}',
+      'let _EngineType = {"UnsignedByteType":1009}',
+      'let _TranscoderFormat = {"ETC1":0}',
+      'let _BasisFormat = {"ETC1S":0}',
+      '/* basis_transcoder.js */',
+      'TRANSCODER();',
+      '/* worker */',
+    ])
+    expect(source).toContain('\tself.onmessage = () => {}')
+    expect(source).not.toContain('function () {')
+
+    run()
+    expect(fs.readFileSync(path.join(fixture.targetDir, 'basis', 'ktx2-worker.js'), 'utf8')).toBe(
+      buildKtx2WorkerSource('transcoder-js', FAKE_BASIS_WORKER),
+    )
+    fixture.basisWorker = { ...FAKE_BASIS_WORKER, fnSource: 'function () { evil() }' }
+    expect(() => run()).toThrow(
+      /basis\/ktx2-worker\.js: generated \d+ B, sha256 [0-9a-f]{64}; the pin is/,
+    )
+    expect(fs.readFileSync(path.join(fixture.targetDir, 'basis', 'ktx2-worker.js'), 'utf8')).toBe(
+      buildKtx2WorkerSource('transcoder-js', FAKE_BASIS_WORKER),
+    )
   })
 
   it('removes its temporary folder and keeps the old target when a write fails midway', () => {
@@ -376,21 +418,25 @@ describe('scripts/sync-3d-assets.mjs (P3-T5 E3 step 2)', () => {
       },
     })
     expect(PINNED_DECODERS.map((decoder) => [decoder.from, decoder.serveAs])).toEqual([
-      ['basis/basis_transcoder.js', 'basis/basis_transcoder.js'],
+      ['basis/basis_transcoder.js', null],
       ['basis/basis_transcoder.wasm', 'basis/basis_transcoder.wasm'],
       ['meshopt_decoder.module.js', null],
       ['zstddec.module.js', null],
     ])
   })
 
-  it('verifies the real 3d/ release and three@0.186.1 in this checkout (needs git lfs pull)', () => {
+  it('verifies the real 3d/ release and three@0.186.1 in this checkout (needs git lfs pull)', async () => {
     const repoRoot = process.cwd()
     const plan = buildSyncPlan({
       sourceDir: path.join(repoRoot, '3d', 'web'),
       sumsPath: path.join(repoRoot, '3d', 'SHA256SUMS.txt'),
       threeLibsDir: path.join(repoRoot, 'node_modules', 'three', 'examples', 'jsm', 'libs'),
+      basisWorker: await readBasisWorkerFromThree(repoRoot),
     })
     expect(plan.files).toHaveLength(37)
+    const worker = plan.files.find((file) => file.rel === KTX2_WORKER_PATH)
+    expect(worker && sha256(worker.buffer)).toBe(PINNED_KTX2_WORKER.sha256)
+    expect(plan.files.some((file) => file.rel === 'basis/basis_transcoder.js')).toBe(false)
     expect(plan.skipped).toHaveLength(6)
     expect(plan.skipped.every((rel) => rel.endsWith('.png'))).toBe(true)
     expect(plan.files.some((file) => file.rel.endsWith('.png'))).toBe(false)

@@ -36,7 +36,6 @@ import {
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
-import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
@@ -62,11 +61,13 @@ import {
   FACADE_MATERIALS,
   INTERIOR,
   INTERIOR_MATERIALS,
+  KTX2_WORKER_URL,
   MODEL_FILES,
   type ModelTier,
   PMREM,
 } from '../renderContract'
 import { inlineBasisuPlugin } from './inlineBasisuPlugin'
+import { UrlWorkerKTX2Loader } from './UrlWorkerKTX2Loader'
 
 export type ViewerFailure = 'context-lost' | 'render-error'
 
@@ -268,7 +269,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     renderer.dispose()
     throw new ContractError('aborted')
   }
-  const ktx2 = new KTX2Loader().setTranscoderPath(BASIS_TRANSCODER_PATH).detectSupport(renderer)
+  const ktx2 = new UrlWorkerKTX2Loader(KTX2_WORKER_URL)
+    .setTranscoderPath(BASIS_TRANSCODER_PATH)
+    .detectSupport(renderer)
   const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder)
   loader.register(inlineBasisuPlugin(ktx2))
   const pmrem = new PMREMGenerator(renderer)

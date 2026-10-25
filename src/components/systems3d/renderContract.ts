@@ -16,6 +16,9 @@ export type ModelTier = keyof typeof MODEL_FILES
 /** Self-hosted KTX2 transcoder (same three version, hash-pinned by `scripts/sync-3d-assets.mjs`). */
 export const BASIS_TRANSCODER_PATH = `${RELEASE_BASE_PATH}/basis/`
 
+/** The KTX2 transcoding worker (security H3b): generated and pinned by the sync, own CSP. */
+export const KTX2_WORKER_URL = `${RELEASE_BASE_PATH}/basis/ktx2-worker.js`
+
 /** `render.bloom`: UnrealBloomPass on a HalfFloat 4× MSAA composer target, full model only. */
 export const BLOOM = { threshold: 8, strength: 0.22, radius: 0.25 } as const
 export const COMPOSER_MSAA_SAMPLES = 4
