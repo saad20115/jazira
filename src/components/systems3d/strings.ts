@@ -20,6 +20,7 @@ export interface Systems3dStrings {
   zoomOut: string
   resetView: string
   exitSystem: string
+  allProjects: string
   hotspots: Readonly<Record<HotspotLabelId, string>>
 }
 
@@ -63,6 +64,7 @@ export const SYSTEMS3D_STRINGS: Readonly<Record<SupportedLocale, Systems3dString
     zoomOut: 'Zoom out',
     resetView: 'Reset view',
     exitSystem: 'Exit system',
+    allProjects: 'All related projects',
     hotspots: {
       chillers: 'Chillers',
       cooling_towers: 'Cooling towers',
@@ -101,6 +103,7 @@ export const SYSTEMS3D_STRINGS: Readonly<Record<SupportedLocale, Systems3dString
     zoomOut: 'تصغير',
     resetView: 'إعادة ضبط العرض',
     exitSystem: 'الخروج من النظام',
+    allProjects: 'كل المشاريع ذات الصلة',
     hotspots: {
       chillers: 'المبرّدات',
       cooling_towers: 'أبراج التبريد',

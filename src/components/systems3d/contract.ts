@@ -532,3 +532,46 @@ export function validateExtras(
   hotspots.sort((a, b) => a.name.localeCompare(b.name))
   return { scene, systems, hotspots }
 }
+
+export interface StillHotspot {
+  name: string
+  label: string
+  /** 0–1 from the top-left of the square end still (`origin: top-left`). */
+  x: number
+  y: number
+}
+
+const MAX_STILL_POINTS = 16
+
+/**
+ * Parses a stills package `<s>_hotspots.json` (stills tier: label anchors on the end-frame still).
+ * Only `in_frame` points are kept; ids and labels must match the allowlists and the system.
+ */
+export function parseStillHotspots(value: unknown, system: SystemId): StillHotspot[] {
+  const where = `${system}_hotspots.json`
+  const doc = record(value, where)
+  if (doc.shot !== system) {
+    throw new ContractError(`${where}: shot must be "${system}"`)
+  }
+  if (!Array.isArray(doc.points) || doc.points.length > MAX_STILL_POINTS) {
+    throw new ContractError(`${where}: expected at most ${String(MAX_STILL_POINTS)} points`)
+  }
+  const points: StillHotspot[] = []
+  doc.points.forEach((item, idx) => {
+    const p = record(item, `${where}.points[${String(idx)}]`)
+    const name = allowedName(p.id, NAME_PATTERNS.hotspot, `${where}.points[${String(idx)}].id`)
+    if (!name.startsWith(`HOT_${system}_`)) {
+      throw new ContractError(`${where}: ${name} belongs to another system`)
+    }
+    if (p.in_frame !== true) {
+      return
+    }
+    points.push({
+      name,
+      label: allowedName(p.label, NAME_PATTERNS.hotspotLabel, `${name}.label`),
+      x: clampedNumber(p.x, 0, 1, `${name}.x`),
+      y: clampedNumber(p.y, 0, 1, `${name}.y`),
+    })
+  })
+  return points
+}

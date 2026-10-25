@@ -1,0 +1,153 @@
+'use client'
+
+import { type ReactElement, type ReactNode, useCallback, useEffect, useState } from 'react'
+
+import { AccordionItem } from '@/components/Accordion'
+import accordionStyles from '@/components/Accordion.module.css'
+import type { SupportedLocale } from '@/i18n'
+
+import type { SystemId } from './contract'
+import { hashForSystem, systemFromHash } from './hash'
+import styles from './InteractiveSystemsSection.module.css'
+import type { RelatedProjectsBySystem } from './relatedProjects'
+import type { Systems3dStrings } from './strings'
+import { SystemsCard } from './SystemsCard'
+
+export interface ExplorerSystem {
+  /** The CMS array row id (accordion item id). */
+  key: string
+  /** The system this row shows (`shot`), when it is one of the five. */
+  system: SystemId | null
+  title: string
+  text: string
+}
+
+export interface SystemsExplorerProps {
+  locale: SupportedLocale
+  poster: ReactNode
+  posterAlt: string
+  badgeLabel: string
+  openLabel: string
+  relatedHeading: string
+  strings: Systems3dStrings
+  systems: readonly ExplorerSystem[]
+  related: RelatedProjectsBySystem
+}
+
+/**
+ * At rest the first row is expanded as in Figma, without entering its system: the card shows the
+ * overview (first paint = the hero still). Opening a row, or a `#systems-<id>` hash, enters it.
+ */
+const DEFAULT_EXPANDED_INDEX = 0
+
+export function SystemsExplorer({
+  locale,
+  poster,
+  posterAlt,
+  badgeLabel,
+  openLabel,
+  relatedHeading,
+  strings,
+  systems,
+  related,
+}: SystemsExplorerProps): ReactElement {
+  const [expandedIndex, setExpandedIndex] = useState<number | null>(DEFAULT_EXPANDED_INDEX)
+  const [entered, setEntered] = useState<SystemId | null>(null)
+
+  const indexOfSystem = useCallback(
+    (system: SystemId): number => systems.findIndex((row) => row.system === system),
+    [systems],
+  )
+
+  const writeHash = useCallback((system: SystemId | null): void => {
+    const { pathname, search } = window.location
+    window.history.replaceState(
+      window.history.state,
+      '',
+      `${pathname}${search}${hashForSystem(system)}`,
+    )
+  }, [])
+
+  // Shareable hash: entered on load or on hashchange (allowlist only; no scroll jump).
+  useEffect(() => {
+    const apply = (): void => {
+      const system = systemFromHash(window.location.hash)
+      if (!system) {
+        return
+      }
+      const idx = indexOfSystem(system)
+      if (idx >= 0) {
+        setExpandedIndex(idx)
+        setEntered(system)
+      }
+    }
+    apply()
+    window.addEventListener('hashchange', apply)
+    return () => {
+      window.removeEventListener('hashchange', apply)
+    }
+  }, [indexOfSystem])
+
+  const toggle = (idx: number, nextExpanded: boolean): void => {
+    const system = systems[idx]?.system ?? null
+    if (nextExpanded) {
+      setExpandedIndex(idx)
+      setEntered(system)
+      writeHash(system)
+    } else {
+      setExpandedIndex(null)
+      setEntered(null)
+      writeHash(null)
+    }
+  }
+
+  const exitSystem = (): void => {
+    setExpandedIndex(null)
+    setEntered(null)
+    writeHash(null)
+  }
+
+  return (
+    <div className={styles.explorerRow}>
+      <SystemsCard
+        badgeLabel={badgeLabel}
+        className={styles.buildingCard}
+        entered={entered}
+        liveLabel={posterAlt}
+        onExitSystem={exitSystem}
+        openLabel={openLabel}
+        related={entered ? (related[entered] ?? null) : null}
+        relatedHeading={relatedHeading}
+        strings={strings}
+      >
+        {poster}
+      </SystemsCard>
+
+      <div className={styles.accordionCol}>
+        <div
+          className={`${accordionStyles.accordionList} ${styles.interactiveAccordion}`}
+          data-component="accordion"
+        >
+          {systems.map((row, idx) => {
+            const badge = String(idx + 1).padStart(2, '0')
+            return (
+              <AccordionItem
+                body={<p className={`${styles.systemDescription} t-body-m`}>{row.text}</p>}
+                defaultExpanded={idx === DEFAULT_EXPANDED_INDEX}
+                id={row.key}
+                key={row.key}
+                locale={locale}
+                numberBadge={badge}
+                onToggle={(next) => {
+                  toggle(idx, next)
+                }}
+                state={expandedIndex === idx ? 'Expanded' : 'Collapsed'}
+                title={row.title}
+              />
+            )
+          })}
+        </div>
+      </div>
+    </div>
+  )
+}

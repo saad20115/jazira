@@ -1,6 +1,5 @@
 import type React from 'react'
 
-import { Accordion, type AccordionEntry } from '@/components/Accordion'
 import { Eyebrow } from '@/components/Eyebrow'
 import { resolveMediaAsset } from '@/components/media-utils'
 import { getDictionary, type SupportedLocale } from '@/i18n'
@@ -9,8 +8,10 @@ import gridStyles from '@/styles/grid.module.css'
 
 import styles from './InteractiveSystemsSection.module.css'
 import { RELEASE_BASE_PATH } from './renderContract'
+import { isSystemId } from './contract'
+import type { RelatedProjectsBySystem } from './relatedProjects'
 import { getSystems3dStrings } from './strings'
-import { SystemsCard } from './SystemsCard'
+import { type ExplorerSystem, SystemsExplorer } from './SystemsExplorer'
 
 type InteractiveSystemsData = HomePage['interactiveSystems']
 
@@ -39,6 +40,8 @@ export interface InteractiveSystemsSectionProps {
   locale: SupportedLocale
   /** Renders the `H2` title with its gold accent segment (`renderAccentHeading(title, 'interactive')`). */
   renderHeading: (title: string) => React.ReactNode
+  /** Up to 3 published projects per system (`getRelatedProjectsBySystem`, server-side, cached). */
+  relatedProjects?: RelatedProjectsBySystem
 }
 
 /**
@@ -51,6 +54,7 @@ export function InteractiveSystemsSection({
   headClassNames,
   locale,
   renderHeading,
+  relatedProjects = {},
 }: InteractiveSystemsSectionProps): React.JSX.Element | null {
   const interactiveEnabled = data?.enabled !== false
   const interactiveEyebrow = data?.eyebrow?.trim() || null
@@ -77,13 +81,12 @@ export function InteractiveSystemsSection({
     typeof data?.heroImage === 'object' && data.heroImage ? data.heroImage.alt.trim() : ''
   const posterAlt = cmsAlt || strings.posterAlt
 
-  const accordionEntries: AccordionEntry[] = interactiveSystemsList.map(
+  const explorerSystems: ExplorerSystem[] = interactiveSystemsList.map(
     (sysItem: InteractiveSystemItem, idx: number) => ({
-      id: sysItem.id ?? `system-${String(idx + 1)}`,
-      numberBadge: String(idx + 1).padStart(2, '0'),
+      key: sysItem.id ?? `system-${String(idx + 1)}`,
+      system: isSystemId(sysItem.shot) ? sysItem.shot : null,
       title: sysItem.title,
-      defaultExpanded: idx === 0,
-      body: <p className={`${styles.systemDescription} t-body-m`}>{sysItem.text}</p>,
+      text: sysItem.text,
     }),
   )
 
@@ -108,13 +111,11 @@ export function InteractiveSystemsSection({
           ) : null}
         </div>
 
-        <div className={styles.explorerRow}>
-          <SystemsCard
-            badgeLabel={dict.home.interactive3dBadge}
-            className={styles.buildingCard}
-            liveLabel={posterAlt}
-            openLabel={data?.liveModelLabel?.trim() || dict.actions.openLive3dModel}
-          >
+        <SystemsExplorer
+          badgeLabel={dict.home.interactive3dBadge}
+          locale={locale}
+          openLabel={data?.liveModelLabel?.trim() || dict.actions.openLive3dModel}
+          poster={
             <picture>
               <source sizes={POSTER_SIZES} srcSet={posterSrcSet('webp')} type="image/webp" />
               {/* A plain <img>: next/image would re-encode the still that the live first frame must match. */}
@@ -130,18 +131,13 @@ export function InteractiveSystemsSection({
                 width={2048}
               />
             </picture>
-          </SystemsCard>
-
-          <div className={styles.accordionCol}>
-            <Accordion
-              className={styles.interactiveAccordion}
-              defaultExpandedIndex={0}
-              items={accordionEntries}
-              locale={locale}
-              singleExpand
-            />
-          </div>
-        </div>
+          }
+          posterAlt={posterAlt}
+          related={relatedProjects}
+          relatedHeading={dict.home.relatedProjectsHeading}
+          strings={strings}
+          systems={explorerSystems}
+        />
       </div>
     </section>
   )

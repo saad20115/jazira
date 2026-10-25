@@ -12,10 +12,16 @@ import {
   useSyncExternalStore,
 } from 'react'
 
+import Link from 'next/link'
+
 import { ArrowUpRightIcon, CubeIcon } from '@/components/icons'
 
+import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
-import { DPR_CAP } from './renderContract'
+import type { SystemRelatedProjects } from './relatedProjects'
+import { DPR_CAP, RELEASE_BASE_PATH } from './renderContract'
+import { StillLabels } from './StillLabels'
+import type { Systems3dStrings } from './strings'
 import { chooseModelTier, decideStart, type DeviceCaps, parseGfxOverride } from './tier'
 import type { ViewerHandle } from './viewer/createViewer'
 
@@ -25,6 +31,15 @@ type Phase = 'still' | 'loading' | 'live' | 'stills'
 /** A start that has not rendered its first frame by then falls back to the stills tier. */
 const START_TIMEOUT_MS = 45_000
 
+const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
+const STILL_SIZES = '(max-width: 1279px) 100vw, 600px'
+
+function endStillSrcSet(system: SystemId, format: 'webp' | 'jpg'): string {
+  return [1440, 2048]
+    .map((w) => `${STILLS_PATH}/${system}_end_${String(w)}.${format} ${String(w)}w`)
+    .join(', ')
+}
+
 export interface SystemsCardProps {
   /** The server-rendered poster (the CAM_hero still). */
   children: ReactNode
@@ -33,6 +48,12 @@ export interface SystemsCardProps {
   openLabel: string
   /** Accessible name of the live canvas (the same tower as the poster). */
   liveLabel: string
+  /** The system entered through the accordion or the URL hash, if any. */
+  entered: SystemId | null
+  onExitSystem: () => void
+  related: SystemRelatedProjects | null
+  relatedHeading: string
+  strings: Systems3dStrings
 }
 
 interface NavigatorHints {
@@ -75,6 +96,11 @@ export function SystemsCard({
   badgeLabel,
   openLabel,
   liveLabel,
+  entered,
+  onExitSystem,
+  related,
+  relatedHeading,
+  strings,
 }: SystemsCardProps): ReactElement {
   const hydrated = useHydrated()
   const cardRef = useRef<HTMLDivElement>(null)
@@ -230,22 +256,82 @@ export function SystemsCard({
       {showCanvas ? (
         <canvas aria-label={liveLabel} className={styles.liveCanvas} ref={canvasRef} role="img" />
       ) : null}
-      {showLiveControls ? (
-        <>
-          <span className={`${styles.liveModelBadge} t-label-caps`}>
-            <CubeIcon aria-hidden="true" className={styles.liveModelBadgeIcon} />
-            {badgeLabel}
-          </span>
-          <button
-            className={`${styles.openModelButton} t-label-button`}
-            data-open-3d-model="true"
-            onClick={onOpen}
-            type="button"
-          >
-            {openLabel}
+      {entered ? (
+        <div className={styles.enteredLayer} data-entered-system={entered} key={entered}>
+          <picture>
+            <source
+              sizes={STILL_SIZES}
+              srcSet={endStillSrcSet(entered, 'webp')}
+              type="image/webp"
+            />
+            <img
+              alt=""
+              className={styles.buildingRender}
+              decoding="async"
+              height={2048}
+              sizes={STILL_SIZES}
+              src={`${STILLS_PATH}/${entered}_end_1440.jpg`}
+              srcSet={endStillSrcSet(entered, 'jpg')}
+              width={2048}
+            />
+          </picture>
+          <StillLabels cardRef={cardRef} strings={strings} system={entered} />
+        </div>
+      ) : null}
+      {showLiveControls && !entered ? (
+        <span className={`${styles.liveModelBadge} t-label-caps`}>
+          <CubeIcon aria-hidden="true" className={styles.liveModelBadgeIcon} />
+          {badgeLabel}
+        </span>
+      ) : null}
+      {entered ? (
+        <button
+          className={`${styles.openModelButton} t-label-button`}
+          data-exit-system="true"
+          data-label-obstacle="true"
+          onClick={(event) => {
+            event.stopPropagation()
+            onExitSystem()
+          }}
+          type="button"
+        >
+          {strings.exitSystem}
+        </button>
+      ) : showLiveControls ? (
+        <button
+          className={`${styles.openModelButton} t-label-button`}
+          data-open-3d-model="true"
+          onClick={onOpen}
+          type="button"
+        >
+          {openLabel}
+          <ArrowUpRightIcon aria-hidden="true" />
+        </button>
+      ) : null}
+      {entered && related && related.projects.length > 0 ? (
+        <aside
+          aria-label={relatedHeading}
+          className={styles.relatedPanel}
+          data-label-obstacle="true"
+        >
+          <p className={`${styles.relatedProjectsLabel} t-label-caps`}>{relatedHeading}</p>
+          <ul className={styles.relatedList}>
+            {related.projects.map((project) => (
+              <li key={project.id}>
+                <Link
+                  className={`${styles.relatedProjectLink} t-body-s-medium`}
+                  href={project.href}
+                >
+                  {project.title}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <Link className={`${styles.relatedAllLink} t-label-link`} href={related.allHref}>
+            {strings.allProjects}
             <ArrowUpRightIcon aria-hidden="true" />
-          </button>
-        </>
+          </Link>
+        </aside>
       ) : null}
     </div>
   )
