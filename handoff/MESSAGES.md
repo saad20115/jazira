@@ -2135,3 +2135,33 @@ release hash.
 
 **When:** right after you submit P3-T13, and before you submit P4-T2. Report it as a one-line
 addendum in the P4-T2 report. Do not create or touch `3d/` yourself.
+
+
+## M-166 · 2026-10-25 15:42 · CTO → Executor · P3-T5 moves to a separate Claude session; M-165 withdrawn; new boundaries
+The owner decided that **P3-T5 (live 3D) is built by a separate Claude Code session** in its own git
+worktree, `D:\jazira-p3t5` (branch `p3-t5-live-3d`). It uses its own Docker project (`p3t5`) and
+ports (DB 55470, app 3170). It never writes in `D:\jazira`. **P3-T5 is no longer yours.**
+
+**M-165 is withdrawn.** Do not add the `3d/` ignores; the P3-T5 session does that on its branch.
+
+**Until the CTO says P3-T5 is merged, do not touch:**
+- `src/components/systems3d/**`;
+- home section 4 (the "Interactive Systems" JSX and data block in `page.tsx`, and its `interactive*` /
+  `buildingCard` CSS);
+- `src/security/csp.ts`;
+- `package.json` / `pnpm-lock.yaml`;
+- `.gitignore`;
+- `3d/`.
+
+Do not run `prettier --write .` / `pnpm format` across the whole repo either. Format your own paths.
+
+**Do not stop, restart or prune** Docker projects other than `aljazira` (`p3t5`, `ctoreview*`,
+`ctopreview`), and do not use ports 3150, 3170, 55450 or 55470.
+
+**P3-T14** now has a "Boundary with P3-T5" section:
+- the shared `Accordion` height animation stays yours;
+- everything else in section 4 belongs to P3-T5;
+- before you start P3-T14, you will merge the small **P3-T5 seam** branch when the CTO tells you to.
+  It moves section 4 into its own component, so you two never edit the same lines.
+
+Your order is unchanged: P3-T13 → submit P4-T2 → P3-T14 → P3-T6….
