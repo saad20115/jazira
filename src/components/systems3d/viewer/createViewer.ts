@@ -11,10 +11,13 @@
 import {
   AgXToneMapping,
   BackSide,
+  BufferAttribute,
+  BufferGeometry,
   Color,
   DirectionalLight,
   Float32BufferAttribute,
   HalfFloatType,
+  InterleavedBufferAttribute,
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
@@ -58,10 +61,12 @@ import {
   CLEAR_COLOR,
   COMPOSER_MSAA_SAMPLES,
   CORE_MATERIALS,
+  FACADE_ANISOTROPY,
   FACADE_MATERIALS,
   INTERIOR,
   INTERIOR_MATERIALS,
   KTX2_WORKER_URL,
+  type LiveLook,
   MODEL_FILES,
   type ModelTier,
   PMREM,
@@ -81,6 +86,8 @@ export interface ViewerOptions {
   allowBloom: boolean
   pixelRatioCap: number
   reducedMotion: boolean
+  /** V-1 live look calibration (`LIVE_LOOK`). */
+  look: LiveLook
   /** Aborting disposes the viewer, also while the model is still loading. */
   signal: AbortSignal
   /** Called once the live canvas holds a rendered, presented frame. */
@@ -168,6 +175,104 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
   }
   material.customProgramCacheKey = () => 'aljazira-interior-v022n'
   material.needsUpdate = true
+}
+
+/**
+ * V-4: the room floor's inner disc (around the plinth) is lit flat in live and ends in a hard pale
+ * ellipse at its edge. Its emissive is eased from 1 at the plinth edge to `edgeLevel` at the disc
+ * edge, on floor fragments inside the disc only. Radii and height come from the geometry.
+ */
+interface FloorDisc {
+  centreX: number
+  centreZ: number
+  floorY: number
+  plinthRadius: number
+  discRadius: number
+}
+
+function addFloorDiscFade(
+  material: MeshStandardMaterial,
+  disc: FloorDisc,
+  edgeLevel: number,
+): void {
+  material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
+    shader.uniforms.uDiscCentre = { value: new Vector2(disc.centreX, disc.centreZ) }
+    shader.uniforms.uDiscFloorY = { value: disc.floorY }
+    shader.uniforms.uDiscInner = { value: disc.plinthRadius }
+    shader.uniforms.uDiscOuter = { value: disc.discRadius }
+    shader.uniforms.uDiscEdgeLevel = { value: edgeLevel }
+    shader.vertexShader = shader.vertexShader
+      .replace('#include <common>', '#include <common>\nvarying vec3 vDiscWorld;')
+      .replace(
+        '#include <project_vertex>',
+        '#include <project_vertex>\nvDiscWorld = (modelMatrix * vec4(transformed, 1.0)).xyz;',
+      )
+    shader.fragmentShader = shader.fragmentShader
+      .replace(
+        '#include <common>',
+        [
+          '#include <common>',
+          'varying vec3 vDiscWorld;',
+          'uniform vec2 uDiscCentre;',
+          'uniform float uDiscFloorY, uDiscInner, uDiscOuter, uDiscEdgeLevel;',
+        ].join('\n'),
+      )
+      .replace(
+        '#include <emissivemap_fragment>',
+        [
+          '#include <emissivemap_fragment>',
+          'float discR = length(vDiscWorld.xz - uDiscCentre);',
+          'float discMask = (1.0 - step(uDiscFloorY + 0.5, vDiscWorld.y)) * (1.0 - step(uDiscOuter, discR));',
+          'totalEmissiveRadiance *= mix(1.0, uDiscEdgeLevel, smoothstep(uDiscInner, uDiscOuter, discR) * discMask);',
+          // The outer floor's first texels past the seam carry the inner disc's light: ease them too.
+          'float seamMask = (1.0 - step(uDiscFloorY + 0.5, vDiscWorld.y)) * step(uDiscOuter, discR);',
+          'totalEmissiveRadiance *= mix(1.0, 0.85, (1.0 - smoothstep(uDiscOuter, uDiscOuter + 2.0, discR)) * seamMask);',
+        ].join('\n'),
+      )
+  }
+  material.customProgramCacheKey = () => `aljazira-floor-disc-${edgeLevel.toFixed(3)}`
+  material.needsUpdate = true
+}
+
+/** Measures the floor disc: the plinth radius and the room floor's vertex ring just outside it. */
+/** World-space vertex positions of every mesh under `root`. */
+function worldVertices(root: Object3D): Vector3[] {
+  const out: Vector3[] = []
+  root.traverse((object) => {
+    if (!(object instanceof Mesh)) {
+      return
+    }
+    const geometry: unknown = object.geometry
+    if (!(geometry instanceof BufferGeometry)) {
+      return
+    }
+    const pos: unknown = geometry.getAttribute('position')
+    // Quantized GLB positions load as InterleavedBufferAttribute (stride 8 for int16 x 3).
+    if (!(pos instanceof BufferAttribute) && !(pos instanceof InterleavedBufferAttribute)) {
+      return
+    }
+    for (let i = 0; i < pos.count; i += 1) {
+      out.push(new Vector3().fromBufferAttribute(pos, i).applyMatrix4(object.matrixWorld))
+    }
+  })
+  return out
+}
+
+function measureFloorDisc(room: Object3D, plinth: Object3D): FloorDisc | null {
+  const centre = plinth.getWorldPosition(new Vector3())
+  const radius = (v: Vector3): number => Math.hypot(v.x - centre.x, v.z - centre.z)
+  const plinthRadius = worldVertices(plinth).reduce((max, v) => Math.max(max, radius(v)), 0)
+  const roomVertices = worldVertices(room)
+  const floorY = roomVertices.reduce((min, v) => Math.min(min, v.y), Infinity)
+  const radii = roomVertices.filter((v) => v.y < floorY + 0.5).map(radius)
+  // The smallest ring of floor vertices beyond the plinth is the edge of the inner disc.
+  const discRadius = radii
+    .filter((r) => r > plinthRadius + 1)
+    .reduce((a, b) => Math.min(a, b), Infinity)
+  if (!Number.isFinite(discRadius) || plinthRadius <= 0 || discRadius > plinthRadius * 2) {
+    return null
+  }
+  return { centreX: centre.x, centreZ: centre.z, floorY, plinthRadius, discRadius }
 }
 
 /** BLEND materials that only fade while a system is entered are drawn opaque at rest. */
@@ -384,7 +489,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   scene.environment = envTarget.texture
   scene.background = null
   renderer.setClearColor(CLEAR_COLOR[studio.mode])
-  renderer.toneMappingExposure = 2 ** studio.exposureStops
+  renderer.toneMappingExposure = 2 ** studio.exposureStops * options.look.exposureScale
+  scene.environmentIntensity = options.look.envIntensity
   for (const name of studio.envOnly) {
     node(name).visible = false
   }
@@ -407,6 +513,37 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     const material = materials.get(name)
     if (material) {
       setOpaque(material)
+    }
+  }
+  for (const material of materials.values()) {
+    material.emissiveIntensity *= options.look.emissiveScale
+  }
+  // V-3: palm fronds are alpha-tested; alpha-to-coverage uses the MSAA samples to soften them.
+  const vegetation = materials.get('MAT_vegetation')
+  if (vegetation) {
+    vegetation.alphaToCoverage = true
+    vegetation.needsUpdate = true
+  }
+  const room = materials.get('MAT_room')
+  if (room && options.look.floorEdgeLevel !== 1) {
+    const disc = measureFloorDisc(node(studio.room), node('MAQ_plinth'))
+    if (disc) {
+      addFloorDiscFade(room, disc, options.look.floorEdgeLevel)
+    }
+  }
+  if (room) {
+    // three ignores envMapIntensity on materials without their own envMap (it uses
+    // scene.environmentIntensity), so the room gets the same PMREM texture explicitly.
+    room.envMap = envTarget.texture
+    room.envMapIntensity = options.look.roomEnvIntensity
+  }
+  // V-2: sharper window bands at DPR 2 (anisotropic filtering of the façade emissive maps).
+  const anisotropy = Math.min(FACADE_ANISOTROPY, renderer.capabilities.getMaxAnisotropy())
+  for (const name of FACADE_MATERIALS) {
+    const map = materials.get(name)?.emissiveMap
+    if (map) {
+      map.anisotropy = anisotropy
+      map.needsUpdate = true
     }
   }
   for (const id of SYSTEM_IDS) {

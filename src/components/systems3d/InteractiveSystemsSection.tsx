@@ -116,7 +116,7 @@ export function InteractiveSystemsSection({
           locale={locale}
           openLabel={data?.liveModelLabel?.trim() || dict.actions.openLive3dModel}
           poster={
-            <picture>
+            <picture className={styles.stillPicture}>
               <source sizes={POSTER_SIZES} srcSet={posterSrcSet('webp')} type="image/webp" />
               {/* A plain <img>: next/image would re-encode the still that the live first frame must match. */}
               <img

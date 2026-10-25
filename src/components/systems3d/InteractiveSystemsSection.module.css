@@ -62,6 +62,14 @@
   inset: 0;
 }
 
+/* The <picture> must fill its layer: an inline <picture> leaves the <img> at its natural height,
+   which top-aligns the square still instead of the centred cover the live camera reproduces. */
+.stillPicture {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
 /* Live 3D (P3-T5): the canvas exists only once JS created it, above the still, and fades in only
    after its first frame. The still under it is never hidden. Durations follow docs/05-design.md §20
    (motion-slow 600 ms, ease-in-out) until the motion tokens land in tokens.css. */

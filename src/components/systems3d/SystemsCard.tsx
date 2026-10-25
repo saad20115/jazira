@@ -19,7 +19,7 @@ import { ArrowUpRightIcon, CubeIcon } from '@/components/icons'
 import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import type { SystemRelatedProjects } from './relatedProjects'
-import { DPR_CAP, RELEASE_BASE_PATH } from './renderContract'
+import { DPR_CAP, LIVE_LOOK, type LiveLook, RELEASE_BASE_PATH } from './renderContract'
 import { StillLabels } from './StillLabels'
 import type { Systems3dStrings } from './strings'
 import { chooseModelTier, decideStart, type DeviceCaps, parseGfxOverride } from './tier'
@@ -77,6 +77,26 @@ function readDeviceCaps(): DeviceCaps {
 /** `?gfx=stills|low|high` forces a tier in development builds only (§8b evidence). */
 function readGfxOverride(): ReturnType<typeof parseGfxOverride> {
   return process.env.NODE_ENV === 'production' ? null : parseGfxOverride(window.location.search)
+}
+
+/** `?look=exposure,env,emissive,roomEnv,floorEdge` overrides the V-1 calibration in development builds only. */
+function readLookOverride(): LiveLook {
+  if (process.env.NODE_ENV === 'production') {
+    return LIVE_LOOK
+  }
+  const raw = new URLSearchParams(window.location.search).get('look')
+  const values = raw?.split(',').map(Number) ?? []
+  if (values.length !== 5 || values.some((v) => !Number.isFinite(v) || v < 0 || v > 8)) {
+    return LIVE_LOOK
+  }
+  const [
+    exposureScale = 1,
+    envIntensity = 1,
+    emissiveScale = 1,
+    roomEnvIntensity = 1,
+    floorEdgeLevel = 1,
+  ] = values
+  return { exposureScale, envIntensity, emissiveScale, roomEnvIntensity, floorEdgeLevel }
 }
 
 const subscribeNever = (): (() => void) => () => undefined
@@ -159,6 +179,7 @@ export function SystemsCard({
           allowBloom: true,
           pixelRatioCap: caps.coarsePointer || caps.phoneLayout ? DPR_CAP.mobile : DPR_CAP.desktop,
           reducedMotion: caps.reducedMotion,
+          look: readLookOverride(),
           signal: controller.signal,
           onFirstFrame: () => {
             firstFrame = true
@@ -258,7 +279,7 @@ export function SystemsCard({
       ) : null}
       {entered ? (
         <div className={styles.enteredLayer} data-entered-system={entered} key={entered}>
-          <picture>
+          <picture className={styles.stillPicture}>
             <source
               sizes={STILL_SIZES}
               srcSet={endStillSrcSet(entered, 'webp')}
