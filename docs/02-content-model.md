@@ -235,7 +235,7 @@ relationship fields (written below as "stat" / "stats").
   cinematic clip shown, defined in code), **`disciplines`** (select hasMany from `projects.scope`
   options — drives "related projects"; defaults: HVAC→`hvac`, Fire→`fire-fighting`,
   Plumbing→`plumbing`, Power→`electrical`, Smart→`low-current`,`data-center`));
-  `heroImage` (upload, the overview still; falls back to the shipped hero render);
+  `heroImage` (upload). **CTO 2026-10-25 (P3-T5):** while a 3D release is pinned, the card's poster is always the release still (`/systems/<version>/stills/hero_*`), so the still→live swap matches. `heroImage` is not rendered then; its alt text, if set, is used as the card image's alt. It remains a legacy fallback only;
   `relatedProjectsLabel` (L); `liveModelLabel` (L). Clips and hotspots are versioned static
   assets (not CMS) — editors change text and mappings, not video.
 - `statsSection` (the "Trusted by Industry Leaders" block): `title`, `text` (L); `stats` =
