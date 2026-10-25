@@ -135,7 +135,3 @@ a {
 nextjs-portal {
   display: none;
 }
-
-html[data-intro='active'] body > footer {
-  display: none;
-}

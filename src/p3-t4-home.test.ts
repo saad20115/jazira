@@ -788,13 +788,31 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         /animation\s*:\s*introOverlayTimeline\s+1200ms\s+linear\s+var\(--intro-delay,\s*0ms\)\s+forwards/,
       )
 
-      // 4. R-22 & CTO Round 4 Decision: Verify duration <= 1600ms, max first-paint skip at 1200ms,
-      //    2.5s cap via CSS --intro-delay computed from performance.now(), and zero viewport/UA branches
+      // 4. R-22, R-26, R-27, R-28, R-29:
+      //    - R-26: page.module.css and globals.css never hide content or footer behind html[data-intro='active']
+      //    - R-27: inline script decides inside requestAnimationFrame using rafTs <= 1200ms and starts from 0ms
+      //    - R-28: .heroGoldGlow and .glow both include filter: blur(48px)
+      //    - R-29: inline script sets inert on background landmarks (including skip link) and moves focus to #main-content
+      const globalsCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/styles/globals.css'),
+        'utf8',
+      )
+      expect(pageModuleCss).not.toContain("data-intro='active'")
+      expect(globalsCss).not.toContain("data-intro='active'")
+
+      const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
+      const introGlowRule = introSplashCss.match(/\.glow\s*\{([^}]*)\}/)?.[1] ?? ''
+      expect(heroGoldGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
+      expect(introGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
+
       expect(INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(1600)
       expect(INTRO_MAX_FIRST_PAINT_MS).toBe(1200)
       expect(INTRO_HARD_CAP_MS).toBeLessThanOrEqual(2500)
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('requestAnimationFrame')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('performance.now()')
-      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('--intro-delay')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain("setProperty('--intro-delay','0ms')")
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('body > a[href="#main-content"]')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain("getElementById('main-content')")
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('innerWidth')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setTimeout')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setInterval')

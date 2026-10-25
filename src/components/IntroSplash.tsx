@@ -10,21 +10,30 @@ import styles from './IntroSplash.module.css'
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
 export const INTRO_MAX_FIRST_PAINT_MS = 1200
 export const INTRO_TOTAL_DURATION_MS = 1200
-export const INTRO_HARD_CAP_MS = 1850
+export const INTRO_HARD_CAP_MS = 2400
+
+export const INERT_TARGET_SELECTORS = [
+  'body > a[href="#main-content"]',
+  'header',
+  '[data-home-content="true"]',
+  'footer',
+  '[data-component="whatsapp-fab"]',
+] as const
 
 /**
- * Synchronous pre-paint script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-22`, `R-23`).
- * - Pure CSS timeline: this inline script only decides `'seen'` or `'active'` and sets `data-intro`
- *   plus the CSS `--intro-delay` cap computed from `performance.now()`.
+ * First-frame intro script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-22`, `R-23`, `R-27`, `R-29`).
+ * - Pure CSS timeline: registers a `requestAnimationFrame` callback and makes the `'seen'` vs `'active'`
+ *   decision inside it using the rAF timestamp as the real first frame (`R-27`).
  * - No branches on viewport, timing, connection, user agent, or automation (`R-22`).
  * - If `prefers-reduced-motion: reduce` is active, `sessionStorage` already has `aljazira_intro_seen='1'`,
- *   or first paint occurs later than `1200ms` (`1.2 s`), sets `data-intro="seen"` and skips the intro.
- * - Otherwise sets `data-intro="active"` and `--intro-delay: Math.min(0, Math.round(2400 - (now + 1200)))ms`
- *   so the pure-CSS keyframe animation (`1200ms <= 1.6s`, with logo at `opacity: 1` for `600ms >= 300ms`)
- *   is guaranteed to end in `opacity: 0; visibility: hidden; pointer-events: none` (`forwards`) before `2.5s`
- *   from `navigationStart`, without any `setTimeout`.
+ *   or the first frame (`rafTs`) arrives later than `1200ms` after `navigationStart`, sets `data-intro="seen"`
+ *   and skips the intro (`R-27`).
+ * - Otherwise starts the timeline from `0` (`--intro-delay: 0ms`, `1200ms <= 1.6s` total, with both
+ *   `logoOpacity === 1` and `overlayOpacity === 1` for `648ms >= 300ms`, ending before `2400ms <= 2.5s`),
+ *   sets `inert` on background landmarks (including the skip link) from the inline script (`R-29`),
+ *   and moves focus to `#main-content` upon dismiss (`R-29`).
  */
-export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var now=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var nowRounded=Math.round(now);if(rm||seen||now>${String(INTRO_MAX_FIRST_PAINT_MS)}){if(!seen&&!rm){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}}window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}var delayMs=Math.min(0,Math.round(${String(INTRO_HARD_CAP_MS)}-(now+${String(INTRO_TOTAL_DURATION_MS)})));d.style.setProperty('--intro-delay',delayMs+'ms');window.__aljaziraIntroDecision={action:'active',nowMs:nowRounded,delayMs:delayMs};d.setAttribute('data-intro','active');}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',scriptMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}var decide=function(rafTs){var now=typeof rafTs==='number'&&rafTs>0?rafTs:(typeof performance==='object'&&typeof performance.now==='function'?performance.now():0);var nowRounded=Math.round(now);if(now>${String(INTRO_MAX_FIRST_PAINT_MS)}){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}setInert(false);window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}var ov=document.querySelector('[data-component="intro-splash"]');if(!ov&&document.readyState==='loading'){window.requestAnimationFrame(decide);return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}if(splash&&!splash.dataset.introBound){splash.dataset.introBound='1';splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};};window.requestAnimationFrame(decide);}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
 
 export interface IntroSplashProps {
   className?: string
@@ -33,13 +42,6 @@ export interface IntroSplashProps {
   siteName?: string | null
   tagline?: string | null
 }
-
-const INERT_TARGET_SELECTORS = [
-  'header',
-  '[data-home-content="true"]',
-  'footer',
-  '[data-component="whatsapp-fab"]',
-] as const
 
 function setBackgroundInert(inert: boolean): void {
   if (typeof document === 'undefined') {
@@ -133,6 +135,8 @@ export function IntroSplash({
     if (typeof window !== 'undefined') {
       markIntroSplashSeen(window)
       document.documentElement.setAttribute('data-intro', 'seen')
+      const mainEl = document.getElementById('main-content')
+      mainEl?.focus({ preventScroll: true })
     }
   }, [forceState])
 
@@ -149,31 +153,44 @@ export function IntroSplash({
     if (forceState || typeof window === 'undefined') {
       return
     }
-    const currentIntroAttr = document.documentElement.getAttribute('data-intro')
-    const overlayEl = overlayRef.current
-    if (
-      currentIntroAttr !== 'active' ||
-      (overlayEl && window.getComputedStyle(overlayEl).visibility === 'hidden')
-    ) {
-      setBackgroundInert(false)
-      if (currentIntroAttr === 'active') {
-        document.documentElement.setAttribute('data-intro', 'seen')
+    let rafId: number | null = null
+
+    const syncActiveState = (): void => {
+      const currentIntroAttr = document.documentElement.getAttribute('data-intro')
+      if (currentIntroAttr === 'seen') {
+        setBackgroundInert(false)
+        return
       }
-      return
+      if (currentIntroAttr !== 'active') {
+        rafId = window.requestAnimationFrame(syncActiveState)
+        return
+      }
+      const overlayEl = overlayRef.current
+      if (overlayEl && window.getComputedStyle(overlayEl).visibility === 'hidden') {
+        dismissImmediately()
+        return
+      }
+      markIntroSplashSeen(window)
+      setBackgroundInert(true)
+      skipButtonRef.current?.focus({ preventScroll: true })
     }
 
-    markIntroSplashSeen(window)
-    setBackgroundInert(true)
-    skipButtonRef.current?.focus({ preventScroll: true })
+    syncActiveState()
 
     const handleKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
+      if (
+        event.key === 'Escape' &&
+        document.documentElement.getAttribute('data-intro') === 'active'
+      ) {
         event.preventDefault()
         dismissImmediately()
       }
     }
     window.addEventListener('keydown', handleKeyDown)
     return () => {
+      if (rafId !== null) {
+        window.cancelAnimationFrame(rafId)
+      }
       window.removeEventListener('keydown', handleKeyDown)
       setBackgroundInert(false)
     }

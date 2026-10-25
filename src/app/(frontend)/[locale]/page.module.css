@@ -17,17 +17,6 @@
   inline-size: 100%;
 }
 
-/*
- * While the full-viewport SSR intro splash (`html[data-intro='active']`) covers the screen,
- * defer layout and text shaping of below-the-fold sections (`y >= 1788px`, below `hero` + `who-we-are`)
- * so First Paint (`preFCP`) only lays out above-the-fold content without triggering `contain-intrinsic-size` shifts.
- */
-:global(html[data-intro='active'])
-  .homeContent
-  > :not([data-home-section='hero']):not([data-home-section='who-we-are']) {
-  display: none;
-}
-
 .goldText {
   color: var(--gold-500);
 }
@@ -100,6 +89,7 @@
   block-size: 700px;
   border-radius: 50%;
   background-image: var(--gradient-hero-gold-glow);
+  filter: blur(48px);
   pointer-events: none;
 }
 

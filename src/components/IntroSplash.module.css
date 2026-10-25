@@ -4,7 +4,7 @@
     visibility: visible;
     pointer-events: auto;
   }
-  74% {
+  76% {
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
@@ -27,7 +27,7 @@
     opacity: 0.45;
     transform: scale(0.42);
   }
-  24%,
+  22%,
   100% {
     opacity: 1;
     transform: scale(1);
@@ -40,7 +40,7 @@
     opacity: 0;
     transform: scale(0.68);
   }
-  24%,
+  22%,
   100% {
     opacity: 1;
     transform: scale(1);
@@ -117,6 +117,7 @@
   block-size: 720px;
   border-radius: 50%;
   background-image: var(--gradient-intro-gold-glow);
+  filter: blur(48px);
   pointer-events: none;
   opacity: 0.45;
   transform: scale(0.42);

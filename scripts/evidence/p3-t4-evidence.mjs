@@ -1122,8 +1122,8 @@ const HOME_SECTION_COMPARISONS = [
 
 export async function runP3T4Evidence({
   baseUrl = process.env.EVIDENCE_BASE_URL || 'http://localhost:3000',
-  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r3'),
-  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r3'),
+  reportsEvidenceDir = path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r5'),
+  reportsPhase3Dir = path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r5'),
   mode = 'all',
   skipBrands = false,
 } = {}) {
@@ -1294,10 +1294,28 @@ export async function runP3T4Evidence({
         const initialDomCheck = await startPage.evaluate(() => {
           const overlay = document.querySelector('[data-component="intro-splash"]')
           const style = overlay ? window.getComputedStyle(overlay) : null
+          const skipLink = document.querySelector('body > a[href="#main-content"]')
+          const header = document.querySelector('header')
+          const homeContent = document.querySelector('[data-home-content="true"]')
+          const footer = document.querySelector('footer')
+          const fab = document.querySelector('[data-component="whatsapp-fab"]')
+          const sections = Array.from(document.querySelectorAll('[data-home-section]'))
+          const hiddenSectionCount = sections.filter(
+            (el) => window.getComputedStyle(el).display === 'none',
+          ).length
           return {
             htmlDataIntro: document.documentElement.dataset.intro ?? null,
             overlayDisplay: style?.display ?? null,
             overlayOpacity: style?.opacity ?? null,
+            skipLinkInertAtStart: Boolean(skipLink?.hasAttribute('inert')),
+            headerInertAtStart: Boolean(header?.hasAttribute('inert')),
+            homeContentInertAtStart: Boolean(homeContent?.hasAttribute('inert')),
+            footerInertAtStart: Boolean(footer?.hasAttribute('inert')),
+            fabInertAtStart: Boolean(fab?.hasAttribute('inert')),
+            sectionCountDuringIntro: sections.length,
+            hiddenSectionCountDuringIntro: hiddenSectionCount,
+            footerDisplayDuringIntro: footer ? window.getComputedStyle(footer).display : null,
+            pageScrollHeightDuringIntro: document.documentElement.scrollHeight,
           }
         })
 
@@ -1305,7 +1323,7 @@ export async function runP3T4Evidence({
         const startBuf = await startPage.screenshot()
         await startCtx.close()
 
-        // Fresh context 2: capture Reveal state (`28:1615`) and verify R-9 (`inert` + focus)
+        // Fresh context 2: capture Reveal state (`28:1615`) and verify R-9 & R-29 (`inert` + focus)
         const revealCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
         const revealPage = await revealCtx.newPage()
         await revealPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
@@ -1324,6 +1342,7 @@ export async function runP3T4Evidence({
         )
 
         const hydratedA11yCheck = await revealPage.evaluate(() => {
+          const skipLink = document.querySelector('body > a[href="#main-content"]')
           const header = document.querySelector('header')
           const homeContent = document.querySelector('[data-home-content="true"]')
           const footer = document.querySelector('footer')
@@ -1331,6 +1350,7 @@ export async function runP3T4Evidence({
           const logo = document.querySelector('[data-component="intro-splash"] [class*="logoWrap"]')
           const overlay = document.querySelector('[data-component="intro-splash"]')
           return {
+            skipLinkInert: Boolean(skipLink?.hasAttribute('inert')),
             headerInert: Boolean(header?.hasAttribute('inert')),
             homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
             footerInert: Boolean(footer?.hasAttribute('inert')),
@@ -1443,6 +1463,8 @@ export async function runP3T4Evidence({
             homeContentInertAfterDismiss: Boolean(
               document.querySelector('[data-home-content="true"]')?.hasAttribute('inert'),
             ),
+            activeElementIdAfterDismiss:
+              document.activeElement?.id || document.activeElement?.tagName || null,
           }))
 
           // Reload in same session -> intro must NOT appear again (suppressed pre-paint via html[data-intro="seen"])
@@ -1465,9 +1487,6 @@ export async function runP3T4Evidence({
           if (recordedVideo) {
             const videoSrcPath = await recordedVideo.path()
             fs.copyFileSync(videoSrcPath, widthVideoPath)
-            if (vvp.width === 1440) {
-              fs.copyFileSync(videoSrcPath, path.join(reportsPhase3Dir, `intro-${loc}.webm`))
-            }
           }
           fs.rmSync(videoTmpDir, { recursive: true, force: true })
 
@@ -1575,7 +1594,9 @@ export async function runP3T4Evidence({
                 const hiddenFrame = firstVisible
                   ? frames.find((f) => f.tMs > firstVisible.tMs && !f.overlayVisible) || null
                   : null
-                const logoFullFrames = visibleFrames.filter((f) => f.logoOpacity >= 0.99)
+                const logoFullFrames = visibleFrames.filter(
+                  (f) => f.logoOpacity >= 0.99 && f.overlayOpacity >= 0.99,
+                )
                 const logoFirstFull = logoFullFrames[0] || null
                 const logoLastFull = logoFullFrames[logoFullFrames.length - 1] || null
 
@@ -1729,6 +1750,71 @@ export async function runP3T4Evidence({
         .catch(() => false)
       await rmCtx.close()
 
+      // 2h. R-26 & R-29 Verification:
+      //     (1) With JS chunks blocked (simulating failed React hydration), all 8 sections and footer are visible,
+      //         pre-hydration `inert` prevents Tab from reaching the skip link behind the overlay, and native
+      //         `animationend` removes `inert`, sets `data-intro="seen"`, and focuses `#main-content`.
+      //     (2) First-visit anchor navigation (`/en#featured-projects`, `/en#cta`) lands at the section (`scrollY > 500`).
+      const blockedChunksCheck = {}
+      for (const loc of ['en', 'ar']) {
+        const blkCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        const blkPage = await blkCtx.newPage()
+        await blkPage.route('**/_next/static/chunks/**', (route) => route.abort())
+        await blkPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
+        await blkPage
+          .locator('[data-component="intro-splash"]')
+          .waitFor({ state: 'visible', timeout: 1500 })
+        await blkPage.keyboard.press('Tab')
+        const duringBlockedIntro = await blkPage.evaluate(() => {
+          const skipLink = document.querySelector('body > a[href="#main-content"]')
+          const header = document.querySelector('header')
+          const homeContent = document.querySelector('[data-home-content="true"]')
+          const footer = document.querySelector('footer')
+          const sections = Array.from(document.querySelectorAll('[data-home-section]'))
+          return {
+            sectionCount: sections.length,
+            hiddenSections: sections.filter((el) => window.getComputedStyle(el).display === 'none')
+              .length,
+            footerDisplay: footer ? window.getComputedStyle(footer).display : null,
+            scrollHeight: document.documentElement.scrollHeight,
+            skipLinkInert: Boolean(skipLink?.hasAttribute('inert')),
+            headerInert: Boolean(header?.hasAttribute('inert')),
+            homeContentInert: Boolean(homeContent?.hasAttribute('inert')),
+            footerInert: Boolean(footer?.hasAttribute('inert')),
+            activeElementAfterTabIsSkipButton:
+              document.activeElement?.getAttribute('data-intro-skip') === 'true',
+          }
+        })
+        await blkPage.waitForTimeout(1350)
+        const afterBlockedIntro = await blkPage.evaluate(() => ({
+          htmlDataIntro: document.documentElement.dataset.intro ?? null,
+          inertCountAfterFinish: document.querySelectorAll('[inert]').length,
+          activeElementIdAfterFinish:
+            document.activeElement?.id || document.activeElement?.tagName || null,
+          scrollHeightAfterFinish: document.documentElement.scrollHeight,
+        }))
+        blockedChunksCheck[loc] = { duringBlockedIntro, afterBlockedIntro }
+        await blkCtx.close()
+      }
+
+      const firstVisitAnchorCheck = {}
+      for (const hash of ['#featured-projects', '#partners', '#cta']) {
+        const hashCtx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+        const hashPage = await hashCtx.newPage()
+        await hashPage.goto(`${baseUrl}/en${hash}`, { waitUntil: 'load' })
+        await hashPage.waitForTimeout(100)
+        const scrollInfo = await hashPage.evaluate((h) => {
+          const target = document.querySelector(h)
+          const rect = target ? target.getBoundingClientRect() : null
+          return {
+            scrollY: Math.round(window.scrollY),
+            targetTopInViewport: rect ? Math.round(rect.top) : null,
+          }
+        }, hash)
+        firstVisitAnchorCheck[hash] = scrollInfo
+        await hashCtx.close()
+      }
+
       const introAudit = {
         ssrContainsIntroStartEn,
         ssrContainsIntroStartAr,
@@ -1738,22 +1824,24 @@ export async function runP3T4Evidence({
         videoFilesByWidthAndLocale,
         rafMatrixRuns,
         lateFirstPaintSkipByLocale,
+        blockedChunksCheck,
+        firstVisitAnchorCheck,
         visibleBeforeEscape,
         visibleAfterEscape,
         rmDataIntro,
         visibleWithReducedMotion,
       }
       const rafTableLines = [
-        '| # | Viewport | Mode | Locale | Run | Decision (`nowMs` / `delayMs`) | First Visible (ms) | Logo `opacity=1` Start..End (`duration` ms) | Hidden (ms) | Visible Duration (ms) | Visible Frames / Total rAF | Logo Restarts / Bounces |',
+        '| # | Viewport | Mode | Locale | Run | Decision (`scriptMs` -> `rafMs` / `delayMs`) | First Visible (ms) | Logo & Overlay `opacity=1` Start..End (`duration` ms) | Hidden (ms) | Visible Duration (ms) | Visible Frames / Total rAF | Logo Restarts / Bounces |',
         '|---|---|---|---|---|---|---|---|---|---|---|---|',
         ...rafMatrixRuns.map(
           (r, i) =>
-            `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.decision?.action ?? 'n/a'}\` (\`${r.decision?.nowMs ?? 'n/a'}ms\` / \`${r.decision?.delayMs ?? 0}ms\`) | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
+            `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.decision?.action ?? 'n/a'}\` (\`${r.decision?.scriptMs ?? 'n/a'}ms\` -> \`${r.decision?.nowMs ?? 'n/a'}ms\` / \`${r.decision?.delayMs ?? 0}ms\`) | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
         ),
       ]
       const introLog = [
         headerBlock,
-        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO Round 4 Pure-CSS Decision, R-22 36-Run Matrix, R-23 0 Restarts/Bounces) ===',
+        '=== Intro Splash Verification (28:1609 -> 28:1615, CTO Round 5 R-26..R-30 Pure-CSS rAF Decision, 36-Run Matrix) ===',
         ...rafTableLines,
         '',
         JSON.stringify(introAudit, null, 2),
@@ -1766,6 +1854,7 @@ export async function runP3T4Evidence({
         const vm = videoMetricsByLocale[loc]
         const nj = noJsVerification[loc]
         const lfp = lateFirstPaintSkipByLocale[loc]
+        const blk = blockedChunksCheck[loc]
         if (
           nj.overlayVisibleNoJs ||
           !nj.h1VisibleNoJs ||
@@ -1773,6 +1862,15 @@ export async function runP3T4Evidence({
           !st.startVisible ||
           st.htmlDataIntro !== 'active' ||
           st.overlayDisplay !== 'flex' ||
+          !st.skipLinkInertAtStart ||
+          !st.headerInertAtStart ||
+          !st.homeContentInertAtStart ||
+          !st.footerInertAtStart ||
+          st.sectionCountDuringIntro !== 8 ||
+          st.hiddenSectionCountDuringIntro !== 0 ||
+          st.footerDisplayDuringIntro === 'none' ||
+          st.pageScrollHeightDuringIntro < 4000 ||
+          !st.skipLinkInert ||
           !st.headerInert ||
           !st.homeContentInert ||
           !st.footerInert ||
@@ -1783,15 +1881,35 @@ export async function runP3T4Evidence({
           vm.storageAfterFirstLoad !== '1' ||
           vm.headerInertAfterDismiss ||
           vm.homeContentInertAfterDismiss ||
+          vm.activeElementIdAfterDismiss !== 'main-content' ||
           vm.htmlDataIntroOnReload !== 'seen' ||
           vm.visibleOnSecondVisit ||
           lfp.decision?.action !== 'skipped_late_first_paint' ||
           lfp.decision?.nowMs <= 1200 ||
           lfp.htmlDataIntro !== 'seen' ||
-          lfp.visibleFrameCount !== 0
+          lfp.visibleFrameCount !== 0 ||
+          blk.duringBlockedIntro.sectionCount !== 8 ||
+          blk.duringBlockedIntro.hiddenSections !== 0 ||
+          blk.duringBlockedIntro.footerDisplay === 'none' ||
+          blk.duringBlockedIntro.scrollHeight < 4000 ||
+          !blk.duringBlockedIntro.skipLinkInert ||
+          !blk.duringBlockedIntro.headerInert ||
+          !blk.duringBlockedIntro.homeContentInert ||
+          !blk.duringBlockedIntro.footerInert ||
+          !blk.duringBlockedIntro.activeElementAfterTabIsSkipButton ||
+          blk.afterBlockedIntro.htmlDataIntro !== 'seen' ||
+          blk.afterBlockedIntro.inertCountAfterFinish !== 0 ||
+          blk.afterBlockedIntro.activeElementIdAfterFinish !== 'main-content'
         ) {
           throw new Error(
             `Intro splash verification failed for ${loc}: ${JSON.stringify(introAudit)}`,
+          )
+        }
+      }
+      for (const [hash, info] of Object.entries(firstVisitAnchorCheck)) {
+        if (!info || info.scrollY < 500) {
+          throw new Error(
+            `First-visit anchor navigation failed for ${hash}: ${JSON.stringify(info)}`,
           )
         }
       }
@@ -2622,7 +2740,7 @@ export async function runP3T4Evidence({
   }
 
   console.log(
-    `[P3-T4 Evidence] All P3-T4 r4 evidence generated in ${reportsEvidenceDir} (logs) and ${reportsPhase3Dir} (images/videos)`,
+    `[P3-T4 Evidence] All P3-T4 r5 evidence generated in ${reportsEvidenceDir} (logs) and ${reportsPhase3Dir} (images/videos)`,
   )
 }
 
@@ -2639,9 +2757,9 @@ if (
 
   const baseUrl = posArgs[0] || process.env.EVIDENCE_BASE_URL || 'http://localhost:3000'
   const reportsEvidenceDir =
-    posArgs[1] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r4')
+    posArgs[1] || path.resolve(process.cwd(), 'docs/reports/evidence/P3-T4/r5')
   const reportsPhase3Dir =
-    posArgs[2] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r4')
+    posArgs[2] || path.resolve(process.cwd(), 'docs/reports/phase-3/P3-T4/r5')
 
   runP3T4Evidence({
     baseUrl,
