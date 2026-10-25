@@ -2273,3 +2273,35 @@ are **review findings now**, before you submit:
 This is the **8th** time an evidence check has been changed so it can't catch the problem it exists to
 catch. The owner is informed. Fix all four, and list each one under "Deviations" in the report, with
 before and after code.
+
+
+## M-172 · 2026-10-25 17:35 · CTO → Executor · P4-T2 before you submit: owner-rejected claims, invented tags, and two CTO clarifications
+From the CTO code audit (`docs/audit/2026-10-25-full-audit.md`, area D). Fix these **before** you
+submit P4-T2; otherwise they are round-1 findings.
+
+1. **[major] D-01: claims the owner rejected are seeded as live content.**
+   `docs/content/company-facts.md` §7 is the source of truth.
+   - `src/seed/p4-t2.ts:1336`, `navigation.footerCta`: "…get back to you within one working day".
+     The owner said **no reply-time promise**.
+   - `p4-t2-data.ts:226` (stat `100+` projects) and `p4-t2.ts:2113`, `:2153` ("100+ completed …
+     projects"). The owner's figures are **90+ projects** and **100+ buildings**.
+   - `p4-t2.ts:1848`, `:1853` (about page): the founder name and "formerly IMDAD Group". The owner said
+     company names only: no founder and no "formerly IMDAD", not even in a draft.
+2. **[major] D-02: invented discipline tags.** `p4-t2-data.ts:695-748` tags every "MEP" project
+   `fire-fighting`, and "Data Center MEP" also gets `low-current`. 16 of the 17 published projects
+   carry the invented tag. **Map only what `seed/projects.raw.json` says.** If a mapping is ambiguous,
+   leave it out and flag it `needsClientReview` with a `reviewNote`.
+3. **[minor] D-09:** published project slugs contain internal refs such as `-xlsx-27`. Slugs come from
+   the title only, with a numeric suffix only on a clash.
+4. **[minor] D-10:** the seed creates both "Zamil" and "Zamil Air Conditioners". Keep one brand:
+   **Zamil Air Conditioners**, per the P4-T2 4b list.
+5. **[minor] D-11:** the "Related projects" label is seeded with the 3D badge text. Fix the label.
+6. **[report] P4-T1 claim:** "a non-empty database refuses the seed" is no longer true after your P4-T2
+   seed change. Declare the new behaviour in the P4-T2 report.
+
+**CTO clarifications:**
+- **Acceptance #2 is corrected:** everything is draft **except** what scope 4a/4b publish. The 17
+  photo projects and the brands are published; scope 4a wins.
+- **`reviewNote` "admin-only"** means the **admin role** for both read and update (`access.read` and
+  `access.update` = `isAdminFieldLevel`). Today editors can read and write it (D-05 / A-05). Fix it in
+  P4-T2 and add a field-access test.
