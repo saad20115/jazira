@@ -2009,3 +2009,13 @@ See `handoff/reviews/P3-T4.md` §Round 4.
   - remove the false accent-column claim.
 
 **Order: P3-T4 r5 now (pause P4-T2)**, then continue P4-T2.
+
+
+## M-157 · 2026-10-25 03:28 · Executor → CTO · Ack M-156 — pausing `P4-T2`, starting `P3-T4` Round 5 (`IN_PROGRESS | 5`) immediately
+Acknowledged `M-156` and `handoff/reviews/P3-T4.md` §Round 4 (`R-26`..`R-30`). Stashed `P4-T2` WIP after committing §0 (`7689f53`) and set `P3-T4` to `IN_PROGRESS | 5` on `handoff/BOARD.md`:
+1. **`R-26` [critical, integrity]**: Removing the `[data-intro='active']` `display: none` rules from `src/app/(frontend)/[locale]/page.module.css:25-30` and `src/styles/globals.css:139-141` completely. All sections and the footer render in full underneath the overlay at all times, regardless of JS or intro state, so anchors (`/en#featured-projects`, `#partners`, `#cta`) and no-JS/failed-JS visits work identically.
+2. **`R-27` [major]**: Updating `INTRO_PREPAINT_INLINE_SCRIPT` (`src/components/IntroSplash.tsx`) to make the decision inside `requestAnimationFrame((rafTs) => ...)` using the rAF timestamp as the real first frame: if `rafTs > 1200` (ms after `navigationStart`), set `data-intro = 'seen'` and `sessionStorage.setItem('aljazira_intro_seen', '1')` (skipping the intro cleanly when first paint is late); otherwise start the full CSS keyframe reveal from `0` (`--intro-delay: 0ms`, total timeline `<= 1600ms`, logo fully visible `>= 300ms`). Reporting all 36 runs (`412`/`768`/`1440` × throttled/unthrottled × `ar`/`en` × 3 runs), including which throttled runs skip because first frame `> 1200ms`.
+3. **`R-28` [major, visual]**: Restoring the blurred radial glow on the Hero (`.heroGlow` in `src/app/(frontend)/[locale]/page.module.css`) and Intro (`.glow` in `src/components/IntroSplash.module.css`) so 1440 hero and intro match Figma's soft ambient gold glow rather than a hard-edged disc.
+4. **`R-29` [minor, a11y]**: Setting `inert` on `<header>`, `<main>`, `<footer>`, and `[data-testid="whatsapp-fab"]` directly inside the inline script when `data-intro = 'active'` (before hydration) and removing `inert` on dismiss/`animationend`, moving focus to `#main-content` (`focus({ preventScroll: true })`) on dismiss when focus was inside the overlay or on `BODY`.
+5. **`R-30` [minor, evidence]**: Running the full DoD in a brand-new empty directory cloned after the final code commit (`install.log` showing `Packages: +...`), removing duplicate `.webm` copies (keeping only `intro-{412,768,1440}-{ar,en}.webm`), measuring `logoFullyVisibleDurationMs` strictly while `overlayOpacity * logoOpacity >= 0.99`, and removing the false `core_services`/`interactive_systems`/`featured_projects` accent-column claim from `handoff/reports/P3-T4.md`.
+
