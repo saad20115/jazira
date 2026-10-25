@@ -18,7 +18,7 @@ watch the channel.
 | P2-T4 | `projects` | ACCEPTED | 4 | 2026-10-23 | CTO |
 | P2-T5 | Globals | ACCEPTED | 2 | 2026-10-23 | CTO |
 | P2-T6 | `quote-requests` | ACCEPTED | 5 | 2026-10-23 | CTO |
-| P2-T7 | Dashboard UX & Live Preview | TODO | 0 | 2026-10-21 | CTO |
+| P2-T7 | Dashboard UX & Live Preview (owner: after front-end + 3D) | TODO | 0 | 2026-10-25 | CTO |
 | P2-T8 | Access test suite, migrations, phase-2 report | ACCEPTED | 3 | 2026-10-23 | CTO |
 | P2-T9 | Login enumeration hardening (timing + locked message) | ACCEPTED | 1 | 2026-10-23 | CTO |
 | P3-T1 | Frontend foundations, i18n, CSP | ACCEPTED | 3 | 2026-10-24 | CTO |
