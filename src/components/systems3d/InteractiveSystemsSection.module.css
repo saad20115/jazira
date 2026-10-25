@@ -1,0 +1,214 @@
+/*
+ * Home section 4, "Interactive Systems" (`111:1608`), moved verbatim out of
+ * `src/app/(frontend)/[locale]/page.module.css` (`handoff/tasks/P3-T5.md` E3 step 1).
+ * Uses CSS logical properties and tokens from `src/styles/tokens.css`.
+ */
+
+/* ==========================================================================
+   4. Interactive Systems Section (`111:1608`, `1440×922`)
+   ========================================================================== */
+
+.interactiveSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--white);
+  box-sizing: border-box;
+}
+
+.interactiveStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+
+.interactiveIntroText {
+  margin: 0;
+  inline-size: 440px;
+  max-inline-size: 100%;
+  color: var(--text-body);
+  flex-shrink: 0;
+}
+
+.explorerRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-40);
+  inline-size: 100%;
+  min-block-size: 580px;
+}
+
+.buildingCard {
+  position: relative;
+  inline-size: 600px;
+  block-size: 580px;
+  border-radius: var(--radius-5xl);
+  background-image: var(--gradient-interactive-card);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.buildingRender {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+.liveModelBadge {
+  position: absolute;
+  inset-block-start: 19px;
+  inset-inline-start: 19px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding-block: var(--space-6);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-pill);
+  background-color: var(--glass-white-8);
+  border: 1px solid var(--glass-border-white-16);
+  color: var(--white);
+}
+
+.liveModelBadgeIcon {
+  display: inline-flex;
+  color: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.openModelButton {
+  position: absolute;
+  inset-block-end: 22px;
+  inset-inline-start: 22px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  min-inline-size: 44px;
+  min-block-size: 44px;
+  padding-block: var(--space-12);
+  padding-inline: var(--space-20);
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  color: var(--navy-950);
+  box-shadow: var(--shadow-button-gold);
+  text-decoration: none;
+  transition:
+    background-color 180ms ease,
+    transform 180ms ease;
+}
+
+.openModelButton:hover {
+  background-color: var(--gold-300);
+  transform: translateY(-1px);
+}
+
+.openModelButton:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.accordionCol {
+  flex: 1 1 0;
+  min-inline-size: 0;
+}
+
+.interactiveAccordion {
+  gap: var(--space-12);
+}
+
+.interactiveAccordion :global([data-accordion-state='Expanded']) {
+  background-color: var(--white);
+  border-color: var(--gold-300);
+  border-width: 1.2px;
+}
+
+.systemBodyStack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.systemDescription {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.relatedProjectsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.relatedProjectsLabel {
+  color: var(--navy-950);
+}
+
+.relatedProjectLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-6);
+  padding-block: var(--space-4);
+  padding-inline: var(--space-10);
+  border-radius: var(--radius-pill);
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  color: var(--navy-950);
+  text-decoration: none;
+  box-sizing: border-box;
+  transition:
+    border-color 160ms ease,
+    color 160ms ease;
+}
+
+@media (max-width: 1023px) {
+  .relatedProjectLink {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+  }
+}
+
+.relatedProjectLink:hover {
+  border-color: var(--gold-500);
+  color: var(--gold-700);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints (`768px–1279.98px` Tablet & `< 768px` Mobile)
+   ========================================================================== */
+
+@media (max-width: 1279.98px) {
+  .interactiveIntroText {
+    inline-size: 100%;
+    max-inline-size: 620px;
+  }
+
+  .explorerRow {
+    flex-direction: column;
+    min-block-size: 0;
+  }
+
+  .buildingCard {
+    inline-size: 100%;
+    block-size: 440px;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .buildingCard {
+    block-size: 360px;
+  }
+
+  .relatedProjectLink {
+    min-inline-size: 44px;
+    min-block-size: 44px;
+    padding-block: var(--space-10);
+    padding-inline: var(--space-14);
+  }
+}
