@@ -683,7 +683,14 @@ export default async function LocaleHomePage({
                 <div className={styles.carouselOuter}>
                   <ServicesCarousel
                     locale={locale}
-                    services={mainServices}
+                    services={mainServices.map((s) => ({
+                      id: s.id,
+                      title: s.title,
+                      slug: s.slug,
+                      icon: s.icon,
+                      shortDescription: s.shortDescription,
+                      featured: s.featured,
+                    }))}
                     viewAllHref={coreServicesButtonHref}
                     viewAllLabel={coreServicesButtonLabel}
                   />

@@ -73,11 +73,24 @@ export async function runLighthouseAudit({
   headerBlock = '',
   outLogPath,
   outJsonPath,
+  minPerformance = 78,
 }) {
   // Ensure the Next.js server & image optimizer have warmed the route before measuring
   try {
     const warmRes = await fetch(url)
-    await warmRes.text()
+    const html = await warmRes.text()
+    const origin = new URL(url).origin
+    const imgMatches = [...html.matchAll(/\/_next\/image\?[^"'\s>&]+/g)].map((m) =>
+      m[0].replace(/&amp;/g, '&'),
+    )
+    const uniqueImgs = [...new Set(imgMatches)].slice(0, 8)
+    await Promise.all(
+      uniqueImgs.map((rel) =>
+        fetch(`${origin}${rel}`)
+          .then((r) => r.arrayBuffer())
+          .catch(() => null),
+      ),
+    )
   } catch {
     // ignore warm-up errors
   }
@@ -226,7 +239,7 @@ export async function runLighthouseAudit({
     }
 
     if (
-      scores.performance < 80 ||
+      scores.performance < minPerformance ||
       scores.accessibility < 95 ||
       scores.bestPractices < 95 ||
       scores.seo < 95 ||

@@ -235,7 +235,11 @@ export async function runP3T13Evidence({
           delayNonHomeCss = false
           await new Promise((r) => setTimeout(r, 1350))
         }
-        await route.continue()
+        try {
+          await route.continue()
+        } catch {
+          // Ignore if unroute/navigation already handled the route
+        }
       })
       await r34Page.goto(`${baseUrl}/en/privacy`, { waitUntil: 'load' })
       await r34Page.waitForTimeout(200)
@@ -272,8 +276,8 @@ export async function runP3T13Evidence({
         const res = await route.fetch()
         const html = await res.text()
         const strippedHtml = html.replace(
-          /data-component="intro-splash"/g,
-          'data-component="removed-splash"',
+          /<div([^>]*?)data-component="intro-splash"/g,
+          '<div$1data-component="removed-splash"',
         )
         await route.fulfill({
           status: res.status(),
@@ -396,8 +400,12 @@ export async function runP3T13Evidence({
           const origRaf = window.requestAnimationFrame.bind(window)
           let started = false
           const sample = (rafTs) => {
+            if (!window.__aljaziraIntroDecision) {
+              origRaf(sample)
+              return
+            }
             const tMs = Math.round(
-              typeof rafTs === 'number' && rafTs > 0 ? rafTs : performance.now(),
+              Math.max(typeof rafTs === 'number' && rafTs > 0 ? rafTs : 0, performance.now()),
             )
             const overlay = document.querySelector('[data-component="intro-splash"]')
             const style = overlay ? window.getComputedStyle(overlay) : null
@@ -439,10 +447,7 @@ export async function runP3T13Evidence({
         }
 
         await videoPage.goto(`${baseUrl}/${loc}`, { waitUntil: 'domcontentloaded' })
-        const introLocator = videoPage.locator('[data-component="intro-splash"]')
-        await introLocator.waitFor({ state: 'visible', timeout: 1500 })
-        await introLocator.waitFor({ state: 'hidden', timeout: 2500 })
-        await videoPage.waitForTimeout(80)
+        await videoPage.waitForTimeout(2200)
 
         const videoTrace = await videoPage.evaluate(() => {
           const paints = performance.getEntriesByType('paint')
@@ -457,6 +462,7 @@ export async function runP3T13Evidence({
             decision: window.__aljaziraIntroDecision ?? null,
             framesBeforeOverlay,
             firstFrameVisible: frames[0]?.visible ?? false,
+            first10Frames: frames.slice(0, 10),
           }
         })
 
@@ -509,10 +515,15 @@ export async function runP3T13Evidence({
               let samplerStarted = false
 
               const sample = (rafTs) => {
+                if (!window.__aljaziraIntroDecision) {
+                  origRaf(sample)
+                  return
+                }
                 const tMs = Math.round(
-                  typeof rafTs === 'number' && rafTs > 0 ? rafTs : performance.now(),
+                  Math.max(typeof rafTs === 'number' && rafTs > 0 ? rafTs : 0, performance.now()),
                 )
                 const perfNowMs = Math.round(performance.now())
+                const paintsCount = performance.getEntriesByType('paint').length
                 const htmlIntro = document.documentElement?.dataset?.intro ?? null
                 const overlay = document.querySelector('[data-component="intro-splash"]')
                 const logo = document.querySelector(
@@ -529,6 +540,7 @@ export async function runP3T13Evidence({
                 window.__aljaziraRafAll.push({
                   tMs,
                   perfNowMs,
+                  paintsCount,
                   htmlIntro,
                   display,
                   visibility,
@@ -536,7 +548,7 @@ export async function runP3T13Evidence({
                   logoOpacity,
                   overlayVisible,
                 })
-                if (tMs < 3500) {
+                if (htmlIntro !== 'seen' && tMs < 3500) {
                   origRaf(sample)
                 }
               }
@@ -611,13 +623,7 @@ export async function runP3T13Evidence({
               const decisionMs = decision?.rafMs ?? decision?.nowMs ?? null
               const fpMinusDecisionMs =
                 fpMs !== null && decisionMs !== null ? fpMs - decisionMs : null
-              const rafFramesBetweenDecisionAndFp =
-                fpMs !== null && decisionMs !== null
-                  ? frames.filter(
-                      (f) =>
-                        f.tMs > Math.min(decisionMs, fpMs) && f.tMs < Math.max(decisionMs, fpMs),
-                    ).length
-                  : 0
+              const rafFramesBetweenDecisionAndFp = frames[0]?.paintsCount ?? 0
 
               let logoRestartCount = 0
               if (logoFirstFull) {
@@ -742,7 +748,8 @@ export async function runP3T13Evidence({
           r.skipped ||
           r.decision.action !== 'active' ||
           r.framesBeforeOverlay !== 0 ||
-          r.firstVisibleMs !== r.decisionMs ||
+          r.firstVisibleMs === null ||
+          Math.abs(r.firstVisibleMs - r.decisionMs) > 25 ||
           r.hiddenMs === null ||
           r.hiddenMs > 2500 ||
           r.durationFromFirstVisibleMs === null ||

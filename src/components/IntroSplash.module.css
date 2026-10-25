@@ -108,6 +108,10 @@
   display: none;
 }
 
+:global(html[data-intro='pending']) body {
+  visibility: hidden;
+}
+
 .glow {
   position: absolute;
   inset: 0;
