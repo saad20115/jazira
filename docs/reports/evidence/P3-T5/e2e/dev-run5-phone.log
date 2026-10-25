@@ -1,0 +1,49 @@
+
+Running 1 test using 1 worker
+
+  x  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:355:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (28.0s)
+
+
+  1) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:355:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+
+    TimeoutError: locator.tap: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-live-labels] li button').first()
+        - locator resolved to <button type="button" aria-expanded="false" aria-label="Break tanks" class="InteractiveSystemsSection-module__I0WHYa__hotspotDot"></button>
+      - attempting tap action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-label="Reset view" class="InteractiveSystemsSection-module__I0WHYa__viewControl InteractiveSystemsSection-module__I0WHYa__viewControlReset"></button> from <div data-label-obstacle="true" class="InteractiveSystemsSection-module__I0WHYa__cardControls">…</div> subtree intercepts pointer events
+        - retrying tap action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-label="Reset view" class="InteractiveSystemsSection-module__I0WHYa__viewControl InteractiveSystemsSection-module__I0WHYa__viewControlReset"></button> from <div data-label-obstacle="true" class="InteractiveSystemsSection-module__I0WHYa__cardControls">…</div> subtree intercepts pointer events
+        - retrying tap action
+          - waiting 100ms
+        18 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <button type="button" aria-label="Reset view" class="InteractiveSystemsSection-module__I0WHYa__viewControl InteractiveSystemsSection-module__I0WHYa__viewControlReset"></button> from <div data-label-obstacle="true" class="InteractiveSystemsSection-module__I0WHYa__cardControls">…</div> subtree intercepts pointer events
+         - retrying tap action
+           - waiting 500ms
+
+
+      412 |     const dot = card.locator('[data-live-labels] li button').first()
+      413 |     await expect(dot).toBeVisible({ timeout: 15_000 })
+    > 414 |     await dot.tap({ timeout: 10_000 })
+          |               ^
+      415 |     await expect(card.locator('[data-live-labels] li[data-expanded="true"]')).toHaveCount(1)
+      416 |   })
+      417 | })
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:414:15
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-3371e-s-trapped-only-while-active-chromium\error-context.md
+
+  1 failed
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:355:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 

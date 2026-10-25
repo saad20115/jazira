@@ -1,0 +1,13 @@
+Cannot use({ launchOptions }) in a describe group, because it forces a new worker.
+Make it top-level in the test file or put in the configuration file.
+
+   at p3-t5-live-3d.e2e.spec.ts:314
+
+  312 |
+  313 | test.describe('P3-T5 live 3D card — WebGL disabled', () => {
+> 314 |   test.use({ launchOptions: { args: [...GPU_ARGS, '--disable-webgl', '--disable-webgl2'] } })
+      |        ^
+  315 |
+  316 |   test.beforeEach(async ({ context }) => {
+  317 |     await prepare(context)
+

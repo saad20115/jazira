@@ -1,0 +1,15 @@
+
+Running 10 tests using 1 worker
+
+  ok  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:140:3 › P3-T5 live 3D card › @smoke still first: the release still paints and no 3D asset loads before intent (14.5s)
+  ok  2 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:161:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels (5.8s)
+  ok  3 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:180:5 › P3-T5 live 3D card › C3-3: a missing worker CSP fails closed to stills before any worker starts (11.7s)
+  ok  4 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:180:5 › P3-T5 live 3D card › C3-3: a different worker CSP fails closed to stills before any worker starts (12.1s)
+  ok  5 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:206:3 › P3-T5 live 3D card › @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (41.7s)
+  ok  6 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:258:3 › P3-T5 live 3D card › live: the page scroll is never trapped — the wheel zooms only while the card is active (6.2s)
+  ok  7 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:277:3 › P3-T5 live 3D card › live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (5.5s)
+  ok  8 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:302:3 › P3-T5 live 3D card › live: a #systems hash enters on load, and a lost context falls back to stills keeping it (4.0s)
+  ok  9 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:325:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier (10.7s)
+  ok 10 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:359:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (18.1s)
+
+  10 passed (2.4m)

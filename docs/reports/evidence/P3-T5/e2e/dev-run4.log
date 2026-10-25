@@ -1,0 +1,24 @@
+
+Running 10 tests using 1 worker
+
+  ok  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:140:3 › P3-T5 live 3D card › @smoke still first: the release still paints and no 3D asset loads before intent (8.7s)
+  ok  2 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:161:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels (2.4s)
+  ok  3 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:180:5 › P3-T5 live 3D card › C3-3: a missing worker CSP fails closed to stills before any worker starts (7.0s)
+  ok  4 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:180:5 › P3-T5 live 3D card › C3-3: a different worker CSP fails closed to stills before any worker starts (6.1s)
+  ok  5 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:206:3 › P3-T5 live 3D card › @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (36.5s)
+  ok  6 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:254:3 › P3-T5 live 3D card › live: the page scroll is never trapped — the wheel zooms only while the card is active (5.7s)
+  ok  7 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:273:3 › P3-T5 live 3D card › live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (4.1s)
+  ok  8 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:298:3 › P3-T5 live 3D card › live: a #systems hash enters on load, and a lost context falls back to stills keeping it (3.4s)
+  ok  9 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:321:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier (2.3s)
+  x  10 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:355:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (2.0m)
+
+
+  1) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:355:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+
+    Test timeout of 120000ms exceeded.
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-3371e-s-trapped-only-while-active-chromium\error-context.md
+
+  1 failed
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:355:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+  9 passed (3.4m)
