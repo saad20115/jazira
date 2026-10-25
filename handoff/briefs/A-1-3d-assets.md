@@ -370,3 +370,61 @@ The reference viewer stops the fan on reduced motion, a hidden tab, or when off-
   architectural-model photo" quality. The home-page card still is re-rendered in the studio.
 - **P3-T5:** hold the sky/environment wiring until the contract delta and the updated
   `extras-schema.md` arrive. The rest of the schema stands.
+
+## 17. v022n — studio maquette, NIGHT (2026-10-25); supersedes the daylight direction in §16
+- **Owner's decision, as relayed by the 3D lead:** "نعتمد النسخة الليلية v022n". The site CTO asks the
+  owner to confirm it directly.
+- The 3D lead's eye QA passed: orbit sheets for full and lite, nothing floating or cut, the plinth
+  seated, and the turntable carries all 5 systems.
+- **Not promoted:** v020 stays pinned until the release prep is done (night stills, manifest text,
+  `RELEASE_v022n.md`) **and** the owner gives the final go.
+
+**Candidate (`web/build/v022n/`):**
+
+| File | Bytes | SHA-256 |
+|---|---|---|
+| `tower.glb` | 7,081,536 | `2fd419908dbe8bacdc97c08ba6ac26b75b61d30c65b6785653ab897f8fcd8af5` |
+| `tower-lite.glb` | 2,109,740 | `382f8f67f83adfcd9f9f7060401a0cfa49da2dcdb0f677273d39dbcebafbe62e` |
+| `manifest.json` | — | `caf1f11c…` (provisional; it changes after the `render.environment` text fix) |
+
+- Draw calls: full 62 scene / 76 with bloom; lite 40, no bloom.
+- GPU textures: about 12.9 / 6.6 MB. Triangles: 61.5k / 52.1k.
+
+**Contract delta for P3-T5.** It replaces the v021 `sky` parts; the rest of the v021
+`extras-schema.md` stands.
+
+- **`sky` removed.** `scene.background = null`.
+- **`studio`** = {mode, room `MAQ_room`, env_only [`MAQ_softbox_fill`, `MAQ_softbox_key`,
+  `MAQ_softbox_sky`], env_position, exposure_stops, bloom}.
+  - The environment comes from `PMREMGenerator.fromScene(envScene, 0, 1, 3000, {position})`. The
+    env scene holds world-matrix copies of the room and the env_only nodes.
+  - env_only nodes are **never drawn** in the main view.
+  - `toneMappingExposure = 2 ** exposure_stops`.
+- **`turntable`** = {root `TURNTABLE`, axis +Y, rpm 0.6, ease_back_s 0.7, resume_after_s 8, play `idle`}.
+  - **Idle:** rotates only with no input, no system entered, reduced motion off, the tab visible and
+    the canvas on screen.
+  - **On system entry:** ease back to 0 (shortest direction, enter bezier), then play `enter_motion`.
+    Hold at 0 while entered, and resume 8 s after exit.
+  - **Camera auto-rotate is OFF.** HOT_/PIVOT_/CAM_/PATH_ are world-space and valid at rotation 0.
+- **`camera_limits`:**
+  - `max_distance` 420;
+  - new `hero_shift_y` 0.148, so `setViewOffset(w, h, 0, 0.148*h, w, h)` replaces 0.227;
+  - `enter_motion.shift_y_from = hero_shift_y`.
+- **Night (`v022n`):**
+  - `studio.mode = 'night'`, clear colour `#1b2130`;
+  - bloom on the full model only, never on lite;
+  - `studio.moon` is a DirectionalLight (colour [0.74, 0.84, 1.0], intensity 2.6, direction
+    [−0.336, 0.707, 0.622]);
+  - `studio.night_glow` is an inward unlit sphere in the **PMREM scene only** (radius 776; vertex
+    colour [0.36, 0.52, 1.0] × 2.2, height-graded) that gives the navy sheen on the glass.
+  - Glass: base `#142A54`, clearcoat 0.6, specular 0.8. Night window light in `tex_cw_emit`.
+  - Room, plinth and site are lightmapped with a black base.
+  - `tex_roomlight*` is UASTC + Zstd.
+- **Unchanged:** AgX + the calibrated look (pivot 0.606), MSAA, interior mapping on full, the system
+  enter/exit, fans, hotspots, variants and budgets.
+- **Full schema:** `web/build/v022n/extras-schema.md` (17.6 KB), delivered in the handover zip with the
+  reference viewer.
+
+**The site CTO still needs**, before acceptance (eye-first rule, `handoff/reviews/A-1.md`): the hero,
+the orbit sheets and the façade/podium/crown crops for v022n in the private artifact, so the owner can
+see them remotely.
