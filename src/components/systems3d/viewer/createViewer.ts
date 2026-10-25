@@ -78,6 +78,14 @@ import {
   PMREM,
 } from '../renderContract'
 import { inlineBasisuPlugin } from './inlineBasisuPlugin'
+import {
+  collectMaterials,
+  compileInChunks,
+  precompilePmrem,
+  uploadTexturesInChunks,
+  warmPrograms,
+  yieldToMain,
+} from './precompile'
 import { createSystemStage, type ProjectedLabel } from './systemStage'
 import { UrlWorkerKTX2Loader } from './UrlWorkerKTX2Loader'
 
@@ -474,6 +482,11 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     extras = validateExtras(root.userData, nodeExtras)
     scene.add(root)
     root.updateMatrixWorld(true)
+    // The parse ends in one task; the environment build starts in the next one.
+    await yieldToMain()
+    if (isDisposed()) {
+      throw new ContractError('disposed after loading')
+    }
   } catch (err) {
     cleanup()
     throw err
@@ -503,12 +516,27 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     glowShell = nightGlowShell(studio.nightGlow)
     envScene.add(glowShell)
   }
+  try {
+    await precompilePmrem(renderer, pmrem, envScene, PMREM.size)
+    if (isDisposed()) {
+      throw new ContractError('disposed while compiling the environment')
+    }
+  } catch (err) {
+    cleanup()
+    throw err
+  }
   const envTarget: WebGLRenderTarget = pmrem.fromScene(envScene, 0, PMREM.near, PMREM.far, {
     position: new Vector3(...studio.envPosition),
+    size: PMREM.size,
   })
   disposables.push(envTarget)
   if (glowShell) {
     disposeObject(glowShell)
+  }
+  // The bake is one task; the scene setup below starts in the next one.
+  await yieldToMain()
+  if (isDisposed()) {
+    throw new ContractError('disposed after the environment')
   }
   scene.environment = envTarget.texture
   scene.background = null
@@ -681,6 +709,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   let turntableAngle = 0
   let lastInputAt = performance.now()
   let onScreen = true
+  let started = false
   let frameHandle = 0
   let wakeTimer = 0
   let lastFrameAt: number | null = null
@@ -705,6 +734,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     },
     turntable: { getAngle: () => turntableAngle, setAngle: setTurntableAngle },
     reducedMotion: options.reducedMotion,
+    compileObjects: (objects) =>
+      Promise.all(objects.map((object) => renderer.compileAsync(object, camera, scene))),
+    warm: (materials) => warmPrograms(renderer, materials, isDisposed),
   })
   let labelsShown = false
 
@@ -795,7 +827,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
 
   function invalidate(): void {
-    if (!disposed && onScreen && frameHandle === 0) {
+    // No frame before the first one is presented: an observer firing while the programs still
+    // compile would render with them and block the main thread on the link (KHR_parallel).
+    if (started && !disposed && onScreen && frameHandle === 0) {
       frameHandle = requestAnimationFrame(frame)
     }
   }
@@ -868,9 +902,35 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   options.signal.removeEventListener('abort', cleanup)
   options.signal.addEventListener('abort', dispose, { once: true })
 
+  // After the first frame, each system's entered programs compile in idle time, one system at a
+  // time, so a later entry neither blocks nor waits (the stage waits for any that is unfinished).
+  const idle = (): Promise<void> =>
+    new Promise((resolve) => {
+      if (typeof window.requestIdleCallback === 'function') {
+        window.requestIdleCallback(() => {
+          resolve()
+        })
+      } else {
+        window.setTimeout(resolve, 50)
+      }
+    })
+  async function warmUpSystems(): Promise<void> {
+    for (const system of SYSTEM_IDS) {
+      await idle()
+      if (isDisposed()) {
+        return
+      }
+      await stage.prepare(system)
+    }
+  }
+
   // First frame: compile in parallel where supported, draw at CAM_hero, wait until presented.
+  // Compile and upload in tasks under ~50 ms (no long task), then draw.
   try {
-    await renderer.compileAsync(scene, camera)
+    await compileInChunks(renderer, scene, camera, isDisposed)
+    await warmPrograms(renderer, collectMaterials(scene), isDisposed)
+    await uploadTexturesInChunks(renderer, scene, isDisposed)
+    await yieldToMain()
     if (isDisposed()) {
       throw new ContractError('disposed while compiling')
     }
@@ -887,8 +947,10 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   if (isDisposed()) {
     throw new ContractError('disposed before the first frame')
   }
+  started = true
   options.onFirstFrame()
   scheduleWake()
+  void warmUpSystems()
 
   return {
     setActive(next: boolean) {

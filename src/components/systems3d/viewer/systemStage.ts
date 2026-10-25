@@ -27,6 +27,12 @@ import type { GLTF } from 'three/addons/loaders/GLTFLoader.js'
 import { SYSTEM_IDS, type SystemId, type ValidatedExtras } from '../contract'
 import { cubicBezier, easeBackAngle, shortestAngle } from '../motion'
 import { FACADE_MATERIALS } from '../renderContract'
+import {
+  collectMaterials,
+  COMPILE_TASK_MS,
+  drawableRepresentatives,
+  yieldToMain,
+} from './precompile'
 
 const GLASS_MATERIALS = [
   'MAT_glass_cw',
@@ -63,6 +69,14 @@ export interface StageDeps {
   setShift: (shiftY: number) => void
   turntable: { getAngle: () => number; setAngle: (angle: number) => void }
   reducedMotion: boolean
+  /**
+   * Compiles the programs of these objects as they are now (`renderer.compileAsync` with the
+   * scene's lights): every program is created before this returns, and the promise resolves once
+   * all are linked, without blocking.
+   */
+  compileObjects: (objects: readonly Object3D[]) => Promise<unknown>
+  /** First use of the materials' programs, spread over short tasks (`warmPrograms`). */
+  warm: (materials: readonly Material[]) => Promise<void>
 }
 
 type Phase = 'rest' | 'easeBack' | 'variant' | 'flyIn' | 'entered' | 'flyOut'
@@ -125,6 +139,11 @@ export interface SystemStage {
   step: (now: number, dtS: number) => boolean
   /** Hotspot labels of the entered system, projected into the card (null when none). */
   labels: (width: number, height: number) => ProjectedLabel[] | null
+  /**
+   * Compiles the programs of `system`'s entered view ahead of time (once per system), so entering
+   * never blocks the main thread on shader links. Entering waits for it.
+   */
+  prepare: (system: SystemId) => Promise<void>
 }
 
 export function createSystemStage(deps: StageDeps): SystemStage {
@@ -278,35 +297,55 @@ export function createSystemStage(deps: StageDeps): SystemStage {
       : []
   })()
   const originals = new Map<Mesh, Material | Material[]>()
-  const selectVariant = async (system: SystemId | null): Promise<void> => {
+  let variantAssigned = false
+  /** Loads the `highlight_<s>` materials of a system (the parser caches them). */
+  const loadVariant = async (system: SystemId | null): Promise<Map<Mesh, Material>> => {
     const index = system ? variantNames.indexOf(`highlight_${system}`) : -1
+    const loaded = new Map<Mesh, Material>()
+    if (index < 0) {
+      return loaded
+    }
     const jobs: Promise<void>[] = []
     deps.gltf.scene.traverse((object) => {
       if (!isMesh(object)) {
         return
       }
-      const mappings = variantMappings(object)
-      if (mappings.length === 0) {
-        return
-      }
-      if (!originals.has(object)) {
-        originals.set(object, object.material)
-      }
-      const mapping = mappings.find((m) => m.variants.includes(index))
-      if (index < 0 || !mapping) {
-        object.material = originals.get(object) as Material
+      const mapping = variantMappings(object).find((m) => m.variants.includes(index))
+      if (!mapping) {
         return
       }
       jobs.push(
         (deps.gltf.parser.getDependency('material', mapping.material) as Promise<Material>).then(
           (material) => {
-            object.material = material
-            deps.gltf.parser.assignFinalMaterial(object)
+            loaded.set(object, material)
           },
         ),
       )
     })
     await Promise.all(jobs)
+    return loaded
+  }
+  /** Puts loaded variant materials on their meshes; every other mapped mesh gets its original. */
+  const assignVariant = (loaded: ReadonlyMap<Mesh, Material>): void => {
+    deps.gltf.scene.traverse((object) => {
+      if (!isMesh(object) || variantMappings(object).length === 0) {
+        return
+      }
+      if (!originals.has(object)) {
+        originals.set(object, object.material)
+      }
+      const material = loaded.get(object)
+      if (material) {
+        object.material = material
+        deps.gltf.parser.assignFinalMaterial(object)
+      } else {
+        object.material = originals.get(object) as Material
+      }
+    })
+    variantAssigned = loaded.size > 0
+  }
+  const selectVariant = async (system: SystemId | null): Promise<void> => {
+    assignVariant(await loadVariant(system))
   }
 
   // Fans (SYS_<s>.fan_spin): the rotor texture turns while the system is entered.
@@ -333,6 +372,107 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     checkedAt: number
     hidden: Set<string>
   } | null = null
+
+  /** Captures the look state the fades change; the returned function puts it back exactly. */
+  const snapshotLook = (): (() => void) => {
+    const saved = [...materials.values()].map((material) => ({
+      material,
+      transparent: material.transparent,
+      opacity: material.opacity,
+      depthWrite: material.depthWrite,
+      clippingPlanes: material.clippingPlanes,
+      emissiveIntensity: material.emissiveIntensity,
+      aoMapIntensity: material.aoMapIntensity,
+      visible: material.visible,
+    }))
+    const slabMaterials = slabs.map((slab) => ({ mesh: slab.mesh, material: slab.mesh.material }))
+    const plane = clipPlane.clone()
+    return () => {
+      for (const s of saved) {
+        const m = s.material
+        if (
+          m.transparent !== s.transparent ||
+          (m.clippingPlanes?.length ?? 0) !== (s.clippingPlanes?.length ?? 0)
+        ) {
+          m.needsUpdate = true
+        }
+        m.transparent = s.transparent
+        m.opacity = s.opacity
+        m.depthWrite = s.depthWrite
+        m.clippingPlanes = s.clippingPlanes
+        m.emissiveIntensity = s.emissiveIntensity
+        m.aoMapIntensity = s.aoMapIntensity
+        m.visible = s.visible
+      }
+      for (const { mesh, material } of slabMaterials) {
+        if (mesh.material !== material) {
+          ;(mesh.material as Material).dispose()
+          mesh.material = material
+        }
+      }
+      clipPlane.copy(plane)
+    }
+  }
+
+  // Shader warm-up: the entered look of a system (its variant, faded and section-clipped materials,
+  // kept slabs) is applied for one synchronous moment, its programs are created and linked in
+  // parallel, and the look is put back before any frame can draw it. Only while nothing of an
+  // entered look is on screen (no fade, no variant).
+  const prepared = new Map<SystemId, Promise<void>>()
+  const lookAtRest = (): boolean =>
+    (phase === 'rest' || phase === 'easeBack' || phase === 'variant') && !variantAssigned
+  const compileEntered = async (system: SystemId): Promise<void> => {
+    const loaded = await loadVariant(system)
+    // Each step applies the entered look, works on it synchronously and puts the rest look back,
+    // so no frame ever draws it; the steps are separate tasks (no long task).
+    const withEnteredLook = <T>(work: () => T): T => {
+      if (!lookAtRest()) {
+        throw new Error('stage busy')
+      }
+      const restore = snapshotLook()
+      try {
+        assignVariant(loaded)
+        applyFade(system, 1)
+        return work()
+      } finally {
+        restore()
+        assignVariant(new Map())
+      }
+    }
+    const { objects, used } = withEnteredLook(() => ({
+      objects: drawableRepresentatives(deps.gltf.scene),
+      used: collectMaterials(deps.gltf.scene),
+    }))
+    const pending: Promise<unknown>[] = []
+    let next = 0
+    while (next < objects.length) {
+      pending.push(
+        withEnteredLook(() => {
+          const taskStart = performance.now()
+          const started: Promise<unknown>[] = []
+          do {
+            started.push(deps.compileObjects(objects.slice(next, next + 1)))
+            next += 1
+          } while (next < objects.length && performance.now() - taskStart < COMPILE_TASK_MS)
+          return Promise.all(started)
+        }),
+      )
+      await yieldToMain()
+    }
+    await Promise.all(pending)
+    await deps.warm(used)
+  }
+  const prepare = (system: SystemId): Promise<void> => {
+    let job = prepared.get(system)
+    if (!job) {
+      job = compileEntered(system).catch(() => {
+        // Busy (a look on screen) or lost: the next request tries again.
+        prepared.delete(system)
+      })
+      prepared.set(system, job)
+    }
+    return job
+  }
 
   const startFlight = (system: SystemId, into: boolean, now: number): void => {
     const motion = extras.systems[system].enterMotion
@@ -417,6 +557,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     request(system) {
       desired = system
     },
+    prepare,
     step(now, dtS) {
       let again = false
       for (const fan of fans) {
@@ -462,9 +603,11 @@ export function createSystemStage(deps: StageDeps): SystemStage {
             phase = 'variant'
             variantPending = true
             const target = desired
-            void selectVariant(target).then(() => {
-              variantPending = false
-            })
+            void prepare(target)
+              .then(() => selectVariant(target))
+              .then(() => {
+                variantPending = false
+              })
           }
           again = true
           break

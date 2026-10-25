@@ -115,4 +115,4 @@ export const DPR_CAP = { desktop: 1.5, mobile: 1.25 } as const
 /** Camera clip planes used by the reference viewer. */
 export const CAMERA_NEAR = 0.5
 export const CAMERA_FAR = 6000
-export const PMREM = { near: 1, far: 3000 } as const
+export const PMREM = { near: 1, far: 3000, size: 256 } as const
