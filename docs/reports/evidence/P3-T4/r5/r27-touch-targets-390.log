@@ -1,0 +1,184 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+$ git rev-parse HEAD
+62f8f7c3e418654607e5cae3a8a8089b3edb3ba8
+
+=== R-27 Touch Target Audit at 390x844 (/ar and /en) ===
+ar controls checked: 34
+en controls checked: 34
+undersized controls (< 44x44px): 0
+{
+  "undersizedControls": [],
+  "sampleAr": [
+    {
+      "tag": "a",
+      "text": "شركة الجزيرة للإمداد الذكي",
+      "component": "shell",
+      "width": 172,
+      "height": 50
+    },
+    {
+      "tag": "button",
+      "text": "فتح قائمة التنقل",
+      "component": "shell",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "استكشف خدماتنا",
+      "component": "button",
+      "width": 202,
+      "height": 54
+    },
+    {
+      "tag": "a",
+      "text": "استعرض المشاريع",
+      "component": "button",
+      "width": 206,
+      "height": 54
+    },
+    {
+      "tag": "button",
+      "text": "مرر للاستكشاف",
+      "component": "hero",
+      "width": 120,
+      "height": 76
+    },
+    {
+      "tag": "a",
+      "text": "تعرف علينا أكثر",
+      "component": "button",
+      "width": 186,
+      "height": 54
+    },
+    {
+      "tag": "a",
+      "text": "اعرف المزيد — التكييف والتهوية والتبريد",
+      "component": "core-services",
+      "width": 97,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "اعرف المزيد — مكافحة الحريق والإنذار المبكر",
+      "component": "core-services",
+      "width": 97,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "اعرف المزيد — السباكة والمياه والصرف الصحي",
+      "component": "core-services",
+      "width": 97,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "اعرف المزيد — الكهرباء وتوزيع الطاقة",
+      "component": "core-services",
+      "width": 97,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "اعرف المزيد — الأنظمة الذكية والتيار الخفيف والأ",
+      "component": "core-services",
+      "width": 97,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "اعرف المزيد — المقاولات العامة",
+      "component": "core-services",
+      "width": 97,
+      "height": 44
+    }
+  ],
+  "sampleEn": [
+    {
+      "tag": "a",
+      "text": "Al Jazira for Imdad Smart Co.",
+      "component": "shell",
+      "width": 172,
+      "height": 50
+    },
+    {
+      "tag": "button",
+      "text": "Open navigation menu",
+      "component": "shell",
+      "width": 44,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "Explore Our Services",
+      "component": "button",
+      "width": 234,
+      "height": 52
+    },
+    {
+      "tag": "a",
+      "text": "View Projects",
+      "component": "button",
+      "width": 182,
+      "height": 52
+    },
+    {
+      "tag": "button",
+      "text": "Scroll to explore",
+      "component": "hero",
+      "width": 170,
+      "height": 74
+    },
+    {
+      "tag": "a",
+      "text": "Learn More About Us",
+      "component": "button",
+      "width": 236,
+      "height": 52
+    },
+    {
+      "tag": "a",
+      "text": "Learn more — HVAC, Ventilation & Refrigeration",
+      "component": "core-services",
+      "width": 101,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "Learn more — Fire Fighting & Fire Alarm",
+      "component": "core-services",
+      "width": 101,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "Learn more — Plumbing, Water & Drainage",
+      "component": "core-services",
+      "width": 101,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "Learn more — Electrical & Power Distribution",
+      "component": "core-services",
+      "width": 101,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "Learn more — Smart Systems, ELV & Security",
+      "component": "core-services",
+      "width": 101,
+      "height": 44
+    },
+    {
+      "tag": "a",
+      "text": "Learn more — General Contracting",
+      "component": "core-services",
+      "width": 101,
+      "height": 44
+    }
+  ]
+}

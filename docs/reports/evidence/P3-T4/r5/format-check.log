@@ -1,0 +1,13 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+$ git rev-parse HEAD
+62f8f7c3e418654607e5cae3a8a8089b3edb3ba8
+$ pnpm format:check
+
+
+> aljazira-website@0.1.0 format:check C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!
+

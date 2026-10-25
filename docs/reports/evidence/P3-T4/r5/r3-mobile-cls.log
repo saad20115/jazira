@@ -1,0 +1,396 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+$ git rev-parse HEAD
+62f8f7c3e418654607e5cae3a8a8089b3edb3ba8
+
+=== R-3, R-19 & R-25 Throttled Cold-Cache Mobile CLS & Arabic Fallback Non-Collision Verification (/ar and /en at 412x823, 4x CPU, Slow 4G, all layout-shift entries counted) ===
+{
+  "arabicFallbackCollisionByViewport": {
+    "412": {
+      "lineCount": 3,
+      "lines": [
+        {
+          "top": 193.59,
+          "bottom": 245.59,
+          "height": 52
+        },
+        {
+          "top": 250.8,
+          "bottom": 302.8,
+          "height": 52
+        },
+        {
+          "top": 308,
+          "bottom": 360,
+          "height": 52
+        }
+      ],
+      "maxLineOverlapPx": 0
+    },
+    "1440": {
+      "lineCount": 2,
+      "lines": [
+        {
+          "top": 260.59,
+          "bottom": 345.59,
+          "height": 85
+        },
+        {
+          "top": 348.59,
+          "bottom": 433.59,
+          "height": 85
+        }
+      ],
+      "maxLineOverlapPx": 0
+    }
+  },
+  "throttledClsByLocale": {
+    "ar": {
+      "viewport": "412x823",
+      "cpuThrottlingRate": 4,
+      "network": "Slow 4G (150ms RTT, 1.6Mbps down, cacheDisabled=true)",
+      "totalClsAllEntries": 0.01394,
+      "totalClsWithoutInput": 0,
+      "h1Height": 172,
+      "shifts": [
+        {
+          "value": 0.00757,
+          "hadRecentInput": true,
+          "startTime": 2766,
+          "sources": [
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 16,
+                "y": 250.796875,
+                "width": 380,
+                "height": 140.203125,
+                "top": 250.796875,
+                "right": 396,
+                "bottom": 391,
+                "left": 16
+              },
+              "currentRect": {
+                "x": 16,
+                "y": 235.796875,
+                "width": 380,
+                "height": 140.203125,
+                "top": 235.796875,
+                "right": 396,
+                "bottom": 376,
+                "left": 16
+              }
+            },
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 16,
+                "y": 395.203125,
+                "width": 380,
+                "height": 116.78125,
+                "top": 395.203125,
+                "right": 396,
+                "bottom": 511.984375,
+                "left": 16
+              },
+              "currentRect": {
+                "x": 16,
+                "y": 389.203125,
+                "width": 380,
+                "height": 116.78125,
+                "top": 389.203125,
+                "right": 396,
+                "bottom": 505.984375,
+                "left": 16
+              }
+            },
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 16,
+                "y": 193.59375,
+                "width": 380,
+                "height": 83,
+                "top": 193.59375,
+                "right": 396,
+                "bottom": 276.59375,
+                "left": 16
+              },
+              "currentRect": {
+                "x": 16,
+                "y": 178.59375,
+                "width": 380,
+                "height": 83,
+                "top": 178.59375,
+                "right": 396,
+                "bottom": 261.59375,
+                "left": 16
+              }
+            },
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 154.765625,
+                "y": 621.78125,
+                "width": 129,
+                "height": 28,
+                "top": 621.78125,
+                "right": 283.765625,
+                "bottom": 649.78125,
+                "left": 154.765625
+              },
+              "currentRect": {
+                "x": 154.765625,
+                "y": 616.78125,
+                "width": 128.484375,
+                "height": 28,
+                "top": 616.78125,
+                "right": 283.25,
+                "bottom": 644.78125,
+                "left": 154.765625
+              }
+            },
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 121.84375,
+                "y": 140,
+                "width": 154.3125,
+                "height": 22,
+                "top": 140,
+                "right": 276.15625,
+                "bottom": 162,
+                "left": 121.84375
+              },
+              "currentRect": {
+                "x": 123.296875,
+                "y": 136,
+                "width": 151.546875,
+                "height": 22,
+                "top": 136,
+                "right": 274.84375,
+                "bottom": 158,
+                "left": 123.296875
+              }
+            }
+          ]
+        },
+        {
+          "value": 0.00637,
+          "hadRecentInput": true,
+          "startTime": 3265,
+          "sources": [
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 16,
+                "y": 235.796875,
+                "width": 380,
+                "height": 140.203125,
+                "top": 235.796875,
+                "right": 396,
+                "bottom": 376,
+                "left": 16
+              },
+              "currentRect": {
+                "x": 16,
+                "y": 235.796875,
+                "width": 380,
+                "height": 140.203125,
+                "top": 235.796875,
+                "right": 396,
+                "bottom": 376,
+                "left": 16
+              }
+            },
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 16,
+                "y": 389.203125,
+                "width": 380,
+                "height": 116.78125,
+                "top": 389.203125,
+                "right": 396,
+                "bottom": 505.984375,
+                "left": 16
+              },
+              "currentRect": {
+                "x": 16,
+                "y": 389.203125,
+                "width": 380,
+                "height": 116.78125,
+                "top": 389.203125,
+                "right": 396,
+                "bottom": 505.984375,
+                "left": 16
+              }
+            },
+            {
+              "node": "undefined",
+              "previousRect": {
+                "x": 16,
+                "y": 178.59375,
+                "width": 380,
+                "height": 83,
+                "top": 178.59375,
+                "right": 396,
+                "bottom": 261.59375,
+                "left": 16
+              },
+              "currentRect": {
+                "x": 16,
+                "y": 178.59375,
+                "width": 380,
+                "height": 83,
+                "top": 178.59375,
+                "right": 396,
+                "bottom": 261.59375,
+                "left": 16
+              }
+            },
+            {
+              "node": "DIV.jb7jfG_wrapper",
+              "previousRect": {
+                "x": 30,
+                "y": 733,
+                "width": 265.328125,
+                "height": 60,
+                "top": 733,
+                "right": 295.328125,
+                "bottom": 793,
+                "left": 30
+              },
+              "currentRect": {
+                "x": 30,
+                "y": 733,
+                "width": 255.859375,
+                "height": 60,
+                "top": 733,
+                "right": 285.859375,
+                "bottom": 793,
+                "left": 30
+              }
+            },
+            {
+              "node": "SPAN.HVoFbW_eyebrow",
+              "previousRect": {
+                "x": 108.296875,
+                "y": 132,
+                "width": 195.421875,
+                "height": 31.59375,
+                "top": 132,
+                "right": 303.71875,
+                "bottom": 163.59375,
+                "left": 108.296875
+              },
+              "currentRect": {
+                "x": 103.3125,
+                "y": 132,
+                "width": 205.375,
+                "height": 31.59375,
+                "top": 132,
+                "right": 308.6875,
+                "bottom": 163.59375,
+                "left": 103.3125
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "en": {
+      "viewport": "412x823",
+      "cpuThrottlingRate": 4,
+      "network": "Slow 4G (150ms RTT, 1.6Mbps down, cacheDisabled=true)",
+      "totalClsAllEntries": 0.00226,
+      "totalClsWithoutInput": 0.00019,
+      "h1Height": 208,
+      "shifts": [
+        {
+          "value": 0.00207,
+          "hadRecentInput": true,
+          "startTime": 1786,
+          "sources": [
+            {
+              "node": "BUTTON.Lr065q_scrollHintButton",
+              "previousRect": {
+                "x": 108.53125,
+                "y": 704,
+                "width": 194.9375,
+                "height": 74,
+                "top": 704,
+                "right": 303.46875,
+                "bottom": 778,
+                "left": 108.53125
+              },
+              "currentRect": {
+                "x": 120.984375,
+                "y": 704,
+                "width": 170.03125,
+                "height": 74,
+                "top": 704,
+                "right": 291.015625,
+                "bottom": 778,
+                "left": 120.984375
+              }
+            },
+            {
+              "node": "SPAN.HVoFbW_eyebrow",
+              "previousRect": {
+                "x": 24.734375,
+                "y": 132,
+                "width": 362.515625,
+                "height": 30,
+                "top": 132,
+                "right": 387.25,
+                "bottom": 162,
+                "left": 24.734375
+              },
+              "currentRect": {
+                "x": 47.6875,
+                "y": 132,
+                "width": 316.609375,
+                "height": 30,
+                "top": 132,
+                "right": 364.296875,
+                "bottom": 162,
+                "left": 47.6875
+              }
+            }
+          ]
+        },
+        {
+          "value": 0.00019,
+          "hadRecentInput": false,
+          "startTime": 2307,
+          "sources": [
+            {
+              "node": "DIV.jb7jfG_wrapper",
+              "previousRect": {
+                "x": 84.34375,
+                "y": 733,
+                "width": 298.203125,
+                "height": 60,
+                "top": 733,
+                "right": 382.546875,
+                "bottom": 793,
+                "left": 84.34375
+              },
+              "currentRect": {
+                "x": 81.34375,
+                "y": 733,
+                "width": 300.65625,
+                "height": 60,
+                "top": 733,
+                "right": 382,
+                "bottom": 793,
+                "left": 81.34375
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

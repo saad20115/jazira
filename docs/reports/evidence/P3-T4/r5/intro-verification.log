@@ -1,0 +1,1267 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+$ git rev-parse HEAD
+62f8f7c3e418654607e5cae3a8a8089b3edb3ba8
+
+=== Intro Splash Verification (28:1609 -> 28:1615, CTO Round 5 R-26..R-30 Pure-CSS rAF Decision, 36-Run Matrix) ===
+| # | Viewport | Mode | Locale | Run | Decision (`scriptMs` -> `rafMs` / `delayMs`) | First Visible (ms) | Logo & Overlay `opacity=1` Start..End (`duration` ms) | Hidden (ms) | Visible Duration (ms) | Visible Frames / Total rAF | Logo Restarts / Bounces |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | `412x823` | `unthrottled` | `ar` | 1 | `active` (`141ms` -> `395ms` / `0ms`) | `424` | `632..1400` (`768ms`) | `1615` | `1191ms` | `72 / 144` | `0 / 0` |
+| 2 | `412x823` | `unthrottled` | `ar` | 2 | `active` (`140ms` -> `352ms` / `0ms`) | `370` | `583..1350` (`767ms`) | `1566` | `1196ms` | `72 / 148` | `0 / 0` |
+| 3 | `412x823` | `unthrottled` | `ar` | 3 | `active` (`161ms` -> `387ms` / `0ms`) | `408` | `620..1386` (`766ms`) | `1604` | `1196ms` | `72 / 146` | `0 / 0` |
+| 4 | `412x823` | `unthrottled` | `en` | 1 | `active` (`152ms` -> `351ms` / `0ms`) | `368` | `583..1349` (`766ms`) | `1567` | `1199ms` | `72 / 148` | `0 / 0` |
+| 5 | `412x823` | `unthrottled` | `en` | 2 | `active` (`142ms` -> `363ms` / `0ms`) | `382` | `588..1354` (`766ms`) | `1571` | `1189ms` | `72 / 148` | `0 / 0` |
+| 6 | `412x823` | `unthrottled` | `en` | 3 | `active` (`153ms` -> `318ms` / `0ms`) | `358` | `572..1339` (`767ms`) | `1563` | `1205ms` | `73 / 156` | `0 / 0` |
+| 7 | `412x823` | `throttled` | `ar` | 1 | `skipped_late_first_paint` (`992ms` -> `2356ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 9` | `0 / 0` |
+| 8 | `412x823` | `throttled` | `ar` | 2 | `skipped_late_first_paint` (`1000ms` -> `2401ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 7` | `0 / 0` |
+| 9 | `412x823` | `throttled` | `ar` | 3 | `skipped_late_first_paint` (`1020ms` -> `2540ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 4` | `0 / 0` |
+| 10 | `412x823` | `throttled` | `en` | 1 | `skipped_late_first_paint` (`955ms` -> `1567ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 71` | `0 / 0` |
+| 11 | `412x823` | `throttled` | `en` | 2 | `skipped_late_first_paint` (`993ms` -> `1277ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 71` | `0 / 0` |
+| 12 | `412x823` | `throttled` | `en` | 3 | `skipped_late_first_paint` (`945ms` -> `1626ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 66` | `0 / 0` |
+| 13 | `768x1024` | `unthrottled` | `ar` | 1 | `active` (`131ms` -> `430ms` / `0ms`) | `452` | `672..1439` (`767ms`) | `1655` | `1203ms` | `73 / 142` | `0 / 0` |
+| 14 | `768x1024` | `unthrottled` | `ar` | 2 | `active` (`138ms` -> `373ms` / `0ms`) | `391` | `615..1382` (`767ms`) | `1598` | `1207ms` | `73 / 147` | `0 / 0` |
+| 15 | `768x1024` | `unthrottled` | `ar` | 3 | `active` (`136ms` -> `361ms` / `0ms`) | `378` | `604..1371` (`767ms`) | `1587` | `1209ms` | `73 / 147` | `0 / 0` |
+| 16 | `768x1024` | `unthrottled` | `en` | 1 | `active` (`133ms` -> `292ms` / `0ms`) | `326` | `570..1337` (`767ms`) | `1553` | `1227ms` | `73 / 154` | `0 / 0` |
+| 17 | `768x1024` | `unthrottled` | `en` | 2 | `active` (`139ms` -> `310ms` / `0ms`) | `348` | `579..1346` (`767ms`) | `1561` | `1213ms` | `73 / 155` | `0 / 0` |
+| 18 | `768x1024` | `unthrottled` | `en` | 3 | `active` (`145ms` -> `329ms` / `0ms`) | `347` | `571..1339` (`768ms`) | `1555` | `1208ms` | `73 / 149` | `0 / 0` |
+| 19 | `768x1024` | `throttled` | `ar` | 1 | `skipped_late_first_paint` (`987ms` -> `2654ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 4` | `0 / 0` |
+| 20 | `768x1024` | `throttled` | `ar` | 2 | `skipped_late_first_paint` (`1010ms` -> `2497ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 6` | `0 / 0` |
+| 21 | `768x1024` | `throttled` | `ar` | 3 | `skipped_late_first_paint` (`998ms` -> `2493ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 5` | `0 / 0` |
+| 22 | `768x1024` | `throttled` | `en` | 1 | `skipped_late_first_paint` (`942ms` -> `1552ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 73` | `0 / 0` |
+| 23 | `768x1024` | `throttled` | `en` | 2 | `skipped_late_first_paint` (`946ms` -> `1275ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 73` | `0 / 0` |
+| 24 | `768x1024` | `throttled` | `en` | 3 | `skipped_late_first_paint` (`938ms` -> `1294ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 68` | `0 / 0` |
+| 25 | `1440x900` | `unthrottled` | `ar` | 1 | `active` (`134ms` -> `375ms` / `0ms`) | `419` | `627..1393` (`766ms`) | `1621` | `1202ms` | `71 / 144` | `0 / 0` |
+| 26 | `1440x900` | `unthrottled` | `ar` | 2 | `active` (`147ms` -> `404ms` / `0ms`) | `487` | `728..1494` (`766ms`) | `1735` | `1248ms` | `72 / 138` | `0 / 0` |
+| 27 | `1440x900` | `unthrottled` | `ar` | 3 | `active` (`143ms` -> `386ms` / `0ms`) | `409` | `645..1413` (`768ms`) | `1641` | `1232ms` | `73 / 145` | `0 / 0` |
+| 28 | `1440x900` | `unthrottled` | `en` | 1 | `active` (`141ms` -> `387ms` / `0ms`) | `420` | `665..1432` (`767ms`) | `1673` | `1253ms` | `73 / 152` | `0 / 0` |
+| 29 | `1440x900` | `unthrottled` | `en` | 2 | `active` (`129ms` -> `339ms` / `0ms`) | `356` | `600..1366` (`766ms`) | `1613` | `1257ms` | `73 / 146` | `0 / 0` |
+| 30 | `1440x900` | `unthrottled` | `en` | 3 | `active` (`127ms` -> `306ms` / `0ms`) | `359` | `615..1381` (`766ms`) | `1611` | `1252ms` | `73 / 151` | `0 / 0` |
+| 31 | `1440x900` | `throttled` | `ar` | 1 | `skipped_late_first_paint` (`1009ms` -> `2401ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 14` | `0 / 0` |
+| 32 | `1440x900` | `throttled` | `ar` | 2 | `skipped_late_first_paint` (`982ms` -> `2733ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 5` | `0 / 0` |
+| 33 | `1440x900` | `throttled` | `ar` | 3 | `skipped_late_first_paint` (`996ms` -> `2677ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 5` | `0 / 0` |
+| 34 | `1440x900` | `throttled` | `en` | 1 | `skipped_late_first_paint` (`945ms` -> `1577ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 82` | `0 / 0` |
+| 35 | `1440x900` | `throttled` | `en` | 2 | `skipped_late_first_paint` (`954ms` -> `1213ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 69` | `0 / 0` |
+| 36 | `1440x900` | `throttled` | `en` | 3 | `skipped_late_first_paint` (`970ms` -> `1669ms` / `0ms`) | `skipped` | `n/a..n/a` (`0ms`) | `skipped` | `0ms` | `0 / 80` | `0 / 0` |
+
+{
+  "ssrContainsIntroStartEn": true,
+  "ssrContainsIntroStartAr": true,
+  "noJsVerification": {
+    "ar": {
+      "javaScriptEnabled": false,
+      "overlayVisibleNoJs": false,
+      "h1VisibleNoJs": true,
+      "primaryCtaVisibleNoJs": true
+    },
+    "en": {
+      "javaScriptEnabled": false,
+      "overlayVisibleNoJs": false,
+      "h1VisibleNoJs": true,
+      "primaryCtaVisibleNoJs": true
+    }
+  },
+  "introStateByLocale": {
+    "en": {
+      "startVisible": true,
+      "htmlDataIntro": "active",
+      "overlayDisplay": "flex",
+      "overlayOpacity": "1",
+      "skipLinkInertAtStart": true,
+      "headerInertAtStart": true,
+      "homeContentInertAtStart": true,
+      "footerInertAtStart": true,
+      "fabInertAtStart": true,
+      "sectionCountDuringIntro": 8,
+      "hiddenSectionCountDuringIntro": 0,
+      "footerDisplayDuringIntro": "block",
+      "pageScrollHeightDuringIntro": 6228,
+      "skipLinkInert": true,
+      "headerInert": true,
+      "homeContentInert": true,
+      "footerInert": true,
+      "fabInert": true,
+      "activeElementIsSkip": true,
+      "revealLogoOpacity": 1,
+      "revealOverlayOpacity": 1
+    },
+    "ar": {
+      "startVisible": true,
+      "htmlDataIntro": "active",
+      "overlayDisplay": "flex",
+      "overlayOpacity": "1",
+      "skipLinkInertAtStart": true,
+      "headerInertAtStart": true,
+      "homeContentInertAtStart": true,
+      "footerInertAtStart": true,
+      "fabInertAtStart": true,
+      "sectionCountDuringIntro": 8,
+      "hiddenSectionCountDuringIntro": 0,
+      "footerDisplayDuringIntro": "block",
+      "pageScrollHeightDuringIntro": 6248,
+      "skipLinkInert": true,
+      "headerInert": true,
+      "homeContentInert": true,
+      "footerInert": true,
+      "fabInert": true,
+      "activeElementIsSkip": true,
+      "revealLogoOpacity": 1,
+      "revealOverlayOpacity": 1
+    }
+  },
+  "videoMetricsByLocale": {
+    "en": {
+      "file": "intro-1440-en.webm",
+      "totalElapsedMs": 1436,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "ar": {
+      "file": "intro-1440-ar.webm",
+      "totalElapsedMs": 1409,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    }
+  },
+  "videoFilesByWidthAndLocale": {
+    "412-en": {
+      "file": "intro-412-en.webm",
+      "totalElapsedMs": 1438,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "412-ar": {
+      "file": "intro-412-ar.webm",
+      "totalElapsedMs": 1428,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "768-en": {
+      "file": "intro-768-en.webm",
+      "totalElapsedMs": 1400,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "768-ar": {
+      "file": "intro-768-ar.webm",
+      "totalElapsedMs": 1400,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "1440-en": {
+      "file": "intro-1440-en.webm",
+      "totalElapsedMs": 1436,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    },
+    "1440-ar": {
+      "file": "intro-1440-ar.webm",
+      "totalElapsedMs": 1409,
+      "h1RenderedDuringIntro": true,
+      "storageAfterFirstLoad": "1",
+      "headerInertAfterDismiss": false,
+      "homeContentInertAfterDismiss": false,
+      "activeElementIdAfterDismiss": "main-content",
+      "htmlDataIntroOnReload": "seen",
+      "overlayDisplayOnReload": "none",
+      "visibleOnSecondVisit": false
+    }
+  },
+  "rafMatrixRuns": [
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 1,
+      "decision": {
+        "action": "active",
+        "scriptMs": 141,
+        "nowMs": 395,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 424,
+      "logoFullyVisibleStartMs": 632,
+      "logoFullyVisibleEndMs": 1400,
+      "logoFullyVisibleDurationMs": 768,
+      "lastVisibleMs": 1600,
+      "hiddenMs": 1615,
+      "durationFromFirstVisibleMs": 1191,
+      "visibleFrameCount": 72,
+      "totalRafFrames": 144,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 2,
+      "decision": {
+        "action": "active",
+        "scriptMs": 140,
+        "nowMs": 352,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 370,
+      "logoFullyVisibleStartMs": 583,
+      "logoFullyVisibleEndMs": 1350,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1548,
+      "hiddenMs": 1566,
+      "durationFromFirstVisibleMs": 1196,
+      "visibleFrameCount": 72,
+      "totalRafFrames": 148,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 3,
+      "decision": {
+        "action": "active",
+        "scriptMs": 161,
+        "nowMs": 387,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 408,
+      "logoFullyVisibleStartMs": 620,
+      "logoFullyVisibleEndMs": 1386,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1587,
+      "hiddenMs": 1604,
+      "durationFromFirstVisibleMs": 1196,
+      "visibleFrameCount": 72,
+      "totalRafFrames": 146,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 1,
+      "decision": {
+        "action": "active",
+        "scriptMs": 152,
+        "nowMs": 351,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 368,
+      "logoFullyVisibleStartMs": 583,
+      "logoFullyVisibleEndMs": 1349,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1548,
+      "hiddenMs": 1567,
+      "durationFromFirstVisibleMs": 1199,
+      "visibleFrameCount": 72,
+      "totalRafFrames": 148,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 2,
+      "decision": {
+        "action": "active",
+        "scriptMs": 142,
+        "nowMs": 363,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 382,
+      "logoFullyVisibleStartMs": 588,
+      "logoFullyVisibleEndMs": 1354,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1554,
+      "hiddenMs": 1571,
+      "durationFromFirstVisibleMs": 1189,
+      "visibleFrameCount": 72,
+      "totalRafFrames": 148,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 3,
+      "decision": {
+        "action": "active",
+        "scriptMs": 153,
+        "nowMs": 318,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 358,
+      "logoFullyVisibleStartMs": 572,
+      "logoFullyVisibleEndMs": 1339,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1538,
+      "hiddenMs": 1563,
+      "durationFromFirstVisibleMs": 1205,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 156,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 1,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 992,
+        "nowMs": 2356,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 9,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 2,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 1000,
+        "nowMs": 2401,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 7,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 3,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 1020,
+        "nowMs": 2540,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 4,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 1,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 955,
+        "nowMs": 1567,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 71,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 2,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 993,
+        "nowMs": 1277,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 71,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "412x823",
+      "width": 412,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 3,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 945,
+        "nowMs": 1626,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 66,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 1,
+      "decision": {
+        "action": "active",
+        "scriptMs": 131,
+        "nowMs": 430,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 452,
+      "logoFullyVisibleStartMs": 672,
+      "logoFullyVisibleEndMs": 1439,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1638,
+      "hiddenMs": 1655,
+      "durationFromFirstVisibleMs": 1203,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 142,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 2,
+      "decision": {
+        "action": "active",
+        "scriptMs": 138,
+        "nowMs": 373,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 391,
+      "logoFullyVisibleStartMs": 615,
+      "logoFullyVisibleEndMs": 1382,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1581,
+      "hiddenMs": 1598,
+      "durationFromFirstVisibleMs": 1207,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 147,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 3,
+      "decision": {
+        "action": "active",
+        "scriptMs": 136,
+        "nowMs": 361,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 378,
+      "logoFullyVisibleStartMs": 604,
+      "logoFullyVisibleEndMs": 1371,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1570,
+      "hiddenMs": 1587,
+      "durationFromFirstVisibleMs": 1209,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 147,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 1,
+      "decision": {
+        "action": "active",
+        "scriptMs": 133,
+        "nowMs": 292,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 326,
+      "logoFullyVisibleStartMs": 570,
+      "logoFullyVisibleEndMs": 1337,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1536,
+      "hiddenMs": 1553,
+      "durationFromFirstVisibleMs": 1227,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 154,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 2,
+      "decision": {
+        "action": "active",
+        "scriptMs": 139,
+        "nowMs": 310,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 348,
+      "logoFullyVisibleStartMs": 579,
+      "logoFullyVisibleEndMs": 1346,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1545,
+      "hiddenMs": 1561,
+      "durationFromFirstVisibleMs": 1213,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 155,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 3,
+      "decision": {
+        "action": "active",
+        "scriptMs": 145,
+        "nowMs": 329,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 347,
+      "logoFullyVisibleStartMs": 571,
+      "logoFullyVisibleEndMs": 1339,
+      "logoFullyVisibleDurationMs": 768,
+      "lastVisibleMs": 1538,
+      "hiddenMs": 1555,
+      "durationFromFirstVisibleMs": 1208,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 149,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 1,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 987,
+        "nowMs": 2654,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 4,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 2,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 1010,
+        "nowMs": 2497,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 6,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 3,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 998,
+        "nowMs": 2493,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 5,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 1,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 942,
+        "nowMs": 1552,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 73,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 2,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 946,
+        "nowMs": 1275,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 73,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "768x1024",
+      "width": 768,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 3,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 938,
+        "nowMs": 1294,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 68,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 1,
+      "decision": {
+        "action": "active",
+        "scriptMs": 134,
+        "nowMs": 375,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 419,
+      "logoFullyVisibleStartMs": 627,
+      "logoFullyVisibleEndMs": 1393,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1597,
+      "hiddenMs": 1621,
+      "durationFromFirstVisibleMs": 1202,
+      "visibleFrameCount": 71,
+      "totalRafFrames": 144,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 2,
+      "decision": {
+        "action": "active",
+        "scriptMs": 147,
+        "nowMs": 404,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 487,
+      "logoFullyVisibleStartMs": 728,
+      "logoFullyVisibleEndMs": 1494,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1708,
+      "hiddenMs": 1735,
+      "durationFromFirstVisibleMs": 1248,
+      "visibleFrameCount": 72,
+      "totalRafFrames": 138,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "unthrottled",
+      "locale": "ar",
+      "run": 3,
+      "decision": {
+        "action": "active",
+        "scriptMs": 143,
+        "nowMs": 386,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 409,
+      "logoFullyVisibleStartMs": 645,
+      "logoFullyVisibleEndMs": 1413,
+      "logoFullyVisibleDurationMs": 768,
+      "lastVisibleMs": 1623,
+      "hiddenMs": 1641,
+      "durationFromFirstVisibleMs": 1232,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 145,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 1,
+      "decision": {
+        "action": "active",
+        "scriptMs": 141,
+        "nowMs": 387,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 420,
+      "logoFullyVisibleStartMs": 665,
+      "logoFullyVisibleEndMs": 1432,
+      "logoFullyVisibleDurationMs": 767,
+      "lastVisibleMs": 1646,
+      "hiddenMs": 1673,
+      "durationFromFirstVisibleMs": 1253,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 152,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 2,
+      "decision": {
+        "action": "active",
+        "scriptMs": 129,
+        "nowMs": 339,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 356,
+      "logoFullyVisibleStartMs": 600,
+      "logoFullyVisibleEndMs": 1366,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1574,
+      "hiddenMs": 1613,
+      "durationFromFirstVisibleMs": 1257,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 146,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "unthrottled",
+      "locale": "en",
+      "run": 3,
+      "decision": {
+        "action": "active",
+        "scriptMs": 127,
+        "nowMs": 306,
+        "delayMs": 0
+      },
+      "firstVisibleMs": 359,
+      "logoFullyVisibleStartMs": 615,
+      "logoFullyVisibleEndMs": 1381,
+      "logoFullyVisibleDurationMs": 766,
+      "lastVisibleMs": 1593,
+      "hiddenMs": 1611,
+      "durationFromFirstVisibleMs": 1252,
+      "visibleFrameCount": 73,
+      "totalRafFrames": 151,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 1,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 1009,
+        "nowMs": 2401,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 14,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 2,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 982,
+        "nowMs": 2733,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 5,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "throttled",
+      "locale": "ar",
+      "run": 3,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 996,
+        "nowMs": 2677,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 5,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 1,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 945,
+        "nowMs": 1577,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 82,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 2,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 954,
+        "nowMs": 1213,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 69,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    },
+    {
+      "viewport": "1440x900",
+      "width": 1440,
+      "mode": "throttled",
+      "locale": "en",
+      "run": 3,
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 970,
+        "nowMs": 1669,
+        "delayMs": 0
+      },
+      "firstVisibleMs": null,
+      "logoFullyVisibleStartMs": null,
+      "logoFullyVisibleEndMs": null,
+      "logoFullyVisibleDurationMs": 0,
+      "lastVisibleMs": null,
+      "hiddenMs": null,
+      "durationFromFirstVisibleMs": null,
+      "visibleFrameCount": 0,
+      "totalRafFrames": 80,
+      "logoRestartCount": 0,
+      "overlayBounceCount": 0,
+      "finalHtmlDataIntro": "seen",
+      "finalOverlayVisible": false,
+      "finalInertCount": 0
+    }
+  ],
+  "lateFirstPaintSkipByLocale": {
+    "ar": {
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 1447,
+        "nowMs": 1469,
+        "delayMs": 0
+      },
+      "htmlDataIntro": "seen",
+      "visibleFrameCount": 0
+    },
+    "en": {
+      "decision": {
+        "action": "skipped_late_first_paint",
+        "scriptMs": 1446,
+        "nowMs": 1472,
+        "delayMs": 0
+      },
+      "htmlDataIntro": "seen",
+      "visibleFrameCount": 0
+    }
+  },
+  "blockedChunksCheck": {
+    "en": {
+      "duringBlockedIntro": {
+        "sectionCount": 8,
+        "hiddenSections": 0,
+        "footerDisplay": "block",
+        "scrollHeight": 6228,
+        "skipLinkInert": true,
+        "headerInert": true,
+        "homeContentInert": true,
+        "footerInert": true,
+        "activeElementBeforeTabIsSkipButton": true,
+        "activeElementInsideInert": false
+      },
+      "afterBlockedIntro": {
+        "htmlDataIntro": "seen",
+        "inertCountAfterFinish": 0,
+        "activeElementIdAfterFinish": "main-content",
+        "scrollHeightAfterFinish": 6228
+      }
+    },
+    "ar": {
+      "duringBlockedIntro": {
+        "sectionCount": 8,
+        "hiddenSections": 0,
+        "footerDisplay": "block",
+        "scrollHeight": 6248,
+        "skipLinkInert": true,
+        "headerInert": true,
+        "homeContentInert": true,
+        "footerInert": true,
+        "activeElementBeforeTabIsSkipButton": true,
+        "activeElementInsideInert": false
+      },
+      "afterBlockedIntro": {
+        "htmlDataIntro": "seen",
+        "inertCountAfterFinish": 0,
+        "activeElementIdAfterFinish": "main-content",
+        "scrollHeightAfterFinish": 6248
+      }
+    }
+  },
+  "firstVisitAnchorCheck": {
+    "#featured-projects": {
+      "scrollY": 3537,
+      "targetTopInViewport": 80
+    },
+    "#partners": {
+      "scrollY": 4606,
+      "targetTopInViewport": 80
+    },
+    "#cta": {
+      "scrollY": 5153,
+      "targetTopInViewport": 80
+    }
+  },
+  "visibleBeforeEscape": true,
+  "visibleAfterEscape": false,
+  "rmDataIntro": "seen",
+  "visibleWithReducedMotion": false
+}

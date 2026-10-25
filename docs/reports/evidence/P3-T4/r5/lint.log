@@ -1,0 +1,12 @@
+﻿$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+$ git rev-parse HEAD
+62f8f7c3e418654607e5cae3a8a8089b3edb3ba8
+$ pnpm lint
+
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+> cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs
+
+[css-logical-properties] Verified 28 public CSS files use logical directional properties (0 violations).
+

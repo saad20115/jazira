@@ -1,0 +1,75 @@
+$ pwd
+C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058
+$ git rev-parse HEAD
+62f8f7c3e418654607e5cae3a8a8089b3edb3ba8
+=== Google Lighthouse v13.5.0 Mobile Audit (en -> http://localhost:3000/en) [Attempt 1/1, no retry] ===
+Performance:    85 (preliminary mobile score; target >= 85)
+Accessibility:  96 (gate >= 95)
+Best Practices: 100 (gate >= 95)
+SEO:            100 (gate >= 95)
+CLS:            0.00285 (gate <= 0.05)
+{
+  "attempt": 1,
+  "totalAttempts": 1,
+  "lighthouseVersion": "13.5.0",
+  "requestedUrl": "http://localhost:3000/en",
+  "finalDisplayedUrl": "http://localhost:3000/en",
+  "fetchTime": "2026-10-25T01:49:43.034Z",
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "scores": {
+    "performance": 85,
+    "accessibility": 96,
+    "bestPractices": 100,
+    "seo": 100
+  },
+  "clsNumeric": 0.00285,
+  "metrics": {
+    "first-contentful-paint": {
+      "numericValue": 1522.436,
+      "displayValue": "1.5 s",
+      "score": 0.95
+    },
+    "largest-contentful-paint": {
+      "numericValue": 3758.936,
+      "displayValue": "3.8 s",
+      "score": 0.56
+    },
+    "total-blocking-time": {
+      "numericValue": 227.782,
+      "displayValue": "230 ms",
+      "score": 0.87
+    },
+    "cumulative-layout-shift": {
+      "numericValue": 0.0028,
+      "displayValue": "0.003",
+      "score": 1
+    },
+    "speed-index": {
+      "numericValue": 2245.4147,
+      "displayValue": "2.2 s",
+      "score": 0.99
+    },
+    "interactive": {
+      "numericValue": 3823.2469,
+      "displayValue": "3.8 s",
+      "score": 0.89
+    }
+  },
+  "failingAudits": [
+    {
+      "category": "accessibility",
+      "id": "color-contrast",
+      "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "score": 0,
+      "displayValue": null
+    }
+  ]
+}
