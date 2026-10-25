@@ -431,3 +431,5 @@ the orbit sheets and the façade/podium/crown crops for v022n in the private art
 see them remotely.
 
 **2026-10-25, site CTO eye review:** the direction is accepted. Live polish round **v022n-r2** (V-1..V-6 in `handoff/reviews/A-1.md` Milestone 5) comes before promotion. The hashes above change with r2.
+
+**2026-10-25 15:14, owner's final go, given directly to the site CTO:** "نعتمده كما هو". v022n is promoted as the release; v020 is backed up. V-1..V-6 continue as non-blocking polish (v022n.1).
