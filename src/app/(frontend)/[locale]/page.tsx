@@ -3,7 +3,6 @@ import { headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type React from 'react'
 
-import { Accordion, type AccordionEntry } from '@/components/Accordion'
 import { Button } from '@/components/Button'
 import { CspSafeImage } from '@/components/CspSafeImage'
 import { Eyebrow } from '@/components/Eyebrow'
@@ -14,6 +13,7 @@ import { LogoMarquee } from '@/components/LogoMarquee'
 import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-utils'
 import { ProjectCard } from '@/components/ProjectCard'
 import { ServicesCarousel } from '@/components/ServicesCarousel'
+import { InteractiveSystemsSection } from '@/components/systems3d/InteractiveSystemsSection'
 import {
   buildHreflangAlternates,
   DEFAULT_LOCALE,
@@ -30,7 +30,7 @@ import {
   getStats,
 } from '@/lib/cms'
 import { type CmsLinkDataLike, resolveSafeCmsLinkData } from '@/lib/link-safety'
-import type { HomePage, Project, Stat, Video } from '@/payload-types'
+import type { Project, Stat, Video } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
 import { canServeArabicLocaleForCurrentRequest, enforceArabicEnabledOrRedirect } from './layout'
@@ -411,22 +411,6 @@ export default async function LocaleHomePage({
     mainServices.length > 0 || coreServicesTitle || coreServicesIntro,
   )
 
-  // 4. Interactive Systems section data (`111:1608`)
-  const interactiveSystems = homePage?.interactiveSystems
-  const interactiveEnabled = interactiveSystems?.enabled !== false
-  const interactiveEyebrow = interactiveSystems?.eyebrow?.trim() || null
-  const interactiveTitle = interactiveSystems?.title?.trim() || null
-  const interactiveIntro = interactiveSystems?.intro?.trim() || null
-  const interactiveHeroImage = resolveMediaAsset(
-    interactiveSystems?.heroImage,
-    interactiveTitle ?? companyName ?? '',
-    'hero',
-  )
-  const interactiveSystemsList = interactiveSystems?.systems ?? []
-  const hasInteractiveContent = Boolean(
-    interactiveSystemsList.length > 0 && (interactiveTitle || interactiveHeroImage),
-  )
-
   // 5. Trusted by Industry Leaders / Stats section data (`18:285`)
   const statsSection = homePage?.statsSection
   const statsEnabled = statsSection?.enabled !== false
@@ -488,20 +472,6 @@ export default async function LocaleHomePage({
   const ctaBgImage = resolveMediaAsset(cta?.backgroundImage, ctaTitle ?? companyName ?? '', 'hero')
   const hasCtaContent = Boolean(
     ctaTitle || ctaTitleAccent || ctaText || ctaPrimaryLabel || ctaSecondaryLabel,
-  )
-
-  // Build Interactive Systems Accordion entries (`111:1608`)
-  const accordionEntries: AccordionEntry[] = interactiveSystemsList.map(
-    (
-      sysItem: NonNullable<NonNullable<HomePage['interactiveSystems']>['systems']>[number],
-      idx: number,
-    ) => ({
-      id: sysItem.id ?? `system-${String(idx + 1)}`,
-      numberBadge: String(idx + 1).padStart(2, '0'),
-      title: sysItem.title,
-      defaultExpanded: idx === 0,
-      body: <p className={`${styles.systemDescription} t-body-m`}>{sysItem.text}</p>,
-    }),
   )
 
   return (
@@ -694,54 +664,17 @@ export default async function LocaleHomePage({
         ) : null}
 
         {/* 4. Interactive Systems Section (111:1608) */}
-        {interactiveEnabled && hasInteractiveContent ? (
-          <section
-            className={styles.interactiveSection}
-            data-home-section="interactive-systems"
-            id="interactive-systems"
-          >
-            <div className={`${gridStyles.container} ${styles.interactiveStack}`}>
-              <div className={styles.splitSectionHead}>
-                <div className={styles.splitHeadLeft}>
-                  {interactiveEyebrow ? <Eyebrow label={interactiveEyebrow} tone="Light" /> : null}
-                  {interactiveTitle ? (
-                    <h2 className={`${styles.sectionHeadingDark} t-h2`}>
-                      {renderAccentHeading(interactiveTitle, 'interactive')}
-                    </h2>
-                  ) : null}
-                </div>
-                {interactiveIntro ? (
-                  <p className={`${styles.interactiveIntroText} t-body-m`}>{interactiveIntro}</p>
-                ) : null}
-              </div>
-
-              <div className={styles.explorerRow}>
-                <div className={styles.buildingCard} data-interactive-3d-card="true">
-                  {interactiveHeroImage ? (
-                    <CspSafeImage
-                      alt={interactiveHeroImage.alt}
-                      className={styles.buildingRender}
-                      height={580}
-                      sizes="(max-width: 1279px) 100vw, 600px"
-                      src={interactiveHeroImage.url}
-                      width={600}
-                    />
-                  ) : null}
-                </div>
-
-                <div className={styles.accordionCol}>
-                  <Accordion
-                    className={styles.interactiveAccordion}
-                    defaultExpandedIndex={0}
-                    items={accordionEntries}
-                    locale={locale}
-                    singleExpand
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-        ) : null}
+        <InteractiveSystemsSection
+          companyName={companyName}
+          data={homePage?.interactiveSystems}
+          headClassNames={{
+            head: styles.splitSectionHead,
+            headLeft: styles.splitHeadLeft,
+            heading: styles.sectionHeadingDark,
+          }}
+          locale={locale}
+          renderHeading={(title) => renderAccentHeading(title, 'interactive')}
+        />
 
         {/* 5. Trusted by Industry Leaders / Stats Section (18:285) */}
         {statsEnabled && hasStatsContent ? (
