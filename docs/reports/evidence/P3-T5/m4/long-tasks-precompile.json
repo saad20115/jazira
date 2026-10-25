@@ -1,0 +1,116 @@
+{
+  "baseUrl": "http://localhost:3170",
+  "results": [
+    {
+      "run": 1,
+      "tasks": [
+        {
+          "atMs": 0,
+          "durationMs": 85,
+          "kinds": [
+            "EvaluateScript"
+          ],
+          "topStepsMs": {
+            "W": 33,
+            "i": 12,
+            "eO": 10,
+            "(anon)": 9,
+            "ek": 4
+          }
+        },
+        {
+          "atMs": 3740,
+          "durationMs": 51,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "initTexture": 16,
+            "render": 15,
+            "getUniforms": 15,
+            "(anon)": 2,
+            "lB": 1
+          }
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "tasks": [
+        {
+          "atMs": 0,
+          "durationMs": 79,
+          "kinds": [
+            "EvaluateScript"
+          ],
+          "topStepsMs": {
+            "W": 37,
+            "eO": 10,
+            "i": 8,
+            "(anon)": 8,
+            "ek": 3
+          }
+        },
+        {
+          "atMs": 3634,
+          "durationMs": 65,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "initTexture": 30,
+            "render": 20,
+            "getUniforms": 13,
+            "(anon)": 1,
+            "(program)": 0
+          }
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "tasks": [
+        {
+          "atMs": 0,
+          "durationMs": 69,
+          "kinds": [
+            "EvaluateScript"
+          ],
+          "topStepsMs": {
+            "W": 27,
+            "i": 10,
+            "eO": 9,
+            "ek": 4,
+            "(anon)": 4
+          }
+        },
+        {
+          "atMs": 2814,
+          "durationMs": 63,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "compileAsync": 62,
+            "(garbage collector)": 1,
+            "(program)": 0
+          }
+        },
+        {
+          "atMs": 3470,
+          "durationMs": 72,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "render": 28,
+            "initTexture": 27,
+            "getUniforms": 14,
+            "lB": 1,
+            "hi": 1
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "baseUrl": "http://localhost:3170",
+  "sheets": [
+    {
+      "url": "/_next/static/chunks/1ypx-gemkwsev.css",
+      "phase": "load",
+      "rawBytes": 87600,
+      "gzipBytes": 12995
+    },
+    {
+      "url": "/_next/static/chunks/2dkl5q_mdl90v.css",
+      "phase": "load",
+      "rawBytes": 22930,
+      "gzipBytes": 4561
+    },
+    {
+      "url": "/_next/static/chunks/31srx9g7-yw4b.css",
+      "phase": "load",
+      "rawBytes": 10316,
+      "gzipBytes": 2193
+    }
+  ],
+  "load": {
+    "rawBytes": 120846,
+    "gzipBytes": 19749
+  },
+  "all": {
+    "rawBytes": 120846,
+    "gzipBytes": 19749
+  }
+}

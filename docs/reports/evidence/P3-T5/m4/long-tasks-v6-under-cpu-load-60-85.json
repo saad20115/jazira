@@ -1,0 +1,173 @@
+{
+  "baseUrl": "http://localhost:3170",
+  "results": [
+    {
+      "run": 1,
+      "tasks": [
+        {
+          "atMs": 0,
+          "durationMs": 144,
+          "kinds": [
+            "EvaluateScript"
+          ],
+          "topStepsMs": {
+            "W": 31,
+            "eO": 28,
+            "i": 14,
+            "load": 8,
+            "validate": 8
+          }
+        },
+        {
+          "atMs": 260,
+          "durationMs": 63,
+          "kinds": [],
+          "topStepsMs": {
+            "(anon)": 14,
+            "parse": 13,
+            "js-to-wasm": 5,
+            "wasm-function[2]": 4,
+            "_invokeOne": 4
+          }
+        },
+        {
+          "atMs": 3072,
+          "durationMs": 61,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "fromScene": 34,
+            "getUniforms": 22,
+            "acquireProgram": 1,
+            "hi": 1,
+            "(anon)": 1
+          }
+        },
+        {
+          "atMs": 3138,
+          "durationMs": 56,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "compileAsync": 12,
+            "setSize": 8,
+            "(garbage collector)": 5,
+            "(anon)": 5,
+            "getMaxAnisotropy": 3
+          }
+        },
+        {
+          "atMs": 3194,
+          "durationMs": 296,
+          "kinds": [],
+          "topStepsMs": {
+            "(program)": 305,
+            "getBoundingClientRect": 1
+          }
+        },
+        {
+          "atMs": 3529,
+          "durationMs": 400,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "(program)": 400
+          }
+        },
+        {
+          "atMs": 4291,
+          "durationMs": 52,
+          "kinds": [],
+          "topStepsMs": {
+            "(program)": 48,
+            "render": 3,
+            "eg": 1
+          }
+        }
+      ]
+    },
+    {
+      "run": 2,
+      "tasks": [
+        {
+          "atMs": 0,
+          "durationMs": 72,
+          "kinds": [
+            "EvaluateScript"
+          ],
+          "topStepsMs": {
+            "W": 29,
+            "i": 11,
+            "eO": 8,
+            "(anon)": 7,
+            "ek": 3
+          }
+        },
+        {
+          "atMs": 2881,
+          "durationMs": 211,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "compileAsync": 210,
+            "(program)": 2
+          }
+        }
+      ]
+    },
+    {
+      "run": 3,
+      "tasks": [
+        {
+          "atMs": 0,
+          "durationMs": 62,
+          "kinds": [
+            "EvaluateScript"
+          ],
+          "topStepsMs": {
+            "W": 26,
+            "i": 9,
+            "eO": 7,
+            "(anon)": 4,
+            "updateProjectionMatrix": 2
+          }
+        },
+        {
+          "atMs": 246,
+          "durationMs": 60,
+          "kinds": [],
+          "topStepsMs": {
+            "parse": 19,
+            "(anon)": 9,
+            "(program)": 4,
+            "wasm-function[2]": 3,
+            "loadMaterial": 3
+          }
+        },
+        {
+          "atMs": 3026,
+          "durationMs": 100,
+          "kinds": [],
+          "topStepsMs": {
+            "(program)": 100
+          }
+        },
+        {
+          "atMs": 4448,
+          "durationMs": 109,
+          "kinds": [
+            "TimerFire"
+          ],
+          "topStepsMs": {
+            "getUniforms": 108,
+            "(program)": 1
+          }
+        }
+      ]
+    }
+  ]
+}

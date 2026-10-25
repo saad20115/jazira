@@ -1,0 +1,70 @@
+{
+  "baseUrl": "http://localhost:3170",
+  "viewport": "1440x900",
+  "renderer": "ANGLE (Intel, Intel(R) HD Graphics 530 (0x00001912) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "page": {
+    "fromMs": 0,
+    "toMs": 1972,
+    "longTasks": 2,
+    "longTasksOver50Ms": 1,
+    "maxLongTaskMs": 99,
+    "longTaskDurationsMs": [
+      99,
+      50
+    ],
+    "interactions": 0,
+    "inpEstimateMs": 0,
+    "slowestEvents": []
+  },
+  "loading": {
+    "fromMs": 1972,
+    "toMs": 4558,
+    "longTasks": 3,
+    "longTasksOver50Ms": 3,
+    "maxLongTaskMs": 1120,
+    "longTaskDurationsMs": [
+      55,
+      1120,
+      715
+    ],
+    "interactions": 0,
+    "inpEstimateMs": 0,
+    "slowestEvents": [
+      "pointerover 16ms",
+      "pointerenter 16ms",
+      "pointerenter 16ms",
+      "pointerenter 16ms",
+      "pointerenter 16ms"
+    ]
+  },
+  "orbit": {
+    "fromMs": 6080,
+    "toMs": 26562,
+    "longTasks": 2,
+    "longTasksOver50Ms": 2,
+    "maxLongTaskMs": 2880,
+    "longTaskDurationsMs": [
+      229,
+      2880
+    ],
+    "interactions": 42,
+    "inpEstimateMs": 464,
+    "slowestEvents": [
+      "keydown 464ms",
+      "keydown 56ms",
+      "keyup 56ms",
+      "pointerdown 48ms",
+      "mousedown 48ms"
+    ]
+  },
+  "intentToLiveMs": 2586,
+  "cls": {
+    "total": 0.0007371605474108368,
+    "afterIntent": 0
+  },
+  "lcp": {
+    "start": 692,
+    "size": 1056768,
+    "element": "img /_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp&w=3840&q=75"
+  }
+}

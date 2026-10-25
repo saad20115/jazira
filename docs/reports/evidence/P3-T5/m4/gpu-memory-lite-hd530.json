@@ -1,0 +1,79 @@
+{
+  "baseUrl": "http://localhost:3170",
+  "query": "",
+  "renderer": "ANGLE (Intel, Intel(R) HD Graphics 530 (0x00001912) Direct3D11 vs_5_0 ps_5_0, D3D11)",
+  "models": [
+    "/systems/v022n/tower-lite.glb"
+  ],
+  "gpuPid": 11596,
+  "samplesBytes": {
+    "still": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 65646592,
+      "Total Committed": 66699264
+    },
+    "live": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 106496000,
+      "Total Committed": 111345664
+    },
+    "entered-hvac": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 116031488,
+      "Total Committed": 117575680
+    },
+    "entered-fire": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 121401344,
+      "Total Committed": 122929152
+    },
+    "entered-plumbing": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 112435200,
+      "Total Committed": 113954816
+    },
+    "entered-power": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 111239168,
+      "Total Committed": 112742400
+    },
+    "entered-smart": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 106823680,
+      "Total Committed": 108294144
+    }
+  },
+  "minusStillMiB": {
+    "live": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 39,
+      "Total Committed": 42.6
+    },
+    "entered-hvac": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 48.1,
+      "Total Committed": 48.5
+    },
+    "entered-fire": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 53.2,
+      "Total Committed": 53.6
+    },
+    "entered-plumbing": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 44.6,
+      "Total Committed": 45.1
+    },
+    "entered-power": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 43.5,
+      "Total Committed": 43.9
+    },
+    "entered-smart": {
+      "Dedicated Usage": 0,
+      "Shared Usage": 39.3,
+      "Total Committed": 39.7
+    }
+  },
+  "peakTotalCommittedMinusStillMiB": 53.6
+}

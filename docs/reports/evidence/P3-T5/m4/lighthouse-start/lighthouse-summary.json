@@ -1,0 +1,106 @@
+{
+  "baseUrl": "http://localhost:3170",
+  "attempts": 3,
+  "locales": {
+    "en": {
+      "runs": [
+        {
+          "performance": 85,
+          "accessibility": 96,
+          "bestPractices": 100,
+          "seo": 100,
+          "lcpMs": 3784,
+          "tbtMs": 185,
+          "cls": 0
+        },
+        {
+          "performance": 87,
+          "accessibility": 96,
+          "bestPractices": 100,
+          "seo": 100,
+          "lcpMs": 3863,
+          "tbtMs": 100,
+          "cls": 0.0034
+        },
+        {
+          "performance": 81,
+          "accessibility": 96,
+          "bestPractices": 100,
+          "seo": 100,
+          "lcpMs": 3941,
+          "tbtMs": 268,
+          "cls": 0
+        }
+      ],
+      "median": {
+        "performance": 85,
+        "accessibility": 96,
+        "bestPractices": 100,
+        "seo": 100,
+        "lcpMs": 3863,
+        "tbtMs": 185,
+        "cls": 0
+      },
+      "baseline": {
+        "performance": 85,
+        "accessibility": 96,
+        "bestPractices": 100,
+        "seo": 100,
+        "lcpMs": 3759,
+        "tbtMs": 228,
+        "cls": 0.00285
+      },
+      "performanceDelta": 0
+    },
+    "ar": {
+      "runs": [
+        {
+          "performance": 82,
+          "accessibility": 96,
+          "bestPractices": 100,
+          "seo": 100,
+          "lcpMs": 4231,
+          "tbtMs": 171,
+          "cls": 0
+        },
+        {
+          "performance": 83,
+          "accessibility": 96,
+          "bestPractices": 100,
+          "seo": 100,
+          "lcpMs": 4235,
+          "tbtMs": 130,
+          "cls": 0
+        },
+        {
+          "performance": 83,
+          "accessibility": 96,
+          "bestPractices": 100,
+          "seo": 100,
+          "lcpMs": 3777,
+          "tbtMs": 253,
+          "cls": 0
+        }
+      ],
+      "median": {
+        "performance": 83,
+        "accessibility": 96,
+        "bestPractices": 100,
+        "seo": 100,
+        "lcpMs": 4231,
+        "tbtMs": 171,
+        "cls": 0
+      },
+      "baseline": {
+        "performance": 81,
+        "accessibility": 96,
+        "bestPractices": 100,
+        "seo": 100,
+        "lcpMs": 4206,
+        "tbtMs": 215,
+        "cls": 0
+      },
+      "performanceDelta": 2
+    }
+  }
+}

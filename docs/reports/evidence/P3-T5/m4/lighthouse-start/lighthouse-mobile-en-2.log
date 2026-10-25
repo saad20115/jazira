@@ -1,0 +1,79 @@
+P3-T5 attempt 2/3 (fixed count, all reported)
+=== Google Lighthouse v13.5.0 Mobile Audit (en -> http://localhost:3170/en) [Attempt 1/1, no retry] ===
+Performance:    87 (preliminary mobile score; target >= 85)
+Accessibility:  96 (gate >= 95)
+Best Practices: 100 (gate >= 95)
+SEO:            100 (gate >= 95)
+CLS:            0.0034 (gate <= 0.05)
+{
+  "attempt": 1,
+  "totalAttempts": 1,
+  "lighthouseVersion": "13.5.0",
+  "requestedUrl": "http://localhost:3170/en",
+  "finalDisplayedUrl": "http://localhost:3170/en",
+  "fetchTime": "2026-10-25T18:38:00.515Z",
+  "formFactor": "mobile",
+  "throttlingMethod": "simulate",
+  "screenEmulation": {
+    "mobile": true,
+    "width": 412,
+    "height": 823,
+    "deviceScaleFactor": 1.75,
+    "disabled": false
+  },
+  "scores": {
+    "performance": 87,
+    "accessibility": 96,
+    "bestPractices": 100,
+    "seo": 100
+  },
+  "clsNumeric": 0.0034,
+  "metrics": {
+    "first-contentful-paint": {
+      "numericValue": 1671.596,
+      "displayValue": "1.7 s",
+      "score": 0.93
+    },
+    "largest-contentful-paint": {
+      "numericValue": 3862.596,
+      "displayValue": "3.9 s",
+      "score": 0.53
+    },
+    "total-blocking-time": {
+      "numericValue": 99.702,
+      "displayValue": "100 ms",
+      "score": 0.98
+    },
+    "cumulative-layout-shift": {
+      "numericValue": 0.0034,
+      "displayValue": "0.003",
+      "score": 1
+    },
+    "speed-index": {
+      "numericValue": 2569.7139,
+      "displayValue": "2.6 s",
+      "score": 0.97
+    },
+    "interactive": {
+      "numericValue": 3907.596,
+      "displayValue": "3.9 s",
+      "score": 0.88
+    }
+  },
+  "failingAudits": [
+    {
+      "category": "accessibility",
+      "id": "color-contrast",
+      "title": "Background and foreground colors do not have a sufficient contrast ratio.",
+      "score": 0,
+      "displayValue": null
+    },
+    {
+      "category": "accessibility",
+      "id": "label-content-name-mismatch",
+      "title": "Elements with visible text labels do not have matching accessible names.",
+      "score": 0,
+      "displayValue": null
+    }
+  ]
+}
