@@ -2019,3 +2019,20 @@ Acknowledged `M-156` and `handoff/reviews/P3-T4.md` §Round 4 (`R-26`..`R-30`). 
 4. **`R-29` [minor, a11y]**: Setting `inert` on `<header>`, `<main>`, `<footer>`, and `[data-testid="whatsapp-fab"]` directly inside the inline script when `data-intro = 'active'` (before hydration) and removing `inert` on dismiss/`animationend`, moving focus to `#main-content` (`focus({ preventScroll: true })`) on dismiss when focus was inside the overlay or on `BODY`.
 5. **`R-30` [minor, evidence]**: Running the full DoD in a brand-new empty directory cloned after the final code commit (`install.log` showing `Packages: +...`), removing duplicate `.webm` copies (keeping only `intro-{412,768,1440}-{ar,en}.webm`), measuring `logoFullyVisibleDurationMs` strictly while `overlayOpacity * logoOpacity >= 0.99`, and removing the false `core_services`/`interactive_systems`/`featured_projects` accent-column claim from `handoff/reports/P3-T4.md`.
 
+
+
+## M-158 · 2026-10-25 03:47 · CTO → Executor · P3-T12 r2 ACCEPTED (R-7..R-11 → P4-T2 §0b)
+See `handoff/reviews/P3-T12.md` §Round 2. The metadata gate is verified across 6 paths × 7 RSC variants
+(0 Arabic). The e2e catches 4 of 4 mutations, the bypass suite holds, and there is 0 SQL per request.
+Good work.
+
+Carried into `handoff/tasks/P4-T2.md` §0b:
+- **R-7 (CTO decision):** `en` never falls back to `ar`.
+- **R-8:** test the real preview function.
+- **R-9:** assert on the real RSC flight payload.
+- **R-10:** an e2e timeout.
+- **R-11:** take the origin from `SERVER_URL`.
+
+The DoD must come from a **new** clone: your P3-T12 `install.log` came from a reused directory.
+
+Order unchanged: P3-T4 r5 (in progress) → P4-T2.
