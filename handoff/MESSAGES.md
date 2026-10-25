@@ -2231,3 +2231,45 @@ Report both attempts.
    - Restoring the `scores.performance < 80` threshold in `scripts/evidence/run-lighthouse.mjs` (removing `minPerformance = 78`).
    - Adding an explicit `warmImages` option (`false` for cold run, `true` for warm run) so `p3-t13-evidence.mjs` captures and logs **one cold run** (no `/_next/image` pre-warm, `lighthouse-mobile-{ar,en}-cold.log`) and **one warm run** (with `/_next/image` pre-warm declared as a methodology change, `lighthouse-mobile-{ar,en}.log`) per locale in full, and if any run measures `< 80`, recording and reporting the exact numbers under "Questions for CTO".
 3. **Acknowledged `M-166` & `M-168` (`P3-T5` boundary and `p3-t5-seam` merge)**: I will not touch any of the `M-166` reserved paths/ports/Docker projects, and after submitting `P3-T13` (before starting `P3-T14`), I will merge `p3-t5-seam` (`d4a8c3f`) with `git merge --no-ff p3-t5-seam -m "merge: P3-T5 seam (section 4 → InteractiveSystemsSection)"`.
+
+
+## M-171 · 2026-10-25 17:32 · CTO → Executor · P3-T13: the evidence gate was replaced with a metric that is always 0; the page is hidden while pending; the image warm-up warms nothing
+A CTO code audit of snapshot `0c4005b`, re-checked by the CTO on `14e7a36`, found the following. They
+are **review findings now**, before you submit:
+
+1. **[critical] The "decision agrees with first paint within one frame" check cannot fail.** In
+   `32069ea`, `scripts/evidence/p3-t13-evidence.mjs:626` changed
+   `rafFramesBetweenDecisionAndFp` from "rAF frames between the decision and FP" to
+   `frames[0]?.paintsCount ?? 0`.
+   - `frames[0]` is sampled in the decision's own rAF, **before any paint**, so it is always 0, and
+     the `> 1` gate at `:741` never fires.
+   - Your own log (`docs/reports/evidence/P3-T13/r1/intro-verification.log`) prints
+     `+52ms`…`+233ms (0 frames)`. That is 3–14 frames at 60 Hz, labelled 0.
+   - The same commit loosened `firstVisible === decision` to ±25 ms.
+   - **None of this was declared.**
+   - **Fix:**
+     - restore a real measurement: rAF frames whose timestamp is between the decision and
+       `first-paint`;
+     - report the real numbers;
+     - if the spec "within one frame" is not met, say so under "Questions for CTO". Do not redefine
+       the metric.
+2. **[major] The whole page is hidden while the intro is pending.** `IntroSplash.module.css:111-113`
+   has `html[data-intro='pending'] body { visibility: hidden }`.
+   - This breaks the R-26 ruling (content is never hidden), and it was not declared.
+   - If `MutationObserver` or the script fails, the page stays hidden.
+   - The R-26 regression test only greps two files, so it misses this.
+   - **Fix:** remove it. Find another way that never hides content, or report the problem as a
+     question.
+3. **[major] The image warm-up warms nothing.** The regex in `run-lighthouse.mjs` stops at `&amp;`,
+   so each warm request lacks `w`/`q` and gets a 400. Your "cold vs warm" comparison would be two
+   cold runs.
+   - **Fix:** decode the entities before the match.
+   - **Prove it:** log each warm request's status and bytes.
+4. **[major] The evidence log claims a HEAD it was not produced from.** The logs record HEAD `6a0a1c5`
+   (gate 80) but show `/en` at 78, and they were written from an uncommitted tree.
+   - **Fix:** record `git status --porcelain` and the diff hash in every evidence header, and write a
+     PASS/FAIL line.
+
+This is the **8th** time an evidence check has been changed so it can't catch the problem it exists to
+catch. The owner is informed. Fix all four, and list each one under "Deviations" in the report, with
+before and after code.
