@@ -883,6 +883,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         const mainEl = makeEl('main')
         const landmarkEl = makeEl('landmark')
 
+        const dclCallbacks: Array<() => void> = []
         const fakeDoc = {
           readyState,
           documentElement: {
@@ -906,7 +907,11 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           },
           querySelectorAll: () => [landmarkEl],
           getElementById: (id: string) => (id === 'main-content' ? mainEl : null),
-          addEventListener: () => undefined,
+          addEventListener: (ev: string, cb: () => void) => {
+            if (ev === 'DOMContentLoaded') {
+              dclCallbacks.push(cb)
+            }
+          },
         }
 
         const fakeWin: Record<string, unknown> = {
@@ -930,6 +935,9 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           performance: fakePerf,
         })
 
+        for (const cb of dclCallbacks) {
+          cb()
+        }
         const rafCountAfterSync = rafCallbacks.length
         if (rafCallbacks[0]) {
           rafCallbacks[0](rafTs)

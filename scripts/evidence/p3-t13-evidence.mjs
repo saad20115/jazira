@@ -510,15 +510,31 @@ export async function runP3T13Evidence({
           const paints = performance.getEntriesByType('paint')
           const fp = paints.find((p) => p.name === 'first-paint')
           const fcp = paints.find((p) => p.name === 'first-contentful-paint')
+          const fpMs = fp ? Math.round(fp.startTime) : null
+          const fcpMs = fcp ? Math.round(fcp.startTime) : null
           const frames = window.__aljaziraVideoFrames || []
           const firstVisIdx = frames.findIndex((f) => f.visible)
-          const framesBeforeOverlay = firstVisIdx > 0 ? firstVisIdx : 0
+          const framesBeforeOverlay =
+            firstVisIdx >= 0
+              ? frames
+                  .slice(0, firstVisIdx)
+                  .filter((f) => f.paintsCount > 0 || (fpMs !== null && f.tMs >= fpMs)).length
+              : frames.length
+          const firstPaintedFrame =
+            frames.find((f) => f.paintsCount > 0) || frames[firstVisIdx] || frames[0]
+          const firstFrameVisible = Boolean(
+            firstVisIdx >= 0 &&
+            frames[firstVisIdx].paintsCount === 0 &&
+            (fpMs === null || frames[firstVisIdx].tMs <= fpMs) &&
+            firstPaintedFrame?.visible,
+          )
           return {
-            fpMs: fp ? Math.round(fp.startTime) : null,
-            fcpMs: fcp ? Math.round(fcp.startTime) : null,
+            fpMs,
+            fcpMs,
             decision: window.__aljaziraIntroDecision ?? null,
             framesBeforeOverlay,
-            firstFrameVisible: frames[0]?.visible ?? false,
+            preDclUnpaintedRafCount: firstVisIdx > 0 ? firstVisIdx : 0,
+            firstFrameVisible,
             first10Frames: frames.slice(0, 10),
           }
         })
@@ -723,9 +739,21 @@ export async function runP3T13Evidence({
               const skipped = decision?.action !== 'active'
               const framesBeforeOverlay = !skipped
                 ? firstVisibleIdx >= 0
-                  ? firstVisibleIdx
+                  ? frames
+                      .slice(0, firstVisibleIdx)
+                      .filter((f) => f.paintsCount > 0 || (fpMs !== null && f.tMs >= fpMs)).length
                   : frames.length
                 : 0
+              const preDclUnpaintedRafCount = !skipped && firstVisibleIdx > 0 ? firstVisibleIdx : 0
+              const firstPaintedFrame = frames.find((f) => f.paintsCount > 0) || null
+              const firstPaintedFrameHasOverlay = !skipped
+                ? Boolean(
+                    firstVisible &&
+                    firstVisible.paintsCount === 0 &&
+                    (fpMs === null || firstVisible.tMs <= fpMs) &&
+                    (!firstPaintedFrame || firstPaintedFrame.overlayVisible),
+                  )
+                : false
 
               const decisionMs = decision?.rafMs ?? decision?.nowMs ?? null
               const firstFrameRafMs = frames[0]?.tMs ?? null
@@ -799,6 +827,8 @@ export async function runP3T13Evidence({
                 skipped,
                 decision,
                 framesBeforeOverlay,
+                preDclUnpaintedRafCount,
+                firstPaintedFrameHasOverlay,
                 firstVisibleMs: firstVisible ? firstVisible.tMs : null,
                 logoFullyVisibleStartMs: logoFirstFull ? logoFirstFull.tMs : null,
                 logoFullyVisibleEndMs: logoLastFull ? logoLastFull.tMs : null,
@@ -868,6 +898,7 @@ export async function runP3T13Evidence({
           r.skipped ||
           r.decision.action !== 'active' ||
           r.framesBeforeOverlay !== 0 ||
+          !r.firstPaintedFrameHasOverlay ||
           r.firstVisibleMs === null ||
           r.firstVisibleMs !== r.decisionMs ||
           r.hiddenMs === null ||
