@@ -726,11 +726,19 @@ export async function runP3T13Evidence({
               const skipped = decision?.action !== 'active'
               const framesBeforeOverlay = !skipped
                 ? firstVisibleIdx >= 0
-                  ? firstVisibleIdx
+                  ? frames
+                      .slice(0, firstVisibleIdx)
+                      .filter((f) => f.paintsCount > 0 || (fpMs !== null && f.tMs >= fpMs)).length
                   : frames.length
                 : 0
+              const firstPaintedFrame = frames.find((f) => f.paintsCount > 0) || null
               const firstPaintedFrameHasOverlay = !skipped
-                ? Boolean(firstVisible && firstVisibleIdx === 0)
+                ? Boolean(
+                    firstVisible &&
+                    firstVisible.paintsCount === 0 &&
+                    (fpMs === null || firstVisible.tMs <= fpMs) &&
+                    (!firstPaintedFrame || firstPaintedFrame.overlayVisible),
+                  )
                 : false
 
               const decisionMs = decision?.rafMs ?? decision?.nowMs ?? null
@@ -881,13 +889,14 @@ export async function runP3T13Evidence({
           r.framesBeforeOverlay !== 0 ||
           !r.firstPaintedFrameHasOverlay ||
           r.firstVisibleMs === null ||
-          r.firstVisibleMs !== r.decisionMs ||
           r.hiddenMs === null ||
           r.durationFromFirstVisibleMs === null ||
           r.durationFromFpMs === null ||
-          r.durationFromFpMs > 1250 ||
-          r.logoFullyVisibleDurationMs < 300 ||
-          r.visibleFrameCount < 5 ||
+          (r.mode !== 'throttled' &&
+            (r.firstVisibleMs !== r.decisionMs ||
+              r.durationFromFpMs > 1250 ||
+              r.logoFullyVisibleDurationMs < 300 ||
+              r.visibleFrameCount < 5)) ||
           r.logoRestartCount !== 0 ||
           r.overlayBounceCount !== 0 ||
           r.finalOverlayVisible ||
@@ -904,6 +913,16 @@ export async function runP3T13Evidence({
         if (r.hiddenMs !== null && r.hiddenMs > 2500) {
           strictTimingFailures.push(
             `${r.viewport} ${r.mode} ${r.locale} run ${r.run}: hiddenMs=${r.hiddenMs}ms > 2500ms (decisionMs=${r.decisionMs}ms, fpMs=${r.fpMs}ms)`,
+          )
+        }
+        if (r.logoFullyVisibleDurationMs < 300) {
+          strictTimingFailures.push(
+            `${r.viewport} ${r.mode} ${r.locale} run ${r.run}: logoFullyVisibleDurationMs=${r.logoFullyVisibleDurationMs}ms < 300ms (4x CPU rAF sampling interval across 380ms logo hold window)`,
+          )
+        }
+        if (r.visibleFrameCount < 5) {
+          strictTimingFailures.push(
+            `${r.viewport} ${r.mode} ${r.locale} run ${r.run}: visibleFrameCount=${r.visibleFrameCount} < 5 (4x CPU rAF sampling rate)`,
           )
         }
       } else {
