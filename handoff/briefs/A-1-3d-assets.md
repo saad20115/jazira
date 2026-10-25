@@ -385,7 +385,8 @@ The reference viewer stops the fan on reduced motion, a hidden tab, or when off-
 |---|---|---|
 | `tower.glb` | 7,081,536 | `2fd419908dbe8bacdc97c08ba6ac26b75b61d30c65b6785653ab897f8fcd8af5` |
 | `tower-lite.glb` | 2,109,740 | `382f8f67f83adfcd9f9f7060401a0cfa49da2dcdb0f677273d39dbcebafbe62e` |
-| `manifest.json` | — | `caf1f11c…` (provisional; it changes after the `render.environment` text fix) |
+| `manifest.json` | 12,003 | `2a5b055d70e20c7928c67b37675da2f9287cbf9abaf0afd9a09b995591abc749` (final; `render.environment` = studio PMREM + night_glow + moon) |
+| `stills/stills_manifest.json` | — | `abceb7a3a2f25f3b9766eefe9ba4b6b60ff4fe5d35a1e45f15a232c774b0fe88` (37 files) |
 
 - Draw calls: full 62 scene / 76 with bloom; lite 40, no bloom.
 - GPU textures: about 12.9 / 6.6 MB. Triangles: 61.5k / 52.1k.
@@ -428,3 +429,5 @@ The reference viewer stops the fan on reduced motion, a hidden tab, or when off-
 **The site CTO still needs**, before acceptance (eye-first rule, `handoff/reviews/A-1.md`): the hero,
 the orbit sheets and the façade/podium/crown crops for v022n in the private artifact, so the owner can
 see them remotely.
+
+**2026-10-25, site CTO eye review:** the direction is accepted. Live polish round **v022n-r2** (V-1..V-6 in `handoff/reviews/A-1.md` Milestone 5) comes before promotion. The hashes above change with r2.
