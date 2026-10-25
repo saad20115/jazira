@@ -99,6 +99,15 @@ function readLookOverride(): LiveLook {
   return { exposureScale, envIntensity, emissiveScale, roomEnvIntensity, floorEdgeLevel }
 }
 
+/** `?fixes=-aniso,-a2c` switches V-2 / V-3 off in development builds only (before/after crops). */
+function readFixesOverride(): { anisotropy: boolean; alphaToCoverage: boolean } {
+  const off =
+    process.env.NODE_ENV === 'production'
+      ? []
+      : (new URLSearchParams(window.location.search).get('fixes')?.split(',') ?? [])
+  return { anisotropy: !off.includes('-aniso'), alphaToCoverage: !off.includes('-a2c') }
+}
+
 const subscribeNever = (): (() => void) => () => undefined
 
 /** True after hydration: JS-only controls are not rendered into the server HTML. */
@@ -180,6 +189,7 @@ export function SystemsCard({
           pixelRatioCap: caps.coarsePointer || caps.phoneLayout ? DPR_CAP.mobile : DPR_CAP.desktop,
           reducedMotion: caps.reducedMotion,
           look: readLookOverride(),
+          fixes: readFixesOverride(),
           signal: controller.signal,
           onFirstFrame: () => {
             firstFrame = true

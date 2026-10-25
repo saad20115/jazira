@@ -15,6 +15,7 @@ import {
   BufferGeometry,
   Color,
   DirectionalLight,
+  FileLoader,
   Float32BufferAttribute,
   HalfFloatType,
   InterleavedBufferAttribute,
@@ -88,6 +89,8 @@ export interface ViewerOptions {
   reducedMotion: boolean
   /** V-1 live look calibration (`LIVE_LOOK`). */
   look: LiveLook
+  /** V-2 / V-3 fixes; both on in production (development builds can switch them off for crops). */
+  fixes: { anisotropy: boolean; alphaToCoverage: boolean }
   /** Aborting disposes the viewer, also while the model is still loading. */
   signal: AbortSignal
   /** Called once the live canvas holds a rendered, presented frame. */
@@ -346,28 +349,28 @@ function disposeObject(root: Object3D): void {
  */
 const TRANSCODE_WATCHDOG_MS = 15_000
 
-function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promise<GLTF> {
-  return new Promise<GLTF>((resolve, reject) => {
-    let watchdog = 0
-    loader.load(
-      url,
-      (gltf) => {
-        window.clearTimeout(watchdog)
-        resolve(gltf)
-      },
-      (event) => {
-        if (watchdog === 0 && event.lengthComputable && event.loaded >= event.total) {
-          watchdog = window.setTimeout(() => {
-            reject(new ContractError('model parse/transcode did not finish in time'))
-          }, TRANSCODE_WATCHDOG_MS)
-        }
-      },
-      (error) => {
-        window.clearTimeout(watchdog)
-        reject(error instanceof Error ? error : new ContractError('model load failed'))
-      },
-    )
+async function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promise<GLTF> {
+  // The download is bounded by the card's start timeout; parse + transcode by the watchdog.
+  const fileLoader = new FileLoader(loader.manager)
+  fileLoader.setResponseType('arraybuffer')
+  const data = await fileLoader.loadAsync(url)
+  if (!(data instanceof ArrayBuffer)) {
+    throw new ContractError('model: not binary')
+  }
+  let watchdog = 0
+  const timeout = new Promise<never>((_resolve, reject) => {
+    watchdog = window.setTimeout(() => {
+      reject(new ContractError('model parse/transcode did not finish in time'))
+    }, TRANSCODE_WATCHDOG_MS)
   })
+  try {
+    return await Promise.race([
+      loader.parseAsync(data, url.slice(0, url.lastIndexOf('/') + 1)),
+      timeout,
+    ])
+  } finally {
+    window.clearTimeout(watchdog)
+  }
 }
 
 /** The GPU name, unmasked where the browser allows it (used only for the tier decision). */
@@ -520,7 +523,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
   // V-3: palm fronds are alpha-tested; alpha-to-coverage uses the MSAA samples to soften them.
   const vegetation = materials.get('MAT_vegetation')
-  if (vegetation) {
+  if (vegetation && options.fixes.alphaToCoverage) {
     vegetation.alphaToCoverage = true
     vegetation.needsUpdate = true
   }
@@ -538,7 +541,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     room.envMapIntensity = options.look.roomEnvIntensity
   }
   // V-2: sharper window bands at DPR 2 (anisotropic filtering of the façade emissive maps).
-  const anisotropy = Math.min(FACADE_ANISOTROPY, renderer.capabilities.getMaxAnisotropy())
+  const anisotropy = options.fixes.anisotropy
+    ? Math.min(FACADE_ANISOTROPY, renderer.capabilities.getMaxAnisotropy())
+    : 1
   for (const name of FACADE_MATERIALS) {
     const map = materials.get(name)?.emissiveMap
     if (map) {
