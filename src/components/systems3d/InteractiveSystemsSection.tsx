@@ -1,4 +1,5 @@
 import type React from 'react'
+import { Suspense } from 'react'
 
 import { Eyebrow } from '@/components/Eyebrow'
 import { resolveMediaAsset } from '@/components/media-utils'
@@ -6,25 +7,27 @@ import { getDictionary, type SupportedLocale } from '@/i18n'
 import type { HomePage } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
-import styles from './InteractiveSystemsSection.module.css'
-import { RELEASE_BASE_PATH } from './renderContract'
 import { isSystemId } from './contract'
+import styles from './InteractiveSystemsSection.module.css'
 import type { RelatedProjectsBySystem } from './relatedProjects'
+import { RelatedProjectsLoader } from './RelatedProjectsLoader'
+import { RELEASE_BASE_PATH } from './renderContract'
 import { getSystems3dStrings } from './strings'
-import { type ExplorerSystem, SystemsExplorer } from './SystemsExplorer'
+import { type ExplorerSystem, SystemsExplorer, type SystemsExplorerProps } from './SystemsExplorer'
 
 type InteractiveSystemsData = HomePage['interactiveSystems']
+type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['systems']>[number]
 
 const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
 const POSTER_SIZES = '(max-width: 1279px) 100vw, 600px'
 const POSTER_WIDTHS = [828, 1440, 2048] as const
+const NO_RELATED_PROJECTS: RelatedProjectsBySystem = {}
 
 function posterSrcSet(format: 'webp' | 'jpg'): string {
   return POSTER_WIDTHS.map((w) => `${STILLS_PATH}/hero_${String(w)}.${format} ${String(w)}w`).join(
     ', ',
   )
 }
-type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['systems']>[number]
 
 /** Class names of the split section head shared with other home sections (stay in `page.module.css`). */
 export interface InteractiveSystemsHeadClassNames {
@@ -40,13 +43,12 @@ export interface InteractiveSystemsSectionProps {
   locale: SupportedLocale
   /** Renders the `H2` title with its gold accent segment (`renderAccentHeading(title, 'interactive')`). */
   renderHeading: (title: string) => React.ReactNode
-  /** Up to 3 published projects per system (`getRelatedProjectsBySystem`, server-side, cached). */
-  relatedProjects?: RelatedProjectsBySystem
 }
 
 /**
- * Home section 4, "Interactive Systems" (`111:1608`, `handoff/tasks/P3-T5.md` E3 step 1).
- * Moved verbatim out of `src/app/(frontend)/[locale]/page.tsx`; renders the same markup.
+ * Home section 4, "Interactive Systems" (`111:1608`, `handoff/tasks/P3-T5.md`).
+ * The related projects are read inside the section (C3-1): `RelatedProjectsLoader` streams in behind
+ * a Suspense boundary whose fallback is the same explorer without the panel.
  */
 export function InteractiveSystemsSection({
   companyName,
@@ -54,7 +56,6 @@ export function InteractiveSystemsSection({
   headClassNames,
   locale,
   renderHeading,
-  relatedProjects = {},
 }: InteractiveSystemsSectionProps): React.JSX.Element | null {
   const interactiveEnabled = data?.enabled !== false
   const interactiveEyebrow = data?.eyebrow?.trim() || null
@@ -90,6 +91,33 @@ export function InteractiveSystemsSection({
     }),
   )
 
+  const explorerProps: Omit<SystemsExplorerProps, 'related'> = {
+    badgeLabel: dict.home.interactive3dBadge,
+    locale,
+    openLabel: data?.liveModelLabel?.trim() || dict.actions.openLive3dModel,
+    poster: (
+      <picture className={styles.stillPicture}>
+        <source sizes={POSTER_SIZES} srcSet={posterSrcSet('webp')} type="image/webp" />
+        {/* A plain <img>: next/image would re-encode the still that the live first frame must match. */}
+        <img
+          alt={posterAlt}
+          className={styles.buildingRender}
+          decoding="async"
+          height={2048}
+          loading="lazy"
+          sizes={POSTER_SIZES}
+          src={`${STILLS_PATH}/hero_1440.jpg`}
+          srcSet={posterSrcSet('jpg')}
+          width={2048}
+        />
+      </picture>
+    ),
+    posterAlt,
+    relatedHeading: dict.home.relatedProjectsHeading,
+    strings,
+    systems: explorerSystems,
+  }
+
   return (
     <section
       className={styles.interactiveSection}
@@ -111,33 +139,9 @@ export function InteractiveSystemsSection({
           ) : null}
         </div>
 
-        <SystemsExplorer
-          badgeLabel={dict.home.interactive3dBadge}
-          locale={locale}
-          openLabel={data?.liveModelLabel?.trim() || dict.actions.openLive3dModel}
-          poster={
-            <picture className={styles.stillPicture}>
-              <source sizes={POSTER_SIZES} srcSet={posterSrcSet('webp')} type="image/webp" />
-              {/* A plain <img>: next/image would re-encode the still that the live first frame must match. */}
-              <img
-                alt={posterAlt}
-                className={styles.buildingRender}
-                decoding="async"
-                height={2048}
-                loading="lazy"
-                sizes={POSTER_SIZES}
-                src={`${STILLS_PATH}/hero_1440.jpg`}
-                srcSet={posterSrcSet('jpg')}
-                width={2048}
-              />
-            </picture>
-          }
-          posterAlt={posterAlt}
-          related={relatedProjects}
-          relatedHeading={dict.home.relatedProjectsHeading}
-          strings={strings}
-          systems={explorerSystems}
-        />
+        <Suspense fallback={<SystemsExplorer {...explorerProps} related={NO_RELATED_PROJECTS} />}>
+          <RelatedProjectsLoader {...explorerProps} data={data} />
+        </Suspense>
       </div>
     </section>
   )

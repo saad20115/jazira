@@ -9,7 +9,8 @@ import { isSystemId, type SystemId } from './contract'
 /**
  * Related projects per system (`handoff/tasks/P3-T5.md` §6): up to 3 published projects whose
  * `scope` contains one of the system's `disciplines`, read through the cached, tagged CMS reader
- * (`getProjects`, published only). Plain data, passed to the client card.
+ * (`getProjects`, published only). Plain data, passed to the client card. Errors propagate; the
+ * caller (`RelatedProjectsLoader`) logs once and renders without the panel.
  */
 
 export const RELATED_PROJECTS_LIMIT = 3
@@ -45,12 +46,12 @@ export async function getRelatedProjectsBySystem(
       }
       const results = await Promise.all(
         disciplines.map((discipline) =>
-          getProjects(locale, { discipline, limit: RELATED_PROJECTS_LIMIT }).catch(() => null),
+          getProjects(locale, { discipline, limit: RELATED_PROJECTS_LIMIT }),
         ),
       )
       const seen = new Set<string>()
       const projects: RelatedProject[] = []
-      for (const doc of results.flatMap((result) => result?.docs ?? [])) {
+      for (const doc of results.flatMap((result) => result.docs)) {
         const key = String(doc.id)
         if (seen.has(key) || !doc.slug || projects.length >= RELATED_PROJECTS_LIMIT) {
           continue

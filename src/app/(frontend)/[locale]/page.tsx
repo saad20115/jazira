@@ -14,7 +14,6 @@ import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-ut
 import { ProjectCard } from '@/components/ProjectCard'
 import { ServicesCarousel } from '@/components/ServicesCarousel'
 import { InteractiveSystemsSection } from '@/components/systems3d/InteractiveSystemsSection'
-import { getRelatedProjectsBySystem } from '@/components/systems3d/relatedProjects'
 import {
   buildHreflangAlternates,
   DEFAULT_LOCALE,
@@ -412,12 +411,6 @@ export default async function LocaleHomePage({
     mainServices.length > 0 || coreServicesTitle || coreServicesIntro,
   )
 
-  // 4. Interactive Systems section data (`111:1608`)
-  const interactiveRelatedProjects = await getRelatedProjectsBySystem(
-    locale,
-    homePage?.interactiveSystems,
-  ).catch(() => ({}))
-
   // 5. Trusted by Industry Leaders / Stats section data (`18:285`)
   const statsSection = homePage?.statsSection
   const statsEnabled = statsSection?.enabled !== false
@@ -680,7 +673,6 @@ export default async function LocaleHomePage({
             heading: styles.sectionHeadingDark,
           }}
           locale={locale}
-          relatedProjects={interactiveRelatedProjects}
           renderHeading={(title) => renderAccentHeading(title, 'interactive')}
         />
 
