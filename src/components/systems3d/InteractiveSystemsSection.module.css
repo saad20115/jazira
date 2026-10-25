@@ -283,6 +283,29 @@
   color: var(--text-body);
 }
 
+.showIn3dButton {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 44px;
+  margin-block-start: var(--space-12);
+  padding-block: var(--space-8);
+  padding-inline: var(--space-16);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--gold-500);
+  background-color: var(--white);
+  color: var(--navy-950);
+  cursor: pointer;
+}
+
+.showIn3dButton[aria-pressed='true'] {
+  background-color: var(--gold-500);
+}
+
+.showIn3dButton:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
 .relatedProjectsRow {
   display: flex;
   flex-wrap: wrap;

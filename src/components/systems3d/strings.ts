@@ -21,6 +21,9 @@ export interface Systems3dStrings {
   resetView: string
   exitSystem: string
   allProjects: string
+  showIn3d: string
+  /** Accessible name of a row's "Show in 3D" button; `{system}` is replaced by the row title. */
+  showIn3dName: string
   hotspots: Readonly<Record<HotspotLabelId, string>>
 }
 
@@ -65,6 +68,8 @@ export const SYSTEMS3D_STRINGS: Readonly<Record<SupportedLocale, Systems3dString
     resetView: 'Reset view',
     exitSystem: 'Exit system',
     allProjects: 'All related projects',
+    showIn3d: 'Show in 3D',
+    showIn3dName: 'Show {system} in 3D',
     hotspots: {
       chillers: 'Chillers',
       cooling_towers: 'Cooling towers',
@@ -104,6 +109,8 @@ export const SYSTEMS3D_STRINGS: Readonly<Record<SupportedLocale, Systems3dString
     resetView: 'إعادة ضبط العرض',
     exitSystem: 'الخروج من النظام',
     allProjects: 'كل المشاريع ذات الصلة',
+    showIn3d: 'اعرض بالـ 3D',
+    showIn3dName: 'اعرض {system} بالـ 3D',
     hotspots: {
       chillers: 'المبرّدات',
       cooling_towers: 'أبراج التبريد',
@@ -132,6 +139,11 @@ export const SYSTEMS3D_STRINGS: Readonly<Record<SupportedLocale, Systems3dString
       access_control: 'نظام التحكم في الدخول',
     },
   },
+}
+
+/** The accessible name of a row's "Show in 3D" button. */
+export function showIn3dLabel(strings: Systems3dStrings, systemTitle: string): string {
+  return strings.showIn3dName.replace('{system}', systemTitle)
 }
 
 export function getSystems3dStrings(locale: SupportedLocale): Systems3dStrings {

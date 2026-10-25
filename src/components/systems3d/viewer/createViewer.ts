@@ -35,7 +35,7 @@ import {
 } from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js'
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
+import { type GLTF, GLTFLoader } from 'three/addons/loaders/GLTFLoader.js'
 import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js'
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js'
@@ -234,6 +234,37 @@ function disposeObject(root: Object3D): void {
   })
 }
 
+/**
+ * Once the GLB bytes are in, parsing and KTX2 transcoding get `TRANSCODE_WATCHDOG_MS`. A transcoder
+ * worker that cannot start (e.g. its CSP lacks what H3b grants) never answers, so without this the
+ * card would wait for the whole start timeout before falling back to the stills.
+ */
+const TRANSCODE_WATCHDOG_MS = 15_000
+
+function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promise<GLTF> {
+  return new Promise<GLTF>((resolve, reject) => {
+    let watchdog = 0
+    loader.load(
+      url,
+      (gltf) => {
+        window.clearTimeout(watchdog)
+        resolve(gltf)
+      },
+      (event) => {
+        if (watchdog === 0 && event.lengthComputable && event.loaded >= event.total) {
+          watchdog = window.setTimeout(() => {
+            reject(new ContractError('model parse/transcode did not finish in time'))
+          }, TRANSCODE_WATCHDOG_MS)
+        }
+      },
+      (error) => {
+        window.clearTimeout(watchdog)
+        reject(error instanceof Error ? error : new ContractError('model load failed'))
+      },
+    )
+  })
+}
+
 /** The GPU name, unmasked where the browser allows it (used only for the tier decision). */
 function readGpuRenderer(renderer: WebGLRenderer): string | null {
   const gl = renderer.getContext()
@@ -298,7 +329,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   let extras: ValidatedExtras
   let nodes: Map<string, Object3D>
   try {
-    const gltf = await loader.loadAsync(MODEL_FILES[tier])
+    const gltf = await loadWithTranscodeWatchdog(loader, MODEL_FILES[tier])
     if (isDisposed()) {
       throw new ContractError('disposed while loading')
     }

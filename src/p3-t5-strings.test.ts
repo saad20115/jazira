@@ -3,7 +3,7 @@ import path from 'node:path'
 
 import { describe, expect, it } from 'vitest'
 
-import { HOTSPOT_LABEL_IDS, SYSTEMS3D_STRINGS } from '@/components/systems3d/strings'
+import { HOTSPOT_LABEL_IDS, showIn3dLabel, SYSTEMS3D_STRINGS } from '@/components/systems3d/strings'
 
 function flatten(value: unknown, prefix = ''): Map<string, unknown> {
   const out = new Map<string, unknown>()
@@ -67,5 +67,14 @@ describe('P3-T5 systems3d strings', () => {
         expect(/[0-9٠-٩]/.test(label), `${locale}: ${label}`).toBe(false)
       }
     }
+  })
+
+  it('the "Show in 3D" accessible name includes the system title in both locales', () => {
+    expect(showIn3dLabel(SYSTEMS3D_STRINGS.en, 'HVAC & Chilled Water')).toBe(
+      'Show HVAC & Chilled Water in 3D',
+    )
+    const ar = showIn3dLabel(SYSTEMS3D_STRINGS.ar, 'التكييف والمياه المبردة')
+    expect(ar).toContain('التكييف والمياه المبردة')
+    expect(ar).not.toContain('{system}')
   })
 })

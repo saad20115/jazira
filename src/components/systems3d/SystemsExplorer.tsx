@@ -10,7 +10,7 @@ import type { SystemId } from './contract'
 import { hashForSystem, systemFromHash } from './hash'
 import styles from './InteractiveSystemsSection.module.css'
 import type { RelatedProjectsBySystem } from './relatedProjects'
-import type { Systems3dStrings } from './strings'
+import { showIn3dLabel, type Systems3dStrings } from './strings'
 import { SystemsCard } from './SystemsCard'
 
 export interface ExplorerSystem {
@@ -35,8 +35,10 @@ export interface SystemsExplorerProps {
 }
 
 /**
- * At rest the first row is expanded as in Figma, without entering its system: the card shows the
- * overview (first paint = the hero still). Opening a row, or a `#systems-<id>` hash, enters it.
+ * CTO rules (2026-10-25): at rest the first row is expanded as in Figma and nothing is entered (no
+ * hash; the card shows the overview). Opening a collapsed row enters its system; every expanded row
+ * has a "Show in 3D" button (the way into the pre-expanded row); collapsing the entered row exits;
+ * a `#systems-<id>` hash on load enters that system and expands its row. Focus never moves.
  */
 const DEFAULT_EXPANDED_INDEX = 0
 
@@ -88,23 +90,26 @@ export function SystemsExplorer({
     }
   }, [indexOfSystem])
 
+  const enter = (system: SystemId | null): void => {
+    setEntered(system)
+    writeHash(system)
+  }
+
   const toggle = (idx: number, nextExpanded: boolean): void => {
     const system = systems[idx]?.system ?? null
     if (nextExpanded) {
       setExpandedIndex(idx)
-      setEntered(system)
-      writeHash(system)
+      enter(system)
     } else {
       setExpandedIndex(null)
-      setEntered(null)
-      writeHash(null)
+      if (system !== null && system === entered) {
+        enter(null)
+      }
     }
   }
 
   const exitSystem = (): void => {
-    setExpandedIndex(null)
-    setEntered(null)
-    writeHash(null)
+    enter(null)
   }
 
   return (
@@ -132,7 +137,25 @@ export function SystemsExplorer({
             const badge = String(idx + 1).padStart(2, '0')
             return (
               <AccordionItem
-                body={<p className={`${styles.systemDescription} t-body-m`}>{row.text}</p>}
+                body={
+                  <>
+                    <p className={`${styles.systemDescription} t-body-m`}>{row.text}</p>
+                    {row.system ? (
+                      <button
+                        aria-label={showIn3dLabel(strings, row.title)}
+                        aria-pressed={entered === row.system}
+                        className={`${styles.showIn3dButton} t-label-button`}
+                        data-show-in-3d={row.system}
+                        onClick={() => {
+                          enter(row.system)
+                        }}
+                        type="button"
+                      >
+                        {strings.showIn3d}
+                      </button>
+                    ) : null}
+                  </>
+                }
                 defaultExpanded={idx === DEFAULT_EXPANDED_INDEX}
                 id={row.key}
                 key={row.key}
