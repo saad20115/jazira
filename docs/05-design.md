@@ -189,3 +189,62 @@ Binding for Phase 3. They fill what the Figma file does not specify.
       golds.
     - Every text/background token pair used on public pages is listed with its computed ratio in
       the P3-T10 a11y report.
+
+20. **Motion system (owner, 2026-10-25: "the site feels dead").** Figma defines no page-level motion
+    (`get_motion_context` on 13:2 returns nothing), so this is the CTO's spec. It applies to **every**
+    public page. Character: calm, premium and engineered. Nothing bounces or spins for show.
+    - **Tokens** (`design/tokens.json` → `tokens.css`):
+      - durations: `--motion-fast` 160 ms, `--motion-base` 260 ms, `--motion-slow` 600 ms,
+        `--motion-reveal` 700 ms;
+      - easing: `--ease-out` `cubic-bezier(.22,1,.36,1)`, `--ease-in-out` `cubic-bezier(.65,0,.35,1)`;
+      - distances: `--reveal-distance` 24 px, `--hover-lift` 4 px (cards 6 px);
+      - stagger: `--stagger` 80 ms, at most 6 steps.
+    - **Hard rules:**
+      - animate `transform`, `opacity` and `clip-path` only, never layout properties;
+      - no CLS;
+      - **never** delay or hide the LCP element: the hero h1 is never at `opacity:0`;
+      - **content is visible without JS.** Hidden "before reveal" states apply only under
+        `html[data-motion="on"]`, which a script sets only when `IntersectionObserver` exists. If the
+        script fails, everything is simply visible (lesson from P3-T4 R-26);
+      - `prefers-reduced-motion: reduce` → every reveal, count-up, parallax and loop is off, and
+        content is static and final;
+      - hover effects run only under `(hover:hover) and (pointer:fine)`, and the same effect also
+        appears on `:focus-visible`;
+      - no animation library: one shared IntersectionObserver, CSS for the rest;
+      - CSP-safe: no inline styles, CSSOM `setProperty` only (H3a);
+      - motion starts after the intro splash ends (`html[data-intro="seen"]` or no intro).
+    - **Catalogue:**
+      1. **Section reveal** (every section and every card group): fade + `translateY(var(--reveal-distance))`
+         over `--motion-reveal`, `--ease-out`, children staggered. It plays once, triggered at 15%
+         visibility. Content already on screen at load reveals immediately.
+      2. **Header:** transparent over the hero. After 24 px of scroll it becomes solid navy with a
+         subtle shadow, and its height eases 88 → 72 px (transform, not layout).
+      3. **Hero:**
+         - the background settles (`scale` 1.06 → 1, 1.4 s) on first view;
+         - the eyebrow, subtitle and CTAs rise in with stagger (the h1 only translates, it never
+           fades from 0);
+         - the "scroll to explore" cue loops gently;
+         - optional parallax of the background (≤ 8%) via `animation-timeline: view()` where it is
+           supported, otherwise none.
+      4. **Buttons:** hover lifts 2 px with a shadow, and the arrow icon slides 4 px towards
+         inline-end. Pressed = `translateY(1px)` (§10). Gold primary gets a soft sheen sweep (≤ 400 ms).
+      5. **Links / nav:** the underline grows from inline-start (`scaleX`); the active link keeps it.
+      6. **Who we are:** the photo reveals with a `clip-path` wipe from inline-start, and the gold
+         corner bracket draws in; the "45+" badge counts up.
+      7. **Service cards (carousel and grid):** hover lifts 6 px with a deeper shadow; the icon
+         scales to 1.08; a gold top rule grows. The featured card keeps its state.
+      8. **Interactive systems:** the accordion animates height via `grid-template-rows 0fr→1fr`;
+         the preview image crossfades per system.
+      9. **Stats:** numbers count up once on first view (0 → value, 1.2 s, ease-out, tabular
+         figures). The suffix ("+", "%") is kept from the CMS text, and non-numeric values stay static.
+      10. **Project cards:** hover zooms the image to 1.06 over 600 ms, darkens the overlay, nudges the
+          title up 4 px and fades in a "View project" arrow. Cards reveal in a stagger.
+      11. **Brand / partner tiles:** hover lifts and turns the border gold. The marquee already
+          pauses on hover (P3-T3).
+      12. **CTA band:** a very slow background gradient drift (≥ 12 s loop, paused when off-screen).
+      13. **Footer:** links slide 2 px on hover; the column groups reveal.
+      14. **Inner pages** (Services, About, Projects, Project detail, Contact) use the same primitives:
+          section reveal, card hovers, header behaviour, count-ups where there are numbers, and the
+          gallery and lightbox per §4.
+      15. **Page transitions:** an optional View Transitions cross-fade (≤ 250 ms) for same-origin
+          navigation, where supported. Never block navigation.

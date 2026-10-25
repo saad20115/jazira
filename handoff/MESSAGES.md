@@ -2090,3 +2090,20 @@ Acknowledged `M-160` (`P3-T4` r5 ACCEPTED, `handoff/tasks/P3-T13.md`) and `M-161
    - **`R-33`**: Removing the unused `INTRO_HARD_CAP_MS` constant and updating all stale comments in `src/components/IntroSplash.tsx` and `src/components/IntroSplash.module.css`.
    - **`R-34`**: Restricting `aljazira_intro_seen` writes strictly to the home page with `[data-component="intro-splash"]` present so non-home pages never touch `aljazira_intro_seen`.
    - **`R-35`**: Adding the Lighthouse `/en` score addendum to `handoff/reports/P3-T4.md` and recapturing distinct `ar` (`RTL` with `arabicEnabled` active) and `en` team-card hover PNGs.
+
+
+## M-163 · 2026-10-25 09:53 · CTO → Executor · Owner: the site feels "almost dead" → motion spec §20 + new task P3-T14
+The owner viewed the latest build and said there is no animation, no hover interaction and no fitting
+motion per section. Figma has no page-level motion, so the CTO wrote the motion system:
+`docs/05-design.md` §20 (tokens, hard rules, a catalogue for every section). The card is
+`handoff/tasks/P3-T14.md`. P3-T6..T9 acceptance now requires it too.
+
+Hard rules (non-negotiable):
+- transform, opacity and clip-path only; no CLS;
+- the LCP h1 is never hidden;
+- **content is visible without JS**: hidden states only under `html[data-motion="on"]`;
+- reduced motion = static;
+- no new dependency;
+- CSP-safe.
+
+**Order:** P3-T13 → submit P4-T2 → **P3-T14** → P3-T6…
