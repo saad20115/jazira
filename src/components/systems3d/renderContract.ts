@@ -75,6 +75,24 @@ export interface LiveLook {
    */
   floorEdgeLevel: number
 }
+
+/**
+ * C3-2: lite tier only, a tint of the paving (its baked light and its base colour) and of the
+ * vegetation base colour, so the ground at the swap reads like the Cycles still (gate: ground band ±8 per channel).
+ */
+export interface LiteGroundTint {
+  paving: readonly [number, number, number]
+  vegetation: readonly [number, number, number]
+}
+/**
+ * Tuned 2026-10-25 (lite, 1440 x DPR 1): the plaza reads light grey-blue like the still and the
+ * palms dark green; the ground band moved from (-14, -18, -23) to about (-7, -10, -14). The rest is
+ * the plinth-top glow and palm geometry/LOD (3D-lead list in the report), not a colour.
+ */
+export const LITE_GROUND_TINT: LiteGroundTint = {
+  paving: [2.2, 2.3, 2.8],
+  vegetation: [0.6, 0.65, 0.4],
+}
 /**
  * Calibrated 2026-10-25 on this machine (Intel HD 530, Chrome/ANGLE D3D11), hero still vs the live
  * first frame at 1440 × DPR 1 (card 600 × 580), lite and full: mean luma −1.6 / −2.0, background top

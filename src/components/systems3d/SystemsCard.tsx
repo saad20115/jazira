@@ -21,7 +21,14 @@ import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import { LiveLabels, type LiveLabelSink } from './LiveLabels'
 import type { SystemRelatedProjects } from './relatedProjects'
-import { DPR_CAP, LIVE_LOOK, type LiveLook, RELEASE_BASE_PATH } from './renderContract'
+import {
+  DPR_CAP,
+  LITE_GROUND_TINT,
+  type LiteGroundTint,
+  LIVE_LOOK,
+  type LiveLook,
+  RELEASE_BASE_PATH,
+} from './renderContract'
 import { StillLabels } from './StillLabels'
 import type { Systems3dStrings } from './strings'
 import { chooseModelTier, decideStart, type DeviceCaps, parseGfxOverride } from './tier'
@@ -108,6 +115,20 @@ function readLookOverride(): LiveLook {
     floorEdgeLevel = 1,
   ] = values
   return { exposureScale, envIntensity, emissiveScale, roomEnvIntensity, floorEdgeLevel }
+}
+
+/** `?ground=pr,pg,pb,vr,vg,vb` overrides the C3-2 lite ground tint in development builds only. */
+function readGroundOverride(): LiteGroundTint {
+  if (process.env.NODE_ENV === 'production') {
+    return LITE_GROUND_TINT
+  }
+  const values =
+    new URLSearchParams(window.location.search).get('ground')?.split(',').map(Number) ?? []
+  if (values.length !== 6 || values.some((v) => !Number.isFinite(v) || v < 0 || v > 4)) {
+    return LITE_GROUND_TINT
+  }
+  const [pr = 1, pg = 1, pb = 1, vr = 1, vg = 1, vb = 1] = values
+  return { paving: [pr, pg, pb], vegetation: [vr, vg, vb] }
 }
 
 /** `?fixes=-aniso,-a2c` switches V-2 / V-3 off in development builds only (before/after crops). */
@@ -208,6 +229,7 @@ export function SystemsCard({
           pixelRatioCap: caps.coarsePointer || caps.phoneLayout ? DPR_CAP.mobile : DPR_CAP.desktop,
           reducedMotion: caps.reducedMotion,
           look: readLookOverride(),
+          groundTint: readGroundOverride(),
           fixes: readFixesOverride(),
           signal: controller.signal,
           onFirstFrame: () => {

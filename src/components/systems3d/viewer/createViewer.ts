@@ -70,6 +70,7 @@ import {
   INTERIOR_MATERIALS,
   KTX2_WORKER_CSP,
   KTX2_WORKER_URL,
+  type LiteGroundTint,
   type LiveLook,
   MODEL_FILES,
   type ModelTier,
@@ -93,6 +94,8 @@ export interface ViewerOptions {
   reducedMotion: boolean
   /** V-1 live look calibration (`LIVE_LOOK`). */
   look: LiveLook
+  /** C3-2 ground tint, applied to the lite model only (`LITE_GROUND_TINT`). */
+  groundTint: LiteGroundTint
   /** V-2 / V-3 fixes; both on in production (development builds can switch them off for crops). */
   fixes: { anisotropy: boolean; alphaToCoverage: boolean }
   /** Aborting disposes the viewer, also while the model is still loading. */
@@ -534,6 +537,15 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
   for (const material of materials.values()) {
     material.emissiveIntensity *= options.look.emissiveScale
+  }
+  if (tier === 'lite') {
+    const [pr, pg, pb] = options.groundTint.paving
+    const paving = materials.get('MAT_paving')
+    // The paving is lit both by its baked site light (emissive) and by the moon (base colour).
+    paving?.emissive.multiply(new Color(pr, pg, pb))
+    paving?.color.multiply(new Color(pr, pg, pb))
+    const [vr, vg, vb] = options.groundTint.vegetation
+    materials.get('MAT_vegetation')?.color.multiply(new Color(vr, vg, vb))
   }
   // V-3: palm fronds are alpha-tested; alpha-to-coverage uses the MSAA samples to soften them.
   const vegetation = materials.get('MAT_vegetation')
