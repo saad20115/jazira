@@ -1,0 +1,6 @@
+$ git rev-parse HEAD
+6a9a20229dd9cff60e69de0916a4b0fc21edcfd5
+$ git status --short
+?? scripts/evidence/p3-t5-seam-proof.mjs
+?? scripts/evidence/p3-t5-setup-local.mjs
+build_id: MVpqHgkwP331KxHHafdGF

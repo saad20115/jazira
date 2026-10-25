@@ -1,0 +1,24 @@
+$ git rev-parse HEAD
+6a9a20229dd9cff60e69de0916a4b0fc21edcfd5
+$ git status --short
+ M src/app/(frontend)/[locale]/page.module.css
+ M src/app/(frontend)/[locale]/page.tsx
+?? docs/reports/evidence/P3-T5/
+?? scripts/evidence/p3-t5-seam-proof.mjs
+?? scripts/evidence/p3-t5-setup-local.mjs
+?? src/components/systems3d/
+?? src/p3-t5-seam.test.ts
+
+
+/en normalized full HTML: 3 changed lines
+/en raw section-4 markup: 2 changed lines (unnormalized)
+/en @1440: computed styles of 70 elements identical=true (0 changed lines)
+/en @1440: section screenshot 1440x922, differing pixels: 0
+/en @390: computed styles of 70 elements identical=true (0 changed lines)
+/en @390: section screenshot 390x1374, differing pixels: 0
+/ar normalized full HTML: 3 changed lines
+/ar raw section-4 markup: 2 changed lines (unnormalized)
+/ar @1440: computed styles of 70 elements identical=true (0 changed lines)
+/ar @1440: section screenshot 1440x928, differing pixels: 0
+/ar @390: computed styles of 70 elements identical=true (0 changed lines)
+/ar @390: section screenshot 390x1448, differing pixels: 0
