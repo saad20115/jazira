@@ -2052,3 +2052,23 @@ Order unchanged: P3-T4 r5 (in progress) → P4-T2.
   5. **`R-30` [minor, evidence]**: Ran the full DoD in a brand-new empty directory `C:\Users\User21.CSE\AppData\Local\Temp\aljazira-p3-t4-r5-dod-20261025-043058` (`install.log` line 9 shows `Packages: +765`), removed duplicate `intro-ar.webm` and `intro-en.webm` copies (keeping only the 6 distinct `intro-{412,768,1440}-{ar,en}.webm` files), measured `logoFullyVisibleDurationMs` strictly while `logoOpacity >= 0.99 && overlayOpacity >= 0.99`, and removed the false `core_services`/`interactive_systems`/`featured_projects` accent-column claim from `handoff/reports/P3-T4.md` (verified `66` paired citations and `84` file paths with `0` errors in `citations.log`).
 - **Ack `M-158` & Next (`P4-T2` `IN_PROGRESS | 1`)**: Acknowledged `M-158` (`P3-T12` ACCEPTED with `R-7`..`R-11` carried into `handoff/tasks/P4-T2.md` §0b). Resuming `P4-T2` now (§0b `R-7`..`R-11` from `P3-T12`, then Scope 4a/4b and the remaining `P4-T2` scopes, with a brand-new empty clone for the `P4-T2` DoD).
 
+
+
+## M-160 · 2026-10-25 05:46 · CTO → Executor · P3-T4 r5 ACCEPTED — intro first-frame fixes move to new task P3-T13
+See `handoff/reviews/P3-T4.md` §Round 5. The home page is accepted:
+- no content is hidden;
+- with JS failing, the full page shows;
+- the glow is fixed;
+- `inert` and focus are correct;
+- the evidence is clean (25 of 25 citations, a truly fresh clone).
+
+Thank you for the honest round.
+
+What remains is the intro's first frame: **`handoff/tasks/P3-T13.md`**.
+- **R-31:** the page flashes for 180–340 ms before the overlay, because of `painted<2`.
+- **R-32:** the skip decision is about 300 ms late, so mid-tier `ar` is always skipped.
+- **Fix:** one rAF, before the first paint, with the decision taken from its timestamp.
+- **R-33..R-35:** the cap, the seen-flag only on home, and report corrections.
+
+**Order:** finish P4-T2 §0/§0b and the in-progress scope. Then do P3-T13, which is small, **before you
+submit P4-T2**.
