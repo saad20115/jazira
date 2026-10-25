@@ -1147,9 +1147,18 @@ export async function runP3T4Evidence({
 
   try {
     // =========================================================================
-    // 1. R-17 & R-19 Verification: TeamCard Enter 2 clipping & hover shadow fade
+    // 1. R-17, R-19 & R-35 Verification: TeamCard Enter 2 clipping & distinct ar/en hover shadow fade
     // =========================================================================
     if (mode === 'all' || mode === 'dev-styleguide') {
+      if (!token) {
+        token = await ensureAdminAuthToken(baseUrl)
+      }
+      await apiRequest(baseUrl, token, '/api/globals/site-settings', {
+        method: 'POST',
+        locale: 'en',
+        body: { arabicEnabled: true },
+      })
+
       const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } })
       const page = await ctx.newPage()
       await page.goto(`${baseUrl}/en/styleguide`, { waitUntil: 'networkidle' })
@@ -1172,23 +1181,30 @@ export async function runP3T4Evidence({
         )
         .first()
       await hoverEnLocator.scrollIntoViewIfNeeded()
-      await saveCompressedPng(
-        await hoverEnLocator.screenshot(),
-        path.join(reportsPhase3Dir, 'team-card-hover-shadow-en.png'),
-      )
+      const hoverEnPath = path.join(reportsPhase3Dir, 'team-card-hover-shadow-en.png')
+      await saveCompressedPng(await hoverEnLocator.screenshot(), hoverEnPath)
 
       await page.goto(`${baseUrl}/ar/styleguide`, { waitUntil: 'networkidle' })
       await page.evaluate(() => document.fonts.ready)
+      const arStyleguideDir = await page.evaluate(() => document.documentElement.dir)
+      if (arStyleguideDir !== 'rtl') {
+        throw new Error(
+          `Expected /ar/styleguide to render RTL (dir="rtl"), got dir="${arStyleguideDir}"`,
+        )
+      }
       const hoverArLocator = page
         .locator(
           '[data-styleguide-subsection="team-card-states"] [data-component="team-card"][data-state="Hover"]',
         )
         .first()
       await hoverArLocator.scrollIntoViewIfNeeded()
-      await saveCompressedPng(
-        await hoverArLocator.screenshot(),
-        path.join(reportsPhase3Dir, 'team-card-hover-shadow-ar.png'),
-      )
+      const hoverArPath = path.join(reportsPhase3Dir, 'team-card-hover-shadow-ar.png')
+      await saveCompressedPng(await hoverArLocator.screenshot(), hoverArPath)
+      if (Buffer.compare(fs.readFileSync(hoverEnPath), fs.readFileSync(hoverArPath)) === 0) {
+        throw new Error(
+          'R-35 violation: team-card-hover-shadow-en.png and team-card-hover-shadow-ar.png are byte-identical',
+        )
+      }
 
       const r17Audit = await page.evaluate(() => {
         const card = document.querySelector(

@@ -11,11 +11,17 @@ import { SEED_ADMIN_USER } from '../../src/seed/materials.ts'
 import { clearGlobalsReferencesBeforeReseed } from '../../src/seed/p4-t2.ts'
 
 const outDirArg = process.argv.find((a) => a.startsWith('--out-dir='))
+const skipSeedRuns = process.argv.includes('--skip-seed-runs')
 const EVIDENCE_DIR = path.resolve(
   process.cwd(),
   outDirArg ? outDirArg.slice('--out-dir='.length) : 'docs/reports/evidence/P4-T2/r1',
 )
 const SCREENSHOT_DIR = path.resolve(process.cwd(), 'docs/reports/phase-4/P4-T2/r1')
+
+const previewSecret = crypto
+  .createHmac('sha256', process.env.PAYLOAD_SECRET ?? '')
+  .update('aljazira-live-preview-secret-v1')
+  .digest('hex')
 
 function ensureDir(dir) {
   fs.mkdirSync(dir, { recursive: true })
@@ -47,22 +53,24 @@ async function run() {
 
   // 1. Clean Phase 4 collections + global references in DB so Run 1 starts on a clean empty baseline
   const payload = await getPayload({ config: payloadConfig })
-  await clearGlobalsReferencesBeforeReseed(payload)
-  for (const collection of [
-    'projects',
-    'services',
-    'team',
-    'stats',
-    'materials',
-    'brands',
-    'media',
-  ]) {
-    await payload.delete({
-      collection,
-      where: { id: { exists: true } },
-      context: { disableRevalidate: true },
-      overrideAccess: true,
-    })
+  if (!skipSeedRuns) {
+    await clearGlobalsReferencesBeforeReseed(payload)
+    for (const collection of [
+      'projects',
+      'services',
+      'team',
+      'stats',
+      'materials',
+      'brands',
+      'media',
+    ]) {
+      await payload.delete({
+        collection,
+        where: { id: { exists: true } },
+        context: { disableRevalidate: true },
+        overrideAccess: true,
+      })
+    }
   }
 
   // Ensure an admin user exists for /admin & /api/preview screenshots
@@ -84,124 +92,132 @@ async function run() {
     overrideAccess: true,
   })
 
-  // 2. Run 1: First-run baseline on an empty DB (`pnpm seed` -> seed_exit_code=0)
-  const run1Res = spawnSync(pnpmCmd, ['seed'], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-  })
-  const run1Log = [
-    '$ pnpm seed',
-    run1Res.stdout || '',
-    run1Res.stderr || '',
-    `[seed_exit_code=${String(run1Res.status)}]`,
-  ]
-    .filter(Boolean)
-    .join('\n')
-  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-1.log'), `${run1Log}\n`, 'utf8')
-  process.stdout.write(`${run1Log}\n`)
-  if (run1Res.status !== 0) {
-    throw new Error(
-      `Expected first-run pnpm seed on empty DB to exit 0, got ${String(run1Res.status)}`,
-    )
-  }
+  if (!skipSeedRuns) {
+    // 2. Run 1: First-run baseline on an empty DB (`pnpm seed` -> seed_exit_code=0)
+    const run1Res = spawnSync(pnpmCmd, ['seed'], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      shell: process.platform === 'win32',
+    })
+    const run1Log = [
+      '$ pnpm seed',
+      run1Res.stdout || '',
+      run1Res.stderr || '',
+      `[seed_exit_code=${String(run1Res.status)}]`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-1.log'), `${run1Log}\n`, 'utf8')
+    process.stdout.write(`${run1Log}\n`)
+    if (run1Res.status !== 0) {
+      throw new Error(
+        `Expected first-run pnpm seed on empty DB to exit 0, got ${String(run1Res.status)}`,
+      )
+    }
 
-  // 3. Run 2: Rerun `pnpm seed` on a non-empty DB without --reseed (`seed_exit_code=1`)
-  const nonEmptyRefusedRes = spawnSync(pnpmCmd, ['seed'], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-  })
-  const nonEmptyRefusedLog = [
-    '$ pnpm seed',
-    nonEmptyRefusedRes.stdout || '',
-    nonEmptyRefusedRes.stderr || '',
-    `[seed_exit_code=${String(nonEmptyRefusedRes.status)}]`,
-  ]
-    .filter(Boolean)
-    .join('\n')
-  fs.writeFileSync(
-    path.join(EVIDENCE_DIR, 'seed-non-empty-refused.log'),
-    `${nonEmptyRefusedLog}\n`,
-    'utf8',
-  )
-  process.stdout.write(`${nonEmptyRefusedLog}\n`)
-  if (nonEmptyRefusedRes.status !== 1) {
-    throw new Error(
-      `Expected pnpm seed on non-empty DB without --reseed to exit 1, got ${String(nonEmptyRefusedRes.status)}`,
+    // 3. Run 2: Rerun `pnpm seed` on a non-empty DB without --reseed (`seed_exit_code=1`)
+    const nonEmptyRefusedRes = spawnSync(pnpmCmd, ['seed'], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      shell: process.platform === 'win32',
+    })
+    const nonEmptyRefusedLog = [
+      '$ pnpm seed',
+      nonEmptyRefusedRes.stdout || '',
+      nonEmptyRefusedRes.stderr || '',
+      `[seed_exit_code=${String(nonEmptyRefusedRes.status)}]`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    fs.writeFileSync(
+      path.join(EVIDENCE_DIR, 'seed-non-empty-refused.log'),
+      `${nonEmptyRefusedLog}\n`,
+      'utf8',
     )
-  }
+    process.stdout.write(`${nonEmptyRefusedLog}\n`)
+    if (nonEmptyRefusedRes.status !== 1) {
+      throw new Error(
+        `Expected pnpm seed on non-empty DB without --reseed to exit 1, got ${String(nonEmptyRefusedRes.status)}`,
+      )
+    }
 
-  // 4. Run 3: `pnpm seed -- --reseed` in development (`seed_exit_code=0`)
-  const reseedDevRes = spawnSync(pnpmCmd, ['seed', '--', '--reseed'], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-  })
-  const reseedDevLog = [
-    '$ pnpm seed -- --reseed',
-    reseedDevRes.stdout || '',
-    reseedDevRes.stderr || '',
-    `[seed_exit_code=${String(reseedDevRes.status)}]`,
-  ]
-    .filter(Boolean)
-    .join('\n')
-  fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-reseed-dev.log'), `${reseedDevLog}\n`, 'utf8')
-  process.stdout.write(`${reseedDevLog}\n`)
-  if (reseedDevRes.status !== 0) {
-    throw new Error(
-      `Expected pnpm seed -- --reseed in development to exit 0, got ${String(reseedDevRes.status)}`,
+    // 4. Run 3: `pnpm seed -- --reseed` in development (`seed_exit_code=0`)
+    const reseedDevRes = spawnSync(pnpmCmd, ['seed', '--', '--reseed'], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      shell: process.platform === 'win32',
+    })
+    const reseedDevLog = [
+      '$ pnpm seed -- --reseed',
+      reseedDevRes.stdout || '',
+      reseedDevRes.stderr || '',
+      `[seed_exit_code=${String(reseedDevRes.status)}]`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-reseed-dev.log'), `${reseedDevLog}\n`, 'utf8')
+    process.stdout.write(`${reseedDevLog}\n`)
+    if (reseedDevRes.status !== 0) {
+      throw new Error(
+        `Expected pnpm seed -- --reseed in development to exit 0, got ${String(reseedDevRes.status)}`,
+      )
+    }
+
+    // 5. Verify NODE_ENV=production guard without --force-production (`seed_exit_code=1`)
+    const prodGuardRes = spawnSync(pnpmCmd, ['seed'], {
+      cwd: process.cwd(),
+      encoding: 'utf8',
+      shell: process.platform === 'win32',
+      env: { ...process.env, NODE_ENV: 'production' },
+    })
+    const prodGuardLog = [
+      '$ NODE_ENV=production pnpm seed',
+      prodGuardRes.stdout || '',
+      prodGuardRes.stderr || '',
+      `[seed_exit_code=${String(prodGuardRes.status)}]`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    fs.writeFileSync(
+      path.join(EVIDENCE_DIR, 'seed-production-guard.log'),
+      `${prodGuardLog}\n`,
+      'utf8',
     )
-  }
+    if (prodGuardRes.status !== 1) {
+      throw new Error(
+        'Expected NODE_ENV=production pnpm seed without --force-production to exit 1!',
+      )
+    }
 
-  // 5. Verify NODE_ENV=production guard without --force-production (`seed_exit_code=1`)
-  const prodGuardRes = spawnSync(pnpmCmd, ['seed'], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-    env: { ...process.env, NODE_ENV: 'production' },
-  })
-  const prodGuardLog = [
-    '$ NODE_ENV=production pnpm seed',
-    prodGuardRes.stdout || '',
-    prodGuardRes.stderr || '',
-    `[seed_exit_code=${String(prodGuardRes.status)}]`,
-  ]
-    .filter(Boolean)
-    .join('\n')
-  fs.writeFileSync(
-    path.join(EVIDENCE_DIR, 'seed-production-guard.log'),
-    `${prodGuardLog}\n`,
-    'utf8',
-  )
-  if (prodGuardRes.status !== 1) {
-    throw new Error('Expected NODE_ENV=production pnpm seed without --force-production to exit 1!')
-  }
-
-  // 6. Verify NODE_ENV=production refuses --reseed even with --force-production (`seed_exit_code=1`)
-  const prodReseedGuardRes = spawnSync(pnpmCmd, ['seed', '--', '--force-production', '--reseed'], {
-    cwd: process.cwd(),
-    encoding: 'utf8',
-    shell: process.platform === 'win32',
-    env: { ...process.env, NODE_ENV: 'production' },
-  })
-  const prodReseedGuardLog = [
-    '$ NODE_ENV=production pnpm seed -- --force-production --reseed',
-    prodReseedGuardRes.stdout || '',
-    prodReseedGuardRes.stderr || '',
-    `[seed_exit_code=${String(prodReseedGuardRes.status)}]`,
-  ]
-    .filter(Boolean)
-    .join('\n')
-  fs.writeFileSync(
-    path.join(EVIDENCE_DIR, 'seed-reseed-production-guard.log'),
-    `${prodReseedGuardLog}\n`,
-    'utf8',
-  )
-  if (prodReseedGuardRes.status !== 1) {
-    throw new Error(
-      'Expected NODE_ENV=production pnpm seed -- --force-production --reseed to exit 1!',
+    // 6. Verify NODE_ENV=production refuses --reseed even with --force-production (`seed_exit_code=1`)
+    const prodReseedGuardRes = spawnSync(
+      pnpmCmd,
+      ['seed', '--', '--force-production', '--reseed'],
+      {
+        cwd: process.cwd(),
+        encoding: 'utf8',
+        shell: process.platform === 'win32',
+        env: { ...process.env, NODE_ENV: 'production' },
+      },
     )
+    const prodReseedGuardLog = [
+      '$ NODE_ENV=production pnpm seed -- --force-production --reseed',
+      prodReseedGuardRes.stdout || '',
+      prodReseedGuardRes.stderr || '',
+      `[seed_exit_code=${String(prodReseedGuardRes.status)}]`,
+    ]
+      .filter(Boolean)
+      .join('\n')
+    fs.writeFileSync(
+      path.join(EVIDENCE_DIR, 'seed-reseed-production-guard.log'),
+      `${prodReseedGuardLog}\n`,
+      'utf8',
+    )
+    if (prodReseedGuardRes.status !== 1) {
+      throw new Error(
+        'Expected NODE_ENV=production pnpm seed -- --force-production --reseed to exit 1!',
+      )
+    }
   }
 
   // 7. Start production server (`next start` on port 3000), verify Local API + anonymous REST, and capture screenshots
@@ -532,8 +548,11 @@ async function run() {
             window.sessionStorage.setItem('aljazira_intro_seen', '1')
           })
           const page = await ctx.newPage()
-          // Enable Next.js draftMode via /api/preview
-          await page.goto(`${baseUrl}/api/preview?path=/${locale}`, { waitUntil: 'networkidle' })
+          // Enable Next.js draftMode via /api/preview with HMAC secret
+          await page.goto(
+            `${baseUrl}/api/preview?secret=${previewSecret}&locale=${locale}&path=/`,
+            { waitUntil: 'networkidle' },
+          )
           await page.locator('[data-home-section="partners"]').waitFor({
             state: 'visible',
             timeout: 15000,
@@ -564,9 +583,12 @@ async function run() {
         },
       ])
       const adminPage = await adminCtx.newPage()
-      await adminPage.goto(`${baseUrl}/api/preview?path=/en/styleguide`, {
-        waitUntil: 'networkidle',
-      })
+      await adminPage.goto(
+        `${baseUrl}/api/preview?secret=${previewSecret}&locale=en&path=/styleguide`,
+        {
+          waitUntil: 'networkidle',
+        },
+      )
       await adminPage.evaluate(async () => {
         await document.fonts.ready
       })
@@ -578,9 +600,12 @@ async function run() {
         })
       }
 
-      await adminPage.goto(`${baseUrl}/api/preview?path=/ar/styleguide`, {
-        waitUntil: 'networkidle',
-      })
+      await adminPage.goto(
+        `${baseUrl}/api/preview?secret=${previewSecret}&locale=ar&path=/styleguide`,
+        {
+          waitUntil: 'networkidle',
+        },
+      )
       await adminPage.evaluate(async () => {
         await document.fonts.ready
       })

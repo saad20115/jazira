@@ -1,12 +1,12 @@
 import fs from 'node:fs'
 import path from 'node:path'
+import vm from 'node:vm'
 
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
-  INTRO_HARD_CAP_MS,
   INTRO_MAX_FIRST_PAINT_MS,
   INTRO_PREPAINT_INLINE_SCRIPT,
   INTRO_SPLASH_STORAGE_KEY,
@@ -807,8 +807,10 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
 
       expect(INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(1600)
       expect(INTRO_MAX_FIRST_PAINT_MS).toBe(1200)
-      expect(INTRO_HARD_CAP_MS).toBeLessThanOrEqual(2500)
-      expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('requestAnimationFrame')
+      expect(INTRO_MAX_FIRST_PAINT_MS + INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(2500)
+      expect(INTRO_PREPAINT_INLINE_SCRIPT.match(/requestAnimationFrame/g)?.length).toBe(1)
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('painted')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('getComputedStyle')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('performance.now()')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain("setProperty('--intro-delay','0ms')")
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('body > a[href="#main-content"]')
@@ -816,6 +818,150 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('innerWidth')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setTimeout')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setInterval')
+    })
+
+    it('executes INTRO_PREPAINT_INLINE_SCRIPT in a single rAF before first paint (R-31, R-32) and never touches aljazira_intro_seen on non-home pages or when overlay is absent (R-34)', () => {
+      const runInlineScriptScenario = ({
+        pathname,
+        hasOverlay,
+        rafTs,
+      }: {
+        pathname: string
+        hasOverlay: boolean
+        rafTs: number
+      }) => {
+        const attrs = new Map<string, string>()
+        const inertSet = new Set<string>()
+        const storage = new Map<string, string>()
+        const rafCallbacks: Array<(ts: number) => void> = []
+
+        const makeEl = (tag: string) => ({
+          dataset: {} as Record<string, string>,
+          setAttribute: (k: string, _v: string) => {
+            if (k === 'inert') inertSet.add(tag)
+          },
+          removeAttribute: (k: string) => {
+            if (k === 'inert') inertSet.delete(tag)
+          },
+          addEventListener: () => undefined,
+          focus: () => undefined,
+        })
+
+        const overlayEl = makeEl('overlay')
+        const skipBtnEl = makeEl('skip')
+        const mainEl = makeEl('main')
+        const landmarkEl = makeEl('landmark')
+
+        const fakeDoc = {
+          readyState: 'interactive',
+          documentElement: {
+            style: { setProperty: () => undefined },
+            setAttribute: (k: string, v: string) => attrs.set(k, v),
+            getAttribute: (k: string) => attrs.get(k) ?? null,
+          },
+          querySelector: (sel: string) => {
+            if (sel.includes('data-component="intro-splash"')) {
+              return hasOverlay ? overlayEl : null
+            }
+            if (sel === '[data-intro-skip="true"]') {
+              return hasOverlay ? skipBtnEl : null
+            }
+            return null
+          },
+          querySelectorAll: () => [landmarkEl],
+          getElementById: (id: string) => (id === 'main-content' ? mainEl : null),
+          addEventListener: () => undefined,
+        }
+
+        const fakeWin: Record<string, unknown> = {
+          location: { pathname },
+          matchMedia: () => ({ matches: false }),
+          sessionStorage: {
+            getItem: (k: string) => storage.get(k) ?? null,
+            setItem: (k: string, v: string) => storage.set(k, v),
+          },
+          requestAnimationFrame: (cb: (ts: number) => void) => {
+            rafCallbacks.push(cb)
+            return rafCallbacks.length
+          },
+          addEventListener: () => undefined,
+        }
+
+        const fakePerf = { now: () => Math.min(rafTs, 80) }
+        vm.runInNewContext(INTRO_PREPAINT_INLINE_SCRIPT, {
+          window: fakeWin,
+          document: fakeDoc,
+          performance: fakePerf,
+        })
+
+        const rafCountAfterSync = rafCallbacks.length
+        if (rafCallbacks[0]) {
+          rafCallbacks[0](rafTs)
+        }
+        return {
+          rafCountAfterSync,
+          rafCountAfterFirstFrame: rafCallbacks.length,
+          dataIntro: attrs.get('data-intro') ?? null,
+          seenFlag: storage.get(INTRO_SPLASH_STORAGE_KEY) ?? null,
+          inertApplied: inertSet.has('landmark'),
+          decision: fakeWin.__aljaziraIntroDecision as
+            { action: string; rafMs: number } | undefined,
+        }
+      }
+
+      // 1. Home page (/en) with overlay and rafTs <= 1200 -> active in 1st rAF, no 2nd rAF (R-31, R-32)
+      const homeFast = runInlineScriptScenario({
+        pathname: '/en',
+        hasOverlay: true,
+        rafTs: 420,
+      })
+      expect(homeFast.rafCountAfterSync).toBe(1)
+      expect(homeFast.rafCountAfterFirstFrame).toBe(1)
+      expect(homeFast.dataIntro).toBe('active')
+      expect(homeFast.seenFlag).toBe('1')
+      expect(homeFast.inertApplied).toBe(true)
+      expect(homeFast.decision?.action).toBe('active')
+      expect(homeFast.decision?.rafMs).toBe(420)
+
+      // 2. Home page (/ar) with overlay and rafTs = 1200 (boundary <= 1200) -> active (R-32)
+      const homeBoundary = runInlineScriptScenario({
+        pathname: '/ar',
+        hasOverlay: true,
+        rafTs: 1200,
+      })
+      expect(homeBoundary.dataIntro).toBe('active')
+      expect(homeBoundary.decision?.action).toBe('active')
+
+      // 3. Home page (/en) with overlay and rafTs > 1200 -> skipped_late_first_paint in 1st rAF (R-32)
+      const homeSlow = runInlineScriptScenario({
+        pathname: '/en',
+        hasOverlay: true,
+        rafTs: 1201,
+      })
+      expect(homeSlow.rafCountAfterFirstFrame).toBe(1)
+      expect(homeSlow.dataIntro).toBe('seen')
+      expect(homeSlow.seenFlag).toBe('1')
+      expect(homeSlow.inertApplied).toBe(false)
+      expect(homeSlow.decision?.action).toBe('skipped_late_first_paint')
+
+      // 4. Non-home page (/en/services) slow (> 1200) or fast (<= 1200) -> never writes aljazira_intro_seen (R-34)
+      const servicesSlow = runInlineScriptScenario({
+        pathname: '/en/services',
+        hasOverlay: false,
+        rafTs: 1850,
+      })
+      expect(servicesSlow.rafCountAfterSync).toBe(0)
+      expect(servicesSlow.seenFlag).toBeNull()
+      expect(servicesSlow.dataIntro).toBeNull()
+
+      // 5. Home page without overlay present -> never writes aljazira_intro_seen (R-34)
+      const homeNoOverlay = runInlineScriptScenario({
+        pathname: '/en',
+        hasOverlay: false,
+        rafTs: 1600,
+      })
+      expect(homeNoOverlay.seenFlag).toBeNull()
+      expect(homeNoOverlay.dataIntro).toBeNull()
     })
   })
 })

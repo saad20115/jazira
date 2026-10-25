@@ -10,7 +10,6 @@ import styles from './IntroSplash.module.css'
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
 export const INTRO_MAX_FIRST_PAINT_MS = 1200
 export const INTRO_TOTAL_DURATION_MS = 1200
-export const INTRO_HARD_CAP_MS = 2400
 
 export const INERT_TARGET_SELECTORS = [
   'body > a[href="#main-content"]',
@@ -21,19 +20,19 @@ export const INERT_TARGET_SELECTORS = [
 ] as const
 
 /**
- * First-frame intro script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-22`, `R-23`, `R-27`, `R-29`).
- * - Pure CSS timeline: registers a `requestAnimationFrame` callback and makes the `'seen'` vs `'active'`
- *   decision inside it using the rAF timestamp as the real first frame (`R-27`).
- * - No branches on viewport, timing, connection, user agent, or automation (`R-22`).
- * - If `prefers-reduced-motion: reduce` is active, `sessionStorage` already has `aljazira_intro_seen='1'`,
- *   or the first frame (`rafTs`) arrives later than `1200ms` after `navigationStart`, sets `data-intro="seen"`
- *   and skips the intro (`R-27`).
- * - Otherwise starts the timeline from `0` (`--intro-delay: 0ms`, `1200ms <= 1.6s` total, with both
- *   `logoOpacity === 1` and `overlayOpacity === 1` for `648ms >= 300ms`, ending before `2400ms <= 2.5s`),
- *   sets `inert` on background landmarks (including the skip link) from the inline script (`R-29`),
- *   and moves focus to `#main-content` upon dismiss (`R-29`).
+ * First-frame intro script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-22`, `R-23`, `R-27`, `R-29`, `R-31`..`R-34`).
+ * - Restricted to the home page (`/`, `/en`, `/ar`) with `[data-component="intro-splash"]` present (`R-34`):
+ *   other pages never read or write `aljazira_intro_seen`.
+ * - Registers a single `requestAnimationFrame` callback (`R-31`, `R-32`) whose callback runs before the first
+ *   frame is painted (render-blocking CSS holds the first `rAF` until styles apply).
+ * - Inside that single `rAF`, reads the `rAF` timestamp `rafTs` (ms since `navigationStart`):
+ *   - `<= 1200`: writes `aljazira_intro_seen='1'`, sets `data-intro="active"` and `inert` on background
+ *     landmarks (`R-29`), and starts the `1200ms` CSS keyframe timeline from `0` (`0%..18%` reveal,
+ *     `18%..82%` hold at `opacity: 1` for `768ms >= 300ms`, `82%..100%` fade out, ending at `<= 2400ms <= 2.5s`).
+ *   - `> 1200`: writes `aljazira_intro_seen='1'` and sets `data-intro="seen"` (`R-27`, `R-32`).
+ * - No branches on viewport, UA, connection, or environment (`R-22`).
  */
-export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',scriptMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}var painted=0;var decide=function(rafTs){var perfNow=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var now=Math.max(typeof rafTs==='number'&&rafTs>0?rafTs:0,perfNow);var nowRounded=Math.round(now);if(now>${String(INTRO_MAX_FIRST_PAINT_MS)}){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}setInert(false);window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}var ov=document.querySelector('[data-component="intro-splash"]');if(!ov){if(document.readyState==='loading'){window.requestAnimationFrame(decide);return;}d.setAttribute('data-intro','seen');return;}if(window.getComputedStyle(ov).position!=='fixed'){window.requestAnimationFrame(decide);return;}if(painted<2){painted++;window.requestAnimationFrame(decide);return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}if(splash&&!splash.dataset.introBound){splash.dataset.introBound='1';splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};};window.requestAnimationFrame(decide);}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var p=(window.location&&window.location.pathname)||'';if(p&&!/^\\/(en|ar)?\\/?$/.test(p)){return;}var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':'skipped_seen',scriptMs:scriptNow,rafMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}window.requestAnimationFrame(function(rafTs){var ov=document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])');if(!ov){return;}var now=typeof rafTs==='number'&&rafTs>0?rafTs:(typeof performance==='object'&&typeof performance.now==='function'?performance.now():0);var nowRounded=Math.round(now);try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}if(now>${String(INTRO_MAX_FIRST_PAINT_MS)}){setInert(false);window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,rafMs:nowRounded,nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}if(splash&&!splash.dataset.introBound){splash.dataset.introBound='1';splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,rafMs:nowRounded,nowMs:nowRounded,delayMs:0};});}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
 
 export interface IntroSplashProps {
   className?: string
@@ -107,12 +106,14 @@ export function markIntroSplashSeen(win: Window | undefined): void {
 /**
  * Figma Intro Splash (`28:1609` Start -> `28:1615` Reveal, `docs/05-design.md` §"CTO decisions" #3).
  *
- * - Hidden by default (`display: none`) so without JavaScript the page is immediately usable (`R-14`).
- * - Pre-paint inline script opts in (`data-intro="active"`) on a fresh visit when `performance.now() <= 1200ms`
- *   and sets `--intro-delay` so the overlay is never visible after `2.5s` from `navigationStart` (`R-22`).
- * - One pure-CSS keyframe timeline (`1200ms <= 1.6s`) drives the logo reveal (`0%..25%`), holds the
- *   revealed logo at `opacity: 1` for `600ms` (`25%..75%`, `>= 300ms`), and fades out (`75%..100%`)
- *   ending in `opacity: 0; visibility: hidden; pointer-events: none` with `animation-fill-mode: forwards`.
+ * - Hidden by default (`display: none`) so without JavaScript or `requestAnimationFrame` the page is immediately usable (`R-14`).
+ * - Single-rAF inline script (`R-31`, `R-32`) runs before the first frame is painted on the home page (`R-34`):
+ *   when `rafTs <= 1200ms`, it sets `data-intro="active"` and `inert` (`R-29`) and starts the `1200ms` timeline from `0ms`;
+ *   when `rafTs > 1200ms`, it sets `data-intro="seen"` and skips the intro (`R-27`, `R-32`).
+ * - One pure-CSS keyframe timeline (`1200ms <= 1.6s`) drives the logo reveal (`0%..18%` = `216ms`), holds the
+ *   revealed logo and overlay at `opacity: 1` for `768ms` (`18%..82%`, `>= 300ms`), and fades out (`82%..100%` = `216ms`,
+ *   completing at `rafTs + 1200ms <= 2400ms <= 2.5s`) ending in `opacity: 0; visibility: hidden; pointer-events: none`
+ *   with `animation-fill-mode: forwards`.
  * - React does zero timing or phase re-renders (`R-23`): it handles only Skip, `Escape`, and click,
  *   and removes `inert` on `animationend`.
  */
