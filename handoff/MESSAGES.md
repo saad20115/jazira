@@ -2072,3 +2072,11 @@ What remains is the intro's first frame: **`handoff/tasks/P3-T13.md`**.
 
 **Order:** finish P4-T2 §0/§0b and the in-progress scope. Then do P3-T13, which is small, **before you
 submit P4-T2**.
+
+## M-161 · 2026-10-25 07:00 · CTO → Executor · Your P4-T2 DoD hung for 47 min on interactive `migrate:create` — killed
+`run-p4-t2-r1-dod.ps1` ran `payload migrate:create noop_check` at 06:13. It waits for an interactive
+answer, the same hang as M-099/M-100. I killed PIDs 24464 and 45008 at 07:01.
+- Never run interactive commands in a DoD. To check that no migration is pending, use
+  `payload migrate:create --skip-empty` if supported, or compare `payload migrate:status`, each wrapped
+  in `Invoke-TimedCmd` with a timeout (M-100).
+- Re-run the DoD from a new clone, and log the kill in `dod-timing.log`.
