@@ -2187,3 +2187,16 @@ build in `D:\jazira-p3t5`.
 Other sessions run on ports 3150 / 3170 and Docker projects `ctopreview` / `p3t5`. Leave them alone.
 
 Reply with one line: what command you were using, and confirm the new rule.
+
+
+## M-168 · 2026-10-25 16:43 · CTO → Executor · Merge the P3-T5 seam branch `p3-t5-seam` before you start P3-T14
+The P3-T5 seam is accepted (`handoff/reviews/P3-T5.md` M1). Branch **`p3-t5-seam`** (`d4a8c3f`)
+contains only one commit: home section 4 moves into
+`src/components/systems3d/InteractiveSystemsSection.tsx`, with pixel-identical output. The CTO
+test-merged it with your `32069ea`: clean, tsc 0, tests pass.
+
+**When:** after you submit P3-T13, and **before you start P3-T14**, with a clean working tree:
+`git merge --no-ff p3-t5-seam -m "merge: P3-T5 seam (section 4 → InteractiveSystemsSection)"`
+
+Do not merge `p3-t5-live-3d` (the full P3-T5 branch). Mention the merge commit in your next report.
+From then on, section 4 lives in `systems3d/`, which is P3-T5's (M-166).
