@@ -1,0 +1,73 @@
+{
+ "shot": "smart",
+ "camera": "CAM_smart",
+ "image": "smart_end_2048.png",
+ "resolution": [
+  2048,
+  2048
+ ],
+ "origin": "top-left",
+ "note": "x/y may fall outside 0-1 for anchors out of frame: filter on in_frame",
+ "points": [
+  {
+   "id": "HOT_smart_1",
+   "label": "bms_data_room",
+   "x": 0.5483,
+   "y": 0.5215,
+   "in_frame": true,
+   "world": [
+    -15.375,
+    17.175,
+    6.3
+   ]
+  },
+  {
+   "id": "HOT_smart_2",
+   "label": "bms_console",
+   "x": 0.2849,
+   "y": 0.4668,
+   "in_frame": true,
+   "world": [
+    -9.425,
+    18.098,
+    6.2
+   ]
+  },
+  {
+   "id": "HOT_smart_3",
+   "label": "elv_riser",
+   "x": 0.1613,
+   "y": -0.6154,
+   "in_frame": false,
+   "world": [
+    9.468,
+    -2.239,
+    30.0
+   ]
+  },
+  {
+   "id": "HOT_smart_4",
+   "label": "cctv_entrance",
+   "x": 0.8021,
+   "y": 0.155,
+   "in_frame": true,
+   "world": [
+    -11.043,
+    -19.651,
+    5.4
+   ]
+  },
+  {
+   "id": "HOT_smart_5",
+   "label": "access_control",
+   "x": 0.5274,
+   "y": 0.2564,
+   "in_frame": true,
+   "world": [
+    0.422,
+    -11.1,
+    0.6
+   ]
+  }
+ ]
+}

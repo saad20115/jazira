@@ -1,0 +1,73 @@
+{
+ "shot": "fire",
+ "camera": "CAM_fire",
+ "image": "fire_end_2048.png",
+ "resolution": [
+  2048,
+  2048
+ ],
+ "origin": "top-left",
+ "note": "x/y may fall outside 0-1 for anchors out of frame: filter on in_frame",
+ "points": [
+  {
+   "id": "HOT_fire_1",
+   "label": "fire_pumps",
+   "x": 0.4698,
+   "y": 0.6311,
+   "in_frame": true,
+   "world": [
+    -15.263,
+    15.318,
+    1.2
+   ]
+  },
+  {
+   "id": "HOT_fire_2",
+   "label": "jockey_pump",
+   "x": 0.4606,
+   "y": 0.6591,
+   "in_frame": true,
+   "world": [
+    -13.078,
+    10.22,
+    1.2
+   ]
+  },
+  {
+   "id": "HOT_fire_3",
+   "label": "sprinkler_riser",
+   "x": 0.5995,
+   "y": 0.3821,
+   "in_frame": true,
+   "world": [
+    3.103,
+    2.283,
+    30.0
+   ]
+  },
+  {
+   "id": "HOT_fire_4",
+   "label": "floor_mains_L10",
+   "x": 0.3705,
+   "y": 0.1588,
+   "in_frame": true,
+   "world": [
+    -1.096,
+    -13.453,
+    40.7
+   ]
+  },
+  {
+   "id": "HOT_fire_5",
+   "label": "alarm_panel",
+   "x": 0.4861,
+   "y": 0.8166,
+   "in_frame": true,
+   "world": [
+    -0.292,
+    -6.118,
+    1.6
+   ]
+  }
+ ]
+}

@@ -1,0 +1,19 @@
+Traceback (most recent call last):
+  File "C:\Users\HOME\AppData\Roaming\Blender Foundation\Blender\5.2\scripts\addons\blender_mcp.py", line 2296, in execute_code
+    exec(code, namespace)
+    ~~~~^^^^^^^^^^^^^^^^^
+  File "<string>", line 1, in <module>
+  File "<string>", line 98, in <module>
+  File "<string>", line 95, in sky
+IndexError: boolean index did not match indexed array along axis 1; size of axis is 512 but size of corresponding boolean axis is 1
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\HOME\AppData\Roaming\Blender Foundation\Blender\5.2\scripts\addons\blender_mcp.py", line 1625, in _execute_command_internal
+    result = handler(**params)
+  File "C:\Users\HOME\AppData\Roaming\Blender Foundation\Blender\5.2\scripts\addons\blender_mcp.py", line 2306, in execute_code
+    raise Exception(
+    ...<5 lines>...
+    )
+Exception: {"exception_type": "IndexError", "message": "boolean index did not match indexed array along axis 1; size of axis is 512 but size of corresponding boolean axis is 1", "traceback": "Traceback (most recent call last):\n  File \"C:\\Users\\HOME\\AppData\\Roaming\\Blender Foundation\\Blender\\5.2\\scripts\\addons\\blender_mcp.py\", line 2296, in execute_code\n    exec(code, namespace)\n    ~~~~^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 1, in <module>\n  File \"<string>\", line 98, in <module>\n  File \"<string>\", line 95, in sky\nIndexError: boolean index did not match indexed array along axis 1; size of axis is 512 but size of corresponding boolean axis is 1\n"}

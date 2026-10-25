@@ -1,0 +1,390 @@
+{
+ "release": "v022n",
+ "derived_from": {
+  "tower.glb": {
+   "bytes": 7081536,
+   "sha256": "2fd419908dbe8bacdc97c08ba6ac26b75b61d30c65b6785653ab897f8fcd8af5"
+  },
+  "tower-lite.glb": {
+   "bytes": 2109740,
+   "sha256": "382f8f67f83adfcd9f9f7060401a0cfa49da2dcdb0f677273d39dbcebafbe62e"
+  },
+  "manifest.json": {
+   "bytes": 12003,
+   "sha256": "2a5b055d70e20c7928c67b37675da2f9287cbf9abaf0afd9a09b995591abc749"
+  }
+ },
+ "master_blend": "blend/aljazira_tower_r5c_v022n.blend",
+ "render": {
+  "engine": "Cycles (OptiX GPU)",
+  "spp": 256,
+  "adaptive_threshold": 0.02,
+  "denoiser": "OptiX",
+  "view_transform": "AgX",
+  "look": "AgX - Medium High Contrast",
+  "exposure": 0.0,
+  "camera": {
+   "hero": "CAM_hero",
+   "ends": "CAM_<s>"
+  },
+  "resolution_master": [
+   2048,
+   2048
+  ],
+  "state_ends": "entered (highlight variant, faded facade / interior, section plane, glow on, fans as static rotors) = render_ends.py, matching the live end"
+ },
+ "downscale": "ffmpeg lanczos from the 1:1 2048 master, no reframing (photo -> live crossfade stays exact)",
+ "encode": "jpg: Blender JPEG writer quality 85 (Standard view, pixels unchanged); webp: ffmpeg libwebp lossy quality 85, compression_level 6, preset photo",
+ "files": [
+  {
+   "name": "fire_end_1440.jpg",
+   "bytes": 234722,
+   "sha256": "d2a2a1c8fcdbc41a18c7d50a6314f56e08ce402c621771dd9dfe200dbf86ea54",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "fire_end_1440.webp",
+   "bytes": 142446,
+   "sha256": "387aec28a926c3e1b5af70111d42c455b37e0ebc5d5e863ecfb7e28e2c4ac181",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "fire_end_2048.jpg",
+   "bytes": 396422,
+   "sha256": "f00c79f91547ce3e6f7b342e7206fa181c16af9abf9e5f90196ca87938761f47",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "fire_end_2048.png",
+   "bytes": 4880736,
+   "sha256": "b0be7397898951c6fca71810e7e0d2d9e3585e5c9944bb3ffd9c8f410c9015f5",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "PNG (master, 8-bit RGB)"
+  },
+  {
+   "name": "fire_end_2048.webp",
+   "bytes": 229902,
+   "sha256": "028f1da56128dcea3a394edd3ed80033666107c9a7d334e2dfb44440d12e4ad9",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "fire_hotspots.json",
+   "bytes": 1126,
+   "sha256": "81bafed09132f052649a3471c947027e9fdac40e92df0cca9c028e88ecadae4a",
+   "format": "JSON hotspots (x, y 0-1 from top-left through CAM_<s>; filter on in_frame)"
+  },
+  {
+   "name": "hero_1440.jpg",
+   "bytes": 167262,
+   "sha256": "ae0d4f08de3b75fce10eb3cee2bb98a12b43b6c3c953ac179b316be57c2a3ce3",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "hero_1440.webp",
+   "bytes": 97476,
+   "sha256": "9c148f70f38c613786d3be90218b336004aa035ced5f922c748b150393327317",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "hero_2048.jpg",
+   "bytes": 297594,
+   "sha256": "8abdd19367185c6688a2e6325fe7e44bfeefcdf719d0caf5dffee8da4ac13644",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "hero_2048.png",
+   "bytes": 4220395,
+   "sha256": "87292267505cae2c192ad3022fbca1fd111a32b3e81615626a141fb769216341",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "PNG (master, 8-bit RGB)"
+  },
+  {
+   "name": "hero_2048.webp",
+   "bytes": 166394,
+   "sha256": "066b1fa470ac0ab8fa06a846cb0d10e2c5030abc95956a1fde73e9f84838a447",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "hero_828.jpg",
+   "bytes": 65411,
+   "sha256": "603f5e5168257033d2a17a096d596aedf5e19da08b3703d6592e661232439b31",
+   "size": [
+    828,
+    828
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "hero_828.webp",
+   "bytes": 40102,
+   "sha256": "83bf27fb942c1ced4d0323ee650c6769d03dba311b7668053fe681531795f9c8",
+   "size": [
+    828,
+    828
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "hvac_end_1440.jpg",
+   "bytes": 186147,
+   "sha256": "b6a81439a97d548cc1ca2cbee7f3a5ca5dd99fb648cc5828159951ae07f94c58",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "hvac_end_1440.webp",
+   "bytes": 92452,
+   "sha256": "3836e6091f7d7797ec6d2a5144729fe83f1e9ea757aaa4586204f5f8e60ad9ba",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "hvac_end_2048.jpg",
+   "bytes": 313904,
+   "sha256": "004fe4819ff0697e39f7d00ce5d0045aa7c5a37822e4b8b834e192fd766cf369",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "hvac_end_2048.png",
+   "bytes": 4303329,
+   "sha256": "5ed32116a66f8a71d6997da530ee67df538e665ded94a9cf52f5219dba3c53b9",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "PNG (master, 8-bit RGB)"
+  },
+  {
+   "name": "hvac_end_2048.webp",
+   "bytes": 144884,
+   "sha256": "8b980bc146d4aee17faf73681befaa455d0947b0171768b7f71da65d246f5ba3",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "hvac_hotspots.json",
+   "bytes": 1114,
+   "sha256": "358fd89560b8edf965897642c7e104135d3a7df0f010ca01af129359681cd854",
+   "format": "JSON hotspots (x, y 0-1 from top-left through CAM_<s>; filter on in_frame)"
+  },
+  {
+   "name": "plumbing_end_1440.jpg",
+   "bytes": 184303,
+   "sha256": "ecfe7dea383f8e13c9dbf517381948c116d8fb5755702daf2f5d020acaa0b1d4",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "plumbing_end_1440.webp",
+   "bytes": 88242,
+   "sha256": "5eec769f9bd7c3f684be8108149c153427d061d556edf68abe0b0847aab9a816",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "plumbing_end_2048.jpg",
+   "bytes": 309680,
+   "sha256": "3b4b2b5b7426a421769ba6df916f76d3245960eb2927a4bae61ad1f3dbd38304",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "plumbing_end_2048.png",
+   "bytes": 4289552,
+   "sha256": "35bec79fac101b011d99abba6e72720b1f54bd717d5c14d7c8c330d3302fbeb0",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "PNG (master, 8-bit RGB)"
+  },
+  {
+   "name": "plumbing_end_2048.webp",
+   "bytes": 138320,
+   "sha256": "33e1eb5c5b182b8961b52d952965a3139c2d4840cf536eec880ad90eda059813",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "plumbing_hotspots.json",
+   "bytes": 1154,
+   "sha256": "50886fce4f4c1a7c700128c6701d559955c28c1976b026665944a3a3c47a6cfc",
+   "format": "JSON hotspots (x, y 0-1 from top-left through CAM_<s>; filter on in_frame)"
+  },
+  {
+   "name": "power_end_1440.jpg",
+   "bytes": 136047,
+   "sha256": "c8a829397ad6857ae273a409cca0b3eb1511dda06fe46d0698f744ef6dd8c8de",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "power_end_1440.webp",
+   "bytes": 59596,
+   "sha256": "a481a4185a39fa58f31a0cf377376576ce90783e23da4356daffb3bde2687268",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "power_end_2048.jpg",
+   "bytes": 228791,
+   "sha256": "c593a49b1ae15b4728e7211597924c7e892eeb7fb847a4cc49b54275054beb05",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "power_end_2048.png",
+   "bytes": 3922466,
+   "sha256": "ec71958dbf754aa3efee6771533f3883b73de05b8135cf126ae19132778d3148",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "PNG (master, 8-bit RGB)"
+  },
+  {
+   "name": "power_end_2048.webp",
+   "bytes": 92106,
+   "sha256": "c430963c80851128ae5c067bc812cea981f9140708843976fd4940fbf70badb9",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "power_hotspots.json",
+   "bytes": 1124,
+   "sha256": "12e2a21c0a34ec5288d7752d43b22833d559fe2e520e135b74543f6676352157",
+   "format": "JSON hotspots (x, y 0-1 from top-left through CAM_<s>; filter on in_frame)"
+  },
+  {
+   "name": "smart_end_1440.jpg",
+   "bytes": 126503,
+   "sha256": "91ae79d50fa74847d928e5cf9dfc6eb61db80ae8763747104c5c148a3059d553",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "smart_end_1440.webp",
+   "bytes": 62864,
+   "sha256": "40ebb730b122b61a06b7dfac0d40786b07eab253b4b1528314213b7ae52fc6d3",
+   "size": [
+    1440,
+    1440
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "smart_end_2048.jpg",
+   "bytes": 214624,
+   "sha256": "7d71d902ec304c0a47b0028e09b02c7bf84955a70713d4d187f469c4027897f8",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "JPEG q85"
+  },
+  {
+   "name": "smart_end_2048.png",
+   "bytes": 3907393,
+   "sha256": "e53b9ef2c1183e88bcf9ea154e6a4fafe8d55e13be77bec83f285343a1c6c23c",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "PNG (master, 8-bit RGB)"
+  },
+  {
+   "name": "smart_end_2048.webp",
+   "bytes": 97010,
+   "sha256": "b6a7e298666bd6d3b814177109acf158d67c4b27f2f78974f4701171b12578e5",
+   "size": [
+    2048,
+    2048
+   ],
+   "format": "WebP q85"
+  },
+  {
+   "name": "smart_hotspots.json",
+   "bytes": 1132,
+   "sha256": "21d75eeee7b8d5fdd1afc15ba8312975327a69054d7eb65b64d06738595a94ba",
+   "format": "JSON hotspots (x, y 0-1 from top-left through CAM_<s>; filter on in_frame)"
+  }
+ ]
+}
