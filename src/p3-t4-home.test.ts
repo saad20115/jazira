@@ -788,8 +788,8 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         /animation\s*:\s*introOverlayTimeline\s+1200ms\s+linear\s+var\(--intro-delay,\s*0ms\)\s+forwards/,
       )
 
-      // 4. R-22, R-26, R-27, R-28, R-29:
-      //    - R-26: page.module.css and globals.css never hide content or footer behind html[data-intro='active']
+      // 4. R-22, R-26, R-27, R-28, R-29 & M-171 #2:
+      //    - R-26: No stylesheet in src/ may hide body, main, header, footer, or .homeContent behind data-intro
       //    - R-27: inline script decides inside requestAnimationFrame using rafTs <= 1200ms and starts from 0ms
       //    - R-28: .heroGoldGlow and .glow both include filter: blur(48px)
       //    - R-29: inline script sets inert on background landmarks (including skip link) and moves focus to #main-content
@@ -797,8 +797,34 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         path.resolve(process.cwd(), 'src/styles/globals.css'),
         'utf8',
       )
-      expect(pageModuleCss).not.toContain("data-intro='active'")
-      expect(globalsCss).not.toContain("data-intro='active'")
+      expect(pageModuleCss).not.toContain('data-intro')
+      expect(globalsCss).not.toContain('data-intro')
+      expect(introSplashCss).not.toContain("data-intro='pending'")
+      expect(introSplashCss).not.toContain('data-intro="pending"')
+      expect(introSplashCss).not.toMatch(
+        /data-intro[^\n{]*\b(body|main|header|footer|section|homeContent)\b/,
+      )
+
+      const collectCssFiles = (dir: string): string[] => {
+        const out: string[] = []
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name)
+          if (entry.isDirectory()) {
+            out.push(...collectCssFiles(full))
+          } else if (entry.name.endsWith('.css')) {
+            out.push(full)
+          }
+        }
+        return out
+      }
+      for (const cssFile of collectCssFiles(path.resolve(process.cwd(), 'src'))) {
+        const cssText = fs.readFileSync(cssFile, 'utf8')
+        expect(cssText).not.toContain("data-intro='pending'")
+        expect(cssText).not.toContain('data-intro="pending"')
+        if (!cssFile.replace(/\\/g, '/').endsWith('src/components/IntroSplash.module.css')) {
+          expect(cssText).not.toContain('data-intro')
+        }
+      }
 
       const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
       const introGlowRule = introSplashCss.match(/\.glow\s*\{([^}]*)\}/)?.[1] ?? ''
@@ -810,6 +836,8 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(INTRO_MAX_FIRST_PAINT_MS + INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(2500)
       expect(INTRO_PREPAINT_INLINE_SCRIPT.match(/requestAnimationFrame/g)?.length).toBe(1)
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('painted')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('pending')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('MutationObserver')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('getComputedStyle')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('performance.now()')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain("setProperty('--intro-delay','0ms')")
@@ -825,12 +853,15 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         pathname,
         hasOverlay,
         rafTs,
+        readyState = 'interactive',
       }: {
         pathname: string
         hasOverlay: boolean
         rafTs: number
+        readyState?: 'loading' | 'interactive' | 'complete'
       }) => {
         const attrs = new Map<string, string>()
+        const dataIntroHistory: string[] = []
         const inertSet = new Set<string>()
         const storage = new Map<string, string>()
         const rafCallbacks: Array<(ts: number) => void> = []
@@ -853,10 +884,15 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         const landmarkEl = makeEl('landmark')
 
         const fakeDoc = {
-          readyState: 'interactive',
+          readyState,
           documentElement: {
             style: { setProperty: () => undefined },
-            setAttribute: (k: string, v: string) => attrs.set(k, v),
+            setAttribute: (k: string, v: string) => {
+              attrs.set(k, v)
+              if (k === 'data-intro') {
+                dataIntroHistory.push(v)
+              }
+            },
             getAttribute: (k: string) => attrs.get(k) ?? null,
           },
           querySelector: (sel: string) => {
@@ -902,6 +938,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           rafCountAfterSync,
           rafCountAfterFirstFrame: rafCallbacks.length,
           dataIntro: attrs.get('data-intro') ?? null,
+          dataIntroHistory,
           seenFlag: storage.get(INTRO_SPLASH_STORAGE_KEY) ?? null,
           inertApplied: inertSet.has('landmark'),
           decision: fakeWin.__aljaziraIntroDecision as
@@ -918,10 +955,24 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(homeFast.rafCountAfterSync).toBe(1)
       expect(homeFast.rafCountAfterFirstFrame).toBe(1)
       expect(homeFast.dataIntro).toBe('active')
+      expect(homeFast.dataIntroHistory).toEqual(['active'])
       expect(homeFast.seenFlag).toBe('1')
       expect(homeFast.inertApplied).toBe(true)
       expect(homeFast.decision?.action).toBe('active')
       expect(homeFast.decision?.rafMs).toBe(420)
+
+      // 1b. Home page (/en) with readyState: 'loading' -> decides immediately in 1st rAF without ever setting 'pending' (M-171 #2)
+      const homeLoading = runInlineScriptScenario({
+        pathname: '/en',
+        hasOverlay: true,
+        rafTs: 380,
+        readyState: 'loading',
+      })
+      expect(homeLoading.dataIntro).toBe('active')
+      expect(homeLoading.dataIntroHistory).toEqual(['active'])
+      expect(homeLoading.dataIntroHistory).not.toContain('pending')
+      expect(homeLoading.decision?.action).toBe('active')
+      expect(homeLoading.decision?.rafMs).toBe(380)
 
       // 2. Home page (/ar) with overlay and rafTs = 1200 (boundary <= 1200) -> active (R-32)
       const homeBoundary = runInlineScriptScenario({

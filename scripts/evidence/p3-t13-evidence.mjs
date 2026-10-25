@@ -20,12 +20,31 @@ import { runLighthouseAudit } from './run-lighthouse.mjs'
 function getRepoHeaderBlock() {
   const cwd = process.cwd()
   let head = 'unknown'
+  let statusPorcelain = 'unknown'
+  let diffSha256 = 'unknown'
   try {
     head = execSync('git rev-parse HEAD', { cwd, encoding: 'utf8' }).trim()
+    const rawStatus = execSync('git status --porcelain', { cwd, encoding: 'utf8' }).trim()
+    statusPorcelain = rawStatus.length > 0 ? rawStatus : '(clean)'
+    const rawDiff = execSync('git diff HEAD', { cwd, maxBuffer: 32 * 1024 * 1024 })
+    diffSha256 =
+      rawDiff.length > 0
+        ? `${crypto.createHash('sha256').update(rawDiff).digest('hex')} (${rawDiff.length} bytes)`
+        : 'clean (0 bytes)'
   } catch {
     // ignore
   }
-  return [`$ pwd`, cwd, `$ git rev-parse HEAD`, head, ''].join('\n')
+  return [
+    `$ pwd`,
+    cwd,
+    `$ git rev-parse HEAD`,
+    head,
+    `$ git status --porcelain`,
+    statusPorcelain,
+    `$ git diff HEAD | sha256`,
+    diffSha256,
+    '',
+  ].join('\n')
 }
 
 async function saveCompressedPng(inputBuffer, outPath, maxWidth = 1440) {
@@ -179,6 +198,13 @@ export async function runP3T13Evidence({
       const arSha256 = crypto.createHash('sha256').update(arBuf).digest('hex')
       const distinctBytes = Buffer.compare(enBuf, arBuf) !== 0
 
+      const r35GatePassed =
+        enDir === 'ltr' &&
+        arDir === 'rtl' &&
+        distinctBytes &&
+        enSha256 !== arSha256 &&
+        enCardText !== arCardText
+
       const r35TeamCardAudit = {
         enUrl: `${baseUrl}/en/styleguide`,
         arUrl: `${baseUrl}/ar/styleguide`,
@@ -191,23 +217,19 @@ export async function runP3T13Evidence({
         enSha256,
         arSha256,
         distinctBytes,
+        gatePassed: r35GatePassed,
       }
       const r35Log = [
         headerBlock,
         '=== R-35 Distinct AR / EN TeamCard Hover Shadow PNG Verification ===',
         JSON.stringify(r35TeamCardAudit, null, 2),
+        r35GatePassed ? 'GATE: PASS' : 'GATE: FAIL',
         '',
       ].join('\n')
       fs.writeFileSync(path.join(reportsEvidenceDir, 'r35-team-card.log'), r35Log, 'utf8')
       await ctx.close()
 
-      if (
-        enDir !== 'ltr' ||
-        arDir !== 'rtl' ||
-        !distinctBytes ||
-        enSha256 === arSha256 ||
-        enCardText === arCardText
-      ) {
+      if (!r35GatePassed) {
         throw new Error(`R-35 verification failed: ${JSON.stringify(r35TeamCardAudit)}`)
       }
 
@@ -397,18 +419,36 @@ export async function runP3T13Evidence({
         })
         await videoCtx.addInitScript(() => {
           window.__aljaziraVideoFrames = []
+          window.__aljaziraDataIntroHistory = []
           const origRaf = window.requestAnimationFrame.bind(window)
-          let started = false
-          const sample = (rafTs) => {
-            if (!window.__aljaziraIntroDecision) {
-              origRaf(sample)
-              return
+          let frameScheduled = false
+
+          const attachAttrObserver = () => {
+            if (!document.documentElement || window.__aljaziraAttrObsAttached) return
+            window.__aljaziraAttrObsAttached = true
+            const initial = document.documentElement.getAttribute('data-intro')
+            if (initial !== null) {
+              window.__aljaziraDataIntroHistory.push(initial)
             }
+            const obs = new MutationObserver(() => {
+              const val = document.documentElement.getAttribute('data-intro')
+              window.__aljaziraDataIntroHistory.push(val)
+            })
+            obs.observe(document.documentElement, {
+              attributes: true,
+              attributeFilter: ['data-intro'],
+            })
+          }
+
+          const sample = (rafTs) => {
+            attachAttrObserver()
             const tMs = Math.round(
-              Math.max(typeof rafTs === 'number' && rafTs > 0 ? rafTs : 0, performance.now()),
+              typeof rafTs === 'number' && rafTs > 0 ? rafTs : performance.now(),
             )
+            const paintsCount = performance.getEntriesByType('paint').length
             const overlay = document.querySelector('[data-component="intro-splash"]')
             const style = overlay ? window.getComputedStyle(overlay) : null
+            const bodyStyle = document.body ? window.getComputedStyle(document.body) : null
             const visible = Boolean(
               style &&
               style.display === 'flex' &&
@@ -417,18 +457,32 @@ export async function runP3T13Evidence({
             )
             window.__aljaziraVideoFrames.push({
               tMs,
+              paintsCount,
+              hasDecision: Boolean(window.__aljaziraIntroDecision),
               htmlIntro: document.documentElement?.dataset?.intro ?? null,
+              bodyVisibility: bodyStyle ? bodyStyle.visibility : null,
               visible,
             })
             if (tMs < 2600) {
-              origRaf(sample)
+              scheduleNextFrame()
             }
           }
+
+          const scheduleNextFrame = () => {
+            origRaf((rafTs) => {
+              queueMicrotask(() => sample(rafTs))
+            })
+          }
+
+          scheduleNextFrame()
+          frameScheduled = true
+
           window.requestAnimationFrame = function (cb) {
+            attachAttrObserver()
             const id = origRaf(cb)
-            if (!started) {
-              started = true
-              origRaf(sample)
+            if (!frameScheduled) {
+              frameScheduled = true
+              scheduleNextFrame()
             }
             return id
           }
@@ -510,21 +564,48 @@ export async function runP3T13Evidence({
             })
             await runCtx.addInitScript(() => {
               window.__aljaziraRafAll = []
+              window.__aljaziraDataIntroHistory = []
+              window.__aljaziraCspViolations = []
               window.__aljaziraPageRafCalls = 0
               const origRaf = window.requestAnimationFrame.bind(window)
-              let samplerStarted = false
+              let samplerScheduled = false
+
+              window.addEventListener('securitypolicyviolation', (ev) => {
+                window.__aljaziraCspViolations.push({
+                  violatedDirective: ev.violatedDirective,
+                  effectiveDirective: ev.effectiveDirective,
+                  blockedURI: ev.blockedURI,
+                })
+              })
+
+              const attachAttrObserver = () => {
+                if (!document.documentElement || window.__aljaziraAttrObsAttached) return
+                window.__aljaziraAttrObsAttached = true
+                const initial = document.documentElement.getAttribute('data-intro')
+                if (initial !== null) {
+                  window.__aljaziraDataIntroHistory.push(initial)
+                }
+                const obs = new MutationObserver(() => {
+                  const val = document.documentElement.getAttribute('data-intro')
+                  window.__aljaziraDataIntroHistory.push(val)
+                })
+                obs.observe(document.documentElement, {
+                  attributes: true,
+                  attributeFilter: ['data-intro'],
+                })
+              }
 
               const sample = (rafTs) => {
-                if (!window.__aljaziraIntroDecision) {
-                  origRaf(sample)
-                  return
-                }
+                attachAttrObserver()
                 const tMs = Math.round(
-                  Math.max(typeof rafTs === 'number' && rafTs > 0 ? rafTs : 0, performance.now()),
+                  typeof rafTs === 'number' && rafTs > 0 ? rafTs : performance.now(),
                 )
                 const perfNowMs = Math.round(performance.now())
-                const paintsCount = performance.getEntriesByType('paint').length
+                const paints = performance.getEntriesByType('paint')
+                const paintsCount = paints.length
                 const htmlIntro = document.documentElement?.dataset?.intro ?? null
+                const bodyStyle = document.body ? window.getComputedStyle(document.body) : null
+                const bodyVisibility = bodyStyle ? bodyStyle.visibility : null
                 const overlay = document.querySelector('[data-component="intro-splash"]')
                 const logo = document.querySelector(
                   '[data-component="intro-splash"] [class*="logoWrap"]',
@@ -541,7 +622,9 @@ export async function runP3T13Evidence({
                   tMs,
                   perfNowMs,
                   paintsCount,
+                  hasDecision: Boolean(window.__aljaziraIntroDecision),
                   htmlIntro,
+                  bodyVisibility,
                   display,
                   visibility,
                   overlayOpacity,
@@ -549,22 +632,40 @@ export async function runP3T13Evidence({
                   overlayVisible,
                 })
                 if (htmlIntro !== 'seen' && tMs < 3500) {
-                  origRaf(sample)
+                  scheduleNextFrame()
                 }
               }
 
+              const scheduleNextFrame = () => {
+                origRaf((rafTs) => {
+                  queueMicrotask(() => sample(rafTs))
+                })
+              }
+
+              scheduleNextFrame()
+              samplerScheduled = true
+
               window.requestAnimationFrame = function (cb) {
+                attachAttrObserver()
                 window.__aljaziraPageRafCalls += 1
                 const id = origRaf(cb)
-                if (!samplerStarted) {
-                  samplerStarted = true
-                  origRaf(sample)
+                if (!samplerScheduled) {
+                  samplerScheduled = true
+                  scheduleNextFrame()
                 }
                 return id
               }
             })
 
             const runPage = await runCtx.newPage()
+            const pageErrors = []
+            const consoleErrors = []
+            runPage.on('pageerror', (err) => pageErrors.push(String(err)))
+            runPage.on('console', (msg) => {
+              if (msg.type() === 'error') {
+                consoleErrors.push(msg.text())
+              }
+            })
             if (throttleMode === 'mid-tier') {
               const cdp = await runCtx.newCDPSession(runPage)
               await cdp.send('Network.enable')
@@ -621,9 +722,22 @@ export async function runP3T13Evidence({
                 : 0
 
               const decisionMs = decision?.rafMs ?? decision?.nowMs ?? null
+              const firstFrameRafMs = frames[0]?.tMs ?? null
               const fpMinusDecisionMs =
                 fpMs !== null && decisionMs !== null ? fpMs - decisionMs : null
-              const rafFramesBetweenDecisionAndFp = frames[0]?.paintsCount ?? 0
+              // M-171 #1 (B-01): Real count of rAF frames whose timestamp is strictly between decision and FP
+              const rafFramesBetweenDecisionAndFp =
+                fpMs !== null && decisionMs !== null
+                  ? frames.filter(
+                      (f) =>
+                        f.tMs > Math.min(decisionMs, fpMs) && f.tMs < Math.max(decisionMs, fpMs),
+                    ).length
+                  : null
+              const dataIntroHistory = window.__aljaziraDataIntroHistory || []
+              const cspViolations = window.__aljaziraCspViolations || []
+              const anyBodyHiddenFrame = frames.some((f) => f.bodyVisibility === 'hidden')
+              const decisionVsFpDisagreement =
+                decisionMs !== null && fpMs !== null ? decisionMs <= 1200 !== fpMs <= 1200 : false
 
               let logoRestartCount = 0
               if (logoFirstFull) {
@@ -668,9 +782,14 @@ export async function runP3T13Evidence({
               return {
                 fpMs,
                 fcpMs,
+                firstFrameRafMs,
                 decisionMs,
                 fpMinusDecisionMs,
                 rafFramesBetweenDecisionAndFp,
+                decisionVsFpDisagreement,
+                dataIntroHistory,
+                anyBodyHiddenFrame,
+                cspViolationsCount: cspViolations.length,
                 skipped,
                 decision,
                 framesBeforeOverlay,
@@ -700,6 +819,8 @@ export async function runP3T13Evidence({
               mode: throttleMode,
               locale: loc,
               run: runIndex,
+              pageErrorsCount: pageErrors.length,
+              consoleErrorsCount: consoleErrors.length,
               ...runSummary,
             })
           }
@@ -707,41 +828,34 @@ export async function runP3T13Evidence({
       }
     }
 
+    const exceedingOneFrameRuns = rafMatrixRuns.filter(
+      (r) => r.rafFramesBetweenDecisionAndFp === null || r.rafFramesBetweenDecisionAndFp > 1,
+    )
+    const decisionVsFpDisagreements = rafMatrixRuns.filter((r) => r.decisionVsFpDisagreement)
+
     const rafTableLines = [
       '| # | Viewport | Mode | Locale | Run | FP (ms) | FCP (ms) | Decision rAF (ms) | Δ(FP−rAF) / Intermediate Frames | Skipped | Frames Before Overlay | First Visible (ms) | Logo-Visible Start..End (`duration` ms) | Hidden (ms) | Span (ms) | Frames (`vis / total`) | Restarts / Bounces |',
       '|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|',
       ...rafMatrixRuns.map(
         (r, i) =>
-          `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.fpMs ?? 'n/a'}\` | \`${r.fcpMs ?? 'n/a'}\` | \`${r.decisionMs ?? 'n/a'}\` | \`${r.fpMinusDecisionMs !== null ? (r.fpMinusDecisionMs >= 0 ? '+' : '') + r.fpMinusDecisionMs + 'ms' : 'n/a'}\` (\`${r.rafFramesBetweenDecisionAndFp}\` frames) | \`${r.skipped}\` | \`${r.framesBeforeOverlay}\` | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
+          `| ${i + 1} | \`${r.viewport}\` | \`${r.mode}\` | \`${r.locale}\` | ${r.run} | \`${r.fpMs ?? 'n/a'}\` | \`${r.fcpMs ?? 'n/a'}\` | \`${r.decisionMs ?? 'n/a'}\` | \`${r.fpMinusDecisionMs !== null ? (r.fpMinusDecisionMs >= 0 ? '+' : '') + r.fpMinusDecisionMs + 'ms' : 'n/a'}\` (\`${r.rafFramesBetweenDecisionAndFp ?? 'n/a'}\` frames) | \`${r.skipped}\` | \`${r.framesBeforeOverlay}\` | \`${r.firstVisibleMs ?? 'skipped'}\` | \`${r.logoFullyVisibleStartMs ?? 'n/a'}..${r.logoFullyVisibleEndMs ?? 'n/a'}\` (\`${r.logoFullyVisibleDurationMs}ms\`) | \`${r.hiddenMs ?? 'skipped'}\` | \`${r.durationFromFirstVisibleMs ?? 0}ms\` | \`${r.visibleFrameCount} / ${r.totalRafFrames}\` | \`${r.logoRestartCount} / ${r.overlayBounceCount}\` |`,
       ),
     ]
 
-    const introAudit = {
-      r34Verification,
-      recordedVideos,
-      rafMatrixRuns,
-    }
-
-    const introLog = [
-      headerBlock,
-      '=== P3-T13 Intro Splash First-Frame Decision Verification (R-31..R-34, 54-Run Matrix: 412/768/1440 × unthrottled/mid-tier/throttled × en/ar × 3 runs) ===',
-      ...rafTableLines,
-      '',
-      JSON.stringify(introAudit, null, 2),
-      '',
-    ].join('\n')
-    fs.writeFileSync(path.join(reportsEvidenceDir, 'intro-verification.log'), introLog, 'utf8')
-
-    // Enforce all P3-T13 acceptance assertions across all 54 runs
+    // Evaluate all strict P3-T13 gates before writing intro-verification.log (M-171 #4, B-08)
+    const gateFailures = []
     for (const r of rafMatrixRuns) {
       if (!r.decision || r.decisionMs === null || r.fpMs === null || r.fcpMs === null) {
-        throw new Error(`Missing decision or FP/FCP in run: ${JSON.stringify(r)}`)
+        gateFailures.push(`Missing decision or FP/FCP in run: ${JSON.stringify(r)}`)
+        continue
       }
-      // Decision must agree with FP within one frame (0 intermediate rAF frames between decision and FP)
-      if (r.rafFramesBetweenDecisionAndFp > 1) {
-        throw new Error(
-          `R-31/R-32 violation: decision (${r.decisionMs}ms) and FP (${r.fpMs}ms) separated by ${r.rafFramesBetweenDecisionAndFp} frames in run: ${JSON.stringify(r)}`,
+      if (r.dataIntroHistory.includes('pending') || r.anyBodyHiddenFrame) {
+        gateFailures.push(
+          `R-26 / M-171 #2 violation: data-intro='pending' or hidden body detected in run: ${JSON.stringify(r)}`,
         )
+      }
+      if (r.pageErrorsCount > 0 || r.cspViolationsCount > 0) {
+        gateFailures.push(`Runtime pageerror/CSP violation during intro run: ${JSON.stringify(r)}`)
       }
       if (r.decisionMs <= 1200) {
         if (
@@ -749,7 +863,7 @@ export async function runP3T13Evidence({
           r.decision.action !== 'active' ||
           r.framesBeforeOverlay !== 0 ||
           r.firstVisibleMs === null ||
-          Math.abs(r.firstVisibleMs - r.decisionMs) > 25 ||
+          r.firstVisibleMs !== r.decisionMs ||
           r.hiddenMs === null ||
           r.hiddenMs > 2500 ||
           r.durationFromFirstVisibleMs === null ||
@@ -761,7 +875,7 @@ export async function runP3T13Evidence({
           r.finalOverlayVisible ||
           r.finalInertCount !== 0
         ) {
-          throw new Error(`Active intro run failed assertions: ${JSON.stringify(r)}`)
+          gateFailures.push(`Active intro run failed assertions: ${JSON.stringify(r)}`)
         }
       } else {
         if (
@@ -770,12 +884,12 @@ export async function runP3T13Evidence({
           r.visibleFrameCount !== 0 ||
           r.finalOverlayVisible
         ) {
-          throw new Error(`Skipped intro run failed assertions: ${JSON.stringify(r)}`)
+          gateFailures.push(`Skipped intro run failed assertions: ${JSON.stringify(r)}`)
         }
       }
       // Mid-tier en and ar play the intro whenever FP <= 1200
       if (r.mode === 'mid-tier' && r.fpMs <= 1200 && r.skipped) {
-        throw new Error(
+        gateFailures.push(
           `R-32 violation: mid-tier ${r.locale} at ${r.viewport} had FP=${r.fpMs}ms <= 1200ms but skipped: ${JSON.stringify(r)}`,
         )
       }
@@ -788,8 +902,72 @@ export async function runP3T13Evidence({
       (r) => r.mode === 'mid-tier' && r.locale === 'ar' && !r.skipped,
     ).length
     if (midTierActiveEn === 0 || midTierActiveAr === 0) {
-      throw new Error(
+      gateFailures.push(
         `Expected mid-tier en and ar to play the intro (got active en=${midTierActiveEn}, ar=${midTierActiveAr})`,
+      )
+    }
+
+    const fpDeltaGatePassed = exceedingOneFrameRuns.length === 0
+    const strictGatesPassed = gateFailures.length === 0
+
+    const introAudit = {
+      gates: {
+        strictGatesPassed,
+        fpDeltaWithinOneFramePassed: fpDeltaGatePassed,
+        exceedingOneFrameCount: exceedingOneFrameRuns.length,
+        exceedingOneFrameRuns: exceedingOneFrameRuns.map((r) => ({
+          viewport: r.viewport,
+          mode: r.mode,
+          locale: r.locale,
+          run: r.run,
+          decisionMs: r.decisionMs,
+          fpMs: r.fpMs,
+          fpMinusDecisionMs: r.fpMinusDecisionMs,
+          rafFramesBetweenDecisionAndFp: r.rafFramesBetweenDecisionAndFp,
+        })),
+        decisionVsFpDisagreementsCount: decisionVsFpDisagreements.length,
+        decisionVsFpDisagreements: decisionVsFpDisagreements.map((r) => ({
+          viewport: r.viewport,
+          mode: r.mode,
+          locale: r.locale,
+          run: r.run,
+          decisionMs: r.decisionMs,
+          fpMs: r.fpMs,
+          skipped: r.skipped,
+        })),
+        gateFailures,
+      },
+      r34Verification,
+      recordedVideos,
+      rafMatrixRuns,
+    }
+
+    const introGateLines = [
+      `GATE R-26 (0 runs with data-intro='pending' or hidden body): ${rafMatrixRuns.every((r) => !r.dataIntroHistory.includes('pending') && !r.anyBodyHiddenFrame) ? 'PASS' : 'FAIL'}`,
+      `GATE R-31 (0 frames painted before overlay; firstVisibleMs === decisionMs): ${rafMatrixRuns.filter((r) => !r.skipped).every((r) => r.framesBeforeOverlay === 0 && r.firstVisibleMs === r.decisionMs) ? 'PASS' : 'FAIL'}`,
+      `GATE R-32-TIMELINE (<=1600ms span, >=300ms logo hold, <=2500ms hidden, mid-tier en/ar active when FP<=1200): ${strictGatesPassed ? 'PASS' : `FAIL (${gateFailures.join(' | ')})`}`,
+      `GATE R-32-FP-DELTA (rafFramesBetweenDecisionAndFp <= 1 across all 54 runs): ${fpDeltaGatePassed ? 'PASS (54/54 runs <= 1 frame)' : `FAIL (${exceedingOneFrameRuns.length}/54 runs had >1 rAF frames between decision rAF and Chromium FP presentation timestamp — reported in Questions for CTO per M-171 #1)`}`,
+      `GATE R-34 (only home page with overlay writes aljazira_intro_seen): PASS`,
+      `GATE: ${strictGatesPassed && fpDeltaGatePassed ? 'PASS' : strictGatesPassed ? `FAIL (R-32-FP-DELTA: ${exceedingOneFrameRuns.length}/54 runs > 1 frame between decision rAF and FP; all other gates PASS)` : `FAIL (${gateFailures.join(' | ')})`}`,
+    ]
+
+    const introLog = [
+      headerBlock,
+      '=== P3-T13 Intro Splash First-Frame Decision Verification (R-31..R-34, 54-Run Matrix: 412/768/1440 × unthrottled/mid-tier/throttled × en/ar × 3 runs) ===',
+      ...rafTableLines,
+      '',
+      JSON.stringify(introAudit, null, 2),
+      ...introGateLines,
+      '',
+    ].join('\n')
+    fs.writeFileSync(path.join(reportsEvidenceDir, 'intro-verification.log'), introLog, 'utf8')
+
+    if (!strictGatesPassed) {
+      throw new Error(`P3-T13 intro verification failed: ${gateFailures.join(' | ')}`)
+    }
+    if (!fpDeltaGatePassed) {
+      console.warn(
+        `[P3-T13 Evidence] Note (M-171 #1): ${exceedingOneFrameRuns.length}/54 runs had >1 rAF frames between decision rAF and Chromium FP presentation timestamp; recorded in ${path.join(reportsEvidenceDir, 'intro-verification.log')} for Questions for CTO.`,
       )
     }
 
