@@ -421,7 +421,6 @@ export async function runP3T13Evidence({
           window.__aljaziraVideoFrames = []
           window.__aljaziraDataIntroHistory = []
           const origRaf = window.requestAnimationFrame.bind(window)
-          let frameScheduled = false
 
           const attachAttrObserver = () => {
             if (!document.documentElement || window.__aljaziraAttrObsAttached) return
@@ -455,35 +454,39 @@ export async function runP3T13Evidence({
               style.visibility !== 'hidden' &&
               Number(style.opacity) > 0.01,
             )
-            window.__aljaziraVideoFrames.push({
+            const entry = {
               tMs,
               paintsCount,
               hasDecision: Boolean(window.__aljaziraIntroDecision),
               htmlIntro: document.documentElement?.dataset?.intro ?? null,
               bodyVisibility: bodyStyle ? bodyStyle.visibility : null,
               visible,
-            })
-            if (tMs < 2600) {
-              scheduleNextFrame()
+            }
+            const last = window.__aljaziraVideoFrames[window.__aljaziraVideoFrames.length - 1]
+            if (last && last.tMs === tMs) {
+              window.__aljaziraVideoFrames[window.__aljaziraVideoFrames.length - 1] = entry
+            } else {
+              window.__aljaziraVideoFrames.push(entry)
+              if (tMs < 2600) {
+                scheduleNextFrame()
+              }
             }
           }
 
           const scheduleNextFrame = () => {
             origRaf((rafTs) => {
-              queueMicrotask(() => sample(rafTs))
+              sample(rafTs)
             })
           }
 
           scheduleNextFrame()
-          frameScheduled = true
 
           window.requestAnimationFrame = function (cb) {
             attachAttrObserver()
             const id = origRaf(cb)
-            if (!frameScheduled) {
-              frameScheduled = true
-              scheduleNextFrame()
-            }
+            origRaf((rafTs) => {
+              sample(rafTs)
+            })
             return id
           }
         })
@@ -568,7 +571,6 @@ export async function runP3T13Evidence({
               window.__aljaziraCspViolations = []
               window.__aljaziraPageRafCalls = 0
               const origRaf = window.requestAnimationFrame.bind(window)
-              let samplerScheduled = false
 
               window.addEventListener('securitypolicyviolation', (ev) => {
                 window.__aljaziraCspViolations.push({
@@ -618,7 +620,7 @@ export async function runP3T13Evidence({
                 const logoOpacity = logoStyle ? Number(Number(logoStyle.opacity).toFixed(3)) : 0
                 const overlayVisible =
                   display === 'flex' && visibility !== 'hidden' && overlayOpacity > 0.01
-                window.__aljaziraRafAll.push({
+                const entry = {
                   tMs,
                   perfNowMs,
                   paintsCount,
@@ -630,29 +632,33 @@ export async function runP3T13Evidence({
                   overlayOpacity,
                   logoOpacity,
                   overlayVisible,
-                })
-                if (htmlIntro !== 'seen' && tMs < 3500) {
-                  scheduleNextFrame()
+                }
+                const last = window.__aljaziraRafAll[window.__aljaziraRafAll.length - 1]
+                if (last && last.tMs === tMs) {
+                  window.__aljaziraRafAll[window.__aljaziraRafAll.length - 1] = entry
+                } else {
+                  window.__aljaziraRafAll.push(entry)
+                  if (htmlIntro !== 'seen' && tMs < 3500) {
+                    scheduleNextFrame()
+                  }
                 }
               }
 
               const scheduleNextFrame = () => {
                 origRaf((rafTs) => {
-                  queueMicrotask(() => sample(rafTs))
+                  sample(rafTs)
                 })
               }
 
               scheduleNextFrame()
-              samplerScheduled = true
 
               window.requestAnimationFrame = function (cb) {
                 attachAttrObserver()
                 window.__aljaziraPageRafCalls += 1
                 const id = origRaf(cb)
-                if (!samplerScheduled) {
-                  samplerScheduled = true
-                  scheduleNextFrame()
-                }
+                origRaf((rafTs) => {
+                  sample(rafTs)
+                })
                 return id
               }
             })
