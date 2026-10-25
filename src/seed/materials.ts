@@ -112,11 +112,13 @@ export interface MaterialsSeedPlan {
 
 export interface MaterialsSeedRunSummary {
   brandsCreated: number
+  brandsDeleted: number
   brandsTotal: number
   brandsUnchanged: number
   brandsUpdated: number
   everyMaterialHasAtLeastOneBrand: boolean
   materialsCreated: number
+  materialsDeleted: number
   materialsTotal: number
   materialsUnchanged: number
   materialsUpdated: number
@@ -488,7 +490,7 @@ export const MATERIAL_ARABIC_DRAFT_MAP: Readonly<Record<number, string | undefin
   23: 'قطع اتصال مخددة',
   24: 'قطع اتصال مسننة',
   25: 'مربط مشطور مبطن وعلاقة كليفس',
-  26: 'صمام ZCV للحريق',
+  26: 'ZCV للحريق',
   27: 'مفتاح تقسية',
   28: 'صمام اختبار وتصريف',
   29: 'مفتاح تدفق',
@@ -606,8 +608,17 @@ export function normalizeMaterialDescriptionEn(rawDescription: string): {
 }
 
 /**
- * Normalizes a single brand token using `SPEC_BRAND_TYPO_MAP`, parenthetical product-note
- * stripping for `HEMPEL (COATING)` -> `Hempel` (`docs/02-content-model.md` line 152, `R-5`),
+ * Parenthetical product-role suffix in a brand cell (e.g. `(PRIMER)`, `(COATING)` in row 31)
+ * that is stripped from the brand name and preserved on the material's notes (`docs/02-content-model.md`
+ * line 152, `handoff/reviews/P4-T1.md` `R-5` & `R-9`). Geographic origin qualifiers such as
+ * `(OMAN-SAUDI)` in row 21 are not matched and remain part of the brand name pending client review.
+ */
+const PARENTHETICAL_PRODUCT_NOTE_REGEX =
+  /\s*\((primer|coating|paint|finish|sealant|adhesive)\)\s*$/i
+
+/**
+ * Normalizes a single brand token using `SPEC_BRAND_TYPO_MAP`, general parenthetical product-note
+ * stripping (`JAZEERA (PRIMER)` -> `Jazeera`, `HEMPEL (COATING)` -> `Hempel`, `R-9`),
  * plus case/whitespace normalization.
  */
 export function normalizeBrandName(rawBrandToken: string): {
@@ -621,26 +632,23 @@ export function normalizeBrandName(rawBrandToken: string): {
     .replace(/\s+/g, ' ')
     .replace(/\s*-\s*/g, (match) => (match.includes(' ') ? ' - ' : '-'))
 
-  const upperKey = collapsed.toUpperCase()
-  if (upperKey === 'HEMPEL (COATING)') {
-    return {
-      normalized: 'Hempel',
-      specTypoApplied: false,
-      productNoteStripped: true,
-      caseOrWhitespaceNormalized: true,
-    }
-  }
+  const productNoteMatch = PARENTHETICAL_PRODUCT_NOTE_REGEX.exec(collapsed)
+  const baseToken = productNoteMatch
+    ? collapsed.slice(0, productNoteMatch.index).trim()
+    : collapsed
 
+  const upperKey = baseToken.toUpperCase()
   const specMapped = SPEC_BRAND_TYPO_MAP[upperKey]
   if (specMapped) {
     return {
       normalized: specMapped,
       specTypoApplied: true,
+      ...(productNoteMatch ? { productNoteStripped: true } : {}),
       caseOrWhitespaceNormalized: specMapped !== rawBrandToken,
     }
   }
 
-  const tokens = collapsed.split(' ').map((token, idx) => {
+  const tokens = baseToken.split(' ').map((token, idx) => {
     if (token === '-') {
       return '-'
     }
@@ -651,6 +659,7 @@ export function normalizeBrandName(rawBrandToken: string): {
   return {
     normalized,
     specTypoApplied: false,
+    ...(productNoteMatch ? { productNoteStripped: true } : {}),
     caseOrWhitespaceNormalized: normalized !== rawBrandToken,
   }
 }
@@ -847,8 +856,8 @@ export function buildMaterialsSeedPlan(
     21: 'brandRaw is "ALJAZIRAH (OMAN-SAUDI)" and originRaw is "ALJAZIRAH (OMAN-SAUDI):" (empty country after colon); left as-is with empty origin pending client confirmation (compare row 22 "ALJAZERA").',
     22: 'brandRaw is "ALJAZERA" with originRaw "ALJAZERA: Saudi Arabia / Oman"; left as "Aljazera" pending client confirmation whether rows 21 and 22 are the same manufacturer (Al Jazeera Steel Products Co.).',
     23: 'brandRaw is "Junt / JTPR UL-FM" (includes UL-FM certification suffix on JTPR); left as "Junt" and "JTPR UL-FM" pending client confirmation.',
-    24: 'brandRaw is "JIHANZI -UL/FM" (UL/FM certification suffix with slash); kept as single brand "Jihanzi -UL/FM" (China) pending client confirmation.',
-    31: 'brandRaw is "JAZEERA (PRIMER) HEMPEL (COATING)" and originRaw has two Brand: Country pairs ("JAZEERA (PRIMER):Saudi arbia HEMPEL (COATING): Denmark"); "HEMPEL (COATING)" normalized to brand "Hempel" with product note kept on material #31, and "Jazeera (Primer)" kept pending client confirmation whether to merge with "Jazeera Paints" (row 71).',
+    24: 'brandRaw is "JIHANZI -UL/FM" (UL/FM certification suffix with slash); kept as single brand "Jihanzi - UL/FM" (China) pending client confirmation.',
+    31: 'brandRaw is "JAZEERA (PRIMER) HEMPEL (COATING)" and originRaw has two Brand: Country pairs ("JAZEERA (PRIMER):Saudi arbia HEMPEL (COATING): Denmark"); parenthetical product notes "(PRIMER)" and "(COATING)" stripped to brands "Jazeera" (Saudi Arabia) and "Hempel" (Denmark) with product notes kept on material #31 — confirm with client whether "Jazeera" (row 31) should be merged with "Jazeera Paints" (row 71).',
     42: 'originRaw is "AEROFOAM: UAE" without a country for second brand "arma flex" ("Armaflex"); seeded "Armaflex" with empty origin pending client confirmation.',
     47: 'originRaw is "GROHE: Germany" without a country for second brand "GEBRIT" ("Geberit"); seeded "Geberit" with empty origin pending client confirmation.',
     53: 'brandRaw is "LUVATA-CAMLEE" joined by hyphen while originRaw has two Brand: Country pairs ("LUVATA :ITALY /CAMLEE: CHINA"); split into "Luvata" (Italy) and "Camlee" (China) pending client confirmation.',
@@ -906,12 +915,14 @@ export function buildMaterialsSeedPlan(
     for (const rawToken of rawBrandTokens) {
       const brandNorm = normalizeBrandName(rawToken)
       if (brandNorm.productNoteStripped) {
+        const noteMatch = PARENTHETICAL_PRODUCT_NOTE_REGEX.exec(rawToken)
+        const strippedNoteUpper = noteMatch?.[1]?.toUpperCase() ?? ''
         addNormalization(
           'brand-product-note',
           'brandRaw',
           rawToken,
           brandNorm.normalized,
-          'Parenthetical product note "(COATING)" stripped from brand name and kept on material #31 notes (docs/02-content-model.md)',
+          `Parenthetical product note "(${strippedNoteUpper})" stripped from brand name and kept on material #${String(row.no)} notes (docs/02-content-model.md)`,
           row.no,
         )
       } else if (brandNorm.specTypoApplied) {
@@ -1041,7 +1052,7 @@ export function buildMaterialsSeedPlan(
         : null
     const row31NotesAr =
       row.no === 31
-        ? 'ملاحظات المنتج من حقل العلامة التجارية: همبل (طلاء نهائي / Coating)؛ الجزيرة (أساس / Primer).'
+        ? 'ملاحظات المنتج من حقل العلامة التجارية: همبل (طلاء / Coating)؛ الجزيرة (أساس / Primer).'
         : null
 
     const notesEn = uncertainDescTypo ? uncertainDescTypo.enReviewNote : row31NotesEn
@@ -1165,9 +1176,11 @@ export async function seedMaterialsAndBrands(
   }
 
   let reseeded = false
+  let brandsDeleted = 0
+  let materialsDeleted = 0
   if ((existingBrandsCount > 0 || existingMaterialsCount > 0) && reseed) {
     // Delete materials first (since materials.brands references brands), then brands
-    await payload.delete({
+    const deletedMaterialsRes = await payload.delete({
       collection: 'materials',
       where: {
         id: {
@@ -1178,7 +1191,7 @@ export async function seedMaterialsAndBrands(
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
-    await payload.delete({
+    const deletedBrandsRes = await payload.delete({
       collection: 'brands',
       where: {
         id: {
@@ -1189,6 +1202,8 @@ export async function seedMaterialsAndBrands(
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
+    materialsDeleted = deletedMaterialsRes.docs.length
+    brandsDeleted = deletedBrandsRes.docs.length
     reseeded = true
   }
 
@@ -1310,10 +1325,12 @@ export async function seedMaterialsAndBrands(
 
   return {
     brandsCreated,
+    brandsDeleted,
     brandsUpdated,
     brandsUnchanged,
     brandsTotal: allBrandsRes.totalDocs,
     materialsCreated,
+    materialsDeleted,
     materialsUpdated,
     materialsUnchanged,
     materialsTotal: allMaterialsRes.totalDocs,
@@ -1335,9 +1352,9 @@ export function formatSeedSummaryLines(summary: MaterialsSeedRunSummary): string
 
   return [
     '=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===',
-    `mode: ${summary.reseeded ? 'reseed (--reseed)' : 'first-run baseline'}`,
-    `brands: created=${String(summary.brandsCreated)}, updated=${String(summary.brandsUpdated)}, unchanged=${String(summary.brandsUnchanged)}, total=${String(summary.brandsTotal)}`,
-    `materials: created=${String(summary.materialsCreated)}, updated=${String(summary.materialsUpdated)}, unchanged=${String(summary.materialsUnchanged)}, total=${String(summary.materialsTotal)}`,
+    `mode: ${summary.reseeded ? `reseed (--reseed, deleted brands=${String(summary.brandsDeleted)}, materials=${String(summary.materialsDeleted)})` : 'first-run baseline'}`,
+    `brands: created=${String(summary.brandsCreated)}, deleted=${String(summary.brandsDeleted)}, updated=${String(summary.brandsUpdated)}, unchanged=${String(summary.brandsUnchanged)}, total=${String(summary.brandsTotal)}`,
+    `materials: created=${String(summary.materialsCreated)}, deleted=${String(summary.materialsDeleted)}, updated=${String(summary.materialsUpdated)}, unchanged=${String(summary.materialsUnchanged)}, total=${String(summary.materialsTotal)}`,
     `systemCounts: electrical=${String(summary.systemCounts.electrical)}, mechanical=${String(summary.systemCounts.mechanical)}, structural=${String(summary.systemCounts.structural)}, architectural=${String(summary.systemCounts.architectural)}`,
     `everyMaterialHasAtLeastOneBrand: ${String(summary.everyMaterialHasAtLeastOneBrand)} (minBrandsPerMaterial=${String(summary.minBrandsPerMaterial)})`,
     `normalizationsApplied: ${String(summary.plan.normalizationsApplied.length)} distinct rule applications`,

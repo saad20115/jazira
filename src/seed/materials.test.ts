@@ -147,6 +147,12 @@ describe('P4-T1 materials + brands seed plan (unit)', () => {
       productNoteStripped: true,
       caseOrWhitespaceNormalized: true,
     })
+    expect(normalizeBrandName('JAZEERA (PRIMER)')).toEqual({
+      normalized: 'Jazeera',
+      specTypoApplied: false,
+      productNoteStripped: true,
+      caseOrWhitespaceNormalized: true,
+    })
   })
 
   it('splits multi-brand cells on /, |, , while protecting UL/FM and handling rows 31 and 53', () => {
@@ -314,30 +320,52 @@ describe('P4-T1 materials + brands seed plan (unit)', () => {
       .map((r) => r.rowNo)
     expect(descTypoReviewRows).toEqual([13, 21, 27, 54])
 
-    // R-3: Arabic drafts translate only what the English says with zero added specs
+    // R-3 & R-10: Arabic drafts translate only what the English says with zero added specs
     expect(MATERIAL_ARABIC_DRAFT_MAP[16]).toBe('إنارة')
     expect(MATERIAL_ARABIC_DRAFT_MAP[18]).toBe('إنارة')
     expect(MATERIAL_ARABIC_DRAFT_MAP[23]).toBe('قطع اتصال مخددة')
     expect(MATERIAL_ARABIC_DRAFT_MAP[24]).toBe('قطع اتصال مسننة')
+    expect(MATERIAL_ARABIC_DRAFT_MAP[26]).toBe('ZCV للحريق')
     expect(MATERIAL_ARABIC_DRAFT_MAP[35]).toBe('نوفيك (NOVEC)')
     expect(MATERIAL_ARABIC_DRAFT_MAP[47]).toBe('خزان طرد للمرحاض (WC)')
     expect(MATERIAL_ARABIC_DRAFT_MAP[53]).toBe('مواسير DX')
     expect(MATERIAL_ARABIC_DRAFT_MAP[68]).toBe('إضافات اللياسة')
 
-    // R-5: Hempel (Coating) -> Hempel, with note kept on material #31, plus Figma partner mappings
+    // R-5 & R-9: Hempel (Coating) -> Hempel and JAZEERA (PRIMER) -> Jazeera, with notes kept on material #31, plus Figma partner mappings
     const brandNames = new Set(plan.brands.map((b) => b.name))
     expect(brandNames.has('Hempel')).toBe(true)
     expect(brandNames.has('Hempel (Coating)')).toBe(false)
+    expect(brandNames.has('Jazeera')).toBe(true)
+    expect(brandNames.has('Jazeera (Primer)')).toBe(false)
     const hempel = plan.brands.find((b) => b.name === 'Hempel')
     expect(hempel?.originEn).toBe('Denmark')
     expect(hempel?.originAr).toBe('الدنمارك')
     expect(hempel?.showInMarquee).toBe(true)
     expect(hempel?.order).toBe(14)
 
+    const jazeera = plan.brands.find((b) => b.name === 'Jazeera')
+    expect(jazeera?.originEn).toBe('Saudi Arabia')
+    expect(jazeera?.originAr).toBe('المملكة العربية السعودية')
+
+    const productNoteNormalizations = plan.normalizationsApplied.filter(
+      (n) => n.category === 'brand-product-note',
+    )
+    expect(productNoteNormalizations.map((n) => `${n.rawValue}->${n.normalizedValue}`)).toEqual([
+      'JAZEERA (PRIMER)->Jazeera',
+      'HEMPEL (COATING)->Hempel',
+    ])
+
     const mat31 = plan.materials.find((m) => m.itemNo === 31)
-    expect(mat31?.brandNames).toEqual(['Jazeera (Primer)', 'Hempel'])
+    expect(mat31?.brandNames).toEqual(['Jazeera', 'Hempel'])
     expect(mat31?.notesEn).toContain('Hempel (Coating)')
-    expect(mat31?.notesAr).toContain('Coating')
+    expect(mat31?.notesEn).toContain('Jazeera (Primer)')
+    expect(mat31?.notesAr).toContain('همبل (طلاء / Coating)')
+    expect(mat31?.notesAr).not.toContain('طلاء نهائي')
+    expect(mat31?.notesAr).toContain('الجزيرة (أساس / Primer)')
+
+    // R-11: Row 24 review note uses normalized "Jihanzi - UL/FM"
+    const row24Review = plan.needsClientReview.find((r) => r.rowNo === 24)
+    expect(row24Review?.details).toContain('kept as single brand "Jihanzi - UL/FM"')
 
     expect(FIGMA_PARTNER_DISPLAY_NAME_MAPPINGS).toHaveLength(4)
     expect(plan.figmaPartnerMappings.map((m) => m.seededBrandName)).toEqual([
@@ -384,10 +412,12 @@ describe('P4-T1 materials + brands seed plan (unit)', () => {
 
     const summaryLines = formatSeedSummaryLines({
       brandsCreated: plan.brands.length,
+      brandsDeleted: 0,
       brandsUpdated: 0,
       brandsUnchanged: 0,
       brandsTotal: plan.brands.length,
       materialsCreated: 73,
+      materialsDeleted: 0,
       materialsUpdated: 0,
       materialsUnchanged: 0,
       materialsTotal: 73,
@@ -403,5 +433,29 @@ describe('P4-T1 materials + brands seed plan (unit)', () => {
     expect(summaryLines.join('\n')).toContain(
       'systemCounts: electrical=20, mechanical=37, structural=8, architectural=8',
     )
+
+    const reseedSummaryLines = formatSeedSummaryLines({
+      brandsCreated: plan.brands.length,
+      brandsDeleted: 83,
+      brandsUpdated: 0,
+      brandsUnchanged: 0,
+      brandsTotal: plan.brands.length,
+      materialsCreated: 73,
+      materialsDeleted: 73,
+      materialsUpdated: 0,
+      materialsUnchanged: 0,
+      materialsTotal: 73,
+      everyMaterialHasAtLeastOneBrand: true,
+      minBrandsPerMaterial: 1,
+      reseeded: true,
+      systemCounts: plan.systemCounts,
+      updatedAtDigest: 'brand:Alfanar:2026-10-24T00:00:00.000Z',
+      plan,
+    })
+    expect(reseedSummaryLines.join('\n')).toContain(
+      'mode: reseed (--reseed, deleted brands=83, materials=73)',
+    )
+    expect(reseedSummaryLines.join('\n')).toContain('deleted=83')
+    expect(reseedSummaryLines.join('\n')).toContain('deleted=73')
   })
 })
