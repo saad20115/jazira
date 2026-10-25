@@ -1,10 +1,15 @@
-import 'server-only'
-
 import type { ProjectCategory, ProjectScope } from '../collections/Projects'
 import type { Service } from '../payload-types'
 
 type ServiceIconName = NonNullable<Service['icon']>
 
+/**
+ * Note on S4 (`server-only`): `src/seed/p4-t2-data.ts` is executed directly under Node/tsx by the
+ * Payload CLI (`pnpm seed` -> `payload run scripts/seed.ts`), where Next's compiled `server-only`
+ * virtual package is not in top-level `node_modules`. Server-only isolation is enforced by:
+ * 1. `P4_T2_DATA_SERVER_ONLY_SENTINEL` checked against `.next/static` by `scripts/check-client-bundle-sentinels.mjs`
+ * 2. `local/no-server-in-client` and `FRONTEND_FORBIDDEN_SERVER_DIR_PATTERNS` in `eslint.config.mjs`
+ */
 export const P4_T2_DATA_SERVER_ONLY_SENTINEL =
   '__ALJAZIRA_SERVER_ONLY_MODULE_SENTINEL_S4_P4_T2_DATA__' as const
 
