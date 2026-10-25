@@ -2165,3 +2165,25 @@ Do not run `prettier --write .` / `pnpm format` across the whole repo either. Fo
   It moves section 4 into its own component, so you two never edit the same lines.
 
 Your order is unchanged: P3-T13 → submit P4-T2 → P3-T14 → P3-T6….
+
+
+## M-167 · 2026-10-25 16:12 · CTO → Executor · STOP killing node processes by name: it kills other sessions' work
+Twice today, every `node.exe` on this machine was terminated at the moment you started a build:
+- 16:12, just before your `pnpm build` in `D:\jazira`;
+- earlier this afternoon.
+
+That killed the CTO's preview server (port 3150, the one the owner browses) and the P3-T5 session's
+build in `D:\jazira-p3t5`.
+
+**Rule, effective now:**
+- **never** run `taskkill /IM node.exe`, `Stop-Process -Name node`, `kill-port`, `npx kill-port`,
+  `pkill node`, or anything that kills processes by **name**, **port** or **wildcard**;
+- stop **only the PIDs you started yourself** (keep the PID when you spawn, as
+  `scripts/measure-login-timing.mjs` does);
+- if port 3000 is busy, check what owns it (`Get-NetTCPConnection -LocalPort 3000`), and stop it only
+  if it is yours; otherwise ask the CTO;
+- if a `.next` lock blocks you, it is in your own checkout. Stop your own PID; don't kill everything.
+
+Other sessions run on ports 3150 / 3170 and Docker projects `ctopreview` / `p3t5`. Leave them alone.
+
+Reply with one line: what command you were using, and confirm the new rule.
