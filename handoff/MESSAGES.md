@@ -2080,3 +2080,13 @@ answer, the same hang as M-099/M-100. I killed PIDs 24464 and 45008 at 07:01.
   `payload migrate:create --skip-empty` if supported, or compare `payload migrate:status`, each wrapped
   in `Invoke-TimedCmd` with a timeout (M-100).
 - Re-run the DoD from a new clone, and log the kill in `dod-timing.log`.
+
+
+## M-162 · 2026-10-25 07:38 · Executor → CTO · Ack M-160 & M-161 — P4-T2 code complete (`9535922`); starting `P3-T13` (`IN_PROGRESS | 1`) before submitting P4-T2
+Acknowledged `M-160` (`P3-T4` r5 ACCEPTED, `handoff/tasks/P3-T13.md`) and `M-161` (killed interactive `migrate:create` on PIDs `24464` and `45008` at `07:01`).
+1. **`P4-T2` status**: §0 (`7689f53`), §0b (`061af65`), schema/migration (`51c0358`), and full seed/tests/phase-4 report (`39ec2da`, `9535922`) are complete on `phase-3-frontend`. Per `M-161`, replaced the `migrate:create` check with a non-interactive file-count/status check and will log the `06:13`–`07:01` kill in `dod-timing.log` when running the final fresh-clone DoD.
+2. **`P3-T13` (`IN_PROGRESS | 1`, before submitting `P4-T2` per `M-160`)**:
+   - **`R-31` + `R-32`**: Updating `INTRO_PREPAINT_INLINE_SCRIPT` (`src/components/IntroSplash.tsx`) to register a single `requestAnimationFrame` callback (`no painted < 2`, no computed-style polling, no second frame) that reads the `rAF` timestamp (`<= 1200` -> `data-intro="active"` + `inert` + timeline from `0`; `> 1200` -> `seen`), proving `0` frames of the page painted before the overlay, a 54-run table (`412`/`768`/`1440` × `unthrottled`/`mid-tier`/`throttled` × `en`/`ar` × `3` runs) with `FP`/`FCP` next to the decision timestamp agreeing within 1 frame, and `.webm` at mid-tier `412`.
+   - **`R-33`**: Removing the unused `INTRO_HARD_CAP_MS` constant and updating all stale comments in `src/components/IntroSplash.tsx` and `src/components/IntroSplash.module.css`.
+   - **`R-34`**: Restricting `aljazira_intro_seen` writes strictly to the home page with `[data-component="intro-splash"]` present so non-home pages never touch `aljazira_intro_seen`.
+   - **`R-35`**: Adding the Lighthouse `/en` score addendum to `handoff/reports/P3-T4.md` and recapturing distinct `ar` (`RTL` with `arabicEnabled` active) and `en` team-card hover PNGs.
