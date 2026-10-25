@@ -53,6 +53,11 @@ export function ProjectCard({
   const resolvedCtaLabel = ctaLabel ?? dict.cards.viewProject
   const mediaAsset = resolveMediaAsset(project.coverImage, project.title, 'card')
   const imageSrc = mediaAsset?.url ?? fallbackImageUrl ?? null
+  const maxPixelWidth =
+    typeof mediaAsset?.width === 'number' && mediaAsset.width > 0 ? mediaAsset.width : null
+  const cardSizes = maxPixelWidth
+    ? `(max-width: 767px) min(100vw, ${String(maxPixelWidth)}px), (max-width: 1279px) min(50vw, ${String(maxPixelWidth)}px), ${String(Math.min(370, maxPixelWidth))}px`
+    : '(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 370px'
 
   const cardClasses = [styles.card, state === 'Hover' ? styles.stateHover : '', className ?? '']
     .filter(Boolean)
@@ -73,7 +78,7 @@ export function ProjectCard({
             alt=""
             width={370}
             height={280}
-            sizes="(max-width: 767px) 100vw, (max-width: 1279px) 50vw, 370px"
+            sizes={cardSizes}
             className={styles.photo}
           />
         ) : null}

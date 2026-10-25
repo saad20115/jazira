@@ -1,5 +1,5 @@
 export { adminOrSelf, isAdminOrSelfFieldLevel } from './adminOrSelf'
 export { isAdmin } from './isAdmin'
 export { isAdminFieldLevel } from './isAdminFieldLevel'
-export { isAdminOrEditor } from './isAdminOrEditor'
+export { isAdminOrEditor, isAdminOrEditorFieldLevel } from './isAdminOrEditor'
 export { publishedOrLoggedIn } from './publishedOrLoggedIn'

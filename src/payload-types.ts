@@ -551,9 +551,9 @@ export interface Project {
     [k: string]: unknown;
   } | null;
   /**
-   * Primary project cover image (required), displayed on project cards and the project detail hero.
+   * Primary project cover image (required to publish; optional on drafts), displayed on project cards and the project detail hero.
    */
-  coverImage: number | Media;
+  coverImage?: (number | null) | Media;
   /**
    * Additional project photos documenting execution and results (up to 30 images).
    */
@@ -610,6 +610,14 @@ export interface Project {
    * Manual ascending sort order (0, 1, 2…). Lower numbers appear first.
    */
   order: number;
+  /**
+   * Flags that this project entry requires client confirmation or review.
+   */
+  needsClientReview?: boolean | null;
+  /**
+   * Internal note for staff regarding data source or items needing confirmation (not visible to public visitors).
+   */
+  reviewNote?: string | null;
   bodyMedia?: (number | Media)[] | null;
   createdAt: string;
   updatedAt: string;
@@ -1092,6 +1100,8 @@ export interface ProjectsSelect<T extends boolean = true> {
   status?: T;
   featured?: T;
   order?: T;
+  needsClientReview?: T;
+  reviewNote?: T;
   bodyMedia?: T;
   createdAt?: T;
   updatedAt?: T;

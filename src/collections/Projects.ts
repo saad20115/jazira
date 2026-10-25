@@ -6,7 +6,7 @@ import {
   ValidationError,
 } from 'payload'
 
-import { isAdminOrEditor } from '../access/isAdminOrEditor'
+import { isAdminOrEditor, isAdminOrEditorFieldLevel } from '../access/isAdminOrEditor'
 import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { pillarFields } from '../fields/groups/pillar'
 import { validateVideoEmbedUrl } from '../fields/link'
@@ -291,6 +291,24 @@ const validateProjectBeforeValidate: CollectionBeforeValidateHook = async ({
   // Verify referenced coverImage exists when provided so invalid IDs fail with 400 instead of 500 FK error (R-6)
   if ('coverImage' in mutable && isNonEmptyInput(mutable.coverImage)) {
     await verifySingleMediaId(mutable.coverImage, 'coverImage', req)
+  }
+
+  // CTO 2026-10-24 (docs/02-content-model.md:217): coverImage is required only to publish (_status === 'published').
+  // Drafts may be saved without an image because 74 of the 91 real projects have no photo yet.
+  const effectiveStatus = '_status' in mutable ? mutable._status : orig._status
+  const effectiveCoverImage = 'coverImage' in mutable ? mutable.coverImage : orig.coverImage
+  if (effectiveStatus === 'published' && !isNonEmptyInput(effectiveCoverImage)) {
+    throw new ValidationError({
+      collection: 'projects',
+      errors: [
+        {
+          path: 'coverImage',
+          message:
+            'صورة الغلاف الرئيسية مطلوبة لنشر المشروع (يمكن حفظ المسودة بدون صورة). / Cover image is required to publish a project (drafts may be saved without an image).',
+        },
+      ],
+      req,
+    })
   }
 
   // Verify referenced gallery media IDs exist when provided (R-6)
@@ -871,7 +889,7 @@ export const Projects: CollectionConfig = withImmutableCreatedAt({
               name: 'coverImage',
               type: 'upload',
               relationTo: 'media',
-              required: true,
+              required: false,
               filterOptions: () => true,
               label: {
                 ar: 'صورة الغلاف الرئيسية',
@@ -879,9 +897,22 @@ export const Projects: CollectionConfig = withImmutableCreatedAt({
               },
               admin: {
                 description: {
-                  ar: 'الصورة الرئيسية للمشروع (مطلوبة) وتظهر في بطاقات المشاريع ورأس صفحة المشروع.',
-                  en: 'Primary project cover image (required), displayed on project cards and the project detail hero.',
+                  ar: 'الصورة الرئيسية للمشروع (مطلوبة عند النشر، واختيارية في المسودات) وتظهر في بطاقات المشاريع ورأس صفحة المشروع.',
+                  en: 'Primary project cover image (required to publish; optional on drafts), displayed on project cards and the project detail hero.',
                 },
+              },
+              validate: (
+                val: unknown,
+                {
+                  data,
+                  siblingData,
+                }: { data?: Record<string, unknown>; siblingData?: Record<string, unknown> },
+              ) => {
+                const status = data?._status ?? siblingData?._status
+                if (status === 'published' && !isNonEmptyInput(val)) {
+                  return 'صورة الغلاف الرئيسية مطلوبة لنشر المشروع (يمكن حفظ المسودة بدون صورة). / Cover image is required to publish a project (drafts may be saved without an image).'
+                }
+                return true
               },
             },
             {
@@ -1128,6 +1159,50 @@ export const Projects: CollectionConfig = withImmutableCreatedAt({
       },
     },
     orderField(),
+    {
+      name: 'needsClientReview',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      access: {
+        read: isAdminOrEditorFieldLevel,
+        create: isAdminOrEditorFieldLevel,
+        update: isAdminOrEditorFieldLevel,
+      },
+      label: {
+        ar: 'يحتاج إلى مراجعة العميل',
+        en: 'Needs Client Review',
+      },
+      admin: {
+        position: 'sidebar',
+        description: {
+          ar: 'يشير إلى أن بيانات هذا المشروع تحتاج إلى تأكيد أو مراجعة من العميل قبل الاعتماد النهائي.',
+          en: 'Flags that this project entry requires client confirmation or review.',
+        },
+      },
+    },
+    {
+      name: 'reviewNote',
+      type: 'textarea',
+      required: false,
+      maxLength: 1000,
+      access: {
+        read: isAdminOrEditorFieldLevel,
+        create: isAdminOrEditorFieldLevel,
+        update: isAdminOrEditorFieldLevel,
+      },
+      label: {
+        ar: 'ملاحظة المراجعة الداخلية',
+        en: 'Internal Review Note',
+      },
+      admin: {
+        position: 'sidebar',
+        description: {
+          ar: 'ملاحظة داخلية للمحررين ومديري النظام حول مصدر البيانات أو البنود المطلوب تأكيدها (غير ظاهرة للزوار).',
+          en: 'Internal note for staff regarding data source or items needing confirmation (not visible to public visitors).',
+        },
+      },
+    },
     bodyMediaField('body'),
   ],
 })
