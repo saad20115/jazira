@@ -184,18 +184,15 @@ export function resolveHomeCopySource(customCopyV2Path?: string): {
   }
 }
 
-function slugifyProject(name: string, ref: string): string {
-  const base = name
+function slugifyProjectTitle(name: string): string {
+  return name
     .toLowerCase()
     .replace(/&/g, ' and ')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
     .replace(/-{2,}/g, '-')
-  const refSlug = ref
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '')
-  return `${base}-${refSlug}`.slice(0, 110).replace(/-+$/g, '')
+    .slice(0, 90)
+    .replace(/-+$/g, '')
 }
 
 /**
@@ -275,6 +272,7 @@ export function buildP4T2SeedPlan(
 
   const featuredByRef = new Map(FIGMA_FEATURED_PROJECTS_6.map((f) => [f.ref, f]))
   let nextNonFeaturedOrder = FIGMA_FEATURED_PROJECTS_6.length + 1
+  const usedSlugs = new Set<string>()
 
   const projects: PlannedProjectSeed[] = rawProjects.map((raw) => {
     const featuredSpec = featuredByRef.get(raw.ref)
@@ -283,8 +281,14 @@ export function buildP4T2SeedPlan(
 
     const titleEn = raw.name.trim()
     const titleAr = PROJECT_TITLE_AR_BY_REF[raw.ref] ?? titleEn
-    const slug =
-      raw.ref === 'XLSX-13' ? 'sofitel-makkah-hotel' : slugifyProject(titleEn, raw.ref)
+    const baseSlug = slugifyProjectTitle(titleEn)
+    let slug = baseSlug
+    let slugSuffix = 2
+    while (usedSlugs.has(slug)) {
+      slug = `${baseSlug}-${String(slugSuffix)}`
+      slugSuffix += 1
+    }
+    usedSlugs.add(slug)
 
     const { locationEn, locationAr, fromMakkahSectionHeader } = normalizeProjectLocation(
       raw.location,
@@ -305,18 +309,21 @@ export function buildP4T2SeedPlan(
     const photoAltAr = photoFile ? `${titleAr} — واجهة خارجية` : null
 
     const reviewNotes: string[] = [
-      `Source: ${raw.ref} (${raw.source}; printed name: "${raw.printed}").`,
-      'Arabic title, location, and client are drafted translations requiring client review.',
-      'No completion year, contract value, or project summary was provided in the source profile; left empty (do not invent).',
+      `Source: ${raw.ref} (${raw.source}; printed: "${raw.printed}").`,
+      'AR title/location/client are drafted translations; year/value/summary left empty.',
     ]
+
+    if (mappedScope.ambiguousScopeQuestion) {
+      reviewNotes.push(mappedScope.ambiguousScopeQuestion)
+    }
 
     if (fromMakkahSectionHeader) {
       reviewNotes.push(
-        "Location derived from profile section header 'Makkah' — confirm exact city/district (note: some rows under this section header mention Jeddah or Mena).",
+        "Location derived from profile header 'Makkah' — confirm exact city/district.",
       )
     }
     if (raw.status.trim().toLowerCase() === 'working') {
-      reviewNotes.push('Status from the old profile was "working" — owner confirmed completed; confirm.')
+      reviewNotes.push('Status in old profile was "working" — owner confirmed completed; confirm.')
     }
     if (
       raw.ref === 'A-p11-8' ||
@@ -324,26 +331,26 @@ export function buildP4T2SeedPlan(
       raw.ref === 'A-p11-12'
     ) {
       reviewNotes.push(
-        'Shown as "In Progress" in the Figma mockups, but owner confirmed on 2026-10-24 that all 91 projects are completed.',
+        'Shown as "In Progress" in Figma, but owner confirmed (2026-10-24) all 91 projects are completed.',
       )
     }
     if (photoMatch) {
       reviewNotes.push(
-        `Cover photo attached from ${photoMatch.entry.file} (printed caption: "${photoMatch.entry.captionAsPrinted}", ${String(photoMatch.entry.width)}×${String(photoMatch.entry.height)}px 2x enhanced scan; replace with high-res photo from admin when available).`,
+        `Cover photo from ${photoMatch.entry.file} (caption: "${photoMatch.entry.captionAsPrinted}", ${String(photoMatch.entry.width)}×${String(photoMatch.entry.height)}px).`,
       )
       if (photoMatch.ambiguousOtherRef) {
         reviewNotes.push(
-          `AMBIGUOUS PHOTO CAPTION (${photoMatch.entry.project}): "${photoMatch.entry.captionAsPrinted}" — ${String(photoMatch.entry.question)}. Attached to first ref ${raw.ref} per P4-T2 Scope 4a; confirm whether this photo belongs to ${raw.ref} or ${photoMatch.ambiguousOtherRef}.`,
+          `AMBIGUOUS PHOTO CAPTION (${photoMatch.entry.project}): "${photoMatch.entry.captionAsPrinted}" — ${String(photoMatch.entry.question)}. Attached to ${raw.ref}; confirm ${raw.ref} vs ${photoMatch.ambiguousOtherRef}.`,
         )
       }
     } else {
-      reviewNotes.push('No photo in seed/images/projects/manifest.json — kept as draft until a cover image is uploaded.')
+      reviewNotes.push('No photo in manifest.json — kept as draft.')
     }
 
     const secondaryAmbiguous = secondaryCandidateNoteByRef.get(raw.ref)
     if (secondaryAmbiguous) {
       reviewNotes.push(
-        `AMBIGUOUS PHOTO CANDIDATE: ${secondaryAmbiguous.file} (caption "${secondaryAmbiguous.captionAsPrinted}") matched ${secondaryAmbiguous.attachedToRef}|${raw.ref} and was attached to first ref ${secondaryAmbiguous.attachedToRef}. Confirm if it belongs to ${raw.ref} instead.`,
+        `AMBIGUOUS PHOTO CANDIDATE: ${secondaryAmbiguous.file} ("${secondaryAmbiguous.captionAsPrinted}") matched ${secondaryAmbiguous.attachedToRef}|${raw.ref}; attached to ${secondaryAmbiguous.attachedToRef}. Confirm if ${raw.ref}.`,
       )
     }
 
@@ -952,6 +959,7 @@ export async function seedP4T2Content(
         id: existingDoc.id,
         locale: 'en',
         data: {
+          name: marqueeSpec.name,
           origin: marqueeSpec.originEn,
           showInMarquee: true,
           order: marqueeSpec.order,
@@ -965,6 +973,7 @@ export async function seedP4T2Content(
         id: existingDoc.id,
         locale: 'ar',
         data: {
+          name: marqueeSpec.name,
           origin: marqueeSpec.originAr,
         },
         context: { disableRevalidate: true },
@@ -1246,7 +1255,7 @@ export async function seedP4T2Content(
       office: {
         title: 'Office Location',
         address: '7676 Bathaa Quraish, Makkah Al-Mukarramah, KSA',
-        mapImage: heroCityMediaId,
+        mapImage: null,
         mapUrl: 'https://maps.google.com/?q=7676+Bathaa+Quraish,+Makkah',
       },
       socials: [],
@@ -1257,7 +1266,7 @@ export async function seedP4T2Content(
         title: 'Al Jazira for Imdad Smart Co. | MEP Contracting, Firefighting & Smart Systems',
         description:
           'Al Jazira for Imdad Smart Company is a leading MEP contractor in the Gulf region, delivering world-class mechanical, electrical, and plumbing solutions with over four decades of proven excellence.',
-        image: heroCityMediaId,
+        image: null,
       },
     },
     context: { disableRevalidate: true },
@@ -1333,7 +1342,7 @@ export async function seedP4T2Content(
       ],
       footerCta: {
         title: 'Have a project in mind?',
-        text: 'Send us your drawings or BOQ and our engineers will get back to you within one working day.',
+        text: 'Send us your drawings or BOQ and our engineers will get back to you.',
         button: {
           label: 'Get a Quote',
           link: { type: 'internal', internalRoute: 'custom', internalPath: '/contact#quote' },
@@ -1378,7 +1387,7 @@ export async function seedP4T2Content(
       ],
       footerCta: {
         title: 'هل لديك مشروع قيد التخطيط؟',
-        text: 'أرسل لنا المخططات أو جداول الكميات (BOQ) وسيتواصل معك مهندسونا خلال يوم عمل واحد.',
+        text: 'أرسل لنا المخططات أو جداول الكميات (BOQ) وسيتواصل معك مهندسونا.',
         button: {
           label: 'اطلب عرض سعر',
           link: { type: 'internal', internalRoute: 'custom', internalPath: '/contact#quote' },
@@ -1474,7 +1483,7 @@ export async function seedP4T2Content(
           disciplines: [...item.disciplines],
         })),
         heroImage: towerRenderMediaId,
-        relatedProjectsLabel: '3D model · live version available',
+        relatedProjectsLabel: 'Related projects',
         liveModelLabel: 'Open the live 3D model',
       },
       statsSection: {
@@ -1591,7 +1600,7 @@ export async function seedP4T2Content(
           shot: item.shot,
           disciplines: [...item.disciplines],
         })),
-        relatedProjectsLabel: 'مجسم ثلاثي الأبعاد · العرض التفاعلي متاح',
+        relatedProjectsLabel: 'مشاريع ذات صلة',
         liveModelLabel: 'افتح المجسم التفاعلي ثلاثي الأبعاد',
       },
       statsSection: {
@@ -1845,12 +1854,12 @@ export async function seedP4T2Content(
         eyebrow: 'Our Story',
         title: 'Engineering Excellence\nSince 1979',
         text: buildLexicalParagraphsRoot([
-          'Al Jazira for Imdad Smart Company (formerly known as IMDAD Group) is a leading name in the MEP construction sector in the Gulf region. With over 45 years of proven experience, the company continues to specialize in Mechanical and Electrical construction, offering complete, collaborative, and end-to-end solutions that bring life to new buildings and sustain existing ones.',
-          'Starting as IMDAD sanitary works in KSA, the company diversified and constantly followed the market. For over 45 years, the team has been reinforcing its international presence in the Gulf, expanding its in-house expertise and enlarging its scope of MEP Engineering services.',
+          'Al Jazira for Imdad Smart Company is a leading name in the MEP construction sector in the Gulf region. With over 45 years of proven experience, the company continues to specialize in Mechanical and Electrical construction, offering complete, collaborative, and end-to-end solutions that bring life to new buildings and sustain existing ones.',
+          'Established in the Kingdom of Saudi Arabia in 1979, the company diversified and constantly followed the market. For over 45 years, the team has been expanding its in-house expertise and enlarging its scope of MEP engineering services across Saudi Arabia, the UAE, and Qatar.',
         ]),
         quote:
           '“Developing and serving society with the highest levels of professional integrity and commitment.”',
-        quoteAuthor: 'Mr. Rashwan Mahmoud — Founder',
+        quoteAuthor: 'Al Jazira for Imdad Smart Company',
         image: aboutTeamMediaId,
       },
       strengths: {
@@ -1866,7 +1875,7 @@ export async function seedP4T2Content(
           },
           {
             title: 'Proven Track Record',
-            text: 'Over 100 completed projects with a reputation for exceptional performance and dependable specialist MEP contracting.',
+            text: '90+ completed projects across 100+ buildings with a reputation for exceptional performance and dependable specialist MEP contracting.',
           },
           {
             title: 'Quality & Reliability',
@@ -1918,7 +1927,7 @@ export async function seedP4T2Content(
           pillars: [
             {
               title: 'Expanding Core Competencies',
-              text: 'Strengthening our electro-mechanical capabilities and broadening our multi-disciplined EPIC service portfolio.',
+              text: 'Strengthening our electro-mechanical capabilities and broadening our multi-disciplined engineering service portfolio.',
             },
             {
               title: 'Unique Technologies',
@@ -1971,7 +1980,7 @@ export async function seedP4T2Content(
     },
     {
       title: 'سجل إنجازات حافل',
-      text: 'أكثر من 100 مشروع منجز بسمعة متميزة في الأداء والاعتمادية في مقاولات الكهروميكانيك التخصصية.',
+      text: 'أكثر من 90 مشروعاً منجزاً تشمل أكثر من 100 مبنى بسمعة متميزة في الأداء والاعتمادية في مقاولات الكهروميكانيك التخصصية.',
     },
     {
       title: 'الجودة والموثوقية',
@@ -2009,7 +2018,7 @@ export async function seedP4T2Content(
   const visionPillarsAr = [
     {
       title: 'توسيع الكفاءات الأساسية',
-      text: 'تعزيز قدراتنا الكهروميكانيكية وتوسيع محفظة خدماتنا الهندسية متعددة التخصصات (EPIC).',
+      text: 'تعزيز قدراتنا الكهروميكانيكية وتوسيع محفظة خدماتنا الهندسية متعددة التخصصات.',
     },
     {
       title: 'تقنيات متميزة',
@@ -2037,11 +2046,11 @@ export async function seedP4T2Content(
         eyebrow: 'قصتنا',
         title: 'تميز هندسي\nمنذ عام 1979',
         text: buildLexicalParagraphsRoot([
-          'شركة الجزيرة الإمداد الذكي (المعروفة سابقاً باسم مجموعة إمداد IMDAD Group) هي اسم رائد في قطاع مقاولات الكهروميكانيك (MEP) في منطقة الخليج. وبخبرة راسخة تتجاوز 45 عاماً، تواصل الشركة تخصصها في الإنشاءات الميكانيكية والكهربائية، مقدمةً حلولاً متكاملة وتعاونية من البداية إلى النهاية تمنح الحياة للمباني الجديدة وتحافظ على استدامة المباني القائمة.',
-          'بدأت الشركة كأعمال صحية تحت اسم إمداد في المملكة العربية السعودية، ثم تنوعت أعمالها وواكبت تطور السوق باستمرار. وعلى مدى أكثر من 45 عاماً، عزز الفريق حضوره الإقليمي في الخليج، موسعاً خبراته الداخلية ونطاق خدماته الهندسية الكهروميكانيكية.',
+          'شركة الجزيرة الإمداد الذكي هي اسم رائد في قطاع مقاولات الكهروميكانيك (MEP) في منطقة الخليج. وبخبرة راسخة تتجاوز 45 عاماً، تواصل الشركة تخصصها في الإنشاءات الميكانيكية والكهربائية، مقدمةً حلولاً متكاملة وتعاونية من البداية إلى النهاية تمنح الحياة للمباني الجديدة وتحافظ على استدامة المباني القائمة.',
+          'تأسست الشركة في المملكة العربية السعودية عام 1979، وتنوعت أعمالها وواكبت تطور السوق باستمرار. وعلى مدى أكثر من 45 عاماً، وسّع الفريق خبراته الداخلية ونطاق خدماته الهندسية الكهروميكانيكية في المملكة العربية السعودية والإمارات العربية المتحدة وقطر.',
         ]),
         quote: '«تنمية المجتمع وخدمته بأعلى مستويات النزاهة المهنية والالتزام.»',
-        quoteAuthor: 'الأستاذ رشوان محمود — المؤسس',
+        quoteAuthor: 'شركة الجزيرة الإمداد الذكي',
       },
       strengths: {
         enabled: true,
@@ -2110,7 +2119,7 @@ export async function seedP4T2Content(
         enabled: true,
         title: 'Our Projects',
         subtitle:
-          '100+ completed MEP, fire fighting, smart-systems and data-center projects across the Gulf. Filter by discipline to explore our track record.',
+          '90+ completed MEP, fire fighting, smart-systems and data-center projects across 100+ buildings in the Gulf. Filter by discipline to explore our track record.',
         image: projTowerMediaId,
       },
       impact: {
@@ -2124,7 +2133,7 @@ export async function seedP4T2Content(
         eyebrow: 'Our Portfolio',
         title: 'Projects That Define\nEngineering Excellence',
         text: buildLexicalParagraphsRoot([
-          'With over 45 years of electro-mechanical construction experience across Saudi Arabia and the Gulf, IMDAD has successfully delivered landmark MEP projects ranging from 32-floor luxury hotel towers to mission-critical data centers and university campuses.',
+          'With over 45 years of electro-mechanical construction experience across Saudi Arabia and the Gulf, Al Jazira for Imdad Smart Company has successfully delivered landmark MEP projects ranging from 32-floor luxury hotel towers to mission-critical data centers and university campuses.',
           'Our in-house team self-performs 85% of MEP works including HVAC, high/low voltage electrical, fire suppression, and smart automation systems — ensuring unmatched execution quality and schedule compliance.',
         ]),
         quote: '“Engineering iconic developments with uncompromised quality, precision, and safety.”',
@@ -2150,7 +2159,7 @@ export async function seedP4T2Content(
       meta: {
         title: 'Our Projects | Al Jazira for Imdad Smart Co.',
         description:
-          '100+ completed MEP, firefighting, smart-systems and data-center projects delivered across Saudi Arabia, UAE, and Qatar.',
+          '90+ completed MEP, firefighting, smart-systems and data-center projects across 100+ buildings delivered in Saudi Arabia, UAE, and Qatar.',
         image: projTowerMediaId,
       },
     },
@@ -2169,7 +2178,7 @@ export async function seedP4T2Content(
         enabled: true,
         title: 'مشاريعنا',
         subtitle:
-          'أكثر من 100 مشروع منجز في أعمال الكهروميكانيك ومكافحة الحريق والأنظمة الذكية ومراكز البيانات في الخليج. صفِّ حسب التخصص لاستعراض سجل إنجازاتنا.',
+          'أكثر من 90 مشروعاً منجزاً تشمل أكثر من 100 مبنى في أعمال الكهروميكانيك ومكافحة الحريق والأنظمة الذكية ومراكز البيانات في الخليج. صفِّ حسب التخصص لاستعراض سجل إنجازاتنا.',
       },
       impact: {
         enabled: true,
@@ -2181,7 +2190,7 @@ export async function seedP4T2Content(
         eyebrow: 'سجل إنجازاتنا',
         title: 'مشاريع تجسد\nالتميز الهندسي',
         text: buildLexicalParagraphsRoot([
-          'بخبرة تتجاوز 45 عاماً في الإنشاءات الكهروميكانيكية في المملكة العربية السعودية والخليج، أنجزت إمداد مشاريع كهروميكانيكية بارزة تتنوع بين الأبراج الفندقية الفاخرة المكونة من 32 طابقاً ومراكز البيانات الحساسة والحرم الجامعية.',
+          'بخبرة تتجاوز 45 عاماً في الإنشاءات الكهروميكانيكية في المملكة العربية السعودية والخليج، أنجزت شركة الجزيرة الإمداد الذكي مشاريع كهروميكانيكية بارزة تتنوع بين الأبراج الفندقية الفاخرة المكونة من 32 طابقاً ومراكز البيانات الحساسة والحرم الجامعية.',
           'ينفذ فريقنا الداخلي ذاتياً 85% من أعمال الكهروميكانيك بما يشمل التكييف والكهرباء للجهد المتوسط والمنخفض وإطفاء الحريق والأتمتة الذكية — لضمان أعلى مستويات جودة التنفيذ والالتزام بالجدول الزمني.',
         ]),
         quote: '«هندسة المشاريع الكبرى بجودة ودقة وسلامة لا تقبل المساومة.»',

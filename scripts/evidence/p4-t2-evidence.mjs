@@ -1,4 +1,4 @@
-import { spawn, spawnSync } from 'node:child_process'
+import { execSync, spawn, spawnSync } from 'node:child_process'
 import crypto from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
@@ -10,13 +10,49 @@ import payloadConfig from '../../src/payload.config.ts'
 import { SEED_ADMIN_USER } from '../../src/seed/materials.ts'
 import { clearGlobalsReferencesBeforeReseed } from '../../src/seed/p4-t2.ts'
 
-const outDirArg = process.argv.find((a) => a.startsWith('--out-dir='))
-const skipSeedRuns = process.argv.includes('--skip-seed-runs')
+function getRepoHeaderBlock() {
+  const cwd = process.cwd()
+  let head = 'unknown'
+  let statusPorcelain = 'unknown'
+  let diffSha256 = 'unknown'
+  try {
+    head = execSync('git rev-parse HEAD', { cwd, encoding: 'utf8' }).trim()
+    const rawStatus = execSync('git status --porcelain', { cwd, encoding: 'utf8' }).trim()
+    statusPorcelain = rawStatus.length > 0 ? rawStatus : '(clean)'
+    const rawDiff = execSync('git diff HEAD', { cwd, maxBuffer: 32 * 1024 * 1024 })
+    diffSha256 =
+      rawDiff.length > 0
+        ? `${crypto.createHash('sha256').update(rawDiff).digest('hex')} (${rawDiff.length} bytes)`
+        : 'clean (0 bytes)'
+  } catch {
+    // ignore
+  }
+  return [
+    `$ pwd`,
+    cwd,
+    `$ git rev-parse HEAD`,
+    head,
+    `$ git status --porcelain`,
+    statusPorcelain,
+    `$ git diff HEAD | sha256`,
+    diffSha256,
+    '',
+  ].join('\n')
+}
+
+const scriptIdx = process.argv.findIndex((a) =>
+  a.replace(/\\/g, '/').endsWith('scripts/evidence/p4-t2-evidence.mjs'),
+)
+const rawArgs = scriptIdx >= 0 ? process.argv.slice(scriptIdx + 1) : process.argv.slice(2)
+const posArgs = rawArgs.filter((a) => !a.startsWith('--') && a !== '--')
+const outDirArg = rawArgs.find((a) => a.startsWith('--out-dir='))
+const skipSeedRuns = rawArgs.includes('--skip-seed-runs')
+const BASE_URL_ARG = posArgs[0] || 'http://localhost:3000'
 const EVIDENCE_DIR = path.resolve(
   process.cwd(),
-  outDirArg ? outDirArg.slice('--out-dir='.length) : 'docs/reports/evidence/P4-T2/r1',
+  outDirArg ? outDirArg.slice('--out-dir='.length) : posArgs[1] || 'docs/reports/evidence/P4-T2/r1',
 )
-const SCREENSHOT_DIR = path.resolve(process.cwd(), 'docs/reports/phase-4/P4-T2/r1')
+const SCREENSHOT_DIR = path.resolve(process.cwd(), posArgs[2] || 'docs/reports/phase-4/P4-T2/r1')
 
 const previewSecret = crypto
   .createHmac('sha256', process.env.PAYLOAD_SECRET ?? '')
@@ -48,8 +84,9 @@ async function run() {
   ensureDir(SCREENSHOT_DIR)
   const pnpmCmd = process.platform === 'win32' ? 'pnpm.cmd' : 'pnpm'
   const nextBin = path.resolve(process.cwd(), 'node_modules/next/dist/bin/next')
-  const port = 3000
-  const baseUrl = `http://localhost:${String(port)}`
+  const parsedUrl = new URL(BASE_URL_ARG)
+  const port = Number(parsedUrl.port || 3000)
+  const baseUrl = BASE_URL_ARG.replace(/\/+$/, '')
 
   // 1. Clean Phase 4 collections + global references in DB so Run 1 starts on a clean empty baseline
   const payload = await getPayload({ config: payloadConfig })
@@ -92,6 +129,8 @@ async function run() {
     overrideAccess: true,
   })
 
+  const headerBlock = getRepoHeaderBlock()
+
   if (!skipSeedRuns) {
     // 2. Run 1: First-run baseline on an empty DB (`pnpm seed` -> seed_exit_code=0)
     const run1Res = spawnSync(pnpmCmd, ['seed'], {
@@ -99,17 +138,20 @@ async function run() {
       encoding: 'utf8',
       shell: process.platform === 'win32',
     })
+    const run1Passed = run1Res.status === 0
     const run1Log = [
+      headerBlock.trimEnd(),
       '$ pnpm seed',
       run1Res.stdout || '',
       run1Res.stderr || '',
       `[seed_exit_code=${String(run1Res.status)}]`,
+      run1Passed ? 'GATE: PASS' : 'GATE: FAIL',
     ]
       .filter(Boolean)
       .join('\n')
     fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-run-1.log'), `${run1Log}\n`, 'utf8')
     process.stdout.write(`${run1Log}\n`)
-    if (run1Res.status !== 0) {
+    if (!run1Passed) {
       throw new Error(
         `Expected first-run pnpm seed on empty DB to exit 0, got ${String(run1Res.status)}`,
       )
@@ -121,11 +163,17 @@ async function run() {
       encoding: 'utf8',
       shell: process.platform === 'win32',
     })
+    const nonEmptyRefusedText = `${nonEmptyRefusedRes.stdout || ''}\n${nonEmptyRefusedRes.stderr || ''}`
+    const nonEmptyRefusedPassed =
+      nonEmptyRefusedRes.status === 1 &&
+      nonEmptyRefusedText.includes('[seed] Refusing to run seed on a non-empty database')
     const nonEmptyRefusedLog = [
+      headerBlock.trimEnd(),
       '$ pnpm seed',
       nonEmptyRefusedRes.stdout || '',
       nonEmptyRefusedRes.stderr || '',
       `[seed_exit_code=${String(nonEmptyRefusedRes.status)}]`,
+      nonEmptyRefusedPassed ? 'GATE: PASS' : 'GATE: FAIL',
     ]
       .filter(Boolean)
       .join('\n')
@@ -135,9 +183,9 @@ async function run() {
       'utf8',
     )
     process.stdout.write(`${nonEmptyRefusedLog}\n`)
-    if (nonEmptyRefusedRes.status !== 1) {
+    if (!nonEmptyRefusedPassed) {
       throw new Error(
-        `Expected pnpm seed on non-empty DB without --reseed to exit 1, got ${String(nonEmptyRefusedRes.status)}`,
+        `Expected pnpm seed on non-empty DB without --reseed to exit 1 with refusal message, got ${String(nonEmptyRefusedRes.status)}`,
       )
     }
 
@@ -147,17 +195,20 @@ async function run() {
       encoding: 'utf8',
       shell: process.platform === 'win32',
     })
+    const reseedDevPassed = reseedDevRes.status === 0
     const reseedDevLog = [
+      headerBlock.trimEnd(),
       '$ pnpm seed -- --reseed',
       reseedDevRes.stdout || '',
       reseedDevRes.stderr || '',
       `[seed_exit_code=${String(reseedDevRes.status)}]`,
+      reseedDevPassed ? 'GATE: PASS' : 'GATE: FAIL',
     ]
       .filter(Boolean)
       .join('\n')
     fs.writeFileSync(path.join(EVIDENCE_DIR, 'seed-reseed-dev.log'), `${reseedDevLog}\n`, 'utf8')
     process.stdout.write(`${reseedDevLog}\n`)
-    if (reseedDevRes.status !== 0) {
+    if (!reseedDevPassed) {
       throw new Error(
         `Expected pnpm seed -- --reseed in development to exit 0, got ${String(reseedDevRes.status)}`,
       )
@@ -170,11 +221,17 @@ async function run() {
       shell: process.platform === 'win32',
       env: { ...process.env, NODE_ENV: 'production' },
     })
+    const prodGuardText = `${prodGuardRes.stdout || ''}\n${prodGuardRes.stderr || ''}`
+    const prodGuardPassed =
+      prodGuardRes.status === 1 &&
+      prodGuardText.includes('[seed] Refusing to run seed when NODE_ENV=production')
     const prodGuardLog = [
+      headerBlock.trimEnd(),
       '$ NODE_ENV=production pnpm seed',
       prodGuardRes.stdout || '',
       prodGuardRes.stderr || '',
       `[seed_exit_code=${String(prodGuardRes.status)}]`,
+      prodGuardPassed ? 'GATE: PASS' : 'GATE: FAIL',
     ]
       .filter(Boolean)
       .join('\n')
@@ -183,9 +240,9 @@ async function run() {
       `${prodGuardLog}\n`,
       'utf8',
     )
-    if (prodGuardRes.status !== 1) {
+    if (!prodGuardPassed) {
       throw new Error(
-        'Expected NODE_ENV=production pnpm seed without --force-production to exit 1!',
+        'Expected NODE_ENV=production pnpm seed without --force-production to exit 1 with refusal message!',
       )
     }
 
@@ -200,11 +257,17 @@ async function run() {
         env: { ...process.env, NODE_ENV: 'production' },
       },
     )
+    const prodReseedText = `${prodReseedGuardRes.stdout || ''}\n${prodReseedGuardRes.stderr || ''}`
+    const prodReseedPassed =
+      prodReseedGuardRes.status === 1 &&
+      prodReseedText.includes('[seed] Refusing to run --reseed when NODE_ENV=production')
     const prodReseedGuardLog = [
+      headerBlock.trimEnd(),
       '$ NODE_ENV=production pnpm seed -- --force-production --reseed',
       prodReseedGuardRes.stdout || '',
       prodReseedGuardRes.stderr || '',
       `[seed_exit_code=${String(prodReseedGuardRes.status)}]`,
+      prodReseedPassed ? 'GATE: PASS' : 'GATE: FAIL',
     ]
       .filter(Boolean)
       .join('\n')
@@ -213,24 +276,26 @@ async function run() {
       `${prodReseedGuardLog}\n`,
       'utf8',
     )
-    if (prodReseedGuardRes.status !== 1) {
+    if (!prodReseedPassed) {
       throw new Error(
-        'Expected NODE_ENV=production pnpm seed -- --force-production --reseed to exit 1!',
+        'Expected NODE_ENV=production pnpm seed -- --force-production --reseed to exit 1 with refusal message!',
       )
     }
   }
 
-  // 7. Start production server (`next start` on port 3000), verify Local API + anonymous REST, and capture screenshots
-  const serverProc = spawn(process.execPath, [nextBin, 'start', '-p', String(port)], {
-    cwd: process.cwd(),
-    env: {
-      ...process.env,
-      NODE_ENV: 'production',
-      NODE_OPTIONS: '--no-deprecation',
-      PORT: String(port),
-    },
-    stdio: 'pipe',
-  })
+  // 7. Start server on port 3000 (unless already started by caller with --skip-seed-runs), verify Local API + anonymous REST, and capture screenshots
+  const serverProc = skipSeedRuns
+    ? null
+    : spawn(process.execPath, [nextBin, 'start', '-p', String(port)], {
+        cwd: process.cwd(),
+        env: {
+          ...process.env,
+          NODE_ENV: 'production',
+          NODE_OPTIONS: '--no-deprecation',
+          PORT: String(port),
+        },
+        stdio: 'pipe',
+      })
 
   try {
     await waitForServer(`${baseUrl}/icon.svg`)
@@ -439,6 +504,7 @@ async function run() {
     const arStatById = new Map(adminStatsAr.docs.map((s) => [s.id, s]))
 
     const queryLines = [
+      headerBlock.trimEnd(),
       '=== P4-T2 DATABASE & ANONYMOUS REST VERIFICATION ===',
       `projects.totalDocs (admin draft=true): ${String(adminProjectsEn.totalDocs)} (published=${String(adminProjectsEn.docs.filter((p) => p._status === 'published').length)}, draft=${String(adminProjectsEn.docs.filter((p) => p._status === 'draft').length)}, featured=${String(adminProjectsEn.docs.filter((p) => p.featured).length)}, needsClientReview=${String(adminProjectsEn.docs.filter((p) => p.needsClientReview).length)})`,
       `services.totalDocs (admin draft=true): ${String(adminServicesEn.totalDocs)} (published=${String(adminServicesEn.docs.filter((s) => s._status === 'published').length)}, draft=${String(adminServicesEn.docs.filter((s) => s._status === 'draft').length)})`,
@@ -485,11 +551,27 @@ async function run() {
       }),
     ]
 
+    const queryGatePassed =
+      adminProjectsEn.totalDocs === 91 &&
+      anonProjects.totalDocs === 17 &&
+      anonServices.totalDocs === 0 &&
+      anonTeam.totalDocs === 0 &&
+      marqueeDocsEn.length === 20 &&
+      !JSON.stringify(anonProjects.docs).includes('[placeholder]') &&
+      !anonProjects.docs.some(
+        (d) => d.needsClientReview !== undefined || d.reviewNote !== undefined,
+      )
+
+    queryLines.push('', queryGatePassed ? 'GATE: PASS' : 'GATE: FAIL')
+
     fs.writeFileSync(
       path.join(EVIDENCE_DIR, 'seed-query-verification.log'),
       `${queryLines.join('\n')}\n`,
       'utf8',
     )
+    if (!queryGatePassed) {
+      throw new Error('P4-T2 query verification gate failed!')
+    }
 
     // 7c. Capture Playwright screenshots (anonymous /en, editor draft /en & /ar at 1440/768/390, styleguide, and /admin views)
     const browser = await chromium.launch()
@@ -634,8 +716,15 @@ async function run() {
       ]
 
       for (const screen of adminScreens) {
-        await adminPage.goto(`${baseUrl}${screen.url}`, { waitUntil: 'networkidle' })
-        await adminPage.waitForTimeout(500)
+        await adminPage.goto(`${baseUrl}${screen.url}`, {
+          waitUntil: 'domcontentloaded',
+          timeout: 60000,
+        })
+        await adminPage
+          .locator('main, [class*="collection-list"], [class*="document-fields"]')
+          .first()
+          .waitFor({ state: 'visible', timeout: 30000 })
+        await adminPage.waitForTimeout(1000)
         for (const dir of [EVIDENCE_DIR, SCREENSHOT_DIR]) {
           await adminPage.screenshot({
             path: path.join(dir, screen.file),
@@ -658,8 +747,10 @@ async function run() {
     if (typeof payload.db.destroy === 'function') {
       await payload.db.destroy()
     }
-    serverProc.kill('SIGTERM')
-    await new Promise((r) => setTimeout(r, 1500))
+    if (serverProc) {
+      serverProc.kill('SIGTERM')
+      await new Promise((r) => setTimeout(r, 1500))
+    }
   }
 }
 
