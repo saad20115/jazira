@@ -24,6 +24,9 @@ next-env.d.ts
 /videos/
 /public/media/
 
+# 3D assets generated from 3d/web/ by scripts/sync-3d-assets.mjs (P3-T5)
+/public/systems/
+
 # Testing & coverage
 /coverage/
 /test-results/
