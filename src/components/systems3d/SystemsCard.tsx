@@ -13,13 +13,12 @@ import {
   useSyncExternalStore,
 } from 'react'
 
-import Link from 'next/link'
-
 import { ArrowUpRightIcon, CubeIcon } from '@/components/icons'
 
 import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import { LiveLabels, type LiveLabelSink } from './LiveLabels'
+import { RelatedPanel } from './RelatedPanel'
 import type { SystemRelatedProjects } from './relatedProjects'
 import {
   DPR_CAP,
@@ -39,6 +38,9 @@ type Phase = 'still' | 'loading' | 'live' | 'stills'
 
 /** A start that has not rendered its first frame by then falls back to the stills tier. */
 const START_TIMEOUT_MS = 45_000
+
+/** Phones render at most this many frames per second (§8c). */
+const PHONE_MAX_FPS = 30
 
 /** Keyboard steps (card focused): arrows orbit, +/- zoom. */
 const KEY_ROTATE = 0.15
@@ -142,6 +144,24 @@ function readFixesOverride(): { anisotropy: boolean; alphaToCoverage: boolean } 
 
 const subscribeNever = (): (() => void) => () => undefined
 
+const PHONE_QUERY = '(max-width: 767.98px)'
+function subscribePhone(onChange: () => void): () => void {
+  const query = window.matchMedia(PHONE_QUERY)
+  query.addEventListener('change', onChange)
+  return () => {
+    query.removeEventListener('change', onChange)
+  }
+}
+
+/** The phone layout (< 768 px); false on the server. */
+function usePhoneLayout(): boolean {
+  return useSyncExternalStore(
+    subscribePhone,
+    () => window.matchMedia(PHONE_QUERY).matches,
+    () => false,
+  )
+}
+
 /** True after hydration: JS-only controls are not rendered into the server HTML. */
 function useHydrated(): boolean {
   return useSyncExternalStore(
@@ -165,6 +185,7 @@ export function SystemsCard({
   strings,
 }: SystemsCardProps): ReactElement {
   const hydrated = useHydrated()
+  const phoneLayout = usePhoneLayout()
   const cardRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const viewerRef = useRef<ViewerHandle | null>(null)
@@ -227,6 +248,7 @@ export function SystemsCard({
             override === 'high' ? 'full' : override === 'low' ? 'lite' : chooseModelTier(caps, gpu),
           allowBloom: true,
           pixelRatioCap: caps.coarsePointer || caps.phoneLayout ? DPR_CAP.mobile : DPR_CAP.desktop,
+          maxFps: caps.coarsePointer || caps.phoneLayout ? PHONE_MAX_FPS : 0,
           reducedMotion: caps.reducedMotion,
           look: readLookOverride(),
           groundTint: readGroundOverride(),
@@ -474,7 +496,7 @@ export function SystemsCard({
               onClick={onOpen}
               type="button"
             >
-              {openLabel}
+              {phoneLayout ? strings.exploreIn3d : openLabel}
               <ArrowUpRightIcon aria-hidden="true" />
             </button>
           )}
@@ -530,29 +552,12 @@ export function SystemsCard({
         </p>
       ) : null}
       {entered && related && related.projects.length > 0 ? (
-        <aside
-          aria-label={relatedHeading}
-          className={styles.relatedPanel}
-          data-label-obstacle="true"
-        >
-          <p className={`${styles.relatedProjectsLabel} t-label-caps`}>{relatedHeading}</p>
-          <ul className={styles.relatedList}>
-            {related.projects.map((project) => (
-              <li key={project.id}>
-                <Link
-                  className={`${styles.relatedProjectLink} t-body-s-medium`}
-                  href={project.href}
-                >
-                  {project.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <Link className={`${styles.relatedAllLink} t-label-link`} href={related.allHref}>
-            {strings.allProjects}
-            <ArrowUpRightIcon aria-hidden="true" />
-          </Link>
-        </aside>
+        <RelatedPanel
+          heading={relatedHeading}
+          placement="card"
+          related={related}
+          strings={strings}
+        />
       ) : null}
     </div>
   )

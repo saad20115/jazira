@@ -55,6 +55,7 @@ import {
   validateExtras,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
+import { FPS_WINDOW, fpsVerdict } from '../tier'
 import {
   AGX_LOOK,
   BASIS_TRANSCODER_PATH,
@@ -80,7 +81,7 @@ import { inlineBasisuPlugin } from './inlineBasisuPlugin'
 import { createSystemStage, type ProjectedLabel } from './systemStage'
 import { UrlWorkerKTX2Loader } from './UrlWorkerKTX2Loader'
 
-export type ViewerFailure = 'context-lost' | 'render-error'
+export type ViewerFailure = 'context-lost' | 'render-error' | 'too-slow'
 
 export interface ViewerOptions {
   canvas: HTMLCanvasElement
@@ -91,6 +92,8 @@ export interface ViewerOptions {
   /** Bloom is allowed only on the full model, and only when the release asks for it. */
   allowBloom: boolean
   pixelRatioCap: number
+  /** Frame cap (phones: 30); 0 = the display rate. */
+  maxFps: number
   reducedMotion: boolean
   /** V-1 live look calibration (`LIVE_LOOK`). */
   look: LiveLook
@@ -112,6 +115,7 @@ export interface ViewerStats {
   tier: ModelTier
   gpu: string | null
   bloom: boolean
+  lowTier: boolean
   pixelRatio: number
   drawCalls: number
   triangles: number
@@ -645,8 +649,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
   resize()
 
+  let lowTier = false
   const draw = (): void => {
-    if (composer) {
+    if (composer && !lowTier) {
       composer.render()
     } else {
       renderer.render(scene, camera)
@@ -714,13 +719,47 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       resumeAfterS: turntable.resumeAfterS,
     })
 
+  // Run-time tier check (§8b) on rAF intervals between consecutive animating frames: they show
+  // whether the device keeps up, also when a frame cap skips drawing.
+  let intervals: number[] = []
+  // `dt` is measured from the last drawn frame, so a frame cap never slows the animation down.
+  let lastDrawAt: number | null = null
+  const minFrameMs = options.maxFps > 0 ? 1000 / options.maxFps - 1 : 0
+  const checkFps = (): boolean => {
+    const verdict = fpsVerdict(intervals, lowTier)
+    if (verdict === 'low') {
+      lowTier = true
+      intervals = []
+      renderer.setPixelRatio(1)
+      resize()
+    } else if (verdict === 'stills') {
+      fail('too-slow')
+      return false
+    }
+    if (intervals.length > FPS_WINDOW * 2) {
+      intervals = intervals.slice(-FPS_WINDOW)
+    }
+    return true
+  }
+
   const frame = (now: number): void => {
     frameHandle = 0
     if (disposed) {
       return
     }
-    const dt = lastFrameAt === null ? 0 : Math.min((now - lastFrameAt) / 1000, 0.1)
+    if (lastFrameAt !== null) {
+      intervals.push(now - lastFrameAt)
+      if (!checkFps()) {
+        return
+      }
+    }
     lastFrameAt = now
+    if (minFrameMs > 0 && lastDrawAt !== null && now - lastDrawAt < minFrameMs) {
+      frameHandle = requestAnimationFrame(frame)
+      return
+    }
+    const dt = lastDrawAt === null ? 0 : Math.min((now - lastDrawAt) / 1000, 0.1)
+    lastDrawAt = now
     let again = stage.step(now, dt)
     controls.enabled = active && !stage.moving
     if (controls.enabled && controls.update(dt)) {
@@ -749,6 +788,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       invalidate()
     } else {
       lastFrameAt = null
+      lastDrawAt = null
+      intervals = []
       scheduleWake()
     }
   }
@@ -909,7 +950,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       return {
         tier,
         gpu,
-        bloom: useBloom,
+        bloom: useBloom && !lowTier,
+        lowTier,
         pixelRatio: renderer.getPixelRatio(),
         drawCalls: renderer.info.render.calls,
         triangles: renderer.info.render.triangles,

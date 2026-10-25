@@ -3,6 +3,7 @@
 import { type ReactElement, type RefObject, useCallback, useEffect, useRef, useState } from 'react'
 
 import styles from './InteractiveSystemsSection.module.css'
+import { HotspotItem } from './HotspotItem'
 import { choosePillSpot, type Rect } from './labelLayout'
 import { HOTSPOT_LABEL_IDS, type HotspotLabelId, type Systems3dStrings } from './strings'
 import type { ProjectedLabel } from './viewer/systemStage'
@@ -98,33 +99,28 @@ export function LiveLabels({ cardRef, sinkRef, strings }: LiveLabelsProps): Reac
   }
   return (
     <ul className={styles.labelLayer} data-live-labels="true">
-      {items.map((item) => (
-        <li
-          className={styles.hotspot}
-          key={item.name}
-          ref={(el) => {
-            if (el) {
-              anchorRefs.current.set(item.name, el)
-            } else {
-              anchorRefs.current.delete(item.name)
-            }
-          }}
-        >
-          <span aria-hidden="true" className={styles.hotspotDot} />
-          <span
-            className={`${styles.hotspotLabel} t-caption`}
-            ref={(el) => {
+      {items.map((item) =>
+        isLabelId(item.label) ? (
+          <HotspotItem
+            anchorRef={(el) => {
+              if (el) {
+                anchorRefs.current.set(item.name, el)
+              } else {
+                anchorRefs.current.delete(item.name)
+              }
+            }}
+            key={item.name}
+            pillRef={(el) => {
               if (el) {
                 pillRefs.current.set(item.name, el)
               } else {
                 pillRefs.current.delete(item.name)
               }
             }}
-          >
-            {isLabelId(item.label) ? strings.hotspots[item.label] : null}
-          </span>
-        </li>
-      ))}
+            text={strings.hotspots[item.label]}
+          />
+        ) : null,
+      )}
     </ul>
   )
 }

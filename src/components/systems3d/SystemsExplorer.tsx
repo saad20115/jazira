@@ -9,6 +9,7 @@ import type { SupportedLocale } from '@/i18n'
 import type { SystemId } from './contract'
 import { hashForSystem, systemFromHash } from './hash'
 import styles from './InteractiveSystemsSection.module.css'
+import { RelatedPanel } from './RelatedPanel'
 import type { RelatedProjectsBySystem } from './relatedProjects'
 import { showIn3dLabel, type Systems3dStrings } from './strings'
 import { SystemsCard } from './SystemsCard'
@@ -112,6 +113,8 @@ export function SystemsExplorer({
     enter(null)
   }
 
+  const enteredRelated = entered ? related[entered] : undefined
+
   return (
     <div className={styles.explorerRow}>
       <SystemsCard
@@ -173,6 +176,14 @@ export function SystemsExplorer({
             )
           })}
         </div>
+        {enteredRelated && enteredRelated.projects.length > 0 ? (
+          <RelatedPanel
+            heading={relatedHeading}
+            placement="stacked"
+            related={enteredRelated}
+            strings={strings}
+          />
+        ) : null}
       </div>
     </div>
   )

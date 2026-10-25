@@ -4,6 +4,8 @@ import {
   chooseModelTier,
   decideStart,
   type DeviceCaps,
+  FPS_WINDOW,
+  fpsVerdict,
   isHighPerformanceGpu,
   parseGfxOverride,
 } from '@/components/systems3d/tier'
@@ -82,5 +84,33 @@ describe('P3-T5 device tiers', () => {
     expect(parseGfxOverride('?gfx=ultra')).toBeNull()
     expect(parseGfxOverride('?gfx=<script>')).toBeNull()
     expect(parseGfxOverride('')).toBeNull()
+  })
+})
+
+describe('P3-T5 run-time FPS tier check', () => {
+  const frames = (ms: number, n = FPS_WINDOW): number[] => Array.from({ length: n }, () => ms)
+
+  it('needs a full window before deciding', () => {
+    expect(fpsVerdict(frames(100, FPS_WINDOW - 1), false)).toBe('ok')
+  })
+
+  it('drops to low below 45 fps, and to stills below 24 fps once low', () => {
+    expect(fpsVerdict(frames(1000 / 60), false)).toBe('ok')
+    expect(fpsVerdict(frames(1000 / 46), false)).toBe('ok')
+    expect(fpsVerdict(frames(1000 / 44), false)).toBe('low')
+    expect(fpsVerdict(frames(1000 / 30), true)).toBe('ok')
+    expect(fpsVerdict(frames(1000 / 23), true)).toBe('stills')
+    expect(fpsVerdict(frames(1000 / 23), false)).toBe('low')
+  })
+
+  it('one long stall (hidden tab, shader compile) does not drop a 60 fps device', () => {
+    expect(fpsVerdict([...frames(1000 / 60, FPS_WINDOW - 1), 10_000], false)).toBe('ok')
+    expect(fpsVerdict(frames(300), false)).toBe('low')
+    expect(fpsVerdict(frames(300), true)).toBe('stills')
+  })
+
+  it('uses only the most recent window', () => {
+    expect(fpsVerdict([...frames(100, 200), ...frames(10)], false)).toBe('ok')
+    expect(fpsVerdict([...frames(10, 200), ...frames(100)], false)).toBe('low')
   })
 })

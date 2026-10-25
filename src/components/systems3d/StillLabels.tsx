@@ -5,6 +5,7 @@ import { type ReactElement, type RefObject, useEffect, useRef, useState } from '
 import { ContractError, parseStillHotspots, type StillHotspot, type SystemId } from './contract'
 import { choosePillSpot, type Rect } from './labelLayout'
 import styles from './InteractiveSystemsSection.module.css'
+import { HotspotItem } from './HotspotItem'
 import { RELEASE_BASE_PATH } from './renderContract'
 import { HOTSPOT_LABEL_IDS, type HotspotLabelId, type Systems3dStrings } from './strings'
 
@@ -102,33 +103,28 @@ export function StillLabels({ system, cardRef, strings }: StillLabelsProps): Rea
   }
   return (
     <ul className={styles.labelLayer}>
-      {points.map((point) => (
-        <li
-          className={styles.hotspot}
-          key={point.name}
-          ref={(el) => {
-            if (el) {
-              anchorRefs.current.set(point.name, el)
-            } else {
-              anchorRefs.current.delete(point.name)
-            }
-          }}
-        >
-          <span aria-hidden="true" className={styles.hotspotDot} />
-          <span
-            className={`${styles.hotspotLabel} t-caption`}
-            ref={(el) => {
+      {points.map((point) =>
+        isLabelId(point.label) ? (
+          <HotspotItem
+            anchorRef={(el) => {
+              if (el) {
+                anchorRefs.current.set(point.name, el)
+              } else {
+                anchorRefs.current.delete(point.name)
+              }
+            }}
+            key={point.name}
+            pillRef={(el) => {
               if (el) {
                 pillRefs.current.set(point.name, el)
               } else {
                 pillRefs.current.delete(point.name)
               }
             }}
-          >
-            {isLabelId(point.label) ? strings.hotspots[point.label] : null}
-          </span>
-        </li>
-      ))}
+            text={strings.hotspots[point.label]}
+          />
+        ) : null,
+      )}
     </ul>
   )
 }

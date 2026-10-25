@@ -77,3 +77,30 @@ export function parseGfxOverride(search: string): GfxOverride | null {
   const value = new URLSearchParams(search).get('gfx')
   return value === 'stills' || value === 'low' || value === 'high' ? value : null
 }
+
+/**
+ * Run-time tier check (§8b): a rolling window of frame intervals measured while the view animates.
+ * Below `lowFps` the viewer drops to the low tier (DPR 1, no bloom); below `stillsFps` while already
+ * low it falls back to the stills tier. A decision needs a full window, and each interval counts at
+ * most `MAX_INTERVAL_MS`, so one stall (shader compile, hidden tab, card scrolled away) never
+ * changes the tier.
+ */
+export const FPS_WINDOW = 60
+export const LOW_TIER_FPS = 45
+export const STILLS_TIER_FPS = 24
+export const MAX_INTERVAL_MS = 250
+
+export type FpsVerdict = 'ok' | 'low' | 'stills'
+
+export function fpsVerdict(intervalsMs: readonly number[], alreadyLow: boolean): FpsVerdict {
+  if (intervalsMs.length < FPS_WINDOW) {
+    return 'ok'
+  }
+  const window = intervalsMs.slice(-FPS_WINDOW)
+  const mean = window.reduce((sum, ms) => sum + Math.min(ms, MAX_INTERVAL_MS), 0) / window.length
+  const fps = mean > 0 ? 1000 / mean : Infinity
+  if (alreadyLow) {
+    return fps < STILLS_TIER_FPS ? 'stills' : 'ok'
+  }
+  return fps < LOW_TIER_FPS ? 'low' : 'ok'
+}
