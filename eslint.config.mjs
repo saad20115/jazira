@@ -182,6 +182,7 @@ export default defineConfig([
       '_inbox/**',
       'reference/**',
       '3d/**',
+      'public/systems/**',
       'src/payload-types.ts',
       'src/payload-generated-schema.ts',
       'src/app/(payload)/admin/importMap.js',

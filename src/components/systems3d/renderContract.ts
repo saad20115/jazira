@@ -19,6 +19,13 @@ export const BASIS_TRANSCODER_PATH = `${RELEASE_BASE_PATH}/basis/`
 /** The KTX2 transcoding worker (security H3b): generated and pinned by the sync, own CSP. */
 export const KTX2_WORKER_URL = `${RELEASE_BASE_PATH}/basis/ktx2-worker.js`
 
+/**
+ * The exact CSP the worker URL must carry (`next.config.ts`, H3b). The viewer checks it before it
+ * starts a worker and fails closed (stills tier) on anything else, including a missing header (C3-3).
+ */
+export const KTX2_WORKER_CSP =
+  "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'"
+
 /** `render.bloom`: UnrealBloomPass on a HalfFloat 4× MSAA composer target, full model only. */
 export const BLOOM = { threshold: 8, strength: 0.22, radius: 0.25 } as const
 export const COMPOSER_MSAA_SAMPLES = 4

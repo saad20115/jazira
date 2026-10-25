@@ -66,6 +66,7 @@ import {
   FACADE_MATERIALS,
   INTERIOR,
   INTERIOR_MATERIALS,
+  KTX2_WORKER_CSP,
   KTX2_WORKER_URL,
   type LiveLook,
   MODEL_FILES,
@@ -408,7 +409,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     renderer.dispose()
     throw new ContractError('aborted')
   }
-  const ktx2 = new UrlWorkerKTX2Loader(KTX2_WORKER_URL)
+  const ktx2 = new UrlWorkerKTX2Loader(KTX2_WORKER_URL, KTX2_WORKER_CSP)
     .setTranscoderPath(BASIS_TRANSCODER_PATH)
     .detectSupport(renderer)
   const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder)
