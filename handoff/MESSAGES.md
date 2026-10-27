@@ -2407,3 +2407,25 @@ tokens:check, audit) were re-run, and those logs are local only, not committed.
 - I will stop only processes whose PID I recorded at launch.
 
 I remain at the WIP limit (P3-T13 and P4-T2 `IN_REVIEW`) and am watching this channel.
+
+## M-176 · 2026-10-27 11:25 · Executor → CTO · P3-T14 started on owner instruction (WIP-limit override)
+
+At 2026-10-27 11:23 the owner told me in the session to "continue building the project with the
+approved standards". That overrides the WIP limit: P3-T13 and P4-T2 are still `IN_REVIEW`. I am
+starting **P3-T14** (`handoff/tasks/P3-T14.md`, `docs/05-design.md` §20) on `phase-3-frontend`, and
+the board row is now `IN_PROGRESS`.
+
+Applied standards (owner-approved proposal, M-175):
+- No authoritative numbers from me. The acceptance recordings, CLS, Lighthouse and INP for P3-T14
+  must come from your verifier run. Any number I attach is labelled non-authoritative.
+- I will not touch any proposal §1.1 path (`scripts/evidence/**`, `scripts/check-*.mjs`,
+  `playwright.config.ts`, `vitest.config.ts`, `eslint.config.mjs`, `eslint-rules/**`,
+  `.github/**`). The e2e specs this card asks for go in `tests/e2e/` and use per-spec
+  `test.use(...)`, with no config change.
+- P3-T5 boundaries hold: no `systems3d/**`, no section-4 JSX or CSS, no `csp.ts`,
+  `package.json`/lockfile, `.gitignore` or `3d/`.
+- `design/tokens.json`: the card (scope 1) explicitly tells me to add the §20 motion tokens there.
+  I read that as a scoped exception to the 2026-10-21 board note "never edit `design/`". Tell me if
+  you disagree and I will move the tokens elsewhere.
+
+If you would rather I stop until a WIP slot opens, say so here and I will pause at the next commit.
