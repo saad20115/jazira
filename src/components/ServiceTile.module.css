@@ -12,18 +12,34 @@
   border-radius: var(--radius-2xl);
   box-sizing: border-box;
   box-shadow: var(--shadow-card-soft);
+  overflow: hidden;
   transition:
-    transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
     background-color 240ms ease,
     border-color 240ms ease,
     opacity 240ms ease;
 }
 
-.tile:hover,
-.tile:focus-within {
-  transform: translateY(-3px);
-  background-color: var(--gold-500);
-  border-color: var(--gold-500);
+/*
+ * §20 catalogue 7: a top rule grows from inline-start on hover/focus. The tile turns gold on
+ * hover (Figma `Featured` look), so the rule is navy to stay visible on the gold surface.
+ */
+.tile::before {
+  content: '';
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  block-size: 3px;
+  background-color: var(--navy-950);
+  transform: scaleX(0);
+  transform-origin: 0% 50%;
+  transition: transform var(--motion-slow) var(--ease-out);
+  pointer-events: none;
+}
+
+:global([dir='rtl']) .tile::before {
+  transform-origin: 100% 50%;
 }
 
 .variantCarousel {
@@ -64,7 +80,8 @@
   flex-shrink: 0;
   transition:
     background-color 240ms ease,
-    color 240ms ease;
+    color 240ms ease,
+    transform var(--motion-base) var(--ease-out);
 }
 
 .stateDefault .iconBox {
@@ -72,9 +89,7 @@
   color: var(--gold-600);
 }
 
-.stateFeatured .iconBox,
-.tile:hover .iconBox,
-.tile:focus-within .iconBox {
+.stateFeatured .iconBox {
   background-color: var(--white);
   color: var(--navy-950);
 }
@@ -103,9 +118,7 @@
   color: var(--text-body);
 }
 
-.stateFeatured .description,
-.tile:hover .description,
-.tile:focus-within .description {
+.stateFeatured .description {
   color: var(--navy-950);
 }
 
@@ -125,9 +138,7 @@
   color: var(--gold-700);
 }
 
-.stateFeatured .linkRow,
-.tile:hover .linkRow,
-.tile:focus-within .linkRow {
+.stateFeatured .linkRow {
   color: var(--navy-950);
 }
 
@@ -144,14 +155,87 @@
   transition: transform 200ms ease;
 }
 
-.tile:hover .linkIcon,
-.tile:focus-within .linkIcon {
-  transform: translateX(3px);
+/*
+ * Hover state (Figma `Featured` look + §20 catalogue 7). Real pointer hover only on
+ * `(hover: hover) and (pointer: fine)`; keyboard focus inside the tile shows the same state.
+ * The featured tile keeps its state at rest.
+ */
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover {
+    background-color: var(--gold-500);
+    border-color: var(--gold-500);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .tile:hover .iconBox {
+    background-color: var(--white);
+    color: var(--navy-950);
+  }
+
+  .tile:hover .description,
+  .tile:hover .linkRow {
+    color: var(--navy-950);
+  }
 }
 
-:global([dir='rtl']) .tile:hover .linkIcon,
-:global([dir='rtl']) .tile:focus-within .linkIcon {
-  transform: translateX(-3px);
+.tile:focus-within {
+  background-color: var(--gold-500);
+  border-color: var(--gold-500);
+  box-shadow: var(--shadow-card-hover);
+}
+
+.tile:focus-within .iconBox {
+  background-color: var(--white);
+  color: var(--navy-950);
+}
+
+.tile:focus-within .description,
+.tile:focus-within .linkRow {
+  color: var(--navy-950);
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .tile:hover {
+    transform: translate3d(0, calc(var(--hover-lift-card) * -1), 0);
+  }
+
+  .tile:hover::before {
+    transform: scaleX(1);
+  }
+
+  .tile:hover .iconBox {
+    transform: scale(1.08);
+  }
+
+  .tile:hover .linkIcon {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  :global([dir='rtl']) .tile:hover .linkIcon {
+    transform: translate3d(-3px, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tile:focus-within {
+    transform: translate3d(0, calc(var(--hover-lift-card) * -1), 0);
+  }
+
+  .tile:focus-within::before {
+    transform: scaleX(1);
+  }
+
+  .tile:focus-within .iconBox {
+    transform: scale(1.08);
+  }
+
+  .tile:focus-within .linkIcon {
+    transform: translate3d(3px, 0, 0);
+  }
+
+  :global([dir='rtl']) .tile:focus-within .linkIcon {
+    transform: translate3d(-3px, 0, 0);
+  }
 }
 
 @media (max-width: 767px) {
@@ -164,17 +248,10 @@
 
 @media (prefers-reduced-motion: reduce) {
   .tile,
+  .tile::before,
+  .iconBox,
   .linkRow,
   .linkIcon {
     transition: none;
-  }
-
-  .tile:hover,
-  .tile:focus-within,
-  .tile:hover .linkIcon,
-  .tile:focus-within .linkIcon,
-  :global([dir='rtl']) .tile:hover .linkIcon,
-  :global([dir='rtl']) .tile:focus-within .linkIcon {
-    transform: none;
   }
 }

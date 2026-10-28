@@ -27,6 +27,9 @@ export type NavbarTheme = (typeof NAVBAR_THEMES)[number]
 export const NAVBAR_PAGES = ['Home', 'Services', 'About Us', 'Projects', 'Contact Us'] as const
 export type NavbarPage = (typeof NAVBAR_PAGES)[number]
 
+/** §20 catalogue 2: the header switches to its scrolled (solid, compact) state after 24 px. */
+export const NAVBAR_SCROLLED_THRESHOLD_PX = 24
+
 export interface NavbarNavItem {
   href?: string | null | undefined
   id?: string | null | undefined
@@ -248,7 +251,7 @@ export function Navbar({
   useEffect(() => {
     if (staticPreview) return
     const handleScroll = (): void => {
-      setIsScrolled(window.scrollY > 12)
+      setIsScrolled(window.scrollY > NAVBAR_SCROLLED_THRESHOLD_PX)
     }
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
@@ -304,6 +307,9 @@ export function Navbar({
     styles.navbar,
     resolvedTheme === 'Dark' ? styles.themeDark : styles.themeLight,
     isScrolled ? styles.scrolled : '',
+    // §20 catalogue 2: the compact (transform-only) bar is dropped while the drawer is open,
+    // because a transformed header would become the containing block of the fixed drawer.
+    isScrolled && !isDrawerOpen ? styles.compact : '',
     staticPreview ? styles.staticPreview : '',
     className ?? '',
   ]

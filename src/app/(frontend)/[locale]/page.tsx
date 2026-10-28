@@ -7,11 +7,13 @@ import { Button } from '@/components/Button'
 import { CspSafeImage } from '@/components/CspSafeImage'
 import { Eyebrow } from '@/components/Eyebrow'
 import { HomeScrollHintButton } from '@/components/HomeScrollHintButton'
+import { CountUp } from '@/components/CountUp'
 import { CornerBracketIcon } from '@/components/icons'
 import { IntroSplash } from '@/components/IntroSplash'
 import { LogoMarquee } from '@/components/LogoMarquee'
 import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-utils'
 import { ProjectCard } from '@/components/ProjectCard'
+import { revealAttributes } from '@/components/Reveal'
 import { ServicesCarousel } from '@/components/ServicesCarousel'
 import { InteractiveSystemsSection } from '@/components/systems3d/InteractiveSystemsSection'
 import {
@@ -514,10 +516,17 @@ export default async function LocaleHomePage({
             </div>
 
             <div className={styles.heroContent}>
-              {heroEyebrow ? <Eyebrow label={heroEyebrow} tone="Dark" /> : null}
+              {heroEyebrow ? (
+                <div {...revealAttributes()}>
+                  <Eyebrow label={heroEyebrow} tone="Dark" />
+                </div>
+              ) : null}
 
               {heroTitle || heroTitleAccent ? (
-                <h1 className={`${styles.heroTitle} t-display-xl`}>
+                <h1
+                  className={`${styles.heroTitle} t-display-xl`}
+                  {...revealAttributes({ variant: 'rise', step: 1 })}
+                >
                   {heroTitle ? <span className={styles.blockLine}>{heroTitle}</span> : null}
                   {heroTitle && heroTitleAccent ? ' ' : null}
                   {heroTitleAccent ? (
@@ -529,11 +538,13 @@ export default async function LocaleHomePage({
               ) : null}
 
               {heroSubtitle ? (
-                <p className={`${styles.heroSubtitle} t-body-l`}>{heroSubtitle}</p>
+                <p className={`${styles.heroSubtitle} t-body-l`} {...revealAttributes({ step: 2 })}>
+                  {heroSubtitle}
+                </p>
               ) : null}
 
               {heroPrimaryLabel || heroSecondaryLabel ? (
-                <div className={styles.heroCtaGroup}>
+                <div className={styles.heroCtaGroup} {...revealAttributes({ step: 3 })}>
                   {heroPrimaryLabel ? (
                     <Button
                       href={heroPrimaryHref ?? `/${locale}/services`}
@@ -573,8 +584,12 @@ export default async function LocaleHomePage({
           <section className={styles.whoSection} data-home-section="who-we-are" id="who-we-are">
             <div className={`${gridStyles.container} ${styles.whoContainer}`}>
               <div className={styles.whoVisualCol}>
-                <CornerBracketIcon className={styles.whoCornerBracket} size={80} />
-                <div className={styles.whoPhotoWrap}>
+                <CornerBracketIcon
+                  className={styles.whoCornerBracket}
+                  size={80}
+                  {...revealAttributes({ variant: 'draw', step: 2 })}
+                />
+                <div className={styles.whoPhotoWrap} {...revealAttributes({ variant: 'wipe' })}>
                   {whoImage ? (
                     <CspSafeImage
                       alt={whoImage.alt}
@@ -587,14 +602,20 @@ export default async function LocaleHomePage({
                   ) : null}
                 </div>
                 {whoBadgeStat ? (
-                  <div className={styles.whoBadgeCard} data-who-badge-stat="true">
-                    <p className={`${styles.whoBadgeNumber} t-stat-m`}>{whoBadgeStat.value}</p>
+                  <div
+                    className={styles.whoBadgeCard}
+                    data-who-badge-stat="true"
+                    {...revealAttributes({ step: 3 })}
+                  >
+                    <p className={`${styles.whoBadgeNumber} t-stat-m`}>
+                      <CountUp value={whoBadgeStat.value} />
+                    </p>
                     <p className={`${styles.whoBadgeLabel} t-body-s`}>{whoBadgeStat.label}</p>
                   </div>
                 ) : null}
               </div>
 
-              <div className={styles.whoContentCol}>
+              <div className={styles.whoContentCol} {...revealAttributes({ stagger: true })}>
                 {whoEyebrow ? <Eyebrow label={whoEyebrow} tone="Light" /> : null}
                 {whoTitle ? (
                   <h2 className={`${styles.whoTitle} t-h2`}>
@@ -632,7 +653,7 @@ export default async function LocaleHomePage({
           >
             <div className={styles.servicesStack}>
               <div className={gridStyles.container}>
-                <div className={styles.splitSectionHead}>
+                <div className={styles.splitSectionHead} {...revealAttributes()}>
                   <div className={styles.splitHeadLeft}>
                     {coreServicesEyebrow ? (
                       <Eyebrow label={coreServicesEyebrow} tone="Light" />
@@ -650,7 +671,7 @@ export default async function LocaleHomePage({
               </div>
 
               {mainServices.length > 0 ? (
-                <div className={styles.carouselOuter}>
+                <div className={styles.carouselOuter} {...revealAttributes({ step: 1 })}>
                   <ServicesCarousel
                     locale={locale}
                     services={mainServices.map((s) => ({
@@ -706,7 +727,7 @@ export default async function LocaleHomePage({
             ) : null}
 
             <div className={`${gridStyles.container} ${styles.statsStack}`}>
-              <div className={styles.statsHead}>
+              <div className={styles.statsHead} {...revealAttributes({ stagger: true })}>
                 {statsTitle ? <h2 className={`${styles.statsTitle} t-h2`}>{statsTitle}</h2> : null}
                 {statsText ? (
                   <p className={`${styles.statsSubtitle} t-body-l`}>{statsText}</p>
@@ -720,9 +741,13 @@ export default async function LocaleHomePage({
                   return (
                     <div className={styles.statItemGroup} key={String(statDoc.id)}>
                       {idx > 0 ? <div aria-hidden="true" className={styles.statDivider} /> : null}
-                      <div className={styles.statCol} data-stat-item={String(idx + 1)}>
+                      <div
+                        className={styles.statCol}
+                        data-stat-item={String(idx + 1)}
+                        {...revealAttributes({ step: idx })}
+                      >
                         <p className={`${styles.statNumber} t-stat-number`}>
-                          <span>{numberPart}</span>
+                          <CountUp value={numberPart} />
                           {suffixPart ? (
                             <span className={styles.statSuffix}>{suffixPart}</span>
                           ) : null}
@@ -745,7 +770,7 @@ export default async function LocaleHomePage({
             id="featured-projects"
           >
             <div className={`${gridStyles.container} ${styles.projectsStack}`}>
-              <div className={styles.centeredSectionHead}>
+              <div className={styles.centeredSectionHead} {...revealAttributes({ stagger: true })}>
                 {featuredProjectsEyebrow ? (
                   <Eyebrow label={featuredProjectsEyebrow} tone="Light" />
                 ) : null}
@@ -763,7 +788,7 @@ export default async function LocaleHomePage({
               </div>
 
               {featuredProjectDocs.length > 0 ? (
-                <div className={styles.projectsGrid}>
+                <div className={styles.projectsGrid} {...revealAttributes({ stagger: true })}>
                   {featuredProjectDocs.map((projectDoc) => (
                     <ProjectCard key={projectDoc.slug} locale={locale} project={projectDoc} />
                   ))}
@@ -789,7 +814,7 @@ export default async function LocaleHomePage({
           <section className={styles.partnersSection} data-home-section="partners" id="partners">
             <div className={styles.partnersStack}>
               <div className={gridStyles.container}>
-                <div className={styles.partnersHead}>
+                <div className={styles.partnersHead} {...revealAttributes({ stagger: true })}>
                   {partnersEyebrow ? <Eyebrow label={partnersEyebrow} tone="Light" /> : null}
                   {partnersTitle ? (
                     <h2 className={`${styles.sectionHeadingDark} t-h2`}>{partnersTitle}</h2>
@@ -800,7 +825,7 @@ export default async function LocaleHomePage({
                 </div>
               </div>
 
-              <div className={styles.marqueeOuter}>
+              <div className={styles.marqueeOuter} {...revealAttributes({ step: 1 })}>
                 <LogoMarquee brands={marqueeBrands} locale={locale} />
               </div>
             </div>
@@ -810,7 +835,7 @@ export default async function LocaleHomePage({
         {/* 8. CTA Section (18:660) */}
         {ctaEnabled && hasCtaContent ? (
           <section className={styles.ctaSection} data-home-section="cta" data-theme="dark" id="cta">
-            <div aria-hidden="true" className={styles.ctaBgLayer}>
+            <div aria-hidden="true" className={styles.ctaBgLayer} data-motion-loop="">
               {ctaBgImage ? (
                 <CspSafeImage
                   alt=""
@@ -829,7 +854,7 @@ export default async function LocaleHomePage({
             <div aria-hidden="true" className={styles.ctaSquareTopEnd} />
             <div aria-hidden="true" className={styles.ctaSquareBottomEnd} />
 
-            <div className={styles.ctaContent}>
+            <div className={styles.ctaContent} {...revealAttributes({ stagger: true })}>
               {ctaTitle || ctaTitleAccent ? (
                 <h2 className={`${styles.ctaTitle} t-display-l`}>
                   {ctaTitle ? <span className={styles.blockLine}>{ctaTitle}</span> : null}
