@@ -30,3 +30,6 @@ next-env.d.ts
 src/payload-types.ts
 src/payload-generated-schema.ts
 src/app/(payload)/admin/importMap.js
+
+# Vendored third-party code kept byte-for-byte reviewable against upstream (see vendor/*/VENDORED.md)
+vendor/
