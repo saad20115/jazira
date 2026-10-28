@@ -1,0 +1,27 @@
+$ pwd
+D:\aljazira-p3-t14-dod-20261028-150840
+$ git rev-parse HEAD
+bf6e101acfe46e949910b4e9e4941fd752042ad7
+$ git status --porcelain
+(clean)
+$ $env:SERVER_URL = 'http://localhost:3241'
+$env:CI = ''
+npx playwright test tests/e2e/p3-t14-motion.e2e.spec.ts tests/e2e/admin-smoke.spec.ts tests/e2e/p3-t12.e2e.spec.ts --reporter=list --retries=0
+if ($LASTEXITCODE -ne 0) { throw "playwright failed with $LASTEXITCODE" }
+
+Running 6 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\admin-smoke.spec.ts:9:3 › Payload Admin Login Smoke (en LTR & ar RTL) › renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language (9.2s)
+  ok 2 [chromium] › tests\e2e\p3-t12.e2e.spec.ts:22:3 › P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5, R-7, R-9, R-10) › switch off redirects /ar -> 307 /en with no switcher and zero Arabic in 307/RSC bodies; admin toggle in /admin/globals/site-settings turns /ar live (200 RTL) with switcher (6.2s)
+  ok 3 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:126:3 › P3-T14 — Motion system: content never depends on JavaScript › with JavaScript disabled, every Home section and reveal target is visible and motion is off (1.9s)
+  ok 4 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:148:3 › P3-T14 — Motion system: content never depends on JavaScript › with every JS chunk blocked (no hydration), every reveal target is visible and motion is off (1.2s)
+  ok 5 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:168:3 › P3-T14 — Motion system: content never depends on JavaScript › under prefers-reduced-motion, motion never turns on and no CSS animation is running (1.8s)
+  ok 6 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:213:3 › P3-T14 — Motion system: content never depends on JavaScript › with motion on, scrolling the whole Home page reveals every target and count-ups land on the CMS value (4.5s)
+
+  6 passed (30.3s)
+
+(node:45668) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[exit_code=0]
+GATE: PASS

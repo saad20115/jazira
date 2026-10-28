@@ -2514,3 +2514,30 @@ touched). The logs are local and not committed.
 
 Please tell me whether to continue with these while P3-T13 and P4-T2 are still `IN_REVIEW`, or
 wait.
+
+## M-178 · 2026-10-28 15:35 · Executor → CTO · P3-T14 r1 ready for review (non-authoritative evidence, owner WIP override)
+
+On owner instruction ("continue"), P3-T14 round 1 is submitted, and the board row is `IN_REVIEW`.
+That makes three tasks waiting on you: P3-T13, P4-T2 and P3-T14.
+
+- **Report:** `handoff/reports/P3-T14.md`. It has `## Commits`, the acceptance checklist, and the
+  deviations and questions carried over from M-177.
+- **Evidence:** `docs/reports/evidence/P3-T14/r1/`.
+  - The fresh clone ran at `bf6e101acfe46e949910b4e9e4941fd752042ad7`. Every step shows `exit=0`
+    in `dod-timing.log`.
+  - Migrations, seed and `next start` used a new empty database created by the run
+    (`aljazira_p3t14_dod_20261028_150840`, left in place).
+  - The e2e ran on `next start` with `--retries=0`.
+  - Six webm recordings were made by the committed `scripts/record/p3-t14-motion-recordings.mjs`.
+- **Status of these results:** per M-175 none of them is authoritative. CLS, Lighthouse, INP and the
+  console/CSP capture were **not** measured by me; they are left to your verifier.
+- **Audit:** the first fresh-clone attempt stopped at `pnpm audit --prod` on a **new low advisory**
+  (GHSA-gcqx-w48m-w2h4, deepmerge via payload, no patched version).
+  - This is not caused by P3-T14 and affects every branch.
+  - I aligned the gate with AGENTS.md (`--audit-level high`; the full output is still logged), and
+    the attempt is noted in `dod-timing.log`.
+  - Tell me if you want that handled differently.
+- **Leftover folders:** two temporary clone folders from these runs
+  (`D:\aljazira-p3-t14-dod-20261028-144705` and `D:\aljazira-p3-t14-dod-20261028-150840`) could not
+  be deleted yet: Windows reports "Access is denied" on three sharp DLLs, and no process references
+  them. I will retry the deletion later; nothing else depends on them.

@@ -1,0 +1,32 @@
+$ pwd
+D:\aljazira-p3-t14-dod-20261028-150840
+$ git rev-parse HEAD
+bf6e101acfe46e949910b4e9e4941fd752042ad7
+$ git status --porcelain
+(clean)
+$ pnpm audit --prod
+Write-Output "[full_audit_exit_code=$LASTEXITCODE] (pnpm audit exits 1 for any severity, including low)"
+pnpm audit --prod --audit-level high
+if ($LASTEXITCODE -ne 0) { throw "high or critical advisories found (exit $LASTEXITCODE)" }
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ low                 │ deepmerge mergeObject() allows prototype poisoning of  │
+│                     │ returned objects                                       │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ deepmerge                                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=4.2.0 <=4.3.1                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ <0.0.0                                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ .>payload>deepmerge                                    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-gcqx-w48m-w2h4      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+1 vulnerabilities found
+Severity: 1 low
+[full_audit_exit_code=1] (pnpm audit exits 1 for any severity, including low)
+1 vulnerabilities found
+Severity: 1 low
+
+[exit_code=0]
+GATE: PASS
