@@ -60,6 +60,7 @@
   "pnpm": {
     "overrides": {
       "chokidar@^3.0.0": "4.0.3",
+      "deepmerge": "file:./vendor/deepmerge-safe",
       "dompurify": "3.4.17",
       "esbuild@<=0.24.2": "0.28.2",
       "happy-dom": "21.0.4",

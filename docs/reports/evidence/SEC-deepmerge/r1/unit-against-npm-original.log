@@ -1,0 +1,96 @@
+
+ RUN  v5.0.5 D:/jazira
+
+ ❯ tests/unit/deepmerge-vendor.test.ts (5 tests | 4 failed) 45ms
+   ❯ deepmerge override (GHSA-gcqx-w48m-w2h4) (5)
+     × resolves `deepmerge` for Payload to the vendored copy, not the npm package 30ms
+     × a JSON "__proto__" key cannot replace the prototype of the returned object (null-prototype target) 6ms
+     × a JSON "__proto__" key in the target is not copied either 2ms
+     × "constructor" and "prototype" keys are dropped, and the global Object.prototype is untouched 1ms
+     ✓ keeps normal deepmerge behaviour (nested objects, arrays, options.arrayMerge) 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/deepmerge-vendor.test.ts > deepmerge override (GHSA-gcqx-w48m-w2h4) > resolves `deepmerge` for Payload to the vendored copy, not the npm package
+AssertionError: expected 'D:\jazira\node_modules\.pnpm\deepmerg…' to be 'D:\jazira\vendor\deepmerge-safe\dist\…' // Object.is equality
+
+Expected: "D:\jazira\vendor\deepmerge-safe\dist\cjs.js"
+Received: "D:\jazira\node_modules\.pnpm\deepmerge@4.3.1\node_modules\deepmerge\dist\cjs.js"
+
+ ❯ tests/unit/deepmerge-vendor.test.ts:30:42
+     28|     const fromPayload = createRequire(payloadEntry).resolve('deepmerge…
+     29|     const realVendored = fs.realpathSync(vendoredEntry)
+     30|     expect(fs.realpathSync(fromPayload)).toBe(realVendored)
+       |                                          ^
+     31|     const pkg = createRequire(payloadEntry)('deepmerge/package.json') …
+     32|     expect(pkg.version).toBe('4.3.1-aljazira.1')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/deepmerge-vendor.test.ts > deepmerge override (GHSA-gcqx-w48m-w2h4) > a JSON "__proto__" key cannot replace the prototype of the returned object (null-prototype target)
+AssertionError: expected { polluted: 'yes' } to be { …(12) } // Object.is equality
+
+- Expected
++ Received
+
+- {}
++ {
++   "polluted": "yes",
++ }
+
+ ❯ tests/unit/deepmerge-vendor.test.ts:38:43
+     36|     const attack: unknown = JSON.parse('{"__proto__": {"polluted": "ye…
+     37|     const result = deepmerge(Object.create(null), attack) as Record<st…
+     38|     expect(Object.getPrototypeOf(result)).toBe(Object.prototype)
+       |                                           ^
+     39|     expect(result.polluted).toBeUndefined()
+     40|     expect(result.safe).toBe(1)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/deepmerge-vendor.test.ts > deepmerge override (GHSA-gcqx-w48m-w2h4) > a JSON "__proto__" key in the target is not copied either
+AssertionError: expected { polluted: 'yes' } to be { …(12) } // Object.is equality
+
+- Expected
++ Received
+
+- {}
++ {
++   "polluted": "yes",
++ }
+
+ ❯ tests/unit/deepmerge-vendor.test.ts:46:43
+     44|     const poisonedTarget: unknown = JSON.parse('{"__proto__": {"pollut…
+     45|     const result = deepmerge(poisonedTarget, { b: 2 }) as Record<strin…
+     46|     expect(Object.getPrototypeOf(result)).toBe(Object.prototype)
+       |                                           ^
+     47|     expect(result.polluted).toBeUndefined()
+     48|     expect(result).toEqual({ a: 1, b: 2 })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/deepmerge-vendor.test.ts > deepmerge override (GHSA-gcqx-w48m-w2h4) > "constructor" and "prototype" keys are dropped, and the global Object.prototype is untouched
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ tests/unit/deepmerge-vendor.test.ts:56:73
+     54|     )
+     55|     const result = deepmerge(Object.create(null), attack) as Record<st…
+     56|     expect(Object.prototype.hasOwnProperty.call(result, 'constructor')…
+       |                                                                         ^
+     57|     expect(Object.prototype.hasOwnProperty.call(result, 'prototype')).…
+     58|     expect(result.ok).toBe(true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 1 passed (5)
+   Start at  15:55:55
+   Duration  631ms (transform 29%, tests 28%, worker 21%, import 21%)
+
