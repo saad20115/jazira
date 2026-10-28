@@ -197,7 +197,24 @@
   --footer-height: 503px;
   --hero-height: 864px;
 
-  /* === 8. Font Family & Typography Scale (`design/tokens.json` -> `typography`, CTO §1 & §2) === */
+  /* === 8. Motion System (`design/tokens.json` -> `motion`, CTO §20) === */
+  --motion-fast: 160ms;
+  --motion-base: 260ms;
+  --motion-slow: 600ms;
+  --motion-reveal: 700ms;
+  --motion-countup: 1200ms;
+  --motion-hero-settle: 1400ms;
+  --motion-sheen: 400ms;
+  --motion-cta-drift: 16000ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --reveal-distance: 24px;
+  --hover-lift: 4px;
+  --hover-lift-card: 6px;
+  --stagger: 80ms;
+  --stagger-max-steps: 6;
+
+  /* === 9. Font Family & Typography Scale (`design/tokens.json` -> `typography`, CTO §1 & §2) === */
   --font-sans: var(--font-poppins), sans-serif;
   --font-lh-multiplier: 1;
   --t-body-l-weight: 400;

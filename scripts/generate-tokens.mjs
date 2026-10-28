@@ -395,8 +395,74 @@ export function buildTokensCss(tokens) {
   lines.push(`  --hero-height: ${Number(layout.heroHeight ?? 864)}px;`)
 
   lines.push('')
+  lines.push('  /* === 8. Motion System (`design/tokens.json` -> `motion`, CTO §20) === */')
+  const motion =
+    /** @type {{ duration?: Record<string, unknown>; easing?: Record<string, unknown>; distance?: Record<string, unknown>; stagger?: Record<string, unknown> }} */ (
+      tokens.motion ?? {}
+    )
+  /**
+   * @param {Record<string, unknown> | undefined} group
+   * @param {string} groupName
+   * @param {string} key
+   * @returns {number}
+   */
+  const requireMotionNumber = (group, groupName, key) => {
+    const value = group?.[key]
+    if (typeof value !== 'number' || !Number.isFinite(value) || value < 0) {
+      throw new Error(
+        `Missing or invalid required numeric token motion.${groupName}.${key} in design/tokens.json`,
+      )
+    }
+    return value
+  }
+  /**
+   * @param {Record<string, unknown> | undefined} group
+   * @param {string} groupName
+   * @param {string} key
+   * @returns {string}
+   */
+  const requireMotionEasing = (group, groupName, key) => {
+    const value = group?.[key]
+    if (typeof value !== 'string' || !/^cubic-bezier\([\d.,\s]+\)$/.test(value)) {
+      throw new Error(
+        `Missing or invalid required easing token motion.${groupName}.${key} in design/tokens.json`,
+      )
+    }
+    return value
+  }
+  /** @type {Array<[string, string]>} */
+  const motionDurations = [
+    ['--motion-fast', 'fast'],
+    ['--motion-base', 'base'],
+    ['--motion-slow', 'slow'],
+    ['--motion-reveal', 'reveal'],
+    ['--motion-countup', 'countUp'],
+    ['--motion-hero-settle', 'heroSettle'],
+    ['--motion-sheen', 'sheen'],
+    ['--motion-cta-drift', 'ctaDrift'],
+  ]
+  for (const [cssVar, key] of motionDurations) {
+    lines.push(`  ${cssVar}: ${requireMotionNumber(motion.duration, 'duration', key)}ms;`)
+  }
+  lines.push(`  --ease-out: ${requireMotionEasing(motion.easing, 'easing', 'out')};`)
+  lines.push(`  --ease-in-out: ${requireMotionEasing(motion.easing, 'easing', 'inOut')};`)
   lines.push(
-    '  /* === 8. Font Family & Typography Scale (`design/tokens.json` -> `typography`, CTO §1 & §2) === */',
+    `  --reveal-distance: ${formatPx(requireMotionNumber(motion.distance, 'distance', 'reveal'))};`,
+  )
+  lines.push(
+    `  --hover-lift: ${formatPx(requireMotionNumber(motion.distance, 'distance', 'hoverLift'))};`,
+  )
+  lines.push(
+    `  --hover-lift-card: ${formatPx(requireMotionNumber(motion.distance, 'distance', 'hoverLiftCard'))};`,
+  )
+  lines.push(`  --stagger: ${requireMotionNumber(motion.stagger, 'stagger', 'step')}ms;`)
+  lines.push(
+    `  --stagger-max-steps: ${requireMotionNumber(motion.stagger, 'stagger', 'maxSteps')};`,
+  )
+
+  lines.push('')
+  lines.push(
+    '  /* === 9. Font Family & Typography Scale (`design/tokens.json` -> `typography`, CTO §1 & §2) === */',
   )
   lines.push('  --font-sans: var(--font-poppins), sans-serif;')
   lines.push('  --font-lh-multiplier: 1;')
