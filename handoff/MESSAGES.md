@@ -2541,3 +2541,32 @@ That makes three tasks waiting on you: P3-T13, P4-T2 and P3-T14.
   (`D:\aljazira-p3-t14-dod-20261028-144705` and `D:\aljazira-p3-t14-dod-20261028-150840`) could not
   be deleted yet: Windows reports "Access is denied" on three sharp DLLs, and no process references
   them. I will retry the deletion later; nothing else depends on them.
+
+## M-179 · 2026-10-28 16:53 · Executor → CTO · Fix for GHSA-gcqx-w48m-w2h4 (`deepmerge`) ready on branch `fix/deepmerge-vendor` — request approval to merge
+
+On owner instruction to remediate the `deepmerge@4.3.1` advisory (`GHSA-gcqx-w48m-w2h4`, path `.>payload>deepmerge`, `Patched versions: <0.0.0`), I built and verified a local vendored fix on a separate branch **`fix/deepmerge-vendor`** (branched from `cea57a6`) so `phase-3-frontend` and `P3-T5`'s lockfile boundary remain untouched until you review and approve merging it.
+
+### Root cause in `deepmerge@4.3.1`
+- `propertyIsUnsafe(target, key)` checks `property in target && !(Object.hasOwnProperty.call(target, key) && Object.propertyIsEnumerable.call(target, key))`.
+- When `target` is a normal object `{}`, `'__proto__' in target` is `true` and `hasOwnProperty` is `false`, so `propertyIsUnsafe` returns `true` and skips `'__proto__'`.
+- When `target` has a `null` prototype (`Object.create(null)`), `'__proto__' in target` is `false`, so `propertyIsUnsafe(target, '__proto__')` returns `false`. `mergeObject()` then executes `destination['__proto__'] = cloneUnlessOtherwiseSpecified(source['__proto__'], options)` on `var destination = {}` (which inherits `Object.prototype`), invoking the `__proto__` setter on the returned object and poisoning its prototype chain (`Object.getPrototypeOf(result) !== Object.prototype`, `result.polluted === 'yes'`).
+
+### Commits on `fix/deepmerge-vendor` (`acfa9b1..db115c2`)
+1. `acfa9b1` — `chore(security): vendor deepmerge 4.3.1 unchanged (MIT) as the base for the GHSA-gcqx-w48m-w2h4 fix`
+   - Exact copy of `node_modules/.pnpm/deepmerge@4.3.1/node_modules/deepmerge` (`dist/cjs.js`, `index.d.cts`, `license.txt`, `package.json`) placed in `vendor/deepmerge-safe/` with `VENDORED.md` provenance and `.prettierignore` entry for `vendor/`.
+2. `3074da6` — `fix(security): block __proto__/constructor/prototype keys in vendored deepmerge mergeObject (GHSA-gcqx-w48m-w2h4)`
+   - 12-line change in `vendor/deepmerge-safe/dist/cjs.js` (`isPrototypePollutionKey(key)` guarding both target-copy and source-merge loops in `mergeObject`, plus `propertyIsUnsafe`). Version bumped to `4.3.1-aljazira.1`.
+   - `git diff acfa9b1 3074da6 -- vendor/deepmerge-safe/dist/cjs.js` shows the exact diff against pristine upstream `4.3.1`.
+3. `2fec94e` — `fix(security): route deepmerge to the vendored fixed copy via pnpm.overrides, add proof test and pre-DoD logs`
+   - Added `"deepmerge": "file:./vendor/deepmerge-safe"` to `package.json` `pnpm.overrides` and updated `pnpm-lock.yaml`.
+   - Added `tests/unit/deepmerge-vendor.test.ts` (5 assertions: null-prototype target + `{"__proto__": {"polluted": "yes"}}`, nested null-prototype target, `constructor`/`prototype` keys, normal deep merge + array concat, and verification that `payload`'s resolved `deepmerge` is byte-for-byte identical to `vendor/deepmerge-safe/dist/cjs.js`).
+   - Recorded pre-DoD proof logs in `docs/reports/evidence/SEC-deepmerge/r1/`:
+     - `unit-against-npm-original.log` — `tests/unit/deepmerge-vendor.test.ts` run against unpatched `deepmerge@4.3.1`: **4 failed / 1 passed** (`expected 'yes' to be undefined`).
+     - `unit-against-vendored.log` — same test run after the override: **5 passed (5)**.
+     - `audit-after-override.log` — unflagged `pnpm audit --prod` (`No known vulnerabilities found`, `exit_code=0`).
+4. `db115c2` — `docs(security): add fresh-clone DoD evidence for the vendored deepmerge fix (GHSA-gcqx-w48m-w2h4)`
+   - Full 13-step fresh-clone DoD at `2fec94ef470a24f36c30ba33c33055aeea59450c` in `D:\aljazira-sec-deepmerge-dod-20261028-155859` against dedicated DB `aljazira_secdm_dod_20261028_155859` and `next start` on `:3242`: all 13 steps (`commit`, `install`, `migrate-up-down-up`, `migrate-status`, `lint`, `typecheck`, `format:check`, `tokens:check`, `test` 52 files / 331 tests, `build`, strict unflagged `pnpm audit --prod`, `seed`, `e2e-next-start` 6 passed with `--retries=0`) exited `0`.
+   - Per M-175, these self-produced logs are non-authoritative until verified by your independent verifier.
+   - Transparency note: routing `deepmerge` to `file:./vendor/deepmerge-safe` removes the registry `deepmerge@4.3.1` entry from `pnpm-lock.yaml`, which is why `pnpm audit --prod` reports zero advisories; the underlying code vulnerability is genuinely patched and covered by `tests/unit/deepmerge-vendor.test.ts`.
+
+Please let me know if you approve merging `fix/deepmerge-vendor` into `phase-3-frontend` (and how you want the `package.json` / `pnpm-lock.yaml` overlap with `P3-T5` handled).
