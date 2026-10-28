@@ -1,0 +1,19 @@
+$ pwd
+D:\aljazira-sec-deepmerge-dod-20261028-155859
+
+# Fresh-clone DoD for the deepmerge vendor fix (branch fix/deepmerge-vendor). Database for migrations/seed/e2e: aljazira_secdm_dod_20261028_155859 (created empty by this run).
+commit                 | start=2026-10-28 15:59:28 | end=2026-10-28 15:59:29 | elapsed=1.1s | exit=0
+install                | start=2026-10-28 15:59:29 | end=2026-10-28 16:03:31 | elapsed=242.3s | exit=0
+migrate-up-down-up     | start=2026-10-28 16:03:32 | end=2026-10-28 16:03:58 | elapsed=26.4s | exit=0
+migrate-status         | start=2026-10-28 16:03:58 | end=2026-10-28 16:04:06 | elapsed=8s | exit=0
+lint                   | start=2026-10-28 16:04:06 | end=2026-10-28 16:05:00 | elapsed=54.4s | exit=0
+typecheck              | start=2026-10-28 16:05:00 | end=2026-10-28 16:05:18 | elapsed=17.2s | exit=0
+format:check           | start=2026-10-28 16:05:18 | end=2026-10-28 16:05:28 | elapsed=10.4s | exit=0
+tokens:check           | start=2026-10-28 16:05:28 | end=2026-10-28 16:05:29 | elapsed=1.2s | exit=0
+test                   | start=2026-10-28 16:05:29 | end=2026-10-28 16:11:28 | elapsed=358.7s | exit=0
+build                  | start=2026-10-28 16:11:28 | end=2026-10-28 16:12:43 | elapsed=75.5s | exit=0
+audit                  | start=2026-10-28 16:12:43 | end=2026-10-28 16:12:46 | elapsed=2.4s | exit=0
+seed                   | start=2026-10-28 16:12:46 | end=2026-10-28 16:13:20 | elapsed=34s | exit=0
+# next start server PID 56380 on :3242 (started by this script)
+e2e-next-start         | start=2026-10-28 16:13:23 | end=2026-10-28 16:13:51 | elapsed=28.3s | exit=0
+# Clone removed. Database aljazira_secdm_dod_20261028_155859 was left in place (not dropped).

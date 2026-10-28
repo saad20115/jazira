@@ -1,0 +1,15 @@
+$ pwd
+D:\aljazira-sec-deepmerge-dod-20261028-155859
+$ git rev-parse HEAD
+2fec94ef470a24f36c30ba33c33055aeea59450c
+$ git status --porcelain
+(clean)
+$ pnpm lint
+
+> aljazira-website@0.1.0 lint D:\aljazira-sec-deepmerge-dod-20261028-155859
+> cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs
+
+[css-logical-properties] Verified 30 public CSS files use logical directional properties (0 violations).
+
+[exit_code=0]
+GATE: PASS

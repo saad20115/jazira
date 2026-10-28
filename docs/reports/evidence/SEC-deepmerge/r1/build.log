@@ -1,0 +1,55 @@
+$ pwd
+D:\aljazira-sec-deepmerge-dod-20261028-155859
+$ git rev-parse HEAD
+2fec94ef470a24f36c30ba33c33055aeea59450c
+$ git status --porcelain
+(clean)
+$ pnpm build
+
+> aljazira-website@0.1.0 build D:\aljazira-sec-deepmerge-dod-20261028-155859
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 499ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 33.4s
+  Running TypeScript ...
+✓ Finished writing to filesystem cache in 10.7s
+  Finished TypeScript in 18.1s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/7) ...
+  Generating static pages using 7 workers (1/7) 
+  Generating static pages using 7 workers (3/7) 
+  Generating static pages using 7 workers (5/7) 
+✓ Generating static pages using 7 workers (7/7) in 749ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/_specimen
+├ ƒ /[locale]/[...rest]
+├ ƒ /[locale]/styleguide
+├ ƒ /admin/[[...segments]]
+├ ƒ /api/[...slug]
+├ ƒ /api/exit-preview
+├ ƒ /api/preview
+├ ƒ /api/preview/exit
+├ ○ /robots.txt
+└ ƒ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+[check-client-bundle-sentinels] Verified zero server-only sentinels or server library markers in .next/static
+
+[exit_code=0]
+GATE: PASS

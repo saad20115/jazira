@@ -1,0 +1,15 @@
+$ pwd
+D:\aljazira-sec-deepmerge-dod-20261028-155859
+$ git rev-parse HEAD
+2fec94ef470a24f36c30ba33c33055aeea59450c
+$ git status --porcelain
+(clean)
+$ pnpm tokens:check
+
+> aljazira-website@0.1.0 tokens:check D:\aljazira-sec-deepmerge-dod-20261028-155859
+> node scripts/generate-tokens.mjs --check
+
+[tokens] Verified src/styles/tokens.css is up-to-date with design/tokens.json.
+
+[exit_code=0]
+GATE: PASS

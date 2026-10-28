@@ -1,0 +1,94 @@
+$ pwd
+D:\aljazira-sec-deepmerge-dod-20261028-155859
+$ git rev-parse HEAD
+2fec94ef470a24f36c30ba33c33055aeea59450c
+$ git status --porcelain
+(clean)
+$ pnpm payload migrate
+if ($LASTEXITCODE -ne 0) { throw "migrate up 1 failed with $LASTEXITCODE" }
+pnpm payload migrate:down
+if ($LASTEXITCODE -ne 0) { throw "migrate:down failed with $LASTEXITCODE" }
+pnpm payload migrate
+if ($LASTEXITCODE -ne 0) { throw "migrate up 2 failed with $LASTEXITCODE" }
+
+> aljazira-website@0.1.0 payload D:\aljazira-sec-deepmerge-dod-20261028-155859
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[16:03:40] INFO: Reading migration files from D:\aljazira-sec-deepmerge-dod-20261028-155859\src\migrations
+[16:03:40] INFO: Migrating: 20261021_074848_initial_users_media
+[16:03:40] INFO: Migrated:  20261021_074848_initial_users_media (156ms)
+[16:03:40] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[16:03:40] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (88ms)
+[16:03:40] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[16:03:40] INFO: Migrated:  20261022_140011_p2_t3_services_team (130ms)
+[16:03:40] INFO: Migrating: 20261022_160652_p2_t4_projects
+[16:03:41] INFO: Migrated:  20261022_160652_p2_t4_projects (227ms)
+[16:03:41] INFO: Migrating: 20261022_221250_p2_t5_globals
+[16:03:41] INFO: Migrated:  20261022_221250_p2_t5_globals (504ms)
+[16:03:41] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[16:03:41] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (21ms)
+[16:03:41] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[16:03:41] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (5ms)
+[16:03:41] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[16:03:41] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (13ms)
+[16:03:41] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[16:03:41] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (5ms)
+[16:03:41] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[16:03:41] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (6ms)
+[16:03:41] INFO: Done.
+
+> aljazira-website@0.1.0 payload D:\aljazira-sec-deepmerge-dod-20261028-155859
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[16:03:49] INFO: Reading migration files from D:\aljazira-sec-deepmerge-dod-20261028-155859\src\migrations
+[16:03:49] INFO: Rolling back batch 1 consisting of 10 migration(s).
+[16:03:49] INFO: Migrating down: 20261025_002404_p4_t2_projects_review_fields
+[16:03:49] INFO: Migrated down:  20261025_002404_p4_t2_projects_review_fields (11ms)
+[16:03:49] INFO: Migrating down: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[16:03:49] INFO: Migrated down:  20261024_195628_p3_t12_site_settings_arabic_enabled (5ms)
+[16:03:49] INFO: Migrating down: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[16:03:49] INFO: Migrated down:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (15ms)
+[16:03:49] INFO: Migrating down: 20261023_005934_p2_t6_quote_requests_service_title
+[16:03:49] INFO: Migrated down:  20261023_005934_p2_t6_quote_requests_service_title (4ms)
+[16:03:49] INFO: Migrating down: 20261022_231435_p2_t6_quote_requests
+[16:03:49] INFO: Migrated down:  20261022_231435_p2_t6_quote_requests (11ms)
+[16:03:49] INFO: Migrating down: 20261022_221250_p2_t5_globals
+[16:03:49] INFO: Migrated down:  20261022_221250_p2_t5_globals (175ms)
+[16:03:49] INFO: Migrating down: 20261022_160652_p2_t4_projects
+[16:03:49] INFO: Migrated down:  20261022_160652_p2_t4_projects (56ms)
+[16:03:50] INFO: Migrating down: 20261022_140011_p2_t3_services_team
+[16:03:50] INFO: Migrated down:  20261022_140011_p2_t3_services_team (43ms)
+[16:03:50] INFO: Migrating down: 20261022_120943_p2_t2_videos_brands_stats_materials
+[16:03:50] INFO: Migrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (34ms)
+[16:03:50] INFO: Migrating down: 20261021_074848_initial_users_media
+[16:03:50] INFO: Migrated down:  20261021_074848_initial_users_media (33ms)
+[16:03:50] INFO: Done.
+
+> aljazira-website@0.1.0 payload D:\aljazira-sec-deepmerge-dod-20261028-155859
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[16:03:57] INFO: Reading migration files from D:\aljazira-sec-deepmerge-dod-20261028-155859\src\migrations
+[16:03:57] INFO: Migrating: 20261021_074848_initial_users_media
+[16:03:57] INFO: Migrated:  20261021_074848_initial_users_media (102ms)
+[16:03:57] INFO: Migrating: 20261022_120943_p2_t2_videos_brands_stats_materials
+[16:03:57] INFO: Migrated:  20261022_120943_p2_t2_videos_brands_stats_materials (54ms)
+[16:03:57] INFO: Migrating: 20261022_140011_p2_t3_services_team
+[16:03:57] INFO: Migrated:  20261022_140011_p2_t3_services_team (70ms)
+[16:03:57] INFO: Migrating: 20261022_160652_p2_t4_projects
+[16:03:57] INFO: Migrated:  20261022_160652_p2_t4_projects (92ms)
+[16:03:57] INFO: Migrating: 20261022_221250_p2_t5_globals
+[16:03:58] INFO: Migrated:  20261022_221250_p2_t5_globals (385ms)
+[16:03:58] INFO: Migrating: 20261022_231435_p2_t6_quote_requests
+[16:03:58] INFO: Migrated:  20261022_231435_p2_t6_quote_requests (25ms)
+[16:03:58] INFO: Migrating: 20261023_005934_p2_t6_quote_requests_service_title
+[16:03:58] INFO: Migrated:  20261023_005934_p2_t6_quote_requests_service_title (4ms)
+[16:03:58] INFO: Migrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg
+[16:03:58] INFO: Migrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (19ms)
+[16:03:58] INFO: Migrating: 20261024_195628_p3_t12_site_settings_arabic_enabled
+[16:03:58] INFO: Migrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (6ms)
+[16:03:58] INFO: Migrating: 20261025_002404_p4_t2_projects_review_fields
+[16:03:58] INFO: Migrated:  20261025_002404_p4_t2_projects_review_fields (6ms)
+[16:03:58] INFO: Done.
+
+[exit_code=0]
+GATE: PASS

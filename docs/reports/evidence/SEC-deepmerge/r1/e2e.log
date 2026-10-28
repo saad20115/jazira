@@ -1,0 +1,27 @@
+$ pwd
+D:\aljazira-sec-deepmerge-dod-20261028-155859
+$ git rev-parse HEAD
+2fec94ef470a24f36c30ba33c33055aeea59450c
+$ git status --porcelain
+(clean)
+$ $env:SERVER_URL = 'http://localhost:3242'
+$env:CI = ''
+npx playwright test tests/e2e/p3-t14-motion.e2e.spec.ts tests/e2e/admin-smoke.spec.ts tests/e2e/p3-t12.e2e.spec.ts --reporter=list --retries=0
+if ($LASTEXITCODE -ne 0) { throw "playwright failed with $LASTEXITCODE" }
+
+Running 6 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\admin-smoke.spec.ts:9:3 › Payload Admin Login Smoke (en LTR & ar RTL) › renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language (7.2s)
+  ok 2 [chromium] › tests\e2e\p3-t12.e2e.spec.ts:22:3 › P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5, R-7, R-9, R-10) › switch off redirects /ar -> 307 /en with no switcher and zero Arabic in 307/RSC bodies; admin toggle in /admin/globals/site-settings turns /ar live (200 RTL) with switcher (4.9s)
+  ok 3 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:126:3 › P3-T14 — Motion system: content never depends on JavaScript › with JavaScript disabled, every Home section and reveal target is visible and motion is off (1.1s)
+  ok 4 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:148:3 › P3-T14 — Motion system: content never depends on JavaScript › with every JS chunk blocked (no hydration), every reveal target is visible and motion is off (952ms)
+  ok 5 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:168:3 › P3-T14 — Motion system: content never depends on JavaScript › under prefers-reduced-motion, motion never turns on and no CSS animation is running (1.5s)
+  ok 6 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:213:3 › P3-T14 — Motion system: content never depends on JavaScript › with motion on, scrolling the whole Home page reveals every target and count-ups land on the CMS value (4.4s)
+
+  6 passed (24.6s)
+
+(node:12208) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[exit_code=0]
+GATE: PASS
