@@ -1,0 +1,132 @@
+/*
+ * Motion system primitives (`docs/05-design.md` CTO decision #20, P3-T14).
+ *
+ * Hard rules enforced here:
+ * - Every hidden "before reveal" state is scoped to `html[data-motion='on']`, which
+ *   `MotionRoot` sets only when IntersectionObserver exists, reduced motion is off and the intro
+ *   splash has ended. Without JavaScript, or if the script fails, everything is visible.
+ * - `prefers-reduced-motion: reduce` turns all of it off (also guarded here, not only in JS).
+ * - Only `opacity`, `transform` and `clip-path` are animated. Reveals are CSS animations with
+ *   `animation-fill-mode: backwards`, so once a reveal ends the element is back to its own
+ *   styles and component hover transitions keep working.
+ * - `rise` never changes opacity (the hero h1 is the LCP element and is never at opacity 0).
+ */
+
+@keyframes motion-reveal-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+}
+
+@keyframes motion-rise-in {
+  from {
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+}
+
+@keyframes motion-wipe-in {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+}
+
+@keyframes motion-wipe-in-rtl {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes motion-draw-in {
+  from {
+    opacity: 0;
+    clip-path: inset(0 100% 100% 0);
+  }
+}
+
+/* Stagger steps: one `--stagger` (80 ms) per step, at most 6 steps (indices 0..5). */
+[data-reveal-step='1'],
+[data-reveal-stagger] > :nth-child(2) {
+  --reveal-index: 1;
+}
+
+[data-reveal-step='2'],
+[data-reveal-stagger] > :nth-child(3) {
+  --reveal-index: 2;
+}
+
+[data-reveal-step='3'],
+[data-reveal-stagger] > :nth-child(4) {
+  --reveal-index: 3;
+}
+
+[data-reveal-step='4'],
+[data-reveal-stagger] > :nth-child(5) {
+  --reveal-index: 4;
+}
+
+[data-reveal-step='5'],
+[data-reveal-stagger] > :nth-child(n + 6) {
+  --reveal-index: 5;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Before reveal (only while motion is on and the target has not been revealed yet). */
+  html[data-motion='on'] [data-reveal]:not([data-revealed]),
+  html[data-motion='on'] [data-reveal-stagger]:not([data-revealed]) > * {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+
+  html[data-motion='on'] [data-reveal='rise']:not([data-revealed]) {
+    opacity: 1;
+  }
+
+  html[data-motion='on'] [data-reveal='wipe']:not([data-revealed]) {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 100% 0 0);
+  }
+
+  html[data-motion='on'][dir='rtl'] [data-reveal='wipe']:not([data-revealed]) {
+    clip-path: inset(0 0 0 100%);
+  }
+
+  html[data-motion='on'] [data-reveal='draw']:not([data-revealed]) {
+    transform: none;
+    clip-path: inset(0 100% 100% 0);
+  }
+
+  /* Reveal (plays once; `instant` targets were already on screen and do not animate). */
+  html[data-motion='on'] [data-reveal][data-revealed='true'],
+  html[data-motion='on'] [data-reveal-stagger][data-revealed='true'] > * {
+    animation-name: motion-reveal-in;
+    animation-duration: var(--motion-reveal);
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+    animation-delay: calc(var(--reveal-index, 0) * var(--stagger));
+  }
+
+  html[data-motion='on'] [data-reveal='rise'][data-revealed='true'] {
+    animation-name: motion-rise-in;
+  }
+
+  html[data-motion='on'] [data-reveal='wipe'][data-revealed='true'] {
+    animation-name: motion-wipe-in;
+  }
+
+  html[data-motion='on'][dir='rtl'] [data-reveal='wipe'][data-revealed='true'] {
+    animation-name: motion-wipe-in-rtl;
+  }
+
+  html[data-motion='on'] [data-reveal='draw'][data-revealed='true'] {
+    animation-name: motion-draw-in;
+  }
+}
+
+/* Count-up: tabular figures, and the reserved width set by the controller keeps the box stable. */
+[data-countup-display] {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+}

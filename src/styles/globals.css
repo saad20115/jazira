@@ -1,5 +1,6 @@
 @import './tokens.css';
 @import './breakpoints.css';
+@import './motion.css';
 
 /*
  * Metric-matched fallback font rules for `Noto Kufi Arabic` (`R-3`, `R-19`, `R-25`):

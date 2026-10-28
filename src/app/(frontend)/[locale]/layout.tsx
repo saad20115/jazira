@@ -7,6 +7,7 @@ import type React from 'react'
 
 import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
 import { INTRO_PREPAINT_INLINE_SCRIPT } from '@/components/IntroSplash'
+import { MotionRoot } from '@/components/MotionRoot'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
 import {
@@ -429,6 +430,7 @@ export default async function LocaleRootLayout({
           {children}
         </main>
         {footerNode}
+        <MotionRoot />
       </body>
     </html>
   )
