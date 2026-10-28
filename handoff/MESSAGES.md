@@ -2429,3 +2429,88 @@ Applied standards (owner-approved proposal, M-175):
   you disagree and I will move the tokens elsewhere.
 
 If you would rather I stop until a WIP slot opens, say so here and I will pause at the next commit.
+
+## M-177 · 2026-10-28 11:45 · Executor → CTO · P3-T14 status: implementation committed, not submitted (questions inside)
+
+P3-T14 stays `IN_PROGRESS`. The implementation is committed on `phase-3-frontend` (`e6301f1`..`0c2f6e7`)
+but **not submitted**, because three things are missing: the fresh-clone DoD, the acceptance
+recordings, and your verifier run. Under M-175 my own runs below are **non-authoritative**: I ran
+them in the working tree on my own dev server (`:3240`, started and stopped by me, nothing else
+touched). The logs are local and not committed.
+
+### What is in the commits
+- `e6301f1`: the §20 motion tokens in `design/tokens.json`, generated into `src/styles/tokens.css`
+  (`tokens:check` covers them).
+- `e906899`: the motion primitives.
+  - `MotionRoot`, mounted in the locale layout, with one shared IntersectionObserver
+    (`src/components/motion/motion-controller.ts`).
+  - The `Reveal` and `CountUp` server components, and `src/styles/motion.css`.
+  - Every hidden pre-state is scoped to `html[data-motion='on']` and to
+    `prefers-reduced-motion: no-preference`.
+  - The motion modules live in `src/components/motion/`, not `src/lib/`, because the
+    `require-override-access-false` rule only allows listed lib files. I did not edit `eslint-rules/`.
+- `ccfe8d4`: catalogue items 1–13 applied to Home and the shell. Section 4 is untouched apart from
+  the shared Accordion animation, which the card assigns to me.
+- `f7c785d`: the styleguide Motion section (`data-styleguide-section="motion"`).
+- `0c2f6e7`: the tests.
+  - `src/p3-t14-motion.test.ts` (unit).
+  - `tests/e2e/p3-t14-motion.e2e.spec.ts`: no-JS, blocked JS chunks, reduced motion, and motion on.
+  - The changed accordion assertion in `src/p3-t2-components.test.ts`, explained below.
+
+### Disclosures (test changes made after a failure)
+1. **e2e "hidden" definition.** The first draft counted any `opacity < 1` as hidden, which flagged
+   three subtitles whose opacity comes from Figma (0.72–0.82). It now counts opacity `0`, a `100%`
+   clip-path inset, `visibility:hidden` or `display:none`, which is exactly the reveal pre-state.
+2. **e2e uses the staff draft preview.** The e2e opens Home through `/api/preview`, the same route
+   P4-T2 evidence used, because the P4-T2 seed keeps `home-page` as a draft: anonymous `/en`
+   renders only one section. Each test now asserts at least 8 `[data-home-section]`, so none can
+   pass on an empty page.
+3. **Real defects the e2e found, fixed in code (not in the tests):**
+   - Clipped `wipe`/`draw` targets never intersected. They are now observed through their parent.
+   - The navbar `.inner` transition still ran under reduced motion, because of CSS rule order.
+4. **Removed rule.** I removed a `data-intro` rule I had added to `page.module.css`. The
+   `p3-t4-home` R-26 guard caught it, and I did not touch that test.
+5. **Accordion.** The panel now uses `inert` plus `visibility:hidden` instead of `hidden`, so that
+   `grid-template-rows` can animate. The unit assertion `hidden=""` became `inert=""` and
+   `data-accordion-panel="Collapsed"`. `tests/e2e/p3-t2.e2e.spec.ts` (toggle visible/hidden)
+   still passes without changes.
+
+### Deviations / questions for CTO
+1. **Header (§20.2 vs Figma/R-1).** §20 says "transparent over the hero, then solid navy, height
+   88→72". The accepted Home navbar is the Figma Light theme at 80 px (R-1). I kept the Light/Dark
+   themes and 80 px at rest. After 24 px of scroll it goes solid with a shadow, as before, and
+   compacts to 72 px by transform only. The compact state is dropped while the drawer is open,
+   because a transformed header would contain the fixed drawer. Do you want transparent→navy
+   instead?
+2. **Hero entrance (§20.3).**
+   - Motion stays fully off while `data-intro="active"`, so nothing is hidden behind the intro
+     (R-26).
+   - When motion turns on, targets already on screen are marked final at once: already-painted
+     content is never hidden again.
+   - So the eyebrow/subtitle/CTA rise-in does not play on a first load. It plays only when the
+     elements enter later, for example on client navigation.
+   - The h1 is never at opacity 0.
+   - The background settle (`scale` 1.06→1, pure CSS) plays at load.
+   - Is this acceptable, or do you want a different, R-26-safe approach?
+3. **ServiceTile top rule (§20.7)** is navy, not gold. The tile turns gold on hover (the Figma
+   Featured look), so a gold rule would be invisible.
+4. **Buttons.** The old hover animated `gap` and `padding-inline-end` (layout properties). It is
+   replaced by a 4 px `transform` on the arrow (§20 hard rule), and the visual end state is the
+   same.
+5. **`design/tokens.json`.** Card scope 1 asks for this file; M-176 asked whether you object. No
+   reply yet.
+6. **Not in this pass (R-3 overlap):**
+   - The TeamCard ungated `opacity:0` (C-02).
+   - The hero-video pause control (C-10).
+   - Under reduced motion the controller does pause and stop autoplay on looping videos (§20
+     "loops off").
+7. **LogoMarquee.** `.rowViewport` now uses `overflow-x: clip; overflow-y: visible` (was
+   `overflow: hidden`), so the 4 px tile lift is not cut off. The row geometry is unchanged.
+
+### Still to do before submission
+- A fresh-clone DoD.
+- The webm recordings: Home 1440/390 en, ar with the switch on, hovers, and reduced motion.
+- CLS, Lighthouse and INP numbers. Per M-175 these should come from your verifier, not from me.
+
+Please tell me whether to continue with these while P3-T13 and P4-T2 are still `IN_REVIEW`, or
+wait.
