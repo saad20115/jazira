@@ -5,6 +5,7 @@ import { Accordion, AccordionItem } from '@/components/Accordion'
 import { Avatar } from '@/components/Avatar'
 import { BrandTile } from '@/components/BrandTile'
 import { Button, BUTTON_STATES, BUTTON_VARIANTS } from '@/components/Button'
+import { CountUp } from '@/components/CountUp'
 import { Eyebrow } from '@/components/Eyebrow'
 import { Footer, getSocialAriaLabel } from '@/components/Footer'
 import {
@@ -21,6 +22,7 @@ import { NAV_LINK_STATES, NavLink } from '@/components/NavLink'
 import { PartnerTile, type PartnerTileState } from '@/components/PartnerTile'
 import { Portrait } from '@/components/Portrait'
 import { ProjectCard, type ProjectCardState } from '@/components/ProjectCard'
+import { Reveal } from '@/components/Reveal'
 import { ServiceCard, type ServiceCardState } from '@/components/ServiceCard'
 import { ServicesCarousel, type ServicesCarouselPosition } from '@/components/ServicesCarousel'
 import { ServiceTile, type ServiceTileState } from '@/components/ServiceTile'
@@ -56,6 +58,7 @@ const NODE_IDS = {
   teamCard: 'Figma 150:596',
   teamMarquee: 'Figma 151:964',
   servicesCarousel: 'Figma 175:3714',
+  motion: 'CTO §20 · no Figma node',
 } as const
 
 const STYLEGUIDE_NAVBAR_THEMES: readonly NavbarTheme[] = ['Light', 'Dark']
@@ -865,6 +868,65 @@ export default async function StyleguidePage({
                 locale={resolvedLocale}
                 services={sg.mockCarouselServices20}
               />
+            </div>
+          </div>
+        </section>
+
+        {/* 19. Motion system (docs/05-design.md CTO decision #20, P3-T14) */}
+        <section
+          className={styles.sectionCard}
+          data-styleguide-section="motion"
+          id="styleguide-motion"
+        >
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{sg.sectionMotion}</h2>
+            <span className={styles.nodeBadge} dir="ltr">
+              {NODE_IDS.motion}
+            </span>
+          </div>
+          <p className={styles.motionNote}>{sg.motionIntro}</p>
+          <p className={styles.motionNote}>{sg.motionReducedNote}</p>
+
+          <div className={styles.motionGrid}>
+            <div className={styles.motionDemo}>
+              <h3 className={styles.motionLabel}>{sg.motionRevealLabel}</h3>
+              <Reveal className={styles.motionBox}>
+                <span>{sg.motionSampleItems[0]}</span>
+              </Reveal>
+            </div>
+
+            <div className={styles.motionDemo}>
+              <h3 className={styles.motionLabel}>{sg.motionStaggerLabel}</h3>
+              <Reveal className={styles.motionRow} stagger>
+                {sg.motionSampleItems.map((item) => (
+                  <span className={styles.motionChip} key={item}>
+                    {item}
+                  </span>
+                ))}
+              </Reveal>
+            </div>
+
+            <div className={styles.motionDemo}>
+              <h3 className={styles.motionLabel}>{sg.motionCountUpLabel}</h3>
+              <div className={styles.motionRow}>
+                {sg.motionSampleStats.map((stat) => (
+                  <CountUp className={styles.motionStat} key={stat} value={stat} />
+                ))}
+              </div>
+            </div>
+
+            <div className={styles.motionDemo}>
+              <h3 className={styles.motionLabel}>{sg.motionHoverLabel}</h3>
+              <div className={styles.motionRow}>
+                <Button href={`/${resolvedLocale}`} label={sg.motionSampleItems[0]} />
+                <Button
+                  href={`/${resolvedLocale}`}
+                  label={sg.motionSampleItems[1]}
+                  variant="Dark"
+                />
+              </div>
+              <h3 className={styles.motionLabel}>{sg.motionLinkLabel}</h3>
+              <NavLink href={`/${resolvedLocale}`} label={sg.motionSampleItems[2]} />
             </div>
           </div>
         </section>

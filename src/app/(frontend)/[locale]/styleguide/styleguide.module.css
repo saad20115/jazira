@@ -455,3 +455,69 @@
     padding-inline: 12px;
   }
 }
+
+/* 19. Motion system demos (P3-T14) */
+.motionNote {
+  color: var(--text-body);
+  font-size: var(--t-body-s-size);
+  line-height: var(--t-body-s-lh);
+}
+
+.motionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.motionDemo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding-block: 20px;
+  padding-inline: 20px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-xl);
+}
+
+.motionLabel {
+  font-family: var(--font-sans);
+  font-weight: var(--t-h5-weight);
+  font-size: var(--t-h5-size);
+  line-height: var(--t-h5-lh);
+  color: var(--navy-950);
+}
+
+.motionBox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 100%;
+  min-block-size: 96px;
+  border-radius: var(--radius-lg);
+  background-color: var(--navy-950);
+  color: var(--white);
+}
+
+.motionRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+
+.motionChip {
+  padding-block: 8px;
+  padding-inline: 14px;
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-50);
+  color: var(--navy-950);
+}
+
+.motionStat {
+  font-family: var(--font-sans);
+  font-weight: var(--t-stat-number-weight);
+  font-size: var(--t-h3-size);
+  line-height: var(--t-h3-lh);
+  color: var(--navy-950);
+}
