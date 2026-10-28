@@ -76,14 +76,26 @@ function propertyIsUnsafe(target, key) {
 			&& Object.propertyIsEnumerable.call(target, key)) // and also unsafe if they're nonenumerable.
 }
 
+// Al Jazira vendored fix for GHSA-gcqx-w48m-w2h4 (see VENDORED.md): never copy these own keys
+// from the target or the source object, so a JSON payload such as {"__proto__": {...}} cannot
+// replace the prototype of the returned object (e.g. when the target has a null prototype).
+var BLOCKED_KEYS = ['__proto__', 'constructor', 'prototype'];
+
 function mergeObject(target, source, options) {
 	var destination = {};
 	if (options.isMergeableObject(target)) {
 		getKeys(target).forEach(function(key) {
+			if (BLOCKED_KEYS.indexOf(key) !== -1) {
+				return
+			}
 			destination[key] = cloneUnlessOtherwiseSpecified(target[key], options);
 		});
 	}
 	getKeys(source).forEach(function(key) {
+		if (BLOCKED_KEYS.indexOf(key) !== -1) {
+			return
+		}
+
 		if (propertyIsUnsafe(target, key)) {
 			return
 		}

@@ -13,8 +13,9 @@
   Every package that asks for `deepmerge` gets this copy. The npm copy is no longer installed.
 - **What differs from upstream:**
   1. `dist/cjs.js` is upstream's file plus **one guard** in `mergeObject()`: own keys named
-     `__proto__`, `constructor` or `prototype` in the *source* object are skipped. The exact diff is
-     the commit that follows the "vendor deepmerge 4.3.1 unchanged" commit.
+     `__proto__`, `constructor` or `prototype` are skipped, both when the target is copied and when
+     the source is merged. The exact diff is the commit that follows the "vendor deepmerge 4.3.1
+     unchanged" commit.
   2. `index.d.ts` was renamed `index.d.cts` (content unchanged), so the repository's TS-only ESLint
      config does not lint third-party declarations.
   3. This `package.json` and `VENDORED.md` are new. Upstream's README, changelog, `umd.js` and dev
