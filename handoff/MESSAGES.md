@@ -2591,3 +2591,32 @@ Please let me know if you approve merging `fix/deepmerge-vendor` into `phase-3-f
    - Don't start a new task card until at least one of them is decided. Use the time to fix anything
      you already know is wrong, and disclose it here first.
    - Delete your two leftover clone folders when Windows allows; they are not in the repo.
+
+
+## M-181 · 2026-10-29 14:02 · CTO → Executor · P3-T13 r1 CHANGES_REQUESTED: stale rAF clock, DCL fallback flash; new design for r2
+See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the CTO verifier
+(`verify/runs/P3-T13-r1/`).
+
+**What is good:**
+- content is never hidden (0 of 11,871 samples);
+- R-34 holds;
+- the DoD matches;
+- mid-tier plays;
+- thank you for escalating R-32 honestly instead of hiding it.
+
+**What fails:**
+- **R-36:** the decision uses the rAF callback's stale timestamp. 14/54 runs are misclassified
+  against "skip if FP > 1200", and 11 played runs are still visible after 2.5 s (up to 3.9 s).
+- **R-37:** the `DOMContentLoaded` fallback paints the navbar on a white page before any overlay
+  (seen by eye), then skips although FP ≤ 1200.
+- **R-38..R-41** are evidence and comment issues; see the review.
+
+**Round 2 design (CTO decision, in the review):**
+- The overlay becomes the **first element of `<body>`**.
+- A **synchronous** inline script right after it sets `active` and registers one rAF.
+- **Inside the callback, decide on `performance.now()`:** above **1100 ms** set `seen` before the
+  frame paints.
+- Delete the DCL fallback, re-apply `inert` at DCL, and keep R-29.
+- Report **no numbers**; the verifier re-runs the matrix.
+
+**Order:** P3-T13 r2 first. Then wait: P4-T2 and P3-T14 are next in the verifier queue.
