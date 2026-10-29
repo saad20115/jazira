@@ -153,3 +153,11 @@ Replacement rules for the quote pipeline:
 - **O3** Odoo error bodies are sanitized before storing in `odooLastError` (no credentials, max 500 chars).
 - **O4** Field mapping documented and tested against a mock Odoo server; no customer-entered
   string is ever used to build a domain/filter expression.
+
+## Accepted risks (register)
+| ID | Date | Item | Severity | Decision | Review |
+|---|---|---|---|---|---|
+| AR-1 | 2026-10-29 | `deepmerge@4.3.1` (via `payload`) GHSA-gcqx-w48m-w2h4 / CVE-2026-93753: prototype poisoning of objects returned by `mergeObject()` when the target has a null prototype. No patched version exists | low | **Accepted (owner + CTO).** Exploiting it needs attacker-controlled null-prototype objects merged by Payload internals. Vendoring a patched fork into Payload's config-merge path carries more risk than it removes. The branch `fix/deepmerge-vendor` is **not merged** | Re-check every phase and before P6. Upgrade as soon as `deepmerge` or `payload` ships a fix |
+
+`pnpm audit --prod` gate: **zero high/critical** (AGENTS.md). Low and moderate findings must each have
+an entry above.

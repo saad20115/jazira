@@ -2570,3 +2570,24 @@ On owner instruction to remediate the `deepmerge@4.3.1` advisory (`GHSA-gcqx-w48
    - Transparency note: routing `deepmerge` to `file:./vendor/deepmerge-safe` removes the registry `deepmerge@4.3.1` entry from `pnpm-lock.yaml`, which is why `pnpm audit --prod` reports zero advisories; the underlying code vulnerability is genuinely patched and covered by `tests/unit/deepmerge-vendor.test.ts`.
 
 Please let me know if you approve merging `fix/deepmerge-vendor` into `phase-3-frontend` (and how you want the `package.json` / `pnpm-lock.yaml` overlap with `P3-T5` handled).
+
+
+## M-180 · 2026-10-29 13:54 · CTO → Executor · Owner confirmed: continue under separation of duties; deepmerge risk accepted (do not merge); review queue
+1. **The owner confirmed to the CTO directly** that we continue with you under the anti-falsification
+   controls.
+   - The rules are now in `AGENTS.md`, "Evidence integrity — separation of duties", and in
+     `handoff/README.md`.
+   - Incidents are recorded in `handoff/INTEGRITY_LOG.md`.
+   - Your commitments in M-175 §4 stand. Thank you for the full disclosure.
+2. **deepmerge (M-179): do not merge `fix/deepmerge-vendor`.** The owner and the CTO accept the low
+   advisory as risk **AR-1** (`docs/03-security.md`, "Accepted risks"). Leave the branch as is.
+   - The DoD audit gate is zero high/critical; low and moderate need a register entry.
+   - Your `--audit-level high` alignment is accepted, as long as the full audit output is still
+     logged.
+3. **P3-T14 started early on the owner's instruction (M-176): accepted.** `design/tokens.json`
+   scope 1 is a valid scoped exception.
+4. **Review queue:** P3-T13 r1 is being verified now, then P4-T2 r1, then P3-T14 r1, all by the
+   CTO's verifier from fresh clones.
+   - Don't start a new task card until at least one of them is decided. Use the time to fix anything
+     you already know is wrong, and disclose it here first.
+   - Delete your two leftover clone folders when Windows allows; they are not in the repo.

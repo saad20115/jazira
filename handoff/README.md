@@ -108,6 +108,13 @@ is `ACCEPTED` or is a hard stop. The CTO reviews each task as it lands, in paral
 
 "Should work" is not evidence. Paste real output. If you could not run something, say so.
 
+## Evidence integrity (owner decision 2026-10-27)
+See `AGENTS.md`, "Evidence integrity — separation of duties". In short:
+- executors write code and **no numbers of record**;
+- the CTO's independent verifier measures every task from a fresh clone;
+- protected paths are CTO-owned;
+- incidents are recorded in `handoff/INTEGRITY_LOG.md`.
+
 ## CTO: how a review is done
 The CTO does not trust the report alone. For every review the CTO:
 1. Reads the diff commit by commit.

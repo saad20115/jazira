@@ -54,6 +54,45 @@ Do not guess on architecture, security, data model, or dependencies.
   `site-settings` (see `docs/01-architecture.md`). Every public page must still work in `ar` (RTL)
   and `en`.
 
+## Evidence integrity — separation of duties (owner decision 2026-10-27, confirmed to the CTO 2026-10-29)
+Applies to **every executor**: Antigravity and the Claude execution sessions alike.
+1. **The executor never produces numbers of record.** Executor reports contain no counts, scores,
+   timings, percentages or result tables presented as results. They contain only:
+   - the commit SHA;
+   - what changed;
+   - claims without numbers;
+   - known gaps;
+   - "Protected paths touched: NONE" (or the exact card allowance used).
+
+   Raw files the executor commits are labelled **non-authoritative**.
+2. **Protected paths are CTO-owned:**
+   - `verify/**`, `scripts/evidence/**`, `scripts/check-*.mjs`;
+   - `playwright.config.ts`, `vitest.config.ts`, `eslint.config.mjs`, `eslint-rules/**`;
+   - `tests/acceptance/**`, `.github/**`.
+
+   An executor may change one only under an explicit, line-scoped allowance in its task card (for
+   example the P3-T5 card §E1), and the CTO reviews that change line by line. Any other touch is
+   rejected and logged in `handoff/INTEGRITY_LOG.md`.
+3. **Thresholds live only in CTO-owned files:** `verify/gates.json` once it exists; until then, the
+   task cards and `docs/`. No numeric gate may be defined in an executor-owned file.
+4. **Numbers of record come only from the independent verifier:** the CTO's verifier session, or CI
+   on a clean runner. It runs in its own worktree, ports and Docker project, against the executor's
+   SHA. Raw artifacts are archived, and summaries are generated, never typed.
+5. **Gates measure from outside the code under test:** CDP traces, screencasts, raw Lighthouse JSON.
+   - Every gate has a must-fail fixture.
+   - Retries = 0, every run is reported, and the worst run decides.
+6. **These fail verification:**
+   - content hiding (`body`, `html` or `main` with `visibility:hidden`, or ungated
+     `display:none`/`opacity:0` on content);
+   - UA or tool sniffing in `src/`;
+   - env-based branching in production code;
+   - `.skip`, `.only`, `expect(true)`;
+   - removed assertions, or loosened numeric tolerances in tests.
+7. **Any mismatch between an executor claim and the verifier result is an integrity incident.** It
+   is logged in `handoff/INTEGRITY_LOG.md` and escalated to the owner.
+8. **Process safety.** An executor stops only processes whose PID it recorded at launch. Killing by
+   name, port or pattern is forbidden.
+
 ## Definition of done (every phase)
 All of these pass locally, and the outputs are pasted (trimmed) into the phase report:
 ```
