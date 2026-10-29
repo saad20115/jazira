@@ -32,6 +32,7 @@ import { StillLabels } from './StillLabels'
 import type { Systems3dStrings } from './strings'
 import { chooseModelTier, decideStart, type DeviceCaps, parseGfxOverride } from './tier'
 import type { ViewerHandle } from './viewer/createViewer'
+import { type FallbackReason, ViewerStartError } from './viewer/failure'
 
 /** still → loading → live; any failure (or a weak device) → stills. The still is never removed. */
 type Phase = 'still' | 'loading' | 'live' | 'stills'
@@ -190,6 +191,7 @@ export function SystemsCard({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const viewerRef = useRef<ViewerHandle | null>(null)
   const [phase, setPhase] = useState<Phase>('still')
+  const [fallbackReason, setFallbackReason] = useState<FallbackReason | null>(null)
   const [session, setSession] = useState(0)
   const [active, setActive] = useState(false)
   const [hint, setHint] = useState(false)
@@ -209,6 +211,7 @@ export function SystemsCard({
       override === 'stills' ||
       (override === null && decideStart(readDeviceCaps()) === 'stills')
     ) {
+      setFallbackReason('device')
       setPhase('stills')
       return
     }
@@ -227,16 +230,17 @@ export function SystemsCard({
     const caps = readDeviceCaps()
     const override = readGfxOverride()
     let firstFrame = false
-    const fallBack = (): void => {
+    const fallBack = (reason: FallbackReason): void => {
       window.clearTimeout(timeout)
       controller.abort()
       viewerRef.current = null
       setActive(false)
+      setFallbackReason(reason)
       setPhase('stills')
     }
     const timeout = window.setTimeout(() => {
       if (!firstFrame) {
-        fallBack()
+        fallBack('timeout')
       }
     }, START_TIMEOUT_MS)
     import('./viewer/createViewer')
@@ -271,9 +275,9 @@ export function SystemsCard({
           handle.setSystem(enteredRef.current)
         }
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (!controller.signal.aborted) {
-          fallBack()
+          fallBack(err instanceof ViewerStartError ? err.reason : 'load-error')
         }
       })
     return () => {
@@ -432,6 +436,7 @@ export function SystemsCard({
       data-entered={entered ?? 'none'}
       data-interactive-3d-card="true"
       data-viewer-active={active ? 'true' : 'false'}
+      data-viewer-fallback={phase === 'stills' ? (fallbackReason ?? undefined) : undefined}
       data-viewer-state={phase}
       onClick={activate}
       onFocus={onFocus}

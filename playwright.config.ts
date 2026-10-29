@@ -40,11 +40,26 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
+      grepInvert: /@gpu/,
       use: {
         ...devices['Desktop Chrome'],
         ...(channel ? { channel } : {}),
       },
     },
+    // Live WebGL tests (`@gpu`) need a hardware GPU and fail without one; CI has none, so this
+    // project exists only when asked for (E2E_GPU=1, e.g. `--project=gpu` on a GPU machine).
+    ...(process.env.E2E_GPU === '1'
+      ? [
+          {
+            name: 'gpu',
+            grep: /@gpu/,
+            use: {
+              ...devices['Desktop Chrome'],
+              ...(channel ? { channel } : {}),
+            },
+          },
+        ]
+      : []),
   ],
   webServer: {
     command: 'pnpm dev',

@@ -16,6 +16,8 @@
 import { FileLoader } from 'three'
 import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js'
 
+import { ViewerStartError } from './failure'
+
 let warned = false
 
 /** Checks the worker URL's response CSP. Exported for tests. */
@@ -31,7 +33,7 @@ export async function verifyWorkerPolicy(workerUrl: string, expectedCsp: string)
       warned = true
       console.warn('[systems3d] KTX2 worker policy check failed; staying on the still images')
     }
-    throw new Error('KTX2 worker: unexpected Content-Security-Policy')
+    throw new ViewerStartError('worker-policy', 'KTX2 worker: unexpected Content-Security-Policy')
   }
 }
 

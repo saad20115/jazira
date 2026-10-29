@@ -42,6 +42,17 @@ export function decideStart(caps: DeviceCaps): StartDecision {
   return 'live'
 }
 
+const SOFTWARE_RENDERERS = /swiftshader|llvmpipe|softpipe|software|microsoft basic render/
+
+/**
+ * Whether WebGL runs on the CPU (SwiftShader, llvmpipe, Microsoft Basic Render Driver). The live
+ * view then falls back to stills before any download: it cannot hold the frame rate, and it would
+ * burn the visitor's CPU.
+ */
+export function isSoftwareRenderer(renderer: string | null | undefined): boolean {
+  return renderer ? SOFTWARE_RENDERERS.test(renderer.toLowerCase()) : false
+}
+
 /**
  * Whether the unmasked WebGL renderer string names a high-performance GPU. Integrated, mobile and
  * software renderers (and an unknown string) are not; the default is the lite model.
@@ -51,7 +62,7 @@ export function isHighPerformanceGpu(renderer: string | null | undefined): boole
     return false
   }
   const name = renderer.toLowerCase()
-  if (/swiftshader|llvmpipe|software|microsoft basic|mali|adreno|powervr|apple gpu/.test(name)) {
+  if (isSoftwareRenderer(name) || /mali|adreno|powervr|apple gpu/.test(name)) {
     return false
   }
   if (/intel/.test(name) && !/arc/.test(name)) {

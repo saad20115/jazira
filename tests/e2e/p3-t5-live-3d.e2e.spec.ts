@@ -3,16 +3,17 @@ import { type BrowserContext, expect, type Locator, type Page, test } from '@pla
 /**
  * P3-T5 — the live 3D tower in the home "Interactive systems" card.
  *
- * Tests that need a live canvas (`live:` titles) run only on a hardware GPU: on a software renderer
- * (SwiftShader, llvmpipe) the run-time FPS tier correctly falls back to stills, so they skip with
- * that reason. Every other test runs everywhere. On Windows the GPU is used through ANGLE D3D11.
+ * `@gpu` tests need a live canvas on a hardware GPU and run only in the `gpu` project
+ * (`E2E_GPU=1 playwright test --project=gpu`); they fail, never skip, when the GPU is not usable.
+ * Every other test runs in the default project, CI included: there, a software renderer must end in
+ * the stills tier with the reason `software`. On Windows the GPU is used through ANGLE D3D11.
  *
  * `E2E_PRODUCTION_SERVER=1` (a `next start` or standalone server) also asserts that the page load
  * itself is free of CSP violations; the dev server injects inline styles of its own.
  */
 
-const GPU_ARGS =
-  process.platform === 'win32' ? ['--use-angle=d3d11'] : ['--enable-unsafe-swiftshader']
+const GPU_ARGS = process.platform === 'win32' ? ['--use-angle=d3d11'] : []
+const SOFTWARE_RENDERER = /swiftshader|llvmpipe|softpipe|software|basic render|^none$/i
 
 test.use({ launchOptions: { args: GPU_ARGS } })
 
@@ -84,12 +85,10 @@ async function rendererName(page: Page): Promise<string> {
   })
 }
 
-async function requireHardwareGpu(page: Page): Promise<void> {
+/** `@gpu` tests: a software or missing renderer is a failure of the run, not a skip. */
+async function expectHardwareGpu(page: Page): Promise<void> {
   const renderer = await rendererName(page)
-  test.skip(
-    /swiftshader|llvmpipe|software|basic render|^none$/i.test(renderer),
-    `needs a hardware GPU for a live canvas (renderer: ${renderer}); stills is the correct tier here`,
-  )
+  expect(renderer, 'the gpu project needs a hardware WebGL renderer').not.toMatch(SOFTWARE_RENDERER)
 }
 
 async function goLive(page: Page, card: Locator): Promise<void> {
@@ -153,9 +152,6 @@ test.describe('P3-T5 live 3D card', () => {
 
     await card.hover()
     await expect(card).not.toHaveAttribute('data-viewer-state', 'still')
-    await expect
-      .poll(() => recorder.model.some((entry) => /\/tower(-lite)?\.glb$/.test(entry)))
-      .toBe(true)
   })
 
   test('reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels', async ({
@@ -166,6 +162,7 @@ test.describe('P3-T5 live 3D card', () => {
     const card = await openHome(page)
     await card.hover()
     await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await expect(card).toHaveAttribute('data-viewer-fallback', 'device')
     await page.locator('[data-show-in-3d]').first().click()
     const system = await systemOfRow(rows(page).first())
     await expect(card).toHaveAttribute('data-entered', system)
@@ -177,7 +174,7 @@ test.describe('P3-T5 live 3D card', () => {
   })
 
   for (const variant of ['missing', 'different'] as const) {
-    test(`C3-3: a ${variant} worker CSP fails closed to stills before any worker starts`, async ({
+    test(`@gpu C3-3: a ${variant} worker CSP fails closed to stills before any worker starts`, async ({
       page,
     }) => {
       const workerMethods: string[] = []
@@ -194,8 +191,10 @@ test.describe('P3-T5 live 3D card', () => {
       })
       const recorder = record(page)
       const card = await openHome(page)
+      await expectHardwareGpu(page)
       await card.hover()
       await expect(card).toHaveAttribute('data-viewer-state', 'stills', { timeout: LIVE_TIMEOUT })
+      await expect(card).toHaveAttribute('data-viewer-fallback', 'worker-policy')
       expect(workerMethods).toEqual(['HEAD'])
       expect(recorder.warnings).toEqual([
         '[systems3d] KTX2 worker policy check failed; staying on the still images',
@@ -203,12 +202,12 @@ test.describe('P3-T5 live 3D card', () => {
     })
   }
 
-  test('@smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems', async ({
+  test('@gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems', async ({
     page,
   }) => {
     const recorder = record(page)
     const card = await openHome(page)
-    await requireHardwareGpu(page)
+    await expectHardwareGpu(page)
     await goLive(page, card)
     expect(recorder.model).toEqual(
       expect.arrayContaining([`HEAD ${WORKER_PATH}`, `GET ${WORKER_PATH}`]),
@@ -255,11 +254,11 @@ test.describe('P3-T5 live 3D card', () => {
     }
   })
 
-  test('live: the page scroll is never trapped — the wheel zooms only while the card is active', async ({
+  test('@gpu live: the page scroll is never trapped — the wheel zooms only while the card is active', async ({
     page,
   }) => {
     const card = await openHome(page)
-    await requireHardwareGpu(page)
+    await expectHardwareGpu(page)
     await goLive(page, card)
     expect(await wheelScrolls(page, card)).toBeGreaterThan(0)
     await card.click()
@@ -274,11 +273,11 @@ test.describe('P3-T5 live 3D card', () => {
     await expect(card).toHaveAttribute('data-viewer-active', 'false')
   })
 
-  test('live: keyboard — focus activates, digits enter systems, Escape exits then deactivates', async ({
+  test('@gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates', async ({
     page,
   }) => {
     const card = await openHome(page)
-    await requireHardwareGpu(page)
+    await expectHardwareGpu(page)
     await goLive(page, card)
     await card.focus()
     await expect(card).toHaveAttribute('data-viewer-active', 'true')
@@ -299,11 +298,11 @@ test.describe('P3-T5 live 3D card', () => {
     await expect(card).toHaveAttribute('data-viewer-active', 'false')
   })
 
-  test('live: a #systems hash enters on load, and a lost context falls back to stills keeping it', async ({
+  test('@gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it', async ({
     page,
   }) => {
     const card = await openHome(page, '#systems-fire')
-    await requireHardwareGpu(page)
+    await expectHardwareGpu(page)
     await expect(card).toHaveAttribute('data-entered', 'fire')
     await goLive(page, card)
     await page.evaluate(() => {
@@ -312,6 +311,7 @@ test.describe('P3-T5 live 3D card', () => {
       gl?.getExtension('WEBGL_lose_context')?.loseContext()
     })
     await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await expect(card).toHaveAttribute('data-viewer-fallback', 'context-lost')
     await expect(card).toHaveAttribute('data-entered', 'fire')
     await expect(card.locator('[data-entered-system="fire"]')).toBeVisible()
     expect(new URL(page.url()).hash).toBe('#systems-fire')
@@ -341,7 +341,42 @@ test.describe('P3-T5 live 3D card — WebGL disabled', () => {
       await expect(card).toHaveAttribute('data-viewer-state', 'stills', {
         timeout: LIVE_TIMEOUT,
       })
+      await expect(card).toHaveAttribute('data-viewer-fallback', 'no-webgl')
       await expect(card.locator('canvas')).toHaveCount(0)
+    } finally {
+      await browser.close()
+    }
+  })
+})
+
+test.describe('P3-T5 live 3D card — software renderer', () => {
+  test.setTimeout(120_000)
+
+  // CI's renderer; forced here so the test means the same on every machine.
+  test('a software WebGL renderer ends in the stills tier, without a canvas or a 3D download', async ({
+    playwright,
+    channel,
+    baseURL,
+  }) => {
+    const browser = await playwright.chromium.launch({
+      ...(channel ? { channel } : {}),
+      args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+    })
+    try {
+      const context = await browser.newContext({ baseURL, viewport: { width: 1440, height: 900 } })
+      await prepare(context)
+      const page = await context.newPage()
+      const recorder = record(page)
+      const card = await openHome(page)
+      expect(await rendererName(page)).toMatch(/swiftshader/i)
+      await card.hover()
+      await expect(card).toHaveAttribute('data-viewer-state', 'stills', {
+        timeout: LIVE_TIMEOUT,
+      })
+      await expect(card).toHaveAttribute('data-viewer-fallback', /^(software|too-slow)$/)
+      await expect(card.locator('canvas')).toHaveCount(0)
+      await expect(card.locator('picture img').first()).toBeVisible()
+      expect(recorder.model.filter((entry) => entry.endsWith('.glb'))).toEqual([])
     } finally {
       await browser.close()
     }
@@ -356,12 +391,12 @@ test.describe('P3-T5 live 3D card — phone', () => {
     await prepare(context)
   })
 
-  test('live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active', async ({
+  test('@gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active', async ({
     page,
     context,
   }) => {
     const card = await openHome(page)
-    await requireHardwareGpu(page)
+    await expectHardwareGpu(page)
     const cdp = await context.newCDPSession(page)
     // A one-finger upward swipe over the card centre; the finger rests before lifting (no fling,
     // which would swallow the next tap).

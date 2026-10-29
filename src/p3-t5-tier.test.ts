@@ -7,6 +7,7 @@ import {
   FPS_WINDOW,
   fpsVerdict,
   isHighPerformanceGpu,
+  isSoftwareRenderer,
   parseGfxOverride,
 } from '@/components/systems3d/tier'
 
@@ -63,6 +64,28 @@ describe('P3-T5 device tiers', () => {
       undefined,
     ]) {
       expect(isHighPerformanceGpu(gpu), String(gpu)).toBe(false)
+    }
+  })
+
+  it('recognises software renderers (stills before any download) and nothing else', () => {
+    for (const gpu of [
+      'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero) (0x0000C0DE)), SwiftShader driver)',
+      'llvmpipe (LLVM 15.0.7, 256 bits)',
+      'Microsoft Basic Render Driver',
+      'ANGLE (Microsoft, Microsoft Basic Render Driver Direct3D11 vs_5_0 ps_5_0, D3D11)',
+    ]) {
+      expect(isSoftwareRenderer(gpu), gpu).toBe(true)
+    }
+    for (const gpu of [
+      'ANGLE (Intel, Intel(R) HD Graphics 530 (0x00001912) Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      'ANGLE (NVIDIA, NVIDIA GeForce RTX 3050 Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      'Mali-G78',
+      'Apple GPU',
+      '',
+      null,
+      undefined,
+    ]) {
+      expect(isSoftwareRenderer(gpu), String(gpu)).toBe(false)
     }
   })
 

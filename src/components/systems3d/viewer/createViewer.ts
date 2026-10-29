@@ -55,7 +55,7 @@ import {
   validateExtras,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
-import { FPS_WINDOW, fpsVerdict } from '../tier'
+import { FPS_WINDOW, fpsVerdict, isSoftwareRenderer } from '../tier'
 import {
   AGX_LOOK,
   BASIS_TRANSCODER_PATH,
@@ -77,6 +77,7 @@ import {
   type ModelTier,
   PMREM,
 } from '../renderContract'
+import { type ViewerFailure, ViewerStartError } from './failure'
 import { inlineBasisuPlugin } from './inlineBasisuPlugin'
 import {
   collectMaterials,
@@ -89,7 +90,7 @@ import {
 import { createSystemStage, type ProjectedLabel } from './systemStage'
 import { UrlWorkerKTX2Loader } from './UrlWorkerKTX2Loader'
 
-export type ViewerFailure = 'context-lost' | 'render-error' | 'too-slow'
+export type { ViewerFailure } from './failure'
 
 export interface ViewerOptions {
   canvas: HTMLCanvasElement
@@ -415,17 +416,26 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   const { canvas, container } = options
   patchAgxLook()
 
-  const renderer = new WebGLRenderer({
-    canvas,
-    antialias: true,
-    alpha: false,
-    powerPreference: 'high-performance',
-  })
+  let renderer: WebGLRenderer
+  try {
+    renderer = new WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      powerPreference: 'high-performance',
+    })
+  } catch {
+    throw new ViewerStartError('no-webgl', 'WebGL context unavailable')
+  }
   if (!renderer.capabilities.isWebGL2) {
     renderer.dispose()
-    throw new ContractError('WebGL2 unavailable')
+    throw new ViewerStartError('no-webgl', 'WebGL2 unavailable')
   }
   const gpu = readGpuRenderer(renderer)
+  if (isSoftwareRenderer(gpu)) {
+    renderer.dispose()
+    throw new ViewerStartError('software', 'software WebGL renderer')
+  }
   const tier = options.selectTier(gpu)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.pixelRatioCap))
   renderer.toneMapping = AgXToneMapping
