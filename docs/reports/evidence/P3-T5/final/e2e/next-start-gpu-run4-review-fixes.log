@@ -1,0 +1,51 @@
+
+Running 9 tests using 1 worker
+
+  ok 1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:187:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (2.2s)
+  ok 2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:187:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (1.2s)
+  ok 3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:215:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (36.1s)
+  ok 4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:267:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (5.5s)
+  ok 5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:286:3 › P3-T5 live 3D card › @gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (33.8s)
+  ok 6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:320:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (3.2s)
+  ok 7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:339:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (10.8s)
+  ok 8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:386:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (5.6s)
+  x  9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:506:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (19.9s)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:506:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+
+    TimeoutError: locator.tap: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-component="accordion-item"]').first().locator('[data-show-in-3d]')
+        - locator resolved to <button type="button" aria-pressed="false" data-show-in-3d="hvac" aria-label="Show HVAC & Chilled Water in 3D" class="I0WHYa_showIn3dButton t-label-button">Show in 3D</button>
+      - attempting tap action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying tap action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not visible
+        - retrying tap action
+          - waiting 100ms
+        18 × waiting for element to be visible, enabled and stable
+           - element is not visible
+         - retrying tap action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      572 |       const row = rows(page).nth(i)
+      573 |       if (i === 0) {
+    > 574 |         await row.locator('[data-show-in-3d]').tap({ timeout: 10_000 })
+          |                                                ^
+      575 |       } else {
+      576 |         await rowHeader(row).tap({ timeout: 10_000 })
+      577 |       }
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:574:48
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-d029f-s-trapped-only-while-active-gpu\error-context.md
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:506:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+  8 passed (2.0m)
+exit=1

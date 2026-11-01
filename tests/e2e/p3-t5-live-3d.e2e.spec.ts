@@ -171,6 +171,16 @@ test.describe('P3-T5 live 3D card', () => {
     await expect(layer).toBeVisible()
     await expect(layer.locator('li button').filter({ visible: true }).first()).toBeVisible()
     expect(recorder.model).toEqual([])
+
+    // Another hash later (an in-page link) exits the system; a system hash enters again.
+    await page.evaluate(() => {
+      window.location.hash = 'stats'
+    })
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await page.evaluate(() => {
+      window.location.hash = 'systems-fire'
+    })
+    await expect(card).toHaveAttribute('data-entered', 'fire')
   })
 
   for (const variant of ['missing', 'different'] as const) {
@@ -497,6 +507,7 @@ test.describe('P3-T5 live 3D card — phone', () => {
     page,
     context,
   }) => {
+    const recorder = record(page)
     const card = await openHome(page)
     await expectHardwareGpu(page)
     const cdp = await context.newCDPSession(page)
@@ -529,6 +540,17 @@ test.describe('P3-T5 live 3D card — phone', () => {
 
     await test.step('still card: the page scrolls', async () => {
       expect(await swipeScrolls()).toBeGreaterThan(0)
+    })
+    await test.step('still card: tapping buttons inside it downloads nothing (§8c)', async () => {
+      await rows(page).first().locator('[data-show-in-3d]').tap({ timeout: 10_000 })
+      await card.scrollIntoViewIfNeeded()
+      const dot = card.locator('[data-entered-system] li button').filter({ visible: true }).last()
+      await dot.tap({ timeout: 10_000 })
+      await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
+      await expect(card).toHaveAttribute('data-entered', 'none')
+      await page.waitForTimeout(1_000)
+      await expect(card).toHaveAttribute('data-viewer-state', 'still')
+      expect(recorder.model).toEqual([])
     })
     await page.locator('[data-open-3d-model]').tap({ timeout: 10_000 })
     await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
