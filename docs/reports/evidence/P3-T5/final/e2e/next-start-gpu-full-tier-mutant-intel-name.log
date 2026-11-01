@@ -1,0 +1,36 @@
+
+Running 1 test using 1 worker
+
+  x  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:329:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (9.2s)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:329:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "full"
+    Received: "lite"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 5000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        13 × locator resolved to <div tabindex="0" data-entered="none" data-viewer-tier="lite" data-viewer-state="live" data-viewer-active="false" class="I0WHYa_buildingCard" data-interactive-3d-card="true">…</div>
+           - unexpected value "lite"
+
+
+      354 |     const card = await openHome(page)
+      355 |     await goLive(page, card)
+    > 356 |     await expect(card).toHaveAttribute('data-viewer-tier', 'full')
+          |                        ^
+      357 |     expect(recorder.model).toContain('GET /systems/v022n/tower.glb')
+      358 |     expect(recorder.model).not.toContain('GET /systems/v022n/tower-lite.glb')
+      359 |
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:356:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-21311-full-model-enters-and-exits-gpu\error-context.md
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:329:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+exit=1

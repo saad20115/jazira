@@ -326,6 +326,53 @@ test.describe('P3-T5 live 3D card', () => {
     expect(new URL(page.url()).hash).toBe('#systems-fire')
   })
 
+  test('@gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits', async ({
+    page,
+    context,
+    browser,
+  }) => {
+    // The real GPU is checked in a context without the name override below.
+    const probe = await browser.newContext()
+    try {
+      await expectHardwareGpu(await probe.newPage())
+    } finally {
+      await probe.close()
+    }
+    // Device hint from outside the code under test: the renderer name the tier rules read.
+    await context.addInitScript(() => {
+      const UNMASKED_RENDERER_WEBGL = 0x9246
+      for (const proto of [WebGL2RenderingContext.prototype, WebGLRenderingContext.prototype]) {
+        const original = Reflect.get(proto, 'getParameter') as (name: GLenum) => unknown
+        proto.getParameter = function (this: WebGLRenderingContext, name: GLenum): unknown {
+          return name === UNMASKED_RENDERER_WEBGL
+            ? 'ANGLE (NVIDIA, NVIDIA GeForce RTX 3050 Laptop GPU Direct3D11 vs_5_0 ps_5_0, D3D11)'
+            : Reflect.apply(original, this, [name])
+        }
+      }
+    })
+    const recorder = record(page)
+    const card = await openHome(page)
+    await goLive(page, card)
+    await expect(card).toHaveAttribute('data-viewer-tier', 'full')
+    expect(recorder.model).toContain('GET /systems/v022n/tower.glb')
+    expect(recorder.model).not.toContain('GET /systems/v022n/tower-lite.glb')
+
+    await card.focus()
+    await page.keyboard.press('1')
+    const system = await systemOfRow(rows(page).first())
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    await page.keyboard.press('Escape')
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+    await expect(card).toHaveAttribute('data-viewer-state', 'live')
+    if (PRODUCTION_SERVER) {
+      expect(recorder.cspViolations).toEqual([])
+    }
+  })
+
   test('@gpu live: under 6× CPU throttling the card ends in the low or stills tier', async ({
     page,
     context,
