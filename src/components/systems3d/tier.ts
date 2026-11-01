@@ -113,3 +113,25 @@ export function fpsVerdict(intervalsMs: readonly number[], alreadyLow: boolean):
   }
   return fps < LOW_TIER_FPS ? 'low' : 'ok'
 }
+
+/**
+ * Shader warm-up tasks lengthen frames on any GPU, so frame intervals during a warm-up are not speed
+ * samples. The blind window is capped (CTO 2026-11-01): after `WARMUP_SKIP_CAP_MS` of skipped
+ * warm-up time, intervals are sampled again even if the warm-up still runs. The skipped time
+ * restarts when a warm-up ends.
+ */
+export const WARMUP_SKIP_CAP_MS = 3000
+
+export function warmupSample(
+  skippedMs: number,
+  preparing: boolean,
+  intervalMs: number,
+): { sample: boolean; skippedMs: number } {
+  if (!preparing) {
+    return { sample: true, skippedMs: 0 }
+  }
+  if (skippedMs >= WARMUP_SKIP_CAP_MS) {
+    return { sample: true, skippedMs }
+  }
+  return { sample: false, skippedMs: skippedMs + intervalMs }
+}

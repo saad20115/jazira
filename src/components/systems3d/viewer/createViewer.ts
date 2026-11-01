@@ -55,7 +55,7 @@ import {
   validateExtras,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
-import { FPS_WINDOW, fpsVerdict, isSoftwareRenderer } from '../tier'
+import { FPS_WINDOW, fpsVerdict, isSoftwareRenderer, warmupSample } from '../tier'
 import {
   AGX_LOOK,
   BASIS_TRANSCODER_PATH,
@@ -377,6 +377,10 @@ function disposeObject(root: Object3D): void {
  * card would wait for the whole start timeout before falling back to the stills.
  */
 const TRANSCODE_WATCHDOG_MS = 15_000
+
+/** Background warm-up: the gap before each system's idle slot, and that slot's latest start. */
+const WARMUP_GAP_MS = 1_000
+const WARMUP_IDLE_TIMEOUT_MS = 5_000
 
 async function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promise<GLTF> {
   // The download is bounded by the card's start timeout; parse + transcode by the watchdog.
@@ -762,6 +766,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   // Run-time tier check (§8b) on rAF intervals between consecutive animating frames: they show
   // whether the device keeps up, also when a frame cap skips drawing.
   let intervals: number[] = []
+  let warmupSkippedMs = 0
   // `dt` is measured from the last drawn frame, so a frame cap never slows the animation down.
   let lastDrawAt: number | null = null
   const minFrameMs = options.maxFps > 0 ? 1000 / options.maxFps - 1 : 0
@@ -788,11 +793,17 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     if (disposed) {
       return
     }
-    // Shader warm-up tasks lengthen frames on any GPU: those intervals say nothing about its speed.
-    if (lastFrameAt !== null && !stage.preparing) {
-      intervals.push(now - lastFrameAt)
-      if (!checkFps()) {
-        return
+    // Shader warm-up tasks lengthen frames on any GPU: those intervals say nothing about its speed,
+    // up to a capped blind window (`warmupSample`).
+    if (lastFrameAt !== null) {
+      const interval = now - lastFrameAt
+      const warmup = warmupSample(warmupSkippedMs, stage.preparing, interval)
+      warmupSkippedMs = warmup.skippedMs
+      if (warmup.sample) {
+        intervals.push(interval)
+        if (!checkFps()) {
+          return
+        }
       }
     }
     lastFrameAt = now
@@ -912,20 +923,32 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   options.signal.removeEventListener('abort', cleanup)
   options.signal.addEventListener('abort', dispose, { once: true })
 
-  // After the first frame, each system's entered programs compile in idle time, one system at a
-  // time, so a later entry neither blocks nor waits (the stage waits for any that is unfinished).
+  // After the first frame, each system's entered programs compile in idle time, so a later entry
+  // neither blocks nor waits (the stage waits for any that is unfinished). Each system gets its own
+  // idle slot after a gap: never all of them in a row right after the first frame.
   const idle = (): Promise<void> =>
     new Promise((resolve) => {
       if (typeof window.requestIdleCallback === 'function') {
-        window.requestIdleCallback(() => {
-          resolve()
-        })
+        window.requestIdleCallback(
+          () => {
+            resolve()
+          },
+          { timeout: WARMUP_IDLE_TIMEOUT_MS },
+        )
       } else {
         window.setTimeout(resolve, 50)
       }
     })
+  const gap = (): Promise<void> =>
+    new Promise((resolve) => {
+      window.setTimeout(resolve, WARMUP_GAP_MS)
+    })
   async function warmUpSystems(): Promise<void> {
     for (const system of SYSTEM_IDS) {
+      await gap()
+      if (isDisposed()) {
+        return
+      }
       await idle()
       if (isDisposed()) {
         return

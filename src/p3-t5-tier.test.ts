@@ -8,6 +8,8 @@ import {
   fpsVerdict,
   isHighPerformanceGpu,
   isSoftwareRenderer,
+  WARMUP_SKIP_CAP_MS,
+  warmupSample,
 } from '@/components/systems3d/tier'
 
 const desktop: DeviceCaps = {
@@ -131,5 +133,45 @@ describe('P3-T5 run-time FPS tier check', () => {
   it('uses only the most recent window', () => {
     expect(fpsVerdict([...frames(100, 200), ...frames(10)], false)).toBe('ok')
     expect(fpsVerdict([...frames(10, 200), ...frames(100)], false)).toBe('low')
+  })
+})
+
+describe('P3-T5 FPS check during shader warm-up (CTO 2026-11-01: capped blind window)', () => {
+  /** Feeds intervals of `ms` while `preparing`; returns how many were sampled. */
+  const run = (start: number, preparing: boolean, ms: number, n: number) => {
+    let skippedMs = start
+    let sampled = 0
+    for (let i = 0; i < n; i += 1) {
+      const step = warmupSample(skippedMs, preparing, ms)
+      skippedMs = step.skippedMs
+      sampled += step.sample ? 1 : 0
+    }
+    return { sampled, skippedMs }
+  }
+
+  it('samples every interval when no warm-up runs', () => {
+    expect(run(0, false, 16, 100)).toEqual({ sampled: 100, skippedMs: 0 })
+  })
+
+  it('skips warm-up intervals only until the cap, then samples again while it still runs', () => {
+    const ms = 50
+    const skippedFrames = WARMUP_SKIP_CAP_MS / ms
+    const { sampled, skippedMs } = run(0, true, ms, skippedFrames + 40)
+    expect(skippedMs).toBe(WARMUP_SKIP_CAP_MS)
+    expect(sampled).toBe(40)
+  })
+
+  it('skips right below the cap and samples from the cap on', () => {
+    expect(warmupSample(WARMUP_SKIP_CAP_MS - 1, true, 16)).toEqual({
+      sample: false,
+      skippedMs: WARMUP_SKIP_CAP_MS + 15,
+    })
+    expect(warmupSample(WARMUP_SKIP_CAP_MS, true, 16).sample).toBe(true)
+  })
+
+  it('a new warm-up after one ends gets its own blind window', () => {
+    const afterCap = run(0, true, 100, 40).skippedMs
+    expect(warmupSample(afterCap, false, 16)).toEqual({ sample: true, skippedMs: 0 })
+    expect(warmupSample(0, true, 16).sample).toBe(false)
   })
 })
