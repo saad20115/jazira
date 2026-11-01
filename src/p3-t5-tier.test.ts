@@ -45,6 +45,8 @@ describe('P3-T5 device tiers', () => {
     for (const gpu of [
       'ANGLE (NVIDIA, NVIDIA GeForce RTX 3050 Direct3D11 vs_5_0 ps_5_0, D3D11)',
       'ANGLE (AMD, AMD Radeon RX 6600 Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      'ANGLE (AMD, AMD Radeon(TM) RX 7600S Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      'ANGLE (AMD, AMD Radeon Pro W6600 Direct3D11 vs_5_0 ps_5_0, D3D11)',
       'ANGLE (Intel, Intel(R) Arc(TM) A770 Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)',
       'Apple M2',
     ]) {
@@ -53,6 +55,10 @@ describe('P3-T5 device tiers', () => {
     for (const gpu of [
       'ANGLE (Intel, Intel(R) HD Graphics 530 Direct3D11 vs_5_0 ps_5_0, D3D11)',
       'ANGLE (Intel, Intel(R) UHD Graphics 620 Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      // Ryzen APUs (integrated Radeon, shared memory).
+      'ANGLE (AMD, AMD Radeon(TM) Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      'ANGLE (AMD, AMD Radeon(TM) Vega 8 Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)',
+      'ANGLE (AMD, AMD Radeon 780M Graphics Direct3D11 vs_5_0 ps_5_0, D3D11)',
       'ANGLE (Google, Vulkan 1.3.0 (SwiftShader Device (Subzero)), SwiftShader driver)',
       'Mali-G78',
       'Adreno (TM) 650',

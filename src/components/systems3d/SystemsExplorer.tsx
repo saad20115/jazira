@@ -72,22 +72,25 @@ export function SystemsExplorer({
   }, [])
 
   // Shareable hash: entered on load or on hashchange (allowlist only; no scroll jump).
+  // Any other hash later (an in-page link, a cleared hash) exits, so the URL keeps describing the card.
   useEffect(() => {
-    const apply = (): void => {
+    const apply = (onLoad: boolean): void => {
       const system = systemFromHash(window.location.hash)
-      if (!system) {
-        return
-      }
-      const idx = indexOfSystem(system)
-      if (idx >= 0) {
+      const idx = system ? indexOfSystem(system) : -1
+      if (system && idx >= 0) {
         setExpandedIndex(idx)
         setEntered(system)
+      } else if (!onLoad) {
+        setEntered(null)
       }
     }
-    apply()
-    window.addEventListener('hashchange', apply)
+    const onHashChange = (): void => {
+      apply(false)
+    }
+    apply(true)
+    window.addEventListener('hashchange', onHashChange)
     return () => {
-      window.removeEventListener('hashchange', apply)
+      window.removeEventListener('hashchange', onHashChange)
     }
   }, [indexOfSystem])
 
@@ -127,7 +130,7 @@ export function SystemsExplorer({
           toggle(idx, true)
         }}
         openLabel={openLabel}
-        related={entered ? (related[entered] ?? null) : null}
+        related={enteredRelated ?? null}
         relatedHeading={relatedHeading}
         strings={strings}
       >

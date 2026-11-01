@@ -64,10 +64,15 @@ export function isHighPerformanceGpu(renderer: string | null | undefined): boole
   if (isSoftwareRenderer(name) || /mali|adreno|powervr|apple gpu/.test(name)) {
     return false
   }
-  if (/intel/.test(name) && !/arc/.test(name)) {
+  if (/intel/.test(name) && !/\barc\b/.test(name)) {
     return false
   }
-  return /nvidia|geforce|quadro|rtx|gtx|radeon|amd|\barc\b|apple m[1-9]/.test(name)
+  // AMD: only discrete Radeon (RX, Pro, VII). Ryzen APUs report "Radeon(TM) Graphics", "Radeon Vega
+  // 8" or "Radeon 780M": integrated, shared memory, so the lite model.
+  if (/amd|radeon/.test(name)) {
+    return /radeon(\(tm\))? (rx|pro|vii)\b/.test(name)
+  }
+  return /nvidia|geforce|quadro|rtx|gtx|\barc\b|apple m[1-9]/.test(name)
 }
 
 /**

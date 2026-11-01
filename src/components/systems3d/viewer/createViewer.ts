@@ -979,12 +979,14 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       if (stage.moving) {
         return
       }
-      const limits = stage.entered ? extras.systems[stage.entered].orbitLimits : null
+      // The view the flight lands on (or the hero view): its camera and the target it looks at.
       const cam = findCamera(node(stage.entered ? `CAM_${stage.entered}` : 'CAM_hero'))
       cam.getWorldPosition(camera.position)
       camera.quaternion.copy(cam.getWorldQuaternion(new Quaternion()))
       controls.target.copy(
-        limits ? new Vector3(...limits.target) : worldPosition(node('PIVOT_hero')),
+        worldPosition(
+          node(stage.entered ? extras.systems[stage.entered].enterMotion.targetTo : 'PIVOT_hero'),
+        ),
       )
       lastInputAt = performance.now()
       invalidate()

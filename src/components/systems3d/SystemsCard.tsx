@@ -303,7 +303,11 @@ export function SystemsCard({
     }
   }
   const onFocus = (event: FocusEvent<HTMLDivElement>): void => {
-    startLive()
+    // Keyboard focus is intent; a tap on a button inside the card (exit, a label dot) is not, so a
+    // phone downloads the model only from the "Explore in 3D" button (§8c).
+    if (event.target instanceof Element && event.target.matches(':focus-visible')) {
+      startLive()
+    }
     if (event.target === event.currentTarget) {
       activate()
     }
