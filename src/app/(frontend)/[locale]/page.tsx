@@ -9,7 +9,6 @@ import { Eyebrow } from '@/components/Eyebrow'
 import { HomeScrollHintButton } from '@/components/HomeScrollHintButton'
 import { CountUp } from '@/components/CountUp'
 import { CornerBracketIcon } from '@/components/icons'
-import { IntroSplash } from '@/components/IntroSplash'
 import { LogoMarquee } from '@/components/LogoMarquee'
 import { normalizeLocalMediaUrl, resolveMediaAsset } from '@/components/media-utils'
 import { ProjectCard } from '@/components/ProjectCard'
@@ -362,7 +361,6 @@ export default async function LocaleHomePage({
     ])
 
   const companyName = siteSettings?.companyName || null
-  const tagline = siteSettings?.tagline || null
 
   // 1. Hero section data (`17:199`)
   const hero = homePage?.hero
@@ -478,8 +476,6 @@ export default async function LocaleHomePage({
 
   return (
     <div className={styles.homePage} data-page="home">
-      <IntroSplash locale={locale} siteName={companyName} tagline={tagline} />
-
       <div className={styles.homeContent} data-home-content="true">
         {/* 1. Hero Section (17:199) */}
         {heroEnabled && hasHeroContent ? (

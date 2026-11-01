@@ -6,7 +6,7 @@ import { redirect } from 'next/navigation'
 import type React from 'react'
 
 import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
-import { INTRO_PREPAINT_INLINE_SCRIPT } from '@/components/IntroSplash'
+import { INTRO_PREPAINT_INLINE_SCRIPT, IntroSplash } from '@/components/IntroSplash'
 import { MotionRoot } from '@/components/MotionRoot'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
@@ -219,24 +219,58 @@ export async function generateMetadata({
   }
 }
 
+function isHomeRoutePath(pathname: string): boolean {
+  const normalized =
+    pathname.endsWith('/') && pathname.length > 1 ? pathname.slice(0, -1) : pathname
+  return normalized === '/ar' || normalized === '/en' || normalized === '/'
+}
+
+async function LocaleHomeIntro({
+  locale,
+  activePathname,
+  cspNonce,
+  isSupportedLocaleParam,
+  shellGlobalsPromise,
+}: {
+  locale: SupportedLocale
+  activePathname: string
+  cspNonce?: string | undefined
+  isSupportedLocaleParam: boolean
+  shellGlobalsPromise: Promise<{ navigation: Navigation | null; siteSettings: SiteSetting | null }>
+}): Promise<React.JSX.Element | null> {
+  if (!isSupportedLocaleParam || !isHomeRoutePath(activePathname)) {
+    return null
+  }
+  const { siteSettings } = await shellGlobalsPromise
+  const companyName = siteSettings?.companyName || null
+  const tagline = siteSettings?.tagline || null
+
+  return (
+    <>
+      <IntroSplash locale={locale} siteName={companyName} tagline={tagline} />
+      <script nonce={cspNonce} dangerouslySetInnerHTML={{ __html: INTRO_PREPAINT_INLINE_SCRIPT }} />
+    </>
+  )
+}
+
 async function LocaleShellHeader({
   locale,
   activePathname,
   cspNonce,
   isDevSpecimenOrStyleguide,
+  shellGlobalsPromise,
 }: {
   locale: SupportedLocale
   activePathname: string
   cspNonce?: string | undefined
   isDevSpecimenOrStyleguide: boolean
+  shellGlobalsPromise: Promise<{ navigation: Navigation | null; siteSettings: SiteSetting | null }>
 }): Promise<React.JSX.Element | null> {
   const dict = getDictionary(locale)
   const [{ isEnabled: isDraftMode }, requestHeaders, shellGlobals] = await Promise.all([
     draftMode(),
     headers(),
-    isDevSpecimenOrStyleguide
-      ? Promise.resolve({ siteSettings: null, navigation: null })
-      : loadShellGlobals(locale),
+    shellGlobalsPromise,
   ])
 
   const isStaffDraftPreview =
@@ -292,16 +326,18 @@ async function LocaleShellFooter({
   locale,
   activePathname,
   isDevSpecimenOrStyleguide,
+  shellGlobalsPromise,
 }: {
   locale: SupportedLocale
   activePathname: string
   isDevSpecimenOrStyleguide: boolean
+  shellGlobalsPromise: Promise<{ navigation: Navigation | null; siteSettings: SiteSetting | null }>
 }): Promise<React.JSX.Element | null> {
   if (isDevSpecimenOrStyleguide) {
     return null
   }
 
-  const { siteSettings, navigation } = await loadShellGlobals(locale)
+  const { siteSettings, navigation } = await shellGlobalsPromise
   const arabicEnabled = Boolean(siteSettings?.arabicEnabled)
 
   const footerColumns: FooterColumnItem[] | undefined =
@@ -389,27 +425,36 @@ export default async function LocaleRootLayout({
     ? fontVariablesClassName
     : getLocaleFontClassName(resolvedLocale)
 
-  const [headerNode, footerNode] = await Promise.all([
+  const shellGlobalsPromise = isDevSpecimenOrStyleguide
+    ? Promise.resolve({ siteSettings: null, navigation: null })
+    : loadShellGlobals(resolvedLocale)
+
+  const [introNode, headerNode, footerNode] = await Promise.all([
+    LocaleHomeIntro({
+      locale: resolvedLocale,
+      activePathname,
+      cspNonce,
+      isSupportedLocaleParam: isSupportedLocale(locale),
+      shellGlobalsPromise,
+    }),
     LocaleShellHeader({
       locale: resolvedLocale,
       activePathname,
       cspNonce,
       isDevSpecimenOrStyleguide,
+      shellGlobalsPromise,
     }),
     LocaleShellFooter({
       locale: resolvedLocale,
       activePathname,
       isDevSpecimenOrStyleguide,
+      shellGlobalsPromise,
     }),
   ])
 
   return (
     <html lang={resolvedLocale} dir={dir} className={htmlFontClass} suppressHydrationWarning>
       <head>
-        <script
-          nonce={cspNonce}
-          dangerouslySetInnerHTML={{ __html: INTRO_PREPAINT_INLINE_SCRIPT }}
-        />
         {fontPreloadUrls.map((href) => (
           <link
             key={href}
@@ -422,6 +467,7 @@ export default async function LocaleRootLayout({
         ))}
       </head>
       <body>
+        {introNode}
         <a href="#main-content" className={`${gridStyles.skipLink} t-label-button`}>
           {dict.a11y.skipToMainContent}
         </a>

@@ -8,7 +8,7 @@ import { DEFAULT_LOCALE, getDictionary, type SupportedLocale } from '@/i18n'
 import styles from './IntroSplash.module.css'
 
 export const INTRO_SPLASH_STORAGE_KEY = 'aljazira_intro_seen'
-export const INTRO_MAX_FIRST_PAINT_MS = 1200
+export const INTRO_MAX_FIRST_PAINT_MS = 1100
 export const INTRO_TOTAL_DURATION_MS = 1200
 
 export const INERT_TARGET_SELECTORS = [
@@ -20,19 +20,24 @@ export const INERT_TARGET_SELECTORS = [
 ] as const
 
 /**
- * First-frame intro script injected with the per-request CSP nonce (`R-4`, `R-14`, `R-22`, `R-23`, `R-27`, `R-29`, `R-31`..`R-34`).
+ * Synchronous inline script placed immediately after `<IntroSplash>` as the first element of the
+ * home `<body>` output (`R-4`, `R-14`, `R-22`, `R-23`, `R-27`, `R-29`, `R-31`..`R-34`, `R-36`, `R-37`).
  * - Restricted to the home page (`/`, `/en`, `/ar`) with `[data-component="intro-splash"]` present (`R-34`):
  *   other pages never read or write `aljazira_intro_seen`.
- * - Registers a single `requestAnimationFrame` callback (`R-31`, `R-32`) whose callback runs before the first
- *   frame is painted (render-blocking CSS holds the first `rAF` until styles apply).
- * - Inside that single `rAF`, reads the `rAF` timestamp `rafTs` (ms since `navigationStart`):
- *   - `<= 1200`: writes `aljazira_intro_seen='1'`, sets `data-intro="active"` and `inert` on background
- *     landmarks (`R-29`), and starts the `1200ms` CSS keyframe timeline from `0` (`0%..18%` reveal,
- *     `18%..82%` hold at `opacity: 1` for `768ms >= 300ms`, `82%..100%` fade out, ending at `<= 2400ms <= 2.5s`).
- *   - `> 1200`: writes `aljazira_intro_seen='1'` and sets `data-intro="seen"` (`R-27`, `R-32`).
+ * - Sets `data-intro="active"` provisionally right after the overlay node (before `<header>` and all
+ *   page content exist in the DOM, eliminating any pre-overlay flash without a `DOMContentLoaded`
+ *   decision fallback, `R-37`) and registers a single `requestAnimationFrame` callback (`R-31`, `R-32`).
+ * - Re-applies `inert` to background landmarks at `DOMContentLoaded` once they are parsed (`R-29`, `R-37`).
+ * - Inside that single `rAF` callback, reads `performance.now()` there (not the callback's stale
+ *   `rafTs` frame-begin argument, `R-36`) and writes `aljazira_intro_seen='1'` only there (`R-34`):
+ *   - `> 1100`: clears `inert` and sets `data-intro="seen"` before that frame paints so the overlay
+ *     never shows (`R-27`, `R-32`, `R-36`).
+ *   - `<= 1100`: keeps `data-intro="active"`, applies `inert` to background landmarks (`R-29`), and
+ *     starts the `1200ms` CSS keyframe timeline from `0` at that frame (`0%..18%` = `216ms` reveal,
+ *     `18%..82%` = `768ms >= 300ms` hold at `opacity: 1`, `82%..100%` = `216ms` fade out).
  * - No branches on viewport, UA, connection, or environment (`R-22`).
  */
-export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var p=(window.location&&window.location.pathname)||'';if(p&&!/^\\/(en|ar)?\\/?$/.test(p)){return;}var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':'skipped_seen',scriptMs:scriptNow,rafMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}window.requestAnimationFrame(function(rafTs){var decide=function(useRafTs){var ov=document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])');if(!ov){return;}var rawTs=useRafTs&&typeof rafTs==='number'&&rafTs>0?rafTs:(typeof performance==='object'&&typeof performance.now==='function'?performance.now():0);var now=Math.round(rawTs);try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}if(rawTs>${String(INTRO_MAX_FIRST_PAINT_MS)}){setInert(false);d.setAttribute('data-intro','seen');window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,rafMs:now,nowMs:now,delayMs:0};return;}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');if(splash&&!splash.__introBound){splash.__introBound=true;splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,rafMs:now,nowMs:now,delayMs:0};};if(document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])')){decide(true);}else if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){decide(false);},{once:true});}});}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var p=(window.location&&window.location.pathname)||'';if(p&&!/^\\/(en|ar)?\\/?$/.test(p)){return;}var ov=document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])');if(!ov){return;}var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':'skipped_seen',scriptMs:scriptNow,rafMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var skipBtn=document.querySelector('[data-intro-skip="true"]');if(!ov.__introBound){ov.__introBound=true;ov.addEventListener('animationend',function(ev){if(ev.target===ov)finishIntro();});ov.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){if(d.getAttribute('data-intro')==='active'){setInert(true);}},{once:true});}window.requestAnimationFrame(function(rafTs){var rawNow=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var now=Math.round(rawNow);var rafMs=typeof rafTs==='number'&&rafTs>0?Math.round(rafTs):now;try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}if(rawNow>${String(INTRO_MAX_FIRST_PAINT_MS)}){setInert(false);d.setAttribute('data-intro','seen');window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,rafMs:rafMs,nowMs:now,delayMs:0};return;}if(d.getAttribute('data-intro')!=='active'){return;}d.style.setProperty('--intro-delay','0ms');setInert(true);if(typeof ov.getAnimations==='function'){var anims=ov.getAnimations({subtree:true});for(var k=0;k<anims.length;k++){try{anims[k].currentTime=0;}catch(e){}}}if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,rafMs:rafMs,nowMs:now,delayMs:0};});}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
 
 export interface IntroSplashProps {
   className?: string
@@ -106,14 +111,16 @@ export function markIntroSplashSeen(win: Window | undefined): void {
 /**
  * Figma Intro Splash (`28:1609` Start -> `28:1615` Reveal, `docs/05-design.md` §"CTO decisions" #3).
  *
+ * - Rendered as the first element of the home `<body>` output (`R-37`), before the skip link and `<header>`.
  * - Hidden by default (`display: none`) so without JavaScript or `requestAnimationFrame` the page is immediately usable (`R-14`).
- * - Single-rAF inline script (`R-31`, `R-32`) runs before the first frame is painted on the home page (`R-34`):
- *   when `rafTs <= 1200ms`, it sets `data-intro="active"` and `inert` (`R-29`) and starts the `1200ms` timeline from `0ms`;
- *   when `rafTs > 1200ms`, it sets `data-intro="seen"` and skips the intro (`R-27`, `R-32`).
+ * - Synchronous inline script right after the overlay sets `data-intro="active"` provisionally, re-applies `inert` at
+ *   `DOMContentLoaded` (`R-29`, `R-37`), and registers one `requestAnimationFrame` callback (`R-31`, `R-32`).
+ * - Inside that `rAF` callback, reads `performance.now()` (`R-36`) and writes `aljazira_intro_seen='1'` (`R-34`):
+ *   when `performance.now() > 1100ms`, it sets `data-intro="seen"` and clears `inert` before the frame paints (`R-27`, `R-36`);
+ *   when `performance.now() <= 1100ms`, it keeps `data-intro="active"` and starts the `1200ms` timeline from that frame.
  * - One pure-CSS keyframe timeline (`1200ms <= 1.6s`) drives the logo reveal (`0%..18%` = `216ms`), holds the
- *   revealed logo and overlay at `opacity: 1` for `768ms` (`18%..82%`, `>= 300ms`), and fades out (`82%..100%` = `216ms`,
- *   completing at `rafTs + 1200ms <= 2400ms <= 2.5s`) ending in `opacity: 0; visibility: hidden; pointer-events: none`
- *   with `animation-fill-mode: forwards`.
+ *   revealed logo and overlay at `opacity: 1` for `768ms` (`18%..82%`, `>= 300ms`), and fades out (`82%..100%` = `216ms`)
+ *   ending in `opacity: 0; visibility: hidden; pointer-events: none` with `animation-fill-mode: forwards`.
  * - React does zero timing or phase re-renders (`R-23`): it handles only Skip, `Escape`, and click,
  *   and removes `inert` on `animationend`.
  */
