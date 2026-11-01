@@ -287,13 +287,22 @@ test.describe('P3-T5 live 3D card', () => {
     }
     expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore)
 
-    await page.keyboard.press('2')
-    const system = await systemOfRow(rows(page).nth(1))
-    await expect(card).toHaveAttribute('data-entered', system)
-    await expect(card).toBeFocused()
-    await page.keyboard.press('Escape')
-    await expect(card).toHaveAttribute('data-entered', 'none')
-    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    // Each digit enters its row's system (labels show once the flight lands); Escape exits it.
+    const count = await rows(page).count()
+    expect(count).toBe(5)
+    for (let i = 0; i < count; i += 1) {
+      await page.keyboard.press(String(i + 1))
+      const system = await systemOfRow(rows(page).nth(i))
+      await expect(card).toHaveAttribute('data-entered', system)
+      await expect(card).toBeFocused()
+      await expect(
+        card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+      ).toBeVisible({ timeout: 15_000 })
+      await page.keyboard.press('Escape')
+      await expect(card).toHaveAttribute('data-entered', 'none')
+      await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+      await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    }
     await page.keyboard.press('Escape')
     await expect(card).toHaveAttribute('data-viewer-active', 'false')
   })
@@ -315,6 +324,52 @@ test.describe('P3-T5 live 3D card', () => {
     await expect(card).toHaveAttribute('data-entered', 'fire')
     await expect(card.locator('[data-entered-system="fire"]')).toBeVisible()
     expect(new URL(page.url()).hash).toBe('#systems-fire')
+  })
+
+  test('@gpu live: under 6× CPU throttling the card ends in the low or stills tier', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(page, card)
+    const tierNow = async (): Promise<string | null> =>
+      (await card.getAttribute('data-viewer-state')) === 'stills'
+        ? 'stills'
+        : card.getAttribute('data-viewer-tier')
+    expect(await tierNow()).toMatch(/^(lite|full)$/)
+
+    const cdp = await context.newCDPSession(page)
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 })
+    try {
+      await card.click()
+      await expect(card).toHaveAttribute('data-viewer-active', 'true')
+      const box = await card.boundingBox()
+      expect(box).not.toBeNull()
+      const x = (box?.x ?? 0) + (box?.width ?? 0) / 2
+      const y = (box?.y ?? 0) + (box?.height ?? 0) / 2
+      // Keep the canvas animating (drag-orbit back and forth) while the rolling FPS check runs.
+      await expect
+        .poll(
+          async () => {
+            await page.mouse.move(x, y)
+            await page.mouse.down()
+            for (let i = 1; i <= 20; i += 1) {
+              await page.mouse.move(x + (i % 10 < 5 ? i * 6 : 60 - i * 3), y)
+            }
+            await page.mouse.up()
+            return tierNow()
+          },
+          { timeout: 60_000, intervals: [0] },
+        )
+        .toMatch(/^(low|stills)$/)
+      if ((await tierNow()) === 'stills') {
+        await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
+        await expect(card.locator('picture img').first()).toBeVisible()
+      }
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
   })
 })
 
@@ -440,17 +495,37 @@ test.describe('P3-T5 live 3D card — phone', () => {
     await expect(card).toHaveAttribute('data-viewer-active', 'false')
     expect(await swipeScrolls()).toBeGreaterThan(0)
 
-    const row = rows(page).nth(2)
-    await rowHeader(row).tap({ timeout: 10_000 })
-    const system = await systemOfRow(row)
-    await expect(card).toHaveAttribute('data-entered', system)
-    await expect(page.locator('[data-related-panel="card"]')).toBeHidden()
-    // On phones the accordion is below the card: the viewer renders only while the card is on
-    // screen, so scroll back to it as a visitor would.
-    await card.scrollIntoViewIfNeeded()
-    const dot = card.locator('[data-live-labels] li button').filter({ visible: true }).first()
-    await expect(dot).toBeVisible({ timeout: 15_000 })
-    await dot.tap({ timeout: 10_000 })
-    await expect(card.locator('[data-live-labels] li[data-expanded="true"]')).toHaveCount(1)
+    // Every system by touch: the pre-expanded first row through "Show in 3D" and the card's exit
+    // button, the others by tapping the header open (enter) and closed (exit).
+    const count = await rows(page).count()
+    expect(count).toBe(5)
+    for (let i = 0; i < count; i += 1) {
+      const row = rows(page).nth(i)
+      if (i === 0) {
+        await row.locator('[data-show-in-3d]').tap({ timeout: 10_000 })
+      } else {
+        await rowHeader(row).tap({ timeout: 10_000 })
+      }
+      const system = await systemOfRow(row)
+      await expect(card).toHaveAttribute('data-entered', system)
+      await expect(page.locator('[data-related-panel="card"]')).toBeHidden()
+      // On phones the accordion is below the card: the viewer renders only while the card is on
+      // screen, so scroll back to it as a visitor would.
+      await card.scrollIntoViewIfNeeded()
+      const dot = card.locator('[data-live-labels] li button').filter({ visible: true }).first()
+      await expect(dot).toBeVisible({ timeout: 15_000 })
+      if (i === 2) {
+        await dot.tap({ timeout: 10_000 })
+        await expect(card.locator('[data-live-labels] li[data-expanded="true"]')).toHaveCount(1)
+      }
+      if (i === 0) {
+        await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
+      } else {
+        await rowHeader(row).tap({ timeout: 10_000 })
+      }
+      await expect(card).toHaveAttribute('data-entered', 'none')
+      await card.scrollIntoViewIfNeeded()
+      await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+    }
   })
 })
