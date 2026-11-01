@@ -789,7 +789,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     if (disposed) {
       return
     }
-    if (lastFrameAt !== null) {
+    // Shader warm-up tasks lengthen frames on any GPU: those intervals say nothing about its speed.
+    if (lastFrameAt !== null && !stage.preparing) {
       intervals.push(now - lastFrameAt)
       if (!checkFps()) {
         return

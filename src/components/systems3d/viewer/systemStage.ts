@@ -133,6 +133,8 @@ export interface SystemStage {
   readonly entered: SystemId | null
   /** True while anything moves (ease-back, variant switch, flight). */
   readonly moving: boolean
+  /** True while shader warm-up work runs (its tasks lengthen frames; not a GPU speed sample). */
+  readonly preparing: boolean
   /** The system the visitor wants (null = overview); the stage gets there step by step. */
   request: (system: SystemId | null) => void
   /** Advances by `dtS`; returns true when another frame is needed. */
@@ -365,6 +367,8 @@ export function createSystemStage(deps: StageDeps): SystemStage {
   let flight: Flight | null = null
   let easeBack: { from: number; start: number; durationS: number } | null = null
   let variantPending = false
+  /** The system whose variant the `variant` phase prepared (or is preparing). */
+  let variantFor: SystemId | null = null
   const raycaster = new Raycaster()
   let occlusion: {
     system: SystemId
@@ -372,6 +376,10 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     checkedAt: number
     hidden: Set<string>
   } | null = null
+
+  /** The part of a material's state that the fades change and that selects its shader program. */
+  const programState = (material: Material): string =>
+    `${String(material.transparent)}|${String(material.clippingPlanes?.length ?? 0)}`
 
   /** Captures the look state the fades change; the returned function puts it back exactly. */
   const snapshotLook = (): (() => void) => {
@@ -439,8 +447,33 @@ export function createSystemStage(deps: StageDeps): SystemStage {
         assignVariant(new Map())
       }
     }
+    // Only objects whose program the entered look can change: another material (variant, kept
+    // slab) or another transparency / clipping state. Everything else is already compiled.
+    const restMaterialOf = new Map<Object3D, Material | Material[]>()
+    deps.gltf.scene.traverse((object) => {
+      if (isMesh(object)) {
+        restMaterialOf.set(object, object.material)
+      }
+    })
+    const restState = new Map<Material, string>()
+    for (const material of materials.values()) {
+      restState.set(material, programState(material))
+    }
+    const lookChanges = (object: Object3D): boolean => {
+      if (!isMesh(object)) {
+        return false
+      }
+      if (object.material !== restMaterialOf.get(object)) {
+        return true
+      }
+      const list = Array.isArray(object.material) ? object.material : [object.material]
+      return list.some((m) => {
+        const rest = restState.get(m)
+        return rest !== undefined && rest !== programState(m)
+      })
+    }
     const { objects, used } = withEnteredLook(() => ({
-      objects: drawableRepresentatives(deps.gltf.scene),
+      objects: drawableRepresentatives(deps.gltf.scene).filter(lookChanges),
       used: collectMaterials(deps.gltf.scene),
     }))
     const pending: Promise<unknown>[] = []
@@ -462,16 +495,42 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     await Promise.all(pending)
     await deps.warm(used)
   }
+  let preparing = 0
   const prepare = (system: SystemId): Promise<void> => {
     let job = prepared.get(system)
     if (!job) {
-      job = compileEntered(system).catch(() => {
-        // Busy (a look on screen) or lost: the next request tries again.
-        prepared.delete(system)
-      })
+      preparing += 1
+      job = compileEntered(system)
+        .finally(() => {
+          preparing -= 1
+        })
+        .catch(() => {
+          // Busy (a look on screen) or lost: the next request tries again.
+          prepared.delete(system)
+        })
       prepared.set(system, job)
     }
     return job
+  }
+
+  /** Shaders of `target` first (no stall when the flight starts), then its variant materials. */
+  const startVariant = (target: SystemId): void => {
+    variantPending = true
+    variantFor = target
+    // A switch while waiting leaves the previous system's highlight on; the warm-up needs the rest
+    // look (it refuses to run while an entered look is on).
+    if (variantAssigned) {
+      assignVariant(new Map())
+    }
+    void prepare(target)
+      .then(() => selectVariant(target))
+      .catch(() => {
+        // A variant material that does not load: fly in without the highlight.
+        assignVariant(new Map())
+      })
+      .then(() => {
+        variantPending = false
+      })
   }
 
   const startFlight = (system: SystemId, into: boolean, now: number): void => {
@@ -551,6 +610,9 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     get entered() {
       return entered
     },
+    get preparing() {
+      return preparing > 0
+    },
     get moving() {
       return phase !== 'rest' && phase !== 'entered'
     },
@@ -601,21 +663,25 @@ export function createSystemStage(deps: StageDeps): SystemStage {
           if (done) {
             easeBack = null
             phase = 'variant'
-            variantPending = true
-            const target = desired
-            void prepare(target)
-              .then(() => selectVariant(target))
-              .then(() => {
-                variantPending = false
-              })
+            startVariant(desired)
           }
           again = true
           break
         }
         case 'variant': {
-          if (!variantPending && desired !== null) {
-            startFlight(desired, true, now)
-            phase = 'flyIn'
+          // The wait for the shaders can be long on a slow GPU: the visitor may have left or
+          // picked another system meanwhile.
+          if (!variantPending) {
+            if (desired === null) {
+              assignVariant(new Map())
+              variantFor = null
+              phase = 'rest'
+            } else if (desired !== variantFor) {
+              startVariant(desired)
+            } else {
+              startFlight(desired, true, now)
+              phase = 'flyIn'
+            }
           }
           again = true
           break
