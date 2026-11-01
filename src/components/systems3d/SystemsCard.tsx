@@ -18,8 +18,6 @@ import { ArrowUpRightIcon, CubeIcon } from '@/components/icons'
 import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import { LiveLabels, type LiveLabelSink } from './LiveLabels'
-import { RelatedPanel } from './RelatedPanel'
-import type { SystemRelatedProjects } from './relatedProjects'
 import {
   DPR_CAP,
   LITE_GROUND_TINT,
@@ -71,8 +69,8 @@ export interface SystemsCardProps {
   onExitSystem: () => void
   /** Keys 1–5: enter the system of that accordion row. */
   onSelectRow: (index: number) => void
-  related: SystemRelatedProjects | null
-  relatedHeading: string
+  /** The related-projects panel of the entered system (suspends on its own until the data arrives). */
+  relatedPanel: ReactNode
   strings: Systems3dStrings
 }
 
@@ -132,8 +130,7 @@ export function SystemsCard({
   entered,
   onExitSystem,
   onSelectRow,
-  related,
-  relatedHeading,
+  relatedPanel,
   strings,
 }: SystemsCardProps): ReactElement {
   const hydrated = useHydrated()
@@ -514,14 +511,7 @@ export function SystemsCard({
           {strings.dragHint}
         </p>
       ) : null}
-      {entered && related && related.projects.length > 0 ? (
-        <RelatedPanel
-          heading={relatedHeading}
-          placement="card"
-          related={related}
-          strings={strings}
-        />
-      ) : null}
+      {entered ? relatedPanel : null}
     </div>
   )
 }

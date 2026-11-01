@@ -1,6 +1,14 @@
 'use client'
 
-import { type ReactElement, type ReactNode, useCallback, useEffect, useState } from 'react'
+import {
+  type ReactElement,
+  type ReactNode,
+  Suspense,
+  use,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react'
 
 import { AccordionItem } from '@/components/Accordion'
 import accordionStyles from '@/components/Accordion.module.css'
@@ -32,7 +40,35 @@ export interface SystemsExplorerProps {
   relatedHeading: string
   strings: Systems3dStrings
   systems: readonly ExplorerSystem[]
-  related: RelatedProjectsBySystem
+  /**
+   * The related-projects read, started on the server and not awaited (C3-1). Only the panels suspend
+   * on it; the card and the accordion never wait for it and are never remounted when it arrives.
+   */
+  related: Promise<RelatedProjectsBySystem>
+}
+
+interface RelatedSlotProps {
+  related: Promise<RelatedProjectsBySystem>
+  system: SystemId | null
+  heading: string
+  strings: Systems3dStrings
+  placement: 'card' | 'stacked'
+}
+
+/** The related-projects panel of the entered system, once the read has arrived (none while it has not). */
+function RelatedSlot({
+  related,
+  system,
+  heading,
+  strings,
+  placement,
+}: RelatedSlotProps): ReactElement | null {
+  const bySystem = use(related)
+  const entry = system ? bySystem[system] : undefined
+  if (!entry || entry.projects.length === 0) {
+    return null
+  }
+  return <RelatedPanel heading={heading} placement={placement} related={entry} strings={strings} />
 }
 
 /**
@@ -116,7 +152,18 @@ export function SystemsExplorer({
     enter(null)
   }
 
-  const enteredRelated = entered ? related[entered] : undefined
+  const relatedSlot = (placement: 'card' | 'stacked'): ReactNode =>
+    entered ? (
+      <Suspense fallback={null}>
+        <RelatedSlot
+          heading={relatedHeading}
+          placement={placement}
+          related={related}
+          strings={strings}
+          system={entered}
+        />
+      </Suspense>
+    ) : null
 
   return (
     <div className={styles.explorerRow}>
@@ -130,8 +177,7 @@ export function SystemsExplorer({
           toggle(idx, true)
         }}
         openLabel={openLabel}
-        related={enteredRelated ?? null}
-        relatedHeading={relatedHeading}
+        relatedPanel={relatedSlot('card')}
         strings={strings}
       >
         {poster}
@@ -179,14 +225,7 @@ export function SystemsExplorer({
             )
           })}
         </div>
-        {enteredRelated && enteredRelated.projects.length > 0 ? (
-          <RelatedPanel
-            heading={relatedHeading}
-            placement="stacked"
-            related={enteredRelated}
-            strings={strings}
-          />
-        ) : null}
+        {relatedSlot('stacked')}
       </div>
     </div>
   )

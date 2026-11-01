@@ -1,5 +1,4 @@
 import type React from 'react'
-import { Suspense } from 'react'
 
 import { Eyebrow } from '@/components/Eyebrow'
 import { resolveMediaAsset } from '@/components/media-utils'
@@ -9,8 +8,7 @@ import gridStyles from '@/styles/grid.module.css'
 
 import { isSystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
-import type { RelatedProjectsBySystem } from './relatedProjects'
-import { RelatedProjectsLoader } from './RelatedProjectsLoader'
+import { loadRelatedProjects } from './loadRelatedProjects'
 import { RELEASE_BASE_PATH } from './renderContract'
 import { getSystems3dStrings } from './strings'
 import { type ExplorerSystem, SystemsExplorer, type SystemsExplorerProps } from './SystemsExplorer'
@@ -21,7 +19,6 @@ type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['sy
 const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
 const POSTER_SIZES = '(max-width: 1279px) 100vw, 600px'
 const POSTER_WIDTHS = [828, 1440, 2048] as const
-const NO_RELATED_PROJECTS: RelatedProjectsBySystem = {}
 
 function posterSrcSet(format: 'webp' | 'jpg'): string {
   return POSTER_WIDTHS.map((w) => `${STILLS_PATH}/hero_${String(w)}.${format} ${String(w)}w`).join(
@@ -47,8 +44,9 @@ export interface InteractiveSystemsSectionProps {
 
 /**
  * Home section 4, "Interactive Systems" (`111:1608`, `handoff/tasks/P3-T5.md`).
- * The related projects are read inside the section (C3-1): `RelatedProjectsLoader` streams in behind
- * a Suspense boundary whose fallback is the same explorer without the panel.
+ * The related projects are read inside the section (C3-1): the read starts here, unawaited, and its
+ * promise goes to the client explorer, which suspends only the panels on it. The card and the
+ * accordion never wait for it and are never remounted when it arrives.
  */
 export function InteractiveSystemsSection({
   companyName,
@@ -91,7 +89,7 @@ export function InteractiveSystemsSection({
     }),
   )
 
-  const explorerProps: Omit<SystemsExplorerProps, 'related'> = {
+  const explorerProps: SystemsExplorerProps = {
     badgeLabel: dict.home.interactive3dBadge,
     locale,
     openLabel: data?.liveModelLabel?.trim() || dict.actions.openLive3dModel,
@@ -113,6 +111,7 @@ export function InteractiveSystemsSection({
       </picture>
     ),
     posterAlt,
+    related: loadRelatedProjects(locale, data),
     relatedHeading: dict.home.relatedProjectsHeading,
     strings,
     systems: explorerSystems,
@@ -139,9 +138,7 @@ export function InteractiveSystemsSection({
           ) : null}
         </div>
 
-        <Suspense fallback={<SystemsExplorer {...explorerProps} related={NO_RELATED_PROJECTS} />}>
-          <RelatedProjectsLoader {...explorerProps} data={data} />
-        </Suspense>
+        <SystemsExplorer {...explorerProps} />
       </div>
     </section>
   )

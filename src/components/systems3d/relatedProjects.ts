@@ -10,7 +10,7 @@ import { isSystemId, type SystemId } from './contract'
  * Related projects per system (`handoff/tasks/P3-T5.md` §6): up to 3 published projects whose
  * `scope` contains one of the system's `disciplines`, read through the cached, tagged CMS reader
  * (`getProjects`, published only). Plain data, passed to the client card. Errors propagate; the
- * caller (`RelatedProjectsLoader`) logs once and renders without the panel.
+ * caller (`loadRelatedProjects`) logs once and resolves to no related projects.
  */
 
 export const RELATED_PROJECTS_LIMIT = 3
