@@ -2686,3 +2686,19 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 - **Do not change the intro code** while you work on P4-T2 r2 and P3-T14 r2. R-44 (the hero entrance)
   must respect `html[data-intro='active']` exactly as written in the P3-T14 review.
 - Continue P4-T2 r2 as you started (M-185).
+
+
+## M-187 · 2026-11-01 16:57 · Executor → CTO · P4-T2 r2 ready for review; starting P3-T14 r2 (`IN_PROGRESS`)
+- **Task**: `P4-T2` (Round `2`) -> `IN_REVIEW`
+- **Code Commit SHA**: `dc7e650c5c1a65eb466ecd4084d8423ee3956d27` (`dc7e650`)
+- **Report**: `handoff/reports/P4-T2.md`
+- **Protected paths touched**: `NONE`
+- **Summary of changes (`R-12`..`R-18`)**:
+  1. **`R-12` (`src/collections/Media.ts`, `src/security/uploadValidation.ts`, `src/migrations/20261101_133828_p4_t2_r2_media_placeholder.ts`, `src/seed/p4-t2.ts`, `src/access/z1-config-enumeration.test.ts`, `tests/int/p4-t2.int.test.ts`):** Chose Option 1: added admin-only `placeholder` checkbox field on `media` (`defaultValue: false`, `index: true`, `isAdminFieldLevel`) with migration `20261101_133828_p4_t2_r2_media_placeholder`, set `placeholder: true` on the design placeholder assets and `placeholder: false` on real project photos in `src/seed/p4-t2.ts`, and restricted anonymous `media` reads via `{ placeholder: { equals: false } }` across Local API, `GET /api/media`, `GET /api/media/:id`, and `GET /api/media/file/:filename` (including generated responsive size filenames).
+  2. **`R-13` (`src/seed/p4-t2-data.ts`, `src/seed/p4-t2.ts`, `docs/reports/phase-4.md`, `src/seed/p4-t2.test.ts`, `tests/int/p4-t2.int.test.ts`):** Seeded `"Makkah region, KSA (profile section header 'Makkah')"` literally as `Makkah Region, KSA` / `منطقة مكة المكرمة، المملكة العربية السعودية` and flagged/listed the rows under the Makkah header whose title names another city (`XLSX-22`, `XLSX-53`, `XLSX-56`) in `reviewNote` and `docs/reports/phase-4.md`.
+  3. **`R-14` (`tests/int/p4-t2.int.test.ts`):** Added integration tests through `seedP4T2Content` without `--reseed` for both half-empty `P4-T1` states (`brands` only and `materials` only), asserting refusal and unchanged database state.
+  4. **`R-15` (`handoff/reports/P4-T2.md`, `docs/reports/phase-4.md`):** Rewrote `handoff/reports/P4-T2.md` with no numbers of record and corrected the migration descriptions in both reports (`20261025_002404_p4_t2_projects_review_fields` adds `needs_client_review` and `review_note` columns/indexes without altering `cover_image_id`, and `20261101_133828_p4_t2_r2_media_placeholder` adds `placeholder` and `media_placeholder_idx` on `media`).
+  5. **`R-16` (`src/collections/Media.ts`):** Set `withoutEnlargement: true` on the `og` (`1200×630`) image size.
+  6. **`R-17` (`src/seed/p4-t2-data.ts`):** Updated the Arabic drafts for `countries` (`'دول نخدمها'`) and `A-p11-1` (`'جامعة الأميرة نورة (PNU)'`) to translate the English source literally.
+  7. **`R-18` (`src/seed/p4-t2.ts`):** Preserved existing non-empty client `origin` values on matched `P4-T1` brands (`Belden` keeps `'United States'`), filling `origin` only when empty.
+- Following the `M-184` #5 & `M-186` work order, I have now set `P3-T14` to `IN_PROGRESS` (Round `2`) and am starting `P3-T14` Round 2 (`R-42`..`R-48`).
