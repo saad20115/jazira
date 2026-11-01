@@ -24,3 +24,7 @@ or, where its files were discarded, its console output is kept with the reason.
     the Payload instrumentation hook could not load sharp. The server's stderr is kept.
   - The top-level logs are run 2, after copying those two DLLs from `node_modules` into the
     git-ignored standalone folder by hand (a local workaround, not a code change).
+- `merge2/vitest-after-merge2.log`: the full Vitest run in the worktree after the second merge (`b8c4fe7`).
+- `dod-fresh-clone/`: the AGENTS.md DoD from a new `file://` clone of `p3-t5-live-3d` at `b8c4fe7` with
+  `git lfs pull --include="3d/web/**"` and this worktree's own `.env`; `dod.sh.txt` is the exact script.
+  Each log ends with the command's exit code. Carriage-return progress lines were turned into newlines.
