@@ -1,0 +1,82 @@
+{
+  "bands": {
+    "top": [
+      0,
+      0.15
+    ],
+    "ground": [
+      0.62,
+      0.78
+    ],
+    "aboveControls": [
+      0,
+      0.78
+    ],
+    "bottomStrip": [
+      0.955,
+      0.985
+    ]
+  },
+  "rows": [
+    {
+      "case": "1440-dpr1-hover",
+      "lumaDeltaAboveControls": -1.7,
+      "topDelta": [
+        -0.3,
+        -0.9,
+        -1.7
+      ],
+      "groundDelta": [
+        -4.6,
+        -7,
+        -9
+      ],
+      "bottomStripDelta": [
+        3.1,
+        2.2,
+        2.4
+      ],
+      "pass": false
+    },
+    {
+      "case": "1440-dpr2-hover",
+      "lumaDeltaAboveControls": -1.9,
+      "topDelta": [
+        -0.3,
+        -0.9,
+        -1.7
+      ],
+      "groundDelta": [
+        -4.5,
+        -6.6,
+        -8.7
+      ],
+      "bottomStripDelta": [
+        3.4,
+        2.3,
+        2.4
+      ],
+      "pass": false
+    },
+    {
+      "case": "390-dpr3-tap",
+      "lumaDeltaAboveControls": -1.6,
+      "topDelta": [
+        -0.7,
+        -1.2,
+        -2.1
+      ],
+      "groundDelta": [
+        -4.9,
+        -7.2,
+        -9.1
+      ],
+      "bottomStripDelta": [
+        2.1,
+        1.4,
+        2.6
+      ],
+      "pass": false
+    }
+  ]
+}

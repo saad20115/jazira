@@ -1,0 +1,14 @@
+
+Running 9 tests using 1 worker
+
+  ok 1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (2.0s)
+  ok 2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (839ms)
+  ok 3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (35.4s)
+  ok 4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:288:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (4.4s)
+  ok 5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:307:3 › P3-T5 live 3D card › @gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (33.6s)
+  ok 6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:341:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (2.6s)
+  ok 7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:360:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (8.7s)
+  ok 8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:407:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (6.8s)
+  ok 9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:527:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (39.7s)
+
+  9 passed (2.3m)

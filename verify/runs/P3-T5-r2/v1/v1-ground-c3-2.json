@@ -1,0 +1,29 @@
+[
+  {
+    "case": "1440-dpr1-hover",
+    "groundBandDelta": [
+      -6.6,
+      -9.8,
+      -13
+    ],
+    "within8": false
+  },
+  {
+    "case": "1440-dpr2-hover",
+    "groundBandDelta": [
+      -6.4,
+      -9.2,
+      -12.8
+    ],
+    "within8": false
+  },
+  {
+    "case": "390-dpr3-tap",
+    "groundBandDelta": [
+      -7.5,
+      -10.6,
+      -13.8
+    ],
+    "within8": false
+  }
+]

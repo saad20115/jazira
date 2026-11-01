@@ -1,0 +1,30 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-01/p3t5b
+
+ ❯ src/p3-t5-late-related.test.ts (1 test | 1 failed) 31196ms
+   ❯ P3-T5 C3-1: late related projects never reset the card (real React, real Chromium) (1)
+     × a visitor enters a system before the related projects arrive; their arrival changes nothing else 31195ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-late-related.test.ts > P3-T5 C3-1: late related projects never reset the card (real React, real Chromium) > a visitor enters a system before the related projects arrive; their arrival changes nothing else
+TimeoutError: locator.hover: Timeout 30000ms exceeded.
+Call log:
+[2m  - waiting for locator('[data-interactive-3d-card]')[22m
+
+ ❯ src/p3-t5-late-related.test.ts:232:18
+    230|       const card = page.locator('[data-interactive-3d-card]')
+    231|       // Go live (mouse intent), activate (click), then pick the secon…
+    232|       await card.hover()
+       |                  ^
+    233|       await expect.poll(() => card.getAttribute('data-viewer-state')).…
+    234|       await card.click({ position: { x: 20, y: 20 } })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 3 passed (4)
+   Start at  21:19:40
+   Duration  33.03s (tests 96%, import 3%, transform 1%)
+

@@ -1,0 +1,17 @@
+step	exit	seconds
+install	0	361
+migrate-up	0	12
+migrate-down	0	11
+migrate-up-again	0	10
+migrate-status	0	10
+lint	0	67
+typecheck	0	21
+format-check	1	11
+tokens-check	0	1
+test	1	413
+build	0	89
+audit-full	1	1
+audit-high	0	2
+seed	0	35
+e2e	1	544
+done

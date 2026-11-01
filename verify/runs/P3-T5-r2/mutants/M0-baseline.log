@@ -1,0 +1,12 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-01/p3t5b
+
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  21:19:25
+   Duration  3.77s (tests 60%, import 32%, transform 7%, worker 1%)
+
+    Isolate  2 workers spawned · ~266ms startup each (spawn + environment, per file)
+             at least ~266ms faster with isolate: false — reuses workers across files instead of one per file
+

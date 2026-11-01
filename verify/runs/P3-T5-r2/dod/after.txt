@@ -1,0 +1,8 @@
+e2e-default-full exit 1
+e2e-gpu exit 0
+e2e-p3t5-default exit 0
+lh mobile try1 exit 0
+lh mobile try2 exit 0
+lh mobile try3 exit 0
+lh desktop exit 0
+server left running: 7351 21956

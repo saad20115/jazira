@@ -1,0 +1,9 @@
+mutant	exit
+M0-baseline	0
+DIRTY after M0-baseline
+M1-no-panel-boundary	1
+DIRTY after M1-no-panel-boundary
+M2-explorer-waits	1
+DIRTY after M2-explorer-waits
+M3-boundary-around-explorer	1
+DIRTY after M3-boundary-around-explorer

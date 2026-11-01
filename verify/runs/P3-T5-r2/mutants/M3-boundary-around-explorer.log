@@ -1,0 +1,37 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-01/p3t5b
+
+ ❯ src/p3-t5-related-loader.test.ts (3 tests | 1 failed) 20ms
+   ❯ P3-T5 C3-1: related projects are read inside the section, never blocking the card (3)
+     × the section passes the unawaited read to the explorer, outside any Suspense boundary 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-related-loader.test.ts > P3-T5 C3-1: related projects are read inside the section, never blocking the card > the section passes the unawaited read to the explorer, outside any Suspense boundary
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/p3-t5-related-loader.test.ts:91:65
+     89|     const [explorer] = explorers
+     90|     expect((explorer.element.props as { related: unknown }).related).t…
+     91|     expect(explorer.ancestors.some((a) => a.type === Suspense)).toBe(f…
+       |                                                                 ^
+     92|     expect(getRelated).toHaveBeenCalledWith('en', DATA)
+     93|     resolveRead({})
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 3 passed (4)
+   Start at  21:20:16
+   Duration  3.88s (tests 59%, import 32%, transform 8%, worker 1%)
+
+    Isolate  2 workers spawned · ~261ms startup each (spawn + environment, per file)
+             at least ~261ms faster with isolate: false — reuses workers across files instead of one per file
+

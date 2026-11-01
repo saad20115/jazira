@@ -1,0 +1,65 @@
+[
+  {
+    "case": "1440-dpr1-hover",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 3191,
+    "size": "600x580",
+    "stillLuma": 74.9,
+    "lumaDelta": -0.6,
+    "topDelta": [
+      -0.3,
+      -0.9,
+      -1.7
+    ],
+    "floorDelta": [
+      4.5,
+      4,
+      3.6
+    ],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "case": "1440-dpr2-hover",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 853,
+    "size": "1200x1160",
+    "stillLuma": 74.9,
+    "lumaDelta": -0.8,
+    "topDelta": [
+      -0.3,
+      -0.9,
+      -1.7
+    ],
+    "floorDelta": [
+      4.6,
+      4,
+      3.6
+    ],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "case": "390-dpr3-tap",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 972,
+    "size": "1074x1074",
+    "stillLuma": 79.2,
+    "lumaDelta": 1.7,
+    "topDelta": [
+      -0.7,
+      -1.2,
+      -2.1
+    ],
+    "floorDelta": [
+      8.6,
+      12.2,
+      21.3
+    ],
+    "errors": [],
+    "pass": false
+  }
+]

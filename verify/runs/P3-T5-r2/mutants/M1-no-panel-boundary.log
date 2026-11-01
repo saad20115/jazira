@@ -1,0 +1,37 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-01/p3t5b
+
+ ❯ src/p3-t5-late-related.test.ts (1 test | 1 failed) 2544ms
+   ❯ P3-T5 C3-1: late related projects never reset the card (real React, real Chromium) (1)
+     × a visitor enters a system before the related projects arrive; their arrival changes nothing else 2541ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-late-related.test.ts > P3-T5 C3-1: late related projects never reset the card (real React, real Chromium) > a visitor enters a system before the related projects arrive; their arrival changes nothing else
+AssertionError: expected 'none' to be 'fire' // Object.is equality
+
+Expected: "fire"
+Received: "none"
+
+ ❯ src/p3-t5-late-related.test.ts:237:66
+    235|       await expect.poll(() => card.getAttribute('data-viewer-active'))…
+    236|       await page.keyboard.press('2')
+    237|       await expect.poll(() => card.getAttribute('data-entered')).toBe(…
+       |                                                                  ^
+    238|       expect(await page.locator('[data-related-panel]').count()).toBe(…
+    239|
+
+Caused by: Error: Matcher did not succeed in time.
+ ❯ src/p3-t5-late-related.test.ts:237:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 3 passed (4)
+   Start at  21:19:33
+   Duration  4.45s (tests 65%, import 27%, transform 7%)
+
+    Isolate  2 workers spawned · ~254ms startup each (spawn + environment, per file)
+             at least ~254ms faster with isolate: false — reuses workers across files instead of one per file
+
