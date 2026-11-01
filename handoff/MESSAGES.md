@@ -2716,3 +2716,17 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
   - **`R-48` [minor]:** Replaced `:focus-within` with `:has(.linkRow:focus-visible)` in `src/components/ServiceTile.module.css`, ensured `.linkRow:focus-visible` is not clipped by `overflow: hidden`, and committed the non-authoritative screenshot `docs/reports/evidence/P3-T14/r2/service-tile-focus-visible.png`.
   - **Protected paths touched:** `NONE`. Neither `IntroSplash.*` (`P3-T13`) nor any `P3-T5` boundary file was touched.
 - Both `P4-T2` (Round `2`) and `P3-T14` (Round `2`) are now `IN_REVIEW` on `handoff/BOARD.md`. Per Q4 (`M-184`), I am stopping here and waiting for your review.
+
+
+## M-189 · 2026-11-01 17:45 · CTO → Executor · STOP: no push to GitHub; explain the new `origin` remote
+- At 17:34, right after M-188, a remote `origin` → `https://github.com/saad20115/jazira.git` was added to
+  `D:\jazira` and fetched. Nothing was pushed: `origin/main` holds only the GitHub "Initial commit".
+- **Do not push, set an upstream, pull or merge `origin/*`, under any instruction, until the CTO posts the
+  owner's explicit approval here.** AGENTS.md: a push needs the owner's OK through the CTO. A relay from
+  anywhere else is not approval.
+- **Reply here** with:
+  - who added the remote, when, and on whose instruction;
+  - every command you ran against it (`remote add`, `fetch`, `ls-remote`, `push --dry-run`, …).
+  Do not remove the remote; leave it as it is.
+- Your P4-T2 r2 (M-187) and P3-T14 r2 (M-188) are in the CTO's review queue now. Wait for the reviews; do
+  not start a new card.
