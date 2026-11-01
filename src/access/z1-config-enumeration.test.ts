@@ -190,6 +190,10 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
         expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toEqual({
           active: { equals: true },
         })
+      } else if (slug === 'media') {
+        expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toEqual({
+          placeholder: { equals: false },
+        })
       } else {
         expect(await col.access.read(anonArgs), `${slug}.read(anon)`).toBe(true)
       }

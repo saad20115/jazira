@@ -129,6 +129,21 @@ describe('P4-T2 seed plan & static specs (unit)', () => {
     expect(xlsx19?.publishStatus).toBe('draft')
     expect(xlsx19?.photoFile).toBeNull()
     expect(xlsx19?.reviewNote).toContain('AMBIGUOUS PHOTO CANDIDATE')
+
+    // R-13: Every XLSX-* project under the 'Makkah' section header is seeded literally as 'Makkah Region, KSA' / 'منطقة مكة المكرمة، المملكة العربية السعودية' (never rewritten as a city)
+    for (const proj of plan.projects.filter((p) => p.ref.startsWith('XLSX-'))) {
+      expect(proj.locationEn).toBe('Makkah Region, KSA')
+      expect(proj.locationAr).toBe('منطقة مكة المكرمة، المملكة العربية السعودية')
+    }
+    for (const jeddahRef of ['XLSX-22', 'XLSX-53', 'XLSX-56'] as const) {
+      const jeddahProj = plan.projects.find((p) => p.ref === jeddahRef)
+      expect(jeddahProj?.locationEn).toBe('Makkah Region, KSA')
+      expect(jeddahProj?.reviewNote).toContain("Title names 'Jeddah'")
+    }
+
+    // R-17: Arabic draft for A-p11-1 translates the English source without adding 'بنت عبدالرحمن'
+    const pnuProj = plan.projects.find((p) => p.ref === 'A-p11-1')
+    expect(pnuProj?.titleAr).toBe('جامعة الأميرة نورة (PNU)')
   })
 
   it('maps raw scope strings literally to categories and discipline scopes without inventing tags (D-02)', () => {
@@ -218,6 +233,7 @@ describe('P4-T2 seed plan & static specs (unit)', () => {
     )
 
     expect(SEED_STATS_5.map((s) => s.value)).toEqual(['45+', '100+', '85%', '21+', '3'])
+    expect(SEED_STATS_5.find((s) => s.key === 'countries')?.labelAr).toBe('دول نخدمها')
     expect(SEED_SERVICES_10).toHaveLength(10)
     expect(SEED_SERVICES_10.filter((s) => s.tier === 'main')).toHaveLength(4)
     expect(SEED_SERVICES_10.filter((s) => s.tier === 'additional')).toHaveLength(6)

@@ -314,6 +314,33 @@ export async function validateAndSanitizeVideoFile(
 }
 
 /**
+ * Checks whether `filename` is a safe, non-dot, non-traversal regular file inside `staticDir`.
+ */
+export function doesSafeUploadFileExist(staticDir: string, filename: unknown): boolean {
+  if (
+    typeof filename !== 'string' ||
+    !filename ||
+    filename.includes('/') ||
+    filename.includes('\\') ||
+    filename.startsWith('.')
+  ) {
+    return false
+  }
+
+  const resolvedDir = path.resolve(staticDir)
+  const filePath = path.resolve(resolvedDir, filename)
+  if (path.dirname(filePath) !== resolvedDir) {
+    return false
+  }
+
+  try {
+    return fsSync.statSync(filePath).isFile()
+  } catch {
+    return false
+  }
+}
+
+/**
  * Custom upload `handlers` guard that runs before Payload's local filesystem fallback in `getFileHandler`.
  * - Rejects dot-files, subdirectory paths (`videos/foo.mp4`, `.tmp/...`), and non-regular files with HTTP 404.
  * - Returns HTTP 404 (instead of Payload's default 500 or EISDIR reset) when a file does not exist on disk (R-11, R-14).
@@ -321,29 +348,8 @@ export async function validateAndSanitizeVideoFile(
 export function createSafeUploadFileHandler(
   staticDir: string,
 ): NonNullable<UploadConfig['handlers']>[number] {
-  const resolvedDir = path.resolve(staticDir)
   return (_req, args) => {
-    const filename = args.params.filename
-    if (
-      !filename ||
-      filename.includes('/') ||
-      filename.includes('\\') ||
-      filename.startsWith('.')
-    ) {
-      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
-    }
-
-    const filePath = path.resolve(resolvedDir, filename)
-    if (path.dirname(filePath) !== resolvedDir) {
-      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
-    }
-
-    try {
-      const stats = fsSync.statSync(filePath)
-      if (!stats.isFile()) {
-        return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
-      }
-    } catch {
+    if (!doesSafeUploadFileExist(staticDir, args.params.filename)) {
       return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
     }
   }

@@ -199,6 +199,10 @@ export interface Media {
   id: number;
   alt: string;
   caption?: string | null;
+  /**
+   * Design placeholder media hidden from anonymous visitors and visible only to authenticated staff.
+   */
+  placeholder?: boolean | null;
   createdAt: string;
   updatedAt: string;
   url?: string | null;
@@ -894,6 +898,7 @@ export interface UsersSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   caption?: T;
+  placeholder?: T;
   createdAt?: T;
   updatedAt?: T;
   url?: T;

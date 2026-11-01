@@ -319,8 +319,13 @@ export function buildP4T2SeedPlan(
 
     if (fromMakkahSectionHeader) {
       reviewNotes.push(
-        "Location derived from profile header 'Makkah' — confirm exact city/district.",
+        "Location seeded literally as 'Makkah Region, KSA' from profile header 'Makkah' — confirm exact city/district.",
       )
+      if (/jeddah/i.test(titleEn)) {
+        reviewNotes.push(
+          "Title names 'Jeddah' while listed under profile section header 'Makkah' — confirm whether location is Jeddah or Makkah.",
+        )
+      }
     }
     if (raw.status.trim().toLowerCase() === 'working') {
       reviewNotes.push('Status in old profile was "working" — owner confirmed completed; confirm.')
@@ -471,6 +476,7 @@ async function uploadMediaFileBilingual(
     altAr: string
     captionEn?: string | null
     captionAr?: string | null
+    placeholder?: boolean
   },
 ): Promise<number> {
   const absolutePath = path.resolve(process.cwd(), options.relativeFilePath)
@@ -484,6 +490,7 @@ async function uploadMediaFileBilingual(
     locale: 'en',
     data: {
       alt: options.altEn,
+      placeholder: options.placeholder === true,
       ...(options.captionEn ? { caption: options.captionEn } : {}),
     },
     file: {
@@ -907,6 +914,7 @@ export async function seedP4T2Content(
       relativeFilePath: imgSpec.file,
       altEn: imgSpec.altEn,
       altAr: imgSpec.altAr,
+      placeholder: true,
     })
     designMediaIdByKey.set(imgSpec.key, mediaId)
   }
@@ -918,6 +926,7 @@ export async function seedP4T2Content(
         relativeFilePath: proj.photoFile,
         altEn: proj.photoAltEn,
         altAr: proj.photoAltAr,
+        placeholder: false,
       })
       projectPhotoMediaIdByRef.set(proj.ref, mediaId)
     }
@@ -926,18 +935,34 @@ export async function seedP4T2Content(
   // ---------------------------------------------------------------------------
   // 2. Scope 4b: 20 Owner Marquee Brands (`showInMarquee: true`, `order: 1..20`)
   // ---------------------------------------------------------------------------
-  const existingBrandsRes = await payload.find({
-    collection: 'brands',
-    limit: 200,
-    depth: 0,
-    locale: 'en',
-    overrideAccess: false,
-    user: SEED_ADMIN_USER,
-  })
+  const [existingBrandsRes, existingBrandsArRes] = await Promise.all([
+    payload.find({
+      collection: 'brands',
+      limit: 200,
+      depth: 0,
+      locale: 'en',
+      fallbackLocale: false,
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    }),
+    payload.find({
+      collection: 'brands',
+      limit: 200,
+      depth: 0,
+      locale: 'ar',
+      fallbackLocale: false,
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    }),
+  ])
 
   const existingBrandByLowerName = new Map<string, (typeof existingBrandsRes.docs)[number]>()
   for (const b of existingBrandsRes.docs) {
     existingBrandByLowerName.set(b.name.toLowerCase(), b)
+  }
+  const existingBrandArById = new Map<number, (typeof existingBrandsArRes.docs)[number]>()
+  for (const b of existingBrandsArRes.docs) {
+    existingBrandArById.set(b.id, b)
   }
 
   const matchedExistingBrandIds = new Set<number>()
@@ -957,13 +982,23 @@ export async function seedP4T2Content(
     if (existingDoc) {
       matchedExistingBrandIds.add(existingDoc.id)
       marqueeBrandsExistingMatched += 1
+      const existingOriginEn =
+        typeof existingDoc.origin === 'string' && existingDoc.origin.trim().length > 0
+          ? existingDoc.origin.trim()
+          : null
+      const existingDocAr = existingBrandArById.get(existingDoc.id)
+      const existingOriginAr =
+        typeof existingDocAr?.origin === 'string' && existingDocAr.origin.trim().length > 0
+          ? existingDocAr.origin.trim()
+          : null
+
       await payload.update({
         collection: 'brands',
         id: existingDoc.id,
         locale: 'en',
         data: {
           name: marqueeSpec.name,
-          origin: marqueeSpec.originEn,
+          origin: existingOriginEn ?? marqueeSpec.originEn,
           showInMarquee: true,
           order: marqueeSpec.order,
         },
@@ -977,7 +1012,7 @@ export async function seedP4T2Content(
         locale: 'ar',
         data: {
           name: marqueeSpec.name,
-          origin: marqueeSpec.originAr,
+          origin: existingOriginAr ?? marqueeSpec.originAr,
         },
         context: { disableRevalidate: true },
         overrideAccess: false,
