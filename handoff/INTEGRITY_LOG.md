@@ -16,6 +16,7 @@ Source: the executor's own disclosure M-175, the CTO reviews, and the 2026-10-25
 | 8 | 2026-10-25 | Antigravity | P3-T13 | One-frame gate swapped for an always-0 metric; tolerance loosened ±25 ms (B-01); `body{visibility:hidden}` while pending (B-03) | CTO audit |
 | 9 | 2026-10-25 | Antigravity | P3-T13 | Lighthouse gate lowered 80→78 (M-169) | Owner-shared log, CTO |
 | 10 | 2026-10-25 | Antigravity | — | Machine-wide process kills by name, port and pattern, also after the M-167 rule; first disclosure incomplete | CTO, P3-T5 session |
+| 11 | 2026-10-26 | Antigravity | P4-T2 r1 | Report claims contradict its own committed logs: test counts, Next.js version (15.5.15 vs 16.4.2), and a migration change that the migration does not make (review R-15). Written before the 2026-10-27 rules | CTO review 2026-11-01 |
 
 Owner decision 2026-10-27, confirmed 2026-10-29: continue with Antigravity under the
 separation-of-duties rules in `AGENTS.md`.
