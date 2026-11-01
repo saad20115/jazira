@@ -1,0 +1,27 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+
+# Prior attempt note (M-161): 2026-10-25 06:13-07:01 interactive 'payload migrate:create noop_check' hung and was killed by CTO (PIDs 24464, 45008). Replaced with non-interactive file-count + migrate:status verification wrapped in Invoke-TimedCmd.
+# Prior attempt note: 2026-10-25 16:31 cross-drive clone on C:\Users\User21.CSE\AppData\Local\Temp timed out during 'pnpm install --frozen-lockfile' at 420s (added 156/765) because pnpm store is on D:\.pnpm-store\v10. Moved fresh clone directory to D:\.
+# Prior attempt note: 2026-10-25 17:12 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-171251 reached 'added 764/765' at 420s when the 420s install timeout fired. Increased install MaxSeconds from 420s to 720s.
+# Prior attempt note: 2026-10-25 17:24 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-172407 passed steps 1-7 and failed in step 8 (p3-t13-prod-intro) because decisionMs was read before style/layout flush (312ms vs firstVisibleMs 497ms). Fixed in commit 063e733.
+# Prior attempt note: 2026-10-25 17:54 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-175407 passed steps 1-9 and timed out in step 10 (p4-t2-evidence-and-queries) at line 637 waiting for 'networkidle' on /admin/collections/projects. Applied M-171 and M-172 pre-submission fixes and changed /admin goto waitUntil to 'domcontentloaded'.
+# Prior attempt note: 2026-10-25 19:13 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-191302 passed steps 1-4 and 304/305 tests in step 5, failing only on deletedCounts.media (27 vs 26) in p4-t2.int.test.ts because an earlier test suite left 1 media row when collection counts were 0. Included counts.media > 0 in the reseed cleanup condition and cleaned leftover test rows in beforeAll.
+# Prior attempt note: 2026-10-25 19:35 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-193514 passed steps 1-7 (including all 49 test files / 305 tests, build, and audit) and stopped in step 8 (p3-t13-prod-intro) when throttled runs had fpMs > 1200ms after the <head> rAF fired at 911..1182ms <= 1200ms.
+# Prior attempt note: 2026-10-25 20:13 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-201315 (commit cc29892) tested deferring the single rAF to DOMContentLoaded, which failed R-31 in step 8 because First Paint (656ms) fired before DOMContentLoaded (889ms) on 412x823 mid-tier en (1 frame painted before overlay). Reverted to direct single-rAF registration in <head>.
+# Prior attempt note: 2026-10-25 20:46 fresh clone on D:\aljazira-p3-t13-p4-t2-dod-20261025-204625 (commit 3e9fc1b) passed steps 1-7 and stopped in step 8 when 1 of 54 runs (768x1024 throttled en run 3) had its <head> rAF fire at 955ms before <main>'s [data-component='intro-splash'] chunk arrived over Slow 4G. Added DOMContentLoaded fallback inside the single rAF callback only when !ov && document.readyState === 'loading', and recorded 4x-CPU throttled sampling intervals in strictTimingFailures.
+commit                   | start=2026-10-25 21:22:01 | end=2026-10-25 21:22:01 | elapsed=0.3s | exit=0
+install                  | start=2026-10-25 21:22:01 | end=2026-10-25 21:31:19 | elapsed=557.8s | exit=0
+migrate-up-down-up       | start=2026-10-25 21:31:19 | end=2026-10-25 21:32:22 | elapsed=62.9s | exit=0
+migrate-status           | start=2026-10-25 21:32:22 | end=2026-10-25 21:32:31 | elapsed=8.8s | exit=0
+lint                     | start=2026-10-25 21:32:40 | end=2026-10-25 21:34:18 | elapsed=97.9s | exit=0
+typecheck                | start=2026-10-25 21:34:18 | end=2026-10-25 21:34:38 | elapsed=19.8s | exit=0
+format:check             | start=2026-10-25 21:34:38 | end=2026-10-25 21:34:53 | elapsed=15.1s | exit=0
+tokens:check             | start=2026-10-25 21:34:53 | end=2026-10-25 21:34:55 | elapsed=2.1s | exit=0
+test                     | start=2026-10-25 21:34:55 | end=2026-10-25 21:42:42 | elapsed=466.8s | exit=0
+p3-t13-dev-styleguide    | start=2026-10-25 21:43:35 | end=2026-10-25 21:43:58 | elapsed=23.2s | exit=0
+build                    | start=2026-10-25 21:44:00 | end=2026-10-25 21:46:17 | elapsed=136.8s | exit=0
+audit                    | start=2026-10-25 21:46:17 | end=2026-10-25 21:46:20 | elapsed=2.6s | exit=0
+p3-t13-prod-intro        | start=2026-10-25 21:46:29 | end=2026-10-25 21:51:41 | elapsed=311.6s | exit=0

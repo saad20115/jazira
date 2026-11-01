@@ -6,6 +6,7 @@ import {
   ValidationError,
 } from 'payload'
 
+import { isAdminFieldLevel } from '../access/isAdminFieldLevel'
 import { isAdminOrEditor, isAdminOrEditorFieldLevel } from '../access/isAdminOrEditor'
 import { publishedOrLoggedIn } from '../access/publishedOrLoggedIn'
 import { pillarFields } from '../fields/groups/pillar'
@@ -1187,9 +1188,9 @@ export const Projects: CollectionConfig = withImmutableCreatedAt({
       required: false,
       maxLength: 1000,
       access: {
-        read: isAdminOrEditorFieldLevel,
-        create: isAdminOrEditorFieldLevel,
-        update: isAdminOrEditorFieldLevel,
+        read: isAdminFieldLevel,
+        create: isAdminFieldLevel,
+        update: isAdminFieldLevel,
       },
       label: {
         ar: 'ملاحظة المراجعة الداخلية',
@@ -1198,8 +1199,8 @@ export const Projects: CollectionConfig = withImmutableCreatedAt({
       admin: {
         position: 'sidebar',
         description: {
-          ar: 'ملاحظة داخلية للمحررين ومديري النظام حول مصدر البيانات أو البنود المطلوب تأكيدها (غير ظاهرة للزوار).',
-          en: 'Internal note for staff regarding data source or items needing confirmation (not visible to public visitors).',
+          ar: 'ملاحظة داخلية لمديري النظام حول مصدر البيانات أو البنود المطلوب تأكيدها (للإدارة فقط، غير ظاهرة للزوار أو المحررين).',
+          en: 'Internal admin-only note regarding data source or items needing confirmation (not visible to editors or public visitors).',
         },
       },
     },

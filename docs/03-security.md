@@ -75,6 +75,31 @@ CTO review checks them one by one. "N/A" must be justified.
     (`/ar`, `/en` home), the policy adds `'wasm-unsafe-eval'` to `script-src` and `worker-src 'self' blob:`
     — nothing else (never `'unsafe-eval'`, never `'unsafe-inline'`). The transcoder (`basis_transcoder.js`
     / `.wasm`) and decoders are self-hosted under `public/`, same version as `three`; no CDN.
+  - **H3b (CTO decision 2026-10-25, KTX2 transcoder worker).** `basis_transcoder.js` from
+    `three@0.186.1` (Emscripten/embind) builds functions with the `Function` constructor. A blob
+    worker inherits the page CSP, so it cannot run under H3a. Decision:
+    - The KTX2 transcoding worker is served from **one same-origin static URL**:
+      `/systems/<version>/basis/ktx2-worker.js`. It is generated at build time from the pinned
+      transcoder and three's `KTX2Loader.BasisWorker` source, and its SHA-256 is pinned like the other
+      assets.
+    - That URL alone gets **its own CSP**, and it is the only CSP header on that response:
+      `default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval';
+      connect-src 'self'` (narrowed to the `basis/` path where the browser supports it).
+    - The page CSP is unchanged:
+      - no `'unsafe-eval'` on any page;
+      - `worker-src 'self'` on the home routes only (`blob:` dropped if nothing else needs it).
+    - **Why this is acceptable:**
+      - the eval runs only inside a DOM-less worker;
+      - the code is pinned by hash;
+      - its inputs are hash-pinned textures;
+      - embind builds invoker functions from type signatures, never from data.
+    - **Residual risk:** same-origin `fetch` from the worker. It is limited by the worker's
+      `connect-src`.
+    - **Degradation:** a browser that applies the page CSP to the worker falls back to the stills
+      tier. The page never breaks.
+    - **Long-term:** remove `'unsafe-eval'` entirely by rebuilding the transcoder with Emscripten
+      `-sDYNAMIC_EXECUTION=0` (through the 3D lead, as a new pinned runtime). This is tracked as a
+      follow-up, not a blocker.
 - **H4** `poweredByHeader: false`; production error pages show no stack traces or versions.
 - **H5** HTTPS only (HTTP → 301), TLS 1.2+ (prefer 1.3), Let's Encrypt auto-renew tested.
 - **H6** Nginx rate limits: `/api/users/login`, `/api/users/forgot-password` 5 req/min/IP;
@@ -128,3 +153,11 @@ Replacement rules for the quote pipeline:
 - **O3** Odoo error bodies are sanitized before storing in `odooLastError` (no credentials, max 500 chars).
 - **O4** Field mapping documented and tested against a mock Odoo server; no customer-entered
   string is ever used to build a domain/filter expression.
+
+## Accepted risks (register)
+| ID | Date | Item | Severity | Decision | Review |
+|---|---|---|---|---|---|
+| AR-1 | 2026-10-29 | `deepmerge@4.3.1` (via `payload`) GHSA-gcqx-w48m-w2h4 / CVE-2026-93753: prototype poisoning of objects returned by `mergeObject()` when the target has a null prototype. No patched version exists | low | **Accepted (owner + CTO).** Exploiting it needs attacker-controlled null-prototype objects merged by Payload internals. Vendoring a patched fork into Payload's config-merge path carries more risk than it removes. The branch `fix/deepmerge-vendor` is **not merged** | Re-check every phase and before P6. Upgrade as soon as `deepmerge` or `payload` ships a fix |
+
+`pnpm audit --prod` gate: **zero high/critical** (AGENTS.md). Low and moderate findings must each have
+an entry above.

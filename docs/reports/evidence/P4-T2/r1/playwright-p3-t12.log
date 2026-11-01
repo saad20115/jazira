@@ -1,0 +1,26 @@
+$ pwd
+D:\aljazira-p4-t2-dod-20261025-233552
+$ git rev-parse HEAD
+b95020942c429546a36dcf59d47f673a4f553a5f
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ "DELETE FROM users WHERE email = 'p4t2-editor@aljazira.co';" | docker exec -i aljazira-db-1 sh -c 'PGPASSWORD="$POSTGRES_PASSWORD" psql -h 127.0.0.1 -U "$POSTGRES_USER" -d "$APP_DB_NAME"'
+$env:CI = ''
+npx playwright test tests/e2e/p3-t12.e2e.spec.ts
+if ($LASTEXITCODE -ne 0) { throw "playwright p3-t12 failed with $LASTEXITCODE" }
+$global:LASTEXITCODE = 0
+DELETE 1
+
+Running 1 test using 1 worker
+
+  ok 1 [chromium] › tests\e2e\p3-t12.e2e.spec.ts:22:3 › P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5, R-7, R-9, R-10) › switch off redirects /ar -> 307 /en with no switcher and zero Arabic in 307/RSC bodies; admin toggle in /admin/globals/site-settings turns /ar live (200 RTL) with switcher (13.3s)
+
+  1 passed (17.5s)
+
+(node:26576) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+[exit_code=0]
+GATE: PASS

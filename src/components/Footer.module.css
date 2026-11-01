@@ -215,7 +215,8 @@
   border-radius: var(--radius-xs);
   transition:
     color 160ms ease,
-    opacity 160ms ease;
+    opacity 160ms ease,
+    transform var(--motion-fast) var(--ease-out);
 }
 
 .quickLinkDot {
@@ -226,9 +227,11 @@
   flex-shrink: 0;
 }
 
-.quickLink:hover {
-  color: var(--white);
-  opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+  .quickLink:hover {
+    color: var(--white);
+    opacity: 1;
+  }
 }
 
 .quickLink:focus-visible {
@@ -294,12 +297,48 @@
   border-radius: var(--radius-xs);
   transition:
     color 160ms ease,
-    opacity 160ms ease;
+    opacity 160ms ease,
+    transform var(--motion-fast) var(--ease-out);
 }
 
-.contactLink:hover {
-  color: var(--white);
-  opacity: 1;
+@media (hover: hover) and (pointer: fine) {
+  .contactLink:hover {
+    color: var(--white);
+    opacity: 1;
+  }
+}
+
+/* §20 catalogue 13: footer links slide 2 px towards inline-end on hover / keyboard focus. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .quickLink:hover,
+  .contactLink:hover {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  :global([dir='rtl']) .quickLink:hover,
+  :global([dir='rtl']) .contactLink:hover {
+    transform: translate3d(-2px, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .quickLink:focus-visible,
+  .contactLink:focus-visible {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  :global([dir='rtl']) .quickLink:focus-visible,
+  :global([dir='rtl']) .contactLink:focus-visible {
+    transform: translate3d(-2px, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .quickLink,
+  .contactLink,
+  .contactText {
+    transition: none;
+  }
 }
 
 .contactLink:focus-visible {

@@ -48,12 +48,19 @@ describe('P4-T2 seed plan & static specs (unit)', () => {
     expect(plan.featuredProjectsCount).toBe(6)
 
     // Every project is completed and flagged needsClientReview with a non-empty reviewNote
+    // D-09: No seeded project slug embeds internal spreadsheet refs (-xlsx-NN or -a-p11-N)
+    // D-02: No project with rawScope "MEP" carries invented fire-fighting tag
     for (const proj of plan.projects) {
       expect(proj.status).toBe('completed')
       expect(proj.needsClientReview).toBe(true)
       expect(proj.reviewNote.length).toBeGreaterThan(20)
+      expect(proj.reviewNote.length).toBeLessThanOrEqual(1000)
       expect(proj.titleEn.length).toBeGreaterThan(0)
       expect(proj.titleAr.length).toBeGreaterThan(0)
+      expect(proj.slug).not.toMatch(/(xlsx|a-p11)-\d+$/i)
+      if (!proj.rawScope.toLowerCase().includes('fire')) {
+        expect(proj.scope).not.toContain('fire-fighting')
+      }
       if (proj.publishStatus === 'published') {
         expect(proj.photoFile).not.toBeNull()
         expect(proj.photoAltEn).toBe(`${proj.titleEn} — exterior`)
@@ -124,20 +131,63 @@ describe('P4-T2 seed plan & static specs (unit)', () => {
     expect(xlsx19?.reviewNote).toContain('AMBIGUOUS PHOTO CANDIDATE')
   })
 
-  it('maps raw scope strings to categories and discipline scopes per P4-T2 Scope 4a', () => {
-    expect(mapRawProjectScope('MEP').category).toBe('mep')
-    expect(mapRawProjectScope('MEP Upgrade').category).toBe('mep')
-    expect(mapRawProjectScope('MEP- Upgrad').category).toBe('mep')
-    expect(mapRawProjectScope('Low Current SCS').category).toBe('low-current')
-    expect(mapRawProjectScope('Low Current Systems').category).toBe('low-current')
-    expect(mapRawProjectScope('Structured Cabling').category).toBe('low-current')
-    expect(mapRawProjectScope('Video Wall').category).toBe('low-current')
-    expect(mapRawProjectScope('Data & Low Current Systems').category).toBe('low-current')
-    expect(mapRawProjectScope('Data Center MEP').category).toBe('data-center')
-    expect(mapRawProjectScope('Fire Fighting').category).toBe('fire-fighting')
-    expect(mapRawProjectScope('Fire Alarm System').category).toBe('fire-fighting')
-    expect(mapRawProjectScope('Fire Alarm & CCTV').category).toBe('fire-fighting')
-    expect(mapRawProjectScope('Civil & MEP').category).toBe('civil-mep')
+  it('maps raw scope strings literally to categories and discipline scopes without inventing tags (D-02)', () => {
+    expect(mapRawProjectScope('MEP')).toMatchObject({
+      category: 'mep',
+      scope: ['mep'],
+      scopeSummaryEn: 'MEP',
+    })
+    expect(mapRawProjectScope('MEP Upgrade')).toMatchObject({
+      category: 'mep',
+      scope: ['mep'],
+      scopeSummaryEn: 'MEP Upgrade',
+    })
+    expect(mapRawProjectScope('MEP- Upgrad')).toMatchObject({
+      category: 'mep',
+      scope: ['mep'],
+      scopeSummaryEn: 'MEP Upgrade',
+    })
+    expect(mapRawProjectScope('Low Current SCS')).toMatchObject({
+      category: 'low-current',
+      scope: ['low-current'],
+    })
+    expect(mapRawProjectScope('Low Current Systems')).toMatchObject({
+      category: 'low-current',
+      scope: ['low-current'],
+    })
+    expect(mapRawProjectScope('Structured Cabling')).toMatchObject({
+      category: 'low-current',
+      scope: ['low-current'],
+    })
+    expect(mapRawProjectScope('Video Wall')).toMatchObject({
+      category: 'low-current',
+      scope: ['low-current'],
+    })
+    expect(mapRawProjectScope('Data & Low Current Systems')).toMatchObject({
+      category: 'low-current',
+      scope: ['low-current'],
+    })
+    expect(mapRawProjectScope('Data Center MEP')).toMatchObject({
+      category: 'data-center',
+      scope: ['data-center', 'mep'],
+    })
+    expect(mapRawProjectScope('Fire Fighting')).toMatchObject({
+      category: 'fire-fighting',
+      scope: ['fire-fighting'],
+    })
+    expect(mapRawProjectScope('Fire Alarm System')).toMatchObject({
+      category: 'fire-fighting',
+      scope: ['fire-fighting'],
+    })
+    expect(mapRawProjectScope('Fire Alarm & CCTV')).toMatchObject({
+      category: 'fire-fighting',
+      scope: ['fire-fighting', 'low-current'],
+    })
+    expect(mapRawProjectScope('Civil & MEP')).toMatchObject({
+      category: 'civil-mep',
+      scope: ['civil', 'mep'],
+    })
+    expect(() => mapRawProjectScope('Unknown Scope')).toThrow(/Unrecognized raw project scope/)
   })
 
   it('defines the 20 owner-approved marquee brands in exact Scope 4b order, 5 stats, 10 services, and [placeholder]-marked team & design images', () => {

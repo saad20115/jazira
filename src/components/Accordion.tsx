@@ -95,14 +95,24 @@ export function AccordionItem({
         </span>
       </button>
 
+      {/*
+        §20 catalogue 8: the panel height animates with `grid-template-rows: 0fr -> 1fr`. When
+        collapsed the panel is `visibility: hidden` (after the close transition) and `inert`, so it
+        stays out of the tab order and the accessibility tree exactly like the former `hidden`.
+      */}
       <div
         aria-labelledby={buttonId}
-        className={styles.panel}
-        hidden={!isExpanded}
+        className={[styles.panelGrid, isExpanded ? styles.panelGridExpanded : '']
+          .filter(Boolean)
+          .join(' ')}
+        data-accordion-panel={effectiveState}
         id={panelId}
+        inert={!isExpanded}
         role="region"
       >
-        {body}
+        <div className={styles.panelClip}>
+          <div className={styles.panel}>{body}</div>
+        </div>
       </div>
     </div>
   )

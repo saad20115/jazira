@@ -120,6 +120,28 @@
   flex-shrink: 0;
 }
 
+.panelGrid {
+  display: grid;
+  grid-template-rows: 0fr;
+  visibility: hidden;
+  transition:
+    grid-template-rows var(--motion-base) var(--ease-in-out),
+    visibility 0s linear var(--motion-base);
+}
+
+.panelGridExpanded {
+  grid-template-rows: 1fr;
+  visibility: visible;
+  transition:
+    grid-template-rows var(--motion-base) var(--ease-in-out),
+    visibility 0s linear 0s;
+}
+
+.panelClip {
+  min-block-size: 0;
+  overflow: hidden;
+}
+
 .panel {
   padding-block-start: 14px;
   font-family: var(--font-sans);
@@ -128,4 +150,11 @@
   line-height: var(--t-body-m-lh);
   letter-spacing: var(--t-body-m-ls);
   color: var(--text-body);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panelGrid,
+  .panelGridExpanded {
+    transition: none;
+  }
 }

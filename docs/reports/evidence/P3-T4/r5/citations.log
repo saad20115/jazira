@@ -2,45 +2,45 @@ $ git grep -n -e '.homeContent' -- src/app/(frontend)/[locale]/page.module.css
 src/app/(frontend)/[locale]/page.module.css:14:.homeContent {
 
 $ git grep -n -e '.overlay' -- src/components/IntroSplash.module.css
-src/components/IntroSplash.module.css:79:.overlay {
-src/components/IntroSplash.module.css:98::global(html[data-intro='active']) .overlay,
-src/components/IntroSplash.module.css:99:.overlay[data-intro-forced='true'] {
-src/components/IntroSplash.module.css:103::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) {
-src/components/IntroSplash.module.css:107::global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']) {
-src/components/IntroSplash.module.css:125::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .glow {
-src/components/IntroSplash.module.css:166::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .logoWrap {
-src/components/IntroSplash.module.css:185::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .goldRule {
-src/components/IntroSplash.module.css:204::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .tagline {
-src/components/IntroSplash.module.css:260:  .overlay,
-src/components/IntroSplash.module.css:261:  :global(html[data-intro='active']) .overlay {
+src/components/IntroSplash.module.css:78:.overlay {
+src/components/IntroSplash.module.css:97::global(html[data-intro='active']) .overlay,
+src/components/IntroSplash.module.css:98:.overlay[data-intro-forced='true'] {
+src/components/IntroSplash.module.css:102::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) {
+src/components/IntroSplash.module.css:106::global(html[data-intro='seen']) .overlay:not([data-intro-forced='true']) {
+src/components/IntroSplash.module.css:124::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .glow {
+src/components/IntroSplash.module.css:165::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .logoWrap {
+src/components/IntroSplash.module.css:184::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .goldRule {
+src/components/IntroSplash.module.css:203::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .tagline {
+src/components/IntroSplash.module.css:259:  .overlay,
+src/components/IntroSplash.module.css:260:  :global(html[data-intro='active']) .overlay {
 
 $ git grep -n -e 'pageModuleCss' -- src/p3-t4-home.test.ts
 src/p3-t4-home.test.ts:741:      const pageModuleCss = fs.readFileSync(
 src/p3-t4-home.test.ts:745:      const carouselOuterMatch = pageModuleCss.match(/\.carouselOuter\s*\{([^}]*)\}/)
-src/p3-t4-home.test.ts:800:      expect(pageModuleCss).not.toContain("data-intro='active'")
-src/p3-t4-home.test.ts:803:      const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
+src/p3-t4-home.test.ts:800:      expect(pageModuleCss).not.toContain('data-intro')
+src/p3-t4-home.test.ts:829:      const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
 
 $ git grep -n -e 'globalsCss' -- src/p3-t4-home.test.ts
 src/p3-t4-home.test.ts:796:      const globalsCss = fs.readFileSync(
-src/p3-t4-home.test.ts:801:      expect(globalsCss).not.toContain("data-intro='active'")
+src/p3-t4-home.test.ts:801:      expect(globalsCss).not.toContain('data-intro')
 
 $ git grep -n -e 'INTRO_PREPAINT_INLINE_SCRIPT' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:36:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',scriptMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}var painted=0;var decide=function(rafTs){var perfNow=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var now=Math.max(typeof rafTs==='number'&&rafTs>0?rafTs:0,perfNow);var nowRounded=Math.round(now);if(now>${String(INTRO_MAX_FIRST_PAINT_MS)}){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}setInert(false);window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}var ov=document.querySelector('[data-component="intro-splash"]');if(!ov){if(document.readyState==='loading'){window.requestAnimationFrame(decide);return;}d.setAttribute('data-intro','seen');return;}if(window.getComputedStyle(ov).position!=='fixed'){window.requestAnimationFrame(decide);return;}if(painted<2){painted++;window.requestAnimationFrame(decide);return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}if(splash&&!splash.dataset.introBound){splash.dataset.introBound='1';splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};};window.requestAnimationFrame(decide);}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+src/components/IntroSplash.tsx:35:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var p=(window.location&&window.location.pathname)||'';if(p&&!/^\\/(en|ar)?\\/?$/.test(p)){return;}var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':'skipped_seen',scriptMs:scriptNow,rafMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}window.requestAnimationFrame(function(rafTs){var decide=function(useRafTs){var ov=document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])');if(!ov){return;}var rawTs=useRafTs&&typeof rafTs==='number'&&rafTs>0?rafTs:(typeof performance==='object'&&typeof performance.now==='function'?performance.now():0);var now=Math.round(rawTs);try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}if(rawTs>${String(INTRO_MAX_FIRST_PAINT_MS)}){setInert(false);d.setAttribute('data-intro','seen');window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,rafMs:now,nowMs:now,delayMs:0};return;}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');if(splash&&!splash.__introBound){splash.__introBound=true;splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,rafMs:now,nowMs:now,delayMs:0};};if(document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])')){decide(true);}else if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){decide(false);},{once:true});}});}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
 
 $ git grep -n -e 'INTRO_MAX_FIRST_PAINT_MS' -- src/components/IntroSplash.tsx
 src/components/IntroSplash.tsx:11:export const INTRO_MAX_FIRST_PAINT_MS = 1200
-src/components/IntroSplash.tsx:36:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':seen?'skipped_seen':'skipped_late_first_paint',scriptMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}var painted=0;var decide=function(rafTs){var perfNow=typeof performance==='object'&&typeof performance.now==='function'?performance.now():0;var now=Math.max(typeof rafTs==='number'&&rafTs>0?rafTs:0,perfNow);var nowRounded=Math.round(now);if(now>${String(INTRO_MAX_FIRST_PAINT_MS)}){try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}setInert(false);window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};d.setAttribute('data-intro','seen');return;}var ov=document.querySelector('[data-component="intro-splash"]');if(!ov){if(document.readyState==='loading'){window.requestAnimationFrame(decide);return;}d.setAttribute('data-intro','seen');return;}if(window.getComputedStyle(ov).position!=='fixed'){window.requestAnimationFrame(decide);return;}if(painted<2){painted++;window.requestAnimationFrame(decide);return;}try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}if(splash&&!splash.dataset.introBound){splash.dataset.introBound='1';splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,nowMs:nowRounded,delayMs:0};};window.requestAnimationFrame(decide);}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
+src/components/IntroSplash.tsx:35:export const INTRO_PREPAINT_INLINE_SCRIPT = `(function(){try{var d=document.documentElement;var p=(window.location&&window.location.pathname)||'';if(p&&!/^\\/(en|ar)?\\/?$/.test(p)){return;}var sels=['body > a[href="#main-content"]','header','[data-home-content="true"]','footer','[data-component="whatsapp-fab"]'];function setInert(v){for(var i=0;i<sels.length;i++){var nodes=document.querySelectorAll(sels[i]);for(var j=0;j<nodes.length;j++){if(v)nodes[j].setAttribute('inert','');else nodes[j].removeAttribute('inert');}}}function finishIntro(){setInert(false);d.setAttribute('data-intro','seen');var m=document.getElementById('main-content');if(m&&typeof m.focus==='function'){m.focus({preventScroll:true});}}var rm=typeof window.matchMedia==='function'&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;var seen=false;try{seen=window.sessionStorage.getItem('${INTRO_SPLASH_STORAGE_KEY}')==='1';}catch(e){}var scriptNow=typeof performance==='object'&&typeof performance.now==='function'?Math.round(performance.now()):0;if(rm||seen){window.__aljaziraIntroDecision={action:rm?'skipped_reduced_motion':'skipped_seen',scriptMs:scriptNow,rafMs:scriptNow,nowMs:scriptNow,delayMs:0};d.setAttribute('data-intro','seen');return;}window.requestAnimationFrame(function(rafTs){var decide=function(useRafTs){var ov=document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])');if(!ov){return;}var rawTs=useRafTs&&typeof rafTs==='number'&&rafTs>0?rafTs:(typeof performance==='object'&&typeof performance.now==='function'?performance.now():0);var now=Math.round(rawTs);try{window.sessionStorage.setItem('${INTRO_SPLASH_STORAGE_KEY}','1');}catch(e){}if(rawTs>${String(INTRO_MAX_FIRST_PAINT_MS)}){setInert(false);d.setAttribute('data-intro','seen');window.__aljaziraIntroDecision={action:'skipped_late_first_paint',scriptMs:scriptNow,rafMs:now,nowMs:now,delayMs:0};return;}d.style.setProperty('--intro-delay','0ms');d.setAttribute('data-intro','active');setInert(true);var skipBtn=document.querySelector('[data-intro-skip="true"]');if(skipBtn&&typeof skipBtn.focus==='function'){skipBtn.focus({preventScroll:true});}var bindOverlay=function(){if(d.getAttribute('data-intro')!=='active')return;setInert(true);var splash=document.querySelector('[data-component="intro-splash"]');if(splash&&!splash.__introBound){splash.__introBound=true;splash.addEventListener('animationend',function(ev){if(ev.target===splash)finishIntro();});splash.addEventListener('click',finishIntro);window.addEventListener('keydown',function(ev){if(ev.key==='Escape'&&d.getAttribute('data-intro')==='active'){ev.preventDefault();finishIntro();}});}};bindOverlay();if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',bindOverlay,{once:true});}window.__aljaziraIntroDecision={action:'active',scriptMs:scriptNow,rafMs:now,nowMs:now,delayMs:0};};if(document.querySelector('[data-component="intro-splash"]:not([data-intro-forced="true"])')){decide(true);}else if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){decide(false);},{once:true});}});}catch(e){document.documentElement.setAttribute('data-intro','seen');}})();`
 
 $ git grep -n -e 'introOverlayTimeline' -- src/components/IntroSplash.module.css
 src/components/IntroSplash.module.css:1:@keyframes introOverlayTimeline {
-src/components/IntroSplash.module.css:104:  animation: introOverlayTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
+src/components/IntroSplash.module.css:103:  animation: introOverlayTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
 
 $ git grep -n -e 'introLogoTimeline' -- src/components/IntroSplash.module.css
 src/components/IntroSplash.module.css:36:@keyframes introLogoTimeline {
-src/components/IntroSplash.module.css:167:  animation: introLogoTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
+src/components/IntroSplash.module.css:166:  animation: introLogoTimeline 1200ms linear var(--intro-delay, 0ms) forwards;
 
-$ git grep -n -e 'INTRO_HARD_CAP_MS' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:13:export const INTRO_HARD_CAP_MS = 2400
+$ git grep -n -e 'INTRO_TOTAL_DURATION_MS' -- src/components/IntroSplash.tsx
+src/components/IntroSplash.tsx:12:export const INTRO_TOTAL_DURATION_MS = 1200
 
 $ git grep -n -e '.heroGoldGlow' -- src/app/(frontend)/[locale]/page.module.css
 src/app/(frontend)/[locale]/page.module.css:83:.heroGoldGlow {
@@ -50,50 +50,49 @@ $ git grep -n -e 'filter' -- src/app/(frontend)/[locale]/page.module.css
 src/app/(frontend)/[locale]/page.module.css:92:  filter: blur(48px);
 
 $ git grep -n -e '.glow' -- src/components/IntroSplash.module.css
-src/components/IntroSplash.module.css:111:.glow {
-src/components/IntroSplash.module.css:118:  background-image: var(--gradient-intro-gold-glow);
-src/components/IntroSplash.module.css:125::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .glow {
-src/components/IntroSplash.module.css:130:.stateReveal .glow {
-src/components/IntroSplash.module.css:248:  .glow {
+src/components/IntroSplash.module.css:110:.glow {
+src/components/IntroSplash.module.css:117:  background-image: var(--gradient-intro-gold-glow);
+src/components/IntroSplash.module.css:124::global(html[data-intro='active']) .overlay:not([data-intro-forced='true']) .glow {
+src/components/IntroSplash.module.css:129:.stateReveal .glow {
+src/components/IntroSplash.module.css:247:  .glow {
 
 $ git grep -n -e 'filter' -- src/components/IntroSplash.module.css
-src/components/IntroSplash.module.css:119:  filter: blur(48px);
+src/components/IntroSplash.module.css:118:  filter: blur(48px);
 
 $ git grep -n -e 'heroGoldGlowRule' -- src/p3-t4-home.test.ts
-src/p3-t4-home.test.ts:803:      const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
-src/p3-t4-home.test.ts:805:      expect(heroGoldGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
+src/p3-t4-home.test.ts:829:      const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
+src/p3-t4-home.test.ts:831:      expect(heroGoldGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
 
 $ git grep -n -e 'introGlowRule' -- src/p3-t4-home.test.ts
-src/p3-t4-home.test.ts:804:      const introGlowRule = introSplashCss.match(/\.glow\s*\{([^}]*)\}/)?.[1] ?? ''
-src/p3-t4-home.test.ts:806:      expect(introGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
+src/p3-t4-home.test.ts:830:      const introGlowRule = introSplashCss.match(/\.glow\s*\{([^}]*)\}/)?.[1] ?? ''
+src/p3-t4-home.test.ts:832:      expect(introGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
 
 $ git grep -n -e 'INERT_TARGET_SELECTORS' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:15:export const INERT_TARGET_SELECTORS = [
-src/components/IntroSplash.tsx:50:  for (const selector of INERT_TARGET_SELECTORS) {
+src/components/IntroSplash.tsx:14:export const INERT_TARGET_SELECTORS = [
+src/components/IntroSplash.tsx:49:  for (const selector of INERT_TARGET_SELECTORS) {
 
 $ git grep -n -e 'dismissImmediately' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:130:  const dismissImmediately = useCallback((): void => {
-src/components/IntroSplash.tsx:146:        dismissImmediately()
-src/components/IntroSplash.tsx:149:    [dismissImmediately],
-src/components/IntroSplash.tsx:170:        dismissImmediately()
-src/components/IntroSplash.tsx:186:        dismissImmediately()
-src/components/IntroSplash.tsx:197:  }, [forceState, dismissImmediately])
-src/components/IntroSplash.tsx:217:      onClick={dismissImmediately}
-src/components/IntroSplash.tsx:236:          dismissImmediately()
+src/components/IntroSplash.tsx:131:  const dismissImmediately = useCallback((): void => {
+src/components/IntroSplash.tsx:147:        dismissImmediately()
+src/components/IntroSplash.tsx:150:    [dismissImmediately],
+src/components/IntroSplash.tsx:163:        dismissImmediately()
+src/components/IntroSplash.tsx:171:  }, [forceState, dismissImmediately])
+src/components/IntroSplash.tsx:191:      onClick={dismissImmediately}
+src/components/IntroSplash.tsx:210:          dismissImmediately()
 
 $ git grep -n -e 'mainEl' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:138:      const mainEl = document.getElementById('main-content')
-src/components/IntroSplash.tsx:139:      mainEl?.focus({ preventScroll: true })
+src/components/IntroSplash.tsx:139:      const mainEl = document.getElementById('main-content')
+src/components/IntroSplash.tsx:140:      mainEl?.focus({ preventScroll: true })
 
 $ git grep -n -e 'widthVideoName' -- scripts/evidence/p3-t4-evidence.mjs
-scripts/evidence/p3-t4-evidence.mjs:1486:          const widthVideoName = `intro-${vvp.label}-${loc}.webm`
-scripts/evidence/p3-t4-evidence.mjs:1487:          const widthVideoPath = path.join(reportsPhase3Dir, widthVideoName)
-scripts/evidence/p3-t4-evidence.mjs:1495:            file: widthVideoName,
+scripts/evidence/p3-t4-evidence.mjs:1502:          const widthVideoName = `intro-${vvp.label}-${loc}.webm`
+scripts/evidence/p3-t4-evidence.mjs:1503:          const widthVideoPath = path.join(reportsPhase3Dir, widthVideoName)
+scripts/evidence/p3-t4-evidence.mjs:1511:            file: widthVideoName,
 
 $ git grep -n -e 'logoFullFrames' -- scripts/evidence/p3-t4-evidence.mjs
-scripts/evidence/p3-t4-evidence.mjs:1598:                const logoFullFrames = visibleFrames.filter(
-scripts/evidence/p3-t4-evidence.mjs:1601:                const logoFirstFull = logoFullFrames[0] || null
-scripts/evidence/p3-t4-evidence.mjs:1602:                const logoLastFull = logoFullFrames[logoFullFrames.length - 1] || null
+scripts/evidence/p3-t4-evidence.mjs:1614:                const logoFullFrames = visibleFrames.filter(
+scripts/evidence/p3-t4-evidence.mjs:1617:                const logoFirstFull = logoFullFrames[0] || null
+scripts/evidence/p3-t4-evidence.mjs:1618:                const logoLastFull = logoFullFrames[logoFullFrames.length - 1] || null
 
 $ git grep -n -e 'home_page_locales' -- src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts
 src/migrations/20261024_104400_p3_t4_r2_title_accent_and_stats_bg.ts:6:  ALTER TABLE "home_page_locales" ADD COLUMN "hero_title_accent" varchar;
@@ -144,22 +143,18 @@ $ git grep -n -e 'ctaFields' -- src/fields/groups/cta.ts
 src/fields/groups/cta.ts:32:export function ctaFields(options: CtaFieldsOptions = {}): Field[] {
 src/fields/groups/cta.ts:187:    fields: ctaFields(fieldOptions),
 
-$ git grep -n -e 'INTRO_TOTAL_DURATION_MS' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:12:export const INTRO_TOTAL_DURATION_MS = 1200
-
 $ git grep -n -e 'IntroSplash' -- src/components/IntroSplash.tsx
 src/components/IntroSplash.tsx:8:import styles from './IntroSplash.module.css'
-src/components/IntroSplash.tsx:38:export interface IntroSplashProps {
-src/components/IntroSplash.tsx:67:export function shouldSkipIntroSplash(win: Window | undefined): boolean {
-src/components/IntroSplash.tsx:96:export function markIntroSplashSeen(win: Window | undefined): void {
-src/components/IntroSplash.tsx:119:export function IntroSplash({
-src/components/IntroSplash.tsx:125:}: IntroSplashProps): ReactElement {
-src/components/IntroSplash.tsx:136:      markIntroSplashSeen(window)
-src/components/IntroSplash.tsx:173:      markIntroSplashSeen(window)
+src/components/IntroSplash.tsx:37:export interface IntroSplashProps {
+src/components/IntroSplash.tsx:66:export function shouldSkipIntroSplash(win: Window | undefined): boolean {
+src/components/IntroSplash.tsx:95:export function markIntroSplashSeen(win: Window | undefined): void {
+src/components/IntroSplash.tsx:120:export function IntroSplash({
+src/components/IntroSplash.tsx:126:}: IntroSplashProps): ReactElement {
+src/components/IntroSplash.tsx:137:      markIntroSplashSeen(window)
 
 $ git grep -n -e 'handleAnimationEnd' -- src/components/IntroSplash.tsx
-src/components/IntroSplash.tsx:143:  const handleAnimationEnd = useCallback(
-src/components/IntroSplash.tsx:216:      onAnimationEnd={handleAnimationEnd}
+src/components/IntroSplash.tsx:144:  const handleAnimationEnd = useCallback(
+src/components/IntroSplash.tsx:190:      onAnimationEnd={handleAnimationEnd}
 
 $ git grep -n -e 'INTRO_PREPAINT_INLINE_SCRIPT' -- src/app/(frontend)/[locale]/layout.tsx
 src/app/(frontend)/[locale]/layout.tsx:9:import { INTRO_PREPAINT_INLINE_SCRIPT } from '@/components/IntroSplash'
@@ -185,19 +180,19 @@ src/app/(frontend)/[locale]/page.tsx:555:                      {heroTitleAccent}
 
 $ git grep -n -e 'statsBgImage' -- src/app/(frontend)/[locale]/page.tsx
 src/app/(frontend)/[locale]/page.tsx:435:  const statsBgImage = resolveMediaAsset(
-src/app/(frontend)/[locale]/page.tsx:754:            {statsBgImage ? (
-src/app/(frontend)/[locale]/page.tsx:758:                  className={styles.statsBgImage}
-src/app/(frontend)/[locale]/page.tsx:759:                  height={statsBgImage.height ?? 425}
-src/app/(frontend)/[locale]/page.tsx:761:                  src={statsBgImage.url}
-src/app/(frontend)/[locale]/page.tsx:762:                  width={statsBgImage.width ?? 1440}
+src/app/(frontend)/[locale]/page.tsx:761:            {statsBgImage ? (
+src/app/(frontend)/[locale]/page.tsx:765:                  className={styles.statsBgImage}
+src/app/(frontend)/[locale]/page.tsx:766:                  height={statsBgImage.height ?? 425}
+src/app/(frontend)/[locale]/page.tsx:768:                  src={statsBgImage.url}
+src/app/(frontend)/[locale]/page.tsx:769:                  width={statsBgImage.width ?? 1440}
 
 $ git grep -n -e 'ctaTitleAccent' -- src/app/(frontend)/[locale]/page.tsx
 src/app/(frontend)/[locale]/page.tsx:480:  const ctaTitleAccent = cta?.titleAccent?.trim() || null
 src/app/(frontend)/[locale]/page.tsx:490:    ctaTitle || ctaTitleAccent || ctaText || ctaPrimaryLabel || ctaSecondaryLabel,
-src/app/(frontend)/[locale]/page.tsx:893:              {ctaTitle || ctaTitleAccent ? (
-src/app/(frontend)/[locale]/page.tsx:896:                  {ctaTitle && ctaTitleAccent ? ' ' : null}
-src/app/(frontend)/[locale]/page.tsx:897:                  {ctaTitleAccent ? (
-src/app/(frontend)/[locale]/page.tsx:899:                      {ctaTitleAccent}
+src/app/(frontend)/[locale]/page.tsx:900:              {ctaTitle || ctaTitleAccent ? (
+src/app/(frontend)/[locale]/page.tsx:903:                  {ctaTitle && ctaTitleAccent ? ' ' : null}
+src/app/(frontend)/[locale]/page.tsx:904:                  {ctaTitleAccent ? (
+src/app/(frontend)/[locale]/page.tsx:906:                      {ctaTitleAccent}
 
 $ git grep -n -e '.track' -- src/components/ServicesCarousel.module.css
 src/components/ServicesCarousel.module.css:8:  --track-width: 806px;
@@ -245,3 +240,30 @@ src/app/(frontend)/[locale]/page.module.css:888:    min-block-size: 680px;
 src/app/(frontend)/[locale]/page.module.css:894:    min-block-size: calc(3 * var(--t-display-xl-lh));
 src/app/(frontend)/[locale]/page.module.css:941:    min-block-size: 44px;
 src/app/(frontend)/[locale]/page.module.css:947:    min-block-size: 0;
+
+$ git grep -n -e 'runLighthouseAudit' -- scripts/evidence/run-lighthouse.mjs
+scripts/evidence/run-lighthouse.mjs:70:export async function runLighthouseAudit({
+scripts/evidence/run-lighthouse.mjs:330:  runLighthouseAudit({ url, locale, outLogPath, outJsonPath })
+
+$ git grep -n -e 'decodedHtml' -- scripts/evidence/run-lighthouse.mjs
+scripts/evidence/run-lighthouse.mjs:88:      const decodedHtml = html.replace(/&amp;/g, '&')
+scripts/evidence/run-lighthouse.mjs:89:      const imgMatches = [...decodedHtml.matchAll(/\/_next\/image\?[^"'\s>]+/g)].map((m) => m[0])
+
+$ git grep -n -e 'scores' -- scripts/evidence/run-lighthouse.mjs
+scripts/evidence/run-lighthouse.mjs:178:    const scores = {
+scripts/evidence/run-lighthouse.mjs:228:      scores.performance >= 80 &&
+scripts/evidence/run-lighthouse.mjs:229:      scores.accessibility >= 95 &&
+scripts/evidence/run-lighthouse.mjs:230:      scores.bestPractices >= 95 &&
+scripts/evidence/run-lighthouse.mjs:231:      scores.seo >= 95 &&
+scripts/evidence/run-lighthouse.mjs:254:      scores,
+scripts/evidence/run-lighthouse.mjs:271:      : `GATE: FAIL (performance=${scores.performance} [gate >= 80], accessibility=${scores.accessibility} [gate >= 95], bestPractices=${scores.bestPractices} [gate >= 95], seo=${scores.seo} [gate >= 95], cls=${clsNumeric} [gate <= 0.05])`
+scripts/evidence/run-lighthouse.mjs:277:      `Performance:    ${scores.performance} (gate >= 80; target >= 85)`,
+scripts/evidence/run-lighthouse.mjs:278:      `Accessibility:  ${scores.accessibility} (gate >= 95)`,
+scripts/evidence/run-lighthouse.mjs:279:      `Best Practices: ${scores.bestPractices} (gate >= 95)`,
+scripts/evidence/run-lighthouse.mjs:280:      `SEO:            ${scores.seo} (gate >= 95)`,
+scripts/evidence/run-lighthouse.mjs:296:        `Lighthouse mobile gate failed for ${url}: ${JSON.stringify({ scores, clsNumeric, failingAudits })}`,
+scripts/evidence/run-lighthouse.mjs:333:        `[Lighthouse] ${url} -> Perf=${res.scores.performance} A11y=${res.scores.accessibility} BP=${res.scores.bestPractices} SEO=${res.scores.seo} CLS=${res.clsNumeric}`,
+
+$ git grep -n -e 'runP3T13Evidence' -- scripts/evidence/p3-t13-evidence.mjs
+scripts/evidence/p3-t13-evidence.mjs:117:export async function runP3T13Evidence({
+scripts/evidence/p3-t13-evidence.mjs:1140:  runP3T13Evidence({

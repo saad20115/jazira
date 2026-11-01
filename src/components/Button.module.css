@@ -16,14 +16,15 @@
   cursor: pointer;
   user-select: none;
   text-decoration: none;
+  overflow: hidden;
+  isolation: isolate;
   transition:
-    background-color 180ms ease,
-    border-color 180ms ease,
-    color 180ms ease,
-    box-shadow 180ms ease,
-    gap 180ms ease,
-    padding-inline-end 180ms ease,
-    opacity 180ms ease;
+    background-color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    box-shadow var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out),
+    opacity var(--motion-fast) ease;
 }
 
 /* Sizes */
@@ -34,12 +35,6 @@
   gap: 10px;
 }
 
-.sizeMd:hover:not(:disabled):not([aria-disabled='true']),
-.sizeMd.stateHover {
-  gap: 14px;
-  padding-inline-end: 20px;
-}
-
 .sizeSm {
   padding-block: 11px;
   padding-inline-start: 20px;
@@ -47,23 +42,11 @@
   gap: 8px;
 }
 
-.sizeSm:hover:not(:disabled):not([aria-disabled='true']),
-.sizeSm.stateHover {
-  gap: 11px;
-  padding-inline-end: 15px;
-}
-
 .sizeLg {
   padding-block: 16px;
   padding-inline-start: 30px;
   padding-inline-end: 28px;
   gap: 12px;
-}
-
-.sizeLg:hover:not(:disabled):not([aria-disabled='true']),
-.sizeLg.stateHover {
-  gap: 16px;
-  padding-inline-end: 24px;
 }
 
 .fullWidth {
@@ -77,21 +60,9 @@
   box-shadow: var(--shadow-button-gold);
 }
 
-.variantGold:hover:not(:disabled):not([aria-disabled='true']),
-.variantGold.stateHover {
-  background-color: var(--gold-600);
-  box-shadow: var(--shadow-button-gold-hover);
-}
-
 .variantDark {
   background-color: var(--navy-950);
   color: var(--white);
-}
-
-.variantDark:hover:not(:disabled):not([aria-disabled='true']),
-.variantDark.stateHover {
-  background-color: var(--navy-800);
-  box-shadow: var(--shadow-button-dark-hover);
 }
 
 .variantGlass {
@@ -101,19 +72,58 @@
   backdrop-filter: blur(8px);
 }
 
-.variantGlass:hover:not(:disabled):not([aria-disabled='true']),
-.variantGlass.stateHover {
-  background-color: var(--glass-white-18);
-  border-color: var(--glass-border-white-50);
-}
-
 .variantOutline {
   background-color: transparent;
   border-color: var(--navy-950);
   color: var(--navy-950);
 }
 
-.variantOutline:hover:not(:disabled):not([aria-disabled='true']),
+/*
+ * Hover state (Figma `Hover` variants + §20 catalogue 4). Real pointer hover only applies on
+ * devices with `(hover: hover) and (pointer: fine)`; the same visual state is shown on
+ * `:focus-visible` and on the forced `stateHover` styleguide class.
+ */
+@media (hover: hover) and (pointer: fine) {
+  .variantGold:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--gold-600);
+    box-shadow: var(--shadow-button-gold-hover);
+  }
+
+  .variantDark:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--navy-800);
+    box-shadow: var(--shadow-button-dark-hover);
+  }
+
+  .variantGlass:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--glass-white-18);
+    border-color: var(--glass-border-white-50);
+  }
+
+  .variantOutline:hover:not(:disabled):not([aria-disabled='true']) {
+    background-color: var(--navy-950);
+    color: var(--white);
+  }
+}
+
+.variantGold:focus-visible,
+.variantGold.stateHover {
+  background-color: var(--gold-600);
+  box-shadow: var(--shadow-button-gold-hover);
+}
+
+.variantDark:focus-visible,
+.variantDark.stateHover {
+  background-color: var(--navy-800);
+  box-shadow: var(--shadow-button-dark-hover);
+}
+
+.variantGlass:focus-visible,
+.variantGlass.stateHover {
+  background-color: var(--glass-white-18);
+  border-color: var(--glass-border-white-50);
+}
+
+.variantOutline:focus-visible,
 .variantOutline.stateHover {
   background-color: var(--navy-950);
   color: var(--white);
@@ -143,11 +153,101 @@
 }
 
 .label {
+  position: relative;
+  z-index: 1;
   display: inline-block;
 }
 
 .icon {
+  position: relative;
+  z-index: 1;
   flex-shrink: 0;
   inline-size: 18px;
   block-size: 18px;
+  transition: transform var(--motion-base) var(--ease-out);
+}
+
+/*
+ * Gold sheen (§20 catalogue 4): a soft light band sweeps once towards inline-end on hover/focus
+ * (<= 400 ms). At rest it waits off-canvas with no transition, so it snaps back invisibly.
+ */
+.variantGold::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-image: linear-gradient(
+    105deg,
+    transparent 30%,
+    var(--glass-white-18) 50%,
+    transparent 70%
+  );
+  transform: translate3d(-120%, 0, 0);
+  pointer-events: none;
+}
+
+:global([dir='rtl']) .variantGold::after {
+  transform: translate3d(120%, 0, 0);
+}
+
+/* Motion part of the hover state: lift 2 px, arrow slides 4 px towards inline-end. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .button:hover:not(:disabled):not([aria-disabled='true']) {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  .button:hover:not(:disabled):not([aria-disabled='true']) .icon {
+    transform: translate3d(var(--hover-lift), 0, 0);
+  }
+
+  :global([dir='rtl']) .button:hover:not(:disabled):not([aria-disabled='true']) .icon {
+    transform: translate3d(calc(var(--hover-lift) * -1), 0, 0);
+  }
+
+  .variantGold:hover:not(:disabled):not([aria-disabled='true'])::after {
+    transform: translate3d(120%, 0, 0);
+    transition: transform var(--motion-sheen) var(--ease-out);
+  }
+
+  :global([dir='rtl']) .variantGold:hover:not(:disabled):not([aria-disabled='true'])::after {
+    transform: translate3d(-120%, 0, 0);
+  }
+
+  /* Pressed = hover style + translateY(1px) (CTO decisions §10). */
+  .button:active:not(:disabled):not([aria-disabled='true']) {
+    transform: translate3d(0, 1px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .button:focus-visible,
+  .stateHover {
+    transform: translate3d(0, -2px, 0);
+  }
+
+  .button:focus-visible .icon,
+  .stateHover .icon {
+    transform: translate3d(var(--hover-lift), 0, 0);
+  }
+
+  :global([dir='rtl']) .button:focus-visible .icon,
+  :global([dir='rtl']) .stateHover .icon {
+    transform: translate3d(calc(var(--hover-lift) * -1), 0, 0);
+  }
+
+  .variantGold:focus-visible::after {
+    transform: translate3d(120%, 0, 0);
+    transition: transform var(--motion-sheen) var(--ease-out);
+  }
+
+  :global([dir='rtl']) .variantGold:focus-visible::after {
+    transform: translate3d(-120%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .icon {
+    transition: none;
+  }
 }

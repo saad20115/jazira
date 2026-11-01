@@ -615,7 +615,7 @@ export interface Project {
    */
   needsClientReview?: boolean | null;
   /**
-   * Internal note for staff regarding data source or items needing confirmation (not visible to public visitors).
+   * Internal admin-only note regarding data source or items needing confirmation (not visible to editors or public visitors).
    */
   reviewNote?: string | null;
   bodyMedia?: (number | Media)[] | null;

@@ -8,9 +8,22 @@
   display: flex;
   align-items: center;
   transition:
-    background-color 200ms ease,
-    box-shadow 200ms ease,
-    border-color 200ms ease;
+    background-color var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out),
+    transform var(--motion-base) var(--ease-out);
+}
+
+/*
+ * §20 catalogue 2: after 24 px of scroll the bar eases from 80 px to 72 px with transforms only
+ * (no layout change): the header slides up 8 px and its content slides down 4 px to stay centred.
+ */
+.compact {
+  transform: translate3d(0, -8px, 0);
+}
+
+.compact .inner {
+  transform: translate3d(0, 4px, 0);
 }
 
 .staticPreview {
@@ -57,6 +70,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+  transition: transform var(--motion-base) var(--ease-out);
 }
 
 .brandLink {
@@ -363,4 +377,12 @@
 .drawerLangSwitch:focus-visible {
   outline: 2px solid var(--gold-300);
   outline-offset: 2px;
+}
+
+/* Kept last so it overrides the `.navbar` and `.inner` transitions declared above. */
+@media (prefers-reduced-motion: reduce) {
+  .navbar,
+  .inner {
+    transition: none;
+  }
 }

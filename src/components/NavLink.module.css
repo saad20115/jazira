@@ -27,11 +27,16 @@
   opacity: 0.82;
 }
 
-.themeDark:hover,
 .themeDark:focus-visible,
 .themeDark.stateHover,
 .themeDark.stateActive {
   opacity: 1;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .themeDark:hover {
+    opacity: 1;
+  }
 }
 
 .stateActive {
@@ -45,24 +50,42 @@
   display: inline-block;
 }
 
+/*
+ * §20 catalogue 5: the gold underline grows from inline-start with `scaleX` (transform only);
+ * the active link keeps it.
+ */
 .underline {
   display: block;
-  inline-size: 0;
+  inline-size: 100%;
   block-size: 2px;
   border-radius: var(--radius-pill);
   background-color: var(--gold-500);
-  opacity: 0;
-  transition:
-    inline-size 180ms ease,
-    opacity 180ms ease;
+  transform: scaleX(0);
+  transform-origin: 0% 50%;
+  transition: transform var(--motion-base) var(--ease-out);
 }
 
-.navLink:hover .underline,
+:global([dir='rtl']) .underline {
+  transform-origin: 100% 50%;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .navLink:hover .underline {
+    transform: scaleX(1);
+  }
+}
+
 .navLink:focus-visible .underline,
 .stateHover .underline,
 .stateActive .underline {
-  inline-size: 100%;
-  opacity: 1;
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .navLink,
+  .underline {
+    transition: none;
+  }
 }
 
 .navLink:focus-visible {

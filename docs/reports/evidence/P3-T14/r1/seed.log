@@ -1,0 +1,37 @@
+$ pwd
+D:\aljazira-p3-t14-dod-20261028-150840
+$ git rev-parse HEAD
+bf6e101acfe46e949910b4e9e4941fd752042ad7
+$ git status --porcelain
+(clean)
+$ pnpm seed
+if ($LASTEXITCODE -ne 0) { throw "pnpm seed failed with $LASTEXITCODE" }
+
+> aljazira-website@0.1.0 seed D:\aljazira-p3-t14-dod-20261028-150840
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===
+mode: first-run baseline
+brands: created=83, deleted=0, updated=0, unchanged=0, total=83
+materials: created=73, deleted=0, updated=0, unchanged=0, total=73
+systemCounts: electrical=20, mechanical=37, structural=8, architectural=8
+everyMaterialHasAtLeastOneBrand: true (minBrandsPerMaterial=1)
+normalizationsApplied: 126 distinct rule applications
+figmaPartnerMappings: 4 Figma↔raw partner display mappings
+needsClientReview: 33 items flagged
+arabicDrafts: 73 rows drafted
+updatedAtDigestSha256: efb5339bb6d0b5e35df9be7a926a40758515a9b954fc81f9f7ed2629e66fed90
+=== AL JAZIRA SEED SUMMARY (P4-T2: SETTINGS, SERVICES, PROJECTS, MARQUEE, COPY, PLACEHOLDERS) ===
+mode: first-run baseline
+media: projectPhotos=17, designAssets=9, total=26
+marqueeBrands: created=16, existingMatched=4, oldCleared=16, totalMarquee=20, totalBrands=99
+stats: created=5
+services: createdDraft=10
+projects: publishedWithPhoto=17, draftWithoutPhoto=74, featured=6, total=91
+teamPlaceholders: createdInactive=13
+globals: site-settings=seeded(arabicEnabled=false), navigation=seeded, draftPageGlobals=home-page,services-page,about-page,projects-page,contact-page,privacy-page
+homeCopySource: design/copy/01-home.md
+p4t2UpdatedAtDigestSha256: ff16902143a20b279890d0a202976b5617ef5f5482cfc7b535dc5dee492f50c7
+
+[exit_code=0]
+GATE: PASS

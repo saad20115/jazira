@@ -110,7 +110,7 @@ export const OWNER_MARQUEE_BRANDS_20: readonly MarqueeBrandSpec[] = [
   {
     order: 8,
     name: 'Zamil Air Conditioners',
-    matchExistingNames: ['Zamil Air Conditioners'],
+    matchExistingNames: ['Zamil Air Conditioners', 'Zamil'],
     originEn: 'Saudi Arabia',
     originAr: 'المملكة العربية السعودية',
   },
@@ -224,8 +224,8 @@ export const SEED_STATS_5: readonly SeedStatSpec[] = [
     key: 'projects',
     order: 2,
     value: '100+',
-    labelEn: 'Completed Projects',
-    labelAr: 'مشروعاً منجزاً',
+    labelEn: 'Buildings Delivered',
+    labelAr: 'مبنى تم تسليمه',
   },
   {
     key: 'selfPerformed',
@@ -690,23 +690,27 @@ export function mapRawProjectScope(rawScope: string): {
   scope: ProjectScope[]
   scopeSummaryEn: string
   scopeSummaryAr: string
+  ambiguousScopeQuestion: string | null
 } {
   const trimmed = rawScope.trim()
   switch (trimmed) {
     case 'MEP':
       return {
         category: 'mep',
-        scope: ['mep', 'hvac', 'electrical', 'plumbing', 'fire-fighting'],
-        scopeSummaryEn: 'Full MEP Works',
-        scopeSummaryAr: 'أعمال الكهروميكانيك المتكاملة (MEP)',
+        scope: ['mep'],
+        scopeSummaryEn: 'MEP',
+        scopeSummaryAr: 'أعمال الكهروميكانيك (MEP)',
+        ambiguousScopeQuestion:
+          'Raw scope is "MEP"; confirm specific sub-disciplines (HVAC, electrical, plumbing, fire fighting) delivered on this project.',
       }
     case 'MEP Upgrade':
     case 'MEP- Upgrad':
       return {
         category: 'mep',
-        scope: ['mep', 'hvac', 'electrical', 'plumbing'],
+        scope: ['mep'],
         scopeSummaryEn: 'MEP Upgrade',
         scopeSummaryAr: 'تحديث أنظمة الكهروميكانيك (MEP)',
+        ambiguousScopeQuestion: `Raw scope is "${trimmed}"; confirm specific sub-disciplines upgraded on this project.`,
       }
     case 'Low Current SCS':
       return {
@@ -714,6 +718,7 @@ export function mapRawProjectScope(rawScope: string): {
         scope: ['low-current'],
         scopeSummaryEn: 'Low Current SCS',
         scopeSummaryAr: 'أنظمة التيار الخفيف والكابلات الهيكلية (SCS)',
+        ambiguousScopeQuestion: null,
       }
     case 'Low Current Systems':
       return {
@@ -721,6 +726,7 @@ export function mapRawProjectScope(rawScope: string): {
         scope: ['low-current'],
         scopeSummaryEn: 'Low Current Systems',
         scopeSummaryAr: 'أنظمة التيار الخفيف',
+        ambiguousScopeQuestion: null,
       }
     case 'Structured Cabling':
       return {
@@ -728,6 +734,7 @@ export function mapRawProjectScope(rawScope: string): {
         scope: ['low-current'],
         scopeSummaryEn: 'Structured Cabling',
         scopeSummaryAr: 'شبكات الكابلات الهيكلية',
+        ambiguousScopeQuestion: null,
       }
     case 'Video Wall':
       return {
@@ -735,27 +742,33 @@ export function mapRawProjectScope(rawScope: string): {
         scope: ['low-current'],
         scopeSummaryEn: 'Video Wall',
         scopeSummaryAr: 'شاشات العرض الجدارية (Video Wall)',
+        ambiguousScopeQuestion: null,
       }
     case 'Data & Low Current Systems':
       return {
         category: 'low-current',
-        scope: ['low-current', 'data-center'],
+        scope: ['low-current'],
         scopeSummaryEn: 'Data & Low Current Systems',
         scopeSummaryAr: 'أنظمة البيانات والتيار الخفيف',
+        ambiguousScopeQuestion:
+          'Raw scope is "Data & Low Current Systems"; mapped to low-current only (confirm if data-center discipline also applies).',
       }
     case 'Data Center MEP':
       return {
         category: 'data-center',
-        scope: ['data-center', 'mep', 'hvac', 'electrical', 'fire-fighting', 'low-current'],
+        scope: ['data-center', 'mep'],
         scopeSummaryEn: 'Data Center MEP',
         scopeSummaryAr: 'أعمال الكهروميكانيك لمراكز البيانات',
+        ambiguousScopeQuestion:
+          'Raw scope is "Data Center MEP"; mapped to data-center and mep only (confirm specific sub-disciplines).',
       }
     case 'Fire Fighting':
       return {
         category: 'fire-fighting',
         scope: ['fire-fighting'],
-        scopeSummaryEn: 'Fire Fighting Systems',
-        scopeSummaryAr: 'أنظمة مكافحة الحريق',
+        scopeSummaryEn: 'Fire Fighting',
+        scopeSummaryAr: 'مكافحة الحريق',
+        ambiguousScopeQuestion: null,
       }
     case 'Fire Alarm System':
       return {
@@ -763,6 +776,7 @@ export function mapRawProjectScope(rawScope: string): {
         scope: ['fire-fighting'],
         scopeSummaryEn: 'Fire Alarm System',
         scopeSummaryAr: 'نظام إنذار الحريق',
+        ambiguousScopeQuestion: null,
       }
     case 'Fire Alarm & CCTV':
       return {
@@ -770,21 +784,19 @@ export function mapRawProjectScope(rawScope: string): {
         scope: ['fire-fighting', 'low-current'],
         scopeSummaryEn: 'Fire Alarm & CCTV',
         scopeSummaryAr: 'إنذار الحريق وكاميرات المراقبة (CCTV)',
+        ambiguousScopeQuestion: null,
       }
     case 'Civil & MEP':
       return {
         category: 'civil-mep',
-        scope: ['civil', 'mep', 'hvac', 'electrical', 'plumbing'],
-        scopeSummaryEn: 'Civil & MEP Works',
+        scope: ['civil', 'mep'],
+        scopeSummaryEn: 'Civil & MEP',
         scopeSummaryAr: 'الأعمال المدنية والكهروميكانيكية',
+        ambiguousScopeQuestion:
+          'Raw scope is "Civil & MEP"; mapped to civil and mep only (confirm specific MEP sub-disciplines).',
       }
     default:
-      return {
-        category: 'mep',
-        scope: ['mep'],
-        scopeSummaryEn: trimmed || 'MEP Works',
-        scopeSummaryAr: 'أعمال الكهروميكانيك (MEP)',
-      }
+      throw new Error(`Unrecognized raw project scope: "${rawScope}"`)
   }
 }
 

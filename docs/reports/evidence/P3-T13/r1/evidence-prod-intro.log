@@ -1,0 +1,20 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ node scripts/evidence/p3-t13-evidence.mjs --mode=prod-intro http://localhost:3000 "D:\jazira\docs\reports\evidence\P3-T13\r1" "D:\jazira\docs\reports\phase-3\P3-T13\r1"
+[P3-T4 Evidence] Seeding CMS via Payload REST API at http://localhost:3000...
+[P3-T4 Evidence] CMS seeded and published in ar and en.
+[P3-T13 Evidence] Note (M-171 #1): 32/54 runs had >1 rAF frames between decision rAF and FP, and 68 strict timing threshold findings due to the fpMs - decisionMs gap; recorded in D:\jazira\docs\reports\evidence\P3-T13\r1\intro-verification.log for Questions for CTO.
+[P3-T13 Evidence] Running COLD Google Lighthouse mobile audit (warmImages=false) on http://localhost:3000/ar...
+[P3-T13 Evidence] Running WARM Google Lighthouse mobile audit (warmImages=true) on http://localhost:3000/ar...
+[P3-T13 Evidence] Running COLD Google Lighthouse mobile audit (warmImages=false) on http://localhost:3000/en...
+[P3-T13 Evidence] Running WARM Google Lighthouse mobile audit (warmImages=true) on http://localhost:3000/en...
+[P3-T13 Evidence] All P3-T13 r1 evidence generated in D:\jazira\docs\reports\evidence\P3-T13\r1 (logs) and D:\jazira\docs\reports\phase-3\P3-T13\r1 (images/videos)
+
+[exit_code=0]
+GATE: PASS

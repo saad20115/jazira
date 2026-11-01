@@ -719,9 +719,10 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(resolved?.url).toBe('/api/media/file/hero-city-1376x768.webp')
     })
 
-    it('enforces R-1 carousel padding-inline-start/end, R-20 430px/1300px geometry, R-4 pre-paint inline script in LocaleRootLayout <head>, R-14 default hidden overlay, and R-15 <=1.6s navigationStart hard cap', async () => {
-      // 1. R-4 + R-20: Render LocaleRootLayout and verify <head> injects the nonce-bearing INTRO_PREPAINT_INLINE_SCRIPT
-      //    (fails immediately if INTRO_PREPAINT_INLINE_SCRIPT is removed from src/app/(frontend)/[locale]/layout.tsx)
+    it('enforces R-1 carousel padding-inline-start/end, R-20 430px/1300px geometry, R-37 overlay + sync script first in home <body>, R-14 default hidden overlay, and R-36 1100ms threshold', async () => {
+      // 1. R-4 + R-20 + R-37: Render LocaleRootLayout on home (/en) and verify <body> outputs
+      //    <IntroSplash> as the very first element, followed immediately by the nonce-bearing
+      //    INTRO_PREPAINT_INLINE_SCRIPT, before the skip link and <header>.
       const layoutElement = await LocaleRootLayout({
         children: React.createElement('div', { 'data-testid': 'home-child' }, 'Child'),
         params: Promise.resolve({ locale: 'en' }),
@@ -730,11 +731,24 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         children: Array<React.ReactElement<{ children?: React.ReactNode }> | null>
       }
       const headElement = layoutProps.children.find((el) => el && el.type === 'head')
+      const bodyElement = layoutProps.children.find((el) => el && el.type === 'body')
       expect(headElement).toBeDefined()
+      expect(bodyElement).toBeDefined()
       const headMarkup = renderToStaticMarkup(headElement as React.ReactElement)
-      expect(headMarkup).toContain('nonce="test-csp-nonce-r4"')
-      expect(headMarkup).toContain(INTRO_SPLASH_STORAGE_KEY)
-      expect(headMarkup).toContain("setAttribute('data-intro','active')")
+      const bodyMarkup = renderToStaticMarkup(bodyElement as React.ReactElement)
+      expect(headMarkup).not.toContain(INTRO_SPLASH_STORAGE_KEY)
+      expect(bodyMarkup).toContain('nonce="test-csp-nonce-r4"')
+      expect(bodyMarkup).toContain(INTRO_SPLASH_STORAGE_KEY)
+      expect(bodyMarkup).toContain("setAttribute('data-intro','active')")
+
+      const overlayIdx = bodyMarkup.indexOf('data-component="intro-splash"')
+      const scriptIdx = bodyMarkup.indexOf(INTRO_SPLASH_STORAGE_KEY)
+      const skipLinkIdx = bodyMarkup.indexOf('<a href="#main-content"')
+      const headerIdx = bodyMarkup.indexOf('<header')
+      expect(overlayIdx).toBeGreaterThan(0)
+      expect(scriptIdx).toBeGreaterThan(overlayIdx)
+      expect(skipLinkIdx).toBeGreaterThan(scriptIdx)
+      expect(headerIdx).toBeGreaterThan(skipLinkIdx)
 
       // 2. R-1 + R-20: Verify .carouselOuter in page.module.css has padding-inline-start: var(--container-gutter)
       //    and ServicesCarousel.module.css has 430px height (340 + 40 + 50) and 140px inline-end padding
@@ -788,17 +802,44 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         /animation\s*:\s*introOverlayTimeline\s+1200ms\s+linear\s+var\(--intro-delay,\s*0ms\)\s+forwards/,
       )
 
-      // 4. R-22, R-26, R-27, R-28, R-29:
-      //    - R-26: page.module.css and globals.css never hide content or footer behind html[data-intro='active']
-      //    - R-27: inline script decides inside requestAnimationFrame using rafTs <= 1200ms and starts from 0ms
-      //    - R-28: .heroGoldGlow and .glow both include filter: blur(48px)
-      //    - R-29: inline script sets inert on background landmarks (including skip link) and moves focus to #main-content
+      // 4. Static stylesheet & script rule check for R-22, R-26, R-27, R-28, R-29, R-36, R-37, R-41:
+      //    - Static CSS rule check across src/**/*.css: no stylesheet outside IntroSplash.module.css
+      //      references data-intro or :has(.overlay), and no rule in IntroSplash.module.css (including
+      //      multiline selectors, :has(), or [data-home-content]) targets body/main/header/footer/section/homeContent.
       const globalsCss = fs.readFileSync(
         path.resolve(process.cwd(), 'src/styles/globals.css'),
         'utf8',
       )
-      expect(pageModuleCss).not.toContain("data-intro='active'")
-      expect(globalsCss).not.toContain("data-intro='active'")
+      expect(pageModuleCss).not.toContain('data-intro')
+      expect(globalsCss).not.toContain('data-intro')
+      expect(introSplashCss).not.toContain("data-intro='pending'")
+      expect(introSplashCss).not.toContain('data-intro="pending"')
+      expect(introSplashCss).not.toContain(':has(')
+      expect(introSplashCss).not.toMatch(
+        /(?:data-intro|:has\()[\s\S]*?(?:\b(?:body|main|header|footer|section|homeContent)\b|data-home-content|#main-content)[\s\S]*?\{/,
+      )
+
+      const collectCssFiles = (dir: string): string[] => {
+        const out: string[] = []
+        for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+          const full = path.join(dir, entry.name)
+          if (entry.isDirectory()) {
+            out.push(...collectCssFiles(full))
+          } else if (entry.name.endsWith('.css')) {
+            out.push(full)
+          }
+        }
+        return out
+      }
+      for (const cssFile of collectCssFiles(path.resolve(process.cwd(), 'src'))) {
+        const cssText = fs.readFileSync(cssFile, 'utf8')
+        expect(cssText).not.toContain("data-intro='pending'")
+        expect(cssText).not.toContain('data-intro="pending"')
+        if (!cssFile.replace(/\\/g, '/').endsWith('src/components/IntroSplash.module.css')) {
+          expect(cssText).not.toContain('data-intro')
+          expect(cssText).not.toContain(':has(.overlay)')
+        }
+      }
 
       const heroGoldGlowRule = pageModuleCss.match(/\.heroGoldGlow\s*\{([^}]*)\}/)?.[1] ?? ''
       const introGlowRule = introSplashCss.match(/\.glow\s*\{([^}]*)\}/)?.[1] ?? ''
@@ -806,11 +847,16 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(introGlowRule).toMatch(/filter\s*:\s*blur\(48px\)/)
 
       expect(INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(1600)
-      expect(INTRO_MAX_FIRST_PAINT_MS).toBe(1200)
+      expect(INTRO_MAX_FIRST_PAINT_MS).toBe(1100)
       expect(INTRO_MAX_FIRST_PAINT_MS + INTRO_TOTAL_DURATION_MS).toBeLessThanOrEqual(2500)
       expect(INTRO_PREPAINT_INLINE_SCRIPT.match(/requestAnimationFrame/g)?.length).toBe(1)
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('painted')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('pending')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('MutationObserver')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('getComputedStyle')
+      expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toMatch(
+        /\.style\.(?:visibility|display|opacity|contentVisibility)\b/,
+      )
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('performance.now()')
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain("setProperty('--intro-delay','0ms')")
       expect(INTRO_PREPAINT_INLINE_SCRIPT).toContain('body > a[href="#main-content"]')
@@ -820,20 +866,32 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(INTRO_PREPAINT_INLINE_SCRIPT).not.toContain('setInterval')
     })
 
-    it('executes INTRO_PREPAINT_INLINE_SCRIPT in a single rAF before first paint (R-31, R-32) and never touches aljazira_intro_seen on non-home pages or when overlay is absent (R-34)', () => {
+    it('executes INTRO_PREPAINT_INLINE_SCRIPT in VM: sets active provisionally, decides on performance.now() in the single rAF against 1100ms (R-36), re-applies inert at DOMContentLoaded (R-37), and respects R-34', () => {
       const runInlineScriptScenario = ({
         pathname,
         hasOverlay,
+        scriptNowMs = 120,
         rafTs,
+        callbackNowMs = rafTs,
+        readyState = 'complete',
+        landmarksParsedAtSync = true,
       }: {
         pathname: string
         hasOverlay: boolean
+        scriptNowMs?: number
         rafTs: number
+        callbackNowMs?: number
+        readyState?: 'loading' | 'complete'
+        landmarksParsedAtSync?: boolean
       }) => {
         const attrs = new Map<string, string>()
+        const dataIntroHistory: string[] = []
         const inertSet = new Set<string>()
         const storage = new Map<string, string>()
         const rafCallbacks: Array<(ts: number) => void> = []
+        const dclListeners: Array<() => void> = []
+        let landmarksParsed = landmarksParsedAtSync
+        let currentNow = scriptNowMs
 
         const makeEl = (tag: string) => ({
           dataset: {} as Record<string, string>,
@@ -845,6 +903,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           },
           addEventListener: () => undefined,
           focus: () => undefined,
+          getAnimations: () => [],
         })
 
         const overlayEl = makeEl('overlay')
@@ -853,10 +912,15 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         const landmarkEl = makeEl('landmark')
 
         const fakeDoc = {
-          readyState: 'interactive',
+          readyState,
           documentElement: {
             style: { setProperty: () => undefined },
-            setAttribute: (k: string, v: string) => attrs.set(k, v),
+            setAttribute: (k: string, v: string) => {
+              attrs.set(k, v)
+              if (k === 'data-intro') {
+                dataIntroHistory.push(v)
+              }
+            },
             getAttribute: (k: string) => attrs.get(k) ?? null,
           },
           querySelector: (sel: string) => {
@@ -868,9 +932,13 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
             }
             return null
           },
-          querySelectorAll: () => [landmarkEl],
+          querySelectorAll: () => (landmarksParsed ? [landmarkEl] : []),
           getElementById: (id: string) => (id === 'main-content' ? mainEl : null),
-          addEventListener: () => undefined,
+          addEventListener: (ev: string, cb: () => void) => {
+            if (ev === 'DOMContentLoaded') {
+              dclListeners.push(cb)
+            }
+          },
         }
 
         const fakeWin: Record<string, unknown> = {
@@ -887,7 +955,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
           addEventListener: () => undefined,
         }
 
-        const fakePerf = { now: () => Math.min(rafTs, 80) }
+        const fakePerf = { now: () => currentNow }
         vm.runInNewContext(INTRO_PREPAINT_INLINE_SCRIPT, {
           window: fakeWin,
           document: fakeDoc,
@@ -895,56 +963,113 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         })
 
         const rafCountAfterSync = rafCallbacks.length
+        const dataIntroAfterSync = attrs.get('data-intro') ?? null
+        const seenFlagAfterSync = storage.get(INTRO_SPLASH_STORAGE_KEY) ?? null
+        const inertAfterSync = inertSet.has('landmark')
+
+        currentNow = callbackNowMs
         if (rafCallbacks[0]) {
           rafCallbacks[0](rafTs)
         }
+        const inertAfterRaf = inertSet.has('landmark')
+
+        landmarksParsed = true
+        fakeDoc.readyState = 'complete'
+        for (const dclCb of dclListeners) {
+          dclCb()
+        }
+
         return {
           rafCountAfterSync,
           rafCountAfterFirstFrame: rafCallbacks.length,
+          dataIntroAfterSync,
+          seenFlagAfterSync,
+          inertAfterSync,
+          inertAfterRaf,
           dataIntro: attrs.get('data-intro') ?? null,
+          dataIntroHistory,
           seenFlag: storage.get(INTRO_SPLASH_STORAGE_KEY) ?? null,
           inertApplied: inertSet.has('landmark'),
           decision: fakeWin.__aljaziraIntroDecision as
-            { action: string; rafMs: number } | undefined,
+            { action: string; rafMs: number; nowMs: number } | undefined,
         }
       }
 
-      // 1. Home page (/en) with overlay and rafTs <= 1200 -> active in 1st rAF, no 2nd rAF (R-31, R-32)
+      // 1. Home page (/en) fast load: sync sets provisional 'active' without writing aljazira_intro_seen,
+      //    then 1st rAF (callbackNowMs <= 1100) keeps 'active' and writes aljazira_intro_seen (R-31, R-32, R-36, R-37)
       const homeFast = runInlineScriptScenario({
         pathname: '/en',
         hasOverlay: true,
-        rafTs: 420,
+        scriptNowMs: 180,
+        rafTs: 240,
+        callbackNowMs: 420,
       })
       expect(homeFast.rafCountAfterSync).toBe(1)
       expect(homeFast.rafCountAfterFirstFrame).toBe(1)
+      expect(homeFast.dataIntroAfterSync).toBe('active')
+      expect(homeFast.seenFlagAfterSync).toBeNull()
       expect(homeFast.dataIntro).toBe('active')
+      expect(homeFast.dataIntroHistory).not.toContain('pending')
       expect(homeFast.seenFlag).toBe('1')
       expect(homeFast.inertApplied).toBe(true)
       expect(homeFast.decision?.action).toBe('active')
-      expect(homeFast.decision?.rafMs).toBe(420)
+      expect(homeFast.decision?.nowMs).toBe(420)
+      expect(homeFast.decision?.rafMs).toBe(240)
 
-      // 2. Home page (/ar) with overlay and rafTs = 1200 (boundary <= 1200) -> active (R-32)
+      // 2. Boundary: callbackNowMs = 1100 (<= 1100) -> active; callbackNowMs = 1101 (> 1100) -> skipped (R-36)
       const homeBoundary = runInlineScriptScenario({
         pathname: '/ar',
         hasOverlay: true,
-        rafTs: 1200,
+        rafTs: 900,
+        callbackNowMs: 1100,
       })
       expect(homeBoundary.dataIntro).toBe('active')
       expect(homeBoundary.decision?.action).toBe('active')
 
-      // 3. Home page (/en) with overlay and rafTs > 1200 -> skipped_late_first_paint in 1st rAF (R-32)
-      const homeSlow = runInlineScriptScenario({
+      const homeOverBoundary = runInlineScriptScenario({
         pathname: '/en',
         hasOverlay: true,
-        rafTs: 1201,
+        rafTs: 900,
+        callbackNowMs: 1101,
       })
-      expect(homeSlow.rafCountAfterFirstFrame).toBe(1)
-      expect(homeSlow.dataIntro).toBe('seen')
-      expect(homeSlow.seenFlag).toBe('1')
-      expect(homeSlow.inertApplied).toBe(false)
-      expect(homeSlow.decision?.action).toBe('skipped_late_first_paint')
+      expect(homeOverBoundary.dataIntro).toBe('seen')
+      expect(homeOverBoundary.seenFlag).toBe('1')
+      expect(homeOverBoundary.inertApplied).toBe(false)
+      expect(homeOverBoundary.decision?.action).toBe('skipped_late_first_paint')
 
-      // 4. Non-home page (/en/services) slow (> 1200) or fast (<= 1200) -> never writes aljazira_intro_seen (R-34)
+      // 3. Stale rafTs regression check (R-36, R-41): rafTs = 960 (<= 1100) but callback performance.now() = 1480 (> 1100)
+      //    must skip based on performance.now() read inside the callback, not the stale rafTs argument.
+      const staleRafClock = runInlineScriptScenario({
+        pathname: '/ar',
+        hasOverlay: true,
+        scriptNowMs: 380,
+        rafTs: 960,
+        callbackNowMs: 1480,
+      })
+      expect(staleRafClock.dataIntro).toBe('seen')
+      expect(staleRafClock.inertApplied).toBe(false)
+      expect(staleRafClock.decision?.action).toBe('skipped_late_first_paint')
+      expect(staleRafClock.decision?.rafMs).toBe(960)
+      expect(staleRafClock.decision?.nowMs).toBe(1480)
+
+      // 4. DOMContentLoaded landmark inert re-application (R-29, R-37, R-41): when the sync script runs at the
+      //    start of <body> while readyState === 'loading' and landmarks are not yet in the DOM, DOMContentLoaded
+      //    applies inert once the landmarks are parsed.
+      const homeLoadingDcl = runInlineScriptScenario({
+        pathname: '/en',
+        hasOverlay: true,
+        scriptNowMs: 150,
+        rafTs: 310,
+        callbackNowMs: 480,
+        readyState: 'loading',
+        landmarksParsedAtSync: false,
+      })
+      expect(homeLoadingDcl.inertAfterSync).toBe(false)
+      expect(homeLoadingDcl.inertAfterRaf).toBe(false)
+      expect(homeLoadingDcl.inertApplied).toBe(true)
+      expect(homeLoadingDcl.dataIntro).toBe('active')
+
+      // 5. Non-home page (/en/services) slow or fast -> never touches aljazira_intro_seen or data-intro (R-34)
       const servicesSlow = runInlineScriptScenario({
         pathname: '/en/services',
         hasOverlay: false,
@@ -954,12 +1079,13 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       expect(servicesSlow.seenFlag).toBeNull()
       expect(servicesSlow.dataIntro).toBeNull()
 
-      // 5. Home page without overlay present -> never writes aljazira_intro_seen (R-34)
+      // 6. Home page without overlay present -> never touches aljazira_intro_seen or data-intro (R-34)
       const homeNoOverlay = runInlineScriptScenario({
         pathname: '/en',
         hasOverlay: false,
         rafTs: 1600,
       })
+      expect(homeNoOverlay.rafCountAfterSync).toBe(0)
       expect(homeNoOverlay.seenFlag).toBeNull()
       expect(homeNoOverlay.dataIntro).toBeNull()
     })

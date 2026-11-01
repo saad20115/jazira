@@ -34,9 +34,8 @@
 }
 
 @keyframes introLogoTimeline {
-  0%,
-  3% {
-    opacity: 0;
+  0% {
+    opacity: 0.08;
     transform: scale(0.68);
   }
   18%,

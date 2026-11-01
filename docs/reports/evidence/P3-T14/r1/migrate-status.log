@@ -1,0 +1,30 @@
+$ pwd
+D:\aljazira-p3-t14-dod-20261028-150840
+$ git rev-parse HEAD
+bf6e101acfe46e949910b4e9e4941fd752042ad7
+$ git status --porcelain
+(clean)
+$ pnpm payload migrate:status
+
+> aljazira-website@0.1.0 payload D:\aljazira-p3-t14-dod-20261028-150840
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:status"
+
+[15:15:07] INFO: Reading migration files from D:\aljazira-p3-t14-dod-20261028-150840\src\migrations
+┌─────────────────────────────────────────────────────┬───────┬─────┐
+│                                                Name │ Batch │ Ran │
+├─────────────────────────────────────────────────────┼───────┼─────┤
+│                 20261021_074848_initial_users_media │     1 │ Yes │
+│ 20261022_120943_p2_t2_videos_brands_stats_materials │     1 │ Yes │
+│                 20261022_140011_p2_t3_services_team │     1 │ Yes │
+│                      20261022_160652_p2_t4_projects │     1 │ Yes │
+│                       20261022_221250_p2_t5_globals │     1 │ Yes │
+│                20261022_231435_p2_t6_quote_requests │     1 │ Yes │
+│  20261023_005934_p2_t6_quote_requests_service_title │     1 │ Yes │
+│  20261024_104400_p3_t4_r2_title_accent_and_stats_bg │     1 │ Yes │
+│ 20261024_195628_p3_t12_site_settings_arabic_enabled │     1 │ Yes │
+│        20261025_002404_p4_t2_projects_review_fields │     1 │ Yes │
+└─────────────────────────────────────────────────────┴───────┴─────┘
+[15:15:07] INFO: Done.
+
+[exit_code=0]
+GATE: PASS

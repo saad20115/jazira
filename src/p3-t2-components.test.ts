@@ -418,7 +418,10 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       expect(collapsedHtml).toContain('aria-expanded="false"')
       expect(collapsedHtml).toContain('aria-controls="acc-1-panel"')
       expect(collapsedHtml).toContain('id="acc-1-panel"')
-      expect(collapsedHtml).toContain('hidden=""')
+      // P3-T14 (§20 catalogue 8): the collapsed panel is `inert` + `visibility: hidden` (CSS) instead
+      // of `hidden`, so its height can animate; it stays out of the tab order and the a11y tree.
+      expect(collapsedHtml).toContain('inert=""')
+      expect(collapsedHtml).toContain('data-accordion-panel="Collapsed"')
       expect(collapsedHtml).toContain('Show details')
 
       const expandedHtml = renderToStaticMarkup(
@@ -434,7 +437,8 @@ describe('P3-T2 — Shell & primitives + styleguide route', () => {
       expect(expandedHtml).toContain('data-accordion-state="Expanded"')
       expect(expandedHtml).toContain('aria-expanded="true"')
       expect(expandedHtml).toContain('aria-controls="acc-2-panel"')
-      expect(expandedHtml).not.toContain('hidden=""')
+      expect(expandedHtml).not.toContain('inert=""')
+      expect(expandedHtml).toContain('data-accordion-panel="Expanded"')
       expect(expandedHtml).toContain('Hide details')
 
       const listHtml = renderToStaticMarkup(

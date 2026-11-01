@@ -756,3 +756,84 @@
     display: none;
   }
 }
+
+/* ==========================================================================
+   Motion (P3-T14, `docs/05-design.md` CTO decision #20). Only transform / opacity are animated;
+   nothing here hides content. Reveal states live in `src/styles/motion.css`.
+   ========================================================================== */
+
+@keyframes heroSettle {
+  from {
+    transform: scale(1.06);
+  }
+}
+
+@keyframes heroParallax {
+  to {
+    transform: translate3d(0, 8%, 0);
+  }
+}
+
+@keyframes scrollCue {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, 6px, 0);
+  }
+}
+
+@keyframes ctaDrift {
+  from {
+    transform: translate3d(-8%, -4%, 0);
+  }
+
+  to {
+    transform: translate3d(8%, 4%, 0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* §20 catalogue 3: the hero background settles from 1.06 to 1 on first view. Pure CSS, scale
+     only (never hidden); Home CSS must not key anything to the intro state (P3-T4 R-26 guard). */
+  .heroBgMedia {
+    animation: heroSettle var(--motion-hero-settle) var(--ease-out) both;
+  }
+
+  /* §20 catalogue 3: the "scroll to explore" cue loops gently once motion is on. */
+  :global(html[data-motion='on']) .scrollHintIcon {
+    animation: scrollCue 2400ms var(--ease-in-out) infinite;
+  }
+
+  /* §20 catalogue 12: a very slow gold glow drifts across the CTA band (16 s loop), paused while
+     the band is off-screen (`data-inview` is set by the shared observer). Rendered only while
+     motion is on, so the static (no-JS / reduced-motion) CTA matches the design exactly. */
+  :global(html[data-motion='on']) .ctaBgLayer::after {
+    content: '';
+    position: absolute;
+    inset: -30%;
+    background-image: var(--gradient-hero-gold-glow);
+    opacity: 0.35;
+    pointer-events: none;
+    animation: ctaDrift var(--motion-cta-drift) var(--ease-in-out) infinite alternate;
+    animation-play-state: paused;
+  }
+
+  :global(html[data-motion='on']) .ctaBgLayer[data-inview='true']::after {
+    animation-play-state: running;
+  }
+}
+
+/* §20 catalogue 3 (optional): parallax of the hero background (<= 8%) where scroll-driven
+   animations are supported; elsewhere there is none. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html[data-motion='on']) .heroMediaLayer {
+      animation: heroParallax linear both;
+      animation-timeline: view();
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}

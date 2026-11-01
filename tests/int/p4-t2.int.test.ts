@@ -46,6 +46,26 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       DELETE FROM "_privacy_page_v";
       DELETE FROM "privacy_page";
     `)
+
+    await clearGlobalsReferencesBeforeReseed(payload)
+    for (const collection of [
+      'projects',
+      'services',
+      'team',
+      'stats',
+      'materials',
+      'brands',
+      'videos',
+      'media',
+    ] as const) {
+      await payload.delete({
+        collection,
+        where: { id: { exists: true } },
+        context: { disableRevalidate: true },
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      })
+    }
   }, 120_000)
 
   afterAll(async () => {
@@ -82,11 +102,11 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       total: 26,
     })
     expect(summary.marqueeBrands).toEqual({
-      created: 17,
-      existingMatched: 3,
-      oldCleared: 17,
+      created: 16,
+      existingMatched: 4,
+      oldCleared: 16,
       totalMarquee: 20,
-      totalBrands: 100,
+      totalBrands: 99,
     })
     expect(summary.statsCreated).toBe(5)
     expect(summary.servicesCreatedDraft).toBe(10)
@@ -161,7 +181,97 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     expect(homeAr.interactiveSystems?.systems?.map((s) => s.title)).toEqual(
       DEFAULT_INTERACTIVE_SYSTEMS_AR.map((s) => s.title),
     )
+    expect(homeEn.interactiveSystems?.relatedProjectsLabel).toBe('Related projects')
+    expect(homeAr.interactiveSystems?.relatedProjectsLabel).toBe('مشاريع ذات صلة')
     expect(homeEn.statsSection?.backgroundImage).toBeTruthy()
+
+    // D-10: Exactly one Zamil brand exists ("Zamil Air Conditioners"), and no separate "Zamil" brand remains
+    const zamilBrands = await payload.find({
+      collection: 'brands',
+      where: { name: { contains: 'Zamil' } },
+      limit: 10,
+      depth: 0,
+      locale: 'en',
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    expect(zamilBrands.docs.map((b) => b.name)).toEqual(['Zamil Air Conditioners'])
+
+    // D-01: Verify live globals/stats and draft globals contain zero owner-rejected claims
+    const [navEn, navAr, statsEn, aboutEn, aboutAr, projectsPageEn, projectsPageAr] =
+      await Promise.all([
+        payload.findGlobal({
+          slug: 'navigation',
+          locale: 'en',
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+        payload.findGlobal({
+          slug: 'navigation',
+          locale: 'ar',
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+        payload.find({
+          collection: 'stats',
+          sort: 'order',
+          limit: 20,
+          locale: 'en',
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+        payload.findGlobal({
+          slug: 'about-page',
+          locale: 'en',
+          draft: true,
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+        payload.findGlobal({
+          slug: 'about-page',
+          locale: 'ar',
+          draft: true,
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+        payload.findGlobal({
+          slug: 'projects-page',
+          locale: 'en',
+          draft: true,
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+        payload.findGlobal({
+          slug: 'projects-page',
+          locale: 'ar',
+          draft: true,
+          overrideAccess: false,
+          user: SEED_ADMIN_USER,
+        }),
+      ])
+
+    const liveAndDraftCopyBlob = JSON.stringify({
+      siteSettingsEn,
+      siteSettingsAr,
+      navEn,
+      navAr,
+      statsEn: statsEn.docs,
+      aboutEn,
+      aboutAr,
+      projectsPageEn,
+      projectsPageAr,
+    })
+    expect(liveAndDraftCopyBlob).not.toMatch(/within one working day/i)
+    expect(liveAndDraftCopyBlob).not.toContain('خلال يوم عمل')
+    expect(liveAndDraftCopyBlob).not.toMatch(/Rashwan/i)
+    expect(liveAndDraftCopyBlob).not.toContain('رشوان')
+    expect(liveAndDraftCopyBlob).not.toMatch(/formerly known as IMDAD/i)
+    expect(liveAndDraftCopyBlob).not.toContain('المعروفة سابقاً')
+    expect(liveAndDraftCopyBlob).not.toMatch(/100\+\s+completed/i)
+    expect(liveAndDraftCopyBlob).not.toMatch(/Over 100 completed/i)
+    expect(JSON.stringify({ siteSettingsEn, siteSettingsAr, navEn, navAr })).not.toContain(
+      '[placeholder]',
+    )
   }, 180_000)
 
   it('refuses a second run without --reseed (first-run baseline guard) and leaves the database unchanged', async () => {
@@ -291,6 +401,61 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       const versionsAttempt = await callRestGet(`/api/globals/${pageGlobalSlug}/versions`)
       expect(versionsAttempt.status).toBe(403)
     }
+
+    // 3. M-172 / D-05 / A-05: Verify `reviewNote` is strictly admin-only (editors cannot read or update `reviewNote`, while `needsClientReview` remains staff-readable)
+    const editorUser = {
+      ...SEED_ADMIN_USER,
+      id: 999,
+      email: 'editor-test@aljazira.co',
+      name: 'Editor Test',
+      role: 'editor' as const,
+    }
+    const [editorProjects, adminProjects] = await Promise.all([
+      payload.find({
+        collection: 'projects',
+        draft: true,
+        limit: 5,
+        sort: 'order',
+        overrideAccess: false,
+        user: editorUser,
+      }),
+      payload.find({
+        collection: 'projects',
+        draft: true,
+        limit: 5,
+        sort: 'order',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+    ])
+    expect(editorProjects.docs.length).toBeGreaterThan(0)
+    const firstEditorProj = editorProjects.docs[0]
+    const firstAdminProj = adminProjects.docs[0]
+    expect(firstEditorProj.needsClientReview).toBe(true)
+    expect((firstEditorProj as unknown as Record<string, unknown>).reviewNote).toBeUndefined()
+    expect(typeof firstAdminProj.reviewNote).toBe('string')
+    expect((firstAdminProj.reviewNote ?? '').length).toBeGreaterThan(20)
+
+    const originalNote = firstAdminProj.reviewNote
+    await payload.update({
+      collection: 'projects',
+      id: firstAdminProj.id,
+      draft: true,
+      data: {
+        reviewNote: 'EDITOR_UNAUTHORIZED_WRITE_ATTEMPT',
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: editorUser,
+    })
+    const afterEditorUpdate = await payload.findByID({
+      collection: 'projects',
+      id: firstAdminProj.id,
+      draft: true,
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    expect(afterEditorUpdate.reviewNote).toBe(originalNote)
   }, 60_000)
 
   it('logs all deleted counts on --reseed when rebuilding a populated Phase 4 database', async () => {
@@ -307,13 +472,13 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       team: 13,
       stats: 5,
       materials: 73,
-      brands: 100,
+      brands: 99,
       media: 26,
     })
 
     const lines = formatP4T2SummaryLines(reseedSummary).join('\n')
     expect(lines).toContain(
-      'mode: reseed (--reseed, deleted projects=91, services=10, team=13, stats=5, materials=73, brands=100, media=26)',
+      'mode: reseed (--reseed, deleted projects=91, services=10, team=13, stats=5, materials=73, brands=99, media=26)',
     )
   }, 180_000)
 })

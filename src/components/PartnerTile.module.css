@@ -33,15 +33,28 @@
   transition: opacity 240ms ease;
 }
 
-.tile:hover,
 .tile:focus-within {
-  transform: translateY(-2px);
+  transform: translate3d(0, calc(var(--hover-lift) * -1), 0);
 }
 
-.tile:hover::after,
 .tile:focus-within::after,
 .stateHover::after {
   opacity: 1;
+}
+
+/* §20 catalogue 11: real pointer hover only on (hover: hover) and (pointer: fine). */
+@media (hover: hover) and (pointer: fine) {
+  .tile:hover {
+    transform: translate3d(0, calc(var(--hover-lift) * -1), 0);
+  }
+
+  .tile:hover::after {
+    opacity: 1;
+  }
+
+  .tile:hover .subtitle {
+    color: var(--gold-700);
+  }
 }
 
 .logoSlot {
@@ -84,7 +97,6 @@
   transition: opacity 200ms ease;
 }
 
-.tile:hover .subtitle,
 .tile:focus-within .subtitle,
 .stateHover .subtitle {
   color: var(--gold-700);

@@ -49,7 +49,10 @@
 .rowViewport {
   position: relative;
   inline-size: 100%;
-  overflow: hidden;
+  /* Clip the scrolling track horizontally only, so the 4 px hover lift of a tile (§20 catalogue
+     11) is not cut off at the top; the outer `.marquee` padding still bounds it vertically. */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .track {

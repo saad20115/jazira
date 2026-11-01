@@ -1,0 +1,13 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+$ node scripts/evidence/p3-t13-evidence.mjs --mode=dev-styleguide http://localhost:3000 "D:\jazira\docs\reports\evidence\P3-T13\r1" "D:\jazira\docs\reports\phase-3\P3-T13\r1"
+[P3-T13 Evidence] dev-styleguide artifacts generated in D:\jazira\docs\reports\evidence\P3-T13\r1 and D:\jazira\docs\reports\phase-3\P3-T13\r1
+
+[exit_code=0]
+GATE: PASS

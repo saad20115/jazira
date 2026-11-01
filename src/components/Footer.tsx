@@ -211,6 +211,7 @@ export function Footer({
         <div
           className={styles.topGrid}
           data-link-columns={String(Math.min(3, Math.max(1, resolvedColumns.length)))}
+          data-reveal-stagger=""
         >
           {/* Column 1: Brand, description, and icon-only socials */}
           <div className={styles.brandColumn}>

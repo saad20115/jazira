@@ -38,6 +38,16 @@ export interface StyleguideStrings {
   sectionTeamCard: string
   sectionTeamMarquee: string
   sectionServicesCarousel: string
+  sectionMotion: string
+  motionIntro: string
+  motionReducedNote: string
+  motionRevealLabel: string
+  motionStaggerLabel: string
+  motionCountUpLabel: string
+  motionHoverLabel: string
+  motionLinkLabel: string
+  motionSampleItems: readonly string[]
+  motionSampleStats: readonly string[]
   sampleEyebrow: string
   serviceIconsTitle: string
   socialIconsTitle: string
@@ -373,6 +383,18 @@ const STYLEGUIDE_AR: StyleguideStrings = {
     '17. شريط الفريق الهندسي المتحرك (TeamMarquee — Position A, Position B & Live · Mock Data)',
   sectionServicesCarousel:
     '18. معرض الخدمات التفاعلي (ServicesCarousel — Position 1..5 & Live · Mock Data)',
+  sectionMotion: '19. نظام الحركة (Motion — Reveal, Stagger, CountUp, Hover · P3-T14)',
+  motionIntro:
+    'تظهر العناصر مرة واحدة عند دخولها الشاشة. بدون جافاسكريبت أو مع تقليل الحركة يكون كل شيء ظاهراً وثابتاً.',
+  motionReducedNote:
+    'لتجربة وضع تقليل الحركة: فعّل «تقليل الحركة» في إعدادات النظام أو من أدوات المطور (Rendering › prefers-reduced-motion: reduce) ثم أعد تحميل الصفحة.',
+  motionRevealLabel: 'ظهور القسم (data-reveal)',
+  motionStaggerLabel: 'ظهور متتابع للمجموعة (data-reveal-stagger)',
+  motionCountUpLabel: 'عدّاد الأرقام (CountUp)',
+  motionHoverLabel: 'تفاعل المرور (Button)',
+  motionLinkLabel: 'رابط بخط سفلي متنامٍ (NavLink)',
+  motionSampleItems: ['عنصر ١', 'عنصر ٢', 'عنصر ٣', 'عنصر ٤'],
+  motionSampleStats: ['45+', '100+', '85%', '24/7'],
   sampleEyebrow: 'عنوان فرعي تجريبي (Eyebrow)',
   serviceIconsTitle: 'أيقونات الخدمات الهندسية (10)',
   socialIconsTitle: 'أيقونات التواصل الاجتماعي (5)',
@@ -586,6 +608,18 @@ const STYLEGUIDE_EN: StyleguideStrings = {
   sectionTeamCard: '16. TeamCard (Default, Hover & Enter 1..5 · Mock Data)',
   sectionTeamMarquee: '17. TeamMarquee (Position A, Position B & Live · Mock Data)',
   sectionServicesCarousel: '18. ServicesCarousel (Position 1..5 & Live · Mock Data)',
+  sectionMotion: '19. Motion system (Reveal, Stagger, CountUp, Hover · P3-T14)',
+  motionIntro:
+    'Elements reveal once when they enter the viewport. Without JavaScript, or with reduced motion, everything is visible and static.',
+  motionReducedNote:
+    'To check reduced motion: turn on "Reduce motion" in the OS settings or in DevTools (Rendering › prefers-reduced-motion: reduce), then reload.',
+  motionRevealLabel: 'Section reveal (data-reveal)',
+  motionStaggerLabel: 'Staggered group reveal (data-reveal-stagger)',
+  motionCountUpLabel: 'Count-up numbers (CountUp)',
+  motionHoverLabel: 'Hover interaction (Button)',
+  motionLinkLabel: 'Growing underline link (NavLink)',
+  motionSampleItems: ['Item 1', 'Item 2', 'Item 3', 'Item 4'],
+  motionSampleStats: ['45+', '100+', '85%', '24/7'],
   sampleEyebrow: 'EYEBROW SPECIMEN LABEL',
   serviceIconsTitle: 'Service Icons (10)',
   socialIconsTitle: 'Social Icons (5)',

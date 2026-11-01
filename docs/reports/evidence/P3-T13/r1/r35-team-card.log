@@ -1,0 +1,25 @@
+$ pwd
+D:\aljazira-p3-t13-p4-t2-dod-20261025-212030
+$ git rev-parse HEAD
+71df181c335fc4af92de0de22b070667cbd7267a
+$ git status --porcelain
+(clean)
+$ git diff HEAD | sha256
+clean (0 bytes)
+
+=== R-35 Distinct AR / EN TeamCard Hover Shadow PNG Verification ===
+{
+  "enUrl": "http://localhost:3000/en/styleguide",
+  "arUrl": "http://localhost:3000/ar/styleguide",
+  "enDir": "ltr",
+  "arDir": "rtl",
+  "enCardText": "Full NameROLE / POSITION",
+  "arCardText": "الاسم الكاملالمسمى الوظيفي",
+  "enBytes": 4067,
+  "arBytes": 4269,
+  "enSha256": "5372e3bdc56b181fe435b144138f347b2d1eade526b3985ce29dca5bc5a5c390",
+  "arSha256": "b17668bc13c50e9aed4f1c8e4a9431eadbec7337ad04ba96c3f1446474219cdf",
+  "distinctBytes": true,
+  "gatePassed": true
+}
+GATE: PASS

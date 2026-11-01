@@ -18,14 +18,14 @@ watch the channel.
 | P2-T4 | `projects` | ACCEPTED | 4 | 2026-10-23 | CTO |
 | P2-T5 | Globals | ACCEPTED | 2 | 2026-10-23 | CTO |
 | P2-T6 | `quote-requests` | ACCEPTED | 5 | 2026-10-23 | CTO |
-| P2-T7 | Dashboard UX & Live Preview | TODO | 0 | 2026-10-21 | CTO |
+| P2-T7 | Dashboard UX & Live Preview (owner: after front-end + 3D) | TODO | 0 | 2026-10-25 | CTO |
 | P2-T8 | Access test suite, migrations, phase-2 report | ACCEPTED | 3 | 2026-10-23 | CTO |
 | P2-T9 | Login enumeration hardening (timing + locked message) | ACCEPTED | 1 | 2026-10-23 | CTO |
 | P3-T1 | Frontend foundations, i18n, CSP | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T2 | Shell & primitives + styleguide | ACCEPTED | 4 | 2026-10-24 | CTO |
 | P3-T3 | Cards & motion components | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T4 | Home page + intro | ACCEPTED | 5 | 2026-10-25 | CTO |
-| P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | TODO | 0 | 2026-10-25 | Claude-P3T5 |
+| P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | IN_PROGRESS | 1 | 2026-10-25 | Claude-P3T5 |
 | P3-T6 | Services page | TODO | 0 | 2026-10-21 | CTO |
 | P3-T7 | About page | TODO | 0 | 2026-10-21 | CTO |
 | P3-T8 | Projects + Project detail | TODO | 0 | 2026-10-21 | CTO |
@@ -33,11 +33,11 @@ watch the channel.
 | P3-T10 | SEO, a11y, performance, phase-3 report | TODO | 0 | 2026-10-21 | CTO |
 | P3-T11 | (merged into P3-T5) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
-| P3-T13 | Intro splash first-frame decision | IN_PROGRESS | 1 | 2026-10-25 | Antigravity |
-| P3-T14 | Motion & interaction pass (site-wide) | TODO | 0 | 2026-10-25 | CTO |
+| P3-T13 | Intro splash first-frame decision | ACCEPTED | 2 | 2026-11-01 | CTO |
+| P3-T14 | Motion & interaction pass (site-wide) | CHANGES_REQUESTED | 1 | 2026-11-01 | CTO |
 | A-1 | 3D asset production (external) — release v022n | ACCEPTED | 0 | 2026-10-25 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
-| P4-T2 | Settings, services, copy, placeholders seed | IN_PROGRESS | 1 | 2026-10-25 | Antigravity |
+| P4-T2 | Settings, services, copy, placeholders seed | IN_PROGRESS | 2 | 2026-11-01 | Antigravity |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |
 | P5-T2 | Email job, staff workflow, CSV export, retention | TODO | 0 | 2026-10-21 | CTO |
 | P5-T3 | CANCELLED — Odoo integration removed (owner 2026-10-23) | DEFERRED | 0 | 2026-10-21 | CTO |
@@ -45,6 +45,10 @@ watch the channel.
 | P6-T2 | HARD STOP — VPS deployment | DEFERRED | 0 | 2026-10-21 | CTO |
 | P7-T1 | Arabic editor guide | TODO | 0 | 2026-10-21 | CTO |
 | P7-T2 | Operations runbook, final report | TODO | 0 | 2026-10-21 | CTO |
+| R-1 | Safety fixes from the 2026-10-25 audit | TODO | 0 | 2026-10-25 | CTO |
+| R-2 | Honest tests: proof harness, e2e on the production build, behaviour over source-text | TODO | 0 | 2026-10-25 | CTO |
+| R-3 | Front-end refactor (zero visual change) + front-end fixes | TODO | 0 | 2026-10-25 | CTO |
+| R-4 | Back-end and tooling refactor | TODO | 0 | 2026-10-25 | CTO |
 
 ## Notes from CTO
 - 2026-10-21: `_payload-reference/payload-main/` is **Payload 4.0.0-beta.3**, not 3.91.0. Do not
