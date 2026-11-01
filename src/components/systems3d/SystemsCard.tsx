@@ -26,6 +26,7 @@ import {
   type LiteGroundTint,
   LIVE_LOOK,
   type LiveLook,
+  type ModelTier,
   RELEASE_BASE_PATH,
 } from './renderContract'
 import { StillLabels } from './StillLabels'
@@ -192,6 +193,8 @@ export function SystemsCard({
   const viewerRef = useRef<ViewerHandle | null>(null)
   const [phase, setPhase] = useState<Phase>('still')
   const [fallbackReason, setFallbackReason] = useState<FallbackReason | null>(null)
+  /** The live model, or `low` after the run-time FPS drop (`data-viewer-tier`, for the e2e). */
+  const [liveTier, setLiveTier] = useState<ModelTier | 'low' | null>(null)
   const [session, setSession] = useState(0)
   const [active, setActive] = useState(false)
   const [hint, setHint] = useState(false)
@@ -264,6 +267,9 @@ export function SystemsCard({
             setPhase('live')
           },
           onFailure: fallBack,
+          onLowTier: () => {
+            setLiveTier('low')
+          },
           onLabels: (labels) => {
             labelSinkRef.current?.(labels)
           },
@@ -271,6 +277,8 @@ export function SystemsCard({
       )
       .then((handle) => {
         viewerRef.current = handle
+        const { tier, lowTier } = handle.stats()
+        setLiveTier(lowTier ? 'low' : tier)
         if (enteredRef.current) {
           handle.setSystem(enteredRef.current)
         }
@@ -438,6 +446,7 @@ export function SystemsCard({
       data-viewer-active={active ? 'true' : 'false'}
       data-viewer-fallback={phase === 'stills' ? (fallbackReason ?? undefined) : undefined}
       data-viewer-state={phase}
+      data-viewer-tier={phase === 'live' ? (liveTier ?? undefined) : undefined}
       onClick={activate}
       onFocus={onFocus}
       onKeyDown={onKeyDown}

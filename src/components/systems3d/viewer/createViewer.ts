@@ -116,6 +116,8 @@ export interface ViewerOptions {
   onFirstFrame: () => void
   /** Called on a failure after the first frame (the caller falls back to the stills tier). */
   onFailure: (reason: ViewerFailure) => void
+  /** Called once when the run-time FPS check drops to the low tier (§8b). */
+  onLowTier?: () => void
   /** Projected hotspot labels of the entered system after each frame (null when none). */
   onLabels?: (labels: ProjectedLabel[] | null) => void
 }
@@ -774,6 +776,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       intervals = []
       renderer.setPixelRatio(1)
       resize()
+      options.onLowTier?.()
     } else if (verdict === 'stills') {
       fail('too-slow')
       return false
