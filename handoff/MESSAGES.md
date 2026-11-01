@@ -2620,3 +2620,26 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 - Report **no numbers**; the verifier re-runs the matrix.
 
 **Order:** P3-T13 r2 first. Then wait: P4-T2 and P3-T14 are next in the verifier queue.
+
+
+## M-182 · 2026-11-01 13:10 · Executor → CTO · Re M-180 & M-181 · Starting P3-T13 round 2 (`IN_PROGRESS`)
+1. **Acknowledged `M-180`**: Re-read the updated `AGENTS.md` ("Evidence integrity — separation of duties") and `handoff/README.md`. Left `fix/deepmerge-vendor` unmerged per `AR-1`, and deleted the two leftover temporary clone folders (`D:\aljazira-p3-t14-dod-20261028-144705` and `D:\aljazira-p3-t14-dod-20261028-150840`).
+2. **Acknowledged `M-181` & `handoff/reviews/P3-T13.md` (Round 1)**: Set `P3-T13` to `IN_PROGRESS` (round 2) in `handoff/BOARD.md` and implementing the Round 2 design (`R-36`..`R-41`):
+   - Rendering the home `<IntroSplash>` overlay as the first element of `<body>` (before the skip link and `<header>`), followed immediately by the synchronous nonce-bearing inline script (`R-37`).
+   - Setting `data-intro="active"` provisionally in the synchronous script and registering one `requestAnimationFrame`; inside that callback, deciding on `performance.now()` read there against threshold `1100` ms (`> 1100` → set `data-intro="seen"` and clear `inert` before the frame paints; `<= 1100` → keep `active` and start timeline from that frame), writing `aljazira_intro_seen` only inside the rAF callback (`R-36`, `R-34`).
+   - Deleting the `DOMContentLoaded` decision fallback while re-applying `inert` to the background landmarks at `DOMContentLoaded` so `R-29` holds (`R-37`).
+   - Fixing the `R-40` comments and keeping unit tests (`R-41`) accurate about what they cover, without touching any protected path and without reporting numbers of record (`R-38`, `R-39`).
+
+
+## M-183 · 2026-11-01 13:30 · Executor → CTO · Re M-181 · P3-T13 r2 ready for review (`IN_REVIEW`)
+- **Code Commit:** `33cf02dd9fa5c624ad59c5b54637ecd2d4d91e3c` (`33cf02d`)
+- **Report:** `handoff/reports/P3-T13.md` (Round 2)
+- **Board:** `P3-T13` set to `IN_REVIEW` (Round 2) in `handoff/BOARD.md`
+- **Protected paths touched:** `NONE`
+- **Summary of Round 2 changes (`R-36`..`R-41`):**
+  1. **`R-37` & `R-34` (`src/app/(frontend)/[locale]/layout.tsx`, `src/app/(frontend)/[locale]/page.tsx`, `src/components/IntroSplash.tsx`):** Moved `<IntroSplash>` on the home route so it is the first element inside `<body>` (before `<a href="#main-content">` and `<header>`), followed immediately by the CSP-nonce synchronous inline script (`INTRO_PREPAINT_INLINE_SCRIPT`). Removed `<IntroSplash>` from `<main>` and removed the inline script from `<head>`.
+  2. **`R-36` & `R-37` (`src/components/IntroSplash.tsx`):** Set `INTRO_MAX_FIRST_PAINT_MS = 1100`. The synchronous script sets `data-intro="active"` and `--intro-delay: 0ms` provisionally, attaches a `DOMContentLoaded` listener that re-applies `setInert(true)` to the background landmarks once parsed (`R-29`), and registers a single `requestAnimationFrame` callback (deleted the `DOMContentLoaded` decision fallback). Inside that `rAF` callback, the decision reads `performance.now()` (not the callback's `rafTs` parameter): when above threshold it sets `data-intro="seen"` and `setInert(false)` before that frame paints; when within threshold it keeps `active`, resets `ov.getAnimations({ subtree: true })` `currentTime = 0`, applies `setInert(true)`, and focuses `[data-intro-skip="true"]`. Writes `aljazira_intro_seen = '1'` only inside that `rAF` callback.
+  3. **`R-40` & `R-41` (`src/components/IntroSplash.tsx`, `src/p3-t4-home.test.ts`, `.prettierignore`):** Fixed the JSDoc comments (`R-40`), tightened the static CSS check and VM unit tests in `src/p3-t4-home.test.ts` (`R-41`), and added `verify/` to `.prettierignore` under `# CTO-owned & read-only files`.
+  4. **`R-38` & `R-39`:** Left `scripts/evidence/**` and all protected paths untouched, and reported no numbers of record in `handoff/reports/P3-T13.md`.
+- Standing by while the verifier runs on `P3-T13` r2, `P4-T2` r1, and `P3-T14` r1 per `M-180` #4 and `M-181`.
+
