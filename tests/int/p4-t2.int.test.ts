@@ -89,6 +89,104 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     }
   }, 60_000)
 
+  it('refuses to run seedP4T2Content without --reseed when P4-T1 is half-empty (brands only or materials only) and leaves the database unchanged (R-14)', async () => {
+    // 1. Half-empty case A: brands > 0, materials === 0
+    const createdBrand = await payload.create({
+      collection: 'brands',
+      locale: 'en',
+      data: {
+        name: 'Half Empty Guard Brand',
+        order: 1,
+        showInMarquee: false,
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+
+    await expect(
+      seedP4T2Content(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts'],
+        reseed: false,
+      }),
+    ).rejects.toThrow(
+      /Refusing to run seed on a non-empty database \(brands=1, materials=0, stats=0, services=0, projects=0, team=0\)/,
+    )
+
+    const [brandsAfterA, materialsAfterA, statsAfterA, servicesAfterA, projectsAfterA, teamAfterA] =
+      await Promise.all([
+        payload.count({ collection: 'brands', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'materials', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'stats', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'services', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'projects', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'team', overrideAccess: false, user: SEED_ADMIN_USER }),
+      ])
+    expect(brandsAfterA.totalDocs).toBe(1)
+    expect(materialsAfterA.totalDocs).toBe(0)
+    expect(statsAfterA.totalDocs).toBe(0)
+    expect(servicesAfterA.totalDocs).toBe(0)
+    expect(projectsAfterA.totalDocs).toBe(0)
+    expect(teamAfterA.totalDocs).toBe(0)
+
+    await payload.delete({
+      collection: 'brands',
+      id: createdBrand.id,
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+
+    // 2. Half-empty case B: brands === 0, materials > 0
+    const createdMaterial = (await payload.db.create({
+      collection: 'materials',
+      data: {
+        itemNo: 1,
+        system: 'electrical',
+        description: {
+          en: 'Half Empty Guard Material',
+          ar: 'مادة اختبار',
+        },
+      },
+    })) as { id: number | string }
+
+    await expect(
+      seedP4T2Content(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts'],
+        reseed: false,
+      }),
+    ).rejects.toThrow(
+      /Refusing to run seed on a non-empty database \(brands=0, materials=1, stats=0, services=0, projects=0, team=0\)/,
+    )
+
+    const [brandsAfterB, materialsAfterB, statsAfterB, servicesAfterB, projectsAfterB, teamAfterB] =
+      await Promise.all([
+        payload.count({ collection: 'brands', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'materials', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'stats', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'services', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'projects', overrideAccess: false, user: SEED_ADMIN_USER }),
+        payload.count({ collection: 'team', overrideAccess: false, user: SEED_ADMIN_USER }),
+      ])
+    expect(brandsAfterB.totalDocs).toBe(0)
+    expect(materialsAfterB.totalDocs).toBe(1)
+    expect(statsAfterB.totalDocs).toBe(0)
+    expect(servicesAfterB.totalDocs).toBe(0)
+    expect(projectsAfterB.totalDocs).toBe(0)
+    expect(teamAfterB.totalDocs).toBe(0)
+
+    await payload.db.deleteOne({
+      collection: 'materials',
+      where: {
+        id: {
+          equals: createdMaterial.id,
+        },
+      },
+    })
+  }, 60_000)
+
   it('seeds the full Phase 4 baseline (P4-T1 + P4-T2) via --reseed and verifies all counts, locales, marquee order, and home-page interactiveSystems in both en & ar', async () => {
     const summary = await seedP4T2Content(payload, {
       nodeEnv: 'test',
@@ -185,7 +283,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     expect(homeAr.interactiveSystems?.relatedProjectsLabel).toBe('مشاريع ذات صلة')
     expect(homeEn.statsSection?.backgroundImage).toBeTruthy()
 
-    // D-10: Exactly one Zamil brand exists ("Zamil Air Conditioners"), and no separate "Zamil" brand remains
+    // D-10 & R-18: Exactly one Zamil brand exists ("Zamil Air Conditioners" with empty P4-T1 origin filled as "Saudi Arabia"), while Belden preserves its existing P4-T1 client origin ("United States")
     const zamilBrands = await payload.find({
       collection: 'brands',
       where: { name: { contains: 'Zamil' } },
@@ -196,6 +294,55 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       user: SEED_ADMIN_USER,
     })
     expect(zamilBrands.docs.map((b) => b.name)).toEqual(['Zamil Air Conditioners'])
+    expect(zamilBrands.docs[0]?.origin).toBe('Saudi Arabia')
+
+    const beldenBrandEn = marqueeEn.docs.find((b) => b.name === 'Belden')
+    expect(beldenBrandEn?.origin).toBe('United States')
+
+    // R-13: Jeddah Palace Hotel (XLSX-22) is seeded with 'Makkah Region, KSA' / 'منطقة مكة المكرمة، المملكة العربية السعودية' (never rewritten as a city)
+    const [jeddahPalaceEn, jeddahPalaceAr, pnuAr, statsAr] = await Promise.all([
+      payload.find({
+        collection: 'projects',
+        where: { slug: { equals: 'jeddah-palace-hotel' } },
+        limit: 1,
+        depth: 0,
+        locale: 'en',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+      payload.find({
+        collection: 'projects',
+        where: { slug: { equals: 'jeddah-palace-hotel' } },
+        limit: 1,
+        depth: 0,
+        locale: 'ar',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+      payload.find({
+        collection: 'projects',
+        where: { slug: { equals: 'princess-noura-university-pnu' } },
+        limit: 1,
+        depth: 0,
+        draft: true,
+        locale: 'ar',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+      payload.find({
+        collection: 'stats',
+        sort: 'order',
+        limit: 10,
+        locale: 'ar',
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      }),
+    ])
+    expect(jeddahPalaceEn.docs[0]?.location).toBe('Makkah Region, KSA')
+    expect(jeddahPalaceAr.docs[0]?.location).toBe('منطقة مكة المكرمة، المملكة العربية السعودية')
+    // R-17: Arabic drafts translate the English source without adding extra facts
+    expect(pnuAr.docs[0]?.title).toBe('جامعة الأميرة نورة (PNU)')
+    expect(statsAr.docs.find((s) => s.value === '3')?.label).toBe('دول نخدمها')
 
     // D-01: Verify live globals/stats and draft globals contain zero owner-rejected claims
     const [navEn, navAr, statsEn, aboutEn, aboutAr, projectsPageEn, projectsPageAr] =
@@ -311,7 +458,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
 
   it('hides all drafts, [placeholder] items, and admin-only review fields (needsClientReview, reviewNote) from anonymous visitors across Local API and REST endpoints', async () => {
     // 1. Anonymous Local API (`overrideAccess: false`, `user: undefined`, `draft: false`)
-    const [anonServices, anonTeam, anonProjects] = await Promise.all([
+    const [anonServices, anonTeam, anonProjects, anonMedia] = await Promise.all([
       payload.find({
         collection: 'services',
         draft: false,
@@ -327,11 +474,30 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
         limit: 200,
         overrideAccess: false,
       }),
+      payload.find({
+        collection: 'media',
+        limit: 200,
+        overrideAccess: false,
+      }),
     ])
 
     expect(anonServices.totalDocs).toBe(0)
     expect(anonTeam.totalDocs).toBe(0)
     expect(anonProjects.totalDocs).toBe(17)
+    // R-12: Only the 17 real project photos are visible to anonymous visitors; 0 placeholder media items
+    expect(anonMedia.totalDocs).toBe(17)
+
+    for (const mediaDoc of anonMedia.docs) {
+      expect(JSON.stringify(mediaDoc)).not.toContain('[placeholder]')
+      expect((mediaDoc as unknown as Record<string, unknown>).placeholder).toBeUndefined()
+      // R-16: Verify og size never enlarges beyond original image dimensions
+      if (typeof mediaDoc.width === 'number' && typeof mediaDoc.sizes?.og?.width === 'number') {
+        expect(mediaDoc.sizes.og.width).toBeLessThanOrEqual(mediaDoc.width)
+      }
+      if (typeof mediaDoc.height === 'number' && typeof mediaDoc.sizes?.og?.height === 'number') {
+        expect(mediaDoc.sizes.og.height).toBeLessThanOrEqual(mediaDoc.height)
+      }
+    }
 
     for (const proj of anonProjects.docs) {
       expect(proj._status).toBe('published')
@@ -341,7 +507,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       expect((proj as unknown as Record<string, unknown>).reviewNote).toBeUndefined()
     }
 
-    // 2. Anonymous REST API (`GET /api/services`, `/api/team`, `/api/projects`, `/api/globals/*`)
+    // 2. Anonymous REST API (`GET /api/services`, `/api/team`, `/api/projects`, `/api/media`, `/api/globals/*`)
     const callRestGet = async (
       urlPath: string,
     ): Promise<{ status: number; body: Record<string, unknown> }> => {
@@ -355,6 +521,17 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       })
       const body = (await res.json()) as Record<string, unknown>
       return { status: res.status, body }
+    }
+
+    const callRestRawGet = async (urlPath: string): Promise<Response> => {
+      const cleanPath = urlPath.replace(/^\/api\//, '').split('?')[0] ?? ''
+      const slug = cleanPath.split('/').filter(Boolean)
+      const req = new Request(`http://localhost:3000${urlPath}`, {
+        method: 'GET',
+      })
+      return getHandler(req, {
+        params: Promise.resolve({ slug }),
+      })
     }
 
     const restServices = await callRestGet('/api/services?limit=200')
@@ -375,6 +552,57 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     for (const doc of restProjectDocs) {
       expect(doc.needsClientReview).toBeUndefined()
       expect(doc.reviewNote).toBeUndefined()
+    }
+
+    // R-12: Anonymous REST list `/api/media`, by ID `/api/media/:id`, and file URL `/api/media/file/:filename`
+    const restMedia = await callRestGet('/api/media?limit=200')
+    expect(restMedia.status).toBe(200)
+    const restMediaDocs = (
+      restMedia.body as { docs: Array<Record<string, unknown>>; totalDocs: number }
+    ).docs
+    expect((restMedia.body as { totalDocs: number }).totalDocs).toBe(17)
+    expect(JSON.stringify(restMediaDocs)).not.toContain('[placeholder]')
+    for (const doc of restMediaDocs) {
+      expect(doc.placeholder).toBeUndefined()
+    }
+
+    const adminPlaceholderMedia = await payload.find({
+      collection: 'media',
+      where: { placeholder: { equals: true } },
+      limit: 50,
+      depth: 0,
+      locale: 'en',
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    expect(adminPlaceholderMedia.totalDocs).toBe(9)
+    for (const placeholderDoc of adminPlaceholderMedia.docs) {
+      const byIdRes = await callRestGet(`/api/media/${String(placeholderDoc.id)}`)
+      expect(byIdRes.status).toBe(404)
+
+      if (placeholderDoc.filename) {
+        const fileRes = await callRestRawGet(
+          `/api/media/file/${encodeURIComponent(placeholderDoc.filename)}`,
+        )
+        expect(fileRes.status).toBe(403)
+      }
+      if (placeholderDoc.sizes?.thumb?.filename) {
+        const thumbRes = await callRestRawGet(
+          `/api/media/file/${encodeURIComponent(placeholderDoc.sizes.thumb.filename)}`,
+        )
+        expect(thumbRes.status).toBe(403)
+      }
+    }
+
+    const firstRealMedia = anonMedia.docs[0]
+    expect(firstRealMedia.filename).toBeTruthy()
+    if (firstRealMedia.filename) {
+      const realByIdRes = await callRestGet(`/api/media/${String(firstRealMedia.id)}`)
+      expect(realByIdRes.status).toBe(200)
+      const realFileRes = await callRestRawGet(
+        `/api/media/file/${encodeURIComponent(firstRealMedia.filename)}`,
+      )
+      expect(realFileRes.status).toBe(200)
     }
 
     for (const pageGlobalSlug of [

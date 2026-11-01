@@ -1,4 +1,5 @@
 import {
+  type Access,
   type CollectionBeforeDeleteHook,
   type CollectionBeforeOperationHook,
   type CollectionConfig,
@@ -11,7 +12,7 @@ import {
   type Where,
 } from 'payload'
 
-import { isAdminOrEditor } from '../access/index'
+import { isAdminFieldLevel, isAdminOrEditor } from '../access/index'
 import { env } from '../env'
 import {
   createRevalidateAfterChangeHook,
@@ -22,6 +23,7 @@ import { createPublicAPIError } from '../security/apiError'
 import {
   ALLOWED_IMAGE_MIME_TYPES,
   createSafeUploadFileHandler,
+  doesSafeUploadFileExist,
   validateAndSanitizeMediaFile,
 } from '../security/uploadValidation'
 import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
@@ -544,6 +546,27 @@ const preventMediaDeletionWhenReferenced: CollectionBeforeDeleteHook = async ({ 
   }
 }
 
+const readPublicNonPlaceholderMedia: Access = (args) => {
+  if (isAdminOrEditor(args)) {
+    return true
+  }
+  const maybeStaticArgs = args as {
+    data?: { filename?: unknown }
+    isReadingStaticFile?: boolean
+  }
+  if (
+    maybeStaticArgs.isReadingStaticFile === true &&
+    !doesSafeUploadFileExist(env.MEDIA_DIR, maybeStaticArgs.data?.filename)
+  ) {
+    return true
+  }
+  return {
+    placeholder: {
+      equals: false,
+    },
+  }
+}
+
 export const Media: CollectionConfig = withImmutableCreatedAt({
   slug: 'media',
   timestamps: true,
@@ -570,7 +593,7 @@ export const Media: CollectionConfig = withImmutableCreatedAt({
     },
   },
   access: {
-    read: () => true,
+    read: readPublicNonPlaceholderMedia,
     create: isAdminOrEditor,
     update: isAdminOrEditor,
     delete: isAdminOrEditor,
@@ -621,7 +644,7 @@ export const Media: CollectionConfig = withImmutableCreatedAt({
         height: 630,
         fit: 'cover',
         position: 'centre',
-        withoutEnlargement: false,
+        withoutEnlargement: true,
         formatOptions: {
           format: 'webp',
         },
@@ -646,6 +669,28 @@ export const Media: CollectionConfig = withImmutableCreatedAt({
       label: {
         ar: 'التسمية التوضيحية',
         en: 'Caption',
+      },
+    },
+    {
+      name: 'placeholder',
+      type: 'checkbox',
+      defaultValue: false,
+      index: true,
+      label: {
+        ar: 'وسائط مؤقتة (Placeholder)',
+        en: 'Placeholder Media',
+      },
+      admin: {
+        position: 'sidebar',
+        description: {
+          ar: 'وسائط تصميم مؤقتة مخفية عن الزوار غير المسجلين ولا تظهر إلا للمحررين والمسؤولين.',
+          en: 'Design placeholder media hidden from anonymous visitors and visible only to authenticated staff.',
+        },
+      },
+      access: {
+        read: isAdminFieldLevel,
+        create: isAdminFieldLevel,
+        update: isAdminFieldLevel,
       },
     },
   ],

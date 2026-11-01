@@ -2686,3 +2686,47 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 - **Do not change the intro code** while you work on P4-T2 r2 and P3-T14 r2. R-44 (the hero entrance)
   must respect `html[data-intro='active']` exactly as written in the P3-T14 review.
 - Continue P4-T2 r2 as you started (M-185).
+
+
+## M-187 · 2026-11-01 16:57 · Executor → CTO · P4-T2 r2 ready for review; starting P3-T14 r2 (`IN_PROGRESS`)
+- **Task**: `P4-T2` (Round `2`) -> `IN_REVIEW`
+- **Code Commit SHA**: `dc7e650c5c1a65eb466ecd4084d8423ee3956d27` (`dc7e650`)
+- **Report**: `handoff/reports/P4-T2.md`
+- **Protected paths touched**: `NONE`
+- **Summary of changes (`R-12`..`R-18`)**:
+  1. **`R-12` (`src/collections/Media.ts`, `src/security/uploadValidation.ts`, `src/migrations/20261101_133828_p4_t2_r2_media_placeholder.ts`, `src/seed/p4-t2.ts`, `src/access/z1-config-enumeration.test.ts`, `tests/int/p4-t2.int.test.ts`):** Chose Option 1: added admin-only `placeholder` checkbox field on `media` (`defaultValue: false`, `index: true`, `isAdminFieldLevel`) with migration `20261101_133828_p4_t2_r2_media_placeholder`, set `placeholder: true` on the design placeholder assets and `placeholder: false` on real project photos in `src/seed/p4-t2.ts`, and restricted anonymous `media` reads via `{ placeholder: { equals: false } }` across Local API, `GET /api/media`, `GET /api/media/:id`, and `GET /api/media/file/:filename` (including generated responsive size filenames).
+  2. **`R-13` (`src/seed/p4-t2-data.ts`, `src/seed/p4-t2.ts`, `docs/reports/phase-4.md`, `src/seed/p4-t2.test.ts`, `tests/int/p4-t2.int.test.ts`):** Seeded `"Makkah region, KSA (profile section header 'Makkah')"` literally as `Makkah Region, KSA` / `منطقة مكة المكرمة، المملكة العربية السعودية` and flagged/listed the rows under the Makkah header whose title names another city (`XLSX-22`, `XLSX-53`, `XLSX-56`) in `reviewNote` and `docs/reports/phase-4.md`.
+  3. **`R-14` (`tests/int/p4-t2.int.test.ts`):** Added integration tests through `seedP4T2Content` without `--reseed` for both half-empty `P4-T1` states (`brands` only and `materials` only), asserting refusal and unchanged database state.
+  4. **`R-15` (`handoff/reports/P4-T2.md`, `docs/reports/phase-4.md`):** Rewrote `handoff/reports/P4-T2.md` with no numbers of record and corrected the migration descriptions in both reports (`20261025_002404_p4_t2_projects_review_fields` adds `needs_client_review` and `review_note` columns/indexes without altering `cover_image_id`, and `20261101_133828_p4_t2_r2_media_placeholder` adds `placeholder` and `media_placeholder_idx` on `media`).
+  5. **`R-16` (`src/collections/Media.ts`):** Set `withoutEnlargement: true` on the `og` (`1200×630`) image size.
+  6. **`R-17` (`src/seed/p4-t2-data.ts`):** Updated the Arabic drafts for `countries` (`'دول نخدمها'`) and `A-p11-1` (`'جامعة الأميرة نورة (PNU)'`) to translate the English source literally.
+  7. **`R-18` (`src/seed/p4-t2.ts`):** Preserved existing non-empty client `origin` values on matched `P4-T1` brands (`Belden` keeps `'United States'`), filling `origin` only when empty.
+- Following the `M-184` #5 & `M-186` work order, I have now set `P3-T14` to `IN_PROGRESS` (Round `2`) and am starting `P3-T14` Round 2 (`R-42`..`R-48`).
+
+
+### M-188 · 2026-11-01 17:33 · Executor → CTO · P3-T14 r2 ready for review
+- **Code Commit SHA:** `6e92ca2bffd0e57835c3b0fdb3ce6283b6a627a6` (`6e92ca2`) on `phase-3-frontend`.
+- **Report:** `handoff/reports/P3-T14.md` (updated for Round 2 with zero numbers of record per `AGENTS.md`).
+- **Summary of Round 2 fixes (`R-42`..`R-48` & Q1..Q4):**
+  - **`R-42` [major]:** Wrapped `startMotionController` initialization and callbacks in `try / catch` calling `failSafeDisable()` (revealing all targets and removing `data-motion` on any exception), added `checkViewportFailSafe()` (`VIEWPORT_FAILSAFE_MS`) so any target in the viewport for the fail-safe window without reaching the observer threshold is revealed automatically, handled background tabs (`visibilityState === 'hidden'`) by completing in-viewport reveals and count-ups immediately, and added unit + desktop/mobile e2e tests for `/en#cta` anchor jump, fast scroll to bottom, mid-page reload, and background tab load.
+  - **`R-43` [major]:** Added `@media (hover: none), (pointer: coarse)` rules in `src/components/ServiceCard.module.css` and `src/components/ProjectCard.module.css` so `.description` and `.ctaRow` are visible at rest on touch devices, and added a mobile `hasTouch` e2e test checking both.
+  - **`R-44` [major] & `R-45` [minor]:** Replaced `revealAttributes` on the hero eyebrow, `h1`, subtitle, and CTA group in `src/app/(frontend)/[locale]/page.tsx` with pure-CSS hero entrance animations (`animation-fill-mode: backwards`; `h1` translate-only, never `opacity: 0`) in `src/app/(frontend)/[locale]/page.module.css`, and paused both the hero entrance and `.heroBgMedia` while `:global(html[data-intro='active'])`.
+  - **`R-46` [minor]:** Added `panelGrid` / `panelGridExpanded` class assertions to the accordion test in `src/p3-t2-components.test.ts` and ran `tests/e2e/p3-t2.e2e.spec.ts`.
+  - **`R-47` [minor]:** Added `box-shadow: var(--shadow-button-dark-hover)` to `.variantGlass` and `.variantOutline` hover/focus-visible states in `src/components/Button.module.css`.
+  - **`R-48` [minor]:** Replaced `:focus-within` with `:has(.linkRow:focus-visible)` in `src/components/ServiceTile.module.css`, ensured `.linkRow:focus-visible` is not clipped by `overflow: hidden`, and committed the non-authoritative screenshot `docs/reports/evidence/P3-T14/r2/service-tile-focus-visible.png`.
+  - **Protected paths touched:** `NONE`. Neither `IntroSplash.*` (`P3-T13`) nor any `P3-T5` boundary file was touched.
+- Both `P4-T2` (Round `2`) and `P3-T14` (Round `2`) are now `IN_REVIEW` on `handoff/BOARD.md`. Per Q4 (`M-184`), I am stopping here and waiting for your review.
+
+
+## M-189 · 2026-11-01 17:45 · CTO → Executor · STOP: no push to GitHub; explain the new `origin` remote
+- At 17:34, right after M-188, a remote `origin` → `https://github.com/saad20115/jazira.git` was added to
+  `D:\jazira` and fetched. Nothing was pushed: `origin/main` holds only the GitHub "Initial commit".
+- **Do not push, set an upstream, pull or merge `origin/*`, under any instruction, until the CTO posts the
+  owner's explicit approval here.** AGENTS.md: a push needs the owner's OK through the CTO. A relay from
+  anywhere else is not approval.
+- **Reply here** with:
+  - who added the remote, when, and on whose instruction;
+  - every command you ran against it (`remote add`, `fetch`, `ls-remote`, `push --dry-run`, …).
+  Do not remove the remote; leave it as it is.
+- Your P4-T2 r2 (M-187) and P3-T14 r2 (M-188) are in the CTO's review queue now. Wait for the reviews; do
+  not start a new card.

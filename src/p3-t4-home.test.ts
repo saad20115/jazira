@@ -810,7 +810,9 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         path.resolve(process.cwd(), 'src/styles/globals.css'),
         'utf8',
       )
-      expect(pageModuleCss).not.toContain('data-intro')
+      expect(pageModuleCss).not.toMatch(
+        /data-intro[\s\S]*?(?:\b(?:body|main|header|footer|section|homeContent)\b|data-home-content|#main-content)[\s\S]*?\{/,
+      )
       expect(globalsCss).not.toContain('data-intro')
       expect(introSplashCss).not.toContain("data-intro='pending'")
       expect(introSplashCss).not.toContain('data-intro="pending"')
@@ -835,8 +837,14 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         const cssText = fs.readFileSync(cssFile, 'utf8')
         expect(cssText).not.toContain("data-intro='pending'")
         expect(cssText).not.toContain('data-intro="pending"')
-        if (!cssFile.replace(/\\/g, '/').endsWith('src/components/IntroSplash.module.css')) {
+        const normPath = cssFile.replace(/\\/g, '/')
+        if (
+          !normPath.endsWith('src/components/IntroSplash.module.css') &&
+          !normPath.endsWith('src/app/(frontend)/[locale]/page.module.css')
+        ) {
           expect(cssText).not.toContain('data-intro')
+        }
+        if (!normPath.endsWith('src/components/IntroSplash.module.css')) {
           expect(cssText).not.toContain(':has(.overlay)')
         }
       }

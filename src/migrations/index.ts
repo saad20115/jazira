@@ -8,6 +8,7 @@ import * as migration_20261023_005934_p2_t6_quote_requests_service_title from '.
 import * as migration_20261024_104400_p3_t4_r2_title_accent_and_stats_bg from './20261024_104400_p3_t4_r2_title_accent_and_stats_bg'
 import * as migration_20261024_195628_p3_t12_site_settings_arabic_enabled from './20261024_195628_p3_t12_site_settings_arabic_enabled'
 import * as migration_20261025_002404_p4_t2_projects_review_fields from './20261025_002404_p4_t2_projects_review_fields'
+import * as migration_20261101_133828_p4_t2_r2_media_placeholder from './20261101_133828_p4_t2_r2_media_placeholder'
 
 export const migrations = [
   {
@@ -59,5 +60,10 @@ export const migrations = [
     up: migration_20261025_002404_p4_t2_projects_review_fields.up,
     down: migration_20261025_002404_p4_t2_projects_review_fields.down,
     name: '20261025_002404_p4_t2_projects_review_fields',
+  },
+  {
+    up: migration_20261101_133828_p4_t2_r2_media_placeholder.up,
+    down: migration_20261101_133828_p4_t2_r2_media_placeholder.down,
+    name: '20261101_133828_p4_t2_r2_media_placeholder',
   },
 ]

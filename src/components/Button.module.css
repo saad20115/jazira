@@ -97,11 +97,13 @@
   .variantGlass:hover:not(:disabled):not([aria-disabled='true']) {
     background-color: var(--glass-white-18);
     border-color: var(--glass-border-white-50);
+    box-shadow: var(--shadow-button-dark-hover);
   }
 
   .variantOutline:hover:not(:disabled):not([aria-disabled='true']) {
     background-color: var(--navy-950);
     color: var(--white);
+    box-shadow: var(--shadow-button-dark-hover);
   }
 }
 
@@ -121,12 +123,14 @@
 .variantGlass.stateHover {
   background-color: var(--glass-white-18);
   border-color: var(--glass-border-white-50);
+  box-shadow: var(--shadow-button-dark-hover);
 }
 
 .variantOutline:focus-visible,
 .variantOutline.stateHover {
   background-color: var(--navy-950);
   color: var(--white);
+  box-shadow: var(--shadow-button-dark-hover);
 }
 
 /* Focus-visible state (CTO decisions §10 & §19: --navy-900 on light surfaces, --gold-300 on dark surfaces) */

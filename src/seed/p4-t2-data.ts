@@ -246,7 +246,7 @@ export const SEED_STATS_5: readonly SeedStatSpec[] = [
     order: 5,
     value: '3',
     labelEn: 'Countries Served',
-    labelAr: 'دول نخدمها في الخليج',
+    labelAr: 'دول نخدمها',
   },
 ] as const
 
@@ -528,7 +528,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
  * (`docs/02-content-model.md` line 161: "Arabic drafts translate exactly what the English says, with no added specs").
  */
 export const PROJECT_TITLE_AR_BY_REF: Readonly<Record<string, string>> = {
-  'A-p11-1': 'جامعة الأميرة نورة بنت عبدالرحمن (PNU)',
+  'A-p11-1': 'جامعة الأميرة نورة (PNU)',
   'A-p11-2': 'بنك نومورا للاستثمار (الشرق الأوسط)',
   'A-p11-3': 'بنك أوف أمريكا (ميريل لينش)',
   'A-p11-4': 'هيئة الطرق والمواصلات (RTA)',
@@ -655,8 +655,8 @@ export function normalizeProjectLocation(rawLocation: string): {
   const trimmed = rawLocation.trim()
   if (trimmed === "Makkah region, KSA (profile section header 'Makkah')") {
     return {
-      locationEn: 'Makkah, KSA',
-      locationAr: 'مكة المكرمة، المملكة العربية السعودية',
+      locationEn: 'Makkah Region, KSA',
+      locationAr: 'منطقة مكة المكرمة، المملكة العربية السعودية',
       fromMakkahSectionHeader: true,
     }
   }
