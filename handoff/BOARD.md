@@ -33,11 +33,11 @@ watch the channel.
 | P3-T10 | SEO, a11y, performance, phase-3 report | TODO | 0 | 2026-10-21 | CTO |
 | P3-T11 | (merged into P3-T5) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
-| P3-T13 | Intro splash first-frame decision | IN_REVIEW | 2 | 2026-11-01 | Antigravity |
+| P3-T13 | Intro splash first-frame decision | ACCEPTED | 2 | 2026-11-01 | CTO |
 | P3-T14 | Motion & interaction pass (site-wide) | CHANGES_REQUESTED | 1 | 2026-11-01 | CTO |
 | A-1 | 3D asset production (external) — release v022n | ACCEPTED | 0 | 2026-10-25 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
-| P4-T2 | Settings, services, copy, placeholders seed | CHANGES_REQUESTED | 1 | 2026-11-01 | CTO |
+| P4-T2 | Settings, services, copy, placeholders seed | IN_PROGRESS | 2 | 2026-11-01 | Antigravity |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |
 | P5-T2 | Email job, staff workflow, CSV export, retention | TODO | 0 | 2026-10-21 | CTO |
 | P5-T3 | CANCELLED — Odoo integration removed (owner 2026-10-23) | DEFERRED | 0 | 2026-10-21 | CTO |

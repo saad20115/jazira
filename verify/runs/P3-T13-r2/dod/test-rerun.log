@@ -1,0 +1,264 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-01/p3
+
+[16:39:10] [32mINFO[39m: [36mDropping database.[39m
+[16:39:11] [32mINFO[39m: [36mReading migration files from D:\jazira-verify\2026-11-01\p3\src\migrations[39m
+[16:39:11] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[16:39:11] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (104ms)[39m
+[16:39:11] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[16:39:11] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (78ms)[39m
+[16:39:11] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[16:39:11] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (106ms)[39m
+[16:39:11] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[16:39:12] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (120ms)[39m
+[16:39:12] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[16:39:12] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (921ms)[39m
+[16:39:12] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[16:39:13] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (76ms)[39m
+[16:39:13] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[16:39:13] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (63ms)[39m
+[16:39:13] [32mINFO[39m: [36mMigrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[16:39:13] [32mINFO[39m: [36mMigrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (45ms)[39m
+[16:39:13] [32mINFO[39m: [36mMigrating: 20261024_195628_p3_t12_site_settings_arabic_enabled[39m
+[16:39:13] [32mINFO[39m: [36mMigrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (18ms)[39m
+[16:39:13] [32mINFO[39m: [36mMigrating: 20261025_002404_p4_t2_projects_review_fields[39m
+[16:39:13] [32mINFO[39m: [36mMigrated:  20261025_002404_p4_t2_projects_review_fields (19ms)[39m
+[16:39:14] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:15] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:15] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:15] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:15] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:15] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[16:39:15] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[16:39:15] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[16:39:15] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[16:39:16] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[16:39:16] [32mINFO[39m: [36mThe following field is invalid: password[39m
+[16:39:19] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:19] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:20] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:21] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:21] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:185:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:400:24
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:22] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/jazira-verify/2026-11-01/p3/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/jazira-verify/2026-11-01/p3/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:410:24
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:22] [31mERROR[39m: [36mThe email or password provided is incorrect.[39m
+    err: {
+      "type": "AuthenticationError",
+      "message": "The email or password provided is incorrect.",
+      "stack":
+          AuthenticationError: The email or password provided is incorrect.
+              at createGenericAuthenticationError (D:/jazira-verify/2026-11-01/p3/src/security/loginEnumeration.ts:88:15)
+              at hardenLoginEnumerationBeforeOperation (D:/jazira-verify/2026-11-01/p3/src/security/loginEnumeration.ts:140:11)
+              at async buildBeforeOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/buildBeforeOperation.js:11:32)
+              at async loginOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/operations/login.js:38:12)
+              at async loginHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/auth/endpoints/login.js:19:20)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:419:32
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 401,
+      "name": "AuthenticationError"
+    }
+[16:39:23] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:23] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:25] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:25] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:25] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:25] [31mERROR[39m: [36mلا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.[39m
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.",
+      "stack":
+          APIError: لا يمكن خفض صلاحية مدير النظام الوحيد إلى محرر. يجب وجود مدير نظام واحد على الأقل. / Cannot demote the last admin user.
+              at createPublicAPIError (D:/jazira-verify/2026-11-01/p3/src/security/apiError.ts:26:15)
+              at preventLastAdminDemotionBeforeChange (D:/jazira-verify/2026-11-01/p3/src/collections/Users.ts:111:15)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async updateDocument (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/utilities/update.js:159:20)
+              at async updateByIDOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/updateByID.js:175:22)
+              at async updateByIDHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/updateByID.js:9:17)
+              at async endpoint.handler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/wrapInternalEndpoints.js:15:28)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[16:39:25] [31mERROR[39m: [36mلا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.[39m
+    err: {
+      "type": "APIError",
+      "message": "لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.",
+      "stack":
+          APIError: لا يمكن حذف مدير النظام الوحيد. يجب وجود مدير نظام واحد على الأقل. / Cannot delete the last admin user.
+              at createPublicAPIError (D:/jazira-verify/2026-11-01/p3/src/security/apiError.ts:26:15)
+              at preventLastAdminBeforeDelete (D:/jazira-verify/2026-11-01/p3/src/collections/Users.ts:144:13)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async deleteByIDOperation (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/operations/deleteByID.js:72:17)
+              at async deleteByIDHandler (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/collections/endpoints/deleteByID.js:9:17)
+              at async handleEndpoints (file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/payload@3.91.0_graphql@16.14.2_typescript@5.9.3/node_modules/payload/dist/utilities/handleEndpoints.js:200:26)
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/@payloadcms+next@3.91.0_@ty_2cf3b2585888cecee1d3259263344460/node_modules/@payloadcms/next/dist/routes/rest/index.js:17:20
+              at callJsonApi (D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:63:15)
+              at D:/jazira-verify/2026-11-01/p3/tests/int/p1-t3.int.test.ts:580:23
+              at async file:///D:/jazira-verify/2026-11-01/p3/node_modules/.pnpm/vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24/node_modules/vitest/dist/chunks/run.BPv-BBRv.js:2801:20
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 400,
+      "name": "APIError"
+    }
+[16:39:31] [32mINFO[39m: [36mYou are not allowed to perform this action.[39m
+[16:39:31] [32mINFO[39m: [36mThe following field is invalid: file[39m
+[16:39:31] [32mINFO[39m: [36mThe following field is invalid: file[39m
+stdout | tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+[A5/R-1 Timing 20+20] known(median=63.27ms, max=258.43ms) vs unknown(median=11.89ms, max=24.28ms) | diff=51.38ms
+
+ ❯ tests/int/p1-t3.int.test.ts (9 tests | 1 failed) 22262ms
+   ❯ P1-T3 integration suite (Postgres test DB via migrations) (9)
+     × returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1) 5470ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/int/p1-t3.int.test.ts > P1-T3 integration suite (Postgres test DB via migrations) > returns identical forgot-password responses for known and unknown emails with <= 1h token expiry, < 100ms median timing difference over 20+20 requests, and delivers email to Mailpit (A5, R-1)
+AssertionError: expected 0 to be greater than or equal to 1
+ ❯ tests/int/p1-t3.int.test.ts:711:36
+    709|       messages?: Array<{ To?: Array<{ Address?: string }> }>
+    710|     }
+    711|     expect(mailpitData.total ?? 0).toBeGreaterThanOrEqual(1)
+       |                                    ^
+    712|     const recipients = (mailpitData.messages ?? []).flatMap((m) =>
+    713|       (m.To ?? []).map((t) => t.Address),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 1 passed (2)
+      Tests  1 failed | 24 passed (25)
+   Start at  16:38:55
+   Duration  43.11s (tests 59%, import 38%, transform 3%)
+

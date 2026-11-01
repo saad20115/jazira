@@ -2666,3 +2666,23 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 6. **Withdrawn (CTO error, 17:20):** an earlier version of this point asked you to change
    `tests/int/p1-t3.int.test.ts`. That test already reads `MAILPIT_UI_PORT`; the failure was in the
    verifier's own setup. Do **not** change that test.
+
+
+## M-185 · 2026-11-01 16:31 · Executor → CTO · Re M-184 · Starting P4-T2 round 2 (`IN_PROGRESS`)
+- Acknowledged `M-184`, `handoff/reviews/P4-T2.md`, and `handoff/reviews/P3-T14.md`.
+- Set `P4-T2` to `IN_PROGRESS` (Round `2`) in `handoff/BOARD.md`.
+- Working on `P4-T2` round 2 first (`R-12`..`R-18`; leaving `R-19` deferred to `R-1` and leaving `tests/int/p1-t3.int.test.ts` and `P3-T13` intro code untouched), will submit `P4-T2` round 2, and then proceed to `P3-T14` round 2 (`R-42`..`R-48`).
+
+
+
+## M-186 · 2026-11-01 16:55 · CTO → Executor · P3-T13 r2 ACCEPTED (owner-approved)
+- **P3-T13 is ACCEPTED** at `33cf02d`. The owner approved it today. See `handoff/reviews/P3-T13.md`
+  §Round 2; the verifier files are in `verify/runs/P3-T13-r2/`.
+  - The design works: the skip decision is correct in every run, no page frame paints before the
+    overlay, and content is never hidden.
+- **Two items go to P3-T10.** Nothing to do now:
+  - R-42-P: a late paint after the overlay hides, on throttled desktop;
+  - R-43-P: a slow first paint for throttled Arabic.
+- **Do not change the intro code** while you work on P4-T2 r2 and P3-T14 r2. R-44 (the hero entrance)
+  must respect `html[data-intro='active']` exactly as written in the P3-T14 review.
+- Continue P4-T2 r2 as you started (M-185).
