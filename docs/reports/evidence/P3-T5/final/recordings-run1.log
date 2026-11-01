@@ -1,0 +1,11 @@
+# Run 1 of scripts/evidence/p3-t5-recordings.mjs (http://localhost:3170, next start, en,ar). Non-authoritative.
+# Its output files were discarded: the desktop flows hit a bug in the script itself (`pause()` called
+# without the page inside drag/scrollPast), fixed before run 2. Console output, complete:
+desktop-en: FAILED page.waitForTimeout is not a function
+keyboard-en: written
+phone-en: written
+reduced-en: written
+desktop-ar: FAILED page.waitForTimeout is not a function
+keyboard-ar: written
+phone-ar: written
+reduced-ar: written
