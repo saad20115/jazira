@@ -1,0 +1,214 @@
+
+Running 9 tests using 1 worker
+
+  x  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (2.0m)
+  x  2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (2.0m)
+  x  3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (2.0m)
+  x  4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:288:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (2.0m)
+  x  5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:307:3 › P3-T5 live 3D card › @gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (2.0m)
+  x  6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:341:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (2.0m)
+  x  7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:360:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (2.0m)
+  x  8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:407:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (2.0m)
+  x  9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:527:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (2.0m)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:219:20
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-3f82e-ls-before-any-worker-starts-gpu\error-context.md
+
+  2) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:219:20
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-fae0b-ls-before-any-worker-starts-gpu\error-context.md
+
+  3) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:235:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-50ae3-rows-enter-and-exit-systems-gpu\error-context.md
+
+  4) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:288:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:291:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-3e311-ly-while-the-card-is-active-gpu\error-context.md
+
+  5) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:307:3 › P3-T5 live 3D card › @gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:310:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-c3a8b-cape-exits-then-deactivates-gpu\error-context.md
+
+  6) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:341:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:344:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-e871d-s-back-to-stills-keeping-it-gpu\error-context.md
+
+  7) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:360:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:385:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-21311-full-model-enters-and-exits-gpu\error-context.md
+
+  8) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:407:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:411:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-1e27a-s-in-the-low-or-stills-tier-gpu\error-context.md
+
+  9) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:527:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.scrollIntoViewIfNeeded: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]')
+
+
+      87 |   await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+      88 |   const card = page.locator('[data-interactive-3d-card]')
+    > 89 |   await card.scrollIntoViewIfNeeded()
+         |              ^
+      90 |   return card
+      91 | }
+      92 |
+        at openHome (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:89:14)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:532:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-d029f-s-trapped-only-while-active-gpu\error-context.md
+
+  9 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:203:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:288:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:307:3 › P3-T5 live 3D card › @gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:341:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:360:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:407:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier 
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:527:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+exit=1

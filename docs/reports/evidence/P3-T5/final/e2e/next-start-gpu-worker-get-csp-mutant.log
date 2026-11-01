@@ -1,0 +1,32 @@
+
+Running 1 test using 1 worker
+
+  x  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (5.8s)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Array [
+    -   "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'",
+    +   "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'; worker-src *",
+      ]
+
+      250 |     await expect.poll(() => recorder.workerGetCsp.length).toBeGreaterThan(0)
+      251 |     for (const policies of recorder.workerGetCsp) {
+    > 252 |       expect(policies).toEqual([WORKER_CSP])
+          |                        ^
+      253 |     }
+      254 |     await expect(card).toHaveAttribute('data-entered', 'none')
+      255 |
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:252:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-50ae3-rows-enter-and-exit-systems-gpu\error-context.md
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:231:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems 
+exit=1

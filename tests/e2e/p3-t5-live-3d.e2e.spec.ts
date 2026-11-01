@@ -20,12 +20,17 @@ test.use({ launchOptions: { args: GPU_ARGS } })
 const PRODUCTION_SERVER = process.env.E2E_PRODUCTION_SERVER === '1'
 const WORKER_PATH = '/systems/v022n/basis/ktx2-worker.js'
 const LIVE_TIMEOUT = 60_000
+/** H3b (CTO decision 2026-10-25, `handoff/reviews/P3-T5.md`): the KTX2 worker's own and only CSP. */
+const WORKER_CSP =
+  "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'"
 
 interface Recorder {
   /** Same-origin `/systems/` requests other than the release stills (method + path). */
   model: string[]
   cspViolations: string[]
   warnings: string[]
+  /** Every Content-Security-Policy header of each GET response for the worker script. */
+  workerGetCsp: string[][]
 }
 
 /** Skips the intro splash (a returning visit) and pins capable-device hints, so the 3D path runs. */
@@ -47,7 +52,18 @@ async function prepare(context: BrowserContext): Promise<void> {
 }
 
 function record(page: Page): Recorder {
-  const recorder: Recorder = { model: [], cspViolations: [], warnings: [] }
+  const recorder: Recorder = { model: [], cspViolations: [], warnings: [], workerGetCsp: [] }
+  page.on('response', (response) => {
+    if (response.request().method() === 'GET' && new URL(response.url()).pathname === WORKER_PATH) {
+      void response.headersArray().then((headers) => {
+        recorder.workerGetCsp.push(
+          headers
+            .filter((h) => h.name.toLowerCase() === 'content-security-policy')
+            .map((h) => h.value),
+        )
+      })
+    }
+  })
   page.on('request', (request) => {
     const url = new URL(request.url())
     if (url.pathname.startsWith('/systems/') && !url.pathname.includes('/stills/')) {
@@ -222,6 +238,11 @@ test.describe('P3-T5 live 3D card', () => {
     expect(recorder.model).toEqual(
       expect.arrayContaining([`HEAD ${WORKER_PATH}`, `GET ${WORKER_PATH}`]),
     )
+    // C3-3 (CTO 2c): the GET the Worker itself makes carries exactly the H3b policy, once.
+    await expect.poll(() => recorder.workerGetCsp.length).toBeGreaterThan(0)
+    for (const policies of recorder.workerGetCsp) {
+      expect(policies).toEqual([WORKER_CSP])
+    }
     await expect(card).toHaveAttribute('data-entered', 'none')
 
     // The pre-expanded first row enters through its "Show in 3D" button, and exits from the card.
