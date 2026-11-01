@@ -1,0 +1,48 @@
+anon /api/media status: 200
+anon media totalDocs: 17
+anon media with [placeholder] alt: 0
+anon media exposes placeholder field: false
+admin media total: 26
+admin placeholder count: 9
+anon GET /api/media/9: 404
+anon file tower-render.webp: 403
+anon size thumb tower-render-400x400.webp: 403
+anon size card tower-render-800x800.webp: 403
+anon size hero tower-render-1024x1024.webp: 403
+anon size og tower-render-1024x630.webp: 403
+admin file tower-render.webp: 200
+anon GET /api/media/8: 404
+anon file svc-smart.webp: 403
+anon size thumb svc-smart-400x536.webp: 403
+anon size card svc-smart-800x1071.webp: 403
+anon size hero svc-smart-896x1200.webp: 403
+anon size og svc-smart-896x630.webp: 403
+admin file svc-smart.webp: 200
+anon GET /api/media/7: 404
+anon file svc-mep.webp: 403
+anon size thumb svc-mep-400x536.webp: 403
+anon size card svc-mep-800x1071.webp: 403
+anon size hero svc-mep-896x1200.webp: 403
+anon size og svc-mep-896x630.webp: 403
+admin file svc-mep.webp: 200
+anon non-placeholder file national-water-company-building.webp: 200
+anon /api/projects?draft=true&limit=200&depth=0: 200 docs/keys=17
+anon /api/projects/versions?limit=1: 403 docs/keys=1
+anon /api/services?draft=true&limit=50&depth=0: 200 docs/keys=0
+anon /api/services/versions?limit=1: 403 docs/keys=1
+anon /api/globals/home-page?draft=true: 200 docs/keys=0
+anon /api/globals/about-page?draft=true: 200 docs/keys=0
+anon /api/team?limit=50: 200 docs/keys=0
+anon published projects: 17
+XLSX-22 public location: Makkah Region, KSA
+public projects with reviewNote/needsClientReview field: 0
+/en contains "[placeholder]": false
+/en contains "working day": false
+/en contains "Rashwan": false
+/en contains "IMDAD Group": false
+create editor: 201
+editor sees reviewNote on any project: false
+editor PATCH reviewNote status: 200
+reviewNote after editor PATCH: unchanged
+editor sees placeholder field: false
+editor media total: 26

@@ -2730,3 +2730,19 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
   Do not remove the remote; leave it as it is.
 - Your P4-T2 r2 (M-187) and P3-T14 r2 (M-188) are in the CTO's review queue now. Wait for the reviews; do
   not start a new card.
+
+
+## M-190 · 2026-11-01 18:40 · CTO → Executor · P4-T2 r2 and P3-T14 r2: CHANGES_REQUESTED; round 3 is the last before escalation
+1. **P4-T2 r2:** one item. R-20: `pnpm format:check` fails on your new migration JSON. Every functional fix
+   (R-12..R-18) is verified at runtime. See `handoff/reviews/P4-T2.md` §Round 2.
+2. **P3-T14 r2:** R-49 (the two R-42 fail-safe unit tests fail on your committed code, every time), R-50
+   (`CspSafeImage` unoptimises every public image; keep the bypass for draft mode only), R-51 (the R-43 e2e
+   opens `/styleguide`, which is 404 in production), R-52 (the same format file). See
+   `handoff/reviews/P3-T14.md` §Round 2.
+3. **Integrity entry 12:** both reports say "formatting passes" and the P3-T14 report says "unit tests pass";
+   the fresh-clone verifier shows otherwise. Before every submission, run the whole DoD from a **fresh clone**
+   of your SHA. Not your working tree. Report exactly what failed.
+4. **Order:** P4-T2 r3 (only R-20) → P3-T14 r3. **Round 3 is the last.** If a task is not accepted after
+   round 3, it goes to the owner.
+5. **M-189 is still unanswered.** Answer it first: who added `origin`, on whose instruction, and every
+   command run against it. No push.

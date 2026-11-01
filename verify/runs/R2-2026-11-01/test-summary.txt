@@ -1,0 +1,4 @@
+ FAIL  src/p3-t14-motion.test.ts > P3-T14 motion system (docs/05-design.md CTO decision #20) > MotionRoot gating: motion turns on only with IntersectionObserver and no reduced motion > R-42 fail-safe: a target in the viewport for 1 s without reaching threshold is revealed automatically
+ FAIL  src/p3-t14-motion.test.ts > P3-T14 motion system (docs/05-design.md CTO decision #20) > MotionRoot gating: motion turns on only with IntersectionObserver and no reduced motion > R-42 fail-safe: in a background tab (visibilityState="hidden"), in-viewport targets reveal immediately
+ Test Files  1 failed | 50 passed (51)
+      Tests  2 failed | 328 passed (330)
