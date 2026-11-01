@@ -1,0 +1,4 @@
+run 1 (cpu load 53%/72%): 100ms EvaluateScript, 53ms ?
+run 2 (cpu load 76%/60%): 71ms EvaluateScript, 64ms TimerFire
+run 3 (cpu load 56%/30%): 69ms EvaluateScript, 51ms TimerFire, 237ms TimerFire, 159ms TimerFire
+exit=0

@@ -1,0 +1,18 @@
+file:///D:/jazira-p3t5/node_modules/.pnpm/puppeteer-core@25.16.0/node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.js:119
+            return Promise.reject(new ConnectionClosedError('Connection closed.'));
+                                  ^
+
+ConnectionClosedError: Connection closed.
+    at Connection._rawSend (file:///D:/jazira-p3t5/node_modules/.pnpm/puppeteer-core@25.16.0/node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.js:119:35)
+    at Connection.send (file:///D:/jazira-p3t5/node_modules/.pnpm/puppeteer-core@25.16.0/node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.js:112:21)
+    at Connection._createSession (file:///D:/jazira-p3t5/node_modules/.pnpm/puppeteer-core@25.16.0/node_modules/puppeteer-core/lib/puppeteer/cdp/Connection.js:239:42)
+    at PageTarget.createSession (file:///D:/jazira-p3t5/node_modules/.pnpm/puppeteer-core@25.16.0/node_modules/puppeteer-core/lib/puppeteer/cdp/Browser.js:165:37)
+    at PageTarget.createCDPSession (file:///D:/jazira-p3t5/node_modules/.pnpm/puppeteer-core@25.16.0/node_modules/puppeteer-core/lib/puppeteer/cdp/Target.js:100:36)
+    at Driver.connect (file:///D:/jazira-p3t5/node_modules/.pnpm/lighthouse@13.5.0_@opentele_1d088f5dd436fe43d63b97d06e256524/node_modules/lighthouse/core/gather/driver.js:84:50)
+    at _setup (file:///D:/jazira-p3t5/node_modules/.pnpm/lighthouse@13.5.0_@opentele_1d088f5dd436fe43d63b97d06e256524/node_modules/lighthouse/core/gather/navigation-runner.js:48:16)
+    at gatherFn (file:///D:/jazira-p3t5/node_modules/.pnpm/lighthouse@13.5.0_@opentele_1d088f5dd436fe43d63b97d06e256524/node_modules/lighthouse/core/gather/navigation-runner.js:298:35)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async Runner.gather (file:///D:/jazira-p3t5/node_modules/.pnpm/lighthouse@13.5.0_@opentele_1d088f5dd436fe43d63b97d06e256524/node_modules/lighthouse/core/runner.js:232:25)
+
+Node.js v24.14.1
+exit=1
