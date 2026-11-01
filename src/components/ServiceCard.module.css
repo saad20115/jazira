@@ -164,6 +164,18 @@
   transform: translateY(0);
 }
 
+/* R-43: on touch devices (`hover: none` / `pointer: coarse`), `.description` is visible at rest. */
+@media (hover: none), (pointer: coarse) {
+  .title {
+    transform: translateY(0);
+  }
+
+  .description {
+    opacity: 0.75;
+    transform: translateY(0);
+  }
+}
+
 .divider {
   inline-size: 100%;
   block-size: 1px;

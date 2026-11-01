@@ -195,6 +195,18 @@
   transform: translateY(0);
 }
 
+/* R-43: on touch devices (`hover: none` / `pointer: coarse`), `.ctaRow` is visible at rest. */
+@media (hover: none), (pointer: coarse) {
+  .infoBlock {
+    transform: translateY(0);
+  }
+
+  .ctaRow {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .progressBar {
   position: absolute;
   inset-inline: 0;

@@ -14,6 +14,7 @@ import {
   parseCountUpValue,
   parseCssTimeToMs,
   shouldEnableMotion,
+  VIEWPORT_FAILSAFE_MS,
 } from '@/components/motion/motion'
 import { type MotionWindow, startMotionController } from '@/components/motion/motion-controller'
 
@@ -279,6 +280,107 @@ describe('P3-T14 motion system (docs/05-design.md CTO decision #20)', () => {
       expect(isIntroPending('seen')).toBe(false)
       expect(isIntroPending(null)).toBe(false)
       expect(isIntroPending(undefined)).toBe(false)
+    })
+
+    it('R-42 fail-safe: any exception in the observer removes data-motion and reveals every target', () => {
+      let ioCallback: ((entries: IntersectionObserverEntry[]) => void) | null = null
+      const env = createFakeEnv({ hasIntersectionObserver: true, prefersReducedMotion: false })
+      ;(env.win as unknown as Record<string, unknown>).IntersectionObserver = class {
+        constructor(cb: (entries: IntersectionObserverEntry[]) => void) {
+          ioCallback = cb
+        }
+        observe(el: FakeElement): void {
+          env.observed.add(el)
+        }
+        unobserve(el: FakeElement): void {
+          env.observed.delete(el)
+        }
+        disconnect(): void {
+          env.observed.clear()
+        }
+      }
+      const offScreen = revealTarget(2400)
+      env.body.append(offScreen)
+      startMotionController(env.doc, env.win)
+      expect(env.html.getAttribute('data-motion')).toBe('on')
+      expect(offScreen.hasAttribute('data-revealed')).toBe(false)
+
+      // Trigger an exception inside handleEntries by passing an entry whose target.matches throws
+      const throwingEntry = {
+        target: {
+          matches: () => {
+            throw new Error('simulated observer error')
+          },
+        },
+        isIntersecting: true,
+        intersectionRatio: 1,
+        intersectionRect: { height: 200 },
+      } as unknown as IntersectionObserverEntry
+      const invokeIo = ioCallback as ((entries: IntersectionObserverEntry[]) => void) | null
+      if (invokeIo) {
+        invokeIo([throwingEntry])
+      }
+
+      expect(env.html.hasAttribute('data-motion')).toBe(false)
+      expect(offScreen.getAttribute('data-revealed')).toBe('instant')
+    })
+
+    it('R-42 fail-safe: a target in the viewport for 1 s without reaching threshold is revealed automatically', () => {
+      let nowMs = 0
+      const scrollHandlers: Array<() => void> = []
+      const env = createFakeEnv({ hasIntersectionObserver: true, prefersReducedMotion: false })
+      ;(env.win as unknown as Record<string, unknown>).performance = { now: () => nowMs }
+      ;(env.win as unknown as Record<string, unknown>).addEventListener = (
+        ev: string,
+        cb: () => void,
+      ) => {
+        if (ev === 'scroll') {
+          scrollHandlers.push(cb)
+        }
+      }
+      const target = revealTarget(2400)
+      env.body.append(target)
+      const handle = startMotionController(env.doc, env.win)
+      expect(target.hasAttribute('data-revealed')).toBe(false)
+
+      // Target scrolls into the viewport (e.g. 10 px overlap, below 15% IO threshold)
+      target.rect = { top: 890, bottom: 1090, left: 0, right: 1440, width: 1440, height: 200 }
+      nowMs = 100
+      scrollHandlers.forEach((cb) => {
+        cb()
+      })
+      expect(target.hasAttribute('data-revealed')).toBe(false)
+
+      // After VIEWPORT_FAILSAFE_MS (1000 ms) in the viewport, the fail-safe reveals it
+      nowMs = 100 + VIEWPORT_FAILSAFE_MS
+      scrollHandlers.forEach((cb) => {
+        cb()
+      })
+      expect(target.getAttribute('data-revealed')).toBe('true')
+      handle?.dispose()
+    })
+
+    it('R-42 fail-safe: in a background tab (visibilityState="hidden"), in-viewport targets reveal immediately', () => {
+      const scrollHandlers: Array<() => void> = []
+      const env = createFakeEnv({ hasIntersectionObserver: true, prefersReducedMotion: false })
+      ;(env.doc as unknown as Record<string, unknown>).visibilityState = 'hidden'
+      ;(env.win as unknown as Record<string, unknown>).addEventListener = (
+        ev: string,
+        cb: () => void,
+      ) => {
+        if (ev === 'scroll') {
+          scrollHandlers.push(cb)
+        }
+      }
+      const target = revealTarget(2400)
+      env.body.append(target)
+      const handle = startMotionController(env.doc, env.win)
+      target.rect = { top: 200, bottom: 400, left: 0, right: 1440, width: 1440, height: 200 }
+      scrollHandlers.forEach((cb) => {
+        cb()
+      })
+      expect(target.getAttribute('data-revealed')).toBe('instant')
+      handle?.dispose()
     })
   })
 

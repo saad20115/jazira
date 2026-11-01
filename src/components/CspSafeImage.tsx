@@ -16,6 +16,15 @@ const CSP_SAFE_IMAGE_STYLE = { color: undefined } as const
 
 export type CspSafeImageProps = Omit<ImageProps, 'style'>
 
-export function CspSafeImage({ alt, ...rest }: CspSafeImageProps): JSX.Element {
-  return <Image alt={alt} {...rest} style={CSP_SAFE_IMAGE_STYLE} />
+export function CspSafeImage({ alt, unoptimized, ...rest }: CspSafeImageProps): JSX.Element {
+  const isPayloadMediaRoute =
+    typeof rest.src === 'string' && rest.src.startsWith('/api/media/file/')
+  return (
+    <Image
+      alt={alt}
+      unoptimized={unoptimized ?? isPayloadMediaRoute}
+      {...rest}
+      style={CSP_SAFE_IMAGE_STYLE}
+    />
+  )
 }

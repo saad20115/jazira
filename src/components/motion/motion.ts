@@ -21,6 +21,9 @@ export const REVEAL_VISIBILITY_THRESHOLD = 0.15
 /** If the intro never reports `data-intro="seen"`, motion still starts after this delay. */
 export const INTRO_WAIT_TIMEOUT_MS = 4000
 
+/** R-42 fail-safe: any target in the viewport for 1 s without being revealed is revealed. */
+export const VIEWPORT_FAILSAFE_MS = 1000
+
 export interface MotionEnvironment {
   hasIntersectionObserver: boolean
   prefersReducedMotion: boolean

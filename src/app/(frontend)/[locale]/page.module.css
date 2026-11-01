@@ -768,6 +768,19 @@
   }
 }
 
+@keyframes heroEnterFadeRise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+}
+
+@keyframes heroEnterRiseOnly {
+  from {
+    transform: translate3d(0, var(--reveal-distance), 0);
+  }
+}
+
 @keyframes heroParallax {
   to {
     transform: translate3d(0, 8%, 0);
@@ -796,10 +809,50 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  /* §20 catalogue 3: the hero background settles from 1.06 to 1 on first view. Pure CSS, scale
-     only (never hidden); Home CSS must not key anything to the intro state (P3-T4 R-26 guard). */
+  /* §20 catalogue 3 & R-45: the hero background settles from 1.06 to 1 on first view. Pure CSS,
+     scale only (never hidden), paused while `html[data-intro='active']`. */
   .heroBgMedia {
     animation: heroSettle var(--motion-hero-settle) var(--ease-out) both;
+  }
+
+  /* §20.3 & R-44: pure-CSS hero entrance from first paint (`fill-mode: backwards`, <= 900 ms total:
+     600 ms duration + 0 / 80 / 160 / 240 ms stagger = 840 ms). The h1 only translates (never
+     opacity 0). Paused while `html[data-intro='active']` and plays when the intro ends. */
+  .heroEyebrowEnter,
+  .heroSubtitle,
+  .heroCtaGroup {
+    animation-name: heroEnterFadeRise;
+    animation-duration: var(--motion-slow);
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+  }
+
+  .heroEyebrowEnter {
+    animation-delay: 0ms;
+  }
+
+  .heroTitle {
+    animation-name: heroEnterRiseOnly;
+    animation-duration: var(--motion-slow);
+    animation-timing-function: var(--ease-out);
+    animation-fill-mode: backwards;
+    animation-delay: var(--stagger);
+  }
+
+  .heroSubtitle {
+    animation-delay: calc(2 * var(--stagger));
+  }
+
+  .heroCtaGroup {
+    animation-delay: calc(3 * var(--stagger));
+  }
+
+  :global(html[data-intro='active']) .heroBgMedia,
+  :global(html[data-intro='active']) .heroEyebrowEnter,
+  :global(html[data-intro='active']) .heroTitle,
+  :global(html[data-intro='active']) .heroSubtitle,
+  :global(html[data-intro='active']) .heroCtaGroup {
+    animation-play-state: paused;
   }
 
   /* §20 catalogue 3: the "scroll to explore" cue loops gently once motion is on. */

@@ -106,11 +106,19 @@
   margin: 0;
   color: var(--navy-950);
   inline-size: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .description {
   margin: 0;
   inline-size: 100%;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
   transition: color 240ms ease;
 }
 
@@ -178,19 +186,19 @@
   }
 }
 
-.tile:focus-within {
+.tile:has(.linkRow:focus-visible) {
   background-color: var(--gold-500);
   border-color: var(--gold-500);
   box-shadow: var(--shadow-card-hover);
 }
 
-.tile:focus-within .iconBox {
+.tile:has(.linkRow:focus-visible) .iconBox {
   background-color: var(--white);
   color: var(--navy-950);
 }
 
-.tile:focus-within .description,
-.tile:focus-within .linkRow {
+.tile:has(.linkRow:focus-visible) .description,
+.tile:has(.linkRow:focus-visible) .linkRow {
   color: var(--navy-950);
 }
 
@@ -217,23 +225,23 @@
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .tile:focus-within {
+  .tile:has(.linkRow:focus-visible) {
     transform: translate3d(0, calc(var(--hover-lift-card) * -1), 0);
   }
 
-  .tile:focus-within::before {
+  .tile:has(.linkRow:focus-visible)::before {
     transform: scaleX(1);
   }
 
-  .tile:focus-within .iconBox {
+  .tile:has(.linkRow:focus-visible) .iconBox {
     transform: scale(1.08);
   }
 
-  .tile:focus-within .linkIcon {
+  .tile:has(.linkRow:focus-visible) .linkIcon {
     transform: translate3d(3px, 0, 0);
   }
 
-  :global([dir='rtl']) .tile:focus-within .linkIcon {
+  :global([dir='rtl']) .tile:has(.linkRow:focus-visible) .linkIcon {
     transform: translate3d(-3px, 0, 0);
   }
 }
@@ -242,7 +250,7 @@
   .linkRow {
     min-inline-size: 44px;
     min-block-size: 44px;
-    margin-block-end: calc(var(--space-10) * -1);
+    margin-block-end: calc(var(--space-6) * -1);
   }
 }
 

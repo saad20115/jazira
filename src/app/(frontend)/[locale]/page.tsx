@@ -513,16 +513,13 @@ export default async function LocaleHomePage({
 
             <div className={styles.heroContent}>
               {heroEyebrow ? (
-                <div {...revealAttributes()}>
+                <div className={styles.heroEyebrowEnter}>
                   <Eyebrow label={heroEyebrow} tone="Dark" />
                 </div>
               ) : null}
 
               {heroTitle || heroTitleAccent ? (
-                <h1
-                  className={`${styles.heroTitle} t-display-xl`}
-                  {...revealAttributes({ variant: 'rise', step: 1 })}
-                >
+                <h1 className={`${styles.heroTitle} t-display-xl`}>
                   {heroTitle ? <span className={styles.blockLine}>{heroTitle}</span> : null}
                   {heroTitle && heroTitleAccent ? ' ' : null}
                   {heroTitleAccent ? (
@@ -534,13 +531,11 @@ export default async function LocaleHomePage({
               ) : null}
 
               {heroSubtitle ? (
-                <p className={`${styles.heroSubtitle} t-body-l`} {...revealAttributes({ step: 2 })}>
-                  {heroSubtitle}
-                </p>
+                <p className={`${styles.heroSubtitle} t-body-l`}>{heroSubtitle}</p>
               ) : null}
 
               {heroPrimaryLabel || heroSecondaryLabel ? (
-                <div className={styles.heroCtaGroup} {...revealAttributes({ step: 3 })}>
+                <div className={styles.heroCtaGroup}>
                   {heroPrimaryLabel ? (
                     <Button
                       href={heroPrimaryHref ?? `/${locale}/services`}
