@@ -21,7 +21,6 @@ export interface DeviceCaps {
 }
 
 export type StartDecision = 'stills' | 'live'
-export type GfxOverride = 'stills' | 'low' | 'high'
 
 const SLOW_CONNECTIONS = new Set(['slow-2g', '2g', '3g'])
 
@@ -81,12 +80,6 @@ export function chooseModelTier(caps: DeviceCaps, gpuRenderer: string | null): M
     return 'lite'
   }
   return isHighPerformanceGpu(gpuRenderer) ? 'full' : 'lite'
-}
-
-/** Parses the dev-only `?gfx=` override (ignored in production builds by the caller). */
-export function parseGfxOverride(search: string): GfxOverride | null {
-  const value = new URLSearchParams(search).get('gfx')
-  return value === 'stills' || value === 'low' || value === 'high' ? value : null
 }
 
 /**

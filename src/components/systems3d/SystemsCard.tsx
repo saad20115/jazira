@@ -23,15 +23,13 @@ import type { SystemRelatedProjects } from './relatedProjects'
 import {
   DPR_CAP,
   LITE_GROUND_TINT,
-  type LiteGroundTint,
   LIVE_LOOK,
-  type LiveLook,
   type ModelTier,
   RELEASE_BASE_PATH,
 } from './renderContract'
 import { StillLabels } from './StillLabels'
 import type { Systems3dStrings } from './strings'
-import { chooseModelTier, decideStart, type DeviceCaps, parseGfxOverride } from './tier'
+import { chooseModelTier, decideStart, type DeviceCaps } from './tier'
 import type { ViewerHandle } from './viewer/createViewer'
 import { type FallbackReason, ViewerStartError } from './viewer/failure'
 
@@ -94,54 +92,6 @@ function readDeviceCaps(): DeviceCaps {
     coarsePointer: window.matchMedia('(pointer: coarse)').matches,
     phoneLayout: window.matchMedia('(max-width: 767.98px)').matches,
   }
-}
-
-/** `?gfx=stills|low|high` forces a tier in development builds only (§8b evidence). */
-function readGfxOverride(): ReturnType<typeof parseGfxOverride> {
-  return process.env.NODE_ENV === 'production' ? null : parseGfxOverride(window.location.search)
-}
-
-/** `?look=exposure,env,emissive,roomEnv,floorEdge` overrides the V-1 calibration in development builds only. */
-function readLookOverride(): LiveLook {
-  if (process.env.NODE_ENV === 'production') {
-    return LIVE_LOOK
-  }
-  const raw = new URLSearchParams(window.location.search).get('look')
-  const values = raw?.split(',').map(Number) ?? []
-  if (values.length !== 5 || values.some((v) => !Number.isFinite(v) || v < 0 || v > 8)) {
-    return LIVE_LOOK
-  }
-  const [
-    exposureScale = 1,
-    envIntensity = 1,
-    emissiveScale = 1,
-    roomEnvIntensity = 1,
-    floorEdgeLevel = 1,
-  ] = values
-  return { exposureScale, envIntensity, emissiveScale, roomEnvIntensity, floorEdgeLevel }
-}
-
-/** `?ground=pr,pg,pb,vr,vg,vb` overrides the C3-2 lite ground tint in development builds only. */
-function readGroundOverride(): LiteGroundTint {
-  if (process.env.NODE_ENV === 'production') {
-    return LITE_GROUND_TINT
-  }
-  const values =
-    new URLSearchParams(window.location.search).get('ground')?.split(',').map(Number) ?? []
-  if (values.length !== 6 || values.some((v) => !Number.isFinite(v) || v < 0 || v > 4)) {
-    return LITE_GROUND_TINT
-  }
-  const [pr = 1, pg = 1, pb = 1, vr = 1, vg = 1, vb = 1] = values
-  return { paving: [pr, pg, pb], vegetation: [vr, vg, vb] }
-}
-
-/** `?fixes=-aniso,-a2c` switches V-2 / V-3 off in development builds only (before/after crops). */
-function readFixesOverride(): { anisotropy: boolean; alphaToCoverage: boolean } {
-  const off =
-    process.env.NODE_ENV === 'production'
-      ? []
-      : (new URLSearchParams(window.location.search).get('fixes')?.split(',') ?? [])
-  return { anisotropy: !off.includes('-aniso'), alphaToCoverage: !off.includes('-a2c') }
 }
 
 const subscribeNever = (): (() => void) => () => undefined
@@ -209,11 +159,7 @@ export function SystemsCard({
     if (phase !== 'still') {
       return
     }
-    const override = readGfxOverride()
-    if (
-      override === 'stills' ||
-      (override === null && decideStart(readDeviceCaps()) === 'stills')
-    ) {
+    if (decideStart(readDeviceCaps()) === 'stills') {
       setFallbackReason('device')
       setPhase('stills')
       return
@@ -231,7 +177,6 @@ export function SystemsCard({
     }
     const controller = new AbortController()
     const caps = readDeviceCaps()
-    const override = readGfxOverride()
     let firstFrame = false
     const fallBack = (reason: FallbackReason): void => {
       window.clearTimeout(timeout)
@@ -251,15 +196,13 @@ export function SystemsCard({
         createViewer({
           canvas,
           container: card,
-          selectTier: (gpu) =>
-            override === 'high' ? 'full' : override === 'low' ? 'lite' : chooseModelTier(caps, gpu),
+          selectTier: (gpu) => chooseModelTier(caps, gpu),
           allowBloom: true,
           pixelRatioCap: caps.coarsePointer || caps.phoneLayout ? DPR_CAP.mobile : DPR_CAP.desktop,
           maxFps: caps.coarsePointer || caps.phoneLayout ? PHONE_MAX_FPS : 0,
           reducedMotion: caps.reducedMotion,
-          look: readLookOverride(),
-          groundTint: readGroundOverride(),
-          fixes: readFixesOverride(),
+          look: LIVE_LOOK,
+          groundTint: LITE_GROUND_TINT,
           signal: controller.signal,
           onFirstFrame: () => {
             firstFrame = true

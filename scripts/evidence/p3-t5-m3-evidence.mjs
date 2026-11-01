@@ -1,3 +1,6 @@
+// Historical (M3, accepted 2026-10-25). The V-2/V-3/V-4 "before" crops used the dev-only `?fixes=` and
+// `?look=` overrides, removed later by CTO decision (AGENTS.md integrity rule 6): run against a build
+// that still has them (4cbd6c3); at later commits those queries are ignored.
 import { execSync } from 'node:child_process'
 import fs from 'node:fs'
 import path from 'node:path'

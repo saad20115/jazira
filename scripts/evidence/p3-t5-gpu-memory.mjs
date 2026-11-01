@@ -3,8 +3,8 @@
 // memory-infra tracing does not report WebGL resources under ANGLE's passthrough decoder (its
 // gpu/gl allocators are absent), so the OS counters are the measure. Samples: "still" (before
 // intent), "live" (the hero, first frame + 3 s) and each of the five systems entered in turn
-// (flight done). The tier is whatever the device rules pick; the requested GLB names it. `query`
-// (dev server only) can force a tier with `?gfx=high`.
+// (flight done). The tier is whatever the device rules pick on this machine; the requested GLB
+// names it. `query` is appended to the page URL as is (the card reads no tier flag from it).
 // Windows only. Usage: node scripts/evidence/p3-t5-gpu-memory.mjs <baseUrl> <out.json> [query]
 import { execFileSync } from 'node:child_process'
 import fs from 'node:fs'

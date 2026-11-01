@@ -108,8 +108,6 @@ export interface ViewerOptions {
   look: LiveLook
   /** C3-2 ground tint, applied to the lite model only (`LITE_GROUND_TINT`). */
   groundTint: LiteGroundTint
-  /** V-2 / V-3 fixes; both on in production (development builds can switch them off for crops). */
-  fixes: { anisotropy: boolean; alphaToCoverage: boolean }
   /** Aborting disposes the viewer, also while the model is still loading. */
   signal: AbortSignal
   /** Called once the live canvas holds a rendered, presented frame. */
@@ -593,7 +591,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
   // V-3: palm fronds are alpha-tested; alpha-to-coverage uses the MSAA samples to soften them.
   const vegetation = materials.get('MAT_vegetation')
-  if (vegetation && options.fixes.alphaToCoverage) {
+  if (vegetation) {
     vegetation.alphaToCoverage = true
     vegetation.needsUpdate = true
   }
@@ -611,9 +609,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     room.envMapIntensity = options.look.roomEnvIntensity
   }
   // V-2: sharper window bands at DPR 2 (anisotropic filtering of the façade emissive maps).
-  const anisotropy = options.fixes.anisotropy
-    ? Math.min(FACADE_ANISOTROPY, renderer.capabilities.getMaxAnisotropy())
-    : 1
+  const anisotropy = Math.min(FACADE_ANISOTROPY, renderer.capabilities.getMaxAnisotropy())
   for (const name of FACADE_MATERIALS) {
     const map = materials.get(name)?.emissiveMap
     if (map) {

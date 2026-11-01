@@ -8,7 +8,6 @@ import {
   fpsVerdict,
   isHighPerformanceGpu,
   isSoftwareRenderer,
-  parseGfxOverride,
 } from '@/components/systems3d/tier'
 
 const desktop: DeviceCaps = {
@@ -98,15 +97,6 @@ describe('P3-T5 device tiers', () => {
     expect(chooseModelTier({ ...desktop, coarsePointer: true }, rtx)).toBe('lite')
     expect(chooseModelTier({ ...desktop, phoneLayout: true }, rtx)).toBe('lite')
     expect(chooseModelTier({ ...desktop, deviceMemory: 4 }, rtx)).toBe('lite')
-  })
-
-  it('parses only the three ?gfx= values', () => {
-    expect(parseGfxOverride('?gfx=stills')).toBe('stills')
-    expect(parseGfxOverride('?gfx=low&x=1')).toBe('low')
-    expect(parseGfxOverride('?gfx=high')).toBe('high')
-    expect(parseGfxOverride('?gfx=ultra')).toBeNull()
-    expect(parseGfxOverride('?gfx=<script>')).toBeNull()
-    expect(parseGfxOverride('')).toBeNull()
   })
 })
 
