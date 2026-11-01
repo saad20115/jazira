@@ -32,3 +32,5 @@ or, where its files were discarded, its console output is kept with the reason.
   dev DB lacked the P4-T2 r2 migration from the second merge, so the home page rendered no sections),
   `e2e/next-start-*-run7.log` (after `payload migrate`), `e2e/next-start-gpu-worker-get-csp-mutant.log`
   (must fail; it does) and `dod-fresh-clone-r2/` (the DoD from a new clone at `0db387d`).
+- Round 3: `unit/` (the late-related-projects test and its mutant with the Suspense boundary moved back
+  around the explorer) and `dod-fresh-clone-r3/` (the DoD from a new clone at `5152819`).
