@@ -18,6 +18,7 @@ import {
   FileLoader,
   Float32BufferAttribute,
   HalfFloatType,
+  HemisphereLight,
   InterleavedBufferAttribute,
   Mesh,
   MeshBasicMaterial,
@@ -104,7 +105,7 @@ export interface ViewerOptions {
   /** Frame cap (phones: 30); 0 = the display rate. */
   maxFps: number
   reducedMotion: boolean
-  /** V-1 live look calibration (`LIVE_LOOK`). */
+  /** The live look (`LIVE_LOOK`, owner review O-5). */
   look: LiveLook
   /** C3-2 ground tint, applied to the lite model only (`LITE_GROUND_TINT`). */
   groundTint: LiteGroundTint
@@ -555,8 +556,10 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   scene.environment = envTarget.texture
   scene.background = null
   renderer.setClearColor(CLEAR_COLOR[studio.mode])
-  renderer.toneMappingExposure = 2 ** studio.exposureStops * options.look.exposureScale
-  scene.environmentIntensity = options.look.envIntensity
+  const { look } = options
+  const baseExposure = 2 ** studio.exposureStops * look.exposureScale
+  renderer.toneMappingExposure = baseExposure
+  scene.environmentIntensity = look.envIntensity
   for (const name of studio.envOnly) {
     node(name).visible = false
   }
@@ -567,6 +570,26 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     moon.target.position.set(0, 0, 0)
     scene.add(moon, moon.target)
   }
+  // O-5: a warm key from beside the hero camera (gold pilasters, crown, plaza) and a sky/ground fill
+  // (plaza and palms). Added before any program is compiled, so the light count never changes.
+  const heroAt = node('CAM_hero').getWorldPosition(new Vector3())
+  const azimuth = Math.atan2(heroAt.x, heroAt.z) + (look.key.azimuthDeg * Math.PI) / 180
+  const elevation = (look.key.elevationDeg * Math.PI) / 180
+  const key = new DirectionalLight(new Color().setRGB(...look.key.color), look.key.intensity)
+  key.position
+    .set(
+      Math.sin(azimuth) * Math.cos(elevation),
+      Math.sin(elevation),
+      Math.cos(azimuth) * Math.cos(elevation),
+    )
+    .multiplyScalar(1000)
+  key.target.position.set(0, 0, 0)
+  const fill = new HemisphereLight(
+    new Color().setRGB(...look.fill.sky),
+    new Color().setRGB(...look.fill.ground),
+    look.fill.intensity,
+  )
+  scene.add(key, key.target, fill)
 
   // Materials at rest: façade and core opaque, system glow hidden, interior mapping on full.
   const materials = new Map<string, MeshStandardMaterial>()
@@ -581,8 +604,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       setOpaque(material)
     }
   }
-  for (const material of materials.values()) {
-    material.emissiveIntensity *= options.look.emissiveScale
+  for (const [name, material] of materials) {
+    material.emissiveIntensity *= look.materialEmissive[name] ?? look.emissiveScale
   }
   if (tier === 'lite') {
     const [pr, pg, pb] = options.groundTint.paving
@@ -600,17 +623,25 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     vegetation.needsUpdate = true
   }
   const room = materials.get('MAT_room')
-  if (room && options.look.floorEdgeLevel !== 1) {
+  if (room && look.floorEdgeLevel !== 1) {
     const disc = measureFloorDisc(node(studio.room), node('MAQ_plinth'))
     if (disc) {
-      addFloorDiscFade(room, disc, options.look.floorEdgeLevel)
+      addFloorDiscFade(room, disc, look.floorEdgeLevel)
     }
   }
   if (room) {
     // three ignores envMapIntensity on materials without their own envMap (it uses
     // scene.environmentIntensity), so the room gets the same PMREM texture explicitly.
     room.envMap = envTarget.texture
-    room.envMapIntensity = options.look.roomEnvIntensity
+    room.envMapIntensity = look.roomEnvIntensity
+  }
+  // The façade glass reflects the same environment, at its own intensity (lowered inside a system).
+  for (const name of INTERIOR_MATERIALS) {
+    const material = materials.get(name)
+    if (material) {
+      material.envMap = envTarget.texture
+      material.envMapIntensity = look.envIntensity
+    }
   }
   // V-2: sharper window bands at DPR 2 (anisotropic filtering of the façade emissive maps).
   const anisotropy = Math.min(FACADE_ANISOTROPY, renderer.capabilities.getMaxAnisotropy())
@@ -732,6 +763,24 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     spin.setFromAxisAngle(yAxis, turntableAngle)
     turntableNode.quaternion.copy(turntableBase).multiply(spin)
   }
+  /**
+   * Inside a system (k = 1) the key, fill and exposure are raised and the façade glass glow is
+   * lowered, eased with the façade fade. The stage has just set the glass glow for this k.
+   */
+  const applySystemLight = (k: number): void => {
+    const lights = 1 + (look.systemLightScale - 1) * k
+    key.intensity = look.key.intensity * lights
+    fill.intensity = look.fill.intensity * lights
+    renderer.toneMappingExposure = baseExposure * (1 + (look.systemExposureScale - 1) * k)
+    const glass = 1 + (look.systemGlassScale - 1) * k
+    for (const name of INTERIOR_MATERIALS) {
+      const material = materials.get(name)
+      if (material) {
+        material.emissiveIntensity *= glass
+        material.envMapIntensity = look.envIntensity * glass
+      }
+    }
+  }
   const stage = createSystemStage({
     gltf,
     nodes,
@@ -749,6 +798,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     compileObjects: (objects) =>
       Promise.all(objects.map((object) => renderer.compileAsync(object, camera, scene))),
     warm: (materials) => warmPrograms(renderer, materials, isDisposed),
+    onEnterMix: applySystemLight,
   })
   let labelsShown = false
 

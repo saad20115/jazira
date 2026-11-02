@@ -7,7 +7,7 @@
 // is the card element only, taken once the camera flight has landed and the labels are placed.
 // A flow that fails is printed, its shots so far are kept, and the exit code is 1.
 //
-// Usage: node scripts/evidence/p3-t5-lighting-shots.mjs <baseUrl> <outDir> [locales=en,ar]
+// Usage: node scripts/evidence/p3-t5-lighting-shots.mjs <baseUrl> <outDir> [locales=en,ar] [widths=1440,390]
 import fs from 'node:fs'
 import path from 'node:path'
 import { createRequire } from 'node:module'
@@ -15,7 +15,7 @@ import { createRequire } from 'node:module'
 const require = createRequire(import.meta.url)
 const { chromium } = require('@playwright/test')
 
-const [baseUrl, outDir, localeList = 'en,ar'] = process.argv.slice(2)
+const [baseUrl, outDir, localeList = 'en,ar', widthList = '1440,390'] = process.argv.slice(2)
 if (!baseUrl || !outDir) {
   console.error(
     'usage: node scripts/evidence/p3-t5-lighting-shots.mjs <baseUrl> <outDir> [locales]',
@@ -23,6 +23,10 @@ if (!baseUrl || !outDir) {
   process.exit(2)
 }
 const LOCALES = localeList.split(',').filter((l) => l === 'en' || l === 'ar')
+const WIDTHS = widthList
+  .split(',')
+  .map(Number)
+  .filter((w) => w === 1440 || w === 390)
 const GPU_ARGS = process.platform === 'win32' ? ['--use-angle=d3d11'] : []
 const LIVE_TIMEOUT = 60_000
 /** Camera flights and label placement settle well within this. */
@@ -88,7 +92,7 @@ async function shoot(browser, width, locale) {
 const browser = await chromium.launch({ args: GPU_ARGS })
 let ok = true
 try {
-  for (const width of [1440, 390]) {
+  for (const width of WIDTHS) {
     for (const locale of LOCALES) {
       ok = (await shoot(browser, width, locale)) && ok
     }

@@ -133,6 +133,8 @@ interface Fixture {
   /** The pending compile of each call, settled by the test. */
   compiles: Deferred[]
   warmed: number
+  /** Every `onEnterMix` value, in order (O-5: the system light blend). */
+  mixes: number[]
 }
 
 function buildFixture(): Fixture {
@@ -210,6 +212,7 @@ function buildFixture(): Fixture {
 
   const compiled: Object3D[][] = []
   const compiles: Deferred[] = []
+  const mixes: number[] = []
   const fixture = {
     camera,
     facade,
@@ -220,6 +223,7 @@ function buildFixture(): Fixture {
     compiled,
     compiles,
     warmed: 0,
+    mixes,
   }
   let angle = 0
   const stage = createSystemStage({
@@ -247,6 +251,9 @@ function buildFixture(): Fixture {
     warm: () => {
       fixture.warmed += 1
       return Promise.resolve()
+    },
+    onEnterMix: (k) => {
+      mixes.push(k)
     },
   })
   return {
@@ -387,5 +394,40 @@ describe('P3-T5 system stage: entering waits for the shader warm-up', () => {
     run(f.stage, now, 200)
     expect(f.stage.entered).toBe('fire')
     expect(f.hvacEquipment.material).toBe(f.highlight.fire)
+  })
+})
+
+describe('P3-T5 O-5: the system light blend follows the flight, never the warm-up', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('rises from 0 to 1 while flying in, ends at 0 after flying out, and the warm-up sends none', async () => {
+    const f = buildFixture()
+    f.stage.request('hvac')
+    let now = run(f.stage, 0, 60)
+    await settle()
+    now = run(f.stage, now, 60)
+    // The warm-up applies the entered look and puts it back: it must not touch the scene light.
+    expect(f.compiled.length).toBeGreaterThan(0)
+    expect(f.mixes).toEqual([])
+    finishCompiles(f)
+    await settle()
+    now = run(f.stage, now, 5)
+    now = run(f.stage, now, 200)
+    expect(f.stage.entered).toBe('hvac')
+    expect(f.mixes.length).toBeGreaterThan(2)
+    expect(f.mixes.at(-1)).toBe(1)
+    for (let i = 1; i < f.mixes.length; i += 1) {
+      expect(f.mixes[i]).toBeGreaterThanOrEqual(f.mixes[i - 1] ?? 0)
+    }
+    f.mixes.length = 0
+    f.stage.request(null)
+    run(f.stage, now, 300)
+    expect(f.stage.entered).toBeNull()
+    expect(f.mixes.at(-1)).toBe(0)
   })
 })

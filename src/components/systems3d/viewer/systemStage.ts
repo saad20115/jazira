@@ -77,6 +77,11 @@ export interface StageDeps {
   compileObjects: (objects: readonly Object3D[]) => Promise<unknown>
   /** First use of the materials' programs, spread over short tasks (`warmPrograms`). */
   warm: (materials: readonly Material[]) => Promise<void>
+  /**
+   * The entered look's share of the frame (0 = overview, 1 = inside a system), on every flight step
+   * (never during a shader warm-up, which puts the material look back but not scene-level values).
+   */
+  onEnterMix?: (k: number) => void
 }
 
 type Phase = 'rest' | 'easeBack' | 'variant' | 'flyIn' | 'entered' | 'flyOut'
@@ -585,6 +590,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
       ? Math.min(1, Math.max(0, (e - flight.fadeStart) / span))
       : 1 - Math.min(1, Math.max(0, (e - (1 - flight.fadeEnd)) / span))
     applyFade(flight.system, k)
+    deps.onEnterMix?.(k)
     if (t < 1) {
       return true
     }
@@ -597,6 +603,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
       camera.fov = heroFov
       deps.setShift(cameraLimits.heroShiftY)
       applyFade(null, 0)
+      deps.onEnterMix?.(0)
       void selectVariant(null)
       applyOrbitLimits(null)
       entered = null

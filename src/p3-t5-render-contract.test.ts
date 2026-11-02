@@ -10,6 +10,7 @@ import {
   CLEAR_COLOR,
   INTERIOR,
   INTERIOR_MATERIALS,
+  LIVE_LOOK,
   MODEL_FILES,
   RELEASE,
 } from '@/components/systems3d/renderContract'
@@ -68,5 +69,37 @@ describe('P3-T5 render contract constants equal the pinned release manifest', ()
 
   it('night clear colour is #1b2130 (brief A-1 §17)', () => {
     expect(CLEAR_COLOR.night.toString(16)).toBe('1b2130')
+  })
+})
+
+describe('P3-T5 O-5: the live look names only materials of the release', () => {
+  function materialNames(file: string): string[] {
+    const buffer = fs.readFileSync(path.resolve(process.cwd(), '3d', 'web', file))
+    const json = JSON.parse(buffer.subarray(20, 20 + buffer.readUInt32LE(12)).toString('utf8')) as {
+      materials: { name?: string }[]
+    }
+    return json.materials.map((m) => m.name ?? '')
+  }
+
+  it('every per-material emissive scale names a material of both models, and scales are sane', () => {
+    const names = Object.keys(LIVE_LOOK.materialEmissive)
+    expect(names.length).toBeGreaterThan(0)
+    for (const file of ['tower.glb', 'tower-lite.glb']) {
+      const inModel = materialNames(file)
+      for (const name of names) {
+        expect(inModel, `${file}: ${name}`).toContain(name)
+      }
+    }
+    for (const scale of [
+      ...Object.values(LIVE_LOOK.materialEmissive),
+      LIVE_LOOK.emissiveScale,
+      LIVE_LOOK.exposureScale,
+      LIVE_LOOK.systemLightScale,
+    ]) {
+      expect(scale).toBeGreaterThan(0)
+      expect(scale).toBeLessThanOrEqual(4)
+    }
+    expect(LIVE_LOOK.systemGlassScale).toBeGreaterThan(0)
+    expect(LIVE_LOOK.systemGlassScale).toBeLessThanOrEqual(1)
   })
 })

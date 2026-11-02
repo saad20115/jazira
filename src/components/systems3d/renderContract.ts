@@ -58,10 +58,28 @@ export const CORE_MATERIALS = ['MAT_concrete', 'MAT_concrete_floor'] as const
 /** Interior mapping (`render.interior_mapping`): 64 × 24 modules, window band 0.12–0.74, 7 m room. */
 export const INTERIOR = { depthM: 7, grid: [64, 24], windowBand: [0.12, 0.74] } as const
 
+/** A warm key light, placed relative to the hero camera (no shadows: cheap on the lite tier). */
+export interface KeyLight {
+  color: readonly [number, number, number]
+  intensity: number
+  /** Turned this far around the vertical axis from the hero camera's direction (degrees). */
+  azimuthDeg: number
+  /** Height above the horizon (degrees). */
+  elevationDeg: number
+}
+
+/** A sky/ground fill (`HemisphereLight`), so the plaza and palms read in the dark studio. */
+export interface FillLight {
+  sky: readonly [number, number, number]
+  ground: readonly [number, number, number]
+  intensity: number
+}
+
 /**
- * V-1 (live ~30 % brighter than the Cycles stills): live look calibration on top of the release
- * values (`toneMappingExposure = 2 ** exposure_stops`, environment and emissive at 1). Tuned against
- * the hero still, gate: mean luma ±5, background ±6 per channel (`handoff/tasks/P3-T5.md`).
+ * The live look on top of the release values (`toneMappingExposure = 2 ** exposure_stops`,
+ * environment and emissive at 1). Owner review O-5 (2026-11-02, `docs/05-design.md` §21): the target
+ * is the look of the Figma render, judged by the owner; the V-1 match to the Cycles stills no longer
+ * limits it.
  */
 export interface LiveLook {
   exposureScale: number
@@ -74,6 +92,26 @@ export interface LiveLook {
    * baked disc around the plinth is flat in live, so it ends in a hard pale ellipse.
    */
   floorEdgeLevel: number
+  key: KeyLight
+  fill: FillLight
+  /**
+   * Emissive (baked light) scale per material, in place of `emissiveScale`: most of the model is lit
+   * by its lightmaps, so this is how the glazing, lobby, gold, crown and plaza are lifted while the
+   * studio room behind stays dark.
+   */
+  materialEmissive: Readonly<Record<string, number>>
+  /**
+   * Inside a system, eased in with the façade fade: the key and fill are scaled by this (the
+   * equipment is lit, not baked), so it reads clearly against its room; the environment is not
+   * raised, which would grey the faded façade glass.
+   */
+  systemLightScale: number
+  systemExposureScale: number
+  /**
+   * Inside a system, the façade glass glow and reflection are scaled by this, so the faded layers of
+   * glass do not veil the equipment.
+   */
+  systemGlassScale: number
 }
 
 /**
@@ -85,25 +123,44 @@ export interface LiteGroundTint {
   vegetation: readonly [number, number, number]
 }
 /**
- * Tuned 2026-10-25 (lite, 1440 x DPR 1): the plaza reads light grey-blue like the still and the
- * palms dark green; the ground band moved from (-14, -18, -23) to about (-7, -10, -14). The rest is
- * the plinth-top glow and palm geometry/LOD (3D-lead list in the report), not a colour.
+ * O-5 (round 3): the plaza warm and light, as in the Figma render, and the palms a readable green
+ * (the 2026-10-25 tint matched the cool grey-blue Cycles still). The rest is the plinth-top glow and
+ * palm geometry/LOD (3D-lead list in the report), not a colour.
  */
 export const LITE_GROUND_TINT: LiteGroundTint = {
-  paving: [2.2, 2.3, 2.8],
-  vegetation: [0.6, 0.65, 0.4],
+  paving: [2.6, 2.3, 1.9],
+  vegetation: [0.85, 0.95, 0.65],
 }
 /**
- * Calibrated 2026-10-25 on this machine (Intel HD 530, Chrome/ANGLE D3D11), hero still vs the live
- * first frame at 1440 × DPR 1 (card 600 × 580), lite and full: mean luma −1.6 / −2.0, background top
- * ≤ 2.5 and floor ≤ 3.7 per channel (gate ±5 / ±6). Evidence: docs/reports/evidence/P3-T5/m3/.
+ * O-5 (round 3): brighter and warmer than the V-1 calibration of 2026-10-25 (exposure 0.84, emissive
+ * 0.78): lit glazing and lobby, gold pilasters and crown caught by a warm key, the plaza and palms
+ * lifted by the fill, and more light inside the systems. Judged by eye against the Figma render
+ * (`docs/reports/evidence/P3-T5/r3/lighting/`).
  */
 export const LIVE_LOOK: LiveLook = {
-  exposureScale: 0.84,
+  exposureScale: 1,
   envIntensity: 1,
-  emissiveScale: 0.78,
+  emissiveScale: 0.66,
   roomEnvIntensity: 0.4,
   floorEdgeLevel: 0.5,
+  materialEmissive: {
+    MAT_glass_cw: 1.5,
+    MAT_glass_side: 1.5,
+    MAT_glass_wing: 1.5,
+    MAT_glass_terrace: 1.5,
+    MAT_podium_glass: 1.8,
+    MAT_gold_fin: 2,
+    MAT_crown_light: 1.8,
+    MAT_paving: 1,
+    MAT_planting: 1,
+    MAT_stone: 1,
+    MAT_bronze: 1,
+  },
+  key: { color: [1, 0.8, 0.58], intensity: 1.6, azimuthDeg: 40, elevationDeg: 38 },
+  fill: { sky: [0.55, 0.62, 0.8], ground: [0.42, 0.33, 0.24], intensity: 0.5 },
+  systemLightScale: 1.5,
+  systemExposureScale: 1,
+  systemGlassScale: 0.3,
 }
 
 /** V-2: anisotropic filtering of the façade emissive (window) textures, capped by the GPU. */
