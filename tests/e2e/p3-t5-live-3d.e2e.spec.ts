@@ -278,6 +278,129 @@ test.describe('P3-T5 live 3D card', () => {
     expect(recorder.model).toEqual([])
   })
 
+  test('O-7: the tap hint appears once the card is half on screen, never as a target, and starts nothing', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveAttribute('data-tap-hint', 'play', { timeout: 5_000 })
+    await expect(hand).toHaveAttribute('aria-hidden', 'true')
+    expect(await hand.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none')
+    // The hand's taps start nothing: after a whole cycle the card is still and nothing loaded.
+    await expect(hand).toHaveCount(0, { timeout: 6_000 })
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    expect(recorder.model).toEqual([])
+  })
+
+  test('O-7: the hint stops at once on hover, and never returns', async ({ page }) => {
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveCount(1, { timeout: 5_000 })
+    await card.hover()
+    // At once: well before the cycle would end by itself.
+    await expect(hand).toHaveCount(0, { timeout: 400 })
+    await page.mouse.move(0, 0)
+    // Without the hover a second cycle would come 8 s after the first; it never does.
+    for (let t = 0; t < 14_000; t += 250) {
+      expect(await hand.count(), `a hint came back after ${String(t)} ms`).toBe(0)
+      await page.waitForTimeout(250)
+    }
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+  })
+
+  test('O-7: the hint stops at once on a click (the click itself starts the model)', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveCount(1, { timeout: 5_000 })
+    // A click through the hand reaches the card (the hand is never a target).
+    const box = await hand.boundingBox()
+    await page.mouse.click((box?.x ?? 0) + 10, (box?.y ?? 0) + 10)
+    await expect(hand).toHaveCount(0, { timeout: 400 })
+    await expect(card).not.toHaveAttribute('data-viewer-state', 'still')
+  })
+
+  test('O-7: under reduced motion the hand is shown still, once, and does not animate', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveAttribute('data-tap-hint', 'still', { timeout: 5_000 })
+    const running = await hand.evaluate(
+      (el) => (el as unknown as Element).getAnimations({ subtree: true }).length,
+    )
+    expect(running).toBe(0)
+    await expect(hand).toHaveCount(0, { timeout: 6_000 })
+    // Shown once only.
+    for (let t = 0; t < 12_000; t += 250) {
+      expect(await hand.count(), `a hint came back after ${String(t)} ms`).toBe(0)
+      await page.waitForTimeout(250)
+    }
+  })
+
+  test('O-8: after a reload with the hash, no frame shows an empty card (slow images)', async ({
+    page,
+  }) => {
+    // Every frame from the first one: is the card on screen with nothing painted in it?
+    await page.addInitScript(() => {
+      const w = window as unknown as { __cardFrames: number; __emptyFrames: number }
+      w.__cardFrames = 0
+      w.__emptyFrames = 0
+      const sample = (): void => {
+        const card = document.querySelector('[data-interactive-3d-card]')
+        const box = card?.getBoundingClientRect()
+        if (card && box && box.bottom > 0 && box.top < window.innerHeight) {
+          w.__cardFrames += 1
+          const poster = card.firstElementChild
+          const img = poster?.querySelector('img')
+          const posterPainted =
+            (img?.complete === true && img.naturalWidth > 0) ||
+            (poster !== null && getComputedStyle(poster).backgroundImage !== 'none')
+          const layer = card.querySelector('[data-entered-system]')
+          const layerImg = layer?.querySelector('img')
+          const layerEmpty =
+            layer?.getAttribute('data-loaded') === 'true' &&
+            !(layerImg?.complete === true && layerImg.naturalWidth > 0)
+          if (!posterPainted || layerEmpty) {
+            w.__emptyFrames += 1
+          }
+        }
+        requestAnimationFrame(sample)
+      }
+      requestAnimationFrame(sample)
+    })
+    // A slow network for the pictures, so the first frames come before any image arrives.
+    await page.route(/\/_next\/image|\/stills\//, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1_500))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await page.evaluate(() => {
+      window.history.replaceState(null, '', '/en#systems-hvac')
+    })
+    await page.reload()
+    await expect(card).toHaveAttribute('data-entered', 'hvac')
+    await expect(card.locator('[data-entered-system="hvac"]')).toHaveAttribute(
+      'data-loaded',
+      'true',
+      { timeout: 15_000 },
+    )
+    const frames = await page.evaluate(() => {
+      const w = window as unknown as { __cardFrames: number; __emptyFrames: number }
+      return { card: w.__cardFrames, empty: w.__emptyFrames }
+    })
+    expect(frames.card).toBeGreaterThan(0)
+    expect(frames.empty).toBe(0)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+  })
+
   for (const variant of ['missing', 'different'] as const) {
     test(`@gpu C3-3: a ${variant} worker CSP fails closed to stills before any worker starts`, async ({
       page,
@@ -574,6 +697,132 @@ test.describe('P3-T5 live 3D card', () => {
     } finally {
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
     }
+  })
+
+  /** O-8: once live inside a system, the canvas renders: it changes when the view turns. */
+  async function expectLiveSystem(page: Page, card: Locator, system: string): Promise<void> {
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card.locator('canvas')).toHaveCount(1)
+    await card.scrollIntoViewIfNeeded()
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    await page.waitForTimeout(800)
+    const box = await card.locator('canvas').boundingBox()
+    expect(box).not.toBeNull()
+    // Below the top band, where the drag hint may appear when the card is focused.
+    const clip = {
+      x: box?.x ?? 0,
+      y: (box?.y ?? 0) + 80,
+      width: box?.width ?? 0,
+      height: (box?.height ?? 0) - 80,
+    }
+    const before = await page.screenshot({ clip })
+    await card.focus()
+    await page.keyboard.press('ArrowLeft')
+    await page.keyboard.press('ArrowLeft')
+    await page.waitForTimeout(600)
+    expect(Buffer.compare(before, await page.screenshot({ clip }))).not.toBe(0)
+  }
+
+  /** O-8: in HVAC the fans turn by themselves: the fan region changes between captures 500 ms apart. */
+  async function expectFansTurning(page: Page, card: Locator): Promise<void> {
+    const towers = card.locator('[data-live-labels] li button[aria-label="Cooling towers"]')
+    await expect(towers).toBeVisible({ timeout: 15_000 })
+    await page.waitForTimeout(1_500)
+    const dot = await towers.boundingBox()
+    const canvas = await card.locator('canvas').boundingBox()
+    expect(dot).not.toBeNull()
+    expect(canvas).not.toBeNull()
+    const cx = (dot?.x ?? 0) + (dot?.width ?? 0) / 2
+    const cy = (dot?.y ?? 0) + (dot?.height ?? 0) / 2
+    const left = Math.max(canvas?.x ?? 0, cx - 110)
+    const top = Math.max(canvas?.y ?? 0, cy - 40)
+    const clip = {
+      x: left,
+      y: top,
+      width: Math.min((canvas?.x ?? 0) + (canvas?.width ?? 0), cx + 110) - left,
+      height: Math.min((canvas?.y ?? 0) + (canvas?.height ?? 0), cy + 150) - top,
+    }
+    await page.mouse.move(0, 0)
+    const first = await page.screenshot({ clip })
+    await page.waitForTimeout(500)
+    const second = await page.screenshot({ clip })
+    expect(Buffer.compare(first, second), 'the HVAC fans do not turn').not.toBe(0)
+  }
+
+  test('@gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    const count = await rows(page).count()
+    expect(count).toBe(5)
+    for (let i = 0; i < count; i += 1) {
+      const row = rows(page).nth(i)
+      await rowHeader(row).click()
+      const system = await systemOfRow(row)
+      await expectLiveSystem(page, card, system)
+      if (system === 'hvac') {
+        await expectFansTurning(page, card)
+      }
+      // After exit, the next card goes live again (the loop).
+      await rowHeader(row).click()
+      await expect(card).toHaveAttribute('data-entered', 'none')
+    }
+  })
+
+  test('@gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+
+    // A plain reload, then a system card.
+    await page.reload()
+    await waitHydrated(card)
+    await card.scrollIntoViewIfNeeded()
+    const fire = rows(page).nth(1)
+    await rowHeader(fire).click()
+    await expectLiveSystem(page, card, await systemOfRow(fire))
+
+    // A reload with the hash: the HVAC still and its expanded card; one click on that card goes live
+    // inside HVAC (it does not exit), and the fans turn.
+    await page.evaluate(() => {
+      window.history.replaceState(null, '', '/en#systems-hvac')
+    })
+    await page.reload()
+    await waitHydrated(card)
+    await expect(card).toHaveAttribute('data-entered', 'hvac')
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    const hvac = rows(page).first()
+    await expect(hvac).toHaveAttribute('data-accordion-state', 'Expanded')
+    await rowHeader(hvac).click()
+    await expectLiveSystem(page, card, 'hvac')
+    await expect(hvac).toHaveAttribute('data-accordion-state', 'Expanded')
+    expect(new URL(page.url()).hash).toBe('#systems-hvac')
+    await expectFansTurning(page, card)
+  })
+
+  test('@gpu O-8: while the model loads after a click, the image stays with a small loading indicator', async ({
+    page,
+  }) => {
+    // Hold the model back, so the loading state lasts long enough to look at.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2_500))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await rowHeader(rows(page).nth(2)).click()
+    await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+    await expect(card.locator('[data-loading-indicator]')).toBeVisible()
+    // The image under it stays: the canvas is still fully transparent.
+    expect(await card.locator('canvas').evaluate((el) => getComputedStyle(el).opacity)).toBe('0')
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card.locator('[data-loading-indicator]')).toHaveCount(0)
   })
 })
 

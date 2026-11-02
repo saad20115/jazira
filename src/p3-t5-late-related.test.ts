@@ -199,7 +199,8 @@ function bundle(): string {
 }
 
 const PAGE = `<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><style>
-  [data-interactive-3d-card] { position: relative; display: block; width: 600px; height: 580px; }
+  [data-interactive-3d-card] { position: relative; display: block; width: 600px; height: 580px; overflow: hidden; }
+  [data-interactive-3d-card] img { display: block; width: 100%; height: 100%; }
   [data-interactive-3d-card] canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 </style></head><body><div id="mount"></div></body></html>`
 
@@ -424,6 +425,23 @@ describe('P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (re
       await card.click({ position: { x: 300, y: 120 } })
       await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
       expect((await viewerLog(page)).systems).toContain('fire')
+    }, '#systems-fire')
+  })
+
+  it('O-8: after a #systems hash on load, one click on that system card goes live inside it (no exit)', async () => {
+    await withExplorer(async (page) => {
+      const card = page.locator('[data-interactive-3d-card]')
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('fire')
+      expect(await rowState(page, 1)).toBe('Expanded')
+      await header(page, 1).click()
+      await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
+      expect(await card.getAttribute('data-entered')).toBe('fire')
+      expect(await rowState(page, 1)).toBe('Expanded')
+      expect((await viewerLog(page)).systems).toContain('fire')
+      // Once live, the same header collapses it and exits.
+      await header(page, 1).click()
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('none')
+      expect(await rowState(page, 1)).toBe('Collapsed')
     }, '#systems-fire')
   })
 })
