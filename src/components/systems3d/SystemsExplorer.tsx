@@ -20,7 +20,7 @@ import styles from './InteractiveSystemsSection.module.css'
 import { RelatedPanel } from './RelatedPanel'
 import type { RelatedProjectsBySystem } from './relatedProjects'
 import type { Systems3dStrings } from './strings'
-import { SystemsCard } from './SystemsCard'
+import { type CardPhase, SystemsCard } from './SystemsCard'
 
 export interface ExplorerSystem {
   /** The CMS array row id (accordion item id). */
@@ -74,9 +74,10 @@ function RelatedSlot({
 /**
  * Owner rules (O-2, 2026-11-02, `docs/05-design.md` §21): at rest the first row is expanded as in
  * Figma and nothing is entered (no hash; the card shows the image). One click on any system header
- * enters it, the pre-expanded one included, and starts the model; a click on the entered header
- * collapses it and exits. A `#systems-<id>` hash on load enters that system and expands its row
- * without starting the model. Focus never moves.
+ * enters it, the pre-expanded one included, and starts the model; once the model is live, a click on
+ * the entered header collapses it and exits (before that, it starts the model: O-8). A
+ * `#systems-<id>` hash on load enters that system and expands its row without starting the model.
+ * Focus never moves.
  */
 const DEFAULT_EXPANDED_INDEX = 0
 
@@ -95,6 +96,7 @@ export function SystemsExplorer({
   const [entered, setEntered] = useState<SystemId | null>(null)
   /** Counts the visitor's system choices; each one asks the card to start the model (O-2). */
   const [startSignal, setStartSignal] = useState(0)
+  const [cardPhase, setCardPhase] = useState<CardPhase>('still')
 
   const indexOfSystem = useCallback(
     (system: SystemId): number => systems.findIndex((row) => row.system === system),
@@ -140,6 +142,16 @@ export function SystemsExplorer({
 
   const toggle = (idx: number, nextExpanded: boolean): void => {
     const system = systems[idx]?.system ?? null
+    // O-8: the entered system's header on a card that is not live yet (a #systems hash on load, or a
+    // start still loading) goes live inside that system; it collapses and exits only once live.
+    if (
+      system !== null &&
+      system === entered &&
+      (cardPhase === 'still' || cardPhase === 'loading')
+    ) {
+      setStartSignal((n) => n + 1)
+      return
+    }
     // A click on an expanded header that is not entered (the pre-expanded first row) enters it.
     if (nextExpanded || (system !== null && system !== entered)) {
       setExpandedIndex(idx)
@@ -185,6 +197,7 @@ export function SystemsExplorer({
         }}
         openLabel={openLabel}
         relatedPanel={relatedSlot('card')}
+        onPhaseChange={setCardPhase}
         startSignal={startSignal}
         strings={strings}
       >
