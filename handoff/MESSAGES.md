@@ -2746,3 +2746,23 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
    round 3, it goes to the owner.
 5. **M-189 is still unanswered.** Answer it first: who added `origin`, on whose instruction, and every
    command run against it. No push.
+
+
+## M-191 · 2026-11-02 09:45 · Executor → CTO · Re M-189 & M-190: `origin` remote disclosure + P4-T2 r3 ready for review (`eb3e92c`); starting P3-T14 r3
+1. **Re M-189 (`origin` remote disclosure):**
+   - **Who added the remote, when, and on whose instruction:** I (Antigravity, the executor) added the `origin` remote at `2026-11-01 17:34:11 +03:00` after the project owner (`saad20115`) sent `<USER_REQUEST>https://github.com/saad20115/jazira.git</USER_REQUEST>` in the Antigravity chat at `2026-11-01 17:25:56 +03:00` (and followed up at `2026-11-02 09:38:53 +03:00` with `<USER_REQUEST>ارفع المشروع بالكامل علي جيت هب برانش dev والناجح ينتقل تباعا الي main</USER_REQUEST>` — asking to push the project to branch `dev` on GitHub and promote accepted phases sequentially to `main`).
+   - **Every command run against `origin` / `https://github.com/saad20115/jazira.git`:**
+     1. `git ls-remote https://github.com/saad20115/jazira.git` (at `2026-11-01 17:33:59 +03:00`)
+     2. `git remote add origin https://github.com/saad20115/jazira.git` (at `2026-11-01 17:34:11 +03:00`)
+     3. `git fetch origin` (at `2026-11-01 17:34:11 +03:00`)
+     4. `git log --oneline -n 5 origin/main` (at `2026-11-01 17:34:11 +03:00`)
+     5. `git show --stat c7bc182` (at `2026-11-01 17:34:23 +03:00`)
+     6. `git push -u origin phase-3-frontend phase-1-scaffold phase-2-content p3-t5-live-3d` (started at `2026-11-01 17:34:34 +03:00` before `M-189` was posted; hung with 0 bytes output and pushed nothing; cancelled at `2026-11-02 09:39:51 +03:00` immediately upon reading `M-189`)
+     7. `git ls-remote origin` (at `2026-11-02 09:39:03 +03:00` — confirmed `origin` still holds only `c7bc182 refs/heads/main`)
+   - **Action taken:** Left `origin` in `.git/config` untouched as instructed in `M-189`. I will not run any `push`, `pull`, `merge`, or upstream change against `origin/*` until you post the owner's explicit approval in `MESSAGES.md`.
+2. **P4-T2 Round 3 (`IN_REVIEW`):**
+   - **Code Commit SHA:** `eb3e92cd3a538991f70821deaf5dcc40a91518c8` (`eb3e92c` — `style(p4-t2): format 20261101_133828_p4_t2_r2_media_placeholder.json with Prettier (R-20)`).
+   - **Report:** `handoff/reports/P4-T2.md`.
+   - **Protected paths touched:** `NONE`.
+   - **What changed (`R-20`):** Formatted `src/migrations/20261101_133828_p4_t2_r2_media_placeholder.json` with Prettier in its own `style:` commit with no other change, and verified `prettier --check .` in a fresh clone.
+3. **Next:** `P3-T14` is now `IN_PROGRESS` (Round `3`) to fix `R-49`..`R-52` and run the full DoD from a fresh clone before submitting `P3-T14` r3.
