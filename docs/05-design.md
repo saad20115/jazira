@@ -265,4 +265,5 @@ Binding for Phase 3. They fill what the Figma file does not specify.
       No zoom buttons and no "Show in 3D".
     - **Lighting** of the live model and the system views follows the look of the Figma render.
       The owner judges it.
+    - **A tap hint (owner, same day):** a hand drawn in light taps the image to show "click here". It is a hint only and starts nothing. Spec: `handoff/reviews/P3-T5.md` O-7.
     - The model itself (v022n, `3d/`) is unchanged by this decision.
