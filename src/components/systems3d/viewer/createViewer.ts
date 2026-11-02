@@ -92,10 +92,15 @@ import {
   compileInChunks,
   compileNow,
   computeBoundsInChunks,
+  createLinkBudget,
   firstUse,
   gpuSettled,
+  LINKS_LOADING,
+  LINKS_PREPARING,
+  LINKS_SYSTEMS,
   type Pause,
   startPmremWarmup,
+  uploadGeometryInChunks,
   uploadMaterialTextures,
   uploadTexturesInChunks,
   waitForLinks,
@@ -142,6 +147,11 @@ export interface ViewerOptions {
   onLowTier?: () => void
   /** Projected hotspot labels of the entered system after each frame (null when none). */
   onLabels?: (labels: ProjectedLabel[] | null) => void
+  /**
+   * O-12: the system the card has entered (null = overview), read while the systems' programs are
+   * prepared: that one comes first, so its flight finds them ready.
+   */
+  enteredSystem?: () => SystemId | null
 }
 
 export interface ViewerStats {
@@ -414,15 +424,26 @@ const TRANSCODE_WATCHDOG_MS = 15_000
 
 /** While a system is entered its look is on screen: the background warm-up waits this long. */
 const WARMUP_BUSY_WAIT_MS = 250
+/** O-12: once shown, the background warm-up waits this long after the first visible frame. */
+const SWAP_SETTLE_MS = 1_000
 
-async function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promise<GLTF> {
-  // The download is bounded by the card's start timeout; parse + transcode by the watchdog.
-  const fileLoader = new FileLoader(loader.manager)
+/** The model file (the download is bounded by the card's start timeout). */
+async function downloadModel(url: string): Promise<ArrayBuffer> {
+  const fileLoader = new FileLoader()
   fileLoader.setResponseType('arraybuffer')
   const data = await fileLoader.loadAsync(url)
   if (!(data instanceof ArrayBuffer)) {
     throw new ContractError('model: not binary')
   }
+  return data
+}
+
+/** Parse + transcode of the downloaded model, bounded by the watchdog. */
+async function parseWithTranscodeWatchdog(
+  loader: GLTFLoader,
+  data: ArrayBuffer,
+  url: string,
+): Promise<GLTF> {
   let watchdog = 0
   const timeout = new Promise<never>((_resolve, reject) => {
     watchdog = window.setTimeout(() => {
@@ -440,8 +461,7 @@ async function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promi
 }
 
 /** The GPU name, unmasked where the browser allows it (used only for the tier decision). */
-function readGpuRenderer(renderer: WebGLRenderer): string | null {
-  const gl = renderer.getContext()
+function readGpuRenderer(gl: WebGL2RenderingContext): string | null {
   const debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
   const value: unknown = gl.getParameter(
     debugInfo ? debugInfo.UNMASKED_RENDERER_WEBGL : gl.RENDERER,
@@ -449,14 +469,144 @@ function readGpuRenderer(renderer: WebGLRenderer): string | null {
   return typeof value === 'string' ? value : null
 }
 
+/** The context three would create for these options (`WebGLRenderer`, three 0.186.1). */
+const CONTEXT_ATTRIBUTES: WebGLContextAttributes = {
+  alpha: false,
+  depth: true,
+  stencil: false,
+  antialias: true,
+  premultipliedAlpha: true,
+  preserveDrawingBuffer: false,
+  powerPreference: 'high-performance',
+  failIfMajorPerformanceCaveat: false,
+}
+
+/**
+ * The extensions three, its KTX2 loader and this viewer ask for while they start (three 0.186.1).
+ * Enabling one is a synchronous round trip to the GPU process; enabled once, later asks are answered
+ * in the page.
+ */
+const START_EXTENSIONS = [
+  'EXT_color_buffer_float',
+  'WEBGL_clip_cull_distance',
+  'OES_texture_float_linear',
+  'EXT_color_buffer_half_float',
+  'WEBGL_multisampled_render_to_texture',
+  'WEBGL_render_shared_exponent',
+  'EXT_texture_filter_anisotropic',
+  'KHR_parallel_shader_compile',
+  'WEBGL_debug_renderer_info',
+  'WEBGL_compressed_texture_astc',
+  'WEBGL_compressed_texture_etc1',
+  'WEBGL_compressed_texture_etc',
+  'WEBGL_compressed_texture_s3tc',
+  'EXT_texture_compression_bptc',
+  'WEBGL_compressed_texture_pvrtc',
+  'WEBKIT_WEBGL_compressed_texture_pvrtc',
+] as const
+
+/**
+ * O-12: the renderer starts in steps. Creating the context and enabling each extension wait for the
+ * GPU process, which is busy every frame (P3-T5 r6 trace: ~250 ms in one task when three did it all
+ * at once). Here the context is its own task (the import that brought this module in ends in the
+ * task before), then each extension; three then finds them enabled.
+ */
+async function createContext(
+  canvas: HTMLCanvasElement,
+  pause: Pause,
+): Promise<WebGL2RenderingContext> {
+  await pause()
+  await framesOnTime()
+  let gl: WebGL2RenderingContext | null
+  try {
+    gl = canvas.getContext('webgl2', CONTEXT_ATTRIBUTES)
+  } catch {
+    gl = null
+  }
+  if (!gl) {
+    throw new ViewerStartError('no-webgl', 'WebGL2 unavailable')
+  }
+  return gl
+}
+
+/** Frames closer than this mean the compositor and the GPU process keep up (no raster backlog). */
+const ON_TIME_FRAME_MS = 25
+const ON_TIME_FRAMES = 3
+const ON_TIME_MAX_WAIT_MS = 1_000
+
+/**
+ * O-12: resolves once a few frames in a row came on time, at the latest after
+ * `ON_TIME_MAX_WAIT_MS`. Creating the context makes synchronous calls to the GPU process; right
+ * after a jump down the page it is still rasterising the new view, and they wait behind that
+ * (P3-T5 r6 trace: ~200 ms in `getContext` for a click at once after the jump).
+ */
+function framesOnTime(): Promise<void> {
+  return new Promise((resolve) => {
+    const start = performance.now()
+    let last = start
+    let onTime = 0
+    const fallback = window.setTimeout(resolve, ON_TIME_MAX_WAIT_MS)
+    const step = (now: number): void => {
+      onTime = now - last < ON_TIME_FRAME_MS ? onTime + 1 : 0
+      last = now
+      if (onTime >= ON_TIME_FRAMES || now - start > ON_TIME_MAX_WAIT_MS) {
+        window.clearTimeout(fallback)
+        resolve()
+      } else {
+        requestAnimationFrame(step)
+      }
+    }
+    requestAnimationFrame(step)
+  })
+}
+
+async function enableExtensions(
+  gl: WebGL2RenderingContext,
+  pause: Pause,
+  isCancelled: () => boolean,
+): Promise<void> {
+  for (const name of START_EXTENSIONS) {
+    if (isCancelled()) {
+      return
+    }
+    await pause()
+    gl.getExtension(name)
+  }
+  await pause()
+}
+
 export async function createViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const { canvas, container } = options
   patchAgxLook()
 
+  /** O-9: idle slices until the visitor asks for the model, then plain task boundaries. */
+  let shown = false
+  void options.whenShown.then(() => {
+    shown = true
+  })
+  const pace: Pause = () => (shown ? yieldToMain() : yieldToIdle())
+  /** O-12: the hero is ready; the systems' programs are being made. */
+  let systemsWarming = false
+  /** When the first visible frame was drawn. */
+  let firstFrameAt: number | null = null
+
+  const gl = await createContext(canvas, pace)
+  await pace()
+  const gpu = readGpuRenderer(gl)
+  if (isSoftwareRenderer(gpu)) {
+    throw new ViewerStartError('software', 'software WebGL renderer')
+  }
+  const tier = options.selectTier(gpu)
+  // O-12: the model downloads while the renderer starts.
+  const modelUrl = MODEL_FILES[tier]
+  const modelData = downloadModel(modelUrl)
+  modelData.catch(() => undefined)
+  await enableExtensions(gl, pace, () => options.signal.aborted)
   let renderer: WebGLRenderer
   try {
     renderer = new WebGLRenderer({
       canvas,
+      context: gl,
       antialias: true,
       alpha: false,
       powerPreference: 'high-performance',
@@ -464,17 +614,10 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   } catch {
     throw new ViewerStartError('no-webgl', 'WebGL context unavailable')
   }
-  const gl = renderer.getContext()
-  if (!renderer.capabilities.isWebGL2 || !(gl instanceof WebGL2RenderingContext)) {
+  if (!renderer.capabilities.isWebGL2) {
     renderer.dispose()
     throw new ViewerStartError('no-webgl', 'WebGL2 unavailable')
   }
-  const gpu = readGpuRenderer(renderer)
-  if (isSoftwareRenderer(gpu)) {
-    renderer.dispose()
-    throw new ViewerStartError('software', 'software WebGL renderer')
-  }
-  const tier = options.selectTier(gpu)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.pixelRatioCap))
   // O-9: no info-log reads on a program's first use. Each is a synchronous round trip that waits for
   // the GPU process (up to ~200 ms on the HD 530); a broken shader still renders nothing, as before.
@@ -483,6 +626,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   renderer.outputColorSpace = SRGBColorSpace
   renderer.localClippingEnabled = true
 
+  // O-12: three's own start-up above, the loaders and PMREM below, in separate tasks.
+  await pace()
   if (options.signal.aborted) {
     renderer.dispose()
     throw new ContractError('aborted')
@@ -493,19 +638,20 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder)
   loader.register(inlineBasisuPlugin(ktx2))
   const pmrem = new PMREMGenerator(renderer)
+  /** O-12: how many new programs link at once (`LINKS_*`: hero unseen, hero shown, systems). */
+  const linkBudget = createLinkBudget(() => {
+    if (systemsWarming) {
+      return LINKS_SYSTEMS
+    }
+    return shown ? LINKS_LOADING : LINKS_PREPARING
+  })
   // O-9: PMREM's slowest program links while the model downloads.
-  const pmremWarmup = startPmremWarmup(renderer, pmrem, PMREM.size)
+  const pmremWarmup = startPmremWarmup(renderer, pmrem, PMREM.size, linkBudget)
   const scene = new Scene()
   const disposables: { dispose: () => void }[] = [ktx2, pmremWarmup, pmrem]
   let disposed = false
   // Read through a function: `disposed` changes while this function awaits (abort, dispose).
   const isDisposed = (): boolean => disposed
-  /** O-9: idle slices until the visitor asks for the model, then plain task boundaries. */
-  let shown = false
-  void options.whenShown.then(() => {
-    shown = true
-  })
-  const pace: Pause = () => (shown ? yieldToMain() : yieldToIdle())
   /** Between two texture uploads: the GPU has taken the last one, so the next never waits. */
   const uploadPause: Pause = () => gpuSettled(gl)
 
@@ -527,7 +673,10 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   let gltf: GLTF
   let nodes: Map<string, Object3D>
   try {
-    gltf = await loadWithTranscodeWatchdog(loader, MODEL_FILES[tier])
+    const data = await modelData
+    // O-12: the parse starts in a task of its own.
+    await pace()
+    gltf = await parseWithTranscodeWatchdog(loader, data, modelUrl)
     if (isDisposed()) {
       throw new ContractError('disposed while loading')
     }
@@ -744,6 +893,12 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     }
   }
 
+  // O-12: the material set-up above, the camera and canvas below, each in its own task.
+  await pace()
+  if (isDisposed()) {
+    throw new ContractError('disposed while preparing')
+  }
+
   // Camera: CAM_hero's exact pose and FOV, square aspect, cover crop of the card + lens shift.
   const heroCamera = findCamera(node('CAM_hero'))
   const camera = new PerspectiveCamera(heroCamera.fov, 1, CAMERA_NEAR, CAMERA_FAR)
@@ -801,7 +956,15 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     }
     applyViewOffset()
   }
+  await pace()
+  if (isDisposed()) {
+    throw new ContractError('disposed while preparing')
+  }
   resize()
+  await pace()
+  if (isDisposed()) {
+    throw new ContractError('disposed while preparing')
+  }
 
   let lowTier = false
   const draw = (): void => {
@@ -878,11 +1041,13 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     },
     turntable: { getAngle: () => turntableAngle, setAngle: setTurntableAngle },
     reducedMotion: options.reducedMotion,
-    compileObjects: (objects) =>
-      waitForLinks(
-        objects.flatMap((object) => compileNow(renderer, object, camera, scene)),
-        isDisposed,
-      ),
+    compileObjects: (objects) => {
+      const programs = objects.flatMap((object) => compileNow(renderer, object, camera, scene))
+      linkBudget.track(programs)
+      return waitForLinks(programs, isDisposed)
+    },
+    compileRoom: () => linkBudget.room(isDisposed),
+    compileFull: () => linkBudget.full,
     // The entered look's programs, then its textures (the variants' maps reach the GPU here, not
     // in the first frames of the flight).
     warm: async (materials) => {
@@ -891,8 +1056,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     },
     pause: async (system) => {
       await pace()
-      // O-9: once shown, another system's warm-up waits while the camera flies to the one asked for.
-      while (shown && !isDisposed() && stage.moving && stage.wanted !== system) {
+      // O-9: once shown, another system's warm-up waits until the camera has reached the one asked
+      // for (O-12: also while that one's own programs are being made).
+      while (shown && !isDisposed() && visitorWaits() && stage.wanted !== system) {
         await new Promise((resolve) => {
           window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
         })
@@ -1112,25 +1278,44 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     return frameMs
   }
 
+  /** The first visible frame is less than `SWAP_SETTLE_MS` old (or still to come). */
+  function swapping(): boolean {
+    return firstFrameAt === null || performance.now() - firstFrameAt < SWAP_SETTLE_MS
+  }
+
+  /** The camera flies, or has yet to reach the system the visitor asked for. */
+  function visitorWaits(): boolean {
+    return stage.moving || stage.wanted !== stage.entered
+  }
+
   /**
    * O-9: each system's entered programs, after the hero's. Entering a system waits for its own; while
    * a system is entered (its look on screen) or the camera flies, the warm-up waits.
    */
   async function warmUpSystems(): Promise<void> {
-    for (const system of SYSTEM_IDS) {
+    const done = new Set<SystemId>()
+    while (done.size < SYSTEM_IDS.length) {
       for (;;) {
         await pace()
         if (isDisposed()) {
           return
         }
-        // Never during a flight on screen: its frames come first.
-        if (stage.canPrepare && !(shown && stage.moving)) {
+        // Never while the visitor waits for a flight on screen, nor during the swap to the live
+        // view (O-12): their frames come first.
+        if (stage.canPrepare && !(shown && (visitorWaits() || swapping()))) {
           break
         }
         await new Promise((resolve) => {
           window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
         })
       }
+      // The system the visitor asked for first (O-12), then the others in order.
+      const wanted = stage.wanted ?? options.enteredSystem?.() ?? null
+      const system =
+        wanted !== null && !done.has(wanted)
+          ? wanted
+          : (SYSTEM_IDS.find((id) => !done.has(id)) ?? SYSTEM_IDS[0])
+      done.add(system)
       await stage.prepare(system)
     }
   }
@@ -1147,15 +1332,27 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   aborted.catch(() => undefined)
 
   // O-9: everything up to the first frame is prepared before the visitor asks for the model, in a
-  // canvas that is not in the page: compile, first use and texture upload in idle slices, then a
-  // timed rehearsal of the hero frame that fixes the tier. The systems' programs are created once
-  // the hero's are linked, so they link while the environment bakes and the hero frame is timed.
+  // canvas that is not in the page: compile, first use and texture and buffer upload in idle slices,
+  // then a timed rehearsal of the hero frame that fixes the tier. O-12: only a few programs link at
+  // a time (`linkBudget`), and the systems' programs come after the rehearsal.
   try {
-    const heroPrograms = await compileInChunks(renderer, scene, camera, isDisposed, pace)
-    // The textures go up while those programs link.
-    await uploadTexturesInChunks(renderer, scene, isDisposed, uploadPause)
+    // O-12: the textures go up while the programs are created (a few at a time) and link.
+    const uploads = uploadTexturesInChunks(renderer, scene, isDisposed, uploadPause)
+    uploads.catch(() => undefined)
+    const heroPrograms = await compileInChunks(
+      renderer,
+      scene,
+      camera,
+      isDisposed,
+      pace,
+      linkBudget,
+    )
+    await uploads
     await waitForLinks(heroPrograms, isDisposed)
-    void warmUpSystems()
+    // O-12: each program's first use, then the model's buffers, a part per task (no draw below
+    // uploads them all at once).
+    await firstUse(heroPrograms, isDisposed, pace)
+    await uploadGeometryInChunks(renderer, scene, camera, isDisposed, uploadPause)
     await studioReady
     if (isDisposed()) {
       throw new ContractError('disposed while compiling')
@@ -1173,13 +1370,21 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       pmremWarmup.dispose()
       await pace()
     }
-    await firstUse(heroPrograms, isDisposed, pace)
-    let verdict = probeVerdict(await probeFrames(), false)
+    const frames = await probeFrames()
+    let verdict = probeVerdict(frames, false)
     if (verdict === 'low') {
+      // The low tier draws at pixel ratio 1 without bloom. O-12: when that is the frame just timed
+      // and it already meets the stills rate, timing it again could only confirm it; otherwise the
+      // low-tier frame is timed anew.
+      const sameFrame = renderer.getPixelRatio() === 1 && composer === null
       lowTier = true
       renderer.setPixelRatio(1)
       resize()
-      verdict = probeVerdict(await probeFrames(), true)
+      if (!sameFrame || probeVerdict(frames, true) !== 'ok') {
+        verdict = probeVerdict(await probeFrames(), true)
+      } else {
+        verdict = 'ok'
+      }
     }
     if (verdict === 'stills') {
       throw new ViewerStartError('too-slow', 'the GPU probe is below the stills rate')
@@ -1187,6 +1392,11 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     if (isDisposed()) {
       throw new ContractError('disposed while preparing')
     }
+    // O-12: the systems' programs only after the timed frames (nothing compiles beside them, so the
+    // tier reflects the hero frame alone), a few at a time; once shown they wait for the swap and
+    // for any flight the visitor waits for.
+    systemsWarming = true
+    void warmUpSystems()
     await Promise.race([options.whenShown, aborted])
     shown = true
     // The canvas is in the page now: its size, then the first visible frame.
@@ -1206,6 +1416,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     throw new ContractError('disposed before the first frame')
   }
   started = true
+  firstFrameAt = performance.now()
   options.onFirstFrame()
   scheduleWake()
 

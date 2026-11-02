@@ -33,6 +33,7 @@ import {
   type Scene,
   type ShaderMaterial,
   type Vector3,
+  Vector4,
   type WebGLRenderer,
   type WebGLRenderTarget,
 } from 'three'
@@ -72,20 +73,22 @@ export function hasPmremInternals(pmrem: PMREMGenerator): pmrem is PMREMGenerato
 
 /**
  * Creates the programs `object` draws with into `target` with tone mapping off (as PMREM renders),
- * synchronously, and returns them; they link in parallel (`waitForLinks`).
+ * lit by `scene` (`object` itself when null), synchronously, and returns them; they link in
+ * parallel (`waitForLinks`).
  */
 function compileOffscreenNow(
   renderer: WebGLRenderer,
   object: Object3D,
   camera: OrthographicCamera | PerspectiveCamera,
   target: WebGLRenderTarget,
+  scene: Scene | null = null,
 ): unknown[] {
   const previousTarget = renderer.getRenderTarget()
   const previousToneMapping = renderer.toneMapping
   renderer.setRenderTarget(target)
   renderer.toneMapping = NoToneMapping
   try {
-    return programsCompiled(renderer, renderer.compile(object, camera))
+    return programsCompiled(renderer, renderer.compile(object, camera, scene))
   } finally {
     renderer.toneMapping = previousToneMapping
     renderer.setRenderTarget(previousTarget)
@@ -132,6 +135,7 @@ export function startPmremWarmup(
   renderer: WebGLRenderer,
   pmrem: PMREMGenerator,
   size: number,
+  budget: LinkBudget = NO_LINK_BUDGET,
 ): PmremWarmup {
   if (!hasPmremInternals(pmrem)) {
     return {
@@ -176,6 +180,7 @@ export function startPmremWarmup(
       target,
     ),
   )
+  budget.track(ggxPrograms)
   /** One bake step with the renderer's target and auto-clear as they were around it. */
   const step = (work: () => void): void => {
     const previousTarget = renderer.getRenderTarget()
@@ -190,11 +195,13 @@ export function startPmremWarmup(
   return {
     standIn: target.texture,
     async compileStudio(envScene, isCancelled, pause) {
-      const studioPrograms = compileOffscreenNow(
-        renderer,
-        envScene,
-        new PerspectiveCamera(90, 1, 0.1, 100),
-        target,
+      const cubeCamera = new PerspectiveCamera(90, 1, 0.1, 100)
+      const studioPrograms = await compileEach(
+        drawableRepresentatives(envScene),
+        (object) => compileOffscreenNow(renderer, object, cubeCamera, target, envScene),
+        isCancelled,
+        pause,
+        budget,
       )
       await waitForLinks([...ggxPrograms, ...studioPrograms], isCancelled)
       await warmPrograms(
@@ -431,6 +438,10 @@ function isLinked(program: unknown): boolean {
   if (typeof program !== 'object' || program === null) {
     return true
   }
+  // A program three has already released (`destroy()` clears `program`) links no more.
+  if (Reflect.has(program, 'program') && Reflect.get(program, 'program') === undefined) {
+    return true
+  }
   const isReady: unknown = Reflect.get(program, 'isReady')
   return typeof isReady !== 'function' || Reflect.apply(isReady, program, []) === true
 }
@@ -458,6 +469,73 @@ export async function waitForLinks(
       })
     }
   }
+}
+
+/**
+ * How many new programs may link at once: the hero's and the studio's while the model is prepared
+ * unseen, and while the visitor waits for the first frame; the systems' (prepared after the hero,
+ * and on demand once live, while the visitor watches: each link takes a core the page's frames
+ * need).
+ */
+export const LINKS_PREPARING = 6
+export const LINKS_LOADING = 3
+export const LINKS_SYSTEMS = 2
+
+/**
+ * O-12: new programs are created only while fewer than `limit()` are still linking. Each link is
+ * D3D shader compiles on the GPU process's worker threads (up to ~2 s of CPU each on the HD 530
+ * box); many at once leave the page's main thread without a core, and its tasks stall for hundreds
+ * of ms inside plain WebGL calls (P3-T5 r6 trace: 291 ms of wall time, 16 ms of CPU, in
+ * `shaderSource`). A program three reuses is counted once at most, and leaves the count at the next
+ * check once linked.
+ */
+export interface LinkBudget {
+  /** Resolves once a new program may be created (at once while there is room). */
+  room: (isCancelled: () => boolean) => Promise<void>
+  /** True while no new program may be created (no GPU round trip). */
+  readonly full: boolean
+  /** Records what a compile returned; the programs not seen before are counted until linked. */
+  track: (programs: Iterable<unknown>) => void
+}
+
+export function createLinkBudget(limit: () => number): LinkBudget {
+  const seen = new WeakSet()
+  let linking: object[] = []
+  const waitPoll = (): Promise<void> =>
+    new Promise((resolve) => {
+      window.setTimeout(resolve, LINK_POLL_MS)
+    })
+  /** One status check per program still counted (each is a synchronous round trip). */
+  const prune = (): void => {
+    linking = linking.filter((program) => !isLinked(program))
+  }
+  return {
+    async room(isCancelled) {
+      prune()
+      while (linking.length >= limit() && !isCancelled()) {
+        await waitPoll()
+        prune()
+      }
+    },
+    get full() {
+      return linking.length >= limit()
+    },
+    track(programs) {
+      for (const program of programs) {
+        if (typeof program === 'object' && program !== null && !seen.has(program)) {
+          seen.add(program)
+          linking.push(program)
+        }
+      }
+    },
+  }
+}
+
+/** Unlimited: every program at once (the unit tests' stand-in; tracks nothing). */
+export const NO_LINK_BUDGET: LinkBudget = {
+  room: () => Promise.resolve(),
+  full: false,
+  track: () => undefined,
 }
 
 /**
@@ -492,8 +570,9 @@ function programsCompiled(renderer: WebGLRenderer, materials: Iterable<Material>
 /**
  * The program creation of `renderer.compile(scene, camera)` split into tasks: the scene's
  * representative objects (`drawableRepresentatives`), as many per task as fit in
- * `COMPILE_TASK_MS`. Lights and environment still come from `scene`. Returns the programs, which
- * link in parallel; the caller waits for them (`waitForLinks`) when it needs them.
+ * `COMPILE_TASK_MS`, and only while `budget` has room (O-12). Lights and environment still come
+ * from `scene`. Returns the programs, which link in parallel; the caller waits for them
+ * (`waitForLinks`) when it needs them.
  */
 export async function compileInChunks(
   renderer: WebGLRenderer,
@@ -501,20 +580,48 @@ export async function compileInChunks(
   camera: Camera,
   isCancelled: () => boolean,
   pause: Pause = yieldToMain,
+  budget: LinkBudget = NO_LINK_BUDGET,
 ): Promise<unknown[]> {
-  const representatives = drawableRepresentatives(scene)
+  return compileEach(
+    drawableRepresentatives(scene),
+    (object) => compileNow(renderer, object, camera, scene),
+    isCancelled,
+    pause,
+    budget,
+  )
+}
+
+/**
+ * `compile` for each object, as many per task as fit in `COMPILE_TASK_MS` while `budget` has room;
+ * between tasks `pause`, and the wait for room. Returns the programs.
+ */
+async function compileEach(
+  objects: readonly Object3D[],
+  compile: (object: Object3D) => unknown[],
+  isCancelled: () => boolean,
+  pause: Pause,
+  budget: LinkBudget,
+): Promise<unknown[]> {
   const programs: unknown[] = []
   let next = 0
-  while (next < representatives.length) {
+  while (next < objects.length) {
+    // The pause first: once there is room, the next programs are created in that same task.
+    await pause()
+    await budget.room(isCancelled)
     if (isCancelled()) {
       break
     }
     const taskStart = performance.now()
     do {
-      programs.push(...compileNow(renderer, representatives[next], camera, scene))
+      const created = compile(objects[next])
+      budget.track(created)
+      programs.push(...created)
       next += 1
-    } while (next < representatives.length && performance.now() - taskStart < COMPILE_TASK_MS)
-    await pause()
+    } while (
+      next < objects.length &&
+      !budget.full &&
+      performance.now() - taskStart < COMPILE_TASK_MS
+    )
   }
   return programs
 }
@@ -581,6 +688,102 @@ export async function uploadMaterialTextures(
     // only bring on long garbage collections. Nothing uploads these textures again.
     if (texture instanceof CompressedTexture && isUploaded(renderer, texture)) {
       texture.mipmaps = []
+    }
+  }
+}
+
+/** Vertex and index data uploaded per task ahead of the first frame (bytes). */
+const GEOMETRY_TASK_BYTES = 4 * 1024 * 1024
+
+function geometryBytes(geometry: BufferGeometry): number {
+  let bytes = geometry.index?.array.byteLength ?? 0
+  for (const attribute of Object.values(geometry.attributes)) {
+    bytes += attribute.array.byteLength
+  }
+  return bytes
+}
+
+/**
+ * O-12: the vertex and index buffers three uploads on an object's first draw, ahead of the first
+ * frame, a few MB per task: each group is drawn once into a 1×1 viewport with everything else
+ * hidden, and `pause` (a GPU fence) comes between groups. In one draw the whole model's buffers
+ * held the main thread for ~360 ms on the HD 530 box while shaders compiled. Every program these
+ * draws use must already be linked (a draw waits for its link).
+ */
+export async function uploadGeometryInChunks(
+  renderer: WebGLRenderer,
+  scene: Scene,
+  camera: Camera,
+  isCancelled: () => boolean,
+  pause: Pause = yieldToMain,
+): Promise<void> {
+  const groups: Object3D[][] = []
+  const seen = new Set<BufferGeometry>()
+  let group: Object3D[] = []
+  let groupBytes = 0
+  scene.traverse((object) => {
+    if (!isDrawable(object) || object instanceof Sprite) {
+      return
+    }
+    group.push(object)
+    if (!seen.has(object.geometry)) {
+      seen.add(object.geometry)
+      groupBytes += geometryBytes(object.geometry)
+    }
+    if (groupBytes >= GEOMETRY_TASK_BYTES) {
+      groups.push(group)
+      group = []
+      groupBytes = 0
+    }
+  })
+  if (group.length > 0) {
+    groups.push(group)
+  }
+  const viewport = renderer.getViewport(new Vector4())
+  const drawables: Object3D[] = []
+  scene.traverse((object) => {
+    if (isDrawable(object)) {
+      drawables.push(object)
+    }
+  })
+  for (const members of groups) {
+    await pause()
+    if (isCancelled()) {
+      return
+    }
+    const inGroup = new Set(members)
+    // Objects and ancestors changed for this one draw, with what they were.
+    const visibility = new Map<Object3D, boolean>()
+    const culling = new Map<Object3D, boolean>()
+    for (const object of drawables) {
+      if (!inGroup.has(object) && object.visible) {
+        visibility.set(object, true)
+        object.visible = false
+      }
+    }
+    for (const object of members) {
+      culling.set(object, object.frustumCulled)
+      object.frustumCulled = false
+      let node: Object3D | null = object
+      while (node && node !== scene) {
+        if (!node.visible && !visibility.has(node)) {
+          visibility.set(node, false)
+          node.visible = true
+        }
+        node = node.parent
+      }
+    }
+    try {
+      renderer.setViewport(0, 0, 1, 1)
+      renderer.render(scene, camera)
+    } finally {
+      renderer.setViewport(viewport)
+      for (const [object, visible] of visibility) {
+        object.visible = visible
+      }
+      for (const [object, frustumCulled] of culling) {
+        object.frustumCulled = frustumCulled
+      }
     }
   }
 }

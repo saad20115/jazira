@@ -19,6 +19,7 @@ import {
   Plane,
   type Quaternion,
   Raycaster,
+  type Intersection,
   Vector3,
 } from 'three'
 import type { OrbitControls } from 'three/addons/controls/OrbitControls.js'
@@ -47,6 +48,11 @@ const CORE_MATERIALS = ['MAT_concrete', 'MAT_concrete_floor']
 const SECTION_SLIDE = 150
 /** Label occlusion raycasts are throttled; positions are still projected every frame. */
 const OCCLUSION_INTERVAL_MS = 250
+/**
+ * O-12: the occlusion rays of one frame stop after this much time (at least one ray per frame); the
+ * rest are cast in the next frames. All of them in one frame cost up to ~75 ms on the HD 530 box.
+ */
+const OCCLUSION_FRAME_BUDGET_MS = 6
 
 export interface ProjectedLabel {
   name: string
@@ -75,6 +81,10 @@ export interface StageDeps {
    * all are linked, without blocking.
    */
   compileObjects: (objects: readonly Object3D[]) => Promise<unknown>
+  /** O-12: resolves once new programs may be created (few are still linking). */
+  compileRoom?: () => Promise<void>
+  /** O-12: true while no new program may be created. */
+  compileFull?: () => boolean
   /** First use of the materials' programs, spread over short tasks (`warmPrograms`). */
   warm: (materials: readonly Material[]) => Promise<void>
   /**
@@ -388,8 +398,27 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     system: SystemId
     occluders: Object3D[]
     checkedAt: number
+    /** Hotspots whose ray is still to be cast in this round. */
+    queue: Set<string>
+    /** Hotspots found hidden, or not yet checked once (a label shows only once found visible). */
     hidden: Set<string>
   } | null = null
+  const hits: Intersection[] = []
+  /** Whether anything blocks the ray (stops at the first occluder hit, unlike `intersectObjects`). */
+  const rayBlocked = (occluders: readonly Object3D[]): boolean => {
+    for (const object of occluders) {
+      if (!object.layers.test(raycaster.layers)) {
+        continue
+      }
+      hits.length = 0
+      object.raycast(raycaster, hits)
+      if (hits.length > 0) {
+        hits.length = 0
+        return true
+      }
+    }
+    return false
+  }
 
   /** The part of a material's state that the fades change and that selects its shader program. */
   const programState = (material: Material): string =>
@@ -493,6 +522,13 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     const pending: Promise<unknown>[] = []
     let next = 0
     while (next < objects.length) {
+      if (next > 0) {
+        await (deps.pause ? deps.pause(system) : yieldToMain())
+      }
+      // O-12: only while few new programs are still linking; then at once, in the same task.
+      if (deps.compileRoom) {
+        await deps.compileRoom()
+      }
       pending.push(
         withEnteredLook(() => {
           const taskStart = performance.now()
@@ -500,12 +536,16 @@ export function createSystemStage(deps: StageDeps): SystemStage {
           do {
             started.push(deps.compileObjects(objects.slice(next, next + 1)))
             next += 1
-          } while (next < objects.length && performance.now() - taskStart < COMPILE_TASK_MS)
+          } while (
+            next < objects.length &&
+            !deps.compileFull?.() &&
+            performance.now() - taskStart < COMPILE_TASK_MS
+          )
           return Promise.all(started)
         }),
       )
-      await (deps.pause ? deps.pause(system) : yieldToMain())
     }
+    await (deps.pause ? deps.pause(system) : yieldToMain())
     await Promise.all(pending)
     await deps.warm(used)
   }
@@ -750,37 +790,56 @@ export function createSystemStage(deps: StageDeps): SystemStage {
             occluders.push(object)
           }
         })
-        occlusion = { system: id, occluders, checkedAt: -Infinity, hidden: new Set() }
-      }
-      const recheck = now - occlusion.checkedAt >= OCCLUSION_INTERVAL_MS
-      if (recheck) {
-        occlusion.checkedAt = now
-        occlusion.hidden.clear()
+        const names = extras.hotspots.filter((h) => h.system === id).map((h) => h.name)
+        occlusion = {
+          system: id,
+          occluders,
+          checkedAt: -Infinity,
+          queue: new Set(),
+          hidden: new Set(names),
+        }
       }
       const state = occlusion
-      return extras.hotspots
-        .filter((h) => h.system === id)
-        .map((hotspot) => {
-          const world = worldPos(hotspot.name)
-          const ndc = world.clone().project(camera)
-          const inFrame = ndc.z < 1 && Math.abs(ndc.x) <= 1 && Math.abs(ndc.y) <= 1
-          if (inFrame && recheck) {
-            const direction = world.clone().sub(camera.position)
-            const distance = direction.length()
-            raycaster.set(camera.position, direction.normalize())
-            raycaster.far = Math.max(0, distance - 0.5)
-            if (raycaster.intersectObjects(state.occluders, false).length > 0) {
-              state.hidden.add(hotspot.name)
-            }
+      const hotspots = extras.hotspots.filter((h) => h.system === id)
+      if (state.queue.size === 0 && now - state.checkedAt >= OCCLUSION_INTERVAL_MS) {
+        state.checkedAt = now
+        for (const hotspot of hotspots) {
+          state.queue.add(hotspot.name)
+        }
+      }
+      let rays = 0
+      return hotspots.map((hotspot) => {
+        const world = worldPos(hotspot.name)
+        const ndc = world.clone().project(camera)
+        const inFrame = ndc.z < 1 && Math.abs(ndc.x) <= 1 && Math.abs(ndc.y) <= 1
+        if (
+          inFrame &&
+          state.queue.has(hotspot.name) &&
+          (rays === 0 || performance.now() - now < OCCLUSION_FRAME_BUDGET_MS)
+        ) {
+          rays += 1
+          state.queue.delete(hotspot.name)
+          const direction = world.clone().sub(camera.position)
+          const distance = direction.length()
+          raycaster.set(camera.position, direction.normalize())
+          raycaster.far = Math.max(0, distance - 0.5)
+          if (rayBlocked(state.occluders)) {
+            state.hidden.add(hotspot.name)
+          } else {
+            state.hidden.delete(hotspot.name)
           }
-          return {
-            name: hotspot.name,
-            label: hotspot.label,
-            x: ((ndc.x + 1) / 2) * width,
-            y: ((1 - ndc.y) / 2) * height,
-            visible: inFrame && !state.hidden.has(hotspot.name),
-          }
-        })
+        } else if (!inFrame) {
+          // Out of the frame it shows nowhere; it is checked again once back in a new round.
+          state.queue.delete(hotspot.name)
+        }
+        return {
+          name: hotspot.name,
+          label: hotspot.label,
+          x: ((ndc.x + 1) / 2) * width,
+          y: ((1 - ndc.y) / 2) * height,
+          visible: inFrame && !state.hidden.has(hotspot.name),
+        }
+      })
     },
   }
 }
