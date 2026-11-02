@@ -43,10 +43,11 @@ type Phase = CardPhase
 const START_TIMEOUT_MS = 45_000
 
 /**
- * O-9: the model is prepared once the card is this close to the viewport (one viewport height above
- * or below), in the next idle period (at the latest after `PREPARE_IDLE_TIMEOUT_MS`).
+ * O-9 / Q6: the model is prepared once the card is this close to the viewport (two viewport heights
+ * above or below) after the visitor scrolled, in an idle period (at the latest after
+ * `PREPARE_IDLE_TIMEOUT_MS`).
  */
-const PREPARE_MARGIN = '100% 0px'
+const PREPARE_MARGIN = '200% 0px'
 const PREPARE_IDLE_TIMEOUT_MS = 1_000
 
 /** Phones render at most this many frames per second (§8c). */
@@ -418,26 +419,62 @@ export function SystemsCard({
     }
     let idleHandle: number | undefined
     let timer: number | undefined
-    const prepare = (): void => {
-      setViewerWanted(true)
+    let observer: IntersectionObserver | null = null
+    let near = false
+    let scrolled = false
+    const whenIdle = (run: () => void): void => {
+      if (typeof window.requestIdleCallback === 'function') {
+        idleHandle = window.requestIdleCallback(run, { timeout: PREPARE_IDLE_TIMEOUT_MS })
+      } else {
+        timer = window.setTimeout(run, 0)
+      }
     }
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) {
-          return
-        }
-        observer.disconnect()
-        if (typeof window.requestIdleCallback === 'function') {
-          idleHandle = window.requestIdleCallback(prepare, { timeout: PREPARE_IDLE_TIMEOUT_MS })
-        } else {
-          timer = window.setTimeout(prepare, 0)
-        }
-      },
-      { rootMargin: PREPARE_MARGIN },
-    )
-    observer.observe(card)
+    const stopWatching = (): void => {
+      observer?.disconnect()
+      window.removeEventListener('scroll', onScroll)
+    }
+    const inView = (): boolean => {
+      const box = card.getBoundingClientRect()
+      return box.top < window.innerHeight && box.bottom > 0
+    }
+    const maybePrepare = (): void => {
+      if (near && (scrolled || inView())) {
+        stopWatching()
+        whenIdle(() => {
+          setViewerWanted(true)
+        })
+      }
+    }
+    function onScroll(): void {
+      scrolled = true
+      maybePrepare()
+    }
+    // Q6: from the page's load event and the idle period after it; then the card in view, or within
+    // two viewports once the visitor scrolls (the model is several MB: never for a page left at its
+    // top, so a page-load audit fetches no model file).
+    const watch = (): void => {
+      scrolled = window.scrollY !== 0
+      window.addEventListener('scroll', onScroll, { passive: true })
+      observer = new IntersectionObserver(
+        (entries) => {
+          near = entries.some((entry) => entry.isIntersecting)
+          maybePrepare()
+        },
+        { rootMargin: PREPARE_MARGIN },
+      )
+      observer.observe(card)
+    }
+    const afterLoad = (): void => {
+      whenIdle(watch)
+    }
+    if (document.readyState === 'complete') {
+      afterLoad()
+    } else {
+      window.addEventListener('load', afterLoad, { once: true })
+    }
     return () => {
-      observer.disconnect()
+      window.removeEventListener('load', afterLoad)
+      stopWatching()
       if (idleHandle !== undefined) {
         window.cancelIdleCallback(idleHandle)
       }
@@ -504,6 +541,7 @@ export function SystemsCard({
           onLabels: (labels) => {
             labelSinkRef.current?.(labels)
           },
+          enteredSystem: () => enteredRef.current,
         }),
       )
       .then((handle) => {
