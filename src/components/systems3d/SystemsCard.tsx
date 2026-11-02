@@ -17,6 +17,7 @@ import {
 
 import { ArrowUpRightIcon, CubeIcon } from '@/components/icons'
 
+import { CARD_IMAGE_SIZES } from './cardImageSizes'
 import type { SystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import { LiveLabels, type LiveLabelSink } from './LiveLabels'
@@ -41,6 +42,13 @@ type Phase = CardPhase
 /** A start that has not rendered its first frame by then falls back to the stills tier. */
 const START_TIMEOUT_MS = 45_000
 
+/**
+ * O-9: the model is prepared once the card is this close to the viewport (one viewport height above
+ * or below), in the next idle period (at the latest after `PREPARE_IDLE_TIMEOUT_MS`).
+ */
+const PREPARE_MARGIN = '100% 0px'
+const PREPARE_IDLE_TIMEOUT_MS = 1_000
+
 /** Phones render at most this many frames per second (§8c). */
 const PHONE_MAX_FPS = 30
 
@@ -58,7 +66,6 @@ const TAP_HINT_STILL_MS = 2_400
 const TAP_HINT_FADE_MS = 600
 
 const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
-const STILL_SIZES = '(max-width: 1279px) 100vw, 600px'
 
 function endStillSrcSet(system: SystemId, format: 'webp' | 'jpg'): string {
   return [1440, 2048]
@@ -94,7 +101,11 @@ function EnteredStill({
       data-loaded={loaded ? 'true' : 'false'}
     >
       <picture className={styles.stillPicture}>
-        <source sizes={STILL_SIZES} srcSet={endStillSrcSet(system, 'webp')} type="image/webp" />
+        <source
+          sizes={CARD_IMAGE_SIZES}
+          srcSet={endStillSrcSet(system, 'webp')}
+          type="image/webp"
+        />
         <img
           alt=""
           className={styles.buildingRender}
@@ -104,7 +115,7 @@ function EnteredStill({
             setLoaded(true)
           }}
           ref={markLoaded}
-          sizes={STILL_SIZES}
+          sizes={CARD_IMAGE_SIZES}
           src={`${STILLS_PATH}/${system}_end_1440.jpg`}
           srcSet={endStillSrcSet(system, 'jpg')}
           width={2048}
@@ -155,6 +166,18 @@ function readDeviceCaps(): DeviceCaps {
   }
 }
 
+/** O-9: the viewer of this card, prepared before the click or started by it. */
+interface LiveViewer {
+  /** Not in the page until the visitor asks for the model. */
+  canvas: HTMLCanvasElement
+  /** Lets the viewer draw its first visible frame (the canvas is in the page by then). */
+  show: () => void
+  /** Disposes the viewer. */
+  abort: () => void
+  /** A failure while preparing: the click then shows the stills tier with this reason. */
+  failure: FallbackReason | null
+}
+
 const subscribeNever = (): (() => void) => () => undefined
 
 const PHONE_QUERY = '(max-width: 767.98px)'
@@ -201,13 +224,19 @@ export function SystemsCard({
   const hydrated = useHydrated()
   const phoneLayout = usePhoneLayout()
   const cardRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  /** Where the live canvas joins the card once the visitor asks for the model. */
+  const canvasHostRef = useRef<HTMLDivElement>(null)
   const viewerRef = useRef<ViewerHandle | null>(null)
   const [phase, setPhase] = useState<Phase>('still')
   const [fallbackReason, setFallbackReason] = useState<FallbackReason | null>(null)
-  /** The live model, or `low` after the run-time FPS drop (`data-viewer-tier`, for the e2e). */
+  /** The live model, or `low` (the GPU probe or the run-time FPS drop; `data-viewer-tier`). */
   const [liveTier, setLiveTier] = useState<ModelTier | 'low' | null>(null)
-  const [session, setSession] = useState(0)
+  /** O-9: the viewer exists (preparing near the viewport, or started by a click); never reset. */
+  const [viewerWanted, setViewerWanted] = useState(false)
+  const liveRef = useRef<LiveViewer | null>(null)
+  /** Set by the start: from then on a failure shows the stills tier instead of waiting. */
+  const shownRef = useRef(false)
+  const liveLabelRef = useRef(liveLabel)
   const [active, setActive] = useState(false)
   /** The same value as `active`, for the viewer callbacks that run before React re-renders. */
   const activeRef = useRef(false)
@@ -334,8 +363,9 @@ export function SystemsCard({
         return
       }
       activateOnLiveRef.current = fromCard && !caps.coarsePointer
+      shownRef.current = true
       setPhase('loading')
-      setSession((n) => n + 1)
+      setViewerWanted(true)
     },
     [phase, stopTapHint],
   )
@@ -351,30 +381,96 @@ export function SystemsCard({
     }
   }, [startSignal])
 
-  // One viewer per session; it lives until a failure or unmount (aborting disposes it).
+  /**
+   * A failure once the visitor asked for the model shows the stills tier; one while preparing waits
+   * for the click (nothing visible changes before it, O-2).
+   */
+  const fallBack = useCallback((reason: FallbackReason): void => {
+    const live = liveRef.current
+    if (live && !shownRef.current) {
+      live.failure = reason
+      return
+    }
+    live?.abort()
+    viewerRef.current = null
+    activeRef.current = false
+    setActive(false)
+    setFallbackReason(reason)
+    setPhase('stills')
+  }, [])
+
+  // O-9: the model is prepared before the visitor asks for it, once the card nears the viewport, in
+  // the next idle period: download, transcode, parse and shader compile in idle slices, into a
+  // canvas outside the page. Only where a click would start the live view (never the stills tier,
+  // never with Save-Data).
   useEffect(() => {
-    const canvas = canvasRef.current
     const card = cardRef.current
-    if (session === 0 || !canvas || !card) {
+    if (!hydrated || !card || viewerWanted || phase !== 'still') {
+      return
+    }
+    if (decideStart(readDeviceCaps()) !== 'live') {
+      return
+    }
+    let idleHandle: number | undefined
+    let timer: number | undefined
+    const prepare = (): void => {
+      setViewerWanted(true)
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) {
+          return
+        }
+        observer.disconnect()
+        if (typeof window.requestIdleCallback === 'function') {
+          idleHandle = window.requestIdleCallback(prepare, { timeout: PREPARE_IDLE_TIMEOUT_MS })
+        } else {
+          timer = window.setTimeout(prepare, 0)
+        }
+      },
+      { rootMargin: PREPARE_MARGIN },
+    )
+    observer.observe(card)
+    return () => {
+      observer.disconnect()
+      if (idleHandle !== undefined) {
+        window.cancelIdleCallback(idleHandle)
+      }
+      window.clearTimeout(timer)
+    }
+  }, [hydrated, phase, viewerWanted])
+
+  useEffect(() => {
+    liveLabelRef.current = liveLabel
+    liveRef.current?.canvas.setAttribute('aria-label', liveLabel)
+  }, [liveLabel])
+
+  // One viewer, prepared or started by a click; it lives until a failure or unmount (aborting
+  // disposes it).
+  useEffect(() => {
+    const card = cardRef.current
+    if (!viewerWanted || !card) {
       return
     }
     const controller = new AbortController()
     const caps = readDeviceCaps()
-    let firstFrame = false
-    const fallBack = (reason: FallbackReason): void => {
-      window.clearTimeout(timeout)
-      controller.abort()
-      viewerRef.current = null
-      activeRef.current = false
-      setActive(false)
-      setFallbackReason(reason)
-      setPhase('stills')
+    const canvas = document.createElement('canvas')
+    canvas.className = styles.liveCanvas
+    canvas.setAttribute('role', 'img')
+    canvas.setAttribute('aria-label', liveLabelRef.current)
+    let show = (): void => undefined
+    const whenShown = new Promise<void>((resolve) => {
+      show = resolve
+    })
+    const live: LiveViewer = {
+      canvas,
+      show,
+      abort: () => {
+        controller.abort()
+      },
+      failure: null,
     }
-    const timeout = window.setTimeout(() => {
-      if (!firstFrame) {
-        fallBack('timeout')
-      }
-    }, START_TIMEOUT_MS)
+    liveRef.current = live
     import('./viewer/createViewer')
       .then(({ createViewer }) =>
         createViewer({
@@ -388,9 +484,8 @@ export function SystemsCard({
           look: LIVE_LOOK,
           groundTint: LITE_GROUND_TINT,
           signal: controller.signal,
+          whenShown,
           onFirstFrame: () => {
-            firstFrame = true
-            window.clearTimeout(timeout)
             setPhase('live')
             if (activateOnLiveRef.current) {
               activateOnLiveRef.current = false
@@ -423,11 +518,36 @@ export function SystemsCard({
         }
       })
     return () => {
-      window.clearTimeout(timeout)
       controller.abort()
+      canvas.remove()
+      if (liveRef.current === live) {
+        liveRef.current = null
+      }
       viewerRef.current = null
     }
-  }, [session, setActiveNow])
+  }, [viewerWanted, setActiveNow, fallBack])
+
+  // The visitor asked for the model: the canvas joins the card and the viewer draws its first
+  // visible frame (at once when prepared). A failure while preparing shows the stills tier now.
+  useEffect(() => {
+    const live = liveRef.current
+    const host = canvasHostRef.current
+    if (phase !== 'loading' || !live || !host) {
+      return
+    }
+    if (live.failure) {
+      fallBack(live.failure)
+      return
+    }
+    host.appendChild(live.canvas)
+    live.show()
+    const timeout = window.setTimeout(() => {
+      fallBack('timeout')
+    }, START_TIMEOUT_MS)
+    return () => {
+      window.clearTimeout(timeout)
+    }
+  }, [phase, fallBack])
 
   // The live view follows the entered system (camera flight); the stills overlay covers the rest.
   useEffect(() => {
@@ -617,7 +737,8 @@ export function SystemsCard({
         {children}
       </div>
       {showCanvas ? (
-        <canvas aria-label={liveLabel} className={styles.liveCanvas} ref={canvasRef} role="img" />
+        // The prepared canvas joins here (O-9); React never renders children into this element.
+        <div className={styles.canvasHost} data-canvas-host="true" ref={canvasHostRef} />
       ) : null}
       {phase === 'live' && entered ? (
         <LiveLabels cardRef={cardRef} sinkRef={labelSinkRef} strings={strings} />

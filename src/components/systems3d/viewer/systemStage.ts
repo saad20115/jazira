@@ -78,6 +78,11 @@ export interface StageDeps {
   /** First use of the materials' programs, spread over short tasks (`warmPrograms`). */
   warm: (materials: readonly Material[]) => Promise<void>
   /**
+   * The wait between two warm-up tasks of `system` (O-9: idle slices until the model is shown, and
+   * no other system's warm-up while the camera flies to the one asked for).
+   */
+  pause?: (system: SystemId) => Promise<void>
+  /**
    * The entered look's share of the frame (0 = overview, 1 = inside a system), on every flight step
    * (never during a shader warm-up, which puts the material look back but not scene-level values).
    */
@@ -140,6 +145,10 @@ export interface SystemStage {
   readonly moving: boolean
   /** True while shader warm-up work runs (its tasks lengthen frames; not a GPU speed sample). */
   readonly preparing: boolean
+  /** True while no entered look is on screen, so `prepare` can run (it fails otherwise). */
+  readonly canPrepare: boolean
+  /** The system the visitor asked for last (null = overview). */
+  readonly wanted: SystemId | null
   /** The system the visitor wants (null = overview); the stage gets there step by step. */
   request: (system: SystemId | null) => void
   /** Advances by `dtS`; returns true when another frame is needed. */
@@ -495,7 +504,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
           return Promise.all(started)
         }),
       )
-      await yieldToMain()
+      await (deps.pause ? deps.pause(system) : yieldToMain())
     }
     await Promise.all(pending)
     await deps.warm(used)
@@ -619,6 +628,12 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     },
     get preparing() {
       return preparing > 0
+    },
+    get wanted() {
+      return desired
+    },
+    get canPrepare() {
+      return lookAtRest()
     },
     get moving() {
       return phase !== 'rest' && phase !== 'entered'

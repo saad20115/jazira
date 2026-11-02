@@ -7,8 +7,11 @@
 /** Failures of a running viewer (reported through `onFailure`). */
 export type ViewerFailure = 'context-lost' | 'render-error' | 'too-slow'
 
-/** Failures before the first frame that have a known cause. */
-export type StartFailure = 'no-webgl' | 'software' | 'worker-policy'
+/**
+ * Failures before the first frame that have a known cause (`too-slow`: the GPU probe before the
+ * first frame, O-9).
+ */
+export type StartFailure = 'no-webgl' | 'software' | 'worker-policy' | 'too-slow'
 
 /**
  * Every stills-tier reason: `device` (the device rules or reduced motion chose stills before any

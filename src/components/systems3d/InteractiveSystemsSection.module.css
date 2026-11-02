@@ -79,6 +79,11 @@
 /* Live 3D (P3-T5): the canvas exists only once JS created it, above the image, and cross-fades in
    only after its first frame (O-4, docs/05-design.md §21: 500 ms, so there is no blank frame;
    instant under reduced motion). The image under it is never hidden; the card size never changes. */
+/* O-9: holds the prepared canvas; no box of its own, so the canvas fills the card. */
+.canvasHost {
+  display: contents;
+}
+
 .liveCanvas {
   position: absolute;
   inset: 0;

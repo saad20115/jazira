@@ -23,6 +23,7 @@ import {
   Mesh,
   MeshBasicMaterial,
   MeshStandardMaterial,
+  type Material,
   type Object3D,
   PerspectiveCamera,
   PMREMGenerator,
@@ -56,7 +57,14 @@ import {
   validateExtras,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
-import { FPS_WINDOW, fpsVerdict, isSoftwareRenderer, warmupSample } from '../tier'
+import {
+  FPS_WINDOW,
+  fpsVerdict,
+  isSoftwareRenderer,
+  PROBE_FRAMES,
+  probeVerdict,
+  warmupSample,
+} from '../tier'
 import {
   AGX_LOOK,
   BASIS_TRANSCODER_PATH,
@@ -81,11 +89,18 @@ import {
 import { type ViewerFailure, ViewerStartError } from './failure'
 import { inlineBasisuPlugin } from './inlineBasisuPlugin'
 import {
-  collectMaterials,
   compileInChunks,
-  precompilePmrem,
+  compileNow,
+  computeBoundsInChunks,
+  firstUse,
+  gpuSettled,
+  type Pause,
+  startPmremWarmup,
+  uploadMaterialTextures,
   uploadTexturesInChunks,
+  waitForLinks,
   warmPrograms,
+  yieldToIdle,
   yieldToMain,
 } from './precompile'
 import { createSystemStage, type ProjectedLabel } from './systemStage'
@@ -111,11 +126,19 @@ export interface ViewerOptions {
   groundTint: LiteGroundTint
   /** Aborting disposes the viewer, also while the model is still loading. */
   signal: AbortSignal
-  /** Called once the live canvas holds a rendered, presented frame. */
+  /**
+   * O-9: resolves when the visitor asks for the model. Until then the viewer only prepares (in idle
+   * slices, into a canvas that is not in the page) and draws nothing anyone sees.
+   */
+  whenShown: Promise<void>
+  /** Called once the live canvas holds a rendered, presented frame (never before `whenShown`). */
   onFirstFrame: () => void
   /** Called on a failure after the first frame (the caller falls back to the stills tier). */
   onFailure: (reason: ViewerFailure) => void
-  /** Called once when the run-time FPS check drops to the low tier (§8b). */
+  /**
+   * Called once when the run-time FPS check drops to the low tier (§8b). O-9: only while the card is
+   * off screen or the tab hidden, so the tier never changes in view.
+   */
   onLowTier?: () => void
   /** Projected hotspot labels of the entered system after each frame (null when none). */
   onLabels?: (labels: ProjectedLabel[] | null) => void
@@ -349,6 +372,16 @@ function findCamera(node: Object3D): PerspectiveCamera {
   return child
 }
 
+/** `instanceof Mesh` narrows to `Mesh<any, any, any>`; this keeps the default generics. */
+function isMesh(object: Object3D): object is Mesh {
+  return object instanceof Mesh
+}
+
+/** Copies of a mesh's materials (they share the textures). */
+function cloneMaterials(material: Material | Material[]): Material | Material[] {
+  return Array.isArray(material) ? material.map((m) => m.clone()) : material.clone()
+}
+
 function disposeObject(root: Object3D): void {
   root.traverse((object) => {
     if (!(object instanceof Mesh)) {
@@ -379,9 +412,8 @@ function disposeObject(root: Object3D): void {
  */
 const TRANSCODE_WATCHDOG_MS = 15_000
 
-/** Background warm-up: the gap before each system's idle slot, and that slot's latest start. */
-const WARMUP_GAP_MS = 1_000
-const WARMUP_IDLE_TIMEOUT_MS = 5_000
+/** While a system is entered its look is on screen: the background warm-up waits this long. */
+const WARMUP_BUSY_WAIT_MS = 250
 
 async function loadWithTranscodeWatchdog(loader: GLTFLoader, url: string): Promise<GLTF> {
   // The download is bounded by the card's start timeout; parse + transcode by the watchdog.
@@ -432,7 +464,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   } catch {
     throw new ViewerStartError('no-webgl', 'WebGL context unavailable')
   }
-  if (!renderer.capabilities.isWebGL2) {
+  const gl = renderer.getContext()
+  if (!renderer.capabilities.isWebGL2 || !(gl instanceof WebGL2RenderingContext)) {
     renderer.dispose()
     throw new ViewerStartError('no-webgl', 'WebGL2 unavailable')
   }
@@ -443,6 +476,9 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
   const tier = options.selectTier(gpu)
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, options.pixelRatioCap))
+  // O-9: no info-log reads on a program's first use. Each is a synchronous round trip that waits for
+  // the GPU process (up to ~200 ms on the HD 530); a broken shader still renders nothing, as before.
+  renderer.debug.checkShaderErrors = false
   renderer.toneMapping = AgXToneMapping
   renderer.outputColorSpace = SRGBColorSpace
   renderer.localClippingEnabled = true
@@ -457,11 +493,21 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder)
   loader.register(inlineBasisuPlugin(ktx2))
   const pmrem = new PMREMGenerator(renderer)
+  // O-9: PMREM's slowest program links while the model downloads.
+  const pmremWarmup = startPmremWarmup(renderer, pmrem, PMREM.size)
   const scene = new Scene()
-  const disposables: { dispose: () => void }[] = [ktx2, pmrem]
+  const disposables: { dispose: () => void }[] = [ktx2, pmremWarmup, pmrem]
   let disposed = false
   // Read through a function: `disposed` changes while this function awaits (abort, dispose).
   const isDisposed = (): boolean => disposed
+  /** O-9: idle slices until the visitor asks for the model, then plain task boundaries. */
+  let shown = false
+  void options.whenShown.then(() => {
+    shown = true
+  })
+  const pace: Pause = () => (shown ? yieldToMain() : yieldToIdle())
+  /** Between two texture uploads: the GPU has taken the last one, so the next never waits. */
+  const uploadPause: Pause = () => gpuSettled(gl)
 
   const cleanup = (): void => {
     if (disposed) {
@@ -498,7 +544,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     scene.add(root)
     root.updateMatrixWorld(true)
     // The parse ends in one task; the environment build starts in the next one.
-    await yieldToMain()
+    await pace()
     if (isDisposed()) {
       throw new ContractError('disposed after loading')
     }
@@ -515,15 +561,25 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     return found
   }
 
-  // Studio environment: PMREM of the lit room + env-only panels (+ the night glow shell).
+  // Studio environment: PMREM of the lit room + env-only panels (+ the night glow shell). Its meshes
+  // get their own copies of the materials, so the bake sees them as loaded whatever the live look
+  // below does to the originals (O-9: the bake now comes after that setup).
   const { studio, cameraLimits, turntable } = extras.scene
   const envScene = new Scene()
+  const envMaterials: Material[] = []
   for (const name of [studio.room, ...studio.envOnly]) {
     const source = node(name)
     const copy = source.clone()
     copy.matrixAutoUpdate = false
     copy.matrix.copy(source.matrixWorld)
     copy.visible = !(studio.nightGlow && name === studio.room)
+    copy.traverse((object) => {
+      if (isMesh(object)) {
+        const own = cloneMaterials(object.material)
+        object.material = own
+        envMaterials.push(...(Array.isArray(own) ? own : [own]))
+      }
+    })
     envScene.add(copy)
   }
   let glowShell: Mesh | null = null
@@ -531,29 +587,50 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     glowShell = nightGlowShell(studio.nightGlow)
     envScene.add(glowShell)
   }
-  try {
-    await precompilePmrem(renderer, pmrem, envScene, PMREM.size)
-    if (isDisposed()) {
-      throw new ContractError('disposed while compiling the environment')
-    }
-  } catch (err) {
-    cleanup()
-    throw err
-  }
-  const envTarget: WebGLRenderTarget = pmrem.fromScene(envScene, 0, PMREM.near, PMREM.far, {
-    position: new Vector3(...studio.envPosition),
-    size: PMREM.size,
-  })
-  disposables.push(envTarget)
-  if (glowShell) {
-    disposeObject(glowShell)
-  }
-  // The bake is one task; the scene setup below starts in the next one.
-  await yieldToMain()
+  // Linked in parallel with the hero's programs below; the bake waits for it.
+  const studioReady = pmremWarmup.compileStudio(envScene, isDisposed, pace)
+  studioReady.catch(() => undefined)
+  // While those link: the bounding spheres the first frustum tests would compute (bake, hero frame).
+  await computeBoundsInChunks([scene, envScene], isDisposed, pace)
   if (isDisposed()) {
-    throw new ContractError('disposed after the environment')
+    throw new ContractError('disposed while preparing')
   }
-  scene.environment = envTarget.texture
+  const bakeEnvironment = async (): Promise<WebGLRenderTarget> => {
+    const target = await pmremWarmup.bake(
+      envScene,
+      { near: PMREM.near, far: PMREM.far, position: new Vector3(...studio.envPosition) },
+      pace,
+    )
+    disposables.push(target)
+    if (glowShell) {
+      disposeObject(glowShell)
+    }
+    for (const material of envMaterials) {
+      material.dispose()
+    }
+    return target
+  }
+  /** The baked environment, or until the bake its stand-in (same programs). */
+  let environment: Texture
+  let baked = false
+  if (pmremWarmup.standIn) {
+    environment = pmremWarmup.standIn
+  } else {
+    // Without the PMREM internals there is no stand-in: bake first, as before.
+    try {
+      await studioReady
+      environment = (await bakeEnvironment()).texture
+      baked = true
+      await pace()
+      if (isDisposed()) {
+        throw new ContractError('disposed after the environment')
+      }
+    } catch (err) {
+      cleanup()
+      throw err
+    }
+  }
+  scene.environment = environment
   scene.background = null
   renderer.setClearColor(CLEAR_COLOR[studio.mode])
   const { look } = options
@@ -632,14 +709,14 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   if (room) {
     // three ignores envMapIntensity on materials without their own envMap (it uses
     // scene.environmentIntensity), so the room gets the same PMREM texture explicitly.
-    room.envMap = envTarget.texture
+    room.envMap = environment
     room.envMapIntensity = look.roomEnvIntensity
   }
   // The façade glass reflects the same environment, at its own intensity (lowered inside a system).
   for (const name of INTERIOR_MATERIALS) {
     const material = materials.get(name)
     if (material) {
-      material.envMap = envTarget.texture
+      material.envMap = environment
       material.envMapIntensity = look.envIntensity
     }
   }
@@ -707,16 +784,22 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     disposables.push(target, composer)
   }
 
+  /** The size the drawing buffer has: assigning `canvas.width` reallocates it even when equal. */
+  let bufferSize = ''
   const resize = (): void => {
     const box = container.getBoundingClientRect()
     cssWidth = Math.max(1, Math.round(box.width))
     cssHeight = Math.max(1, Math.round(box.height))
-    renderer.setSize(cssWidth, cssHeight, false)
-    applyViewOffset()
-    if (composer) {
-      composer.setPixelRatio(1)
-      composer.setSize(canvas.width, canvas.height)
+    const size = `${String(cssWidth)}x${String(cssHeight)}@${String(renderer.getPixelRatio())}`
+    if (size !== bufferSize) {
+      bufferSize = size
+      renderer.setSize(cssWidth, cssHeight, false)
+      if (composer) {
+        composer.setPixelRatio(1)
+        composer.setSize(canvas.width, canvas.height)
+      }
     }
+    applyViewOffset()
   }
   resize()
 
@@ -796,8 +879,25 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     turntable: { getAngle: () => turntableAngle, setAngle: setTurntableAngle },
     reducedMotion: options.reducedMotion,
     compileObjects: (objects) =>
-      Promise.all(objects.map((object) => renderer.compileAsync(object, camera, scene))),
-    warm: (materials) => warmPrograms(renderer, materials, isDisposed),
+      waitForLinks(
+        objects.flatMap((object) => compileNow(renderer, object, camera, scene)),
+        isDisposed,
+      ),
+    // The entered look's programs, then its textures (the variants' maps reach the GPU here, not
+    // in the first frames of the flight).
+    warm: async (materials) => {
+      await warmPrograms(renderer, materials, isDisposed, pace)
+      await uploadMaterialTextures(renderer, materials, isDisposed, uploadPause)
+    },
+    pause: async (system) => {
+      await pace()
+      // O-9: once shown, another system's warm-up waits while the camera flies to the one asked for.
+      while (shown && !isDisposed() && stage.moving && stage.wanted !== system) {
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
+        })
+      }
+    },
     onEnterMix: applySystemLight,
   })
   let labelsShown = false
@@ -820,22 +920,32 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   // `dt` is measured from the last drawn frame, so a frame cap never slows the animation down.
   let lastDrawAt: number | null = null
   const minFrameMs = options.maxFps > 0 ? 1000 / options.maxFps - 1 : 0
-  const checkFps = (): boolean => {
+  /**
+   * O-9: a drop the check asks for waits until nobody can see it (card off screen or tab hidden):
+   * never during a flight in view, never a visible jump.
+   */
+  let pendingDrop: 'low' | 'stills' | null = null
+  const checkFps = (): void => {
     const verdict = fpsVerdict(intervals, lowTier)
-    if (verdict === 'low') {
+    if (verdict === 'stills' || (verdict === 'low' && pendingDrop === null)) {
+      pendingDrop = verdict
+    }
+    if (intervals.length > FPS_WINDOW * 2) {
+      intervals = intervals.slice(-FPS_WINDOW)
+    }
+  }
+  const applyPendingDrop = (): void => {
+    const drop = pendingDrop
+    pendingDrop = null
+    if (drop === 'low' && !lowTier) {
       lowTier = true
       intervals = []
       renderer.setPixelRatio(1)
       resize()
       options.onLowTier?.()
-    } else if (verdict === 'stills') {
+    } else if (drop === 'stills') {
       fail('too-slow')
-      return false
     }
-    if (intervals.length > FPS_WINDOW * 2) {
-      intervals = intervals.slice(-FPS_WINDOW)
-    }
-    return true
   }
 
   const frame = (now: number): void => {
@@ -851,9 +961,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       warmupSkippedMs = warmup.skippedMs
       if (warmup.sample) {
         intervals.push(interval)
-        if (!checkFps()) {
-          return
-        }
+        checkFps()
       }
     }
     lastFrameAt = now
@@ -926,12 +1034,17 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     onScreen = entries.some((entry) => entry.isIntersecting)
     if (onScreen) {
       invalidate()
+    } else if (started) {
+      applyPendingDrop()
     }
   })
-  intersection.observe(canvas)
+  // The canvas joins the page only when shown (O-9): the card's box is the same.
+  intersection.observe(container)
   const onVisibility = (): void => {
     if (document.visibilityState === 'visible') {
       invalidate()
+    } else if (started) {
+      applyPendingDrop()
     }
   }
   document.addEventListener('visibilitychange', onVisibility)
@@ -973,50 +1086,112 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   options.signal.removeEventListener('abort', cleanup)
   options.signal.addEventListener('abort', dispose, { once: true })
 
-  // After the first frame, each system's entered programs compile in idle time, so a later entry
-  // neither blocks nor waits (the stage waits for any that is unfinished). Each system gets its own
-  // idle slot after a gap: never all of them in a row right after the first frame.
-  const idle = (): Promise<void> =>
-    new Promise((resolve) => {
-      if (typeof window.requestIdleCallback === 'function') {
-        window.requestIdleCallback(
-          () => {
-            resolve()
-          },
-          { timeout: WARMUP_IDLE_TIMEOUT_MS },
-        )
-      } else {
-        window.setTimeout(resolve, 50)
+  /**
+   * O-9: GPU time of one hero frame at the size it will show: drawn, then a one-pixel read waits for
+   * the GPU to finish it. Each frame is its own task, after the GPU has finished everything before
+   * it, so the read never waits for other work.
+   */
+  const pixel = new Uint8Array(4)
+  const probeFrames = async (): Promise<number[]> => {
+    // One untimed frame first, waited for without blocking: it pays the first-use costs on the GPU.
+    await pace()
+    draw()
+    const frameMs: number[] = []
+    for (let i = 0; i < PROBE_FRAMES; i += 1) {
+      // Nothing else queued on the GPU: the read waits for this frame only.
+      await gpuSettled(gl)
+      await pace()
+      if (isDisposed()) {
+        break
       }
-    })
-  const gap = (): Promise<void> =>
-    new Promise((resolve) => {
-      window.setTimeout(resolve, WARMUP_GAP_MS)
-    })
+      const start = performance.now()
+      draw()
+      gl.readPixels(0, 0, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, pixel)
+      frameMs.push(performance.now() - start)
+    }
+    return frameMs
+  }
+
+  /**
+   * O-9: each system's entered programs, after the hero's. Entering a system waits for its own; while
+   * a system is entered (its look on screen) or the camera flies, the warm-up waits.
+   */
   async function warmUpSystems(): Promise<void> {
     for (const system of SYSTEM_IDS) {
-      await gap()
-      if (isDisposed()) {
-        return
-      }
-      await idle()
-      if (isDisposed()) {
-        return
+      for (;;) {
+        await pace()
+        if (isDisposed()) {
+          return
+        }
+        // Never during a flight on screen: its frames come first.
+        if (stage.canPrepare && !(shown && stage.moving)) {
+          break
+        }
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
+        })
       }
       await stage.prepare(system)
     }
   }
 
-  // First frame: compile in parallel where supported, draw at CAM_hero, wait until presented.
-  // Compile and upload in tasks under ~50 ms (no long task), then draw.
+  const aborted = new Promise<never>((_resolve, reject) => {
+    options.signal.addEventListener(
+      'abort',
+      () => {
+        reject(new ContractError('aborted'))
+      },
+      { once: true },
+    )
+  })
+  aborted.catch(() => undefined)
+
+  // O-9: everything up to the first frame is prepared before the visitor asks for the model, in a
+  // canvas that is not in the page: compile, first use and texture upload in idle slices, then a
+  // timed rehearsal of the hero frame that fixes the tier. The systems' programs are created once
+  // the hero's are linked, so they link while the environment bakes and the hero frame is timed.
   try {
-    await compileInChunks(renderer, scene, camera, isDisposed)
-    await warmPrograms(renderer, collectMaterials(scene), isDisposed)
-    await uploadTexturesInChunks(renderer, scene, isDisposed)
-    await yieldToMain()
+    const heroPrograms = await compileInChunks(renderer, scene, camera, isDisposed, pace)
+    // The textures go up while those programs link.
+    await uploadTexturesInChunks(renderer, scene, isDisposed, uploadPause)
+    await waitForLinks(heroPrograms, isDisposed)
+    void warmUpSystems()
+    await studioReady
     if (isDisposed()) {
       throw new ContractError('disposed while compiling')
     }
+    if (!baked) {
+      // The bake (in steps, every program linked), then the real environment for the stand-in.
+      const bakedTexture = (await bakeEnvironment()).texture
+      for (const material of materials.values()) {
+        if (material.envMap === environment) {
+          material.envMap = bakedTexture
+        }
+      }
+      environment = bakedTexture
+      scene.environment = bakedTexture
+      pmremWarmup.dispose()
+      await pace()
+    }
+    await firstUse(heroPrograms, isDisposed, pace)
+    let verdict = probeVerdict(await probeFrames(), false)
+    if (verdict === 'low') {
+      lowTier = true
+      renderer.setPixelRatio(1)
+      resize()
+      verdict = probeVerdict(await probeFrames(), true)
+    }
+    if (verdict === 'stills') {
+      throw new ViewerStartError('too-slow', 'the GPU probe is below the stills rate')
+    }
+    if (isDisposed()) {
+      throw new ContractError('disposed while preparing')
+    }
+    await Promise.race([options.whenShown, aborted])
+    shown = true
+    // The canvas is in the page now: its size, then the first visible frame.
+    await gpuSettled(gl)
+    resize()
     draw()
     await new Promise<void>((resolve) => {
       requestAnimationFrame(() => {
@@ -1033,7 +1208,6 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   started = true
   options.onFirstFrame()
   scheduleWake()
-  void warmUpSystems()
 
   return {
     setActive(next: boolean) {

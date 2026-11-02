@@ -92,7 +92,8 @@ export function chooseModelTier(caps: DeviceCaps, gpuRenderer: string | null): M
  * Below `lowFps` the viewer drops to the low tier (DPR 1, no bloom); below `stillsFps` while already
  * low it falls back to the stills tier. A decision needs a full window, and each interval counts at
  * most `MAX_INTERVAL_MS`, so one stall (shader compile, hidden tab, card scrolled away) never
- * changes the tier.
+ * changes the tier. O-9: the viewer applies a drop only while the card is off screen or the tab
+ * hidden, never in view; the tier it starts with comes from `probeVerdict`.
  */
 export const FPS_WINDOW = 60
 export const LOW_TIER_FPS = 45
@@ -112,6 +113,28 @@ export function fpsVerdict(intervalsMs: readonly number[], alreadyLow: boolean):
     return fps < STILLS_TIER_FPS ? 'stills' : 'ok'
   }
   return fps < LOW_TIER_FPS ? 'low' : 'ok'
+}
+
+/**
+ * O-9: the tier is fixed before the first visible frame. The viewer times a few frames of the hero
+ * view at the size they will show (each drawn, then waited for on the GPU); the first one pays
+ * first-use costs and is left out. The median of the rest is held to the same rates as the run-time
+ * check: a frame that takes longer than one frame at `LOW_TIER_FPS` (or `STILLS_TIER_FPS` once low)
+ * fails it.
+ */
+export const PROBE_FRAMES = 4
+
+export function probeVerdict(frameMs: readonly number[], alreadyLow: boolean): FpsVerdict {
+  const timed = [...frameMs.slice(1)].sort((a, b) => a - b)
+  if (timed.length === 0) {
+    return 'ok'
+  }
+  const middle = Math.floor(timed.length / 2)
+  const median = timed.length % 2 === 1 ? timed[middle] : (timed[middle - 1] + timed[middle]) / 2
+  if (alreadyLow) {
+    return median > 1000 / STILLS_TIER_FPS ? 'stills' : 'ok'
+  }
+  return median > 1000 / LOW_TIER_FPS ? 'low' : 'ok'
 }
 
 /**

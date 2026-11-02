@@ -1,18 +1,27 @@
 /**
- * Shader programs compiled off the main thread (`KHR_parallel_shader_compile`, through three's
- * `compileAsync`) before they are first used. A program used before its link finishes blocks the
- * main thread until it does (P3-T5 M4 profile on the HD 530: PMREM's GGX filter alone ~0.9 s).
+ * Shader programs compiled off the main thread (`KHR_parallel_shader_compile`) before they are
+ * first used. A program used before its link finishes blocks the main thread until it does (P3-T5
+ * M4 profile on the HD 530: PMREM's GGX filter alone ~0.9 s).
  *
- * `compileAsync` creates every program synchronously and only waits asynchronously, so render
- * state that changes the program (render target, tone mapping) is set around that synchronous call
- * and restored before awaiting.
+ * `renderer.compile` creates every program synchronously, so render state that changes the
+ * program (render target, tone mapping) is set around that call and restored before any wait. The
+ * links are then awaited here (`waitForLinks`), one program per check: each check is a
+ * synchronous round trip to the GPU process.
+ *
+ * O-9: all of this runs before the visitor asks for the model (`createViewer`'s `whenShown`), in
+ * idle slices, so a click finds the work done.
  */
 
 import {
+  BackSide,
+  BoxGeometry,
+  type BufferGeometry,
   type Camera,
+  CompressedTexture,
   Line,
   type Material,
   Mesh,
+  MeshBasicMaterial,
   NoToneMapping,
   Points,
   Sprite,
@@ -23,6 +32,7 @@ import {
   type PMREMGenerator,
   type Scene,
   type ShaderMaterial,
+  type Vector3,
   type WebGLRenderer,
   type WebGLRenderTarget,
 } from 'three'
@@ -34,76 +44,192 @@ interface PmremInternals {
   _ggxMaterial: ShaderMaterial | null
   /** The meshes the filters draw with; their geometry is part of the program cache key. */
   _lodMeshes: Mesh[]
+  /** The six cube faces of `fromScene` into the output target. */
+  _sceneToCubeUV: (
+    scene: Scene,
+    near: number,
+    far: number,
+    target: WebGLRenderTarget,
+    position: Vector3,
+  ) => void
+  /** One GGX level of `fromScene` (`_applyPMREM` runs them in a row with autoClear off). */
+  _applyGGXFilter: (target: WebGLRenderTarget, lodIn: number, lodOut: number) => void
+  /** The solid background `_sceneToCubeUV` draws first; it creates it on first use. */
+  _backgroundBox: Mesh | null
 }
 
 /** Exported for the unit test that pins these internals to three 0.186.1. */
 export function hasPmremInternals(pmrem: PMREMGenerator): pmrem is PMREMGenerator & PmremInternals {
-  const setSize: unknown = Reflect.get(pmrem, '_setSize')
-  const allocate: unknown = Reflect.get(pmrem, '_allocateTargets')
   return (
-    typeof setSize === 'function' &&
-    typeof allocate === 'function' &&
+    ['_setSize', '_allocateTargets', '_sceneToCubeUV', '_applyGGXFilter'].every(
+      (name) => typeof Reflect.get(pmrem, name) === 'function',
+    ) &&
     Reflect.has(pmrem, '_ggxMaterial') &&
+    Reflect.has(pmrem, '_backgroundBox') &&
     Array.isArray(Reflect.get(pmrem, '_lodMeshes'))
   )
 }
 
-/** Compiles `object` as it will render into `target` with tone mapping off, then waits. */
-async function compileOffscreen(
+/**
+ * Creates the programs `object` draws with into `target` with tone mapping off (as PMREM renders),
+ * synchronously, and returns them; they link in parallel (`waitForLinks`).
+ */
+function compileOffscreenNow(
   renderer: WebGLRenderer,
   object: Object3D,
   camera: OrthographicCamera | PerspectiveCamera,
   target: WebGLRenderTarget,
-): Promise<void> {
+): unknown[] {
   const previousTarget = renderer.getRenderTarget()
   const previousToneMapping = renderer.toneMapping
   renderer.setRenderTarget(target)
   renderer.toneMapping = NoToneMapping
-  let ready: Promise<unknown>
   try {
-    ready = renderer.compileAsync(object, camera)
+    return programsCompiled(renderer, renderer.compile(object, camera))
   } finally {
     renderer.toneMapping = previousToneMapping
     renderer.setRenderTarget(previousTarget)
   }
-  await ready
+}
+
+/** Where and how far `fromScene` renders the studio from. */
+export interface PmremBakeView {
+  near: number
+  far: number
+  position: Vector3
+}
+
+/** The warm-up of `pmrem.fromScene(envScene, 0, …, { size })`, started before the model loads. */
+export interface PmremWarmup {
+  /**
+   * A texture with the baked environment's mapping and size: programs compiled with it as the
+   * environment are the ones the baked one uses (three keys them by mapping and size). Null without
+   * the PMREM internals.
+   */
+  readonly standIn: Texture | null
+  /**
+   * Compiles the studio scene as the cube render draws it, then resolves once it and the GGX filter
+   * are linked and used once, so the bake blocks on nothing.
+   */
+  compileStudio: (envScene: Scene, isCancelled: () => boolean, pause: Pause) => Promise<void>
+  /**
+   * `fromScene(envScene, 0, near, far, { size, position })` in steps (O-9: in one task it is a long
+   * task on the HD 530): the six cube faces, then each GGX level, with `pause` in between and the
+   * renderer's own target back between steps. Without the internals, `fromScene` in one go.
+   */
+  bake: (envScene: Scene, view: PmremBakeView, pause: Pause) => Promise<WebGLRenderTarget>
+  dispose: () => void
 }
 
 /**
- * Prepares `pmrem.fromScene(envScene, 0, …, { size })`: compiles the studio scene as the cube
- * render draws it, and PMREM's GGX filter on the very mesh it draws with (a stand-in geometry gives
- * a different program cache key, and the bake then links its own copy). With sigma 0 the blur
- * filter is never used. Without the expected internals nothing is precompiled and `fromScene`
- * compiles as before.
+ * O-9: starts PMREM's GGX filter at once (the slowest program here: ~0.9 s of link on the HD 530),
+ * so it links while the model downloads. It is compiled on the very mesh it draws with (a stand-in
+ * geometry gives a different program cache key, and the bake then links its own copy). With sigma
+ * 0 the blur filter is never used. Without the expected internals nothing is precompiled and
+ * `fromScene` compiles as before.
  */
-export async function precompilePmrem(
+export function startPmremWarmup(
   renderer: WebGLRenderer,
   pmrem: PMREMGenerator,
-  envScene: Scene,
   size: number,
-): Promise<void> {
+): PmremWarmup {
   if (!hasPmremInternals(pmrem)) {
-    return
+    return {
+      standIn: null,
+      compileStudio: () => Promise.resolve(),
+      bake: (envScene, view) =>
+        Promise.resolve(
+          pmrem.fromScene(envScene, 0, view.near, view.far, { size, position: view.position }),
+        ),
+      dispose: () => undefined,
+    }
   }
   pmrem._setSize(size)
-  // Creates the filter materials (kept for `fromScene` at the same size) and a target of the
-  // cube render's format; the target itself is only used to compile against.
+  // Creates the filter materials (kept for the bake at the same size) and a target of the cube
+  // render's format and size; it is only compiled against, and lends its texture.
   const target = pmrem._allocateTargets()
-  try {
-    await compileOffscreen(renderer, envScene, new PerspectiveCamera(90, 1, 0.1, 100), target)
-    const ggxMesh = pmrem._lodMeshes.at(-1)
-    if (ggxMesh && pmrem._ggxMaterial) {
-      // `_applyGGXFilter` assigns this same material to the mesh before each draw.
-      ggxMesh.material = pmrem._ggxMaterial
-      await compileOffscreen(renderer, ggxMesh, new OrthographicCamera(), target)
-    }
-    await warmPrograms(
+  let targetDisposed = false
+  const ggxPrograms: unknown[] = []
+  const ggxMesh = pmrem._lodMeshes.at(-1)
+  const ggxMaterial = pmrem._ggxMaterial
+  if (ggxMesh && ggxMaterial) {
+    // `_applyGGXFilter` assigns this same material to the mesh before each draw.
+    ggxMesh.material = ggxMaterial
+    ggxPrograms.push(...compileOffscreenNow(renderer, ggxMesh, new OrthographicCamera(), target))
+  }
+  // The background box exactly as  creates it, so its program links here too
+  // instead of inside the bake.
+  pmrem._backgroundBox ??= new Mesh(
+    new BoxGeometry(),
+    new MeshBasicMaterial({
+      name: 'PMREM.Background',
+      side: BackSide,
+      depthWrite: false,
+      depthTest: false,
+    }),
+  )
+  ggxPrograms.push(
+    ...compileOffscreenNow(
       renderer,
-      [...collectMaterials(envScene), ...(pmrem._ggxMaterial ? [pmrem._ggxMaterial] : [])],
-      () => false,
-    )
-  } finally {
-    target.dispose()
+      pmrem._backgroundBox,
+      new PerspectiveCamera(90, 1, 0.1, 100),
+      target,
+    ),
+  )
+  /** One bake step with the renderer's target and auto-clear as they were around it. */
+  const step = (work: () => void): void => {
+    const previousTarget = renderer.getRenderTarget()
+    const autoClear = renderer.autoClear
+    try {
+      work()
+    } finally {
+      renderer.autoClear = autoClear
+      renderer.setRenderTarget(previousTarget)
+    }
+  }
+  return {
+    standIn: target.texture,
+    async compileStudio(envScene, isCancelled, pause) {
+      const studioPrograms = compileOffscreenNow(
+        renderer,
+        envScene,
+        new PerspectiveCamera(90, 1, 0.1, 100),
+        target,
+      )
+      await waitForLinks([...ggxPrograms, ...studioPrograms], isCancelled)
+      await warmPrograms(
+        renderer,
+        [...collectMaterials(envScene), ...(ggxMaterial ? [ggxMaterial] : [])],
+        isCancelled,
+        pause,
+      )
+    },
+    async bake(envScene, view, pause) {
+      pmrem._setSize(size)
+      const output = pmrem._allocateTargets()
+      output.depthBuffer = true
+      step(() => {
+        pmrem._sceneToCubeUV(envScene, view.near, view.far, output, view.position)
+      })
+      for (let lod = 1; lod < pmrem._lodMeshes.length; lod += 1) {
+        await pause()
+        step(() => {
+          renderer.autoClear = false
+          pmrem._applyGGXFilter(output, lod - 1, lod)
+        })
+      }
+      // What `fromScene`'s cleanup does to the output target.
+      output.scissorTest = false
+      output.viewport.set(0, 0, output.width, output.height)
+      output.scissor.set(0, 0, output.width, output.height)
+      return output
+    },
+    dispose() {
+      if (!targetDisposed) {
+        targetDisposed = true
+        target.dispose()
+      }
+    },
   }
 }
 
@@ -116,9 +242,6 @@ function isDrawable(object: Object3D): object is Mesh | Points | Line | Sprite {
     object instanceof Sprite
   )
 }
-function isMesh(object: Object3D): object is Mesh {
-  return object instanceof Mesh
-}
 function isTexture(value: unknown): value is Texture {
   return value instanceof Texture
 }
@@ -127,6 +250,63 @@ function isTexture(value: unknown): value is Texture {
 export function yieldToMain(): Promise<void> {
   return new Promise((resolve) => {
     window.setTimeout(resolve, 0)
+  })
+}
+
+/** The wait between two chunks of work: `yieldToMain`, or an idle slice while nothing is shown. */
+export type Pause = () => Promise<void>
+
+/** How often a fence is checked, and the longest wait for one (a lost context never signals). */
+const FENCE_POLL_MS = 4
+const FENCE_MAX_WAIT_MS = 2_000
+
+/**
+ * O-9: resolves once the GPU process has worked through every command issued so far (a fence; its
+ * status is read without blocking). Work issued in chunks with this wait in between never queues
+ * behind a backlog, so the synchronous calls a chunk makes (uniform lookups, a canvas resize) wait
+ * only for that chunk, not for seconds of shader translation issued before it.
+ */
+export async function gpuSettled(gl: WebGL2RenderingContext): Promise<void> {
+  const sync = gl.fenceSync(gl.SYNC_GPU_COMMANDS_COMPLETE, 0)
+  if (!sync) {
+    return
+  }
+  gl.flush()
+  const start = performance.now()
+  try {
+    while (
+      !gl.isContextLost() &&
+      gl.getSyncParameter(sync, gl.SYNC_STATUS) !== gl.SIGNALED &&
+      performance.now() - start < FENCE_MAX_WAIT_MS
+    ) {
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, FENCE_POLL_MS)
+      })
+    }
+  } finally {
+    gl.deleteSync(sync)
+  }
+}
+
+/** Longest wait for an idle slice before a chunk runs anyway (ms). */
+const IDLE_TIMEOUT_MS = 1_000
+
+/**
+ * O-9: the next idle period (`requestIdleCallback`), so work prepared before the visitor asks for
+ * the model never competes with scrolling, input or the page's own frames.
+ */
+export function yieldToIdle(): Promise<void> {
+  return new Promise((resolve) => {
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(
+        () => {
+          resolve()
+        },
+        { timeout: IDLE_TIMEOUT_MS },
+      )
+    } else {
+      window.setTimeout(resolve, 0)
+    }
   })
 }
 
@@ -172,26 +352,43 @@ export async function warmPrograms(
   renderer: WebGLRenderer,
   materials: Iterable<Material>,
   isCancelled: () => boolean,
+  pause: Pause = yieldToMain,
 ): Promise<void> {
-  const seen = new Set<unknown>()
-  let taskStart = performance.now()
+  const programs: unknown[] = []
   for (const material of materials) {
-    for (const program of programsOf(renderer, material)) {
-      if (seen.has(program) || typeof program !== 'object' || program === null) {
-        continue
-      }
-      seen.add(program)
-      if (isCancelled()) {
-        return
-      }
-      const getUniforms: unknown = Reflect.get(program, 'getUniforms')
-      if (typeof getUniforms === 'function') {
-        Reflect.apply(getUniforms, program, [])
-      }
-      if (performance.now() - taskStart > TASK_BUDGET_MS) {
-        await yieldToMain()
-        taskStart = performance.now()
-      }
+    programs.push(...programsOf(renderer, material))
+  }
+  await firstUse(programs, isCancelled, pause)
+}
+
+/**
+ * The first use of these programs (`warmPrograms`). O-9: it waits for their links first; a program
+ * still linking (another warm-up may have just created it) would block the main thread here.
+ */
+export async function firstUse(
+  list: Iterable<unknown>,
+  isCancelled: () => boolean,
+  pause: Pause = yieldToMain,
+): Promise<void> {
+  const programs = new Set<object>()
+  for (const program of list) {
+    if (typeof program === 'object' && program !== null) {
+      programs.add(program)
+    }
+  }
+  await waitForLinks(programs, isCancelled)
+  let taskStart = performance.now()
+  for (const program of programs) {
+    if (isCancelled()) {
+      return
+    }
+    const getUniforms: unknown = Reflect.get(program, 'getUniforms')
+    if (typeof getUniforms === 'function') {
+      Reflect.apply(getUniforms, program, [])
+    }
+    if (performance.now() - taskStart > TASK_BUDGET_MS) {
+      await pause()
+      taskStart = performance.now()
     }
   }
 }
@@ -226,32 +423,100 @@ export function drawableRepresentatives(root: Object3D): Object3D[] {
  */
 export const COMPILE_TASK_MS = 25
 
+/** How often a link still running is checked (ms). */
+const LINK_POLL_MS = 50
+
+/** three's `isReady()` of a program: KHR_parallel_shader_compile reports its link done. */
+function isLinked(program: unknown): boolean {
+  if (typeof program !== 'object' || program === null) {
+    return true
+  }
+  const isReady: unknown = Reflect.get(program, 'isReady')
+  return typeof isReady !== 'function' || Reflect.apply(isReady, program, []) === true
+}
+
 /**
- * `renderer.compileAsync(scene, camera)` split into tasks: the scene's representative objects
- * (`drawableRepresentatives`), as many per task as fit in `COMPILE_TASK_MS`. Lights and
- * environment still come from `scene`.
+ * O-9: waits until these programs are linked. Every check is a synchronous round trip to the GPU
+ * process, so it asks about one program per poll (the first one not yet linked), where three's
+ * `compileAsync` asks about every pending program of every call every 10 ms.
+ */
+export async function waitForLinks(
+  programs: Iterable<unknown>,
+  isCancelled: () => boolean,
+): Promise<void> {
+  const pending = [...new Set(programs)]
+  while (pending.length > 0) {
+    if (isCancelled()) {
+      return
+    }
+    while (pending.length > 0 && isLinked(pending[0])) {
+      pending.shift()
+    }
+    if (pending.length > 0) {
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, LINK_POLL_MS)
+      })
+    }
+  }
+}
+
+/**
+ * Creates the programs `object` draws with in `scene` (its lights and environment), synchronously,
+ * and returns them; they link in parallel (`waitForLinks`).
+ */
+export function compileNow(
+  renderer: WebGLRenderer,
+  object: Object3D,
+  camera: Camera,
+  scene: Scene,
+): unknown[] {
+  return programsCompiled(renderer, renderer.compile(object, camera, scene))
+}
+
+/** The program three just chose for each material (`currentProgram`, three 0.186.1). */
+function programsCompiled(renderer: WebGLRenderer, materials: Iterable<Material>): unknown[] {
+  const programs: unknown[] = []
+  for (const material of materials) {
+    const properties = renderer.properties.get(material)
+    const program: unknown =
+      typeof properties === 'object' && properties !== null
+        ? Reflect.get(properties, 'currentProgram')
+        : undefined
+    if (program !== undefined) {
+      programs.push(program)
+    }
+  }
+  return programs
+}
+
+/**
+ * The program creation of `renderer.compile(scene, camera)` split into tasks: the scene's
+ * representative objects (`drawableRepresentatives`), as many per task as fit in
+ * `COMPILE_TASK_MS`. Lights and environment still come from `scene`. Returns the programs, which
+ * link in parallel; the caller waits for them (`waitForLinks`) when it needs them.
  */
 export async function compileInChunks(
   renderer: WebGLRenderer,
   scene: Scene,
   camera: Camera,
   isCancelled: () => boolean,
-): Promise<void> {
+  pause: Pause = yieldToMain,
+): Promise<unknown[]> {
   const representatives = drawableRepresentatives(scene)
-  const pending: Promise<unknown>[] = []
+  const programs: unknown[] = []
   let next = 0
   while (next < representatives.length) {
     if (isCancelled()) {
-      return
+      break
     }
     const taskStart = performance.now()
     do {
-      pending.push(renderer.compileAsync(representatives[next], camera, scene))
+      programs.push(...compileNow(renderer, representatives[next], camera, scene))
       next += 1
     } while (next < representatives.length && performance.now() - taskStart < COMPILE_TASK_MS)
-    await yieldToMain()
+    await pause()
   }
-  await Promise.all(pending)
+  return programs
 }
 
 const MAP_KEYS = [
@@ -266,35 +531,86 @@ const MAP_KEYS = [
   'bumpMap',
 ] as const
 
-/** Uploads the scene's material maps before the first draw, in tasks of about 30 ms. */
+/** Uploads the scene's material maps before the first draw (`uploadMaterialTextures`). */
 export async function uploadTexturesInChunks(
   renderer: WebGLRenderer,
   scene: Scene,
   isCancelled: () => boolean,
+  pause: Pause = yieldToMain,
+): Promise<void> {
+  await uploadMaterialTextures(renderer, collectMaterials(scene), isCancelled, pause)
+}
+
+/** Whether three has this version of the texture on the GPU (`__version`, three 0.186.1). */
+function isUploaded(renderer: WebGLRenderer, texture: Texture): boolean {
+  const properties = renderer.properties.get(texture)
+  return (
+    typeof properties === 'object' &&
+    properties !== null &&
+    Reflect.get(properties, '__version') === texture.version
+  )
+}
+
+/**
+ * Uploads these materials' maps ahead of the draw that needs them, with `pause` before each one (O-9:
+ * a GPU fence, so an upload never waits behind other GPU work; also the variant materials' maps
+ * before a system is entered). Uploaded ones are skipped.
+ */
+export async function uploadMaterialTextures(
+  renderer: WebGLRenderer,
+  materials: Iterable<Material>,
+  isCancelled: () => boolean,
+  pause: Pause = yieldToMain,
 ): Promise<void> {
   const textures = new Set<Texture>()
-  scene.traverse((object) => {
-    if (!isMesh(object)) {
-      return
-    }
-    const material: Material | Material[] = object.material
-    for (const m of Array.isArray(material) ? material : [material]) {
-      for (const key of MAP_KEYS) {
-        const value: unknown = Reflect.get(m, key)
-        if (isTexture(value)) {
-          textures.add(value)
-        }
+  for (const material of materials) {
+    for (const key of MAP_KEYS) {
+      const value: unknown = Reflect.get(material, key)
+      if (isTexture(value) && !isUploaded(renderer, value)) {
+        textures.add(value)
       }
     }
-  })
-  let taskStart = performance.now()
+  }
   for (const texture of textures) {
+    await pause()
     if (isCancelled()) {
       return
     }
     renderer.initTexture(texture)
+    // O-9: the transcoded mip levels (tens of MB in all) are on the GPU now; kept in the page they
+    // only bring on long garbage collections. Nothing uploads these textures again.
+    if (texture instanceof CompressedTexture && isUploaded(renderer, texture)) {
+      texture.mipmaps = []
+    }
+  }
+}
+
+/**
+ * O-9: the bounding spheres three computes on the first frustum test of each geometry (up to ~200
+ * ms for the room on the HD 530 while shaders compile), ahead of the first draw, one geometry at a
+ * time within the task budget.
+ */
+export async function computeBoundsInChunks(
+  roots: readonly Object3D[],
+  isCancelled: () => boolean,
+  pause: Pause = yieldToMain,
+): Promise<void> {
+  const geometries = new Set<BufferGeometry>()
+  for (const root of roots) {
+    root.traverse((object) => {
+      if (isDrawable(object) && !(object instanceof Sprite) && !object.geometry.boundingSphere) {
+        geometries.add(object.geometry)
+      }
+    })
+  }
+  let taskStart = performance.now()
+  for (const geometry of geometries) {
+    if (isCancelled()) {
+      return
+    }
+    geometry.computeBoundingSphere()
     if (performance.now() - taskStart > TASK_BUDGET_MS) {
-      await yieldToMain()
+      await pause()
       taskStart = performance.now()
     }
   }
