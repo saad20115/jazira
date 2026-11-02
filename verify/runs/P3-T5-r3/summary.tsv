@@ -1,0 +1,26 @@
+step	exit	seconds
+install	0	509
+migrate-up	0	27
+migrate-down	0	14
+migrate-up-again	0	12
+migrate-status	0	13
+lint	0	101
+typecheck	0	28
+format-check	1	12
+tokens-check	0	1
+test	1	498
+build	0	156
+audit-full	1	2
+audit-high	0	2
+seed	0	45
+e2e-default-pre	1	1394
+publish-home	0	1
+e2e-default	1	112
+e2e-gpu	0	220
+e2e-p3t5-prodflag	0	61
+lh-mobile-try1	0	62
+lh-mobile-try2	0	28
+lh-mobile-try3	0	26
+lh-desktop	0	27
+server left running: 10938 9212
+done
