@@ -64,6 +64,8 @@ const TAP_HINT_MAX_CYCLES = 2
 /** O-7 under reduced motion: the still hand stays this long, then fades (motion-slow). */
 const TAP_HINT_STILL_MS = 2_400
 const TAP_HINT_FADE_MS = 600
+/** O-11: the entered still's fade-out over the canvas at the swap (motion-slow, as its CSS). */
+const STILL_FADE_OUT_MS = 600
 
 const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
 
@@ -257,6 +259,9 @@ export function SystemsCard({
   const tapHintDoneRef = useRef(false)
   const tapHintTimerRef = useRef<number | undefined>(undefined)
   const [hint, setHint] = useState(false)
+  /** O-11: the entered still stays over the canvas while it fades out at the swap. */
+  const [stillLeaving, setStillLeaving] = useState(false)
+  const previousPhaseRef = useRef<Phase>('still')
   const hintShownRef = useRef(false)
   const labelSinkRef = useRef<LiveLabelSink | null>(null)
   const enteredRef = useRef(entered)
@@ -549,6 +554,22 @@ export function SystemsCard({
     }
   }, [phase, fallBack])
 
+  // O-11: at the swap the entered still fades out over the canvas (CSS), then leaves.
+  useEffect(() => {
+    const from = previousPhaseRef.current
+    previousPhaseRef.current = phase
+    if (from !== 'loading' || phase !== 'live') {
+      return
+    }
+    setStillLeaving(true)
+    const timer = window.setTimeout(() => {
+      setStillLeaving(false)
+    }, STILL_FADE_OUT_MS)
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [phase])
+
   // The live view follows the entered system (camera flight); the stills overlay covers the rest.
   useEffect(() => {
     if (phase === 'live') {
@@ -743,7 +764,7 @@ export function SystemsCard({
       {phase === 'live' && entered ? (
         <LiveLabels cardRef={cardRef} sinkRef={labelSinkRef} strings={strings} />
       ) : null}
-      {entered && phase !== 'live' ? (
+      {entered && (phase !== 'live' || stillLeaving) ? (
         <EnteredStill cardRef={cardRef} key={entered} strings={strings} system={entered} />
       ) : null}
       {hydrated && phase === 'still' && tapHint ? (

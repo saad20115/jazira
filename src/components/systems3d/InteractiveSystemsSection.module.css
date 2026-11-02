@@ -143,6 +143,35 @@
   opacity: 1;
 }
 
+/* O-11: while the model loads after a click, the image on screen (the poster, or the system's
+   still) slowly pushes in, then holds at the end scale; it never loops. Live, the same animation
+   stays applied but pauses, so the O-4 cross-fade starts from the zoomed image (no snap back). The
+   card clips it (overflow: hidden): no layout shift. */
+@keyframes systemsPushIn {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.06);
+  }
+}
+
+.buildingCard[data-viewer-state='loading'] :is(.poster, .enteredLayer),
+.buildingCard[data-viewer-state='live'] :is(.poster, .enteredLayer) {
+  animation: systemsPushIn calc(var(--motion-slow) * 5) var(--ease-out) both;
+}
+
+.buildingCard[data-viewer-state='live'] :is(.poster, .enteredLayer) {
+  animation-play-state: paused;
+}
+
+/* The system's still stays for the cross-fade and fades out over the canvas (`SystemsCard`). */
+.buildingCard[data-viewer-state='live'] .enteredLayer {
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* O-8: while the model loads after a click, the current image stays with this small indicator. */
 @keyframes systemsSpin {
   to {
@@ -357,6 +386,10 @@
 
   .enteredLayer {
     transition: none;
+  }
+
+  .buildingCard[data-viewer-state] :is(.poster, .enteredLayer) {
+    animation: none;
   }
 }
 
