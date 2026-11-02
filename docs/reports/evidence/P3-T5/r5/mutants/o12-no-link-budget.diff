@@ -1,0 +1,9 @@
+--- a/src/components/systems3d/viewer/precompile.ts
++++ b/src/components/systems3d/viewer/precompile.ts
+@@
+-export const LINKS_PREPARING = 6
+-export const LINKS_LOADING = 3
+-export const LINKS_SYSTEMS = 2
++export const LINKS_PREPARING = 1000
++export const LINKS_LOADING = 1000
++export const LINKS_SYSTEMS = 1000
