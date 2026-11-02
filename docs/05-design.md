@@ -248,3 +248,21 @@ Binding for Phase 3. They fill what the Figma file does not specify.
           gallery and lightbox per §4.
       15. **Page transitions:** an optional View Transitions cross-fade (≤ 250 ms) for same-origin
           navigation, where supported. Never block navigation.
+
+21. **Interactive systems — owner review (2026-11-02).** Supersedes the "photo-real hero still … starts
+    at the exact hero camera … no jump on the crossfade" parts of §17, the owner confirmation in §18
+    that the still has no city, and the "Show in 3D" button.
+    - **Poster:** the card first shows the Figma image `design/assets/images/tower-render.png` (city
+      included). It is also the overview on weak devices.
+    - **Starting the model:** a click or tap on the image, on "Open the live 3D model", or on any system
+      card. Hover never swaps.
+    - **The swap** is a soft cross-fade (400–600 ms; instant under reduced motion).
+    - **Controls** are only these:
+      - before start: the badge and "Open the live 3D model", as in Figma;
+      - when live: one "reset view";
+      - inside a system: "Exit system" as well.
+
+      No zoom buttons and no "Show in 3D".
+    - **Lighting** of the live model and the system views follows the look of the Figma render.
+      The owner judges it.
+    - The model itself (v022n, `3d/`) is unchanged by this decision.
