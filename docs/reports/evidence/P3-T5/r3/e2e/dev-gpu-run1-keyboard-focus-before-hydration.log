@@ -1,0 +1,45 @@
+
+Running 10 tests using 1 worker
+
+  ok  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:276:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (8.0s)
+  ok  2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:276:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (5.0s)
+  ok  3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:304:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters (37.9s)
+  ok  4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:378:3 › P3-T5 live 3D card › @gpu live: a system card click on the still card starts the model in that system (8.9s)
+  ok  5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:397:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (6.9s)
+  x   6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:416:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates (1.1m)
+  ok  7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:457:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (7.5s)
+  ok  8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:477:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (16.1s)
+  ok  9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:524:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (10.7s)
+  ok 10 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:667:3 › P3-T5 live 3D card — phone › @gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active (43.5s)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:416:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "live"
+    Received: "still"
+    Timeout:  60000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 60000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        121 × locator resolved to <div tabindex="0" data-entered="none" data-viewer-state="still" data-viewer-active="false" data-interactive-3d-card="true" class="InteractiveSystemsSection-module__I0WHYa__buildingCard">…</div>
+            - unexpected value "still"
+
+
+      426 |     expect(recorder.model).toEqual([])
+      427 |     await page.keyboard.press('Enter')
+    > 428 |     await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+          |                        ^
+      429 |     await expect(card).toHaveAttribute('data-viewer-active', 'true')
+      430 |     await expect(card).toBeFocused()
+      431 |     const scrollBefore = await page.evaluate(() => window.scrollY)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:428:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-9b30c-cape-exits-then-deactivates-gpu\error-context.md
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:416:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates 
+  9 passed (3.5m)

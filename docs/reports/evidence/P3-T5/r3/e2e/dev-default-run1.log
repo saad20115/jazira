@@ -1,0 +1,11 @@
+
+Running 6 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:195:3 › P3-T5 live 3D card › @smoke image first: the Figma image paints, hover changes nothing, a click starts (13.0s)
+  ok 2 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:229:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels (3.4s)
+  ok 3 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:261:3 › P3-T5 live 3D card › a #systems hash on load enters that system without starting the model (4.1s)
+  ok 4 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:575:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier (2.9s)
+  ok 5 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:606:3 › P3-T5 live 3D card — software renderer › a software WebGL renderer ends in the stills tier, without a canvas or a 3D download (5.8s)
+  ok 6 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:644:3 › P3-T5 live 3D card — phone › O-6: every Fire dot of the still can be tapped at 390 px, and a tap downloads nothing (3.9s)
+
+  6 passed (1.4m)

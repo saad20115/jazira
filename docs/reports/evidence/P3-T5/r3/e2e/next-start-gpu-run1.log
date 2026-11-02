@@ -1,0 +1,15 @@
+
+Running 10 tests using 1 worker
+
+  ok  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:282:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (1.8s)
+  ok  2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:282:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (1.0s)
+  ok  3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:310:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters (36.5s)
+  ok  4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:384:3 › P3-T5 live 3D card › @gpu live: a system card click on the still card starts the model in that system (6.8s)
+  ok  5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:403:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (5.1s)
+  ok  6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:422:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates (34.5s)
+  ok  7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:466:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (3.5s)
+  ok  8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:486:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (10.2s)
+  ok  9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:533:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (6.8s)
+  ok 10 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:676:3 › P3-T5 live 3D card — phone › @gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active (42.7s)
+
+  10 passed (2.5m)
