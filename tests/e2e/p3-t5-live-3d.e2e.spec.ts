@@ -112,6 +112,33 @@ async function waitHydrated(card: Locator): Promise<void> {
   await expect(card).toHaveAttribute('tabindex', '0')
 }
 
+/** O-11: each frame, the card's state and the poster layer's scale (from its computed transform). */
+async function startScaleSampler(card: Locator): Promise<void> {
+  await card.evaluate((el) => {
+    const samples: { state: string; scale: number }[] = []
+    Object.assign(window, { __scaleSamples: samples })
+    const poster = el.querySelector(':scope > [class*="poster"]')
+    const sample = (): void => {
+      if (poster) {
+        const transform = getComputedStyle(poster).transform
+        samples.push({
+          state: el.getAttribute('data-viewer-state') ?? '',
+          scale: transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a,
+        })
+      }
+      requestAnimationFrame(sample)
+    }
+    requestAnimationFrame(sample)
+  })
+}
+
+async function scaleSamples(page: Page): Promise<{ state: string; scale: number }[]> {
+  return page.evaluate(
+    () =>
+      (window as unknown as { __scaleSamples: { state: string; scale: number }[] }).__scaleSamples,
+  )
+}
+
 /**
  * O-9: before a click, a tap or a key the model may be prepared out of sight (near the viewport,
  * on a capable device), but nothing of it is shown: the card is still, without a canvas or a
@@ -978,6 +1005,60 @@ test.describe('P3-T5 live 3D card', () => {
     expect(shown.length).toBeGreaterThan(0)
     // Only the latest system's labels ever appeared: the camera never stopped inside the first.
     expect(seen.filter((name) => !shown.includes(name))).toEqual([])
+  })
+
+  test('O-11: under reduced motion the image never pushes in', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const card = await openHome(page)
+    await startScaleSampler(card)
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await page.waitForTimeout(1_500)
+    const samples = await scaleSamples(page)
+    expect(samples.length).toBeGreaterThan(0)
+    expect(samples.filter((sample) => sample.scale !== 1)).toEqual([])
+  })
+
+  test('@gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale', async ({
+    page,
+  }) => {
+    // Hold the model back, so the load lasts after the click.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 3_000))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startScaleSampler(card)
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await page.waitForTimeout(1_000)
+    const samples = await scaleSamples(page)
+    const loading = samples.filter((sample) => sample.state === 'loading')
+    const live = samples.filter((sample) => sample.state === 'live')
+    expect(loading.length).toBeGreaterThan(1)
+    expect(live.length).toBeGreaterThan(1)
+    // It grows while loading, never shrinks, and stays within the addendum's end scale.
+    const last = loading[loading.length - 1].scale
+    expect(last).toBeGreaterThan(1)
+    expect(last).toBeLessThanOrEqual(1.06)
+    loading.forEach((sample, i) => {
+      if (i > 0) {
+        expect(sample.scale).toBeGreaterThanOrEqual(loading[i - 1].scale)
+      }
+    })
+    // The swap: no snap back; the image holds one scale through the cross-fade.
+    expect(live[0].scale).toBeGreaterThanOrEqual(last)
+    expect(live.filter((sample) => sample.scale !== live[0].scale)).toEqual([])
+
+    // O-11: a click while live (a system card) does not zoom the image.
+    const held = live[0].scale
+    await rowHeader(rows(page).nth(1)).click()
+    await expect(card).toHaveAttribute('data-entered', await systemOfRow(rows(page).nth(1)))
+    await page.waitForTimeout(800)
+    const after = (await scaleSamples(page)).filter((sample) => sample.state === 'live')
+    expect(after.filter((sample) => sample.scale !== held)).toEqual([])
   })
 })
 
