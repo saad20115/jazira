@@ -1,0 +1,13 @@
+diff --git a/src/components/systems3d/SystemsCard.tsx b/src/components/systems3d/SystemsCard.tsx
+index 6857ece..a5677f4 100644
+--- a/src/components/systems3d/SystemsCard.tsx
++++ b/src/components/systems3d/SystemsCard.tsx
+@@ -405,7 +405,7 @@ export function SystemsCard({
+   // never with Save-Data).
+   useEffect(() => {
+     const card = cardRef.current
+-    if (!hydrated || !card || viewerWanted || phase !== 'still') {
++    if (!hydrated || !card || viewerWanted || phase !== 'still' || hydrated) {
+       return
+     }
+     if (decideStart(readDeviceCaps()) !== 'live') {

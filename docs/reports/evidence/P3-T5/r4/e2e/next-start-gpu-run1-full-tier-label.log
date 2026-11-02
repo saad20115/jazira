@@ -1,0 +1,50 @@
+
+Running 16 tests using 1 worker
+
+[1/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:409:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts
+[2/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:409:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts
+[3/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:437:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters
+[4/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:511:3 › P3-T5 live 3D card › @gpu live: a system card click on the still card starts the model in that system
+[5/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:530:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active
+[6/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:549:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates
+[7/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:591:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it
+[8/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:611:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:611:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "full"
+    Received: "low"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 5000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        14 × locator resolved to <div tabindex="0" data-entered="none" data-viewer-tier="low" data-viewer-state="live" data-viewer-active="true" class="I0WHYa_buildingCard" data-interactive-3d-card="true">…</div>
+           - unexpected value "low"
+
+
+      636 |     const card = await openHome(page)
+      637 |     await goLive(card)
+    > 638 |     await expect(card).toHaveAttribute('data-viewer-tier', 'full')
+          |                        ^
+      639 |     expect(recorder.model).toContain('GET /systems/v022n/tower.glb')
+      640 |     expect(recorder.model).not.toContain('GET /systems/v022n/tower-lite.glb')
+      641 |
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:638:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-21311-full-model-enters-and-exits-gpu\error-context.md
+
+
+[9/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:658:3 › P3-T5 live 3D card › @gpu live: under CPU throttling the card ends in a lower tier, applied only off screen (O-9)
+[10/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:790:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn
+[11/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:812:3 › P3-T5 live 3D card › @gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside
+[12/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:844:3 › P3-T5 live 3D card › @gpu O-8: while the model loads after a click, the image stays with a small loading indicator
+[13/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:895:3 › P3-T5 live 3D card › @gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more
+[14/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:916:3 › P3-T5 live 3D card › @gpu O-9: the tier never changes in view: system after system keeps the tier it started with
+[15/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:941:3 › P3-T5 live 3D card › @gpu O-9: a click during loading keeps only the latest system (no flight to the first)
+[16/16] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1076:3 › P3-T5 live 3D card — phone › @gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:611:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+  15 passed (4.3m)

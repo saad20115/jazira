@@ -1,0 +1,95 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-late-related.test.ts (10 tests | 3 failed) 19347ms
+   ❯ P3-T5 round 4 (O-9): the model is prepared before the click, and shown only on it (real React, real Chromium) (4)
+     × near the viewport the viewer is prepared, nothing shows; one click shows that same viewer 1911ms
+     × far from the viewport nothing is prepared; scrolled near, it is (and still nothing shows) 3423ms
+     × a failure while preparing changes nothing until the click, which then shows the stills tier 1855ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-late-related.test.ts > P3-T5 round 4 (O-9): the model is prepared before the click, and shown only on it (real React, real Chromium) > near the viewport the viewer is prepared, nothing shows; one click shows that same viewer
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/p3-t5-late-related.test.ts:490:70
+    488|     await withExplorer(async (page, errors) => {
+    489|       const card = page.locator('[data-interactive-3d-card]')
+    490|       await expect.poll(async () => (await viewerLog(page)).created).t…
+       |                                                                      ^
+    491|       await page.waitForTimeout(300)
+    492|       expect((await viewerLog(page)).shown).toBe(0)
+ ❯ withExplorer src/p3-t5-late-related.test.ts:271:11
+ ❯ src/p3-t5-late-related.test.ts:488:5
+
+Caused by: Error: Matcher did not succeed in time.
+ ❯ src/p3-t5-late-related.test.ts:490:7
+ ❯ withExplorer src/p3-t5-late-related.test.ts:271:5
+ ❯ src/p3-t5-late-related.test.ts:488:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/p3-t5-late-related.test.ts > P3-T5 round 4 (O-9): the model is prepared before the click, and shown only on it (real React, real Chromium) > far from the viewport nothing is prepared; scrolled near, it is (and still nothing shows)
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ withExplorer.spacerPx src/p3-t5-late-related.test.ts:517:72
+    515|         expect((await viewerLog(page)).created).toBe(0)
+    516|         await card.scrollIntoViewIfNeeded()
+    517|         await expect.poll(async () => (await viewerLog(page)).created)…
+       |                                                                        ^
+    518|         expect((await viewerLog(page)).shown).toBe(0)
+    519|         expect(await card.locator('canvas').count()).toBe(0)
+ ❯ withExplorer src/p3-t5-late-related.test.ts:271:5
+ ❯ src/p3-t5-late-related.test.ts:511:5
+
+Caused by: Error: Matcher did not succeed in time.
+ ❯ withExplorer.spacerPx src/p3-t5-late-related.test.ts:517:9
+ ❯ withExplorer src/p3-t5-late-related.test.ts:271:5
+ ❯ src/p3-t5-late-related.test.ts:511:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/p3-t5-late-related.test.ts > P3-T5 round 4 (O-9): the model is prepared before the click, and shown only on it (real React, real Chromium) > a failure while preparing changes nothing until the click, which then shows the stills tier
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ withExplorer.viewerFails src/p3-t5-late-related.test.ts:546:72
+    544|       async (page) => {
+    545|         const card = page.locator('[data-interactive-3d-card]')
+    546|         await expect.poll(async () => (await viewerLog(page)).created)…
+       |                                                                        ^
+    547|         await page.waitForTimeout(300)
+    548|         expect(await card.getAttribute('data-viewer-state')).toBe('sti…
+ ❯ withExplorer src/p3-t5-late-related.test.ts:271:11
+ ❯ src/p3-t5-late-related.test.ts:543:5
+
+Caused by: Error: Matcher did not succeed in time.
+ ❯ withExplorer.viewerFails src/p3-t5-late-related.test.ts:546:9
+ ❯ withExplorer src/p3-t5-late-related.test.ts:271:5
+ ❯ src/p3-t5-late-related.test.ts:543:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 7 passed (10)
+   Start at  20:02:59
+   Duration  20.81s (tests 94%, import 5%, transform 1%)
+

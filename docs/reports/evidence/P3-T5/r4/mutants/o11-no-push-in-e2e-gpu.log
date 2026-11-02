@@ -1,0 +1,25 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1022:3 › P3-T5 live 3D card › @gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1022:3 › P3-T5 live 3D card › @gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 1
+    Received:   1
+
+      1042 |     // It grows while loading, never shrinks, and stays within the addendum's end scale.
+      1043 |     const last = loading[loading.length - 1].scale
+    > 1044 |     expect(last).toBeGreaterThan(1)
+           |                  ^
+      1045 |     expect(last).toBeLessThanOrEqual(1.06)
+      1046 |     loading.forEach((sample, i) => {
+      1047 |       if (i > 0) {
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:1044:18
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-37539-fade-starts-from-that-scale-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1022:3 › P3-T5 live 3D card › @gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale 
