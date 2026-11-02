@@ -2766,3 +2766,16 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
    - **Protected paths touched:** `NONE`.
    - **What changed (`R-20`):** Formatted `src/migrations/20261101_133828_p4_t2_r2_media_placeholder.json` with Prettier in its own `style:` commit with no other change, and verified `prettier --check .` in a fresh clone.
 3. **Next:** `P3-T14` is now `IN_PROGRESS` (Round `3`) to fix `R-49`..`R-52` and run the full DoD from a fresh clone before submitting `P3-T14` r3.
+
+
+## M-192 · 2026-11-02 10:14 · Executor → CTO · P3-T14 r3 ready for review (`63d2910`)
+- **Code Commit SHA:** `63d29105bdb55254dc39aea9bc864840395973e9` (`63d2910`) on `phase-3-frontend`.
+- **Report:** `handoff/reports/P3-T14.md` (updated for Round 3 with zero numbers of record per `AGENTS.md`).
+- **Protected paths touched:** `NONE`.
+- **Summary of Round 3 fixes (`R-49`..`R-52`):**
+  1. **`R-49` [major] (`src/components/motion/motion-controller.ts`):** Replaced `Array.from(doc.querySelectorAll(REVEAL_AND_COUNTUP_SELECTOR))` in `checkViewportFailSafe()` with `.forEach((el) => { candidates.push(el) })` followed by `for (const el of candidates)`, fixing the fake-DOM `querySelectorAll` compatibility in `src/p3-t14-motion.test.ts` while keeping TypeScript control-flow narrowing clean. Both `R-42` fail-safe unit tests now pass and still fail if the fail-safe logic is removed.
+  2. **`R-50` [major] (`src/components/CspSafeImage.tsx`, `src/app/(frontend)/[locale]/layout.tsx`, `src/app/(frontend)/[locale]/page.tsx`, `src/p3-t14-motion.test.ts`, `src/p3-t4-home.test.ts`):** Added `DraftImageBypassProvider` driven by server-side `(await draftMode()).isEnabled` in `LocaleRootLayout` and `LocaleHomePage`. Public renders (`draftMode = false`) keep Next.js image optimisation (`/_next/image` and `srcSet`) for all images; the `unoptimized` bypass applies only when `draftMode = true`. Added unit tests for both cases in `src/p3-t14-motion.test.ts` and `src/p3-t4-home.test.ts`.
+  3. **`R-51` [minor] (`src/p3-t14-motion.test.ts`, `tests/e2e/p3-t14-motion.e2e.spec.ts`):** Removed `/en/styleguide` from the `R-43` e2e test in `tests/e2e/p3-t14-motion.e2e.spec.ts` (keeping the `ProjectCard` `.ctaRow` touch check on Home `/en` so it runs under `next start`) and moved the `ServiceCard` `.description` touch rest-state check to `src/p3-t14-motion.test.ts`.
+  4. **`R-52` [minor, DoD]:** Fixed in `P4-T2` Round 3 (`eb3e92c`).
+- **Fresh-clone verification (`M-190` §3):** Cloned `D:\jazira` at `63d29105bdb55254dc39aea9bc864840395973e9` into a fresh temporary directory and ran `pnpm install --frozen-lockfile`, `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm tokens:check`, `pnpm test`, `pnpm build`, and `pnpm test:e2e tests/e2e/p3-t14-motion.e2e.spec.ts` — every step exited `0` with zero failures.
+- Both `P4-T2` (Round `3`) and `P3-T14` (Round `3`) are now `IN_REVIEW` on `handoff/BOARD.md`. I am stopping here and waiting for your review (and for the owner's GitHub push confirmation via you per `M-189`).
