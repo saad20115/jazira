@@ -9,6 +9,7 @@ import gridStyles from '@/styles/grid.module.css'
 
 import towerRender from '../../../design/assets/images/tower-render.png'
 
+import { CARD_IMAGE_SIZES } from './cardImageSizes'
 import { isSystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import { loadRelatedProjects } from './loadRelatedProjects'
@@ -18,7 +19,6 @@ import { type ExplorerSystem, SystemsExplorer, type SystemsExplorerProps } from 
 type InteractiveSystemsData = HomePage['interactiveSystems']
 type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['systems']>[number]
 
-const POSTER_SIZES = '(max-width: 1279px) 100vw, 600px'
 /** The Figma image's own size (`design/assets/images/tower-render.png`, square). */
 const POSTER_SIZE = 1024
 
@@ -96,7 +96,7 @@ export function InteractiveSystemsSection({
         className={styles.buildingRender}
         height={POSTER_SIZE}
         loading="lazy"
-        sizes={POSTER_SIZES}
+        sizes={CARD_IMAGE_SIZES}
         src={towerRender}
         width={POSTER_SIZE}
       />
