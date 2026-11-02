@@ -1,0 +1,18 @@
+
+Running 13 tests using 1 worker
+
+  ok  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:405:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (2.1s)
+  ok  2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:405:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (1.2s)
+  ok  3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:433:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters (36.4s)
+  ok  4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:507:3 › P3-T5 live 3D card › @gpu live: a system card click on the still card starts the model in that system (6.7s)
+  ok  5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:526:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (4.5s)
+  ok  6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:545:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates (34.9s)
+  ok  7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:589:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (2.8s)
+  ok  8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:609:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (9.6s)
+  ok  9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:656:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (7.0s)
+  ok 10 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:755:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn (43.9s)
+  ok 11 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:777:3 › P3-T5 live 3D card › @gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside (18.5s)
+  ok 12 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:809:3 › P3-T5 live 3D card › @gpu O-8: while the model loads after a click, the image stays with a small loading indicator (5.2s)
+  ok 13 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:925:3 › P3-T5 live 3D card — phone › @gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active (42.0s)
+
+  13 passed (3.6m)

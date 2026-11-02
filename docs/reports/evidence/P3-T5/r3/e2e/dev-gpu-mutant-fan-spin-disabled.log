@@ -1,0 +1,42 @@
+MUTANT fan_spin disabled: systemStage skips every fan (cfg.rpm > 0)
+diff --git a/src/components/systems3d/viewer/systemStage.ts b/src/components/systems3d/viewer/systemStage.ts
+index 8f1e409..9b0b046 100644
+--- a/src/components/systems3d/viewer/systemStage.ts
++++ b/src/components/systems3d/viewer/systemStage.ts
+@@ -359,7 +359,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
+   const fans = SYSTEM_IDS.flatMap((id) => {
+     const cfg = extras.systems[id].fanSpin
+     const map = cfg ? materials.get(cfg.material)?.map : null
+-    if (!cfg || !map) {
++    if (!cfg || !map || cfg.rpm > 0) {
+       return []
+     }
+     map.center.set(0.5, 0.5)
+
+Running 1 test using 1 worker
+
+  x  1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:755:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn (18.0s)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:755:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn 
+
+    Error: the HVAC fans do not turn
+
+    expect(received).not.toBe(expected) // Object.is equality
+
+    Expected: not 0
+
+      750 |     await page.waitForTimeout(500)
+      751 |     const second = await page.screenshot({ clip })
+    > 752 |     expect(Buffer.compare(first, second), 'the HVAC fans do not turn').not.toBe(0)
+          |                                                                            ^
+      753 |   }
+      754 |
+      755 |   test('@gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn', async ({
+        at expectFansTurning (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:752:76)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:769:9
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-6880e-stem-and-the-HVAC-fans-turn-gpu\error-context.md
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:755:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn 

@@ -35,3 +35,16 @@ the CTO verifier re-runs DoD, e2e, gpu e2e and Lighthouse on the submitted SHA.
 
 ## `unit/`
 - `mutant-header-rule-reverted.log`, `mutant-blend-called-in-warmup.log`: must-fail mutant runs.
+
+## Round 3, part 2 (O-7, O-8)
+- `hint-recordings/hint-<width>-<locale>/hint-<width>-<locale>.webm`: the O-7 tap hint on `next start`
+  of the code SHA, at 1440 and 390 (touch), `en` and `ar` (`scripts/evidence/p3-t5-hint-recordings.mjs`):
+  the first cycle, the one repeat, then a click or tap that starts the model.
+- `e2e/dev-default-mutant-*.log`, `e2e/dev-gpu-mutant-*.log`: must-fail mutants of the O-7 and O-8
+  tests on `next dev` (no blurred placeholder; hover not stopping the hint, runs 1 and 2; reduced
+  motion ignored; `fan_spin` off; the entered header exiting from a still). Run 1 of the hover mutant
+  passed against the first version of the test; the test was tightened and run 2 fails.
+- `e2e/dev-gpu-o8-run1.log`: the new gpu tests on `next dev`.
+- `e2e/next-start-default-run2-o7-o8.log`, `e2e/next-start-gpu-run2-o7-o8.log`: the whole spec on
+  `next start` of the code SHA, `E2E_PRODUCTION_SERVER=1`.
+- `dod-fresh-clone-run3-8eb916f/`: the DoD from a new clone at the code SHA.

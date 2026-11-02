@@ -1,0 +1,353 @@
+MUTANT o7-hover-does-not-stop (run 2, stricter test)
+diff --git a/src/components/systems3d/SystemsCard.tsx b/src/components/systems3d/SystemsCard.tsx
+index dde3041..27e1f11 100644
+--- a/src/components/systems3d/SystemsCard.tsx
++++ b/src/components/systems3d/SystemsCard.tsx
+@@ -7,6 +7,7 @@ import {
+   type PointerEvent,
+   type ReactElement,
+   type ReactNode,
++  type RefObject,
+   useCallback,
+   useEffect,
+   useRef,
+@@ -27,13 +28,15 @@ import {
+   RELEASE_BASE_PATH,
+ } from './renderContract'
+ import { StillLabels } from './StillLabels'
++import { TapHint } from './TapHint'
+ import type { Systems3dStrings } from './strings'
+ import { chooseModelTier, decideStart, type DeviceCaps } from './tier'
+ import type { ViewerHandle } from './viewer/createViewer'
+ import { type FallbackReason, ViewerStartError } from './viewer/failure'
+ 
+ /** still → loading → live; any failure (or a weak device) → stills. The still is never removed. */
+-type Phase = 'still' | 'loading' | 'live' | 'stills'
++export type CardPhase = 'still' | 'loading' | 'live' | 'stills'
++type Phase = CardPhase
+ 
+ /** A start that has not rendered its first frame by then falls back to the stills tier. */
+ const START_TIMEOUT_MS = 45_000
+@@ -47,6 +50,12 @@ const KEY_ZOOM_IN = 0.85
+ const KEY_ZOOM_OUT = 1 / KEY_ZOOM_IN
+ /** How long the "Drag to rotate" hint stays after the first activation. */
+ const HINT_MS = 3200
++/** O-7: a second tap-hint cycle this long after the first ends, if the card is still idle on screen. */
++const TAP_HINT_REPEAT_MS = 8_000
++const TAP_HINT_MAX_CYCLES = 2
++/** O-7 under reduced motion: the still hand stays this long, then fades (motion-slow). */
++const TAP_HINT_STILL_MS = 2_400
++const TAP_HINT_FADE_MS = 600
+ 
+ const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
+ const STILL_SIZES = '(max-width: 1279px) 100vw, 600px'
+@@ -57,6 +66,55 @@ function endStillSrcSet(system: SystemId, format: 'webp' | 'jpg'): string {
+     .join(', ')
+ }
+ 
++/**
++ * The end still of an entered system over the image (stills tier, and before the model is live).
++ * O-8: it shows only once its picture has loaded, so the card is never an empty frame; until then the
++ * image under it stays.
++ */
++function EnteredStill({
++  cardRef,
++  strings,
++  system,
++}: {
++  cardRef: RefObject<HTMLDivElement | null>
++  strings: Systems3dStrings
++  system: SystemId
++}): ReactElement {
++  const [loaded, setLoaded] = useState(false)
++  const markLoaded = useCallback((img: HTMLImageElement | null): void => {
++    // A cached picture can be complete before React listens for its load event.
++    if (img?.complete && img.naturalWidth > 0) {
++      setLoaded(true)
++    }
++  }, [])
++  return (
++    <div
++      className={styles.enteredLayer}
++      data-entered-system={system}
++      data-loaded={loaded ? 'true' : 'false'}
++    >
++      <picture className={styles.stillPicture}>
++        <source sizes={STILL_SIZES} srcSet={endStillSrcSet(system, 'webp')} type="image/webp" />
++        <img
++          alt=""
++          className={styles.buildingRender}
++          decoding="async"
++          height={2048}
++          onLoad={() => {
++            setLoaded(true)
++          }}
++          ref={markLoaded}
++          sizes={STILL_SIZES}
++          src={`${STILLS_PATH}/${system}_end_1440.jpg`}
++          srcSet={endStillSrcSet(system, 'jpg')}
++          width={2048}
++        />
++      </picture>
++      <StillLabels cardRef={cardRef} strings={strings} system={system} />
++    </div>
++  )
++}
++
+ export interface SystemsCardProps {
+   /** The server-rendered poster (the Figma image, O-1). */
+   children: ReactNode
+@@ -74,6 +132,8 @@ export interface SystemsCardProps {
+   relatedPanel: ReactNode
+   /** Increases on each system the visitor picks; each increase starts the model (O-2). */
+   startSignal: number
++  /** The card's phase, for the accordion (O-8: a click on the entered header goes live from a still). */
++  onPhaseChange?: (phase: CardPhase) => void
+   strings: Systems3dStrings
+ }
+ 
+@@ -135,6 +195,7 @@ export function SystemsCard({
+   onSelectRow,
+   relatedPanel,
+   startSignal,
++  onPhaseChange,
+   strings,
+ }: SystemsCardProps): ReactElement {
+   const hydrated = useHydrated()
+@@ -153,6 +214,19 @@ export function SystemsCard({
+   /** A start from the card itself (image, button, Enter/Space) activates the card once it is live. */
+   const activateOnLiveRef = useRef(false)
+   const prefetchedRef = useRef(false)
++  /** O-7: the tap hint now showing (its cycle number keys a fresh animation), or none. */
++  const [tapHint, setTapHint] = useState<{
++    cycle: number
++    still: boolean
++    leaving: boolean
++  } | null>(null)
++  /** Off screen the hint waits; it starts and repeats only when the card is at least half on screen. */
++  const [cardInView, setCardInView] = useState(true)
++  const cardHalfInViewRef = useRef(false)
++  const tapHintCyclesRef = useRef(0)
++  /** Set by any hover, focus, click or tap on the card, and by the start: no hint ever again. */
++  const tapHintDoneRef = useRef(false)
++  const tapHintTimerRef = useRef<number | undefined>(undefined)
+   const [hint, setHint] = useState(false)
+   const hintShownRef = useRef(false)
+   const labelSinkRef = useRef<LiveLabelSink | null>(null)
+@@ -160,6 +234,9 @@ export function SystemsCard({
+   useEffect(() => {
+     enteredRef.current = entered
+   }, [entered])
++  useEffect(() => {
++    onPhaseChange?.(phase)
++  }, [phase, onPhaseChange])
+ 
+   /** Active: the card takes the wheel and one-finger drag (the first time, with the drag hint). */
+   const setActiveNow = useCallback((value: boolean): void => {
+@@ -172,6 +249,73 @@ export function SystemsCard({
+     }
+   }, [])
+ 
++  const stopTapHint = useCallback((): void => {
++    tapHintDoneRef.current = true
++    window.clearTimeout(tapHintTimerRef.current)
++    setTapHint(null)
++  }, [])
++
++  const playTapHint = useCallback((): void => {
++    if (tapHintDoneRef.current || tapHintCyclesRef.current >= TAP_HINT_MAX_CYCLES) {
++      return
++    }
++    tapHintCyclesRef.current += 1
++    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches
++    setTapHint({ cycle: tapHintCyclesRef.current, still, leaving: false })
++    if (still) {
++      // Shown once, still, then it fades.
++      tapHintDoneRef.current = true
++      tapHintTimerRef.current = window.setTimeout(() => {
++        setTapHint((current) => (current ? { ...current, leaving: true } : null))
++        tapHintTimerRef.current = window.setTimeout(() => {
++          setTapHint(null)
++        }, TAP_HINT_FADE_MS)
++      }, TAP_HINT_STILL_MS)
++    }
++  }, [])
++
++  const onTapHintEnd = useCallback((): void => {
++    setTapHint(null)
++    if (tapHintDoneRef.current || tapHintCyclesRef.current >= TAP_HINT_MAX_CYCLES) {
++      return
++    }
++    tapHintTimerRef.current = window.setTimeout(() => {
++      if (cardHalfInViewRef.current) {
++        playTapHint()
++      }
++    }, TAP_HINT_REPEAT_MS)
++  }, [playTapHint])
++
++  // O-7: the hint plays the first time the card is at least half on screen, and waits off screen.
++  useEffect(() => {
++    const card = cardRef.current
++    if (!hydrated || !card || phase !== 'still' || tapHintDoneRef.current) {
++      return
++    }
++    const observer = new IntersectionObserver(
++      (entries) => {
++        // One target: the last entry is its latest state.
++        const entry = entries[entries.length - 1]
++        cardHalfInViewRef.current = entry.intersectionRatio >= 0.5
++        setCardInView(entry.isIntersecting)
++        if (cardHalfInViewRef.current && tapHintCyclesRef.current === 0) {
++          playTapHint()
++        }
++      },
++      { threshold: [0, 0.5] },
++    )
++    observer.observe(card)
++    return () => {
++      observer.disconnect()
++    }
++  }, [hydrated, phase, playTapHint])
++  useEffect(
++    () => () => {
++      window.clearTimeout(tapHintTimerRef.current)
++    },
++    [],
++  )
++
+   /**
+    * O-2: the model starts only from a click, a tap or a key (never hover or focus). A start from the
+    * card itself also activates it once live, except on touch, where the page keeps the one-finger
+@@ -182,6 +326,7 @@ export function SystemsCard({
+       if (phase !== 'still') {
+         return
+       }
++      stopTapHint()
+       const caps = readDeviceCaps()
+       if (decideStart(caps) === 'stills') {
+         setFallbackReason('device')
+@@ -192,7 +337,7 @@ export function SystemsCard({
+       setPhase('loading')
+       setSession((n) => n + 1)
+     },
+-    [phase],
++    [phase, stopTapHint],
+   )
+ 
+   // A system picked in the accordion (or with keys 1–5) starts the model too (O-2).
+@@ -337,7 +482,8 @@ export function SystemsCard({
+     }
+   }, [active, deactivate])
+ 
+-  // Hover never changes what is shown (O-2); a mouse over the card only fetches the viewer code.
++  // Hover never changes what is shown (O-2), except that the tap hint stops (O-7); a mouse over the
++  // card only fetches the viewer code.
+   const onPointerEnter = (event: PointerEvent<HTMLDivElement>): void => {
+     if (event.pointerType !== 'mouse' || prefetchedRef.current || phase !== 'still') {
+       return
+@@ -348,6 +494,7 @@ export function SystemsCard({
+     }
+   }
+   const onFocus = (event: FocusEvent<HTMLDivElement>): void => {
++    stopTapHint()
+     if (event.target === event.currentTarget) {
+       activate()
+     }
+@@ -355,6 +502,7 @@ export function SystemsCard({
+   // A click or tap on the image starts the model; once live, it activates the card. Buttons and
+   // links inside the card (exit, reset, label dots, related projects) do neither.
+   const onClick = (event: MouseEvent<HTMLDivElement>): void => {
++    stopTapHint()
+     if (
+       event.target instanceof Element &&
+       event.target !== event.currentTarget &&
+@@ -459,6 +607,7 @@ export function SystemsCard({
+       onClick={onClick}
+       onFocus={onFocus}
+       onKeyDown={onKeyDown}
++      onPointerDown={stopTapHint}
+       onPointerEnter={onPointerEnter}
+       ref={cardRef}
+       tabIndex={hydrated && phase !== 'stills' ? 0 : undefined}
+@@ -473,26 +622,26 @@ export function SystemsCard({
+         <LiveLabels cardRef={cardRef} sinkRef={labelSinkRef} strings={strings} />
+       ) : null}
+       {entered && phase !== 'live' ? (
+-        <div className={styles.enteredLayer} data-entered-system={entered} key={entered}>
+-          <picture className={styles.stillPicture}>
+-            <source
+-              sizes={STILL_SIZES}
+-              srcSet={endStillSrcSet(entered, 'webp')}
+-              type="image/webp"
+-            />
+-            <img
+-              alt=""
+-              className={styles.buildingRender}
+-              decoding="async"
+-              height={2048}
+-              sizes={STILL_SIZES}
+-              src={`${STILLS_PATH}/${entered}_end_1440.jpg`}
+-              srcSet={endStillSrcSet(entered, 'jpg')}
+-              width={2048}
+-            />
+-          </picture>
+-          <StillLabels cardRef={cardRef} strings={strings} system={entered} />
+-        </div>
++        <EnteredStill cardRef={cardRef} key={entered} strings={strings} system={entered} />
++      ) : null}
++      {hydrated && phase === 'still' && tapHint ? (
++        <TapHint
++          key={tapHint.cycle}
++          leaving={tapHint.leaving}
++          onEnd={onTapHintEnd}
++          paused={!cardInView}
++          still={tapHint.still}
++        />
++      ) : null}
++      {phase === 'loading' ? (
++        <p
++          className={`${styles.loadingIndicator} t-caption`}
++          data-loading-indicator="true"
++          role="status"
++        >
++          <span aria-hidden="true" className={styles.loadingSpinner} />
++          {strings.loading}
++        </p>
+       ) : null}
+       {showStartControls && !entered ? (
+         <span className={`${styles.liveModelBadge} t-label-caps`}>
+
+Running 1 test using 1 worker
+
+  x  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:297:3 › P3-T5 live 3D card › O-7: the hint stops at once on hover, and never returns (5.2s)
+
+
+  1) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:297:3 › P3-T5 live 3D card › O-7: the hint stops at once on hover, and never returns 
+
+    Error: expect(locator).toHaveCount(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]').locator('[data-tap-hint]')
+    Expected: 0
+    Received: 1
+    Timeout:  400ms
+
+    Call log:
+      - Expect "toHaveCount" locator('[data-interactive-3d-card]').locator('[data-tap-hint]') with timeout 400ms
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-tap-hint]')
+        7 × locator resolved to 1 element
+          - unexpected value "1"
+
+
+      302 |     await card.hover()
+      303 |     // At once: well before the cycle would end by itself.
+    > 304 |     await expect(hand).toHaveCount(0, { timeout: 400 })
+          |                        ^
+      305 |     await page.mouse.move(0, 0)
+      306 |     // Without the hover a second cycle would come 8 s after the first; it never does.
+      307 |     for (let t = 0; t < 14_000; t += 250) {
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:304:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-0b3e5--on-hover-and-never-returns-chromium\error-context.md
+
+  1 failed
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:297:3 › P3-T5 live 3D card › O-7: the hint stops at once on hover, and never returns 

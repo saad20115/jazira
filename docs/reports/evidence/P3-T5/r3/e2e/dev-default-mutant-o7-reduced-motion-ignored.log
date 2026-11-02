@@ -1,0 +1,71 @@
+MUTANT o7-reduced-motion-ignored
+ .../systems3d/InteractiveSystemsSection.module.css | 236 +++++++++++++++++++-
+ src/components/systems3d/SystemsCard.tsx           | 196 +++++++++++++++--
+ src/components/systems3d/SystemsExplorer.tsx       |  21 +-
+ tests/e2e/p3-t5-live-3d.e2e.spec.ts                | 243 +++++++++++++++++++++
+ 4 files changed, 666 insertions(+), 30 deletions(-)
+diff --git a/src/components/systems3d/InteractiveSystemsSection.module.css b/src/components/systems3d/InteractiveSystemsSection.module.css
+index f6bc626..bfb311a 100644
+--- a/src/components/systems3d/InteractiveSystemsSection.module.css
++++ b/src/components/systems3d/InteractiveSystemsSection.module.css
+@@ -57,9 +57,15 @@
+   display: block;
+ }
+ 
++/* O-8: never an empty card. Until the Figma image (lazy) has loaded, a 24 px blurred copy of it
++   (generated from design/assets/images/tower-render.png with sharp: resize 24, blur 0.6, JPEG q55)
++   is painted from the first frame; the image covers it once loaded. */
+ .poster {
+   position: absolute;
+   inset: 0;
++  background-image: url('data:image/jpeg;base64,/9j/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCAAYABgDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAEDBgQF/8QAIxAAAgIBAwQDAQAAAAAAAAAAAQIAAxESITEEExRBBUJxkf/EABgBAQADAQAAAAAAAAAAAAAAAAMAAQIE/8QAHBEAAwACAwEAAAAAAAAAAAAAAAECAxIhQUJR/9oADAMBAAIRAxEAPwDz61rWtm2JAzKq+qtNoGitV/s5HuCnS2743kq+LAMLzzGvPX0KcUro1nS+D20a1hqI3iZd71C5J425iY2t+hNZXRFfivXoe0a0yzEex+yyv5CphWBVSSPsecRE5rhNizTSKLinZCgqWubGV9RES1wR8n//2Q==');
++  background-position: center;
++  background-size: cover;
+ }
+ 
+ /* The <picture> must fill its layer: an inline <picture> leaves the <img> at its natural height,
+@@ -119,11 +125,49 @@
+   }
+ }
+ 
++/* O-8: the end still shows only once it has loaded; until then the image under it stays. */
+ .enteredLayer {
+   position: absolute;
+   inset: 0;
+   z-index: 2;
+-  animation: systemsFadeIn 600ms cubic-bezier(0.65, 0, 0.35, 1);
+
+Running 1 test using 1 worker
+
+  x  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:325:3 › P3-T5 live 3D card › O-7: under reduced motion the hand is shown still, once, and does not animate (9.0s)
+
+
+  1) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:325:3 › P3-T5 live 3D card › O-7: under reduced motion the hand is shown still, once, and does not animate 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator: locator('[data-interactive-3d-card]').locator('[data-tap-hint]')
+    Expected: "still"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]').locator('[data-tap-hint]') with timeout 5000ms
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-tap-hint]')
+        10 × locator resolved to <svg focusable="false" aria-hidden="true" data-paused="false" viewBox="0 0 64 64" data-leaving="false" data-tap-hint="play" class="InteractiveSystemsSection-module__I0WHYa__tapHint">…</svg>
+           - unexpected value "play"
+
+
+      330 |     await waitHydrated(card)
+      331 |     const hand = card.locator('[data-tap-hint]')
+    > 332 |     await expect(hand).toHaveAttribute('data-tap-hint', 'still', { timeout: 5_000 })
+          |                        ^
+      333 |     const running = await hand.evaluate(
+      334 |       (el) => (el as unknown as Element).getAnimations({ subtree: true }).length,
+      335 |     )
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:332:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-daa0d-l-once-and-does-not-animate-chromium\error-context.md
+
+  1 failed
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:325:3 › P3-T5 live 3D card › O-7: under reduced motion the hand is shown still, once, and does not animate 
