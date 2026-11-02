@@ -34,11 +34,12 @@ const mockProjects = vi.fn<
   }>
 >()
 const mockBrands = vi.fn<() => Promise<Brand[]>>()
+const mockDraftMode = vi.fn<() => Promise<{ isEnabled: boolean }>>()
 
 vi.mock('server-only', () => ({}))
 
 vi.mock('next/headers', () => ({
-  draftMode: () => Promise.resolve({ isEnabled: false }),
+  draftMode: () => mockDraftMode(),
   headers: () =>
     Promise.resolve(
       new Map([
@@ -387,6 +388,7 @@ function buildSampleHomePage(): HomePage {
 describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:1615`)', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    mockDraftMode.mockResolvedValue({ isEnabled: false })
     mockSiteSettings.mockResolvedValue({
       id: 1,
       companyName: 'Al Jazira for Imdad Smart Co.',
@@ -701,7 +703,7 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
       }
     })
 
-    it('normalizes local Payload serverURL media URLs to relative paths for next/image localPatterns', () => {
+    it('normalizes local Payload serverURL media URLs to relative paths for next/image localPatterns', async () => {
       expect(
         normalizeLocalMediaUrl('http://localhost:3000/api/media/file/hero-city-1376x768.webp'),
       ).toBe('/api/media/file/hero-city-1376x768.webp')
@@ -717,6 +719,31 @@ describe('P3-T4 — Home Page (`/[locale]`) & Intro Splash (`28:1609` -> `28:161
         'Fallback',
       )
       expect(resolved?.url).toBe('/api/media/file/hero-city-1376x768.webp')
+
+      // R-50: Public Home render (draftMode = false) keeps Next.js image optimisation (/_next/image + srcSet),
+      // while draft preview (draftMode = true) bypasses /_next/image for /api/media/file/* URLs.
+      const homeWithPayloadMedia = buildSampleHomePage()
+      homeWithPayloadMedia.hero = {
+        ...homeWithPayloadMedia.hero,
+        background: makeMedia(77, '/api/media/file/hero-city-1376x768.webp', 'Riyadh skyline'),
+      }
+
+      mockDraftMode.mockResolvedValueOnce({ isEnabled: false })
+      mockHomePage.mockResolvedValueOnce(homeWithPayloadMedia)
+      const publicHomeEl = await LocaleHomePage({ params: Promise.resolve({ locale: 'en' }) })
+      const publicHomeHtml = renderToStaticMarkup(publicHomeEl)
+      expect(publicHomeHtml).toContain(
+        '/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp',
+      )
+
+      mockDraftMode.mockResolvedValueOnce({ isEnabled: true })
+      mockHomePage.mockResolvedValueOnce(homeWithPayloadMedia)
+      const draftHomeEl = await LocaleHomePage({ params: Promise.resolve({ locale: 'en' }) })
+      const draftHomeHtml = renderToStaticMarkup(draftHomeEl)
+      expect(draftHomeHtml).toContain('src="/api/media/file/hero-city-1376x768.webp"')
+      expect(draftHomeHtml).not.toContain(
+        '/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city-1376x768.webp',
+      )
     })
 
     it('enforces R-1 carousel padding-inline-start/end, R-20 430px/1300px geometry, R-37 overlay + sync script first in home <body>, R-14 default hidden overlay, and R-36 1100ms threshold', async () => {

@@ -1,7 +1,7 @@
 'use client'
 
 import Image, { type ImageProps } from 'next/image'
-import type { JSX } from 'react'
+import { createContext, type JSX, type ReactNode, useContext } from 'react'
 
 /**
  * Prevents `next/image` from emitting an inline `style="color:transparent"` attribute that
@@ -14,15 +14,37 @@ import type { JSX } from 'react'
  */
 const CSP_SAFE_IMAGE_STYLE = { color: undefined } as const
 
+/**
+ * R-50: Public renders keep Next.js image optimisation (`/_next/image` + responsive `srcset`).
+ * Only when server-side `draftMode().isEnabled` is true does `DraftImageBypassProvider` enable
+ * direct browser fetches for `/api/media/file/...` so authenticated editors in draft preview send
+ * their `payload-token` cookie instead of hitting an unauthenticated `/_next/image` loopback on
+ * placeholder media (`P4-T2` R-12).
+ */
+const DraftImageBypassContext = createContext<boolean>(false)
+
+export function DraftImageBypassProvider({
+  enabled,
+  children,
+}: {
+  enabled: boolean
+  children?: ReactNode
+}): JSX.Element {
+  return (
+    <DraftImageBypassContext.Provider value={enabled}>{children}</DraftImageBypassContext.Provider>
+  )
+}
+
 export type CspSafeImageProps = Omit<ImageProps, 'style'>
 
 export function CspSafeImage({ alt, unoptimized, ...rest }: CspSafeImageProps): JSX.Element {
+  const isDraftBypass = useContext(DraftImageBypassContext)
   const isPayloadMediaRoute =
     typeof rest.src === 'string' && rest.src.startsWith('/api/media/file/')
   return (
     <Image
       alt={alt}
-      unoptimized={unoptimized ?? isPayloadMediaRoute}
+      unoptimized={unoptimized ?? (isDraftBypass && isPayloadMediaRoute)}
       {...rest}
       style={CSP_SAFE_IMAGE_STYLE}
     />

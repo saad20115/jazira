@@ -404,7 +404,7 @@ test.describe('P3-T14 — Motion system: content never depends on JavaScript', (
     })
   }
 
-  test('R-43: at 390px with hasTouch, ServiceCard .description and ProjectCard .ctaRow are visible at rest', async ({
+  test('R-43: at 390px with hasTouch, ProjectCard .ctaRow is visible at rest on Home', async ({
     browser,
   }) => {
     const context = await newHomeContext(browser, {
@@ -414,7 +414,6 @@ test.describe('P3-T14 — Motion system: content never depends on JavaScript', (
     })
     const page = await context.newPage()
 
-    // 1. Check ProjectCard .ctaRow at rest on Home (`/en`)
     await openHome(page, 'networkidle')
     const homeProjectCards = page.locator('[data-component="project-card"]')
     expect(await homeProjectCards.count()).toBeGreaterThan(0)
@@ -435,50 +434,6 @@ test.describe('P3-T14 — Motion system: content never depends on JavaScript', (
     expect(homeProjectCtaState?.opacity).toBe(1)
     expect(homeProjectCtaState?.visibility).toBe('visible')
     expect(homeProjectCtaState?.display).not.toBe('none')
-
-    // 2. Check ServiceCard .description and ProjectCard .ctaRow Default state at rest on `/en/styleguide`
-    await page.goto(`${BASE_URL}/en/styleguide`, { waitUntil: 'networkidle' })
-    const serviceCards = page.locator('[data-component="service-card"][data-state="Default"]')
-    expect(await serviceCards.count()).toBeGreaterThan(0)
-    await serviceCards.first().scrollIntoViewIfNeeded()
-
-    const serviceDescState = await serviceCards.first().evaluate((card) => {
-      const desc = card.querySelector<HTMLElement>('p')
-      const title = card.querySelector<HTMLElement>('h3')
-      if (!desc || !title) return null
-      const descStyle = window.getComputedStyle(desc)
-      const titleStyle = window.getComputedStyle(title)
-      return {
-        opacity: Number(descStyle.opacity),
-        visibility: descStyle.visibility,
-        display: descStyle.display,
-        descTransform: descStyle.transform,
-        titleTransform: titleStyle.transform,
-      }
-    })
-    expect(serviceDescState).not.toBeNull()
-    expect(serviceDescState?.opacity).toBeGreaterThan(0.5)
-    expect(serviceDescState?.visibility).toBe('visible')
-    expect(serviceDescState?.display).not.toBe('none')
-
-    const projectCards = page.locator('[data-component="project-card"][data-state="Default"]')
-    expect(await projectCards.count()).toBeGreaterThan(0)
-    await projectCards.first().scrollIntoViewIfNeeded()
-
-    const projectCtaState = await projectCards.first().evaluate((card) => {
-      const ctaRow = card.querySelector<HTMLElement>('[class*="ctaRow"]')
-      if (!ctaRow) return null
-      const style = window.getComputedStyle(ctaRow)
-      return {
-        opacity: Number(style.opacity),
-        visibility: style.visibility,
-        display: style.display,
-      }
-    })
-    expect(projectCtaState).not.toBeNull()
-    expect(projectCtaState?.opacity).toBe(1)
-    expect(projectCtaState?.visibility).toBe('visible')
-    expect(projectCtaState?.display).not.toBe('none')
 
     await context.close()
   })

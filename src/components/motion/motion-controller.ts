@@ -255,7 +255,11 @@ export function startMotionController(
         const hiddenTab = isDocumentHidden()
         let nextDelayMs: number | null = null
 
-        for (const el of Array.from(doc.querySelectorAll(REVEAL_AND_COUNTUP_SELECTOR))) {
+        const candidates: Element[] = []
+        doc.querySelectorAll(REVEAL_AND_COUNTUP_SELECTOR).forEach((el) => {
+          candidates.push(el)
+        })
+        for (const el of candidates) {
           const isCountUp = el.matches(COUNT_UP_SELECTOR)
           const alreadyDone = isCountUp
             ? el.getAttribute('data-countup-state') === 'done'

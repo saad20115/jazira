@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
-import { headers } from 'next/headers'
+import { draftMode, headers } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type React from 'react'
 
 import { Button } from '@/components/Button'
-import { CspSafeImage } from '@/components/CspSafeImage'
+import { CspSafeImage, DraftImageBypassProvider } from '@/components/CspSafeImage'
 import { Eyebrow } from '@/components/Eyebrow'
 import { HomeScrollHintButton } from '@/components/HomeScrollHintButton'
 import { CountUp } from '@/components/CountUp'
@@ -345,6 +345,14 @@ export default async function LocaleHomePage({
 
   const dict = getDictionary(locale)
 
+  let isDraftMode = false
+  try {
+    const dm = await draftMode()
+    isDraftMode = dm.isEnabled
+  } catch {
+    isDraftMode = false
+  }
+
   const [siteSettings, homePage, mainServices, allStats, featuredProjectsResult, marqueeBrands] =
     await Promise.all([
       getSiteSettings(locale).catch(() => null),
@@ -475,419 +483,431 @@ export default async function LocaleHomePage({
   )
 
   return (
-    <div className={styles.homePage} data-page="home">
-      <div className={styles.homeContent} data-home-content="true">
-        {/* 1. Hero Section (17:199) */}
-        {heroEnabled && hasHeroContent ? (
-          <section
-            className={styles.heroSection}
-            data-home-section="hero"
-            data-theme="dark"
-            id="hero"
-          >
-            <div aria-hidden="true" className={styles.heroMediaLayer}>
-              {heroBgVideoUrl ? (
-                <video
-                  autoPlay
-                  className={styles.heroBgMedia}
-                  loop
-                  muted
-                  playsInline
-                  src={heroBgVideoUrl}
-                />
-              ) : heroBgImage ? (
-                <CspSafeImage
-                  alt=""
-                  className={styles.heroBgMedia}
-                  fetchPriority="high"
-                  height={heroBgImage.height ?? 864}
-                  loading="eager"
-                  sizes="100vw"
-                  src={heroBgImage.url}
-                  width={heroBgImage.width ?? 1440}
-                />
-              ) : null}
-              <div className={styles.heroOverlay} />
-              <div className={styles.heroGoldGlow} />
-            </div>
-
-            <div className={styles.heroContent}>
-              {heroEyebrow ? (
-                <div className={styles.heroEyebrowEnter}>
-                  <Eyebrow label={heroEyebrow} tone="Dark" />
-                </div>
-              ) : null}
-
-              {heroTitle || heroTitleAccent ? (
-                <h1 className={`${styles.heroTitle} t-display-xl`}>
-                  {heroTitle ? <span className={styles.blockLine}>{heroTitle}</span> : null}
-                  {heroTitle && heroTitleAccent ? ' ' : null}
-                  {heroTitleAccent ? (
-                    <span className={`${styles.blockLine} ${styles.goldText}`}>
-                      {heroTitleAccent}
-                    </span>
-                  ) : null}
-                </h1>
-              ) : null}
-
-              {heroSubtitle ? (
-                <p className={`${styles.heroSubtitle} t-body-l`}>{heroSubtitle}</p>
-              ) : null}
-
-              {heroPrimaryLabel || heroSecondaryLabel ? (
-                <div className={styles.heroCtaGroup}>
-                  {heroPrimaryLabel ? (
-                    <Button
-                      href={heroPrimaryHref ?? `/${locale}/services`}
-                      label={heroPrimaryLabel}
-                      link={hero?.primaryCta?.link}
-                      locale={locale}
-                      showArrow
-                      variant="Gold"
-                    />
-                  ) : null}
-                  {heroSecondaryLabel ? (
-                    <Button
-                      href={heroSecondaryHref ?? `/${locale}/projects`}
-                      label={heroSecondaryLabel}
-                      link={hero?.secondaryCta?.link}
-                      locale={locale}
-                      showArrow
-                      variant="Glass"
-                    />
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-
-            <HomeScrollHintButton
-              className={styles.scrollHintButton}
-              iconClassName={styles.scrollHintIcon}
-              label={dict.home.scrollToExplore}
-              labelClassName={`${styles.scrollHintLabel} t-label-caps`}
-              targetId="who-we-are"
-            />
-          </section>
-        ) : null}
-
-        {/* 2. Who We Are Section (17:222) */}
-        {whoEnabled && hasWhoContent ? (
-          <section className={styles.whoSection} data-home-section="who-we-are" id="who-we-are">
-            <div className={`${gridStyles.container} ${styles.whoContainer}`}>
-              <div className={styles.whoVisualCol}>
-                <CornerBracketIcon
-                  className={styles.whoCornerBracket}
-                  size={80}
-                  {...revealAttributes({ variant: 'draw', step: 2 })}
-                />
-                <div className={styles.whoPhotoWrap} {...revealAttributes({ variant: 'wipe' })}>
-                  {whoImage ? (
-                    <CspSafeImage
-                      alt={whoImage.alt}
-                      className={styles.whoPhoto}
-                      height={410}
-                      sizes="(max-width: 767px) 100vw, 540px"
-                      src={whoImage.url}
-                      width={540}
-                    />
-                  ) : null}
-                </div>
-                {whoBadgeStat ? (
-                  <div
-                    className={styles.whoBadgeCard}
-                    data-who-badge-stat="true"
-                    {...revealAttributes({ step: 3 })}
-                  >
-                    <p className={`${styles.whoBadgeNumber} t-stat-m`}>
-                      <CountUp value={whoBadgeStat.value} />
-                    </p>
-                    <p className={`${styles.whoBadgeLabel} t-body-s`}>{whoBadgeStat.label}</p>
-                  </div>
-                ) : null}
-              </div>
-
-              <div className={styles.whoContentCol} {...revealAttributes({ stagger: true })}>
-                {whoEyebrow ? <Eyebrow label={whoEyebrow} tone="Light" /> : null}
-                {whoTitle ? (
-                  <h2 className={`${styles.whoTitle} t-h2`}>
-                    {renderAccentHeading(whoTitle, 'who')}
-                  </h2>
-                ) : null}
-                {whoParagraphs.map((paragraph, idx) => (
-                  <p className={`${styles.whoParagraph} t-body-m`} key={`who-p-${String(idx)}`}>
-                    {paragraph}
-                  </p>
-                ))}
-                {whoButtonLabel ? (
-                  <div className={styles.whoButtonWrap}>
-                    <Button
-                      href={whoButtonHref ?? `/${locale}/about`}
-                      label={whoButtonLabel}
-                      link={whoWeAre?.button?.link}
-                      locale={locale}
-                      showArrow
-                      variant="Dark"
-                    />
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </section>
-        ) : null}
-
-        {/* 3. Core Services Section (17:254) */}
-        {coreServicesEnabled && hasCoreServicesContent ? (
-          <section
-            className={styles.servicesSection}
-            data-home-section="core-services"
-            id="core-services"
-          >
-            <div className={styles.servicesStack}>
-              <div className={gridStyles.container}>
-                <div className={styles.splitSectionHead} {...revealAttributes()}>
-                  <div className={styles.splitHeadLeft}>
-                    {coreServicesEyebrow ? (
-                      <Eyebrow label={coreServicesEyebrow} tone="Light" />
-                    ) : null}
-                    {coreServicesTitle ? (
-                      <h2 className={`${styles.sectionHeadingDark} t-h2`}>
-                        {renderAccentHeading(coreServicesTitle, 'services')}
-                      </h2>
-                    ) : null}
-                  </div>
-                  {coreServicesIntro ? (
-                    <p className={`${styles.servicesIntroText} t-body-m`}>{coreServicesIntro}</p>
-                  ) : null}
-                </div>
-              </div>
-
-              {mainServices.length > 0 ? (
-                <div className={styles.carouselOuter} {...revealAttributes({ step: 1 })}>
-                  <ServicesCarousel
-                    locale={locale}
-                    services={mainServices.map((s) => ({
-                      id: s.id,
-                      title: s.title,
-                      slug: s.slug,
-                      icon: s.icon,
-                      shortDescription: s.shortDescription,
-                      featured: s.featured,
-                    }))}
-                    viewAllHref={coreServicesButtonHref}
-                    viewAllLabel={coreServicesButtonLabel}
+    <DraftImageBypassProvider enabled={isDraftMode}>
+      <div className={styles.homePage} data-page="home">
+        <div className={styles.homeContent} data-home-content="true">
+          {/* 1. Hero Section (17:199) */}
+          {heroEnabled && hasHeroContent ? (
+            <section
+              className={styles.heroSection}
+              data-home-section="hero"
+              data-theme="dark"
+              id="hero"
+            >
+              <div aria-hidden="true" className={styles.heroMediaLayer}>
+                {heroBgVideoUrl ? (
+                  <video
+                    autoPlay
+                    className={styles.heroBgMedia}
+                    loop
+                    muted
+                    playsInline
+                    src={heroBgVideoUrl}
                   />
+                ) : heroBgImage ? (
+                  <CspSafeImage
+                    alt=""
+                    className={styles.heroBgMedia}
+                    fetchPriority="high"
+                    height={heroBgImage.height ?? 864}
+                    loading="eager"
+                    sizes="100vw"
+                    src={heroBgImage.url}
+                    width={heroBgImage.width ?? 1440}
+                  />
+                ) : null}
+                <div className={styles.heroOverlay} />
+                <div className={styles.heroGoldGlow} />
+              </div>
+
+              <div className={styles.heroContent}>
+                {heroEyebrow ? (
+                  <div className={styles.heroEyebrowEnter}>
+                    <Eyebrow label={heroEyebrow} tone="Dark" />
+                  </div>
+                ) : null}
+
+                {heroTitle || heroTitleAccent ? (
+                  <h1 className={`${styles.heroTitle} t-display-xl`}>
+                    {heroTitle ? <span className={styles.blockLine}>{heroTitle}</span> : null}
+                    {heroTitle && heroTitleAccent ? ' ' : null}
+                    {heroTitleAccent ? (
+                      <span className={`${styles.blockLine} ${styles.goldText}`}>
+                        {heroTitleAccent}
+                      </span>
+                    ) : null}
+                  </h1>
+                ) : null}
+
+                {heroSubtitle ? (
+                  <p className={`${styles.heroSubtitle} t-body-l`}>{heroSubtitle}</p>
+                ) : null}
+
+                {heroPrimaryLabel || heroSecondaryLabel ? (
+                  <div className={styles.heroCtaGroup}>
+                    {heroPrimaryLabel ? (
+                      <Button
+                        href={heroPrimaryHref ?? `/${locale}/services`}
+                        label={heroPrimaryLabel}
+                        link={hero?.primaryCta?.link}
+                        locale={locale}
+                        showArrow
+                        variant="Gold"
+                      />
+                    ) : null}
+                    {heroSecondaryLabel ? (
+                      <Button
+                        href={heroSecondaryHref ?? `/${locale}/projects`}
+                        label={heroSecondaryLabel}
+                        link={hero?.secondaryCta?.link}
+                        locale={locale}
+                        showArrow
+                        variant="Glass"
+                      />
+                    ) : null}
+                  </div>
+                ) : null}
+              </div>
+
+              <HomeScrollHintButton
+                className={styles.scrollHintButton}
+                iconClassName={styles.scrollHintIcon}
+                label={dict.home.scrollToExplore}
+                labelClassName={`${styles.scrollHintLabel} t-label-caps`}
+                targetId="who-we-are"
+              />
+            </section>
+          ) : null}
+
+          {/* 2. Who We Are Section (17:222) */}
+          {whoEnabled && hasWhoContent ? (
+            <section className={styles.whoSection} data-home-section="who-we-are" id="who-we-are">
+              <div className={`${gridStyles.container} ${styles.whoContainer}`}>
+                <div className={styles.whoVisualCol}>
+                  <CornerBracketIcon
+                    className={styles.whoCornerBracket}
+                    size={80}
+                    {...revealAttributes({ variant: 'draw', step: 2 })}
+                  />
+                  <div className={styles.whoPhotoWrap} {...revealAttributes({ variant: 'wipe' })}>
+                    {whoImage ? (
+                      <CspSafeImage
+                        alt={whoImage.alt}
+                        className={styles.whoPhoto}
+                        height={410}
+                        sizes="(max-width: 767px) 100vw, 540px"
+                        src={whoImage.url}
+                        width={540}
+                      />
+                    ) : null}
+                  </div>
+                  {whoBadgeStat ? (
+                    <div
+                      className={styles.whoBadgeCard}
+                      data-who-badge-stat="true"
+                      {...revealAttributes({ step: 3 })}
+                    >
+                      <p className={`${styles.whoBadgeNumber} t-stat-m`}>
+                        <CountUp value={whoBadgeStat.value} />
+                      </p>
+                      <p className={`${styles.whoBadgeLabel} t-body-s`}>{whoBadgeStat.label}</p>
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className={styles.whoContentCol} {...revealAttributes({ stagger: true })}>
+                  {whoEyebrow ? <Eyebrow label={whoEyebrow} tone="Light" /> : null}
+                  {whoTitle ? (
+                    <h2 className={`${styles.whoTitle} t-h2`}>
+                      {renderAccentHeading(whoTitle, 'who')}
+                    </h2>
+                  ) : null}
+                  {whoParagraphs.map((paragraph, idx) => (
+                    <p className={`${styles.whoParagraph} t-body-m`} key={`who-p-${String(idx)}`}>
+                      {paragraph}
+                    </p>
+                  ))}
+                  {whoButtonLabel ? (
+                    <div className={styles.whoButtonWrap}>
+                      <Button
+                        href={whoButtonHref ?? `/${locale}/about`}
+                        label={whoButtonLabel}
+                        link={whoWeAre?.button?.link}
+                        locale={locale}
+                        showArrow
+                        variant="Dark"
+                      />
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            </section>
+          ) : null}
+
+          {/* 3. Core Services Section (17:254) */}
+          {coreServicesEnabled && hasCoreServicesContent ? (
+            <section
+              className={styles.servicesSection}
+              data-home-section="core-services"
+              id="core-services"
+            >
+              <div className={styles.servicesStack}>
+                <div className={gridStyles.container}>
+                  <div className={styles.splitSectionHead} {...revealAttributes()}>
+                    <div className={styles.splitHeadLeft}>
+                      {coreServicesEyebrow ? (
+                        <Eyebrow label={coreServicesEyebrow} tone="Light" />
+                      ) : null}
+                      {coreServicesTitle ? (
+                        <h2 className={`${styles.sectionHeadingDark} t-h2`}>
+                          {renderAccentHeading(coreServicesTitle, 'services')}
+                        </h2>
+                      ) : null}
+                    </div>
+                    {coreServicesIntro ? (
+                      <p className={`${styles.servicesIntroText} t-body-m`}>{coreServicesIntro}</p>
+                    ) : null}
+                  </div>
+                </div>
+
+                {mainServices.length > 0 ? (
+                  <div className={styles.carouselOuter} {...revealAttributes({ step: 1 })}>
+                    <ServicesCarousel
+                      locale={locale}
+                      services={mainServices.map((s) => ({
+                        id: s.id,
+                        title: s.title,
+                        slug: s.slug,
+                        icon: s.icon,
+                        shortDescription: s.shortDescription,
+                        featured: s.featured,
+                      }))}
+                      viewAllHref={coreServicesButtonHref}
+                      viewAllLabel={coreServicesButtonLabel}
+                    />
+                  </div>
+                ) : null}
+              </div>
+            </section>
+          ) : null}
+
+          {/* 4. Interactive Systems Section (111:1608) */}
+          <InteractiveSystemsSection
+            companyName={companyName}
+            data={homePage?.interactiveSystems}
+            headClassNames={{
+              head: styles.splitSectionHead,
+              headLeft: styles.splitHeadLeft,
+              heading: styles.sectionHeadingDark,
+            }}
+            locale={locale}
+            renderHeading={(title) => renderAccentHeading(title, 'interactive')}
+          />
+
+          {/* 5. Trusted by Industry Leaders / Stats Section (18:285) */}
+          {statsEnabled && hasStatsContent ? (
+            <section
+              className={styles.statsSection}
+              data-home-section="stats"
+              data-theme="dark"
+              id="stats"
+            >
+              {statsBgImage ? (
+                <div aria-hidden="true" className={styles.statsBgLayer}>
+                  <CspSafeImage
+                    alt=""
+                    className={styles.statsBgImage}
+                    height={statsBgImage.height ?? 425}
+                    sizes="100vw"
+                    src={statsBgImage.url}
+                    width={statsBgImage.width ?? 1440}
+                  />
+                  <div className={styles.statsBgOverlay} />
                 </div>
               ) : null}
-            </div>
-          </section>
-        ) : null}
 
-        {/* 4. Interactive Systems Section (111:1608) */}
-        <InteractiveSystemsSection
-          companyName={companyName}
-          data={homePage?.interactiveSystems}
-          headClassNames={{
-            head: styles.splitSectionHead,
-            headLeft: styles.splitHeadLeft,
-            heading: styles.sectionHeadingDark,
-          }}
-          locale={locale}
-          renderHeading={(title) => renderAccentHeading(title, 'interactive')}
-        />
+              <div className={`${gridStyles.container} ${styles.statsStack}`}>
+                <div className={styles.statsHead} {...revealAttributes({ stagger: true })}>
+                  {statsTitle ? (
+                    <h2 className={`${styles.statsTitle} t-h2`}>{statsTitle}</h2>
+                  ) : null}
+                  {statsText ? (
+                    <p className={`${styles.statsSubtitle} t-body-l`}>{statsText}</p>
+                  ) : null}
+                  <div aria-hidden="true" className={styles.goldDivider} />
+                </div>
 
-        {/* 5. Trusted by Industry Leaders / Stats Section (18:285) */}
-        {statsEnabled && hasStatsContent ? (
-          <section
-            className={styles.statsSection}
-            data-home-section="stats"
-            data-theme="dark"
-            id="stats"
-          >
-            {statsBgImage ? (
-              <div aria-hidden="true" className={styles.statsBgLayer}>
-                <CspSafeImage
-                  alt=""
-                  className={styles.statsBgImage}
-                  height={statsBgImage.height ?? 425}
-                  sizes="100vw"
-                  src={statsBgImage.url}
-                  width={statsBgImage.width ?? 1440}
-                />
-                <div className={styles.statsBgOverlay} />
-              </div>
-            ) : null}
-
-            <div className={`${gridStyles.container} ${styles.statsStack}`}>
-              <div className={styles.statsHead} {...revealAttributes({ stagger: true })}>
-                {statsTitle ? <h2 className={`${styles.statsTitle} t-h2`}>{statsTitle}</h2> : null}
-                {statsText ? (
-                  <p className={`${styles.statsSubtitle} t-body-l`}>{statsText}</p>
-                ) : null}
-                <div aria-hidden="true" className={styles.goldDivider} />
-              </div>
-
-              <div className={styles.statsRow}>
-                {resolvedSectionStats.map((statDoc, idx) => {
-                  const { numberPart, suffixPart } = splitStatValueAndSuffix(statDoc.value)
-                  return (
-                    <div className={styles.statItemGroup} key={String(statDoc.id)}>
-                      {idx > 0 ? <div aria-hidden="true" className={styles.statDivider} /> : null}
-                      <div
-                        className={styles.statCol}
-                        data-stat-item={String(idx + 1)}
-                        {...revealAttributes({ step: idx })}
-                      >
-                        <p className={`${styles.statNumber} t-stat-number`}>
-                          <CountUp value={numberPart} />
-                          {suffixPart ? (
-                            <span className={styles.statSuffix}>{suffixPart}</span>
-                          ) : null}
-                        </p>
-                        <p className={`${styles.statLabel} t-body-m`}>{statDoc.label}</p>
+                <div className={styles.statsRow}>
+                  {resolvedSectionStats.map((statDoc, idx) => {
+                    const { numberPart, suffixPart } = splitStatValueAndSuffix(statDoc.value)
+                    return (
+                      <div className={styles.statItemGroup} key={String(statDoc.id)}>
+                        {idx > 0 ? <div aria-hidden="true" className={styles.statDivider} /> : null}
+                        <div
+                          className={styles.statCol}
+                          data-stat-item={String(idx + 1)}
+                          {...revealAttributes({ step: idx })}
+                        >
+                          <p className={`${styles.statNumber} t-stat-number`}>
+                            <CountUp value={numberPart} />
+                            {suffixPart ? (
+                              <span className={styles.statSuffix}>{suffixPart}</span>
+                            ) : null}
+                          </p>
+                          <p className={`${styles.statLabel} t-body-m`}>{statDoc.label}</p>
+                        </div>
                       </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
-            </div>
-          </section>
-        ) : null}
+            </section>
+          ) : null}
 
-        {/* 6. Featured Projects Section (18:308) */}
-        {featuredProjectsEnabled && hasFeaturedProjectsContent ? (
-          <section
-            className={styles.projectsSection}
-            data-home-section="featured-projects"
-            id="featured-projects"
-          >
-            <div className={`${gridStyles.container} ${styles.projectsStack}`}>
-              <div className={styles.centeredSectionHead} {...revealAttributes({ stagger: true })}>
-                {featuredProjectsEyebrow ? (
-                  <Eyebrow label={featuredProjectsEyebrow} tone="Light" />
+          {/* 6. Featured Projects Section (18:308) */}
+          {featuredProjectsEnabled && hasFeaturedProjectsContent ? (
+            <section
+              className={styles.projectsSection}
+              data-home-section="featured-projects"
+              id="featured-projects"
+            >
+              <div className={`${gridStyles.container} ${styles.projectsStack}`}>
+                <div
+                  className={styles.centeredSectionHead}
+                  {...revealAttributes({ stagger: true })}
+                >
+                  {featuredProjectsEyebrow ? (
+                    <Eyebrow label={featuredProjectsEyebrow} tone="Light" />
+                  ) : null}
+                  {featuredProjectsTitle ? (
+                    <h2 className={`${styles.sectionHeadingDark} t-h2`}>
+                      {renderAccentHeading(featuredProjectsTitle, 'projects')}
+                    </h2>
+                  ) : null}
+                  {featuredProjectsIntro ? (
+                    <p className={`${styles.centeredSectionIntro} t-body-l`}>
+                      {featuredProjectsIntro}
+                    </p>
+                  ) : null}
+                  <div aria-hidden="true" className={styles.goldDivider} />
+                </div>
+
+                {featuredProjectDocs.length > 0 ? (
+                  <div className={styles.projectsGrid} {...revealAttributes({ stagger: true })}>
+                    {featuredProjectDocs.map((projectDoc) => (
+                      <ProjectCard key={projectDoc.slug} locale={locale} project={projectDoc} />
+                    ))}
+                  </div>
                 ) : null}
-                {featuredProjectsTitle ? (
-                  <h2 className={`${styles.sectionHeadingDark} t-h2`}>
-                    {renderAccentHeading(featuredProjectsTitle, 'projects')}
+
+                {featuredProjectsButtonLabel ? (
+                  <Button
+                    href={featuredProjectsButtonHref}
+                    label={featuredProjectsButtonLabel}
+                    link={featuredProjects?.button?.link}
+                    locale={locale}
+                    showArrow
+                    variant="Dark"
+                  />
+                ) : null}
+              </div>
+            </section>
+          ) : null}
+
+          {/* 7. Trusted Partners Section (18:579) */}
+          {partnersEnabled && hasPartnersContent ? (
+            <section className={styles.partnersSection} data-home-section="partners" id="partners">
+              <div className={styles.partnersStack}>
+                <div className={gridStyles.container}>
+                  <div className={styles.partnersHead} {...revealAttributes({ stagger: true })}>
+                    {partnersEyebrow ? <Eyebrow label={partnersEyebrow} tone="Light" /> : null}
+                    {partnersTitle ? (
+                      <h2 className={`${styles.sectionHeadingDark} t-h2`}>{partnersTitle}</h2>
+                    ) : null}
+                    {partnersIntro ? (
+                      <p className={`${styles.centeredSectionIntro} t-body-l`}>{partnersIntro}</p>
+                    ) : null}
+                  </div>
+                </div>
+
+                <div className={styles.marqueeOuter} {...revealAttributes({ step: 1 })}>
+                  <LogoMarquee brands={marqueeBrands} locale={locale} />
+                </div>
+              </div>
+            </section>
+          ) : null}
+
+          {/* 8. CTA Section (18:660) */}
+          {ctaEnabled && hasCtaContent ? (
+            <section
+              className={styles.ctaSection}
+              data-home-section="cta"
+              data-theme="dark"
+              id="cta"
+            >
+              <div aria-hidden="true" className={styles.ctaBgLayer} data-motion-loop="">
+                {ctaBgImage ? (
+                  <CspSafeImage
+                    alt=""
+                    className={styles.ctaBgImage}
+                    height={484}
+                    sizes="100vw"
+                    src={ctaBgImage.url}
+                    width={1440}
+                  />
+                ) : null}
+                <div className={styles.ctaBgOverlay} />
+              </div>
+
+              <div aria-hidden="true" className={styles.ctaSquareTopStart} />
+              <div aria-hidden="true" className={styles.ctaSquareBottomStart} />
+              <div aria-hidden="true" className={styles.ctaSquareTopEnd} />
+              <div aria-hidden="true" className={styles.ctaSquareBottomEnd} />
+
+              <div className={styles.ctaContent} {...revealAttributes({ stagger: true })}>
+                {ctaTitle || ctaTitleAccent ? (
+                  <h2 className={`${styles.ctaTitle} t-display-l`}>
+                    {ctaTitle ? <span className={styles.blockLine}>{ctaTitle}</span> : null}
+                    {ctaTitle && ctaTitleAccent ? ' ' : null}
+                    {ctaTitleAccent ? (
+                      <span className={`${styles.blockLine} ${styles.goldText}`}>
+                        {ctaTitleAccent}
+                      </span>
+                    ) : null}
                   </h2>
                 ) : null}
-                {featuredProjectsIntro ? (
-                  <p className={`${styles.centeredSectionIntro} t-body-l`}>
-                    {featuredProjectsIntro}
-                  </p>
+
+                {ctaText ? <p className={`${styles.ctaSubtitle} t-body-l`}>{ctaText}</p> : null}
+
+                {ctaPrimaryLabel || ctaSecondaryLabel ? (
+                  <div className={styles.ctaButtonsRow}>
+                    {ctaPrimaryLabel ? (
+                      <Button
+                        href={ctaPrimaryHref}
+                        label={ctaPrimaryLabel}
+                        link={cta?.button?.link}
+                        locale={locale}
+                        showArrow
+                        variant="Gold"
+                      />
+                    ) : null}
+                    {ctaSecondaryLabel ? (
+                      <Button
+                        href={ctaSecondaryHref}
+                        label={ctaSecondaryLabel}
+                        link={cta?.secondaryButton?.link}
+                        locale={locale}
+                        showArrow={false}
+                        variant="Glass"
+                      />
+                    ) : null}
+                  </div>
                 ) : null}
-                <div aria-hidden="true" className={styles.goldDivider} />
               </div>
-
-              {featuredProjectDocs.length > 0 ? (
-                <div className={styles.projectsGrid} {...revealAttributes({ stagger: true })}>
-                  {featuredProjectDocs.map((projectDoc) => (
-                    <ProjectCard key={projectDoc.slug} locale={locale} project={projectDoc} />
-                  ))}
-                </div>
-              ) : null}
-
-              {featuredProjectsButtonLabel ? (
-                <Button
-                  href={featuredProjectsButtonHref}
-                  label={featuredProjectsButtonLabel}
-                  link={featuredProjects?.button?.link}
-                  locale={locale}
-                  showArrow
-                  variant="Dark"
-                />
-              ) : null}
-            </div>
-          </section>
-        ) : null}
-
-        {/* 7. Trusted Partners Section (18:579) */}
-        {partnersEnabled && hasPartnersContent ? (
-          <section className={styles.partnersSection} data-home-section="partners" id="partners">
-            <div className={styles.partnersStack}>
-              <div className={gridStyles.container}>
-                <div className={styles.partnersHead} {...revealAttributes({ stagger: true })}>
-                  {partnersEyebrow ? <Eyebrow label={partnersEyebrow} tone="Light" /> : null}
-                  {partnersTitle ? (
-                    <h2 className={`${styles.sectionHeadingDark} t-h2`}>{partnersTitle}</h2>
-                  ) : null}
-                  {partnersIntro ? (
-                    <p className={`${styles.centeredSectionIntro} t-body-l`}>{partnersIntro}</p>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className={styles.marqueeOuter} {...revealAttributes({ step: 1 })}>
-                <LogoMarquee brands={marqueeBrands} locale={locale} />
-              </div>
-            </div>
-          </section>
-        ) : null}
-
-        {/* 8. CTA Section (18:660) */}
-        {ctaEnabled && hasCtaContent ? (
-          <section className={styles.ctaSection} data-home-section="cta" data-theme="dark" id="cta">
-            <div aria-hidden="true" className={styles.ctaBgLayer} data-motion-loop="">
-              {ctaBgImage ? (
-                <CspSafeImage
-                  alt=""
-                  className={styles.ctaBgImage}
-                  height={484}
-                  sizes="100vw"
-                  src={ctaBgImage.url}
-                  width={1440}
-                />
-              ) : null}
-              <div className={styles.ctaBgOverlay} />
-            </div>
-
-            <div aria-hidden="true" className={styles.ctaSquareTopStart} />
-            <div aria-hidden="true" className={styles.ctaSquareBottomStart} />
-            <div aria-hidden="true" className={styles.ctaSquareTopEnd} />
-            <div aria-hidden="true" className={styles.ctaSquareBottomEnd} />
-
-            <div className={styles.ctaContent} {...revealAttributes({ stagger: true })}>
-              {ctaTitle || ctaTitleAccent ? (
-                <h2 className={`${styles.ctaTitle} t-display-l`}>
-                  {ctaTitle ? <span className={styles.blockLine}>{ctaTitle}</span> : null}
-                  {ctaTitle && ctaTitleAccent ? ' ' : null}
-                  {ctaTitleAccent ? (
-                    <span className={`${styles.blockLine} ${styles.goldText}`}>
-                      {ctaTitleAccent}
-                    </span>
-                  ) : null}
-                </h2>
-              ) : null}
-
-              {ctaText ? <p className={`${styles.ctaSubtitle} t-body-l`}>{ctaText}</p> : null}
-
-              {ctaPrimaryLabel || ctaSecondaryLabel ? (
-                <div className={styles.ctaButtonsRow}>
-                  {ctaPrimaryLabel ? (
-                    <Button
-                      href={ctaPrimaryHref}
-                      label={ctaPrimaryLabel}
-                      link={cta?.button?.link}
-                      locale={locale}
-                      showArrow
-                      variant="Gold"
-                    />
-                  ) : null}
-                  {ctaSecondaryLabel ? (
-                    <Button
-                      href={ctaSecondaryHref}
-                      label={ctaSecondaryLabel}
-                      link={cta?.secondaryButton?.link}
-                      locale={locale}
-                      showArrow={false}
-                      variant="Glass"
-                    />
-                  ) : null}
-                </div>
-              ) : null}
-            </div>
-          </section>
-        ) : null}
+            </section>
+          ) : null}
+        </div>
       </div>
-    </div>
+    </DraftImageBypassProvider>
   )
 }

@@ -1,8 +1,12 @@
+import fs from 'node:fs'
+import path from 'node:path'
+
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { describe, expect, it } from 'vitest'
 
 import { CountUp } from '@/components/CountUp'
+import { CspSafeImage, DraftImageBypassProvider } from '@/components/CspSafeImage'
 import { Reveal, revealAttributes } from '@/components/Reveal'
 import {
   clampStaggerIndex,
@@ -492,6 +496,60 @@ describe('P3-T14 motion system (docs/05-design.md CTO decision #20)', () => {
       expect(hasReachedRevealThreshold(0.1, 30, 900)).toBe(false)
       expect(hasReachedRevealThreshold(0.05, 135, 900)).toBe(true)
       expect(hasReachedRevealThreshold(0.05, 134, 900)).toBe(false)
+    })
+  })
+
+  describe('R-50 & R-51: draft-only image optimisation bypass and touch rest-state rules', () => {
+    it('R-50: CspSafeImage keeps Next.js image optimisation on public renders and bypasses only when DraftImageBypassProvider is enabled', () => {
+      const publicHtml = renderToStaticMarkup(
+        React.createElement(
+          DraftImageBypassProvider,
+          { enabled: false },
+          React.createElement(CspSafeImage, {
+            alt: 'Hero',
+            height: 600,
+            sizes: '100vw',
+            src: '/api/media/file/hero-city.webp',
+            width: 800,
+          }),
+        ),
+      )
+      expect(publicHtml).toContain('/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fhero-city.webp')
+      expect(publicHtml).toContain('srcSet=')
+
+      const draftHtml = renderToStaticMarkup(
+        React.createElement(
+          DraftImageBypassProvider,
+          { enabled: true },
+          React.createElement(CspSafeImage, {
+            alt: 'Hero',
+            height: 600,
+            sizes: '100vw',
+            src: '/api/media/file/hero-city.webp',
+            width: 800,
+          }),
+        ),
+      )
+      expect(draftHtml).toContain('src="/api/media/file/hero-city.webp"')
+      expect(draftHtml).not.toContain('/_next/image')
+    })
+
+    it('R-43 / R-51: ServiceCard.module.css and ProjectCard.module.css keep .description and .ctaRow visible at rest under @media (hover: none), (pointer: coarse)', () => {
+      const serviceCardCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/components/ServiceCard.module.css'),
+        'utf8',
+      )
+      expect(serviceCardCss).toMatch(
+        /@media\s*\(hover:\s*none\),\s*\(pointer:\s*coarse\)\s*\{[\s\S]*?\.title\s*\{\s*transform:\s*translateY\(0\);\s*\}[\s\S]*?\.description\s*\{\s*opacity:\s*0\.75;\s*transform:\s*translateY\(0\);\s*\}/,
+      )
+
+      const projectCardCss = fs.readFileSync(
+        path.resolve(process.cwd(), 'src/components/ProjectCard.module.css'),
+        'utf8',
+      )
+      expect(projectCardCss).toMatch(
+        /@media\s*\(hover:\s*none\),\s*\(pointer:\s*coarse\)\s*\{[\s\S]*?\.infoBlock\s*\{\s*transform:\s*translateY\(0\);\s*\}[\s\S]*?\.ctaRow\s*\{\s*opacity:\s*1;\s*transform:\s*translateY\(0\);\s*\}/,
+      )
     })
   })
 })

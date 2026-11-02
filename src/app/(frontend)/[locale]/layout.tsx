@@ -5,6 +5,7 @@ import { draftMode, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import type React from 'react'
 
+import { DraftImageBypassProvider } from '@/components/CspSafeImage'
 import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
 import { INTRO_PREPAINT_INLINE_SCRIPT, IntroSplash } from '@/components/IntroSplash'
 import { MotionRoot } from '@/components/MotionRoot'
@@ -452,6 +453,14 @@ export default async function LocaleRootLayout({
     }),
   ])
 
+  let isDraftMode = false
+  try {
+    const dm = await draftMode()
+    isDraftMode = dm.isEnabled
+  } catch {
+    isDraftMode = false
+  }
+
   return (
     <html lang={resolvedLocale} dir={dir} className={htmlFontClass} suppressHydrationWarning>
       <head>
@@ -473,7 +482,7 @@ export default async function LocaleRootLayout({
         </a>
         {headerNode}
         <main id="main-content" tabIndex={-1}>
-          {children}
+          <DraftImageBypassProvider enabled={isDraftMode}>{children}</DraftImageBypassProvider>
         </main>
         {footerNode}
         <MotionRoot />
