@@ -1,0 +1,77 @@
+
+Running 25 tests using 1 worker
+
+  ok  1 [chromium] › tests\e2e\admin-smoke.spec.ts:9:3 › Payload Admin Login Smoke (en LTR & ar RTL) › renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language (6.1s)
+  ok  2 [chromium] › tests\e2e\p3-t12.e2e.spec.ts:22:3 › P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5, R-7, R-9, R-10) › switch off redirects /ar -> 307 /en with no switcher and zero Arabic in 307/RSC bodies; admin toggle in /admin/globals/site-settings turns /ar live (200 RTL) with switcher (5.2s)
+  ok  3 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:153:3 › P3-T14 — Motion system: content never depends on JavaScript › with JavaScript disabled, every Home section and reveal target is visible and motion is off (2.0s)
+  ok  4 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:189:3 › P3-T14 — Motion system: content never depends on JavaScript › with every JS chunk blocked (no hydration), every reveal target is visible and motion is off (918ms)
+  ok  5 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:209:3 › P3-T14 — Motion system: content never depends on JavaScript › under prefers-reduced-motion, motion never turns on and no CSS animation is running (1.5s)
+  ok  6 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:254:3 › P3-T14 — Motion system: content never depends on JavaScript › with motion on, scrolling the whole Home page reveals every target and count-ups land on the CMS value (4.5s)
+  ok  7 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:313:5 › P3-T14 — Motion system: content never depends on JavaScript › R-42 fail-safe at 1440px: anchor jump (/en#cta), fast scroll to bottom, reload mid-page, and background tab leave no target hidden or clipped (10.2s)
+  ok  8 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:313:5 › P3-T14 — Motion system: content never depends on JavaScript › R-42 fail-safe at 390px: anchor jump (/en#cta), fast scroll to bottom, reload mid-page, and background tab leave no target hidden or clipped (10.1s)
+  x   9 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:407:3 › P3-T14 — Motion system: content never depends on JavaScript › R-43: at 390px with hasTouch, ServiceCard .description and ProjectCard .ctaRow are visible at rest (3.2s)
+  ok 10 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:486:3 › P3-T14 — Motion system: content never depends on JavaScript › R-44, R-45, R-48: hero entrance & bg settle pause under data-intro="active" and play when intro ends; ServiceTile uses :focus-visible without clipping focus ring (2.5s)
+  x  11 [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click (5.9s)
+  ok 12 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:239:3 › P3-T5 live 3D card › @smoke image first: the Figma image paints, hover changes nothing, a click starts (5.6s)
+  ok 13 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:270:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels (714ms)
+  ok 14 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:302:3 › P3-T5 live 3D card › a #systems hash on load enters that system without starting the model (2.1s)
+  ok 15 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:314:3 › P3-T5 live 3D card › O-7: the tap hint appears once the card is half on screen, never as a target, and starts nothing (3.7s)
+  ok 16 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:328:3 › P3-T5 live 3D card › O-7: the hint stops at once on hover, and never returns (15.6s)
+  ok 17 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:345:3 › P3-T5 live 3D card › O-7: the hint stops at once on a click (the click itself starts the model) (628ms)
+  ok 18 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:359:3 › P3-T5 live 3D card › O-7: under reduced motion the hand is shown still, once, and does not animate (16.9s)
+  ok 19 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:379:3 › P3-T5 live 3D card › O-8: after a reload with the hash, no frame shows an empty card (slow images) (2.8s)
+  ok 20 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:892:3 › P3-T5 live 3D card › O-9: at the top of the page nothing of the model is fetched (the card is far below) (3.5s)
+  ok 21 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:903:3 › P3-T5 live 3D card › O-9: with Save-Data nothing is prepared; a click shows the stills tier (3.6s)
+  ok 22 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1010:3 › P3-T5 live 3D card › O-11: under reduced motion the image never pushes in (2.2s)
+  ok 23 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1069:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier (1.3s)
+  ok 24 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1100:3 › P3-T5 live 3D card — software renderer › a software WebGL renderer ends in the stills tier, without a canvas or a 3D download (2.8s)
+  ok 25 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1138:3 › P3-T5 live 3D card — phone › O-6: every Fire dot of the still can be tapped at 390 px, and a tap starts nothing (2.1s)
+
+
+  1) [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:407:3 › P3-T14 — Motion system: content never depends on JavaScript › R-43: at 390px with hasTouch, ServiceCard .description and ProjectCard .ctaRow are visible at rest 
+
+    Error: expect(received).toBeGreaterThan(expected)
+
+    Expected: > 0
+    Received:   0
+
+      440 |     await page.goto(`${BASE_URL}/en/styleguide`, { waitUntil: 'networkidle' })
+      441 |     const serviceCards = page.locator('[data-component="service-card"][data-state="Default"]')
+    > 442 |     expect(await serviceCards.count()).toBeGreaterThan(0)
+          |                                        ^
+      443 |     await serviceCards.first().scrollIntoViewIfNeeded()
+      444 |
+      445 |     const serviceDescState = await serviceCards.first().evaluate((card) => {
+        at D:\jazira-verify\2026-11-02\p3t5d\tests\e2e\p3-t14-motion.e2e.spec.ts:442:40
+
+    Error Context: test-results\p3-t14-motion.e2e-P3-T14-—-9253b--ctaRow-are-visible-at-rest-chromium\error-context.md
+
+  2) [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator: locator('header[data-component="navbar"] button[aria-controls]').first()
+    Expected: "false"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveAttribute" locator('header[data-component="navbar"] button[aria-controls]').first() with timeout 5000ms
+      - waiting for locator('header[data-component="navbar"] button[aria-controls]').first()
+
+
+       9 |
+      10 |     const menuButton = page.locator('header[data-component="navbar"] button[aria-controls]').first()
+    > 11 |     await expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+         |                              ^
+      12 |
+      13 |     // 1. Open drawer via hamburger button click
+      14 |     await menuButton.click()
+        at D:\jazira-verify\2026-11-02\p3t5d\tests\e2e\p3-t2.e2e.spec.ts:11:30
+
+    Error Context: test-results\p3-t2.e2e-P3-T2-—-Shell-Pr-d61d1-and-language-switcher-click-chromium\error-context.md
+
+  2 failed
+    [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:407:3 › P3-T14 — Motion system: content never depends on JavaScript › R-43: at 390px with hasTouch, ServiceCard .description and ProjectCard .ctaRow are visible at rest 
+    [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click 
+  23 passed (2.0m)
