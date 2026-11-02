@@ -137,7 +137,16 @@ interface Fixture {
   mixes: number[]
 }
 
-function buildFixture(): Fixture {
+interface FixtureOptions {
+  /** O-12: the link budget's wait and its state, as createViewer passes them. */
+  compileRoom?: () => Promise<void>
+  compileFull?: () => boolean
+  /** Hotspots (with their anchor nodes) and extra opaque meshes. */
+  hotspots?: { name: string; system: SystemId; position: [number, number, number] }[]
+  meshes?: Mesh[]
+}
+
+function buildFixture(options: FixtureOptions = {}): Fixture {
   const scene = new Group()
   const nodes = new Map<string, Object3D>()
   const materials = new Map<string, MeshStandardMaterial>()
@@ -178,6 +187,12 @@ function buildFixture(): Fixture {
     },
   }
   scene.add(facade, stone, hvacEquipment)
+  for (const mesh of options.meshes ?? []) {
+    scene.add(mesh)
+  }
+  for (const hotspot of options.hotspots ?? []) {
+    addNode(hotspot.name, hotspot.position)
+  }
 
   const highlight = {
     hvac: new MeshStandardMaterial({ name: 'MAT_highlight_hvac' }),
@@ -230,7 +245,10 @@ function buildFixture(): Fixture {
     gltf,
     nodes,
     materials,
-    extras: EXTRAS,
+    extras: {
+      ...EXTRAS,
+      hotspots: (options.hotspots ?? []).map(({ name, system }) => ({ name, system, label: name })),
+    },
     camera,
     controls,
     heroQuaternion: new Quaternion(),
@@ -248,6 +266,8 @@ function buildFixture(): Fixture {
       compiles.push(job)
       return job.promise
     },
+    ...(options.compileRoom ? { compileRoom: options.compileRoom } : {}),
+    ...(options.compileFull ? { compileFull: options.compileFull } : {}),
     warm: () => {
       fixture.warmed += 1
       return Promise.resolve()
@@ -429,5 +449,88 @@ describe('P3-T5 O-5: the system light blend follows the flight, never the warm-u
     run(f.stage, now, 300)
     expect(f.stage.entered).toBeNull()
     expect(f.mixes.at(-1)).toBe(0)
+  })
+})
+
+describe('P3-T5 O-12: a system warm-up creates programs only while few are linking', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('waits for room before each compile, and compiles one object per task while full', async () => {
+    let open = deferred()
+    let rooms = 0
+    const f = buildFixture({
+      compileRoom: () => {
+        rooms += 1
+        return open.promise
+      },
+      compileFull: () => true,
+    })
+    void f.stage.prepare('hvac')
+    await settle()
+    expect(f.compiled).toEqual([])
+    // Room for one compile at a time: each call compiles a single object.
+    for (let i = 0; i < 10 && rooms > f.compiled.length; i += 1) {
+      const current = open
+      open = deferred()
+      current.resolve()
+      await settle()
+    }
+    expect(f.compiled.length).toBeGreaterThan(1)
+    expect(f.compiled.every((objects) => objects.length === 1)).toBe(true)
+    expect(rooms).toBeGreaterThanOrEqual(f.compiled.length)
+  })
+})
+
+describe('P3-T5 O-12: label occlusion rays are spread over frames', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllGlobals()
+  })
+
+  it('casts one ray per frame when each ray uses the frame budget; a label shows once found clear', async () => {
+    // CAM_hvac sits at (10, 20, 40) and looks down -z once entered. A wall hides the first anchor.
+    const wall = new Mesh(
+      new BoxGeometry(1, 1, 0.2),
+      new MeshStandardMaterial({ name: 'MAT_wall' }),
+    )
+    wall.position.set(10, 20, 35)
+    wall.updateMatrixWorld()
+    const f = buildFixture({
+      hotspots: [
+        { name: 'HOT_hvac_1', system: 'hvac', position: [10, 20, 30] },
+        { name: 'HOT_hvac_2', system: 'hvac', position: [12, 20, 30] },
+      ],
+      meshes: [wall],
+    })
+    f.stage.request('hvac')
+    const now = run(f.stage, 0, 60)
+    await settle()
+    finishCompiles(f)
+    await settle()
+    run(f.stage, now, 300)
+    expect(f.stage.entered).toBe('hvac')
+    // Every clock read moves 10 ms on: past the frame budget after the first ray.
+    let clock = 1_000_000
+    vi.spyOn(performance, 'now').mockImplementation(() => (clock += 10))
+    const raycast = vi.spyOn(wall, 'raycast')
+
+    const first = f.stage.labels(400, 400)
+    expect(raycast).toHaveBeenCalledTimes(1)
+    // Not yet checked means not shown.
+    expect(first?.map((l) => l.visible)).toEqual([false, false])
+    const second = f.stage.labels(400, 400)
+    expect(raycast).toHaveBeenCalledTimes(2)
+    expect(second?.map((l) => l.visible)).toEqual([false, true])
+    // Both checked: no ray until the next round.
+    f.stage.labels(400, 400)
+    expect(raycast).toHaveBeenCalledTimes(2)
   })
 })

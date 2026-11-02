@@ -208,13 +208,14 @@ function bundle(): string {
 
 const pageHtml = (
   spacerPx: number,
+  holdLoad = false,
 ): string => `<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><style>
   [data-interactive-3d-card] { position: relative; display: block; width: 600px; height: 580px; overflow: hidden; }
   [data-interactive-3d-card] img { display: block; width: 100%; height: 100%; }
   [data-interactive-3d-card] canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
   /* As the CSS module does: the tap hint is never a target (O-7). */
   [data-tap-hint] { position: absolute; pointer-events: none; }
-</style></head><body><div id="spacer" style="height: ${String(spacerPx)}px"></div><div id="mount"></div></body></html>`
+</style></head><body>${holdLoad ? '<img id="held" alt="" src="/held.png">' : ''}<div id="spacer" style="height: ${String(spacerPx)}px"></div><div id="mount"></div><div style="height: 2000px"></div></body></html>`
 
 interface ViewerLog {
   /** Viewers created: prepared near the viewport (O-9) or started by a click; never more than one. */
@@ -227,9 +228,14 @@ interface ViewerLog {
 
 /** A real Chromium page with the explorer mounted (`hash` is the URL hash on load). */
 async function withExplorer(
-  run: (page: Page, errors: string[]) => Promise<void>,
+  run: (page: Page, errors: string[], releaseLoad: () => void) => Promise<void>,
   hash = '',
-  options: { spacerPx?: number; saveData?: boolean; viewerFails?: boolean } = {},
+  options: {
+    spacerPx?: number
+    saveData?: boolean
+    viewerFails?: boolean
+    holdLoad?: boolean
+  } = {},
 ): Promise<void> {
   const script = bundle()
   const browser = await chromium.launch({ headless: true })
@@ -257,18 +263,30 @@ async function withExplorer(
       route.fulfill({
         status: 200,
         contentType: 'text/html',
-        body: pageHtml(options.spacerPx ?? 0),
+        body: pageHtml(options.spacerPx ?? 0, options.holdLoad === true),
       }),
     )
+    // Q6: an image that arrives only when the test says, so the page's load event waits for it.
+    let releaseLoad = (): void => undefined
+    const held = new Promise<void>((resolve) => {
+      releaseLoad = resolve
+    })
+    await context.route(`${ORIGIN}/held.png`, async (route) => {
+      await held
+      await route.fulfill({ status: 404, body: '' })
+    })
     const page = await context.newPage()
     const errors: string[] = []
     page.on('pageerror', (err) => errors.push(err.message))
-    await page.goto(`${ORIGIN}/en${hash}`)
+    await page.goto(`${ORIGIN}/en${hash}`, {
+      waitUntil: options.holdLoad === true ? 'domcontentloaded' : 'load',
+    })
     await page.addScriptTag({ content: script })
     await page.evaluate(() => {
       ;(window as unknown as { __mount: () => void }).__mount()
     })
-    await run(page, errors)
+    await run(page, errors, releaseLoad)
+    releaseLoad()
   } finally {
     await browser.close()
   }
@@ -553,6 +571,45 @@ describe('P3-T5 round 4 (O-9): the model is prepared before the click, and shown
       },
       '',
       { viewerFails: true },
+    )
+  })
+})
+
+describe('P3-T5 Q6: preparation starts after the load event, two viewports out once the visitor scrolls (real React, real Chromium)', () => {
+  it('nothing is prepared before the page has loaded, even with the card in view; then it is', async () => {
+    await withExplorer(
+      async (page, _errors, releaseLoad) => {
+        expect(await page.evaluate(() => document.readyState)).not.toBe('complete')
+        await page.waitForTimeout(1_500)
+        expect((await viewerLog(page)).created).toBe(0)
+        releaseLoad()
+        await expect.poll(() => page.evaluate(() => document.readyState)).toBe('complete')
+        await expect.poll(async () => (await viewerLog(page)).created).toBe(1)
+        expect((await viewerLog(page)).shown).toBe(0)
+      },
+      '',
+      { holdLoad: true },
+    )
+  })
+
+  it('within two viewports but out of view, nothing is prepared until the visitor scrolls', async () => {
+    await withExplorer(
+      async (page) => {
+        const card = page.locator('[data-interactive-3d-card]')
+        // The card starts one viewport (900 px) below the fold: inside the two-viewport margin.
+        await page.waitForTimeout(1_500)
+        expect((await viewerLog(page)).created).toBe(0)
+        // A small scroll, the card still out of view.
+        await page.mouse.wheel(0, 200)
+        await expect.poll(() => page.evaluate(() => window.scrollY)).toBeGreaterThan(0)
+        const top = await card.evaluate((el) => el.getBoundingClientRect().top)
+        expect(top).toBeGreaterThan(900)
+        await expect.poll(async () => (await viewerLog(page)).created).toBe(1)
+        expect((await viewerLog(page)).shown).toBe(0)
+        expect(await card.locator('canvas').count()).toBe(0)
+      },
+      '',
+      { spacerPx: 1_800 },
     )
   })
 })
