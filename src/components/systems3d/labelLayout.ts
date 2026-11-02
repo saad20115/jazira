@@ -63,3 +63,60 @@ export function anchorClear(x: number, y: number, obstacles: readonly Rect[]): b
   }
   return !obstacles.some((o) => o.w > 0 && o.h > 0 && overlaps(target, o))
 }
+
+/**
+ * O-6 (owner review 2026-11-02): the smallest distance between two hotspot dot centres. Two dots this
+ * far apart keep their 24 px target circles apart (WCAG 2.5.8), and the 44 px tap area of one never
+ * covers the other dot, so every dot can be tapped (the Fire pumps under the jockey pump on phones).
+ */
+export const MIN_DOT_SPACING = 28
+
+const SPREAD_PASSES = 8
+
+/**
+ * Moves dots that are closer than `MIN_DOT_SPACING` apart, each pair by half the shortfall along the
+ * line between them (a few passes), kept inside the card. Dots already far enough apart stay where
+ * they are; the order of the input is kept.
+ */
+export function spreadDots(
+  points: readonly { x: number; y: number }[],
+  cardWidth: number,
+  cardHeight: number,
+): { x: number; y: number }[] {
+  const out = points.map(({ x, y }) => ({ x, y }))
+  const clamp = (value: number, max: number): number =>
+    Math.min(Math.max(value, MARGIN), Math.max(MARGIN, max - MARGIN))
+  for (let pass = 0; pass < SPREAD_PASSES; pass += 1) {
+    let moved = false
+    for (let i = 0; i < out.length; i += 1) {
+      for (let j = i + 1; j < out.length; j += 1) {
+        const a = out[i]
+        const b = out[j]
+        let dx = b.x - a.x
+        let dy = b.y - a.y
+        let distance = Math.hypot(dx, dy)
+        if (distance >= MIN_DOT_SPACING) {
+          continue
+        }
+        if (distance < 0.01) {
+          // Same spot: split them vertically, the later one below.
+          dx = 0
+          dy = 1
+          distance = 1
+        }
+        const push = (MIN_DOT_SPACING - distance) / 2
+        const ux = dx / distance
+        const uy = dy / distance
+        a.x = clamp(a.x - ux * push, cardWidth)
+        a.y = clamp(a.y - uy * push, cardHeight)
+        b.x = clamp(b.x + ux * push, cardWidth)
+        b.y = clamp(b.y + uy * push, cardHeight)
+        moved = true
+      }
+    }
+    if (!moved) {
+      break
+    }
+  }
+  return out
+}

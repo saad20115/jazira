@@ -70,9 +70,9 @@
   block-size: 100%;
 }
 
-/* Live 3D (P3-T5): the canvas exists only once JS created it, above the still, and fades in only
-   after its first frame. The still under it is never hidden. Durations follow docs/05-design.md §20
-   (motion-slow 600 ms, ease-in-out) until the motion tokens land in tokens.css. */
+/* Live 3D (P3-T5): the canvas exists only once JS created it, above the image, and cross-fades in
+   only after its first frame (O-4, docs/05-design.md §21: 500 ms, so there is no blank frame;
+   instant under reduced motion). The image under it is never hidden; the card size never changes. */
 .liveCanvas {
   position: absolute;
   inset: 0;
@@ -82,7 +82,12 @@
   block-size: 100%;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 600ms cubic-bezier(0.65, 0, 0.35, 1);
+  transition: opacity 500ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+/* O-2: a click or tap on the image starts the model. */
+.buildingCard[data-viewer-state='still'] {
+  cursor: pointer;
 }
 
 .buildingCard[data-viewer-state='live'] .liveCanvas {
@@ -228,8 +233,9 @@
   text-decoration: none;
 }
 
-/* Card controls (bottom inline-start, where the design puts "Open the live 3D model"): the main
-   button, then zoom in/out, reset and Done. Glyphs come from CSS so JSX holds no literal text. */
+/* Card controls (bottom inline-start, where the design puts "Open the live 3D model"). O-3: that
+   button before the start, "Exit system" inside a system, and one "reset view" once live. The glyph
+   comes from CSS so JSX holds no literal text. */
 .cardControls {
   position: absolute;
   inset-block-end: 22px;
@@ -263,32 +269,13 @@
   line-height: 1;
 }
 
-.viewControlZoomIn::before {
-  content: '+';
-}
-
-.viewControlZoomOut::before {
-  content: '\2212';
-}
-
 .viewControlReset::before {
   content: '\21BA';
 }
 
-.viewControl:focus-visible,
-.doneButton:focus-visible {
+.viewControl:focus-visible {
   outline: 2px solid var(--gold-300);
   outline-offset: 2px;
-}
-
-.doneButton {
-  min-block-size: 44px;
-  padding-inline: var(--space-16);
-  border-radius: var(--radius-pill);
-  border: 0;
-  background-color: var(--gold-500);
-  color: var(--navy-950);
-  cursor: pointer;
 }
 
 .dragHint {
@@ -399,29 +386,6 @@
 .systemDescription {
   margin: 0;
   color: var(--text-body);
-}
-
-.showIn3dButton {
-  display: inline-flex;
-  align-items: center;
-  min-block-size: 44px;
-  margin-block-start: var(--space-12);
-  padding-block: var(--space-8);
-  padding-inline: var(--space-16);
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--gold-500);
-  background-color: var(--white);
-  color: var(--navy-950);
-  cursor: pointer;
-}
-
-.showIn3dButton[aria-pressed='true'] {
-  background-color: var(--gold-500);
-}
-
-.showIn3dButton:focus-visible {
-  outline: 2px solid var(--navy-950);
-  outline-offset: 2px;
 }
 
 .relatedProjectsRow {

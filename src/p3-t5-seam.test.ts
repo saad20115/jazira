@@ -77,6 +77,19 @@ describe('P3-T5 M1 seam: InteractiveSystemsSection', () => {
     expect(html).toContain('alt="Tower render"')
   })
 
+  it('O-1: the poster is the Figma image through Next image optimisation, lazy, never the release still', () => {
+    const html = render()
+    const poster = /<img [^>]*alt="Tower render"[^>]*>/.exec(html)?.[0] ?? ''
+    expect(poster).toContain('tower-render.png')
+    expect(poster).toContain('/_next/image?url=')
+    expect(poster).toContain('srcSet="')
+    expect(poster).toContain('loading="lazy"')
+    expect(poster).not.toContain('style=')
+    expect(html).not.toContain('/stills/hero_')
+    // No "Show in 3D" in the rows (O-3): the system card itself enters and starts the model.
+    expect(html).not.toContain('data-show-in-3d')
+  })
+
   it('renders one numbered accordion item per system, the first one expanded', () => {
     const html = render()
     expect(html.match(/data-accordion-state="/g)).toHaveLength(3)

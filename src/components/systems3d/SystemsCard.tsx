@@ -3,6 +3,7 @@
 import {
   type FocusEvent,
   type KeyboardEvent,
+  type MouseEvent,
   type PointerEvent,
   type ReactElement,
   type ReactNode,
@@ -40,7 +41,7 @@ const START_TIMEOUT_MS = 45_000
 /** Phones render at most this many frames per second (§8c). */
 const PHONE_MAX_FPS = 30
 
-/** Keyboard steps (card focused): arrows orbit, +/- zoom. */
+/** Keyboard steps (card focused): arrows orbit, +/- zoom (the wheel and pinch zoom too). */
 const KEY_ROTATE = 0.15
 const KEY_ZOOM_IN = 0.85
 const KEY_ZOOM_OUT = 1 / KEY_ZOOM_IN
@@ -57,7 +58,7 @@ function endStillSrcSet(system: SystemId, format: 'webp' | 'jpg'): string {
 }
 
 export interface SystemsCardProps {
-  /** The server-rendered poster (the CAM_hero still). */
+  /** The server-rendered poster (the Figma image, O-1). */
   children: ReactNode
   className: string
   badgeLabel: string
@@ -71,6 +72,8 @@ export interface SystemsCardProps {
   onSelectRow: (index: number) => void
   /** The related-projects panel of the entered system (suspends on its own until the data arrives). */
   relatedPanel: ReactNode
+  /** Increases on each system the visitor picks; each increase starts the model (O-2). */
+  startSignal: number
   strings: Systems3dStrings
 }
 
@@ -131,6 +134,7 @@ export function SystemsCard({
   onExitSystem,
   onSelectRow,
   relatedPanel,
+  startSignal,
   strings,
 }: SystemsCardProps): ReactElement {
   const hydrated = useHydrated()
@@ -144,6 +148,11 @@ export function SystemsCard({
   const [liveTier, setLiveTier] = useState<ModelTier | 'low' | null>(null)
   const [session, setSession] = useState(0)
   const [active, setActive] = useState(false)
+  /** The same value as `active`, for the viewer callbacks that run before React re-renders. */
+  const activeRef = useRef(false)
+  /** A start from the card itself (image, button, Enter/Space) activates the card once it is live. */
+  const activateOnLiveRef = useRef(false)
+  const prefetchedRef = useRef(false)
   const [hint, setHint] = useState(false)
   const hintShownRef = useRef(false)
   const labelSinkRef = useRef<LiveLabelSink | null>(null)
@@ -152,18 +161,50 @@ export function SystemsCard({
     enteredRef.current = entered
   }, [entered])
 
-  const startLive = useCallback((): void => {
-    if (phase !== 'still') {
-      return
+  /** Active: the card takes the wheel and one-finger drag (the first time, with the drag hint). */
+  const setActiveNow = useCallback((value: boolean): void => {
+    activeRef.current = value
+    setActive(value)
+    viewerRef.current?.setActive(value)
+    if (value && !hintShownRef.current) {
+      hintShownRef.current = true
+      setHint(true)
     }
-    if (decideStart(readDeviceCaps()) === 'stills') {
-      setFallbackReason('device')
-      setPhase('stills')
-      return
+  }, [])
+
+  /**
+   * O-2: the model starts only from a click, a tap or a key (never hover or focus). A start from the
+   * card itself also activates it once live, except on touch, where the page keeps the one-finger
+   * scroll until a second tap.
+   */
+  const startLive = useCallback(
+    (fromCard: boolean): void => {
+      if (phase !== 'still') {
+        return
+      }
+      const caps = readDeviceCaps()
+      if (decideStart(caps) === 'stills') {
+        setFallbackReason('device')
+        setPhase('stills')
+        return
+      }
+      activateOnLiveRef.current = fromCard && !caps.coarsePointer
+      setPhase('loading')
+      setSession((n) => n + 1)
+    },
+    [phase],
+  )
+
+  // A system picked in the accordion (or with keys 1–5) starts the model too (O-2).
+  const startLiveRef = useRef(startLive)
+  useEffect(() => {
+    startLiveRef.current = startLive
+  }, [startLive])
+  useEffect(() => {
+    if (startSignal > 0) {
+      startLiveRef.current(false)
     }
-    setPhase('loading')
-    setSession((n) => n + 1)
-  }, [phase])
+  }, [startSignal])
 
   // One viewer per session; it lives until a failure or unmount (aborting disposes it).
   useEffect(() => {
@@ -179,6 +220,7 @@ export function SystemsCard({
       window.clearTimeout(timeout)
       controller.abort()
       viewerRef.current = null
+      activeRef.current = false
       setActive(false)
       setFallbackReason(reason)
       setPhase('stills')
@@ -205,6 +247,10 @@ export function SystemsCard({
             firstFrame = true
             window.clearTimeout(timeout)
             setPhase('live')
+            if (activateOnLiveRef.current) {
+              activateOnLiveRef.current = false
+              setActiveNow(true)
+            }
           },
           onFailure: fallBack,
           onLowTier: () => {
@@ -222,6 +268,9 @@ export function SystemsCard({
         if (enteredRef.current) {
           handle.setSystem(enteredRef.current)
         }
+        if (activeRef.current) {
+          handle.setActive(true)
+        }
       })
       .catch((err: unknown) => {
         if (!controller.signal.aborted) {
@@ -233,7 +282,7 @@ export function SystemsCard({
       controller.abort()
       viewerRef.current = null
     }
-  }, [session])
+  }, [session, setActiveNow])
 
   // The live view follows the entered system (camera flight); the stills overlay covers the rest.
   useEffect(() => {
@@ -244,14 +293,9 @@ export function SystemsCard({
 
   const activate = useCallback((): void => {
     if (phase === 'live' && !active) {
-      setActive(true)
-      viewerRef.current?.setActive(true)
-      if (!hintShownRef.current) {
-        hintShownRef.current = true
-        setHint(true)
-      }
+      setActiveNow(true)
     }
-  }, [phase, active])
+  }, [phase, active, setActiveNow])
 
   useEffect(() => {
     if (!hint) {
@@ -266,9 +310,8 @@ export function SystemsCard({
   }, [hint])
 
   const deactivate = useCallback((): void => {
-    setActive(false)
-    viewerRef.current?.setActive(false)
-  }, [])
+    setActiveNow(false)
+  }, [setActiveNow])
 
   // While active: a press outside the card or Escape hands the wheel and one-finger drag back.
   useEffect(() => {
@@ -294,31 +337,52 @@ export function SystemsCard({
     }
   }, [active, deactivate])
 
+  // Hover never changes what is shown (O-2); a mouse over the card only fetches the viewer code.
   const onPointerEnter = (event: PointerEvent<HTMLDivElement>): void => {
-    if (event.pointerType === 'mouse') {
-      startLive()
+    if (event.pointerType !== 'mouse' || prefetchedRef.current || phase !== 'still') {
+      return
+    }
+    prefetchedRef.current = true
+    if (decideStart(readDeviceCaps()) === 'live') {
+      import('./viewer/createViewer').catch(() => undefined)
     }
   }
   const onFocus = (event: FocusEvent<HTMLDivElement>): void => {
-    // Keyboard focus is intent; a tap on a button inside the card (exit, a label dot) is not, so a
-    // phone downloads the model only from the "Explore in 3D" button (§8c).
-    if (event.target instanceof Element && event.target.matches(':focus-visible')) {
-      startLive()
-    }
     if (event.target === event.currentTarget) {
       activate()
     }
   }
-  const onOpen = (): void => {
-    startLive()
-    activate()
+  // A click or tap on the image starts the model; once live, it activates the card. Buttons and
+  // links inside the card (exit, reset, label dots, related projects) do neither.
+  const onClick = (event: MouseEvent<HTMLDivElement>): void => {
+    if (
+      event.target instanceof Element &&
+      event.target !== event.currentTarget &&
+      event.target.closest('button, a') !== null
+    ) {
+      return
+    }
+    if (phase === 'still') {
+      startLive(true)
+    } else {
+      activate()
+    }
+  }
+  const onOpen = (event: MouseEvent<HTMLButtonElement>): void => {
+    event.stopPropagation()
+    startLive(true)
   }
 
-  // Keyboard (card focused): arrows rotate, +/- zoom, 0 resets, 1-5 enter systems, Escape exits the
-  // system first and then deactivates. Keys are handled only on the card itself, never on its
-  // buttons or links, so page keyboard navigation is untouched.
+  // Keyboard (card focused): Enter or Space starts the model; arrows rotate, +/- zoom, 0 resets,
+  // 1-5 enter systems, Escape exits the system first and then deactivates. Keys are handled only on
+  // the card itself, never on its buttons or links, so page keyboard navigation is untouched.
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>): void => {
     if (event.target !== event.currentTarget) {
+      return
+    }
+    if ((event.key === 'Enter' || event.key === ' ') && phase === 'still') {
+      event.preventDefault()
+      startLive(true)
       return
     }
     const viewer = phase === 'live' ? viewerRef.current : null
@@ -379,7 +443,8 @@ export function SystemsCard({
   }
 
   const showCanvas = phase === 'loading' || phase === 'live'
-  const showLiveControls = hydrated && phase !== 'stills'
+  /** O-3: the badge and "Open the live 3D model" only until the model is live (as in Figma). */
+  const showStartControls = hydrated && (phase === 'still' || phase === 'loading')
 
   return (
     <div
@@ -391,12 +456,12 @@ export function SystemsCard({
       data-viewer-fallback={phase === 'stills' ? (fallbackReason ?? undefined) : undefined}
       data-viewer-state={phase}
       data-viewer-tier={phase === 'live' ? (liveTier ?? undefined) : undefined}
-      onClick={activate}
+      onClick={onClick}
       onFocus={onFocus}
       onKeyDown={onKeyDown}
       onPointerEnter={onPointerEnter}
       ref={cardRef}
-      tabIndex={phase === 'live' ? 0 : undefined}
+      tabIndex={hydrated && phase !== 'stills' ? 0 : undefined}
     >
       <div aria-hidden={phase === 'live' ? true : undefined} className={styles.poster}>
         {children}
@@ -429,13 +494,13 @@ export function SystemsCard({
           <StillLabels cardRef={cardRef} strings={strings} system={entered} />
         </div>
       ) : null}
-      {showLiveControls && !entered ? (
+      {showStartControls && !entered ? (
         <span className={`${styles.liveModelBadge} t-label-caps`}>
           <CubeIcon aria-hidden="true" className={styles.liveModelBadgeIcon} />
           {badgeLabel}
         </span>
       ) : null}
-      {entered || showLiveControls ? (
+      {entered || showStartControls || phase === 'live' ? (
         <div className={styles.cardControls} data-label-obstacle="true">
           {entered ? (
             <button
@@ -449,7 +514,8 @@ export function SystemsCard({
             >
               {strings.exitSystem}
             </button>
-          ) : (
+          ) : null}
+          {showStartControls && !entered ? (
             <button
               className={`${styles.openModelButton} t-label-button`}
               data-open-3d-model="true"
@@ -459,50 +525,18 @@ export function SystemsCard({
               {phoneLayout ? strings.exploreIn3d : openLabel}
               <ArrowUpRightIcon aria-hidden="true" />
             </button>
-          )}
+          ) : null}
           {phase === 'live' ? (
-            <>
-              <button
-                aria-label={strings.zoomIn}
-                className={`${styles.viewControl} ${styles.viewControlZoomIn}`}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  viewerRef.current?.zoomBy(KEY_ZOOM_IN)
-                }}
-                type="button"
-              />
-              <button
-                aria-label={strings.zoomOut}
-                className={`${styles.viewControl} ${styles.viewControlZoomOut}`}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  viewerRef.current?.zoomBy(KEY_ZOOM_OUT)
-                }}
-                type="button"
-              />
-              <button
-                aria-label={strings.resetView}
-                className={`${styles.viewControl} ${styles.viewControlReset}`}
-                onClick={(event) => {
-                  event.stopPropagation()
-                  viewerRef.current?.resetView()
-                }}
-                type="button"
-              />
-              {active ? (
-                <button
-                  className={`${styles.doneButton} t-label-button`}
-                  data-done="true"
-                  onClick={(event) => {
-                    event.stopPropagation()
-                    deactivate()
-                  }}
-                  type="button"
-                >
-                  {strings.done}
-                </button>
-              ) : null}
-            </>
+            <button
+              aria-label={strings.resetView}
+              className={`${styles.viewControl} ${styles.viewControlReset}`}
+              data-reset-view="true"
+              onClick={(event) => {
+                event.stopPropagation()
+                viewerRef.current?.resetView()
+              }}
+              type="button"
+            />
           ) : null}
         </div>
       ) : null}

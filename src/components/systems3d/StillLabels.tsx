@@ -3,7 +3,7 @@
 import { type ReactElement, type RefObject, useEffect, useRef, useState } from 'react'
 
 import { ContractError, parseStillHotspots, type StillHotspot, type SystemId } from './contract'
-import { anchorClear, choosePillSpot, type Rect } from './labelLayout'
+import { anchorClear, choosePillSpot, type Rect, spreadDots } from './labelLayout'
 import styles from './InteractiveSystemsSection.module.css'
 import { HotspotItem } from './HotspotItem'
 import { RELEASE_BASE_PATH } from './renderContract'
@@ -66,16 +66,26 @@ export function StillLabels({ system, cardRef, strings }: StillLabelsProps): Rea
         return { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height }
       })
       const placed: Rect[] = []
-      const ordered = [...points].sort((a, b) => a.y - b.y)
+      const ordered = [...points]
+        .sort((a, b) => a.y - b.y)
+        .map((point) => ({
+          name: point.name,
+          x: point.x * side - (side - width) / 2,
+          y: point.y * side - (side - height) / 2,
+        }))
+      // O-6: dots of nearby anchors are spread apart so each one can be tapped.
+      const inFrame = ordered.filter(({ x, y }) => x >= 0 && x <= width && y >= 0 && y <= height)
+      const spread = spreadDots(inFrame, width, height)
+      const dotAt = new Map(inFrame.map((point, i) => [point.name, spread[i] ?? point]))
       for (const point of ordered) {
         const anchor = anchorRefs.current.get(point.name)
         const pill = pillRefs.current.get(point.name)
+        const dot = dotAt.get(point.name)
         if (!anchor || !pill) {
           continue
         }
-        const x = point.x * side - (side - width) / 2
-        const y = point.y * side - (side - height) / 2
-        const inside = x >= 0 && x <= width && y >= 0 && y <= height && anchorClear(x, y, obstacles)
+        const { x, y } = dot ?? point
+        const inside = dot !== undefined && anchorClear(x, y, obstacles)
         anchor.style.setProperty('translate', `${x.toFixed(1)}px ${y.toFixed(1)}px`)
         anchor.style.setProperty('visibility', inside ? 'visible' : 'hidden')
         const w = pill.offsetWidth

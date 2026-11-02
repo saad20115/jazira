@@ -4,7 +4,7 @@ import { type ReactElement, type RefObject, useCallback, useEffect, useRef, useS
 
 import styles from './InteractiveSystemsSection.module.css'
 import { HotspotItem } from './HotspotItem'
-import { anchorClear, choosePillSpot, type Rect } from './labelLayout'
+import { anchorClear, choosePillSpot, type Rect, spreadDots } from './labelLayout'
 import { HOTSPOT_LABEL_IDS, type HotspotLabelId, type Systems3dStrings } from './strings'
 import type { ProjectedLabel } from './viewer/systemStage'
 
@@ -45,22 +45,28 @@ export function LiveLabels({ cardRef, sinkRef, strings }: LiveLabelsProps): Reac
         return { x: r.left - box.left, y: r.top - box.top, w: r.width, h: r.height }
       })
       const placed: Rect[] = []
-      for (const label of [...labels].sort((a, b) => a.y - b.y)) {
+      const sorted = [...labels].sort((a, b) => a.y - b.y)
+      // O-6: dots of nearby anchors are spread apart so each one can be tapped.
+      const inFrame = sorted.filter((label) => label.visible)
+      const spread = spreadDots(inFrame, box.width, box.height)
+      const dotAt = new Map(inFrame.map((label, i) => [label.name, spread[i] ?? label]))
+      for (const label of sorted) {
         const anchor = anchorRefs.current.get(label.name)
         const pill = pillRefs.current.get(label.name)
         if (!anchor || !pill) {
           continue
         }
-        const shown = label.visible && anchorClear(label.x, label.y, obstacles)
-        anchor.style.setProperty('translate', `${label.x.toFixed(1)}px ${label.y.toFixed(1)}px`)
+        const { x, y } = dotAt.get(label.name) ?? label
+        const shown = label.visible && anchorClear(x, y, obstacles)
+        anchor.style.setProperty('translate', `${x.toFixed(1)}px ${y.toFixed(1)}px`)
         anchor.style.setProperty('visibility', shown ? 'visible' : 'hidden')
         const w = pill.offsetWidth
         const h = pill.offsetHeight
         const spot = shown
-          ? choosePillSpot(label.x, label.y, w, h, box.width, box.height, [...obstacles, ...placed])
+          ? choosePillSpot(x, y, w, h, box.width, box.height, [...obstacles, ...placed])
           : null
         if (spot) {
-          placed.push({ x: label.x + spot.dx, y: label.y + spot.dy, w, h })
+          placed.push({ x: x + spot.dx, y: y + spot.dy, w, h })
           pill.style.setProperty('translate', `${spot.dx.toFixed(1)}px ${spot.dy.toFixed(1)}px`)
         }
         pill.style.setProperty('opacity', spot ? '1' : '0')

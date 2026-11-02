@@ -1,30 +1,26 @@
 import type React from 'react'
 
+import { CspSafeImage } from '@/components/CspSafeImage'
 import { Eyebrow } from '@/components/Eyebrow'
 import { resolveMediaAsset } from '@/components/media-utils'
 import { getDictionary, type SupportedLocale } from '@/i18n'
 import type { HomePage } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
+import towerRender from '../../../design/assets/images/tower-render.png'
+
 import { isSystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
 import { loadRelatedProjects } from './loadRelatedProjects'
-import { RELEASE_BASE_PATH } from './renderContract'
 import { getSystems3dStrings } from './strings'
 import { type ExplorerSystem, SystemsExplorer, type SystemsExplorerProps } from './SystemsExplorer'
 
 type InteractiveSystemsData = HomePage['interactiveSystems']
 type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['systems']>[number]
 
-const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
 const POSTER_SIZES = '(max-width: 1279px) 100vw, 600px'
-const POSTER_WIDTHS = [828, 1440, 2048] as const
-
-function posterSrcSet(format: 'webp' | 'jpg'): string {
-  return POSTER_WIDTHS.map((w) => `${STILLS_PATH}/hero_${String(w)}.${format} ${String(w)}w`).join(
-    ', ',
-  )
-}
+/** The Figma image's own size (`design/assets/images/tower-render.png`, square). */
+const POSTER_SIZE = 1024
 
 /** Class names of the split section head shared with other home sections (stay in `page.module.css`). */
 export interface InteractiveSystemsHeadClassNames {
@@ -74,8 +70,8 @@ export function InteractiveSystemsSection({
   }
   const dict = getDictionary(locale)
   const strings = getSystems3dStrings(locale)
-  // The poster is always the pinned release still (CTO Q3, 2026-10-25); the CMS heroImage only
-  // supplies its alt text while a 3D release is pinned.
+  // The poster is always the Figma image (owner review O-1, 2026-11-02, docs/05-design.md §21); the
+  // CMS heroImage only supplies its alt text.
   const cmsAlt =
     typeof data?.heroImage === 'object' && data.heroImage ? data.heroImage.alt.trim() : ''
   const posterAlt = cmsAlt || strings.posterAlt
@@ -94,21 +90,16 @@ export function InteractiveSystemsSection({
     locale,
     openLabel: data?.liveModelLabel?.trim() || dict.actions.openLive3dModel,
     poster: (
-      <picture className={styles.stillPicture}>
-        <source sizes={POSTER_SIZES} srcSet={posterSrcSet('webp')} type="image/webp" />
-        {/* A plain <img>: next/image would re-encode the still that the live first frame must match. */}
-        <img
-          alt={posterAlt}
-          className={styles.buildingRender}
-          decoding="async"
-          height={2048}
-          loading="lazy"
-          sizes={POSTER_SIZES}
-          src={`${STILLS_PATH}/hero_1440.jpg`}
-          srcSet={posterSrcSet('jpg')}
-          width={2048}
-        />
-      </picture>
+      // Next image optimisation (responsive srcset, lazy): below the fold, never the LCP element.
+      <CspSafeImage
+        alt={posterAlt}
+        className={styles.buildingRender}
+        height={POSTER_SIZE}
+        loading="lazy"
+        sizes={POSTER_SIZES}
+        src={towerRender}
+        width={POSTER_SIZE}
+      />
     ),
     posterAlt,
     related: loadRelatedProjects(locale, data),

@@ -2,7 +2,7 @@ import fs from 'node:fs'
 import { createRequire } from 'node:module'
 import path from 'node:path'
 
-import { chromium } from '@playwright/test'
+import { chromium, type Locator, type Page } from '@playwright/test'
 import ts from 'typescript'
 import { describe, expect, it } from 'vitest'
 
@@ -203,35 +203,58 @@ const PAGE = `<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-
   [data-interactive-3d-card] canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 </style></head><body><div id="mount"></div></body></html>`
 
+interface ViewerLog {
+  created: number
+  disposed: number
+  systems: (string | null)[]
+}
+
+/** A real Chromium page with the explorer mounted (`hash` is the URL hash on load). */
+async function withExplorer(
+  run: (page: Page, errors: string[]) => Promise<void>,
+  hash = '',
+): Promise<void> {
+  const script = bundle()
+  const browser = await chromium.launch({ headless: true })
+  try {
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
+    // Device hints of a capable desktop, set from outside the code (the card reads real hints).
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 })
+      Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 })
+      Object.assign(window, { __viewerLog: { created: 0, disposed: 0, systems: [] } })
+    })
+    await context.route(`${ORIGIN}/**`, (route) =>
+      route.fulfill({ status: 200, contentType: 'text/html', body: PAGE }),
+    )
+    const page = await context.newPage()
+    const errors: string[] = []
+    page.on('pageerror', (err) => errors.push(err.message))
+    await page.goto(`${ORIGIN}/en${hash}`)
+    await page.addScriptTag({ content: script })
+    await page.evaluate(() => {
+      ;(window as unknown as { __mount: () => void }).__mount()
+    })
+    await run(page, errors)
+  } finally {
+    await browser.close()
+  }
+}
+
+const viewerLog = (page: Page): Promise<ViewerLog> =>
+  page.evaluate(() => (window as unknown as { __viewerLog: ViewerLog }).__viewerLog)
+
 describe('P3-T5 C3-1: late related projects never reset the card (real React, real Chromium)', () => {
   it('a visitor enters a system before the related projects arrive; their arrival changes nothing else', async () => {
-    const script = bundle()
-    const browser = await chromium.launch({ headless: true })
-    try {
-      const context = await browser.newContext({ viewport: { width: 1440, height: 900 } })
-      // Device hints of a capable desktop, set from outside the code (the card reads real hints).
-      await context.addInitScript(() => {
-        Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 })
-        Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 })
-        Object.assign(window, { __viewerLog: { created: 0, disposed: 0, systems: [] } })
-      })
-      await context.route(`${ORIGIN}/**`, (route) =>
-        route.fulfill({ status: 200, contentType: 'text/html', body: PAGE }),
-      )
-      const page = await context.newPage()
-      const errors: string[] = []
-      page.on('pageerror', (err) => errors.push(err.message))
-      await page.goto(`${ORIGIN}/en`)
-      await page.addScriptTag({ content: script })
-      await page.evaluate(() => {
-        ;(window as unknown as { __mount: () => void }).__mount()
-      })
-
+    await withExplorer(async (page, errors) => {
       const card = page.locator('[data-interactive-3d-card]')
-      // Go live (mouse intent), activate (click), then pick the second system (key 2 on the card).
+      // Hover changes nothing (O-2); a click on the image starts the model and, once live, activates
+      // the card; then pick the second system (key 2 on the card).
       await card.hover()
+      await page.waitForTimeout(200)
+      expect(await card.getAttribute('data-viewer-state')).toBe('still')
+      await card.click({ position: { x: 20, y: 80 } })
       await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
-      await card.click({ position: { x: 20, y: 20 } })
       await expect.poll(() => card.getAttribute('data-viewer-active')).toBe('true')
       await page.keyboard.press('2')
       await expect.poll(() => card.getAttribute('data-entered')).toBe('fire')
@@ -287,8 +310,120 @@ describe('P3-T5 C3-1: late related projects never reset the card (real React, re
         panelLinks: ['/en/projects/tower-a', '/en/projects?scope=fire-fighting'],
       })
       expect(errors).toEqual([])
-    } finally {
-      await browser.close()
+    })
+  })
+})
+
+describe('P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (real React, real Chromium)', () => {
+  const item = (page: Page, n: number): Locator =>
+    page.locator('[data-component="accordion-item"]').nth(n)
+  const header = (page: Page, n: number): Locator => item(page, n).locator(':scope > button')
+  const rowState = (page: Page, n: number): Promise<string | null> =>
+    item(page, n).getAttribute('data-accordion-state')
+
+  it('hover never starts; one click on the pre-expanded HVAC header enters it and starts the model', async () => {
+    await withExplorer(async (page, errors) => {
+      const card = page.locator('[data-interactive-3d-card]')
+      expect(await rowState(page, 0)).toBe('Expanded')
+      await card.hover()
+      await page.mouse.move(700, 300)
+      await card.hover({ position: { x: 300, y: 300 } })
+      await page.waitForTimeout(300)
+      expect(await card.getAttribute('data-viewer-state')).toBe('still')
+      expect((await viewerLog(page)).created).toBe(0)
+
+      // One click enters the pre-expanded row (never "click twice"); the row stays expanded.
+      await header(page, 0).click()
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('hvac')
+      expect(await rowState(page, 0)).toBe('Expanded')
+      await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
+      expect(page.url()).toMatch(/#systems-hvac$/)
+      // A start from a system card does not take the wheel.
+      expect(await card.getAttribute('data-viewer-active')).toBe('false')
+
+      // A second click on the entered header collapses it and exits.
+      await header(page, 0).click()
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('none')
+      expect(await rowState(page, 0)).toBe('Collapsed')
+
+      // A collapsed header opens and enters in one click; the model is not started again.
+      await header(page, 2).click()
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('plumbing')
+      expect(await rowState(page, 2)).toBe('Expanded')
+      expect(await header(page, 2).evaluate((el) => el === document.activeElement)).toBe(true)
+      expect((await viewerLog(page)).created).toBe(1)
+      expect(await page.locator('[data-show-in-3d]').count()).toBe(0)
+      expect(errors).toEqual([])
+    })
+  })
+
+  it('a system card click on a still card starts the model and enters that system', async () => {
+    await withExplorer(async (page) => {
+      const card = page.locator('[data-interactive-3d-card]')
+      await header(page, 3).click()
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('power')
+      await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
+      const log = await viewerLog(page)
+      expect(log.created).toBe(1)
+      expect(log.systems).toContain('power')
+    })
+  })
+
+  it('Enter or Space on the focused card starts it; the controls follow the owner table (O-3)', async () => {
+    for (const key of ['Enter', ' ']) {
+      await withExplorer(async (page) => {
+        const card = page.locator('[data-interactive-3d-card]')
+        const badge = card.locator(':scope > [class*="liveModelBadge"]')
+        const open = card.locator('[data-open-3d-model]')
+        const exit = card.locator('[data-exit-system]')
+        const reset = card.locator('[data-reset-view]')
+        const buttons = card.locator('button')
+        // Image: the badge and "Open the live 3D model", as in Figma.
+        await expect.poll(() => open.count()).toBe(1)
+        expect(await badge.count()).toBe(1)
+        expect(await buttons.count()).toBe(1)
+
+        await card.focus()
+        await page.waitForTimeout(100)
+        expect(await card.getAttribute('data-viewer-state')).toBe('still')
+        await page.keyboard.press(key)
+        await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
+        await expect.poll(() => card.getAttribute('data-viewer-active')).toBe('true')
+        expect(await card.evaluate((el) => el === document.activeElement)).toBe(true)
+
+        // Live, overview: one "reset view" and nothing else (no zoom buttons, no Done, no badge).
+        expect(await badge.count()).toBe(0)
+        expect(await open.count()).toBe(0)
+        expect(await reset.count()).toBe(1)
+        expect(await buttons.count()).toBe(1)
+        expect(await card.locator('[data-done]').count()).toBe(0)
+
+        // Inside a system: "Exit system" and "reset view".
+        await page.keyboard.press('4')
+        await expect.poll(() => card.getAttribute('data-entered')).toBe('power')
+        expect(await exit.count()).toBe(1)
+        expect(await reset.count()).toBe(1)
+        expect(await buttons.count()).toBe(2)
+        await page.keyboard.press('Escape')
+        await expect.poll(() => card.getAttribute('data-entered')).toBe('none')
+      })
     }
+  })
+
+  it('a #systems hash on load enters that system without starting the model', async () => {
+    await withExplorer(async (page) => {
+      const card = page.locator('[data-interactive-3d-card]')
+      await expect.poll(() => card.getAttribute('data-entered')).toBe('fire')
+      await page.waitForTimeout(300)
+      expect(await card.getAttribute('data-viewer-state')).toBe('still')
+      expect((await viewerLog(page)).created).toBe(0)
+      // The still of the entered system shows "Exit system" only.
+      expect(await card.locator('[data-exit-system]').count()).toBe(1)
+      expect(await card.locator('[data-open-3d-model]').count()).toBe(0)
+      // A click on its image starts the model in that system.
+      await card.click({ position: { x: 300, y: 120 } })
+      await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
+      expect((await viewerLog(page)).systems).toContain('fire')
+    }, '#systems-fire')
   })
 })

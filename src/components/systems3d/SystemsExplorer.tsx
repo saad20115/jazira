@@ -19,7 +19,7 @@ import { hashForSystem, systemFromHash } from './hash'
 import styles from './InteractiveSystemsSection.module.css'
 import { RelatedPanel } from './RelatedPanel'
 import type { RelatedProjectsBySystem } from './relatedProjects'
-import { showIn3dLabel, type Systems3dStrings } from './strings'
+import type { Systems3dStrings } from './strings'
 import { SystemsCard } from './SystemsCard'
 
 export interface ExplorerSystem {
@@ -72,10 +72,11 @@ function RelatedSlot({
 }
 
 /**
- * CTO rules (2026-10-25): at rest the first row is expanded as in Figma and nothing is entered (no
- * hash; the card shows the overview). Opening a collapsed row enters its system; every expanded row
- * has a "Show in 3D" button (the way into the pre-expanded row); collapsing the entered row exits;
- * a `#systems-<id>` hash on load enters that system and expands its row. Focus never moves.
+ * Owner rules (O-2, 2026-11-02, `docs/05-design.md` §21): at rest the first row is expanded as in
+ * Figma and nothing is entered (no hash; the card shows the image). One click on any system header
+ * enters it, the pre-expanded one included, and starts the model; a click on the entered header
+ * collapses it and exits. A `#systems-<id>` hash on load enters that system and expands its row
+ * without starting the model. Focus never moves.
  */
 const DEFAULT_EXPANDED_INDEX = 0
 
@@ -92,6 +93,8 @@ export function SystemsExplorer({
 }: SystemsExplorerProps): ReactElement {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(DEFAULT_EXPANDED_INDEX)
   const [entered, setEntered] = useState<SystemId | null>(null)
+  /** Counts the visitor's system choices; each one asks the card to start the model (O-2). */
+  const [startSignal, setStartSignal] = useState(0)
 
   const indexOfSystem = useCallback(
     (system: SystemId): number => systems.findIndex((row) => row.system === system),
@@ -137,9 +140,13 @@ export function SystemsExplorer({
 
   const toggle = (idx: number, nextExpanded: boolean): void => {
     const system = systems[idx]?.system ?? null
-    if (nextExpanded) {
+    // A click on an expanded header that is not entered (the pre-expanded first row) enters it.
+    if (nextExpanded || (system !== null && system !== entered)) {
       setExpandedIndex(idx)
       enter(system)
+      if (system !== null) {
+        setStartSignal((n) => n + 1)
+      }
     } else {
       setExpandedIndex(null)
       if (system !== null && system === entered) {
@@ -178,6 +185,7 @@ export function SystemsExplorer({
         }}
         openLabel={openLabel}
         relatedPanel={relatedSlot('card')}
+        startSignal={startSignal}
         strings={strings}
       >
         {poster}
@@ -193,23 +201,12 @@ export function SystemsExplorer({
             return (
               <AccordionItem
                 body={
-                  <>
-                    <p className={`${styles.systemDescription} t-body-m`}>{row.text}</p>
-                    {row.system ? (
-                      <button
-                        aria-label={showIn3dLabel(strings, row.title)}
-                        aria-pressed={entered === row.system}
-                        className={`${styles.showIn3dButton} t-label-button`}
-                        data-show-in-3d={row.system}
-                        onClick={() => {
-                          enter(row.system)
-                        }}
-                        type="button"
-                      >
-                        {strings.showIn3d}
-                      </button>
-                    ) : null}
-                  </>
+                  <p
+                    className={`${styles.systemDescription} t-body-m`}
+                    data-row-system={row.system ?? undefined}
+                  >
+                    {row.text}
+                  </p>
                 }
                 defaultExpanded={idx === DEFAULT_EXPANDED_INDEX}
                 id={row.key}
