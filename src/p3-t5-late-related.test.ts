@@ -596,7 +596,8 @@ describe('P3-T5 Q6: preparation starts after the load event, two viewports out o
     await withExplorer(
       async (page) => {
         const card = page.locator('[data-interactive-3d-card]')
-        // The card starts one viewport (900 px) below the fold: inside the two-viewport margin.
+        // The card starts one and a half viewports (1,350 px) below the fold: inside the two-viewport
+        // margin, outside the one-viewport margin of round 4.
         await page.waitForTimeout(1_500)
         expect((await viewerLog(page)).created).toBe(0)
         // A small scroll, the card still out of view.
@@ -609,7 +610,7 @@ describe('P3-T5 Q6: preparation starts after the load event, two viewports out o
         expect(await card.locator('canvas').count()).toBe(0)
       },
       '',
-      { spacerPx: 1_800 },
+      { spacerPx: 2_250 },
     )
   })
 })
