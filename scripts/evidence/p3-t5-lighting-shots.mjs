@@ -1,6 +1,6 @@
 // P3-T5 round 3 evidence (owner finding O-5): screenshots of the live card for the owner to judge
 // the lighting by eye — the overview and each of the five systems, at 1440×900 and 390×844 (touch),
-// in each locale. Nothing is measured here.
+// in each locale, and the image before the start. Nothing is measured here.
 //
 // The same steps run on the r2 build ("before") and on round 3 ("after"): "Open the live 3D model"
 // starts the model; on the focused card the keys 1–5 enter the systems and Escape exits. Each shot
@@ -56,6 +56,10 @@ async function shoot(browser, width, locale) {
     await page.locator('html[data-intro="seen"]').waitFor()
     const card = page.locator('[data-interactive-3d-card]')
     await card.scrollIntoViewIfNeeded()
+    // The image state before the start (round 3: the Figma image, O-1); the r2 build had its still.
+    await page.locator('[data-open-3d-model]').waitFor()
+    await page.waitForTimeout(1_000)
+    await card.screenshot({ path: name('00-image') })
     await page.locator('[data-open-3d-model]').click()
     await page
       .locator('[data-interactive-3d-card][data-viewer-state="live"]')
