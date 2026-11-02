@@ -8,6 +8,10 @@ import {
   fpsVerdict,
   isHighPerformanceGpu,
   isSoftwareRenderer,
+  LOW_TIER_FPS,
+  PROBE_FRAMES,
+  probeVerdict,
+  STILLS_TIER_FPS,
   WARMUP_SKIP_CAP_MS,
   warmupSample,
 } from '@/components/systems3d/tier'
@@ -173,5 +177,42 @@ describe('P3-T5 FPS check during shader warm-up (CTO 2026-11-01: capped blind wi
     const afterCap = run(0, true, 100, 40).skippedMs
     expect(warmupSample(afterCap, false, 16)).toEqual({ sample: true, skippedMs: 0 })
     expect(warmupSample(0, true, 16).sample).toBe(false)
+  })
+})
+
+describe('P3-T5 O-9: the GPU probe fixes the tier before the first visible frame', () => {
+  const lowFrameMs = 1000 / LOW_TIER_FPS
+  const stillsFrameMs = 1000 / STILLS_TIER_FPS
+  const frames = (first: number, rest: number): number[] => [
+    first,
+    ...Array.from({ length: PROBE_FRAMES - 1 }, () => rest),
+  ]
+
+  it('frames faster than the low rate keep the model', () => {
+    expect(probeVerdict(frames(lowFrameMs * 0.5, lowFrameMs * 0.5), false)).toBe('ok')
+  })
+
+  it('frames slower than the low rate start on the low tier', () => {
+    expect(probeVerdict(frames(lowFrameMs * 2, lowFrameMs * 2), false)).toBe('low')
+  })
+
+  it('the first frame (first-use costs) never decides', () => {
+    expect(probeVerdict(frames(stillsFrameMs * 20, lowFrameMs * 0.5), false)).toBe('ok')
+  })
+
+  it('the median decides: one slow frame among fast ones keeps the tier', () => {
+    const timed = frames(lowFrameMs * 0.5, lowFrameMs * 0.5)
+    timed[timed.length - 1] = stillsFrameMs * 20
+    expect(probeVerdict(timed, false)).toBe('ok')
+  })
+
+  it('once low, frames slower than the stills rate end on the stills tier', () => {
+    expect(probeVerdict(frames(stillsFrameMs * 2, stillsFrameMs * 2), true)).toBe('stills')
+    expect(probeVerdict(frames(lowFrameMs * 1.2, lowFrameMs * 1.2), true)).toBe('ok')
+  })
+
+  it('no timed frame (the viewer was disposed) decides nothing', () => {
+    expect(probeVerdict([], false)).toBe('ok')
+    expect(probeVerdict([stillsFrameMs * 20], true)).toBe('ok')
   })
 })

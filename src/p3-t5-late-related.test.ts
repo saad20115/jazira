@@ -38,13 +38,21 @@ const STUBS: Record<string, string> = {
       var log = window.__viewerLog;
       log.created += 1;
       options.signal.addEventListener('abort', function () { log.disposed += 1; });
-      options.onFirstFrame();
-      return Promise.resolve({
-        setActive: function () {}, setSystem: function (s) { log.systems.push(s); },
-        resetView: function () {}, zoomBy: function () {}, rotateBy: function () {},
-        stats: function () { return { tier: 'lite', gpu: null, bloom: false, lowTier: false,
-          pixelRatio: 1, drawCalls: 0, triangles: 0, geometries: 0, textures: 0 }; },
-        dispose: function () {},
+      if (window.__viewerFails) {
+        return Promise.reject(new Error('stub: the model did not load'));
+      }
+      // O-9: like the real viewer, it may be prepared before the click; its first frame comes only
+      // once the card shows it.
+      return options.whenShown.then(function () {
+        log.shown += 1;
+        options.onFirstFrame();
+        return {
+          setActive: function () {}, setSystem: function (s) { log.systems.push(s); },
+          resetView: function () {}, zoomBy: function () {}, rotateBy: function () {},
+          stats: function () { return { tier: 'lite', gpu: null, bloom: false, lowTier: false,
+            pixelRatio: 1, drawCalls: 0, triangles: 0, geometries: 0, textures: 0 }; },
+          dispose: function () {},
+        };
       });
     } };`,
 }
@@ -198,15 +206,22 @@ function bundle(): string {
   })();`
 }
 
-const PAGE = `<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><style>
+const pageHtml = (
+  spacerPx: number,
+): string => `<!doctype html><html lang="en" dir="ltr"><head><meta charset="utf-8"><style>
   [data-interactive-3d-card] { position: relative; display: block; width: 600px; height: 580px; overflow: hidden; }
   [data-interactive-3d-card] img { display: block; width: 100%; height: 100%; }
   [data-interactive-3d-card] canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
-</style></head><body><div id="mount"></div></body></html>`
+  /* As the CSS module does: the tap hint is never a target (O-7). */
+  [data-tap-hint] { position: absolute; pointer-events: none; }
+</style></head><body><div id="spacer" style="height: ${String(spacerPx)}px"></div><div id="mount"></div></body></html>`
 
 interface ViewerLog {
+  /** Viewers created: prepared near the viewport (O-9) or started by a click; never more than one. */
   created: number
   disposed: number
+  /** Viewers asked to draw their first visible frame (only after a click, a tap or a key). */
+  shown: number
   systems: (string | null)[]
 }
 
@@ -214,6 +229,7 @@ interface ViewerLog {
 async function withExplorer(
   run: (page: Page, errors: string[]) => Promise<void>,
   hash = '',
+  options: { spacerPx?: number; saveData?: boolean; viewerFails?: boolean } = {},
 ): Promise<void> {
   const script = bundle()
   const browser = await chromium.launch({ headless: true })
@@ -223,10 +239,26 @@ async function withExplorer(
     await context.addInitScript(() => {
       Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 })
       Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 })
-      Object.assign(window, { __viewerLog: { created: 0, disposed: 0, systems: [] } })
+      Object.assign(window, { __viewerLog: { created: 0, disposed: 0, shown: 0, systems: [] } })
     })
+    if (options.saveData === true) {
+      await context.addInitScript(() => {
+        Object.defineProperty(navigator, 'connection', {
+          get: () => ({ saveData: true, effectiveType: '4g' }),
+        })
+      })
+    }
+    if (options.viewerFails === true) {
+      await context.addInitScript(() => {
+        Object.assign(window, { __viewerFails: true })
+      })
+    }
     await context.route(`${ORIGIN}/**`, (route) =>
-      route.fulfill({ status: 200, contentType: 'text/html', body: PAGE }),
+      route.fulfill({
+        status: 200,
+        contentType: 'text/html',
+        body: pageHtml(options.spacerPx ?? 0),
+      }),
     )
     const page = await context.newPage()
     const errors: string[] = []
@@ -331,7 +363,9 @@ describe('P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (re
       await card.hover({ position: { x: 300, y: 300 } })
       await page.waitForTimeout(300)
       expect(await card.getAttribute('data-viewer-state')).toBe('still')
-      expect((await viewerLog(page)).created).toBe(0)
+      // O-9: the model may be prepared by now, but nothing is shown before a click.
+      expect((await viewerLog(page)).shown).toBe(0)
+      expect(await card.locator('canvas').count()).toBe(0)
 
       // One click enters the pre-expanded row (never "click twice"); the row stays expanded.
       await header(page, 0).click()
@@ -353,6 +387,7 @@ describe('P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (re
       expect(await rowState(page, 2)).toBe('Expanded')
       expect(await header(page, 2).evaluate((el) => el === document.activeElement)).toBe(true)
       expect((await viewerLog(page)).created).toBe(1)
+      expect((await viewerLog(page)).shown).toBe(1)
       expect(await page.locator('[data-show-in-3d]').count()).toBe(0)
       expect(errors).toEqual([])
     })
@@ -417,7 +452,9 @@ describe('P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (re
       await expect.poll(() => card.getAttribute('data-entered')).toBe('fire')
       await page.waitForTimeout(300)
       expect(await card.getAttribute('data-viewer-state')).toBe('still')
-      expect((await viewerLog(page)).created).toBe(0)
+      // O-9: the model may be prepared by now, but nothing is shown before a click.
+      expect((await viewerLog(page)).shown).toBe(0)
+      expect(await card.locator('canvas').count()).toBe(0)
       // The still of the entered system shows "Exit system" only.
       expect(await card.locator('[data-exit-system]').count()).toBe(1)
       expect(await card.locator('[data-open-3d-model]').count()).toBe(0)
@@ -443,5 +480,79 @@ describe('P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (re
       await expect.poll(() => card.getAttribute('data-entered')).toBe('none')
       expect(await rowState(page, 1)).toBe('Collapsed')
     }, '#systems-fire')
+  })
+})
+
+describe('P3-T5 round 4 (O-9): the model is prepared before the click, and shown only on it (real React, real Chromium)', () => {
+  it('near the viewport the viewer is prepared, nothing shows; one click shows that same viewer', async () => {
+    await withExplorer(async (page, errors) => {
+      const card = page.locator('[data-interactive-3d-card]')
+      await expect.poll(async () => (await viewerLog(page)).created).toBe(1)
+      await page.waitForTimeout(300)
+      expect((await viewerLog(page)).shown).toBe(0)
+      expect(await card.getAttribute('data-viewer-state')).toBe('still')
+      expect(await card.locator('canvas').count()).toBe(0)
+      expect(await card.locator('[data-open-3d-model]').count()).toBe(1)
+
+      await card.click({ position: { x: 20, y: 80 } })
+      await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('live')
+      const log = await viewerLog(page)
+      expect(log.created).toBe(1)
+      expect(log.shown).toBe(1)
+      expect(log.disposed).toBe(0)
+      // The prepared canvas joins the card when shown.
+      expect(await card.locator('canvas').count()).toBe(1)
+      expect(await card.locator('canvas').getAttribute('aria-label')).toBeTruthy()
+      expect(errors).toEqual([])
+    })
+  })
+
+  it('far from the viewport nothing is prepared; scrolled near, it is (and still nothing shows)', async () => {
+    await withExplorer(
+      async (page) => {
+        const card = page.locator('[data-interactive-3d-card]')
+        await page.waitForTimeout(1_500)
+        expect((await viewerLog(page)).created).toBe(0)
+        await card.scrollIntoViewIfNeeded()
+        await expect.poll(async () => (await viewerLog(page)).created).toBe(1)
+        expect((await viewerLog(page)).shown).toBe(0)
+        expect(await card.locator('canvas').count()).toBe(0)
+      },
+      '',
+      { spacerPx: 4_000 },
+    )
+  })
+
+  it('with Save-Data nothing is prepared; a click shows the stills tier', async () => {
+    await withExplorer(
+      async (page) => {
+        const card = page.locator('[data-interactive-3d-card]')
+        await page.waitForTimeout(1_500)
+        expect((await viewerLog(page)).created).toBe(0)
+        await card.click({ position: { x: 20, y: 80 } })
+        await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('stills')
+        expect(await card.getAttribute('data-viewer-fallback')).toBe('device')
+        expect((await viewerLog(page)).created).toBe(0)
+      },
+      '',
+      { saveData: true },
+    )
+  })
+
+  it('a failure while preparing changes nothing until the click, which then shows the stills tier', async () => {
+    await withExplorer(
+      async (page) => {
+        const card = page.locator('[data-interactive-3d-card]')
+        await expect.poll(async () => (await viewerLog(page)).created).toBe(1)
+        await page.waitForTimeout(300)
+        expect(await card.getAttribute('data-viewer-state')).toBe('still')
+        expect(await card.getAttribute('data-viewer-fallback')).toBeNull()
+        await card.click({ position: { x: 20, y: 80 } })
+        await expect.poll(() => card.getAttribute('data-viewer-state')).toBe('stills')
+        expect(await card.getAttribute('data-viewer-fallback')).toBe('load-error')
+      },
+      '',
+      { viewerFails: true },
+    )
   })
 })
