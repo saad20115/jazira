@@ -107,8 +107,21 @@ async function expectHardwareGpu(page: Page): Promise<void> {
   expect(renderer, 'the gpu project needs a hardware WebGL renderer').not.toMatch(SOFTWARE_RENDERER)
 }
 
-async function goLive(page: Page, card: Locator): Promise<void> {
-  await card.hover()
+/** The still card is interactive once hydrated: it is focusable then (O-2 start triggers). */
+async function waitHydrated(card: Locator): Promise<void> {
+  await expect(card).toHaveAttribute('tabindex', '0')
+}
+
+/** O-2: a click on the image starts the model (and, on a mouse, activates it once live). */
+async function clickImage(card: Locator): Promise<void> {
+  await waitHydrated(card)
+  const box = await card.boundingBox()
+  expect(box).not.toBeNull()
+  await card.click({ position: { x: (box?.width ?? 0) / 2, y: (box?.height ?? 0) / 2 } })
+}
+
+async function goLive(card: Locator): Promise<void> {
+  await clickImage(card)
   await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
 }
 
@@ -120,11 +133,44 @@ function rowHeader(row: Locator): Locator {
   return row.locator(':scope > button')
 }
 
-/** The system a row shows, read from its "Show in 3D" button (the row must be expanded). */
+/** The system a row shows (the row must be expanded). */
 async function systemOfRow(row: Locator): Promise<string> {
-  const value = await row.locator('[data-show-in-3d]').getAttribute('data-show-in-3d')
+  const value = await row.locator('[data-row-system]').getAttribute('data-row-system')
   expect(value).not.toBeNull()
   return value ?? ''
+}
+
+/** O-3: the controls the owner removed are nowhere on the page. */
+async function expectRemovedControlsAbsent(page: Page): Promise<void> {
+  await expect(page.locator('[data-show-in-3d]')).toHaveCount(0)
+  await expect(page.locator('[data-done]')).toHaveCount(0)
+  for (const name of ['Show in 3D', 'Zoom in', 'Zoom out', 'Done']) {
+    await expect(
+      page.locator('#interactive-systems').getByRole('button', { name, exact: true }),
+    ).toHaveCount(0)
+  }
+}
+
+/**
+ * O-6: every visible hotspot dot in `layer` is the topmost element at its own centre, so a tap on it
+ * reaches it (no other dot or tap area covers it). Returns the accessible names checked.
+ */
+async function expectEveryDotTappable(layer: Locator): Promise<string[]> {
+  const dots = layer.locator('li button').filter({ visible: true })
+  await expect(dots.first()).toBeVisible({ timeout: 15_000 })
+  const names: string[] = []
+  const count = await dots.count()
+  for (let i = 0; i < count; i += 1) {
+    const dot = dots.nth(i)
+    const name = (await dot.getAttribute('aria-label')) ?? ''
+    const onTop = await dot.evaluate((el) => {
+      const r = el.getBoundingClientRect()
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) === el
+    })
+    expect(onTop, `the "${name}" dot is covered`).toBe(true)
+    names.push(name)
+  }
+  return names
 }
 
 async function wheelScrolls(page: Page, card: Locator): Promise<number> {
@@ -152,21 +198,37 @@ test.describe('P3-T5 live 3D card', () => {
     await prepare(context)
   })
 
-  test('@smoke still first: the release still paints and no 3D asset loads before intent', async ({
+  test('@smoke image first: the Figma image paints, hover changes nothing, a click starts', async ({
     page,
   }) => {
     const recorder = record(page)
     const card = await openHome(page)
-    const poster = card.locator('picture img').first()
+    // O-1: the Figma image through Next image optimisation, not a release still.
+    const poster = card.locator('img').first()
     await expect(poster).toBeVisible()
     await expect.poll(() => poster.evaluate((img: HTMLImageElement) => img.complete)).toBe(true)
     expect(await poster.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0)
+    const src = await poster.evaluate((img: HTMLImageElement) => img.currentSrc)
+    expect(src).toContain('/_next/image?url=')
+    expect(src).toContain('tower-render')
+    expect(src).not.toContain('/stills/')
+    // O-3 at rest: the badge and "Open the live 3D model", as in Figma; no removed control.
+    await expect(card.locator('[data-open-3d-model]')).toBeVisible()
+    await expect(card.locator(':scope > [class*="liveModelBadge"]')).toBeVisible()
+    await expect(card.locator('[data-reset-view]')).toHaveCount(0)
+    await expectRemovedControlsAbsent(page)
     await page.waitForTimeout(2_000)
     await expect(card).toHaveAttribute('data-viewer-state', 'still')
     expect(recorder.model).toEqual([])
     expect(await wheelScrolls(page, card)).toBeGreaterThan(0)
 
+    // O-2: hover never swaps (it may only fetch the viewer code).
     await card.hover()
+    await page.waitForTimeout(1_500)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    expect(recorder.model).toEqual([])
+
+    await clickImage(card)
     await expect(card).not.toHaveAttribute('data-viewer-state', 'still')
   })
 
@@ -176,12 +238,15 @@ test.describe('P3-T5 live 3D card', () => {
     await page.emulateMedia({ reducedMotion: 'reduce' })
     const recorder = record(page)
     const card = await openHome(page)
-    await card.hover()
+    await clickImage(card)
     await expect(card).toHaveAttribute('data-viewer-state', 'stills')
     await expect(card).toHaveAttribute('data-viewer-fallback', 'device')
-    await page.locator('[data-show-in-3d]').first().click()
-    const system = await systemOfRow(rows(page).first())
+    // One click on the pre-expanded first header enters it (O-2).
+    const first = rows(page).first()
+    await rowHeader(first).click()
+    const system = await systemOfRow(first)
     await expect(card).toHaveAttribute('data-entered', system)
+    await expect(first).toHaveAttribute('data-accordion-state', 'Expanded')
     await expect(page).toHaveURL(new RegExp(`#systems-${system}$`))
     const layer = card.locator(`[data-entered-system="${system}"]`)
     await expect(layer).toBeVisible()
@@ -197,6 +262,20 @@ test.describe('P3-T5 live 3D card', () => {
       window.location.hash = 'systems-fire'
     })
     await expect(card).toHaveAttribute('data-entered', 'fire')
+  })
+
+  test('a #systems hash on load enters that system without starting the model', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page, '#systems-fire')
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(card.locator('[data-entered-system="fire"]')).toBeVisible()
+    await expect(card.locator('[data-exit-system]')).toBeVisible()
+    await expect(card.locator('[data-open-3d-model]')).toHaveCount(0)
+    await page.waitForTimeout(1_500)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    expect(recorder.model).toEqual([])
   })
 
   for (const variant of ['missing', 'different'] as const) {
@@ -218,7 +297,7 @@ test.describe('P3-T5 live 3D card', () => {
       const recorder = record(page)
       const card = await openHome(page)
       await expectHardwareGpu(page)
-      await card.hover()
+      await clickImage(card)
       await expect(card).toHaveAttribute('data-viewer-state', 'stills', { timeout: LIVE_TIMEOUT })
       await expect(card).toHaveAttribute('data-viewer-fallback', 'worker-policy')
       expect(workerMethods).toEqual(['HEAD'])
@@ -228,13 +307,21 @@ test.describe('P3-T5 live 3D card', () => {
     })
   }
 
-  test('@gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems', async ({
+  test('@gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters', async ({
     page,
   }) => {
     const recorder = record(page)
     const card = await openHome(page)
     await expectHardwareGpu(page)
-    await goLive(page, card)
+    const sizeBefore = await card.boundingBox()
+    await goLive(card)
+    // O-4: a soft cross-fade, and the card size does not change.
+    const fade = await card
+      .locator('canvas')
+      .evaluate((el) => getComputedStyle(el).transitionDuration)
+    expect(fade).toBe('0.5s')
+    const sizeAfter = await card.boundingBox()
+    expect([sizeAfter?.width, sizeAfter?.height]).toEqual([sizeBefore?.width, sizeBefore?.height])
     expect(recorder.model).toEqual(
       expect.arrayContaining([`HEAD ${WORKER_PATH}`, `GET ${WORKER_PATH}`]),
     )
@@ -244,18 +331,27 @@ test.describe('P3-T5 live 3D card', () => {
       expect(policies).toEqual([WORKER_CSP])
     }
     await expect(card).toHaveAttribute('data-entered', 'none')
+    // O-3 live, overview: one "reset view"; the badge and the open button are gone.
+    await expect(card.locator('[data-reset-view]')).toHaveCount(1)
+    await expect(card.locator('[data-open-3d-model]')).toHaveCount(0)
+    await expect(card.locator(':scope > [class*="liveModelBadge"]')).toHaveCount(0)
+    await expect(card.locator('button').filter({ visible: true })).toHaveCount(1)
+    await expectRemovedControlsAbsent(page)
 
-    // The pre-expanded first row enters through its "Show in 3D" button, and exits from the card.
+    // The pre-expanded first row enters with one header click, and exits from the card.
     const first = rows(page).first()
-    await first.locator('[data-show-in-3d]').click()
+    await rowHeader(first).click()
     const firstSystem = await systemOfRow(first)
     await expect(card).toHaveAttribute('data-entered', firstSystem)
-    await expect(first.locator('[data-show-in-3d]')).toHaveAttribute('aria-pressed', 'true')
+    await expect(first).toHaveAttribute('data-accordion-state', 'Expanded')
     await expect(
       card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
     ).toBeVisible({
       timeout: 15_000,
     })
+    // Inside a system: "Exit system" and "reset view".
+    await expect(card.locator('[data-exit-system]')).toHaveCount(1)
+    await expect(card.locator('[data-reset-view]')).toHaveCount(1)
     await card.locator('[data-exit-system]').click()
     await expect(card).toHaveAttribute('data-entered', 'none')
     expect(new URL(page.url()).hash).toBe('')
@@ -285,14 +381,32 @@ test.describe('P3-T5 live 3D card', () => {
     }
   })
 
+  test('@gpu live: a system card click on the still card starts the model in that system', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    const row = rows(page).nth(1)
+    await rowHeader(row).click()
+    const system = await systemOfRow(row)
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    expect(recorder.model.some((entry) => entry.endsWith('.glb'))).toBe(true)
+    // A start from a system card leaves the page wheel alone.
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+  })
+
   test('@gpu live: the page scroll is never trapped — the wheel zooms only while the card is active', async ({
     page,
   }) => {
     const card = await openHome(page)
     await expectHardwareGpu(page)
-    await goLive(page, card)
-    expect(await wheelScrolls(page, card)).toBeGreaterThan(0)
-    await card.click()
+    // A click on the image starts the model and takes the wheel once it is live.
+    await goLive(card)
     await expect(card).toHaveAttribute('data-viewer-active', 'true')
     expect(await wheelScrolls(page, card)).toBe(0)
     await page.keyboard.press('Escape')
@@ -300,18 +414,29 @@ test.describe('P3-T5 live 3D card', () => {
     expect(await wheelScrolls(page, card)).toBeGreaterThan(0)
     await card.click()
     await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    expect(await wheelScrolls(page, card)).toBe(0)
     await page.locator('h1, h2').first().click()
     await expect(card).toHaveAttribute('data-viewer-active', 'false')
   })
 
-  test('@gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates', async ({
+  test('@gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates', async ({
     page,
   }) => {
+    const recorder = record(page)
     const card = await openHome(page)
     await expectHardwareGpu(page)
-    await goLive(page, card)
+    // Focus alone starts nothing (O-2); Enter on the focused card does. The card is focusable once
+    // hydrated (its keyboard handlers exist only then).
+    await waitHydrated(card)
     await card.focus()
+    await expect(card).toBeFocused()
+    await page.waitForTimeout(1_000)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    expect(recorder.model).toEqual([])
+    await page.keyboard.press('Enter')
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
     await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    await expect(card).toBeFocused()
     const scrollBefore = await page.evaluate(() => window.scrollY)
     for (const key of ['ArrowLeft', 'ArrowUp', '+', '-', '0']) {
       await page.keyboard.press(key)
@@ -344,7 +469,8 @@ test.describe('P3-T5 live 3D card', () => {
     const card = await openHome(page, '#systems-fire')
     await expectHardwareGpu(page)
     await expect(card).toHaveAttribute('data-entered', 'fire')
-    await goLive(page, card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    await goLive(card)
     await page.evaluate(() => {
       const canvas = document.querySelector('[data-interactive-3d-card] canvas')
       const gl = canvas instanceof HTMLCanvasElement ? canvas.getContext('webgl2') : null
@@ -383,7 +509,7 @@ test.describe('P3-T5 live 3D card', () => {
     })
     const recorder = record(page)
     const card = await openHome(page)
-    await goLive(page, card)
+    await goLive(card)
     await expect(card).toHaveAttribute('data-viewer-tier', 'full')
     expect(recorder.model).toContain('GET /systems/v022n/tower.glb')
     expect(recorder.model).not.toContain('GET /systems/v022n/tower-lite.glb')
@@ -410,7 +536,7 @@ test.describe('P3-T5 live 3D card', () => {
   }) => {
     const card = await openHome(page)
     await expectHardwareGpu(page)
-    await goLive(page, card)
+    await goLive(card)
     const tierNow = async (): Promise<string | null> =>
       (await card.getAttribute('data-viewer-state')) === 'stills'
         ? 'stills'
@@ -443,7 +569,7 @@ test.describe('P3-T5 live 3D card', () => {
         .toMatch(/^(low|stills)$/)
       if ((await tierNow()) === 'stills') {
         await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
-        await expect(card.locator('picture img').first()).toBeVisible()
+        await expect(card.locator('img').first()).toBeVisible()
       }
     } finally {
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
@@ -470,7 +596,7 @@ test.describe('P3-T5 live 3D card — WebGL disabled', () => {
       const page = await context.newPage()
       const card = await openHome(page)
       expect(await rendererName(page)).toBe('none')
-      await card.hover()
+      await clickImage(card)
       await expect(card).toHaveAttribute('data-viewer-state', 'stills', {
         timeout: LIVE_TIMEOUT,
       })
@@ -502,13 +628,13 @@ test.describe('P3-T5 live 3D card — software renderer', () => {
       const recorder = record(page)
       const card = await openHome(page)
       expect(await rendererName(page)).toMatch(/swiftshader/i)
-      await card.hover()
+      await clickImage(card)
       await expect(card).toHaveAttribute('data-viewer-state', 'stills', {
         timeout: LIVE_TIMEOUT,
       })
       await expect(card).toHaveAttribute('data-viewer-fallback', /^(software|too-slow)$/)
       await expect(card.locator('canvas')).toHaveCount(0)
-      await expect(card.locator('picture img').first()).toBeVisible()
+      await expect(card.locator('img').first()).toBeVisible()
       expect(recorder.model.filter((entry) => entry.endsWith('.glb'))).toEqual([])
     } finally {
       await browser.close()
@@ -524,11 +650,33 @@ test.describe('P3-T5 live 3D card — phone', () => {
     await prepare(context)
   })
 
-  test('@gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active', async ({
+  test('O-6: every Fire dot of the still can be tapped at 390 px, and a tap downloads nothing', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page, '#systems-fire')
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await card.scrollIntoViewIfNeeded()
+    const layer = card.locator('[data-entered-system="fire"]')
+    const names = await expectEveryDotTappable(layer)
+    expect(names).toEqual(expect.arrayContaining(['Fire pumps', 'Jockey pump']))
+    for (const name of ['Fire pumps', 'Jockey pump']) {
+      const dot = layer.getByRole('button', { name, exact: true })
+      await dot.tap({ timeout: 10_000 })
+      await expect(dot).toHaveAttribute('aria-expanded', 'true')
+    }
+    // Buttons inside the still card (dots, Exit system) never start the model (§8c).
+    await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await page.waitForTimeout(1_000)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    expect(recorder.model).toEqual([])
+  })
+
+  test('@gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active', async ({
     page,
     context,
   }) => {
-    const recorder = record(page)
     const card = await openHome(page)
     await expectHardwareGpu(page)
     const cdp = await context.newCDPSession(page)
@@ -562,57 +710,51 @@ test.describe('P3-T5 live 3D card — phone', () => {
     await test.step('still card: the page scrolls', async () => {
       expect(await swipeScrolls()).toBeGreaterThan(0)
     })
-    await test.step('still card: tapping buttons inside it downloads nothing (§8c)', async () => {
-      await rows(page).first().locator('[data-show-in-3d]').tap({ timeout: 10_000 })
-      await card.scrollIntoViewIfNeeded()
-      const dot = card.locator('[data-entered-system] li button').filter({ visible: true }).last()
-      await dot.tap({ timeout: 10_000 })
-      await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
-      await expect(card).toHaveAttribute('data-entered', 'none')
-      await page.waitForTimeout(1_000)
-      await expect(card).toHaveAttribute('data-viewer-state', 'still')
-      expect(recorder.model).toEqual([])
-    })
-    await page.locator('[data-open-3d-model]').tap({ timeout: 10_000 })
-    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
-    expect(await swipeScrolls()).toBeGreaterThan(0)
-
+    // O-2: a tap on the image starts the model; on touch it does not take the page scroll yet.
+    await waitHydrated(card)
     const box = await card.boundingBox()
-    await page.touchscreen.tap((box?.x ?? 0) + 40, (box?.y ?? 0) + 40)
-    await expect(card).toHaveAttribute('data-viewer-active', 'true')
-    expect(await swipeScrolls()).toBe(0)
-    await page.locator('[data-done]').tap({ timeout: 10_000 })
+    await page.touchscreen.tap(
+      (box?.x ?? 0) + (box?.width ?? 0) / 2,
+      (box?.y ?? 0) + (box?.height ?? 0) / 2,
+    )
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
     await expect(card).toHaveAttribute('data-viewer-active', 'false')
     expect(await swipeScrolls()).toBeGreaterThan(0)
 
-    // Every system by touch: the pre-expanded first row through "Show in 3D" and the card's exit
-    // button, the others by tapping the header open (enter) and closed (exit).
+    await page.touchscreen.tap((box?.x ?? 0) + 40, (box?.y ?? 0) + 60)
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    expect(await swipeScrolls()).toBe(0)
+    // No Done button (O-3): a tap outside the card hands the scroll back.
+    await expectRemovedControlsAbsent(page)
+    await page.locator('h1, h2').first().tap({ timeout: 10_000 })
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+    await card.scrollIntoViewIfNeeded()
+    expect(await swipeScrolls()).toBeGreaterThan(0)
+
+    // Every system by touch: one tap on its header enters it (the pre-expanded first row too), a
+    // second tap on the same header exits.
     const count = await rows(page).count()
     expect(count).toBe(5)
     for (let i = 0; i < count; i += 1) {
       const row = rows(page).nth(i)
-      if (i === 0) {
-        await row.locator('[data-show-in-3d]').tap({ timeout: 10_000 })
-      } else {
-        await rowHeader(row).tap({ timeout: 10_000 })
-      }
+      await rowHeader(row).tap({ timeout: 10_000 })
       const system = await systemOfRow(row)
       await expect(card).toHaveAttribute('data-entered', system)
       await expect(page.locator('[data-related-panel="card"]')).toBeHidden()
       // On phones the accordion is below the card: the viewer renders only while the card is on
       // screen, so scroll back to it as a visitor would.
       await card.scrollIntoViewIfNeeded()
-      const dot = card.locator('[data-live-labels] li button').filter({ visible: true }).first()
+      const labels = card.locator('[data-live-labels]')
+      const dot = labels.locator('li button').filter({ visible: true }).first()
       await expect(dot).toBeVisible({ timeout: 15_000 })
+      // O-6: no dot is covered by another (Fire: the pumps and the jockey pump).
+      await page.waitForTimeout(500)
+      await expectEveryDotTappable(labels)
       if (i === 2) {
         await dot.tap({ timeout: 10_000 })
         await expect(card.locator('[data-live-labels] li[data-expanded="true"]')).toHaveCount(1)
       }
-      if (i === 0) {
-        await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
-      } else {
-        await rowHeader(row).tap({ timeout: 10_000 })
-      }
+      await rowHeader(row).tap({ timeout: 10_000 })
       await expect(card).toHaveAttribute('data-entered', 'none')
       await card.scrollIntoViewIfNeeded()
       await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })

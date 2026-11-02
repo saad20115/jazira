@@ -1,13 +1,16 @@
 // P3-T5 evidence: screen recordings and network waterfalls of the live card (card "Evidence
 // required"). Each flow runs in its own browser context with `recordVideo` (WebM) and `recordHar`
 // (the waterfall: first load = the still only, then the viewer chunk + GLB after intent). Flows:
-//   desktop-<locale>  1440×900: page scroll over the still card (no hijack) → hover (live) →
-//                     click (active) → drag rotate, wheel zoom → open HVAC → orbit → exit → open
-//                     Fire → reset → Done → page scroll;
-//   keyboard-<locale> 1440×900: Tab to the card → arrows, +/−, 0 → 1…5 enter, Escape exits each →
-//                     Escape deactivates;
-//   phone-<locale>    390×844 touch: swipe over the still → "Explore in 3D" → tap (active) → drag →
-//                     HVAC → exit → Done → swipe scrolls the page;
+// Round 3 (owner review O-2, O-3): the model starts only on a click, tap or key; no "Show in 3D",
+// zoom buttons or Done.
+//   desktop-<locale>  1440×900: page scroll over the image (no hijack) → hover (nothing changes) →
+//                     click the image (cross-fade to live, active) → drag rotate, wheel zoom → one
+//                     click on the pre-expanded HVAC header (enters) → orbit → exit → Fire header
+//                     (enters) → Fire header (exits) → reset view → Escape → page scroll;
+//   keyboard-<locale> 1440×900: focus the card → Enter (live) → arrows, +/−, 0 → 1…5 enter, Escape
+//                     exits each → Escape deactivates;
+//   phone-<locale>    390×844 touch: swipe over the image → tap the image (live) → tap (active) →
+//                     drag → HVAC header → Fire header (dots) → tap outside → swipe scrolls the page;
 //   reduced-<locale>  1440×900, prefers-reduced-motion: the stills tier (no 3D download), a system
 //                     shown from its end still.
 // Nothing is measured here; the files are for the eye. Every flow is written, also on failure (its
@@ -103,14 +106,6 @@ async function waitLabels(card) {
     .waitFor({ timeout: 15_000 })
 }
 
-/** Zoom in, zoom out and reset are the aria-labelled buttons beside the open/exit button. */
-function viewControls(card) {
-  return card
-    .locator('[data-exit-system], [data-open-3d-model]')
-    .locator('xpath=..')
-    .locator('button[aria-label]')
-}
-
 const FLOWS = {
   async desktop(browser, locale) {
     const { context } = await newContext(browser, `desktop-${locale}`, {
@@ -124,11 +119,12 @@ const FLOWS = {
       await pause(page, 1500)
       await scrollPast(page, card)
       await card.hover()
+      await pause(page, 1500)
+      await card.click()
       await page
         .locator('[data-interactive-3d-card][data-viewer-state="live"]')
         .waitFor({ timeout: LIVE_TIMEOUT })
       await pause(page, 1500)
-      await card.click()
       await drag(page, card, 220)
       await drag(page, card, -120, -60)
       const { x, y } = await center(card)
@@ -137,8 +133,8 @@ const FLOWS = {
       await pause(page, 800)
       await page.mouse.wheel(0, 300)
       await pause(page, 800)
-      // HVAC is the pre-expanded first row: its "Show in 3D" button enters it.
-      await rows(page).first().locator('[data-show-in-3d]').click()
+      // HVAC is the pre-expanded first row: one click on its header enters it.
+      await rows(page).first().locator(':scope > button').click()
       await waitLabels(card)
       await pause(page, 1000)
       await card.click({ position: { x: 40, y: 40 } })
@@ -152,12 +148,9 @@ const FLOWS = {
       await pause(page, 2000)
       await rows(page).nth(1).locator(':scope > button').click()
       await pause(page, 2500)
-      await viewControls(card).nth(2).click()
+      await card.locator('[data-reset-view]').click()
       await pause(page, 1500)
-      const done = card.locator('[data-done]')
-      if (await done.isVisible()) {
-        await done.click()
-      }
+      await page.keyboard.press('Escape')
       await scrollPast(page, card)
     } finally {
       await context.close()
@@ -172,12 +165,12 @@ const FLOWS = {
     try {
       const card = await openCard(page, locale)
       await card.scrollIntoViewIfNeeded()
-      await card.hover()
+      await card.focus()
+      await pause(page, 800)
+      await page.keyboard.press('Enter')
       await page
         .locator('[data-interactive-3d-card][data-viewer-state="live"]')
         .waitFor({ timeout: LIVE_TIMEOUT })
-      await page.mouse.move(0, 0)
-      await card.focus()
       for (const key of ['ArrowLeft', 'ArrowLeft', 'ArrowUp', '+', '+', '-', '0']) {
         await page.keyboard.press(key)
         await pause(page, 400)
@@ -230,7 +223,8 @@ const FLOWS = {
       }
       await swipe(200)
       await card.scrollIntoViewIfNeeded()
-      await page.locator('[data-open-3d-model]').tap()
+      const still = await card.boundingBox()
+      await page.touchscreen.tap(still.x + still.width / 2, still.y + still.height / 2)
       await page
         .locator('[data-interactive-3d-card][data-viewer-state="live"]')
         .waitFor({ timeout: LIVE_TIMEOUT })
@@ -238,17 +232,19 @@ const FLOWS = {
       const box = await card.boundingBox()
       await page.touchscreen.tap(box.x + 40, box.y + 40)
       await swipe(-120)
-      await rows(page).first().locator('[data-show-in-3d]').tap()
+      await rows(page).first().locator(':scope > button').tap()
       await card.scrollIntoViewIfNeeded()
       await waitLabels(card)
       await pause(page, 1500)
+      await rows(page).nth(1).locator(':scope > button').tap()
+      await card.scrollIntoViewIfNeeded()
+      await waitLabels(card)
+      await pause(page, 2000)
       await card.locator('[data-exit-system]').tap()
       await page.locator('[data-interactive-3d-card][data-entered="none"]').waitFor()
       await pause(page, 2000)
-      const done = card.locator('[data-done]')
-      if (await done.isVisible()) {
-        await done.tap()
-      }
+      await page.locator('h2').first().tap()
+      await card.scrollIntoViewIfNeeded()
       await swipe(250)
       await pause(page, 1000)
     } finally {
@@ -265,10 +261,10 @@ const FLOWS = {
     try {
       const card = await openCard(page, locale)
       await card.scrollIntoViewIfNeeded()
-      await card.hover()
+      await card.click()
       await page.locator('[data-interactive-3d-card][data-viewer-state="stills"]').waitFor()
       await pause(page, 800)
-      await rows(page).first().locator('[data-show-in-3d]').click()
+      await rows(page).first().locator(':scope > button').click()
       await pause(page, 2000)
       await rows(page).nth(1).locator(':scope > button').click()
       await pause(page, 2000)
