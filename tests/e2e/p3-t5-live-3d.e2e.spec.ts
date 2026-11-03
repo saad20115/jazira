@@ -1203,29 +1203,36 @@ test.describe('P3-T5 live 3D card', () => {
     }
   })
 
-  test('@gpu O-14: a context lost while the model loads ends in the stills tier, with that reason, within 10 s', async ({
+  test('@gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s', async ({
     page,
     context,
   }) => {
+    // The model download is held until the click, so the start is early when the context goes: the
+    // viewer has its context (it asks for the model right after creating it), and has not yet got to
+    // its own context-loss handling, which comes later in the start.
+    let release = (): void => undefined
+    const held = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await held
+      await route.continue()
+    })
     const card = await openHome(page)
     await expectHardwareGpu(page)
     await waitHydrated(card)
     await startStateLog(card)
     const cdp = await context.newCDPSession(page)
-    // Slow enough that the card is still loading once the viewer has its context, not so slow that it
-    // never gets that far within the bound.
     await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
     try {
       await clickImage(card)
       await expect(card).toHaveAttribute('data-viewer-state', 'loading')
-      // The viewer has its context once it has sized the canvas (a new canvas is 300 × 150): lose
-      // that one (asking for a context earlier would create it here instead).
-      await expect
-        .poll(() => card.locator('canvas').evaluate((el) => (el as HTMLCanvasElement).width), {
-          timeout: START_BOUND_MS,
-        })
-        .not.toBe(300)
-      await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+      await expect(card.locator('canvas')).toHaveCount(1)
+      const downloaded = page.waitForEvent('requestfinished', (request) =>
+        /\/systems\/v022n\/tower[^/]*\.glb$/.test(request.url()),
+      )
+      release()
+      await downloaded
       await card.locator('canvas').evaluate((el) => {
         const gl = (el as HTMLCanvasElement).getContext('webgl2')
         gl?.getExtension('WEBGL_lose_context')?.loseContext()
