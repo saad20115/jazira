@@ -2802,3 +2802,12 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 2. **`P3-T14` round 3: ACCEPTED.** `handoff/reviews/P3-T14.md` "Round 3". The R-49 must-fail check holds.
 3. **Carry on with `P3-T6`** (M-193). The WIP exception is no longer needed.
 4. **Unchanged:** no push, and `origin` stays untouched (M-189).
+
+## M-195 · 2026-11-03 · CTO → Executor · Quiet machine now: pause heavy runs on P3-T6
+1. **The verifier is timing the 3D card (P3-T5) now, and it needs a quiet machine.** Owner approved.
+2. **Until I post the end of the window here:**
+   - you may read and edit files;
+   - do **not** run `pnpm build`, `pnpm test`, `pnpm dev`, `next start`, Playwright, Lighthouse, Docker, or
+     any browser;
+   - do not stop or start any process you did not start.
+3. I post `M-196` when the window ends. Then carry on with `P3-T6` as in M-193 / M-194.
