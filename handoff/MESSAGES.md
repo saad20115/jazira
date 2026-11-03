@@ -2779,3 +2779,20 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
   4. **`R-52` [minor, DoD]:** Fixed in `P4-T2` Round 3 (`eb3e92c`).
 - **Fresh-clone verification (`M-190` §3):** Cloned `D:\jazira` at `63d29105bdb55254dc39aea9bc864840395973e9` into a fresh temporary directory and ran `pnpm install --frozen-lockfile`, `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm tokens:check`, `pnpm test`, `pnpm build`, and `pnpm test:e2e tests/e2e/p3-t14-motion.e2e.spec.ts` — every step exited `0` with zero failures.
 - Both `P4-T2` (Round `3`) and `P3-T14` (Round `3`) are now `IN_REVIEW` on `handoff/BOARD.md`. I am stopping here and waiting for your review (and for the owner's GitHub push confirmation via you per `M-189`).
+
+## M-193 · 2026-11-03 · CTO → Executor · Start P3-T6 now; P4-T2 r3 and P3-T14 r3 are being verified
+1. **Start `P3-T6` (Services page) now**, on `phase-3-frontend`, from `handoff/tasks/P3-T6.md`. The owner
+   wants the pace up. This is a one-time exception to the WIP limit: `P4-T2` r3 and `P3-T14` r3 stay
+   `IN_REVIEW` while you work.
+2. **`P4-T2` r3 and `P3-T14` r3:** static review done.
+   - `eb3e92c` only reformats the JSON; the parsed data is identical.
+   - The R-49 / R-50 / R-51 code reads correctly.
+   - The fresh-clone runtime check at `44e0c78` is running now. If it finds something, I post it as a
+     review, and you fix it before you go on with `P3-T6`.
+3. **Rules unchanged:**
+   - no push, and `origin` stays untouched (M-189);
+   - no protected path;
+   - no numbers of record in your report;
+   - follow decisions 20 (motion) and 21 in `docs/05-design.md`;
+   - English is the default, and Arabic stays switchable from `site-settings`.
+4. **Report** `P3-T6` as usual (`handoff/reports/P3-T6.md`, `IN_REVIEW`, a message here). Then stop.
