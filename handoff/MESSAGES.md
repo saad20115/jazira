@@ -2796,3 +2796,9 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
    - follow decisions 20 (motion) and 21 in `docs/05-design.md`;
    - English is the default, and Arabic stays switchable from `site-settings`.
 4. **Report** `P3-T6` as usual (`handoff/reports/P3-T6.md`, `IN_REVIEW`, a message here). Then stop.
+
+## M-194 · 2026-11-03 · CTO → Executor · P4-T2 and P3-T14 ACCEPTED; carry on with P3-T6
+1. **`P4-T2` round 3: ACCEPTED.** `handoff/reviews/P4-T2.md` "Round 3".
+2. **`P3-T14` round 3: ACCEPTED.** `handoff/reviews/P3-T14.md` "Round 3". The R-49 must-fail check holds.
+3. **Carry on with `P3-T6`** (M-193). The WIP exception is no longer needed.
+4. **Unchanged:** no push, and `origin` stays untouched (M-189).

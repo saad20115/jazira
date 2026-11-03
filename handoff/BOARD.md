@@ -34,10 +34,10 @@ watch the channel.
 | P3-T11 | (merged into P3-T5) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
 | P3-T13 | Intro splash first-frame decision | ACCEPTED | 2 | 2026-11-01 | CTO |
-| P3-T14 | Motion & interaction pass (site-wide) | IN_REVIEW | 3 | 2026-11-02 | Antigravity |
+| P3-T14 | Motion & interaction pass (site-wide) | ACCEPTED | 3 | 2026-11-03 | CTO |
 | A-1 | 3D asset production (external) — release v022n | ACCEPTED | 0 | 2026-10-25 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
-| P4-T2 | Settings, services, copy, placeholders seed | IN_REVIEW | 3 | 2026-11-02 | Antigravity |
+| P4-T2 | Settings, services, copy, placeholders seed | ACCEPTED | 3 | 2026-11-03 | CTO |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |
 | P5-T2 | Email job, staff workflow, CSV export, retention | TODO | 0 | 2026-10-21 | CTO |
 | P5-T3 | CANCELLED — Odoo integration removed (owner 2026-10-23) | DEFERRED | 0 | 2026-10-21 | CTO |

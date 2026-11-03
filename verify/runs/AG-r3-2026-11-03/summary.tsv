@@ -1,0 +1,23 @@
+step	exit	seconds
+install	0	1651
+migrate-up	0	46
+migrate-down	0	12
+migrate-up-again	0	16
+migrate-status	0	16
+lint	0	128
+typecheck	0	33
+format-check	0	18
+tokens-check	0	1
+test	0	756
+build	0	374
+audit-full	1	3
+audit-high	0	2
+seed	0	60
+e2e-default-pre	1	71
+publish-home	0	1
+e2e-default	1	56
+e2e-p3t14-prodflag	0	40
+r50-images	0	1
+arabic-off	0	1
+server left running: 18356 34484
+done

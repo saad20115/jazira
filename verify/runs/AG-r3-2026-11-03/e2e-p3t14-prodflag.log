@@ -1,0 +1,13 @@
+
+Running 8 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:153:3 › P3-T14 — Motion system: content never depends on JavaScript › with JavaScript disabled, every Home section and reveal target is visible and motion is off (2.4s)
+  ok 2 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:189:3 › P3-T14 — Motion system: content never depends on JavaScript › with every JS chunk blocked (no hydration), every reveal target is visible and motion is off (1.0s)
+  ok 3 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:209:3 › P3-T14 — Motion system: content never depends on JavaScript › under prefers-reduced-motion, motion never turns on and no CSS animation is running (1.6s)
+  ok 4 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:254:3 › P3-T14 — Motion system: content never depends on JavaScript › with motion on, scrolling the whole Home page reveals every target and count-ups land on the CMS value (4.6s)
+  ok 5 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:313:5 › P3-T14 — Motion system: content never depends on JavaScript › R-42 fail-safe at 1440px: anchor jump (/en#cta), fast scroll to bottom, reload mid-page, and background tab leave no target hidden or clipped (10.3s)
+  ok 6 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:313:5 › P3-T14 — Motion system: content never depends on JavaScript › R-42 fail-safe at 390px: anchor jump (/en#cta), fast scroll to bottom, reload mid-page, and background tab leave no target hidden or clipped (10.4s)
+  ok 7 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:407:3 › P3-T14 — Motion system: content never depends on JavaScript › R-43: at 390px with hasTouch, ProjectCard .ctaRow is visible at rest on Home (2.6s)
+  ok 8 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:441:3 › P3-T14 — Motion system: content never depends on JavaScript › R-44, R-45, R-48: hero entrance & bg settle pause under data-intro="active" and play when intro ends; ServiceTile uses :focus-visible without clipping focus ring (2.5s)
+
+  8 passed (38.0s)
