@@ -1,0 +1,18 @@
+
+Running 14 tests using 1 worker
+
+[1/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:339:3 › P3-T5 live 3D card › @smoke image first: the Figma image paints, hover changes nothing, a click starts
+[2/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:370:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels
+[3/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:402:3 › P3-T5 live 3D card › a #systems hash on load enters that system without starting the model
+[4/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:414:3 › P3-T5 live 3D card › O-7: the tap hint appears once the card is half on screen, never as a target, and starts nothing
+[5/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:428:3 › P3-T5 live 3D card › O-7: the hint stops at once on hover, and never returns
+[6/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:445:3 › P3-T5 live 3D card › O-7: the hint stops at once on a click (the click itself starts the model)
+[7/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:459:3 › P3-T5 live 3D card › O-7: under reduced motion the hand is shown still, once, and does not animate
+[8/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:479:3 › P3-T5 live 3D card › O-8: after a reload with the hash, no frame shows an empty card (slow images)
+[9/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1010:3 › P3-T5 live 3D card › O-9: at the top of the page nothing of the model is fetched (the card is far below)
+[10/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1021:3 › P3-T5 live 3D card › O-9: with Save-Data nothing is prepared; a click shows the stills tier
+[11/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1128:3 › P3-T5 live 3D card › O-11: under reduced motion the image never pushes in
+[12/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1287:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier
+[13/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1318:3 › P3-T5 live 3D card — software renderer › a software WebGL renderer ends in the stills tier, without a canvas or a 3D download
+[14/14] [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1356:3 › P3-T5 live 3D card — phone › O-6: every Fire dot of the still can be tapped at 390 px, and a tap starts nothing
+  14 passed (1.4m)

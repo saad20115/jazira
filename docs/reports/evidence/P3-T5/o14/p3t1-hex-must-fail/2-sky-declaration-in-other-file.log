@@ -1,0 +1,41 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t1-foundations.test.ts (12 tests | 1 failed) 511ms
+   ❯ P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, and no raw hex (3)
+     × enforces zero raw hex colors (#...) across src/app/(frontend) and src/components 130ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t1-foundations.test.ts > P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, and no raw hex > enforces zero raw hex colors (#...) across src/app/(frontend) and src/components
+AssertionError: expected [ { …(2) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "file": "src/components/Accordion.module.css",
++     "matches": [
++       "#306cab",
++     ],
++   },
++ ]
+
+ ❯ src/p3-t1-foundations.test.ts:171:24
+    169|     }
+    170|
+    171|     expect(violations).toEqual([])
+       |                        ^
+    172|   })
+    173|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  14:10:36
+   Duration  3.62s (import 80%, tests 16%, transform 3%, worker 1%)
+

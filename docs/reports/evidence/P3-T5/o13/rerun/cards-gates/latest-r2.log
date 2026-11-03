@@ -1,0 +1,1 @@
+{"mode":"latest","tScroll":995,"firstClick":1243,"liveMs":7183,"maxLongTaskFirstWindow":81,"maxFlightGap":150,"tiersAfterLive":["low"],"laterStartMs":[10,56],"maxLoadScale":1.06,"scaleAtSwap":[1.06,1.06],"enteredAfterFirstPhase":"plumbing","modelRequests":["tower-lite.glb"],"errors":[],"pass":{"live":false,"longTask":true,"flightGap":false,"tier":true,"later":true,"latest":true}}

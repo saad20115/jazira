@@ -1,0 +1,36 @@
+
+Running 1 test using 1 worker
+
+(node:19020) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1206:3 › P3-T5 live 3D card › @gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1206:3 › P3-T5 live 3D card › @gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s 
+
+    Error: expect(received).toEqual(expected) // deep equality
+
+    - Expected  - 1
+    + Received  + 1
+
+      Object {
+        "afterClickMs": Any<Number>,
+    -   "reason": "context-lost",
+    +   "reason": "no-webgl",
+        "state": "stills",
+      }
+
+      1243 |     }
+      1244 |     const ended = await firstEnd(page)
+    > 1245 |     expect(ended).toEqual({
+           |                   ^
+      1246 |       state: 'stills',
+      1247 |       reason: 'context-lost',
+      1248 |       afterClickMs: expect.any(Number),
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:1245:19
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-998e4-ith-that-reason-within-10-s-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1206:3 › P3-T5 live 3D card › @gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s 
