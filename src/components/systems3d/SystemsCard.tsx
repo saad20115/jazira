@@ -39,8 +39,12 @@ import { type FallbackReason, ViewerStartError } from './viewer/failure'
 export type CardPhase = 'still' | 'loading' | 'live' | 'stills'
 type Phase = CardPhase
 
-/** A start that has not rendered its first frame by then falls back to the stills tier. */
-const START_TIMEOUT_MS = 45_000
+/**
+ * O-14: a start that has not rendered its first frame this long after the click falls back to the
+ * stills tier (reason `timeout`), so within 10 s of the click the card is live or stills, whatever
+ * the start waits for. The viewer is aborted, which ends its waits.
+ */
+const START_TIMEOUT_MS = 9_000
 
 /**
  * O-9 / Q6: the model is prepared once the card is this close to the viewport (two viewport heights

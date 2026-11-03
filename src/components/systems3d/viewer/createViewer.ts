@@ -591,7 +591,39 @@ async function enableExtensions(
   await pause()
 }
 
+/**
+ * O-14: a context lost before the first frame answers no link, fence or frame again, so the start
+ * would wait on it for ever. Losing it aborts the start at once (every wait checks the signal) and
+ * the start rejects with `context-lost`. Once started, the viewer handles a loss itself.
+ */
 export async function createViewer(options: ViewerOptions): Promise<ViewerHandle> {
+  const start = new AbortController()
+  const abortStart = (): void => {
+    start.abort()
+  }
+  if (options.signal.aborted) {
+    start.abort()
+  }
+  options.signal.addEventListener('abort', abortStart, { once: true })
+  const contextLost = new Error('WebGL context lost while starting')
+  const onLost = (event: Event): void => {
+    event.preventDefault()
+    start.abort(contextLost)
+  }
+  options.canvas.addEventListener('webglcontextlost', onLost)
+  try {
+    return await startViewer({ ...options, signal: start.signal })
+  } catch (err) {
+    if (start.signal.reason === contextLost) {
+      throw new ViewerStartError('context-lost', 'WebGL context lost while starting')
+    }
+    throw err
+  } finally {
+    options.canvas.removeEventListener('webglcontextlost', onLost)
+  }
+}
+
+async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const { canvas, container } = options
   patchAgxLook()
 

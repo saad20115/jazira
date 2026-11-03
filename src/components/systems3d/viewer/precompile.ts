@@ -433,6 +433,13 @@ export const COMPILE_TASK_MS = 25
 /** How often a link still running is checked (ms). */
 const LINK_POLL_MS = 50
 
+/**
+ * O-14: the longest wait for links (ms). A link on a loaded machine can take seconds, and on a
+ * context lost before the first frame `isReady()` never turns true; past this the work goes on (a
+ * program still linking is then waited for by its first use, which the driver bounds).
+ */
+export const LINK_MAX_WAIT_MS = 4_000
+
 /** three's `isReady()` of a program: KHR_parallel_shader_compile reports its link done. */
 function isLinked(program: unknown): boolean {
   if (typeof program !== 'object' || program === null) {
@@ -454,10 +461,12 @@ function isLinked(program: unknown): boolean {
 export async function waitForLinks(
   programs: Iterable<unknown>,
   isCancelled: () => boolean,
+  maxWaitMs = LINK_MAX_WAIT_MS,
 ): Promise<void> {
   const pending = [...new Set(programs)]
+  const start = performance.now()
   while (pending.length > 0) {
-    if (isCancelled()) {
+    if (isCancelled() || performance.now() - start >= maxWaitMs) {
       return
     }
     while (pending.length > 0 && isLinked(pending[0])) {
@@ -498,7 +507,7 @@ export interface LinkBudget {
   track: (programs: Iterable<unknown>) => void
 }
 
-export function createLinkBudget(limit: () => number): LinkBudget {
+export function createLinkBudget(limit: () => number, maxWaitMs = LINK_MAX_WAIT_MS): LinkBudget {
   const seen = new WeakSet()
   let linking: object[] = []
   const waitPoll = (): Promise<void> =>
@@ -512,7 +521,13 @@ export function createLinkBudget(limit: () => number): LinkBudget {
   return {
     async room(isCancelled) {
       prune()
+      const start = performance.now()
       while (linking.length >= limit() && !isCancelled()) {
+        if (performance.now() - start >= maxWaitMs) {
+          // O-14: links this slow are no longer counted (they go on in the GPU process).
+          linking = []
+          return
+        }
         await waitPoll()
         prune()
       }
