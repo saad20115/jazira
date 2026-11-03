@@ -593,8 +593,9 @@ async function enableExtensions(
 
 /**
  * O-14: a context lost before the first frame answers no link, fence or frame again, so the start
- * would wait on it for ever. Losing it aborts the start at once (every wait checks the signal) and
- * the start rejects with `context-lost`. Once started, the viewer handles a loss itself.
+ * would wait on it for ever. Losing it aborts the start (every wait checks the signal), and the start
+ * rejects with `context-lost` at once, without waiting for the step in progress (a parse, say) to
+ * notice. Once started, the viewer handles a loss itself.
  */
 export async function createViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const start = new AbortController()
@@ -605,19 +606,20 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     start.abort()
   }
   options.signal.addEventListener('abort', abortStart, { once: true })
-  const contextLost = new Error('WebGL context lost while starting')
-  const onLost = (event: Event): void => {
-    event.preventDefault()
-    start.abort(contextLost)
-  }
-  options.canvas.addEventListener('webglcontextlost', onLost)
-  try {
-    return await startViewer({ ...options, signal: start.signal })
-  } catch (err) {
-    if (start.signal.reason === contextLost) {
-      throw new ViewerStartError('context-lost', 'WebGL context lost while starting')
+  let onLost = (_event: Event): void => undefined
+  const lost = new Promise<never>((_resolve, reject) => {
+    onLost = (event) => {
+      event.preventDefault()
+      start.abort()
+      reject(new ViewerStartError('context-lost', 'WebGL context lost while starting'))
     }
-    throw err
+  })
+  options.canvas.addEventListener('webglcontextlost', onLost)
+  const started = startViewer({ ...options, signal: start.signal })
+  // After a loss the start ends on its own (it is aborted); its own error is not the reason.
+  started.catch(() => undefined)
+  try {
+    return await Promise.race([started, lost])
   } finally {
     options.canvas.removeEventListener('webglcontextlost', onLost)
   }

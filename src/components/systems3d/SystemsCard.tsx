@@ -42,9 +42,10 @@ type Phase = CardPhase
 /**
  * O-14: a start that has not rendered its first frame this long after the click falls back to the
  * stills tier (reason `timeout`), so within 10 s of the click the card is live or stills, whatever
- * the start waits for. The viewer is aborted, which ends its waits.
+ * the start waits for. The viewer is aborted, which ends its waits. 8 s leaves room for the stills to
+ * show on a loaded device, where the timer and the render run late.
  */
-const START_TIMEOUT_MS = 9_000
+const START_TIMEOUT_MS = 8_000
 
 /**
  * O-9 / Q6: the model is prepared once the card is this close to the viewport (two viewport heights
@@ -401,12 +402,21 @@ export function SystemsCard({
       live.failure = reason
       return
     }
-    live?.abort()
+    if (live) {
+      live.failure = reason
+    }
     viewerRef.current = null
     activeRef.current = false
     setActive(false)
     setFallbackReason(reason)
     setPhase('stills')
+    // O-14: the stills first; disposing the viewer (the scene, its GPU resources) is a long task on a
+    // loaded device, so it runs in a task of its own after the card has changed.
+    if (live) {
+      window.setTimeout(() => {
+        live.abort()
+      }, 0)
+    }
   }, [])
 
   // O-9: the model is prepared before the visitor asks for it, once the card nears the viewport, in
@@ -532,6 +542,10 @@ export function SystemsCard({
           signal: controller.signal,
           whenShown,
           onFirstFrame: () => {
+            // O-14: a frame that comes after the fallback (the abort runs a task later) changes nothing.
+            if (live.failure) {
+              return
+            }
             setPhase('live')
             if (activateOnLiveRef.current) {
               activateOnLiveRef.current = false
@@ -549,6 +563,10 @@ export function SystemsCard({
         }),
       )
       .then((handle) => {
+        // O-14: a start that ends after the fallback is being disposed; the card keeps the stills.
+        if (live.failure && shownRef.current) {
+          return
+        }
         viewerRef.current = handle
         const { tier, lowTier } = handle.stats()
         setLiveTier(lowTier ? 'low' : tier)
