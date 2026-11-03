@@ -267,3 +267,12 @@ Binding for Phase 3. They fill what the Figma file does not specify.
       The owner judges it.
     - **A tap hint (owner, same day):** a hand drawn in light taps the image to show "click here". It is a hint only and starts nothing. Spec: `handoff/reviews/P3-T5.md` O-7.
     - The model itself (v022n, `3d/`) is unchanged by this decision.
+22. **Interactive systems — scene colours (2026-11-03, owner O-13, CTO answer to Q12).** The live model
+    sits on a dusk sky that matches the Figma poster (`design/assets/images/tower-render.png`). The
+    poster's blue-hour azure cannot be mixed from the brand tokens, so these colours are **scene colours**,
+    not brand UI tokens:
+    - They are named custom properties **scoped to the interactive-systems section stylesheet**, for example
+      `--systems-sky-top`, with a comment that says they are sampled from the poster.
+    - They are never used outside the 3D card, and never as UI colours (text, buttons, borders).
+    - The gold glow and the ground still come from the brand tokens (`color-mix()`).
+    - No global token is added for them. If another page ever needs them, they become tokens first.
