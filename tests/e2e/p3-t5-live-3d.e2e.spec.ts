@@ -163,6 +163,52 @@ async function goLive(card: Locator): Promise<void> {
   await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
 }
 
+/** Mean colour of a band of the card as shown (from `top` to `bottom`, fractions of its height). */
+async function meanRgb(
+  page: Page,
+  card: Locator,
+  top: number,
+  bottom: number,
+): Promise<{ r: number; g: number; b: number }> {
+  const box = await card.boundingBox()
+  if (!box) {
+    throw new Error('card has no box')
+  }
+  // The left half only: the live "Drag to rotate" chip sits at the top right.
+  const png = await page.screenshot({
+    clip: {
+      x: box.x + box.width * 0.1,
+      y: box.y + box.height * top,
+      width: box.width * 0.4,
+      height: box.height * (bottom - top),
+    },
+  })
+  return page.evaluate(async (src) => {
+    const img = new Image()
+    img.src = `data:image/png;base64,${src}`
+    await img.decode()
+    const canvas = document.createElement('canvas')
+    canvas.width = img.width
+    canvas.height = img.height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      throw new Error('no 2d context')
+    }
+    ctx.drawImage(img, 0, 0)
+    const data = ctx.getImageData(0, 0, img.width, img.height).data
+    let r = 0
+    let g = 0
+    let b = 0
+    for (let i = 0; i < data.length; i += 4) {
+      r += data[i]
+      g += data[i + 1]
+      b += data[i + 2]
+    }
+    const n = data.length / 4
+    return { r: r / n, g: g / n, b: b / n }
+  }, png.toString('base64'))
+}
+
 function rows(page: Page): Locator {
   return page.locator('[data-component="accordion-item"]')
 }
@@ -476,6 +522,24 @@ test.describe('P3-T5 live 3D card', () => {
     expect(fade).toBe('0.5s')
     const sizeAfter = await card.boundingBox()
     expect([sizeAfter?.width, sizeAfter?.height]).toEqual([sizeBefore?.width, sizeBefore?.height])
+    // O-13 (Q13): the canvas is transparent over its dusk sky (CSS), and the top of the card shows
+    // that sky: a clear blue, darker at the very top than lower down (not the grey studio room, not
+    // a flat colour, not black).
+    const sky = await card.locator('canvas').evaluate((el) => ({
+      alpha: (el as HTMLCanvasElement).getContext('webgl2')?.getContextAttributes()?.alpha,
+      image: getComputedStyle(el).backgroundImage,
+    }))
+    expect(sky.alpha).toBe(true)
+    expect(sky.image).toContain('linear-gradient')
+    await page.waitForTimeout(600)
+    const zenith = await meanRgb(page, card, 0, 0.04)
+    const upper = await meanRgb(page, card, 0.1, 0.14)
+    for (const band of [zenith, upper]) {
+      expect(band.b).toBeGreaterThan(band.g)
+      expect(band.g).toBeGreaterThan(band.r)
+      expect(band.b - band.r).toBeGreaterThan(40)
+    }
+    expect(zenith.r + zenith.g + zenith.b).toBeLessThan(upper.r + upper.g + upper.b)
     expect(recorder.model).toEqual(
       expect.arrayContaining([`HEAD ${WORKER_PATH}`, `GET ${WORKER_PATH}`]),
     )
