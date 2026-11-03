@@ -163,6 +163,60 @@ async function goLive(card: Locator): Promise<void> {
   await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
 }
 
+/** O-14 (CTO round 7): within this long of the click the card is live or in the stills tier. */
+const START_BOUND_MS = 10_000
+
+/**
+ * O-14: logs, in the page, the time of the pointerdown on the card and of every state change, with
+ * the stills reason. Real time (`performance.now()`), unaffected by CPU throttling.
+ */
+async function startStateLog(card: Locator): Promise<void> {
+  await card.evaluate((el) => {
+    const log: { at: number; state: string | null; reason: string | null }[] = []
+    let clickAt: number | null = null
+    el.addEventListener(
+      'pointerdown',
+      () => {
+        clickAt ??= performance.now()
+      },
+      { capture: true },
+    )
+    new MutationObserver(() => {
+      log.push({
+        at: performance.now(),
+        state: el.getAttribute('data-viewer-state'),
+        reason: el.getAttribute('data-viewer-fallback'),
+      })
+    }).observe(el, {
+      attributes: true,
+      attributeFilter: ['data-viewer-state', 'data-viewer-fallback'],
+    })
+    Object.assign(window, { __startLog: { log, clickAt: () => clickAt } })
+  })
+}
+
+/** O-14: the first time after the click the card was live or stills (null: never). */
+async function firstEnd(
+  page: Page,
+): Promise<{ state: string; reason: string | null; afterClickMs: number } | null> {
+  return page.evaluate(() => {
+    const { log, clickAt } = (
+      window as unknown as {
+        __startLog: {
+          log: { at: number; state: string | null; reason: string | null }[]
+          clickAt: () => number | null
+        }
+      }
+    ).__startLog
+    const click = clickAt()
+    const end = log.find((entry) => entry.state === 'live' || entry.state === 'stills')
+    if (click === null || !end?.state) {
+      return null
+    }
+    return { state: end.state, reason: end.reason, afterClickMs: Math.round(end.at - click) }
+  })
+}
+
 /** Mean colour of a band of the card as shown (from `top` to `bottom`, fractions of its height). */
 async function meanRgb(
   page: Page,
@@ -1123,6 +1177,70 @@ test.describe('P3-T5 live 3D card', () => {
     await page.waitForTimeout(800)
     const after = (await scaleSamples(page)).filter((sample) => sample.state === 'live')
     expect(after.filter((sample) => sample.scale !== held)).toEqual([])
+  })
+
+  test('@gpu O-14: under heavy CPU throttling, within 10 s of the click the card is live or stills with a reason', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startStateLog(card)
+    const cdp = await context.newCDPSession(page)
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 20 })
+    try {
+      await clickImage(card)
+      await page.waitForTimeout(START_BOUND_MS + 1_000)
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+    const ended = await firstEnd(page)
+    expect(ended, 'live or stills within 10 s of the click').not.toBeNull()
+    expect(ended?.afterClickMs).toBeLessThanOrEqual(START_BOUND_MS)
+    if (ended?.state === 'stills') {
+      expect(ended.reason).toMatch(/^(timeout|too-slow|context-lost|load-error|render-error)$/)
+    }
+  })
+
+  test('@gpu O-14: a context lost while the model loads ends in the stills tier, with that reason, within 10 s', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startStateLog(card)
+    const cdp = await context.newCDPSession(page)
+    // Slow enough that the card is still loading once the viewer has its context, not so slow that it
+    // never gets that far within the bound.
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
+    try {
+      await clickImage(card)
+      await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+      // The viewer has its context once it has sized the canvas (a new canvas is 300 × 150): lose
+      // that one (asking for a context earlier would create it here instead).
+      await expect
+        .poll(() => card.locator('canvas').evaluate((el) => (el as HTMLCanvasElement).width), {
+          timeout: START_BOUND_MS,
+        })
+        .not.toBe(300)
+      await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+      await card.locator('canvas').evaluate((el) => {
+        const gl = (el as HTMLCanvasElement).getContext('webgl2')
+        gl?.getExtension('WEBGL_lose_context')?.loseContext()
+      })
+      await page.waitForTimeout(START_BOUND_MS + 1_000)
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+    const ended = await firstEnd(page)
+    expect(ended).toEqual({
+      state: 'stills',
+      reason: 'context-lost',
+      afterClickMs: expect.any(Number),
+    })
+    expect(ended?.afterClickMs).toBeLessThanOrEqual(START_BOUND_MS)
   })
 })
 

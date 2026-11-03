@@ -16,8 +16,10 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   createLinkBudget,
+  LINK_MAX_WAIT_MS,
   hasPmremInternals,
   uploadGeometryInChunks,
+  waitForLinks,
 } from '@/components/systems3d/viewer/precompile'
 
 describe('P3-T5 shader warm-up', () => {
@@ -106,6 +108,16 @@ describe('P3-T5 O-12: only a few new programs link at once', () => {
     limit = 2
     expect(budget.full).toBe(false)
     await budget.room(() => false)
+  })
+
+  it('O-14: stops waiting for room after its bound, even if nothing ever links, and counts afresh', async () => {
+    const budget = createLinkBudget(() => 1, 150)
+    // A program on a lost context: `isReady()` never turns true.
+    budget.track([program()])
+    const start = performance.now()
+    await budget.room(() => false)
+    expect(performance.now() - start).toBeGreaterThanOrEqual(140)
+    expect(budget.full).toBe(false)
   })
 
   it('stops waiting once cancelled', async () => {
@@ -209,5 +221,44 @@ describe('P3-T5 O-12: the model buffers go up a few MB per task before the first
       },
     )
     expect(draws).toBe(1)
+  })
+})
+
+describe('P3-T5 O-14: every wait for links has a bound', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('waits for the links, and returns once they are done', async () => {
+    const first = program()
+    const second = program()
+    let done = false
+    const wait = waitForLinks([first, second], () => false, 5_000).then(() => {
+      done = true
+    })
+    await new Promise((resolve) => {
+      setTimeout(resolve, 120)
+    })
+    expect(done).toBe(false)
+    first.linked = true
+    second.linked = true
+    await wait
+    expect(done).toBe(true)
+  })
+
+  it('returns after its bound when a program never links (a context lost before the first frame)', async () => {
+    const start = performance.now()
+    await waitForLinks([program()], () => false, 150)
+    const waited = performance.now() - start
+    expect(waited).toBeGreaterThanOrEqual(140)
+    expect(waited).toBeLessThan(1_000)
+  })
+
+  it('has a default bound of a few seconds', () => {
+    expect(LINK_MAX_WAIT_MS).toBeGreaterThan(0)
+    expect(LINK_MAX_WAIT_MS).toBeLessThan(10_000)
   })
 })
