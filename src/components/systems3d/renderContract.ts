@@ -33,7 +33,10 @@ export const COMPOSER_MSAA_SAMPLES = 4
 /** Blender's "Medium High Contrast" look in AgX-log space: `(c − pivot) · 1.2 + pivot`. */
 export const AGX_LOOK = { pivot: 0.606, contrast: 1.2 } as const
 
-/** Clear colour for each studio mode (`scene.background` stays null; the room mesh is the backdrop). */
+/**
+ * The release's clear colour for each studio mode (the room mesh as the backdrop). O-13: the live
+ * canvas clears transparent instead, and the card's dusk sky (CSS) is the backdrop.
+ */
 export const CLEAR_COLOR = { night: 0x1b2130, day: 0xd8d8d6 } as const
 
 /** Materials the `enter` state fades and the interior mapping applies to (`extras-schema.md` v021). */
@@ -92,6 +95,27 @@ export interface LiveLook {
    * baked disc around the plinth is flat in live, so it ends in a hard pale ellipse.
    */
   floorEdgeLevel: number
+  /**
+   * O-13: the room's floor is the ground the plinth stands on. It fades out into the card's dusk sky
+   * between these multiples of the plinth radius; the room's walls are not drawn.
+   */
+  groundFade: readonly [number, number]
+  /**
+   * O-13: evening tints of the baked studio light (emissive, a cool grey) of the lightmapped room
+   * floor (warm, toward the ground under the sky) and plinth (warm).
+   */
+  floorTint: readonly [number, number, number]
+  plinthTint: readonly [number, number, number]
+  /**
+   * O-13: base colour tint per material, for the few surfaces lit by the lights rather than baked
+   * (the roads are white in the model, so the cool moon turns them pale blue).
+   */
+  materialColor: Readonly<Record<string, readonly [number, number, number]>>
+  /**
+   * O-13: environment reflection per material, in place of `envIntensity`: the studio's bright
+   * panels turn the roads and the plinth rim's clear coat pale, which reads as day, not dusk.
+   */
+  materialEnv: Readonly<Record<string, number>>
   key: KeyLight
   fill: FillLight
   /**
@@ -143,6 +167,11 @@ export const LIVE_LOOK: LiveLook = {
   emissiveScale: 0.66,
   roomEnvIntensity: 0.4,
   floorEdgeLevel: 0.5,
+  groundFade: [1.02, 1.6],
+  floorTint: [1, 0.7, 0.36],
+  plinthTint: [0.7, 0.6, 0.48],
+  materialColor: { MAT_asphalt: [0.3, 0.29, 0.28] },
+  materialEnv: { MAT_asphalt: 0.3, MAT_plinth_side: 0.35 },
   materialEmissive: {
     MAT_glass_cw: 1.5,
     MAT_glass_side: 1.5,
@@ -156,8 +185,8 @@ export const LIVE_LOOK: LiveLook = {
     MAT_stone: 1,
     MAT_bronze: 1,
   },
-  key: { color: [1, 0.8, 0.58], intensity: 1.6, azimuthDeg: 40, elevationDeg: 38 },
-  fill: { sky: [0.55, 0.62, 0.8], ground: [0.42, 0.33, 0.24], intensity: 0.5 },
+  key: { color: [1, 0.74, 0.48], intensity: 1.6, azimuthDeg: 40, elevationDeg: 38 },
+  fill: { sky: [0.45, 0.52, 0.78], ground: [0.45, 0.33, 0.22], intensity: 0.5 },
   systemLightScale: 1.5,
   systemExposureScale: 1,
   systemGlassScale: 0.3,

@@ -94,6 +94,38 @@
   opacity: 0;
   pointer-events: none;
   transition: opacity 500ms cubic-bezier(0.65, 0, 0.35, 1);
+  /* O-13 (docs/05-design.md decision 22): the dusk sky of the poster behind the model (the canvas
+     is transparent, so it fades in with it): darkest at the top, lightening to a warm haze at the
+     horizon with a faint gold glow, then a dark evening ground with a soft gold pool under the
+     island. Browsers dither gradients, so there are no bands on 8-bit screens. The sky colours are
+     scene colours, not brand tokens: the poster's blue-hour azure cannot be mixed from them (Q12).
+     They are used in this rule only. */
+  --systems-sky-top: #306cab; /* sampled from tower-render.png: top edge of the card's 0–15 % band */
+  --systems-sky-upper: #8da3bb; /* sampled from tower-render.png: sky at 15 % of the card height */
+  --systems-sky-mid: #97a7bb; /* sampled from tower-render.png: sky above the skyline, 30–40 % band */
+  --systems-sky-horizon: #b0aca6; /* sampled from tower-render.png: warm haze at the horizon */
+
+  background-color: var(--navy-950);
+  background-image:
+    radial-gradient(
+      80% 12% at 50% 57%,
+      color-mix(in srgb, var(--gold-500) 30%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      60% 22% at 50% 72%,
+      color-mix(in srgb, var(--gold-500) 22%, transparent) 0%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--systems-sky-top) 0%,
+      var(--systems-sky-upper) 15%,
+      var(--systems-sky-mid) 36%,
+      var(--systems-sky-horizon) 55%,
+      color-mix(in srgb, var(--navy-800) 60%, var(--navy-900)) 68%,
+      var(--navy-950) 100%
+    );
 }
 
 /* O-2: a click or tap on the image starts the model. */

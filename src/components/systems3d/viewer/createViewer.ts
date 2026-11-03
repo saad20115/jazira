@@ -71,7 +71,6 @@ import {
   BLOOM,
   CAMERA_FAR,
   CAMERA_NEAR,
-  CLEAR_COLOR,
   COMPOSER_MSAA_SAMPLES,
   CORE_MATERIALS,
   FACADE_ANISOTROPY,
@@ -247,6 +246,9 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
  * V-4: the room floor's inner disc (around the plinth) is lit flat in live and ends in a hard pale
  * ellipse at its edge. Its emissive is eased from 1 at the plinth edge to `edgeLevel` at the disc
  * edge, on floor fragments inside the disc only. Radii and height come from the geometry.
+ *
+ * O-13: the room is no longer the backdrop. Its floor fades out between `fade` plinth radii into the
+ * card's dusk sky behind the transparent canvas, and its walls are not drawn.
  */
 interface FloorDisc {
   centreX: number
@@ -256,17 +258,23 @@ interface FloorDisc {
   discRadius: number
 }
 
-function addFloorDiscFade(
+function addRoomGround(
   material: MeshStandardMaterial,
   disc: FloorDisc,
   edgeLevel: number,
+  fade: readonly [number, number],
 ): void {
+  material.transparent = true
+  material.depthWrite = false
   material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
     shader.uniforms.uDiscCentre = { value: new Vector2(disc.centreX, disc.centreZ) }
     shader.uniforms.uDiscFloorY = { value: disc.floorY }
     shader.uniforms.uDiscInner = { value: disc.plinthRadius }
     shader.uniforms.uDiscOuter = { value: disc.discRadius }
     shader.uniforms.uDiscEdgeLevel = { value: edgeLevel }
+    shader.uniforms.uGroundFade = {
+      value: new Vector2(fade[0] * disc.plinthRadius, fade[1] * disc.plinthRadius),
+    }
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', '#include <common>\nvarying vec3 vDiscWorld;')
       .replace(
@@ -281,6 +289,7 @@ function addFloorDiscFade(
           'varying vec3 vDiscWorld;',
           'uniform vec2 uDiscCentre;',
           'uniform float uDiscFloorY, uDiscInner, uDiscOuter, uDiscEdgeLevel;',
+          'uniform vec2 uGroundFade;',
         ].join('\n'),
       )
       .replace(
@@ -293,10 +302,14 @@ function addFloorDiscFade(
           // The outer floor's first texels past the seam carry the inner disc's light: ease them too.
           'float seamMask = (1.0 - step(uDiscFloorY + 0.5, vDiscWorld.y)) * step(uDiscOuter, discR);',
           'totalEmissiveRadiance *= mix(1.0, 0.85, (1.0 - smoothstep(uDiscOuter, uDiscOuter + 2.0, discR)) * seamMask);',
+          // O-13: the floor fades into the sky; the walls (above the floor) are not drawn.
+          'diffuseColor.a *= (1.0 - step(uDiscFloorY + 0.5, vDiscWorld.y)) * (1.0 - smoothstep(uGroundFade.x, uGroundFade.y, discR));',
+          'if (diffuseColor.a < 0.002) discard;',
         ].join('\n'),
       )
   }
-  material.customProgramCacheKey = () => `aljazira-floor-disc-${edgeLevel.toFixed(3)}`
+  material.customProgramCacheKey = () =>
+    `aljazira-room-ground-${edgeLevel.toFixed(3)}-${fade[0].toFixed(3)}-${fade[1].toFixed(3)}`
   material.needsUpdate = true
 }
 
@@ -469,9 +482,12 @@ function readGpuRenderer(gl: WebGL2RenderingContext): string | null {
   return typeof value === 'string' ? value : null
 }
 
-/** The context three would create for these options (`WebGLRenderer`, three 0.186.1). */
+/**
+ * The context three would create for these options (`WebGLRenderer`, three 0.186.1). O-13: with
+ * alpha, so the card's dusk sky (the canvas's CSS background) shows behind the model.
+ */
 const CONTEXT_ATTRIBUTES: WebGLContextAttributes = {
-  alpha: false,
+  alpha: true,
   depth: true,
   stencil: false,
   antialias: true,
@@ -608,7 +624,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
       canvas,
       context: gl,
       antialias: true,
-      alpha: false,
+      alpha: true,
       powerPreference: 'high-performance',
     })
   } catch {
@@ -781,7 +797,8 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
   }
   scene.environment = environment
   scene.background = null
-  renderer.setClearColor(CLEAR_COLOR[studio.mode])
+  // O-13: transparent (premultiplied, so black): the card's dusk sky is the backdrop.
+  renderer.setClearColor(0x000000, 0)
   const { look } = options
   const baseExposure = 2 ** studio.exposureStops * look.exposureScale
   renderer.toneMappingExposure = baseExposure
@@ -848,12 +865,26 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     vegetation.alphaToCoverage = true
     vegetation.needsUpdate = true
   }
+  // O-13: the room floor and the plinth in the evening light. Their light is baked (emissive).
+  materials.get('MAT_room')?.emissive.multiply(new Color(...look.floorTint))
+  for (const name of ['MAT_plinth_top', 'MAT_plinth_side']) {
+    materials.get(name)?.emissive.multiply(new Color(...look.plinthTint))
+  }
+  for (const [name, tint] of Object.entries(look.materialColor)) {
+    materials.get(name)?.color.multiply(new Color(...tint))
+  }
   const room = materials.get('MAT_room')
-  if (room && look.floorEdgeLevel !== 1) {
-    const disc = measureFloorDisc(node(studio.room), node('MAQ_plinth'))
-    if (disc) {
-      addFloorDiscFade(room, disc, look.floorEdgeLevel)
-    }
+  const roomNode = node(studio.room)
+  const disc = room ? measureFloorDisc(roomNode, node('MAQ_plinth')) : null
+  if (room && disc) {
+    addRoomGround(room, disc, look.floorEdgeLevel, look.groundFade)
+    // First among the transparent meshes: the faded façade inside a system blends over the ground.
+    roomNode.traverse((object) => {
+      object.renderOrder = -1
+    })
+  } else {
+    // Without a floor to fade, the room would hide the sky: it is not drawn.
+    roomNode.visible = false
   }
   if (room) {
     // three ignores envMapIntensity on materials without their own envMap (it uses
@@ -867,6 +898,14 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
     if (material) {
       material.envMap = environment
       material.envMapIntensity = look.envIntensity
+    }
+  }
+  // O-13: the few surfaces that reflect less of the studio at dusk (same texture, so same program).
+  for (const [name, level] of Object.entries(look.materialEnv)) {
+    const material = materials.get(name)
+    if (material) {
+      material.envMap = environment
+      material.envMapIntensity = level
     }
   }
   // V-2: sharper window bands at DPR 2 (anisotropic filtering of the façade emissive maps).
