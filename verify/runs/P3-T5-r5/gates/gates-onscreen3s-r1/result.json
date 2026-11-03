@@ -1,0 +1,34 @@
+{
+ "mode": "onscreen3s",
+ "tScroll": 836,
+ "firstClick": 4298,
+ "liveMs": 1071,
+ "maxLongTaskFirstWindow": 136,
+ "maxFlightGap": 133,
+ "tiersAfterLive": [
+  "low"
+ ],
+ "laterStartMs": [
+  12,
+  9,
+  8
+ ],
+ "maxLoadScale": 1.0523,
+ "scaleAtSwap": [
+  1.0526,
+  1.0526
+ ],
+ "enteredAfterFirstPhase": "fire",
+ "modelRequests": [
+  "tower-lite.glb"
+ ],
+ "errors": [],
+ "pass": {
+  "live": true,
+  "longTask": true,
+  "flightGap": false,
+  "tier": true,
+  "later": true,
+  "latest": true
+ }
+}
