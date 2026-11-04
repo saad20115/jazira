@@ -181,6 +181,7 @@ export function startPmremWarmup(
     ),
   )
   budget.track(ggxPrograms)
+  startLinks(renderer)
   /** One bake step with the renderer's target and auto-clear as they were around it. */
   const step = (work: () => void): void => {
     const previousTarget = renderer.getRenderTarget()
@@ -199,6 +200,9 @@ export function startPmremWarmup(
       const studioPrograms = await compileEach(
         drawableRepresentatives(envScene),
         (object) => compileOffscreenNow(renderer, object, cubeCamera, target, envScene),
+        () => {
+          startLinks(renderer)
+        },
         isCancelled,
         pause,
         budget,
@@ -215,15 +219,21 @@ export function startPmremWarmup(
       pmrem._setSize(size)
       const output = pmrem._allocateTargets()
       output.depthBuffer = true
-      step(() => {
-        pmrem._sceneToCubeUV(envScene, view.near, view.far, output, view.position)
-      })
-      for (let lod = 1; lod < pmrem._lodMeshes.length; lod += 1) {
-        await pause()
+      try {
         step(() => {
-          renderer.autoClear = false
-          pmrem._applyGGXFilter(output, lod - 1, lod)
+          pmrem._sceneToCubeUV(envScene, view.near, view.far, output, view.position)
         })
+        for (let lod = 1; lod < pmrem._lodMeshes.length; lod += 1) {
+          await pause()
+          step(() => {
+            renderer.autoClear = false
+            pmrem._applyGGXFilter(output, lod - 1, lod)
+          })
+        }
+      } catch (err) {
+        // A pause that ends the bake (the viewer was disposed) leaves no target behind.
+        output.dispose()
+        throw err
       }
       // What `fromScene`'s cleanup does to the output target.
       output.scissorTest = false
@@ -481,13 +491,13 @@ export async function waitForLinks(
 }
 
 /**
- * How many new programs may link at once: the hero's and the studio's while the model is prepared
- * unseen, and while the visitor waits for the first frame; the systems' (prepared after the hero,
- * and on demand once live, while the visitor watches: each link takes a core the page's frames
- * need).
+ * How many new programs may link at once: the hero's and the studio's, whether prepared unseen or
+ * while the visitor waits for the first frame (O-9a: with 3 while waiting, a click right after the
+ * scroll waited for every hero link at half the rate, with cores idle: P3-T5 r8 trace); the
+ * systems' (prepared after the hero, and on demand once live, while the visitor watches: each link
+ * takes a core the page's frames need).
  */
-export const LINKS_PREPARING = 6
-export const LINKS_LOADING = 3
+export const LINKS_HERO = 6
 export const LINKS_SYSTEMS = 2
 
 /**
@@ -554,6 +564,16 @@ export const NO_LINK_BUDGET: LinkBudget = {
 }
 
 /**
+ * O-9a: sends the commands issued so far to the GPU process, so the links of the programs just
+ * created start now. WebGL only queues them in the page until something flushes the queue (a fence,
+ * a status check, a presented frame), and a canvas outside the page presents nothing (P3-T5 r8
+ * trace: PMREM's filter, the slowest link, started ~1 s after its program was created).
+ */
+export function startLinks(renderer: WebGLRenderer): void {
+  renderer.getContext().flush()
+}
+
+/**
  * Creates the programs `object` draws with in `scene` (its lights and environment), synchronously,
  * and returns them; they link in parallel (`waitForLinks`).
  */
@@ -600,6 +620,9 @@ export async function compileInChunks(
   return compileEach(
     drawableRepresentatives(scene),
     (object) => compileNow(renderer, object, camera, scene),
+    () => {
+      startLinks(renderer)
+    },
     isCancelled,
     pause,
     budget,
@@ -607,12 +630,14 @@ export async function compileInChunks(
 }
 
 /**
- * `compile` for each object, as many per task as fit in `COMPILE_TASK_MS` while `budget` has room;
- * between tasks `pause`, and the wait for room. Returns the programs.
+ * `compile` for each object, as many per task as fit in `COMPILE_TASK_MS` while `budget` has room,
+ * then `flush` (their links start); between tasks `pause`, and the wait for room. Returns the
+ * programs.
  */
 async function compileEach(
   objects: readonly Object3D[],
   compile: (object: Object3D) => unknown[],
+  flush: () => void,
   isCancelled: () => boolean,
   pause: Pause,
   budget: LinkBudget,
@@ -637,6 +662,7 @@ async function compileEach(
       !budget.full &&
       performance.now() - taskStart < COMPILE_TASK_MS
     )
+    flush()
   }
   return programs
 }

@@ -94,10 +94,10 @@ import {
   createLinkBudget,
   firstUse,
   gpuSettled,
-  LINKS_LOADING,
-  LINKS_PREPARING,
+  LINKS_HERO,
   LINKS_SYSTEMS,
   type Pause,
+  startLinks,
   startPmremWarmup,
   uploadGeometryInChunks,
   uploadMaterialTextures,
@@ -640,6 +640,21 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   /** When the first visible frame was drawn. */
   let firstFrameAt: number | null = null
 
+  // O-9a: the transcoder's policy check and binary download first (they need no renderer); its
+  // workers start once the renderer says which formats it takes (`detectSupport`, `init` below).
+  const ktx2 = new UrlWorkerKTX2Loader(KTX2_WORKER_URL, KTX2_WORKER_CSP)
+  ktx2.setTranscoderPath(BASIS_TRANSCODER_PATH)
+  void ktx2.fetchTranscoder()
+  // Its workers end with the viewer, also when the start fails before the viewer holds it (the card
+  // aborts a failed viewer once the failure shows, at the latest when it unmounts).
+  options.signal.addEventListener(
+    'abort',
+    () => {
+      ktx2.dispose()
+    },
+    { once: true },
+  )
+
   const gl = await createContext(canvas, pace)
   await pace()
   const gpu = readGpuRenderer(gl)
@@ -682,19 +697,15 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     renderer.dispose()
     throw new ContractError('aborted')
   }
-  const ktx2 = new UrlWorkerKTX2Loader(KTX2_WORKER_URL, KTX2_WORKER_CSP)
-    .setTranscoderPath(BASIS_TRANSCODER_PATH)
-    .detectSupport(renderer)
+  ktx2.detectSupport(renderer)
   const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder)
   loader.register(inlineBasisuPlugin(ktx2))
+  // O-9a: the transcoding workers start now, while the model downloads (the parse waits for the
+  // same promise and reports its failure).
+  ktx2.init().catch(() => undefined)
   const pmrem = new PMREMGenerator(renderer)
-  /** O-12: how many new programs link at once (`LINKS_*`: hero unseen, hero shown, systems). */
-  const linkBudget = createLinkBudget(() => {
-    if (systemsWarming) {
-      return LINKS_SYSTEMS
-    }
-    return shown ? LINKS_LOADING : LINKS_PREPARING
-  })
+  /** O-12: how many new programs link at once (`LINKS_*`: the hero's, the systems'). */
+  const linkBudget = createLinkBudget(() => (systemsWarming ? LINKS_SYSTEMS : LINKS_HERO))
   // O-9: PMREM's slowest program links while the model downloads.
   const pmremWarmup = startPmremWarmup(renderer, pmrem, PMREM.size, linkBudget)
   const scene = new Scene()
@@ -794,11 +805,18 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   if (isDisposed()) {
     throw new ContractError('disposed while preparing')
   }
+  /** The bake's steps end once the viewer is disposed (O-9a: it runs beside the hero's links). */
+  const bakePause: Pause = async () => {
+    await pace()
+    if (isDisposed()) {
+      throw new ContractError('disposed while baking')
+    }
+  }
   const bakeEnvironment = async (): Promise<WebGLRenderTarget> => {
     const target = await pmremWarmup.bake(
       envScene,
       { near: PMREM.near, far: PMREM.far, position: new Vector3(...studio.envPosition) },
-      pace,
+      bakePause,
     )
     disposables.push(target)
     if (glowShell) {
@@ -1116,6 +1134,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     reducedMotion: options.reducedMotion,
     compileObjects: (objects) => {
       const programs = objects.flatMap((object) => compileNow(renderer, object, camera, scene))
+      startLinks(renderer)
       linkBudget.track(programs)
       return waitForLinks(programs, isDisposed)
     },
@@ -1412,6 +1431,23 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     // O-12: the textures go up while the programs are created (a few at a time) and link.
     const uploads = uploadTexturesInChunks(renderer, scene, isDisposed, uploadPause)
     uploads.catch(() => undefined)
+    // O-9a: the bake needs only the studio's programs (`studioReady`), so it runs while the hero's
+    // are created and link, not after them; then the real environment replaces the stand-in (the
+    // same programs, so nothing compiles again).
+    const environmentReady = baked
+      ? Promise.resolve()
+      : studioReady.then(async () => {
+          const bakedTexture = (await bakeEnvironment()).texture
+          for (const material of materials.values()) {
+            if (material.envMap === environment) {
+              material.envMap = bakedTexture
+            }
+          }
+          environment = bakedTexture
+          scene.environment = bakedTexture
+          pmremWarmup.dispose()
+        })
+    environmentReady.catch(() => undefined)
     const heroPrograms = await compileInChunks(
       renderer,
       scene,
@@ -1426,22 +1462,9 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     // uploads them all at once).
     await firstUse(heroPrograms, isDisposed, pace)
     await uploadGeometryInChunks(renderer, scene, camera, isDisposed, uploadPause)
-    await studioReady
+    await environmentReady
     if (isDisposed()) {
       throw new ContractError('disposed while compiling')
-    }
-    if (!baked) {
-      // The bake (in steps, every program linked), then the real environment for the stand-in.
-      const bakedTexture = (await bakeEnvironment()).texture
-      for (const material of materials.values()) {
-        if (material.envMap === environment) {
-          material.envMap = bakedTexture
-        }
-      }
-      environment = bakedTexture
-      scene.environment = bakedTexture
-      pmremWarmup.dispose()
-      await pace()
     }
     const frames = await probeFrames()
     let verdict = probeVerdict(frames, false)
