@@ -3027,3 +3027,19 @@ All four tasks (`P3-T6`..`P3-T9`) are now `IN_REVIEW` (WIP limit reached). Zero 
 ## M-213 · 2026-11-05 · CTO → Executor · Quiet window over
 The 3D card timing runs are finished. You may build, test and run `next start`, Playwright and Docker again. Run the
 e2e with `E2E_PRODUCTION_SERVER=1` before each round 3 submission (M-212).
+
+## M-214 · 2026-11-05 · Executor → CTO · Re M-212 & M-213 · P3-T8, P3-T6 & P3-T7 Round 3 IN_REVIEW
+1. **`P3-T8` Round 3 (`IN_REVIEW`, code commit `e581e0b`, report `handoff/reports/P3-T8.md` in `e310ef0`):**
+   - **`R-79`:** Omitted `fill` from `CspSafeImageProps` in `src/components/CspSafeImage.tsx`, replaced all three `<CspSafeImage fill>` usages in `src/app/(frontend)/[locale]/projects/[slug]/page.tsx` and `src/app/(frontend)/[locale]/projects/page.tsx` with explicit `width`/`height` + CSS `position: absolute; inset: 0;`, and added a `securitypolicyviolation` listener + `img[style]` assertion in `tests/e2e/p3-t8.e2e.spec.ts`.
+   - **`R-74`:** Updated `.ctaSecondaryButton` (`"Call Us Now"`) in `src/components/CtaBand.module.css` to `background-color: var(--glass-white-8); border-color: var(--glass-border-white-28);`.
+   - **`R-80`:** Removed `.catch(() => null)` and `.catch(() => [])` from `getProjectsPage`, `getHomePage`, and `getRelatedProjects` in `src/app/(frontend)/[locale]/projects/[slug]/page.tsx`.
+   - **`R-81`:** Added `compact` (`.ctaSectionCompact`) on `<CtaBand>` for the project detail page CTA (`20:995`).
+   - Committed non-authoritative side-by-side shots under `docs/reports/P3-T8/` (`side-by-side-cta.png`, `side-by-side-detail-cta.png`).
+2. **`P3-T6` Round 3 (`IN_REVIEW`, code commit `fe32aae`, report `handoff/reports/P3-T6.md` in `e310ef0`):**
+   - **`R-61`:** Updated `.td` vertical padding in `src/components/ApprovedMaterialsTable.module.css` to match Figma `157:3333`.
+   - Committed non-authoritative side-by-side shot under `docs/reports/P3-T6/side-by-side-approved-materials.png`.
+3. **`P3-T7` Round 3 (`IN_REVIEW`, code commit `5f8cfd8`, report `handoff/reports/P3-T7.md` in `e310ef0`):**
+   - **`R-66`:** Updated `.mvSection` block start/end padding and `.mvContainer` gap in `src/app/(frontend)/[locale]/about/page.module.css` to match Figma `108:1576`.
+   - **`R-78`:** Wrapped the Our Story heading elements in `.storyHead` (`gap: var(--space-16)`) in `src/app/(frontend)/[locale]/about/page.tsx` and aligned `.storyContainer` (`align-items: flex-start`) and `.storyVisualCol` top offset in `src/app/(frontend)/[locale]/about/page.module.css`.
+   - Committed non-authoritative side-by-side shots under `docs/reports/P3-T7/` (`side-by-side-our-story.png`, `side-by-side-mission-vision.png`).
+4. **Verification:** Verified `pnpm format`, `pnpm lint`, `pnpm typecheck`, `pnpm tokens:check`, `pnpm build`, `pnpm test`, and Playwright E2E with `E2E_PRODUCTION_SERVER=1` against `next start`. `Protected paths touched: NONE`. Zero processes started by me are running. Watching `handoff/MESSAGES.md` for your Round 3 reviews or next instructions.
