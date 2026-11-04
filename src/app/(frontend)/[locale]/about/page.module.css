@@ -12,10 +12,10 @@
 }
 
 .goldDivider {
-  inline-size: 60px;
+  inline-size: 52px;
   block-size: 3px;
   border-radius: var(--radius-xs);
-  background-color: var(--gold-500);
+  background-image: var(--gradient-gold-accent-line);
 }
 
 .centeredSectionHead {
@@ -23,8 +23,8 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: var(--space-14);
-  max-inline-size: 620px;
+  gap: var(--space-16);
+  max-inline-size: 640px;
   margin-inline: auto;
 }
 
@@ -35,7 +35,8 @@
 .storySection {
   position: relative;
   inline-size: 100%;
-  padding-block: var(--section-padding-y);
+  padding-block-start: var(--space-56);
+  padding-block-end: var(--space-72);
   background-color: var(--white);
   box-sizing: border-box;
 }
@@ -56,8 +57,8 @@
 
 .storyCornerBracket {
   position: absolute;
-  inset-block-start: 0;
-  inset-inline-start: 0;
+  inset-block-start: -12px;
+  inset-inline-start: -12px;
   inline-size: 80px;
   block-size: 80px;
   color: var(--gold-500);
@@ -69,8 +70,8 @@
   position: relative;
   inline-size: 520px;
   block-size: 420px;
-  margin-block-start: var(--space-10);
-  margin-inline-start: var(--space-10);
+  margin-block-start: var(--space-8);
+  margin-inline-start: var(--space-8);
   border-radius: 18px;
   overflow: hidden;
   box-shadow: var(--shadow-who-image);
@@ -86,12 +87,12 @@
 
 .storyBadgeCard {
   position: absolute;
-  inset-block-end: 0;
-  inset-inline-end: 0;
+  inset-block-start: 360px;
+  inset-inline-start: 370px;
   z-index: 3;
-  padding-block: var(--space-16);
-  padding-inline: var(--space-24);
-  border-radius: var(--radius-xl);
+  padding-block: var(--space-18);
+  padding-inline: 26px;
+  border-radius: var(--radius-2xl);
   background-color: var(--white);
   box-shadow: var(--shadow-who-badge);
   display: flex;
@@ -105,6 +106,8 @@
 .storyBadgeNumber {
   margin: 0;
   color: var(--gold-500);
+  unicode-bidi: isolate;
+  direction: ltr;
 }
 
 .storyBadgeLabel {
@@ -136,12 +139,12 @@
   margin: 0;
   inline-size: 100%;
   border-inline-start: 3px solid var(--gold-500);
-  padding-inline-start: var(--space-20);
-  padding-block: var(--space-4);
+  padding-inline-start: var(--space-18);
+  padding-block: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-6);
+  gap: var(--space-8);
   box-sizing: border-box;
 }
 
@@ -152,7 +155,7 @@
 
 .storyQuoteAuthor {
   font-style: normal;
-  color: var(--gold-500);
+  color: var(--gold-600);
 }
 
 /* ==========================================================================
@@ -196,7 +199,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-48);
+  gap: 52px;
 }
 
 .strengthsTitle {
@@ -206,42 +209,43 @@
 
 .strengthsIntro {
   margin: 0;
-  color: var(--text-on-dark-muted);
+  max-inline-size: 530px;
+  color: color-mix(in srgb, var(--white) 72%, transparent);
 }
 
 .strengthsGrid {
   inline-size: 100%;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-24);
+  gap: var(--space-20);
 }
 
 .strengthCard {
-  background-color: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-dark);
+  background-color: var(--glass-white-6);
+  border: 1px solid var(--glass-border-white-16);
   border-radius: 18px;
   padding-block: 28px;
   padding-inline: 26px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-14);
+  gap: var(--space-16);
   box-sizing: border-box;
 }
 
 .strengthCardTop {
   inline-size: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
 }
 
 .strengthIconBox {
   inline-size: 44px;
   block-size: 44px;
-  border-radius: var(--radius-md);
-  background-color: rgba(236, 173, 21, 0.14);
-  border: 1px solid rgba(236, 173, 21, 0.35);
+  border-radius: var(--radius-lg);
+  background-color: var(--gold-tint-15);
+  border: 1px solid var(--gold-border-45);
   color: var(--gold-500);
   display: inline-flex;
   align-items: center;
@@ -251,8 +255,8 @@
 }
 
 .strengthNum {
-  color: var(--gold-500);
-  opacity: 0.12;
+  color: var(--white);
+  opacity: 0.22;
   user-select: none;
 }
 
@@ -270,11 +274,11 @@
 
 .strengthCardText {
   margin: 0;
-  color: var(--text-on-dark-body);
+  color: color-mix(in srgb, var(--white) 78%, transparent);
 }
 
 /* ==========================================================================
-   4. Our Mission & Vision (`108:1576`, `1440×1272`)
+   4. Our Mission & Vision (`108:1576`, `1440×1618`)
    ========================================================================== */
 
 .mvSection {
@@ -293,7 +297,7 @@
 }
 
 .mvSectionHead {
-  max-inline-size: 680px;
+  max-inline-size: 640px;
 }
 
 .mvTitle {
@@ -303,6 +307,7 @@
 
 .mvIntro {
   margin: 0;
+  max-inline-size: 584px;
   color: var(--text-body);
 }
 
@@ -311,7 +316,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: var(--space-64);
+  gap: var(--space-72);
 }
 
 .mvVisualCol {
@@ -325,9 +330,9 @@
   position: relative;
   inline-size: 540px;
   block-size: 400px;
-  border-radius: 18px;
+  border-radius: 20px;
   overflow: hidden;
-  box-shadow: var(--shadow-mv-image);
+  box-shadow: var(--shadow-panel-lg);
   background-color: var(--navy-900);
 }
 
@@ -341,18 +346,18 @@
 .mvPhotoShade {
   position: absolute;
   inset: 0;
-  background-image: var(--gradient-mv-photo);
+  background-image: var(--gradient-image-overlay-top-to-bottom);
   pointer-events: none;
 }
 
 .mvNumberBadge {
   position: absolute;
-  inset-block-start: -16px;
-  inline-size: 64px;
-  block-size: 64px;
+  inset-block-start: -20px;
+  padding-block: var(--space-12);
+  padding-inline: var(--space-18);
   border-radius: var(--radius-xl);
   background-color: var(--gold-500);
-  box-shadow: var(--shadow-mv-badge);
+  box-shadow: var(--shadow-dark-elevated);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -360,11 +365,11 @@
 }
 
 .mvNumberBadgeStart {
-  inset-inline-start: -16px;
+  inset-inline-start: -20px;
 }
 
 .mvNumberBadgeEnd {
-  inset-inline-end: -16px;
+  inset-inline-end: -20px;
 }
 
 .mvBadgeText {
@@ -377,7 +382,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-20);
+  gap: var(--space-18);
 }
 
 .mvRowTitle {
@@ -386,10 +391,10 @@
 }
 
 .mvGoldBar {
-  inline-size: 48px;
+  inline-size: 52px;
   block-size: 3px;
   border-radius: var(--radius-xs);
-  background-color: var(--gold-500);
+  background-image: var(--gradient-gold-accent-line);
 }
 
 .mvRowText {
@@ -400,7 +405,6 @@
 .pillarsList {
   margin: 0;
   padding: 0;
-  padding-block-start: var(--space-4);
   list-style: none;
   inline-size: 100%;
   display: flex;
@@ -417,9 +421,9 @@
 .pillarCheckBox {
   inline-size: 22px;
   block-size: 22px;
-  border-radius: var(--radius-sm);
-  background-color: rgba(236, 173, 21, 0.14);
-  color: var(--gold-500);
+  border-radius: var(--radius-xs);
+  background-color: var(--gold-50);
+  color: var(--gold-600);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -429,7 +433,7 @@
 
 .pillarText {
   margin: 0;
-  color: var(--text-body);
+  color: var(--navy-950);
 }
 
 .pillarTitle {
@@ -444,12 +448,13 @@
 .teamSection {
   position: relative;
   inline-size: 100%;
-  padding-block: var(--section-padding-y);
+  padding-block-start: var(--space-72);
+  padding-block-end: 78px;
   background-color: var(--surface);
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: var(--space-56);
+  gap: var(--space-72);
   box-sizing: border-box;
 }
 
@@ -464,15 +469,17 @@
   display: flex;
   align-items: flex-end;
   justify-content: space-between;
-  gap: var(--space-48);
+  gap: var(--space-80);
 }
 
 .teamHeaderStart {
+  flex: 1 1 0;
+  min-inline-size: 0;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: var(--space-14);
-  max-inline-size: 560px;
+  gap: var(--space-16);
+  max-inline-size: 610px;
 }
 
 .teamTitle {
@@ -482,7 +489,14 @@
 
 .teamIntro {
   margin: 0;
-  max-inline-size: 460px;
+  color: var(--navy-950);
+}
+
+.teamIntroSecondary {
+  margin: 0;
+  inline-size: 470px;
+  max-inline-size: 100%;
+  flex-shrink: 0;
   color: var(--text-body);
 }
 
@@ -491,7 +505,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-32);
+  gap: var(--space-24);
 }
 
 .leadershipRow {
@@ -500,7 +514,7 @@
   flex-wrap: wrap;
   align-items: flex-start;
   justify-content: center;
-  gap: var(--space-28);
+  gap: var(--space-24);
 }
 
 .leadershipCardSlot {
@@ -559,7 +573,12 @@
   }
 
   .storyPhotoWrap {
-    inline-size: calc(100% - var(--space-10));
+    inline-size: calc(100% - var(--space-16));
+  }
+
+  .storyBadgeCard {
+    inset-inline-start: auto;
+    inset-inline-end: -4px;
   }
 
   .strengthsGrid {
@@ -590,11 +609,15 @@
 
 @media (max-width: 767px) {
   .storyVisualCol {
-    block-size: 320px;
+    block-size: 348px;
   }
 
   .storyPhotoWrap {
     block-size: 300px;
+  }
+
+  .storyBadgeCard {
+    inset-block-start: 240px;
   }
 
   .strengthsGrid {

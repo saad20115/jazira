@@ -1985,7 +1985,7 @@ export async function seedP4T2Content(
         eyebrow: 'Our team',
         title: 'Meet Our\nTeam',
         intro:
-          'A solid base of skilled engineers, an effective management team, and a dedicated labor force support our growth.',
+          'A solid base of skilled engineers, an effective management team, and a dedicated labor force support our growth.\n\nIn today\u2019s dynamic marketplace, Al Jazira needs people who are innovative, passionate about the business, and who make a difference every day. Our team structure ensures clear accountability and efficient project delivery across all levels.',
         staffTitle: 'The people behind every project',
         staffText: 'Engineers, supervisors and specialists from our in-house team.',
       },
@@ -2131,7 +2131,8 @@ export async function seedP4T2Content(
         enabled: true,
         eyebrow: 'فريقنا',
         title: 'تعرف على\nفريقنا',
-        intro: 'قاعدة صلبة من المهندسين المهرة، وإدارة فعالة، وكوادر فنية متفانية تدعم نمونا المستمر.',
+        intro:
+          'قاعدة صلبة من المهندسين المهرة، وإدارة فعالة، وكوادر فنية متفانية تدعم نمونا المستمر.\n\nفي سوق اليوم الديناميكي، تحتاج الجزيرة إلى كفاءات مبتكرة وشغوفة بعملها تصنع الفارق كل يوم. ويضمن هيكل فريقنا وضوح المسؤوليات وكفاءة تسليم المشاريع على جميع المستويات.',
         staffTitle: 'الكفاءات التي تقف وراء كل مشروع',
         staffText: 'مهندسون ومشرفون وأخصائيون من فريقنا الداخلي.',
       },

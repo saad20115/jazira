@@ -166,11 +166,11 @@ function renderPillarCheckIcon(): React.ReactElement {
       stroke="currentColor"
       strokeLinecap="round"
       strokeLinejoin="round"
-      strokeWidth={2}
+      strokeWidth={1.83}
       viewBox="0 0 12 12"
       width={12}
     >
-      <path d="M2.5 6.2L5 8.7L9.5 3.7" />
+      <path d="M1.5 6.2L4.5 9.2L10.5 3.2" />
     </svg>
   )
 }
@@ -302,6 +302,11 @@ export default async function LocaleAboutPage({
     resolveMediaAsset(pageHeader?.image, storyFallbackAlt, 'card')
   const firstStat: Stat | null = allStats.length > 0 ? (allStats[0] ?? null) : null
   const storyBadgeStat = resolveStatDoc(story?.badgeStat, allStats) ?? firstStat
+  const storyBadgeLabel = storyBadgeStat
+    ? storyBadgeStat.label === dict.about.yearsOfExperiencePrefix
+      ? dict.about.yearsExperienceBadgeLabel
+      : storyBadgeStat.label
+    : null
   const hasStoryContent = Boolean(
     storyTitle || storyParagraphs.length > 0 || storyQuote || storyImage,
   )
@@ -354,7 +359,11 @@ export default async function LocaleAboutPage({
   const teamEnabled = team?.enabled !== false
   const teamEyebrow = team?.eyebrow?.trim() || null
   const teamTitle = team?.title?.trim() || null
-  const teamIntro = team?.intro?.trim() || null
+  const rawTeamIntro = team?.intro?.trim() || null
+  const [firstTeamIntro = '', secondTeamIntro = ''] = rawTeamIntro ? rawTeamIntro.split(/\n+/) : []
+  const teamIntro = firstTeamIntro.trim() || null
+  const teamSecondaryIntro =
+    secondTeamIntro.trim() || (teamIntro ? dict.about.teamSecondaryIntro : null)
   const staffTitle = team?.staffTitle?.trim() || null
   const staffText = team?.staffText?.trim() || null
   // Empty-state rule (P3-T7 Scope 5): if zero active records in both categories, hide the entire section cleanly.
@@ -387,6 +396,8 @@ export default async function LocaleAboutPage({
                 <CornerBracketIcon
                   className={styles.storyCornerBracket}
                   size={80}
+                  strokeLinecap="round"
+                  strokeWidth={4}
                   {...revealAttributes({ variant: 'draw', step: 2 })}
                 />
                 <div className={styles.storyPhotoWrap} {...revealAttributes({ variant: 'wipe' })}>
@@ -409,9 +420,11 @@ export default async function LocaleAboutPage({
                     {...revealAttributes({ step: 3 })}
                   >
                     <p className={`${styles.storyBadgeNumber} t-stat-m`}>
-                      <CountUp value={storyBadgeStat.value} />
+                      <bdi dir="ltr">
+                        <CountUp value={storyBadgeStat.value} />
+                      </bdi>
                     </p>
-                    <p className={`${styles.storyBadgeLabel} t-body-s`}>{storyBadgeStat.label}</p>
+                    <p className={`${styles.storyBadgeLabel} t-body-s`}>{storyBadgeLabel}</p>
                   </div>
                 ) : null}
               </div>
@@ -479,7 +492,7 @@ export default async function LocaleAboutPage({
                   </h2>
                 ) : null}
                 {strengthsIntro ? (
-                  <p className={`${styles.strengthsIntro} t-body-m`}>{strengthsIntro}</p>
+                  <p className={`${styles.strengthsIntro} t-body-l`}>{strengthsIntro}</p>
                 ) : null}
                 <div aria-hidden="true" className={styles.goldDivider} />
               </div>
@@ -530,7 +543,7 @@ export default async function LocaleAboutPage({
                     {renderAboutAccentHeading(mvTitle, false)}
                   </h2>
                 ) : null}
-                {mvIntro ? <p className={`${styles.mvIntro} t-body-m`}>{mvIntro}</p> : null}
+                {mvIntro ? <p className={`${styles.mvIntro} t-body-l`}>{mvIntro}</p> : null}
                 <div aria-hidden="true" className={styles.goldDivider} />
               </div>
 
@@ -566,7 +579,7 @@ export default async function LocaleAboutPage({
                     ) : null}
                     <div aria-hidden="true" className={styles.mvGoldBar} />
                     {missionText ? (
-                      <p className={`${styles.mvRowText} t-body-m`}>{missionText}</p>
+                      <p className={`${styles.mvRowText} t-body-l`}>{missionText}</p>
                     ) : null}
                     {missionPillars.length > 0 ? (
                       <ul className={styles.pillarsList}>
@@ -578,7 +591,7 @@ export default async function LocaleAboutPage({
                             <span aria-hidden="true" className={styles.pillarCheckBox}>
                               {renderPillarCheckIcon()}
                             </span>
-                            <p className={`${styles.pillarText} t-body-s`}>
+                            <p className={`${styles.pillarText} t-body-m`}>
                               <strong className={styles.pillarTitle}>{pillar.title}</strong>
                               {pillar.text ? ` — ${pillar.text}` : null}
                             </p>
@@ -600,7 +613,7 @@ export default async function LocaleAboutPage({
                     ) : null}
                     <div aria-hidden="true" className={styles.mvGoldBar} />
                     {visionText ? (
-                      <p className={`${styles.mvRowText} t-body-m`}>{visionText}</p>
+                      <p className={`${styles.mvRowText} t-body-l`}>{visionText}</p>
                     ) : null}
                     {visionPillars.length > 0 ? (
                       <ul className={styles.pillarsList}>
@@ -612,7 +625,7 @@ export default async function LocaleAboutPage({
                             <span aria-hidden="true" className={styles.pillarCheckBox}>
                               {renderPillarCheckIcon()}
                             </span>
-                            <p className={`${styles.pillarText} t-body-s`}>
+                            <p className={`${styles.pillarText} t-body-m`}>
                               <strong className={styles.pillarTitle}>{pillar.title}</strong>
                               {pillar.text ? ` — ${pillar.text}` : null}
                             </p>
@@ -665,8 +678,11 @@ export default async function LocaleAboutPage({
                       {renderAboutAccentHeading(teamTitle, false)}
                     </h2>
                   ) : null}
-                  {teamIntro ? <p className={`${styles.teamIntro} t-body-m`}>{teamIntro}</p> : null}
+                  {teamIntro ? <p className={`${styles.teamIntro} t-body-l`}>{teamIntro}</p> : null}
                 </div>
+                {teamSecondaryIntro ? (
+                  <p className={`${styles.teamIntroSecondary} t-body-m`}>{teamSecondaryIntro}</p>
+                ) : null}
               </div>
 
               {leadershipMembers.length > 0 ? (

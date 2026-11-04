@@ -70,6 +70,9 @@ test.describe('P3-T7 — About Us Page (/en/about and /ar/about)', () => {
     await expect(storySection).toBeVisible()
     await expect(storySection.locator('h2')).toContainText('Engineering Excellence')
     await expect(storySection.locator('[data-story-badge-stat="true"]')).toContainText('45+')
+    await expect(storySection.locator('[data-story-badge-stat="true"]')).toContainText(
+      'Years Experience',
+    )
 
     const strengthsSection = page.locator('#core-strengths')
     await expect(strengthsSection).toBeVisible()
@@ -82,6 +85,7 @@ test.describe('P3-T7 — About Us Page (/en/about and /ar/about)', () => {
 
     const teamSection = page.locator('#meet-our-team')
     await expect(teamSection).toBeVisible()
+    await expect(teamSection).toContainText('dynamic marketplace')
     await expect(teamSection.locator('[data-team-subsection="leadership"]')).toBeVisible()
     await expect(teamSection.locator('[data-team-subsection="staff"]')).toBeVisible()
 
@@ -90,5 +94,6 @@ test.describe('P3-T7 — About Us Page (/en/about and /ar/about)', () => {
     expect(arRes?.status()).toBe(200)
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
     await expect(page.locator('h1')).toContainText('من نحن')
+    await expect(page.locator('[data-story-badge-stat="true"] bdi')).toHaveAttribute('dir', 'ltr')
   })
 })
