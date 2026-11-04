@@ -111,6 +111,11 @@
   min-inline-size: 0;
 }
 
+.fieldset > .fieldLabel {
+  display: block;
+  margin-block-end: var(--space-8);
+}
+
 .fieldLabel {
   color: var(--muted);
   margin: 0;
@@ -126,7 +131,7 @@
 .selectControl {
   appearance: none;
   inline-size: 100%;
-  block-size: 46px;
+  block-size: 48px;
   padding-inline-start: var(--space-14);
   padding-inline-end: var(--space-32);
   border-radius: var(--radius-md);
@@ -152,7 +157,7 @@
 
 .inputControl {
   inline-size: 100%;
-  block-size: 46px;
+  block-size: 48px;
   padding-inline: var(--space-14);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
@@ -179,7 +184,7 @@
   align-items: center;
   gap: var(--space-8);
   inline-size: 100%;
-  block-size: 46px;
+  block-size: 48px;
   padding-inline: var(--space-14);
   border-radius: var(--radius-md);
   border: 1px solid var(--border);
@@ -432,14 +437,16 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding-block: 13px;
+  block-size: 49px;
+  padding-block: 11px;
   padding-inline: var(--space-24);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   border: 1.5px solid var(--navy-950);
   background: var(--white);
   color: var(--navy-950);
   cursor: pointer;
   flex-shrink: 0;
+  box-sizing: border-box;
   transition:
     background-color var(--motion-fast) var(--ease-out),
     transform var(--motion-fast) var(--ease-out);
@@ -452,6 +459,12 @@
 
 .flexSubmitBtn {
   flex: 1 1 0%;
+}
+
+.form :global(button[data-component='button']) {
+  block-size: 49px;
+  padding-block: 11px;
+  box-sizing: border-box;
 }
 
 /* ==========================================================================

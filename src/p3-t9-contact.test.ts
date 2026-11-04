@@ -172,7 +172,8 @@ describe('P3-T9 — <QuoteForm> 3-step UI, Honeypot, Consent Link, and Message S
     expect(step3Html).toContain('Review &amp; send')
     expect(step3Html).toContain('Hotel / Tower · Design stage')
     expect(step3Html).toContain('HVAC, Fire Fighting')
-    expect(step3Html).toContain('An engineer replies within one working day.')
+    expect(step3Html).toContain('An engineer will review your inquiry and get back to you.')
+    expect(step3Html).not.toMatch(/within|working day|hours/i)
     expect(step3Html).toContain('href="/en/privacy"')
     expect(step3Html).toContain('Send request')
 

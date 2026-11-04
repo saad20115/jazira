@@ -234,7 +234,7 @@ function StaticOfficeMapSvg(): React.ReactElement {
       </g>
 
       {/* Gold Location Pin (`23:1468` at x=700, y=170) */}
-      <g transform="translate(700, 170)">
+      <g className={styles.staticMapPinGroup} transform="translate(700, 170)">
         <circle cx="32" cy="32" r="30" fill="var(--gold-500)" fillOpacity="0.25" />
         <path
           d="M32 50C32 50 44 39.5 44 30C44 26.8174 42.7357 23.7652 40.4853 21.5147C38.2348 19.2643 35.1826 18 32 18C28.8174 18 25.7652 19.2643 23.5147 21.5147C21.2643 23.7652 20 26.8174 20 30C20 39.5 32 50 32 50Z"
@@ -717,7 +717,7 @@ export default async function LocaleContactPage({
                     </div>
                   ) : null}
 
-                  <Button href={mapUrl} newTab variant="Gold" size="lg" showArrow fullWidth>
+                  <Button href={mapUrl} newTab variant="Gold" size="md" showArrow fullWidth>
                     {dict.contact.getDirectionsButton}
                   </Button>
                 </div>

@@ -250,6 +250,11 @@ export interface UiDictionary {
     officeEmailLabel: string
     getDirectionsButton: string
   }
+  about: {
+    yearsOfExperiencePrefix: string
+    yearsExperienceBadgeLabel: string
+    teamSecondaryIntro: string
+  }
   overlays: {
     messageSentTitle: string
     messageSentBody: string
@@ -607,6 +612,12 @@ export const arDictionary = {
     officeEmailLabel: 'البريد الإلكتروني',
     getDirectionsButton: 'احصل على الاتجاهات',
   },
+  about: {
+    yearsOfExperiencePrefix: 'عاماً من الخبرة',
+    yearsExperienceBadgeLabel: 'عاماً من الخبرة',
+    teamSecondaryIntro:
+      'في سوق اليوم الديناميكي، تحتاج الجزيرة إلى كفاءات مبتكرة وشغوفة بعملها تصنع الفارق كل يوم. ويضمن هيكل فريقنا وضوح المسؤوليات وكفاءة تسليم المشاريع على جميع المستويات.',
+  },
   overlays: {
     messageSentTitle: 'تم إرسال رسالتك بنجاح',
     messageSentBody:
@@ -660,7 +671,7 @@ export const arDictionary = {
     summaryContactLabel: 'التواصل',
     messageOptionalLabel: 'رسالة إضافية (اختياري)',
     messagePlaceholder: 'أي تفاصيل أخرى تود إخبارنا بها عن المشروع؟',
-    replyNote: 'يرد عليك مهندس مختص خلال يوم عمل واحد.',
+    replyNote: 'سيقوم مهندس مختص بمراجعة طلبك والتواصل معك.',
     consentPrefix: 'أوافق على معالجة بياناتي وفقاً لـ',
     consentPrivacyLinkLabel: 'سياسة الخصوصية',
     honeypotLabel: 'الموقع الإلكتروني للشركة (اتركه فارغاً)',

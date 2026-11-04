@@ -644,7 +644,7 @@ export function QuoteForm({
               <Button
                 type="button"
                 variant="Dark"
-                size="lg"
+                size="md"
                 showArrow
                 fullWidth
                 onClick={handleNextFromStep1}
@@ -859,7 +859,7 @@ export function QuoteForm({
                 <Button
                   type="button"
                   variant="Dark"
-                  size="lg"
+                  size="md"
                   showArrow
                   onClick={handleNextFromStep2}
                   className={styles.flexSubmitBtn}
@@ -1017,7 +1017,7 @@ export function QuoteForm({
                 <Button
                   type="submit"
                   variant="Gold"
-                  size="lg"
+                  size="md"
                   showArrow
                   disabled={isSubmitting}
                   aria-busy={isSubmitting}

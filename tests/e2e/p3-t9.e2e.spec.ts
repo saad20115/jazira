@@ -80,7 +80,8 @@ test.describe('P3-T9 — Contact Page, 3-Step Quote Form UI, Message Sent Dialog
     await page.keyboard.press('Enter')
     await expect(page.locator('[data-quote-step="3"]')).toBeVisible()
 
-    // 5. Verify Privacy Policy consent link points to /en/privacy, check consent via Space, and submit via Enter
+    // 5. Verify Step 3 has neutral reply note (D-01, R-75), Privacy Policy consent link points to /en/privacy, check consent via Space, and submit via Enter
+    await expect(page.locator('[data-quote-step="3"]')).not.toContainText(/working day|24|hour/i)
     const privacyLink = page.locator('[data-privacy-link]')
     await expect(privacyLink).toHaveAttribute('href', '/en/privacy')
 

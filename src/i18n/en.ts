@@ -244,6 +244,12 @@ export const enDictionary = {
     officeEmailLabel: 'Email',
     getDirectionsButton: 'Get Directions',
   },
+  about: {
+    yearsOfExperiencePrefix: 'Years of Experience',
+    yearsExperienceBadgeLabel: 'Years Experience',
+    teamSecondaryIntro:
+      'In today\u2019s dynamic marketplace, Al Jazira needs people who are innovative, passionate about the business, and who make a difference every day. Our team structure ensures clear accountability and efficient project delivery across all levels.',
+  },
   overlays: {
     messageSentTitle: 'Message Sent Successfully',
     messageSentBody:
@@ -297,7 +303,7 @@ export const enDictionary = {
     summaryContactLabel: 'Contact',
     messageOptionalLabel: 'Message (optional)',
     messagePlaceholder: 'Anything else we should know about the project?',
-    replyNote: 'An engineer replies within one working day.',
+    replyNote: 'An engineer will review your inquiry and get back to you.',
     consentPrefix: 'I agree to the processing of my details according to the',
     consentPrivacyLinkLabel: 'Privacy Policy',
     honeypotLabel: 'Company website (leave empty)',
