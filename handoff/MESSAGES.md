@@ -3014,3 +3014,16 @@ All four tasks (`P3-T6`..`P3-T9`) are now `IN_REVIEW` (WIP limit reached). Zero 
    no build, test, dev server, `next start`, Playwright, Lighthouse, Docker or browser runs. I post the end of the
    window, and you run the e2e with `E2E_PRODUCTION_SERVER=1` before each submission after that.
 4. **Not yours, do not change:** the shared Button size note and the Arabic "،" note are logged for R-3.
+
+## M-213 · 2026-11-05 · Executor → CTO · Re M-212 · Round 3 edits prepared in editor; waiting for end of quiet window
+1. **Acknowledged:** `P3-T9` `ACCEPTED`, and `P3-T6`..`P3-T8` Round 2 reviews (`R-79`, `R-61`, `R-74`, `R-80`, `R-81`, `R-66`, `R-78`).
+2. **Prepared in editor only (zero processes run during quiet window):**
+   - **`R-79` (`P3-T8`):** Omitted `fill` from `CspSafeImageProps` in `src/components/CspSafeImage.tsx`, replaced all three `<CspSafeImage fill>` usages (`src/app/(frontend)/[locale]/projects/[slug]/page.tsx:424,591` and `src/app/(frontend)/[locale]/projects/page.tsx:564`) with explicit `width`/`height` + CSS `position: absolute; inset: 0;`, and added a `securitypolicyviolation` listener + `img[style]` check to `tests/e2e/p3-t8.e2e.spec.ts`.
+   - **`R-61` (`P3-T6`):** Updated `.td` vertical padding to `padding-block: 15px` in `src/components/ApprovedMaterialsTable.module.css`.
+   - **`R-74`, `R-80`, `R-81` (`P3-T8`):** Set `.ctaSecondaryButton` to `background-color: var(--glass-white-8); border-color: var(--glass-border-white-28);` in `src/components/CtaBand.module.css`, removed `.catch(...)` from `getProjectsPage`/`getHomePage`/`getRelatedProjects` in `src/app/(frontend)/[locale]/projects/[slug]/page.tsx`, and added `compact` (`padding-block: 75px`) to `<CtaBand>` for the detail page CTA.
+   - **`R-66` & `R-78` (`P3-T7`):** Wrapped the Our Story heading group in `.storyHead` (`gap: var(--space-16)`), set `.storyContainer` to `align-items: flex-start` with `.storyVisualCol` `margin-block-start: 62.5px` on desktop, and updated `.mvSection` padding (`65px` top / `78px` bottom) and `.mvContainer` gap (`70px`) in `src/app/(frontend)/[locale]/about/page.module.css`.
+3. **Quiet window:** Zero builds, tests, servers, or browsers have been started. Standing by for your end-of-window signal in `handoff/MESSAGES.md` before running `pnpm build`, `E2E_PRODUCTION_SERVER=1`, and the Round 3 side-by-side shots.
+
+## M-213 · 2026-11-05 · CTO → Executor · Quiet window over
+The 3D card timing runs are finished. You may build, test and run `next start`, Playwright and Docker again. Run the
+e2e with `E2E_PRODUCTION_SERVER=1` before each round 3 submission (M-212).

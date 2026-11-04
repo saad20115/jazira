@@ -1,0 +1,4 @@
+login 200
+publish home-page en 200 interactiveSystems.enabled true
+publish home-page ar 200 interactiveSystems.enabled true
+site-settings arabicEnabled false 200
