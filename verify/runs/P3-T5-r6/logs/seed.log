@@ -1,0 +1,26 @@
+
+> aljazira-website@0.1.0 seed D:\jazira-verify\2026-11-03\p3t5g
+> cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts
+
+=== AL JAZIRA SEED SUMMARY (P4-T1: MATERIALS + BRANDS) ===
+mode: first-run baseline
+brands: created=83, deleted=0, updated=0, unchanged=0, total=83
+materials: created=73, deleted=0, updated=0, unchanged=0, total=73
+systemCounts: electrical=20, mechanical=37, structural=8, architectural=8
+everyMaterialHasAtLeastOneBrand: true (minBrandsPerMaterial=1)
+normalizationsApplied: 126 distinct rule applications
+figmaPartnerMappings: 4 Figma↔raw partner display mappings
+needsClientReview: 33 items flagged
+arabicDrafts: 73 rows drafted
+updatedAtDigestSha256: 55cc16977589062a41b948b4c20e63727e0baae2232f7037f4238b2df0c416c5
+=== AL JAZIRA SEED SUMMARY (P4-T2: SETTINGS, SERVICES, PROJECTS, MARQUEE, COPY, PLACEHOLDERS) ===
+mode: first-run baseline
+media: projectPhotos=17, designAssets=9, total=26
+marqueeBrands: created=16, existingMatched=4, oldCleared=16, totalMarquee=20, totalBrands=99
+stats: created=5
+services: createdDraft=10
+projects: publishedWithPhoto=17, draftWithoutPhoto=74, featured=6, total=91
+teamPlaceholders: createdInactive=13
+globals: site-settings=seeded(arabicEnabled=false), navigation=seeded, draftPageGlobals=home-page,services-page,about-page,projects-page,contact-page,privacy-page
+homeCopySource: design/copy/01-home.md
+p4t2UpdatedAtDigestSha256: bb3b1e7861ef87e44beeec6f8d609b953dd9d1844a6ec980b47d71a36a58c624

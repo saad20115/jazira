@@ -25,7 +25,7 @@ watch the channel.
 | P3-T2 | Shell & primitives + styleguide | ACCEPTED | 4 | 2026-10-24 | CTO |
 | P3-T3 | Cards & motion components | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T4 | Home page + intro | ACCEPTED | 5 | 2026-10-25 | CTO |
-| P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | CHANGES_REQUESTED | 2 | 2026-11-02 | Claude-P3T5 |
+| P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | CHANGES_REQUESTED | 2 | 2026-11-04 | CTO |
 | P3-T6 | Services page | IN_REVIEW | 1 | 2026-11-04 | Antigravity |
 | P3-T7 | About page | IN_REVIEW | 1 | 2026-11-04 | Antigravity |
 | P3-T8 | Projects + Project detail | IN_REVIEW | 1 | 2026-11-04 | Antigravity |

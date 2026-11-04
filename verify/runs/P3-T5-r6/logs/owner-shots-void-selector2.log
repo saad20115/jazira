@@ -1,0 +1,9 @@
+order {"fire":-1,"hvac":-1}
+file:///D:/jazira-verify/2026-11-03/scripts/p3t5/owner-shots.mjs:23
+  if (!order) { const t = await systems.allInnerTexts(); order = { fire: t.findIndex((x) => x.trim() === 'Fire Fighting'), hvac: t.findIndex((x) => x.trim() === 'HVAC') }; console.log('order', JSON.stringify(order)); if (order.fire < 0 || order.hvac < 0) throw new Error('system buttons not found: ' + JSON.stringify(t)) }
+                                                                                                                                                                                                                                                                     ^
+
+Error: system buttons not found: ["","01\nHVAC & Chilled Water\nHide details","02\nFire Fighting & Fire Alarm\nShow details","03\nPlumbing, Drainage & Water Supply\nShow details","04\nPower Distribution & Lighting\nShow details","05\nSmart Systems, ELV & BMS\nShow details"]
+    at file:///D:/jazira-verify/2026-11-03/scripts/p3t5/owner-shots.mjs:23:262
+
+Node.js v24.14.1
