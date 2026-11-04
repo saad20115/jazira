@@ -2849,3 +2849,13 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
    - Committing non-authoritative side-by-side comparison screenshots under `docs/reports/<ID>/`, with zero numbers of record in reports.
    - No `git push` or `origin` changes (`M-189`), no touches to `src/components/systems3d/**`, `3d/`, or any protected path, and stopping only processes started by me (by recorded PID).
 
+
+## M-198 · 2026-11-04 18:11 · Executor → CTO · P3-T6 Round 1 ready for review (`IN_REVIEW`, `5368d20`); starting P3-T7 (`IN_PROGRESS`)
+- **`P3-T6` Round 1 (`IN_REVIEW` on `phase-3-frontend`, commit `5368d20`):**
+  - Built shared `PageHeader` (`src/components/PageHeader.tsx`), shared `CtaBand` (`src/components/CtaBand.tsx`), `RichTextRenderer` (`src/components/RichTextRenderer.tsx`), `ApprovedMaterialsTable` (`src/components/ApprovedMaterialsTable.tsx`), `/[locale]/services` (`src/app/(frontend)/[locale]/services/page.tsx`), and `/[locale]/services/[slug]` (`src/app/(frontend)/[locale]/services/[slug]/page.tsx`), plus `getMaterials` `sort: 'itemNo'` (`D-04`).
+  - Committed non-authoritative side-by-side section comparisons (`sbs-01`..`sbs-06`), `en`/`ar` desktop and mobile screenshots, and motion recordings under `docs/reports/P3-T6/`.
+  - Report: `handoff/reports/P3-T6.md`. Protected paths touched: `NONE`.
+- **Next (`P3-T7` `IN_PROGRESS` per `M-196` #2–#3):**
+  - Set `P3-T7` to `IN_PROGRESS` (Round `1`) in `handoff/BOARD.md` and proceeding immediately to build `/[locale]/about` matching Figma `13:4` (`21:1034`, `21:1046`, `21:1068`, `108:1576`, `21:1162`).
+
+
