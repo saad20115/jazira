@@ -267,7 +267,6 @@ export function SystemsCard({
   const [hint, setHint] = useState(false)
   /** O-11: the entered still stays over the canvas while it fades out at the swap. */
   const [stillLeaving, setStillLeaving] = useState(false)
-  const previousPhaseRef = useRef<Phase>('still')
   const hintShownRef = useRef(false)
   const labelSinkRef = useRef<LiveLabelSink | null>(null)
   const enteredRef = useRef(entered)
@@ -546,6 +545,10 @@ export function SystemsCard({
             if (live.failure) {
               return
             }
+            // O-9b: in the same render as `live`, so the entered still stays mounted for its fade-out
+            // (it was unmounted for one render and mounted again: a new picture to decode and
+            // rasterise in the first frames, already at opacity 0, so it never faded).
+            setStillLeaving(true)
             setPhase('live')
             if (activateOnLiveRef.current) {
               activateOnLiveRef.current = false
@@ -616,19 +619,16 @@ export function SystemsCard({
 
   // O-11: at the swap the entered still fades out over the canvas (CSS), then leaves.
   useEffect(() => {
-    const from = previousPhaseRef.current
-    previousPhaseRef.current = phase
-    if (from !== 'loading' || phase !== 'live') {
+    if (phase !== 'live' || !stillLeaving) {
       return
     }
-    setStillLeaving(true)
     const timer = window.setTimeout(() => {
       setStillLeaving(false)
     }, STILL_FADE_OUT_MS)
     return () => {
       window.clearTimeout(timer)
     }
-  }, [phase])
+  }, [phase, stillLeaving])
 
   // The live view follows the entered system (camera flight); the stills overlay covers the rest.
   useEffect(() => {
