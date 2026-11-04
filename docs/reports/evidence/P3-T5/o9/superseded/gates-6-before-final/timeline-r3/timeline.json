@@ -1,0 +1,178 @@
+{
+ "hw": {
+  "cores": 8,
+  "mem": 16
+ },
+ "marks": [
+  [
+   3371,
+   "CLICK Fire Fighting"
+  ],
+  [
+   13191,
+   "CLICK Plumbing"
+  ],
+  [
+   22523,
+   "CLICK HVAC"
+  ],
+  [
+   31747,
+   "CLICK Smart Systems"
+  ]
+ ],
+ "log": [
+  [
+   389,
+   "still/none///"
+  ],
+  [
+   4091,
+   "still/fire///"
+  ],
+  [
+   4117,
+   "loading/fire//loading/"
+  ],
+  [
+   4124,
+   "loading/fire//loading/canvas"
+  ],
+  [
+   4892,
+   "live/fire/low//canvas"
+  ],
+  [
+   13393,
+   "live/plumbing/low//canvas"
+  ],
+  [
+   22687,
+   "live/hvac/low//canvas"
+  ],
+  [
+   31958,
+   "live/smart/low//canvas"
+  ]
+ ],
+ "longTasks": [
+  [
+   210,
+   92
+  ],
+  [
+   304,
+   80
+  ],
+  [
+   1087,
+   82
+  ],
+  [
+   1803,
+   62
+  ],
+  [
+   2579,
+   58
+  ],
+  [
+   2804,
+   178
+  ],
+  [
+   3428,
+   74
+  ],
+  [
+   3564,
+   52
+  ]
+ ],
+ "gaps": [
+  [
+   288,
+   100
+  ],
+  [
+   738,
+   450
+  ],
+  [
+   821,
+   67
+  ],
+  [
+   1005,
+   133
+  ],
+  [
+   1088,
+   67
+  ],
+  [
+   1171,
+   83
+  ],
+  [
+   1338,
+   117
+  ],
+  [
+   2321,
+   50
+  ],
+  [
+   2971,
+   167
+  ],
+  [
+   3288,
+   50
+  ],
+  [
+   3488,
+   83
+  ],
+  [
+   3905,
+   67
+  ],
+  [
+   4388,
+   233
+  ],
+  [
+   4571,
+   67
+  ],
+  [
+   4721,
+   50
+  ],
+  [
+   5671,
+   50
+  ],
+  [
+   10171,
+   50
+  ],
+  [
+   19771,
+   50
+  ],
+  [
+   37587,
+   250
+  ]
+ ],
+ "errors": [
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)"
+ ]
+}

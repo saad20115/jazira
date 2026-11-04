@@ -1,0 +1,137 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-ktx2-workers.test.ts (4 tests | 3 failed) 58ms
+   ❯ P3-T5 O-9a: the KTX2 workers start before the parse, never before the policy check (4)
+     × starts no worker until the policy is checked, then one per pool slot; init gives each the transcoder 47ms
+     × a failed policy check starts no worker, and init reports it 4ms
+     × a dispose during the policy check starts no worker at all 2ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-ktx2-workers.test.ts > P3-T5 O-9a: the KTX2 workers start before the parse, never before the policy check > starts no worker until the policy is checked, then one per pool slot; init gives each the transcoder
+AssertionError: expected [ FakeWorker{ …(3) }, …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++ ]
+
+ ❯ src/p3-t5-ktx2-workers.test.ts:70:32
+     68|     const ktx2 = loader()
+     69|     const fetched = ktx2.fetchTranscoder()
+     70|     expect(FakeWorker.created).toEqual([])
+       |                                ^
+     71|     await fetched
+     72|     expect(FakeWorker.created).toHaveLength(ktx2.workerPool.pool)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/p3-t5-ktx2-workers.test.ts > P3-T5 O-9a: the KTX2 workers start before the parse, never before the policy check > a failed policy check starts no worker, and init reports it
+AssertionError: expected [ FakeWorker{ …(3) }, …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": false,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++ ]
+
+ ❯ src/p3-t5-ktx2-workers.test.ts:90:32
+     88|     await expect(ktx2.fetchTranscoder()).rejects.toThrow(/unexpected C…
+     89|     await expect(ktx2.init()).rejects.toThrow(/unexpected Content-Secu…
+     90|     expect(FakeWorker.created).toEqual([])
+       |                                ^
+     91|   })
+     92|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/p3-t5-ktx2-workers.test.ts > P3-T5 O-9a: the KTX2 workers start before the parse, never before the policy check > a dispose during the policy check starts no worker at all
+AssertionError: expected [ FakeWorker{ …(3) }, …(3) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   FakeWorker {
++     "messages": [],
++     "terminated": true,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": true,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": true,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++   FakeWorker {
++     "messages": [],
++     "terminated": true,
++     "url": "/systems/v022n/basis/ktx2-worker.js",
++   },
++ ]
+
+ ❯ src/p3-t5-ktx2-workers.test.ts:112:32
+    110|     ktx2.dispose()
+    111|     await fetched
+    112|     expect(FakeWorker.created).toEqual([])
+       |                                ^
+    113|   })
+    114| })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 1 passed (4)
+   Start at  23:34:19
+   Duration  881ms (import 48%, transform 34%, tests 13%, worker 6%)
+

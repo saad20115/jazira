@@ -1,0 +1,44 @@
+{
+ "mode": "immediate",
+ "tScroll": 3106,
+ "settledMs": 4241,
+ "settledState": "live/fire/low//canvas",
+ "firstClick": 3330,
+ "liveMs": 4241,
+ "maxLongTaskFirstWindow": 195,
+ "maxFlightGap": 83,
+ "tiersAfterLive": [
+  "low"
+ ],
+ "laterStartMs": [
+  12,
+  12,
+  8
+ ],
+ "maxLoadScale": 1.06,
+ "scaleAtSwap": [
+  1.06,
+  1.06
+ ],
+ "enteredAfterFirstPhase": "fire",
+ "modelRequests": [
+  "tower-lite.glb"
+ ],
+ "errors": [
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)"
+ ],
+ "pass": {
+  "settled": true,
+  "live": false,
+  "longTask": true,
+  "flightGap": true,
+  "tier": true,
+  "later": true,
+  "latest": true
+ }
+}

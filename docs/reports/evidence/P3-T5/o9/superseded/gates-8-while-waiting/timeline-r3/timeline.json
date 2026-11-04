@@ -1,0 +1,190 @@
+{
+ "hw": {
+  "cores": 8,
+  "mem": 16
+ },
+ "marks": [
+  [
+   3030,
+   "CLICK Fire Fighting"
+  ],
+  [
+   12588,
+   "CLICK Plumbing"
+  ],
+  [
+   22059,
+   "CLICK HVAC"
+  ],
+  [
+   31399,
+   "CLICK Smart Systems"
+  ]
+ ],
+ "log": [
+  [
+   281,
+   "still/none///"
+  ],
+  [
+   3456,
+   "still/fire///"
+  ],
+  [
+   3476,
+   "loading/fire//loading/"
+  ],
+  [
+   3484,
+   "loading/fire//loading/canvas"
+  ],
+  [
+   4335,
+   "live/fire/low//canvas"
+  ],
+  [
+   12946,
+   "live/plumbing/low//canvas"
+  ],
+  [
+   22236,
+   "live/hvac/low//canvas"
+  ],
+  [
+   31637,
+   "live/smart/low//canvas"
+  ]
+ ],
+ "longTasks": [
+  [
+   214,
+   66
+  ],
+  [
+   293,
+   75
+  ],
+  [
+   989,
+   50
+  ],
+  [
+   1602,
+   50
+  ]
+ ],
+ "gaps": [
+  [
+   197,
+   46
+  ],
+  [
+   364,
+   150
+  ],
+  [
+   797,
+   433
+  ],
+  [
+   897,
+   83
+  ],
+  [
+   1080,
+   133
+  ],
+  [
+   1147,
+   50
+  ],
+  [
+   1247,
+   50
+  ],
+  [
+   2597,
+   233
+  ],
+  [
+   3497,
+   50
+  ],
+  [
+   3780,
+   250
+  ],
+  [
+   3914,
+   50
+  ],
+  [
+   4030,
+   50
+  ],
+  [
+   4430,
+   50
+  ],
+  [
+   5647,
+   50
+  ],
+  [
+   8513,
+   50
+  ],
+  [
+   9647,
+   50
+  ],
+  [
+   10447,
+   50
+  ],
+  [
+   18346,
+   50
+  ],
+  [
+   22096,
+   50
+  ],
+  [
+   23663,
+   50
+  ],
+  [
+   32496,
+   50
+  ],
+  [
+   33412,
+   50
+  ],
+  [
+   36362,
+   50
+  ],
+  [
+   36446,
+   50
+  ],
+  [
+   36679,
+   50
+  ],
+  [
+   36946,
+   50
+  ]
+ ],
+ "errors": [
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)"
+ ]
+}

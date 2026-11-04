@@ -1,0 +1,14 @@
+
+> aljazira-website@0.1.0 build C:\Users\User21.CSE\AppData\Local\Temp\claude\55d5332796bc9398\1b1c303c-9b0c-4ef9-a782-162c77955636\scratchpad\r8\dod-clone
+> node scripts/sync-3d-assets.mjs && cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+[sync-3d-assets] v022n: 37 files, 14127741 B, written -> public/systems/v022n/
+[sync-3d-assets] skipped (not served): stills/fire_end_2048.png, stills/hero_2048.png, stills/hvac_end_2048.png, stills/plumbing_end_2048.png, stills/power_end_2048.png, stills/smart_end_2048.png
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 553ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...

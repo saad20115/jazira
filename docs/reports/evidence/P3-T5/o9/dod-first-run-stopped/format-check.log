@@ -1,0 +1,10 @@
+
+> aljazira-website@0.1.0 format:check C:\Users\User21.CSE\AppData\Local\Temp\claude\55d5332796bc9398\1b1c303c-9b0c-4ef9-a782-162c77955636\scratchpad\r8\dod-clone
+> prettier --check .
+
+Checking formatting...
+[[33mwarn[39m] src/migrations/20261101_133828_p4_t2_r2_media_placeholder.json
+[[33mwarn[39m] tests/e2e/p3-t5-live-3d.e2e.spec.ts
+[[33mwarn[39m] Code style issues found in 2 files. Run Prettier with --write to fix.
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1
