@@ -46,8 +46,12 @@ export {
   type GetBrandsOptions,
   getMaterials,
   getProjectBySlug,
+  getProjectCategoryCounts,
+  type GetProjectCategoryCountsOptions,
   getProjects,
   type GetProjectsOptions,
+  getPublishedProjectSlugs,
+  getRelatedProjects,
   getServiceBySlug,
   getServices,
   type GetServicesOptions,
@@ -55,6 +59,7 @@ export {
   getTeamMembers,
   type GetTeamOptions,
   type PaginatedProjectsResult,
+  type ProjectCategoryCounts,
 } from './collections'
 export {
   getAboutPage,

@@ -54,6 +54,48 @@ export function formatViewAllItems(template: string, total: number): string {
   return template.replace('{total}', String(total))
 }
 
+export function formatPageNumberLabel(template: string, page: number): string {
+  return template.replace('{page}', String(page))
+}
+
+export function formatLightboxCounter(
+  counterTemplate: string,
+  withCaptionTemplate: string,
+  current: number,
+  total: number,
+  caption?: string | null,
+): string {
+  const trimmedCaption = typeof caption === 'string' ? caption.trim() : ''
+  if (trimmedCaption.length > 0) {
+    return withCaptionTemplate
+      .replace('{current}', String(current))
+      .replace('{total}', String(total))
+      .replace('{caption}', trimmedCaption)
+  }
+  return counterTemplate.replace('{current}', String(current)).replace('{total}', String(total))
+}
+
+export function formatOpenImageInLightbox(template: string, index: number, total: number): string {
+  return template.replace('{index}', String(index)).replace('{total}', String(total))
+}
+
+export function formatDefaultProjectAboutSummary(
+  templateWithoutClient: string,
+  templateWithClient: string,
+  scope: string,
+  location: string,
+  client?: string | null,
+): string {
+  const trimmedClient = typeof client === 'string' ? client.trim() : ''
+  if (trimmedClient.length > 0) {
+    return templateWithClient
+      .replace('{scope}', scope)
+      .replace('{client}', trimmedClient)
+      .replace('{location}', location)
+  }
+  return templateWithoutClient.replace('{scope}', scope).replace('{location}', location)
+}
+
 export function splitHeadingForGoldAccent(rawTitle: string | null | undefined): {
   mainPart: string
   accentPart: string | null

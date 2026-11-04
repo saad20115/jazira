@@ -189,6 +189,65 @@ export interface UiDictionary {
     otherServicesEyebrow: string
     otherServicesHeading: string
   }
+  projects: {
+    allProjects: string
+    filterNavLabel: string
+    statusFilterLabel: string
+    paginationNavLabel: string
+    previousPage: string
+    nextPage: string
+    pageNumberTemplate: string
+    activeFilterPrefix: string
+    clearFilter: string
+    emptyTitle: string
+    emptyDescription: string
+    showAllProjects: string
+    categories: {
+      mep: string
+      'fire-fighting': string
+      'low-current': string
+      'data-center': string
+      'civil-mep': string
+    }
+    disciplines: {
+      mep: string
+      hvac: string
+      'fire-fighting': string
+      plumbing: string
+      electrical: string
+      'low-current': string
+      'data-center': string
+      civil: string
+    }
+    detail: {
+      backToProjects: string
+      aboutEyebrow: string
+      defaultAboutHeading: string
+      defaultAboutSummaryTemplate: string
+      defaultAboutSummaryWithClientTemplate: string
+      projectSheetTitle: string
+      sheetClient: string
+      sheetLocation: string
+      sheetYear: string
+      sheetScope: string
+      sheetDeliveredBy: string
+      sheetStatus: string
+      planningTitle: string
+      planningSubtitle: string
+      requestQuote: string
+      deliverablesEyebrow: string
+      deliverablesHeading: string
+      galleryEyebrow: string
+      galleryHeading: string
+      openImageInLightboxTemplate: string
+      lightboxCounterTemplate: string
+      lightboxCounterWithCaptionTemplate: string
+      videoEyebrow: string
+      videoHeading: string
+      relatedHeading: string
+      relatedSubtitle: string
+    }
+  }
 }
 
 export const arDictionary = {
@@ -373,5 +432,64 @@ export const arDictionary = {
     keyDeliverablesHeading: 'أبرز المخرجات',
     otherServicesEyebrow: 'استكشف المزيد',
     otherServicesHeading: 'خدمات أخرى',
+  },
+  projects: {
+    allProjects: 'كل المشاريع',
+    filterNavLabel: 'تصفية المشاريع حسب التصنيف',
+    statusFilterLabel: 'تصفية المشاريع حسب الحالة',
+    paginationNavLabel: 'تنقل صفحات المشاريع',
+    previousPage: 'الصفحة السابقة',
+    nextPage: 'الصفحة التالية',
+    pageNumberTemplate: 'الصفحة {page}',
+    activeFilterPrefix: 'مصفّى حسب:',
+    clearFilter: 'مسح التصفية',
+    emptyTitle: 'لا توجد مشاريع مطابقة للتصفية المحددة',
+    emptyDescription: 'جرّب اختيار تخصص آخر أو استعرض سجل المشاريع الكامل.',
+    showAllProjects: 'عرض جميع المشاريع',
+    categories: {
+      mep: 'أعمال الكهروميكانيك',
+      'fire-fighting': 'مكافحة الحريق',
+      'low-current': 'التيار الخفيف',
+      'data-center': 'مراكز البيانات',
+      'civil-mep': 'الأعمال المدنية والكهروميكانيك',
+    },
+    disciplines: {
+      mep: 'الأعمال الكهروميكانيكية',
+      hvac: 'التكييف والتهوية',
+      'fire-fighting': 'مكافحة الحريق',
+      plumbing: 'الأعمال الصحية والسباكة',
+      electrical: 'الأعمال الكهربائية',
+      'low-current': 'التيار الخفيف',
+      'data-center': 'مراكز البيانات',
+      civil: 'الأعمال المدنية',
+    },
+    detail: {
+      backToProjects: 'العودة إلى المشاريع',
+      aboutEyebrow: 'عن المشروع',
+      defaultAboutHeading: 'التنفيذ الهندسي ونبذة عن المشروع',
+      defaultAboutSummaryTemplate: 'تنفيذ {scope} في {location}.',
+      defaultAboutSummaryWithClientTemplate: 'تنفيذ {scope} لصالح {client} في {location}.',
+      projectSheetTitle: 'بطاقة المشروع',
+      sheetClient: 'العميل',
+      sheetLocation: 'الموقع',
+      sheetYear: 'سنة الإنجاز',
+      sheetScope: 'نطاق العمل',
+      sheetDeliveredBy: 'التنفيذ عبر',
+      sheetStatus: 'الحالة',
+      planningTitle: 'هل تخطط لمشروع مماثل؟',
+      planningSubtitle: 'أرسل مخططاتك وسنقوم بإعداد عرض فني ومالي متكامل.',
+      requestQuote: 'اطلب عرض سعر',
+      deliverablesEyebrow: 'النطاق الهندسي',
+      deliverablesHeading: 'المخرجات الرئيسية وأبرز الجوانب الفنية',
+      galleryEyebrow: 'معرض الصور',
+      galleryHeading: 'الاستعراض المرئي للمشروع',
+      openImageInLightboxTemplate: 'فتح الصورة {index} من {total} في العارض',
+      lightboxCounterTemplate: '{current} / {total}',
+      lightboxCounterWithCaptionTemplate: '{current} / {total}  ·  {caption}',
+      videoEyebrow: 'فيديو المشروع',
+      videoHeading: 'العرض المرئي بالفيديو',
+      relatedHeading: 'مشاريع ذات صلة',
+      relatedSubtitle: 'استكشف المزيد من المشاريع في نفس التصنيف.',
+    },
   },
 } satisfies UiDictionary

@@ -1,0 +1,481 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  background: var(--surface);
+}
+
+.container {
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-max) + (var(--gutter-desktop) * 2));
+  margin-inline: auto;
+  padding-inline: var(--gutter-desktop);
+}
+
+/* ==========================================================================
+   Section 1: Project Hero (20:880)
+   ========================================================================== */
+.heroSection {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-block-start: 230px;
+  padding-block-end: 150px;
+  padding-inline: var(--gutter-desktop);
+  background: var(--navy-950);
+  overflow: hidden;
+  text-align: center;
+}
+
+.heroMediaLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.heroImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.heroOverlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--navy-950) 55%, transparent) 0%,
+    color-mix(in srgb, var(--navy-950) 85%, transparent) 100%
+  );
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+  max-inline-size: var(--container-max);
+  inline-size: 100%;
+}
+
+.backLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  color: color-mix(in srgb, var(--white) 80%, transparent);
+  text-decoration: none;
+  transition: color var(--motion-fast) var(--ease-out);
+}
+
+:global([dir='rtl']) .backArrowIcon {
+  transform: scaleX(-1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .backLink:hover,
+  .backLink:focus-visible {
+    color: var(--gold-300);
+  }
+}
+
+.heroBadgesRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+}
+
+.heroScopePill {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 5px;
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--gold-500) 20%, transparent);
+  border: 1px solid color-mix(in srgb, var(--gold-500) 60%, transparent);
+  color: var(--gold-300);
+}
+
+.heroStatusPill {
+  display: inline-flex;
+  align-items: center;
+  padding-block: 5px;
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--white) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 25%, transparent);
+  color: var(--white);
+}
+
+.heroTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.heroWaveWrap {
+  position: absolute;
+  inset-block-end: -2px;
+  inset-inline: 0;
+  block-size: 90px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.heroWaveSvg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* ==========================================================================
+   Section 2: Information & About (20:895)
+   ========================================================================== */
+.infoSection {
+  background: var(--surface);
+  padding-block-start: var(--space-56);
+  padding-block-end: var(--space-72);
+}
+
+.infoGrid {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-48);
+  inline-size: 100%;
+}
+
+.aboutColumn {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-20);
+}
+
+.aboutHeading {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.aboutLead {
+  margin: 0;
+  color: var(--body);
+}
+
+.aboutRichText {
+  inline-size: 100%;
+  color: var(--body);
+}
+
+.accordionWrap {
+  inline-size: 100%;
+}
+
+.accordionBodyText {
+  margin: 0;
+  color: var(--body);
+}
+
+.sidebarColumn {
+  flex-shrink: 0;
+  inline-size: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+.projectSheetCard {
+  background: var(--navy-950);
+  border-radius: 20px;
+  padding-block-start: 28px;
+  padding-block-end: var(--space-16);
+  padding-inline: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  inline-size: 100%;
+}
+
+.projectSheetTitle {
+  margin: 0;
+  color: var(--gold-500);
+}
+
+.projectSheetSpacer {
+  block-size: var(--space-14);
+  inline-size: 100%;
+}
+
+.projectSheetList {
+  margin: 0;
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.projectSheetRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-12);
+  padding-block: var(--space-14);
+}
+
+.projectSheetRowBordered {
+  border-block-end: 1px solid color-mix(in srgb, var(--white) 10%, transparent);
+}
+
+.projectSheetLabel {
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.projectSheetValue {
+  margin: 0;
+  color: var(--white);
+  text-align: end;
+}
+
+.planningCard {
+  background: var(--gold-50);
+  border-radius: 20px;
+  padding: var(--space-24);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-10);
+  inline-size: 100%;
+}
+
+.planningTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.planningSubtitle {
+  margin: 0;
+  color: var(--body);
+}
+
+.planningSpacer {
+  block-size: var(--space-4);
+  inline-size: 100%;
+}
+
+.planningButton {
+  inline-size: 100%;
+}
+
+/* ==========================================================================
+   Section 3: Key Deliverables (20:947)
+   ========================================================================== */
+.deliverablesSection {
+  position: relative;
+  background: var(--navy-950);
+  padding-block: 65px;
+  overflow: hidden;
+}
+
+.deliverablesBgLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.deliverablesBgImage {
+  object-fit: cover;
+}
+
+.deliverablesOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-stats-overlay);
+}
+
+.deliverablesHead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+  margin-block-end: var(--space-36);
+}
+
+.deliverablesTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.deliverablesGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-20);
+  inline-size: 100%;
+}
+
+.deliverableCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  min-block-size: 80px;
+  padding: var(--space-20);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--white) 5%, transparent);
+  border: 1px solid color-mix(in srgb, var(--white) 12%, transparent);
+}
+
+.deliverableIconBox {
+  flex-shrink: 0;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-md);
+  background: var(--gold-fill-tint);
+  border: 1px solid var(--gold-border-tint);
+  color: var(--gold-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.deliverableText {
+  margin: 0;
+  color: color-mix(in srgb, var(--white) 90%, transparent);
+}
+
+/* ==========================================================================
+   Section 4: Gallery (20:976) & Section 4b: Video
+   ========================================================================== */
+.gallerySection,
+.videoSection {
+  background: var(--surface);
+  padding-block-start: 65px;
+  padding-block-end: var(--space-72);
+}
+
+.galleryHead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+  margin-block-end: var(--space-32);
+}
+
+.galleryTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.videoStage {
+  position: relative;
+  inline-size: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--navy-950);
+  box-shadow: var(--shadow-image);
+}
+
+.videoPlayer,
+.videoIframe {
+  inline-size: 100%;
+  block-size: 100%;
+  border: none;
+  display: block;
+}
+
+/* ==========================================================================
+   Section 6: Related Projects (20:1009)
+   ========================================================================== */
+.relatedSection {
+  background: var(--surface);
+  padding-block-start: 65px;
+  padding-block-end: var(--space-72);
+}
+
+.relatedHead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-10);
+  margin-block-end: var(--space-32);
+}
+
+.relatedTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.relatedSubtitle {
+  margin: 0;
+  color: var(--body);
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-24);
+  inline-size: 100%;
+}
+
+.relatedCardCell {
+  display: flex;
+  inline-size: 100%;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 1279px) {
+  .container,
+  .heroSection {
+    padding-inline: var(--gutter-tablet);
+  }
+
+  .infoGrid {
+    flex-direction: column;
+    gap: var(--space-40);
+  }
+
+  .sidebarColumn {
+    inline-size: 100%;
+  }
+
+  .deliverablesGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .relatedGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  .container,
+  .heroSection {
+    padding-inline: var(--gutter-mobile);
+  }
+
+  .heroSection {
+    padding-block-start: 160px;
+    padding-block-end: 110px;
+  }
+
+  .infoSection,
+  .gallerySection,
+  .videoSection,
+  .relatedSection {
+    padding-block: var(--space-48);
+  }
+
+  .relatedGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

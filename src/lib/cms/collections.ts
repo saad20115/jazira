@@ -129,6 +129,7 @@ export interface GetProjectsOptions {
   category?: Project['category']
   status?: Project['status']
   discipline?: NonNullable<Project['scope']>[number]
+  requireCoverImage?: boolean
   limit?: number
   page?: number
 }
@@ -158,6 +159,9 @@ async function queryProjectsDirect(
   }
   if (options.discipline) {
     clauses.push({ scope: { equals: options.discipline } })
+  }
+  if (options.requireCoverImage) {
+    clauses.push({ coverImage: { exists: true } })
   }
 
   const where: Where | undefined =
@@ -199,6 +203,7 @@ export async function getProjects(
     options.category ?? 'all',
     options.status ?? 'all',
     options.discipline ?? 'all',
+    options.requireCoverImage ? 'with-cover' : 'any-cover',
     String(options.limit ?? 24),
     String(options.page ?? 1),
   ]
@@ -245,6 +250,162 @@ export async function getProjectBySlug(
     ['cms-project-by-slug', locale, normalizedSlug],
     tags,
   )
+  return cachedGetter()
+}
+
+export interface ProjectCategoryCounts {
+  all: number
+  mep: number
+  'fire-fighting': number
+  'low-current': number
+  'data-center': number
+  'civil-mep': number
+}
+
+export interface GetProjectCategoryCountsOptions {
+  status?: Project['status']
+  discipline?: NonNullable<Project['scope']>[number]
+  requireCoverImage?: boolean
+}
+
+async function queryProjectCategoryCountsDirect(
+  locale: SupportedLocale,
+  options: GetProjectCategoryCountsOptions,
+): Promise<ProjectCategoryCounts> {
+  const fallbackLocale = getFallbackLocale(locale)
+  const clauses: Where[] = []
+  if (options.status) {
+    clauses.push({ status: { equals: options.status } })
+  }
+  if (options.discipline) {
+    clauses.push({ scope: { equals: options.discipline } })
+  }
+  if (options.requireCoverImage) {
+    clauses.push({ coverImage: { exists: true } })
+  }
+  const where: Where | undefined =
+    clauses.length === 1 ? clauses[0] : clauses.length > 1 ? { and: clauses } : undefined
+
+  const result = await cmsFind({
+    collection: 'projects',
+    locale,
+    fallbackLocale,
+    where,
+    sort: 'order',
+    limit: 100,
+    page: 1,
+    depth: 0,
+  })
+
+  const counts: ProjectCategoryCounts = {
+    all: result.totalDocs,
+    mep: 0,
+    'fire-fighting': 0,
+    'low-current': 0,
+    'data-center': 0,
+    'civil-mep': 0,
+  }
+
+  for (const doc of result.docs) {
+    if (doc.category in counts) {
+      counts[doc.category] += 1
+    }
+  }
+
+  return counts
+}
+
+export async function getProjectCategoryCounts(
+  locale: SupportedLocale,
+  options: GetProjectCategoryCountsOptions = {},
+): Promise<ProjectCategoryCounts> {
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return queryProjectCategoryCountsDirect(locale, options)
+  }
+
+  const tags = [...buildCollectionTags('projects'), `collection:projects:${locale}`]
+  const keyParts = [
+    'cms-project-category-counts',
+    locale,
+    options.status ?? 'all',
+    options.discipline ?? 'all',
+    options.requireCoverImage ? 'with-cover' : 'any-cover',
+  ]
+  const cachedGetter = withCmsCache(
+    () => queryProjectCategoryCountsDirect(locale, options),
+    keyParts,
+    tags,
+  )
+  return cachedGetter()
+}
+
+async function queryRelatedProjectsDirect(
+  locale: SupportedLocale,
+  category: Project['category'],
+  excludeSlug: string,
+  limit: number,
+): Promise<Project[]> {
+  const fallbackLocale = getFallbackLocale(locale)
+  const result = await cmsFind({
+    collection: 'projects',
+    locale,
+    fallbackLocale,
+    where: {
+      and: [
+        { category: { equals: category } },
+        { slug: { not_equals: excludeSlug } },
+        { coverImage: { exists: true } },
+      ],
+    },
+    sort: 'order',
+    limit,
+    page: 1,
+    depth: 2,
+  })
+  return result.docs
+}
+
+export async function getRelatedProjects(
+  locale: SupportedLocale,
+  category: Project['category'],
+  excludeSlug: string,
+  limit = 3,
+): Promise<Project[]> {
+  const normalizedSlug = excludeSlug.trim()
+  const isDraft = await resolvePublicDraftFlag()
+  if (isDraft) {
+    return queryRelatedProjectsDirect(locale, category, normalizedSlug, limit)
+  }
+
+  const tags = [...buildCollectionTags('projects'), `collection:projects:${locale}`]
+  const keyParts = ['cms-related-projects', locale, category, normalizedSlug, String(limit)]
+  const cachedGetter = withCmsCache(
+    () => queryRelatedProjectsDirect(locale, category, normalizedSlug, limit),
+    keyParts,
+    tags,
+  )
+  return cachedGetter()
+}
+
+export async function getPublishedProjectSlugs(): Promise<string[]> {
+  const fetchDirect = async (): Promise<string[]> => {
+    const result = await cmsFind({
+      collection: 'projects',
+      locale: 'en',
+      fallbackLocale: false,
+      sort: 'order',
+      limit: 100,
+      page: 1,
+      depth: 0,
+    })
+    return result.docs
+      .map((doc) => (typeof doc.slug === 'string' ? doc.slug.trim() : ''))
+      .filter((s) => s.length > 0)
+  }
+
+  const tags = buildCollectionTags('projects')
+  const cachedGetter = withCmsCache(fetchDirect, ['cms-published-project-slugs'], tags)
   return cachedGetter()
 }
 

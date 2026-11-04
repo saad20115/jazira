@@ -1,0 +1,509 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  background: var(--white);
+}
+
+.container {
+  inline-size: 100%;
+  max-inline-size: calc(var(--container-max) + (var(--gutter-desktop) * 2));
+  margin-inline: auto;
+  padding-inline: var(--gutter-desktop);
+}
+
+.goldDivider {
+  inline-size: 52px;
+  block-size: 3px;
+  border-radius: var(--radius-xs);
+  background: var(--gradient-gold-divider);
+}
+
+.sectionHeading {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.headingGoldLine {
+  display: block;
+  color: var(--gold-500);
+}
+
+/* ==========================================================================
+   Section 2: Explore Projects (19:568)
+   ========================================================================== */
+.exploreSection {
+  background: var(--surface);
+  padding-block-start: var(--space-56);
+  padding-block-end: var(--space-72);
+}
+
+.filtersBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  margin-block-end: var(--space-40);
+}
+
+.filterTab {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  padding-block: var(--space-10);
+  padding-inline-start: var(--space-16);
+  padding-inline-end: var(--space-10);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--body);
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.filterTabActive {
+  background: var(--navy-950);
+  color: var(--white);
+}
+
+.filterTabLabel {
+  color: inherit;
+}
+
+.filterTabCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-2);
+  padding-inline: 7px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  color: var(--muted);
+}
+
+.filterTabCountActive {
+  background: var(--glass-fill-strong);
+  color: var(--white);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .filterTab:not(.filterTabActive):hover,
+  .filterTab:not(.filterTabActive):focus-visible {
+    background: var(--white);
+    color: var(--navy-950);
+  }
+}
+
+.activeFiltersRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-10);
+  margin-block-end: var(--space-32);
+}
+
+.activeFilterPrefix {
+  color: var(--body);
+}
+
+.activeFilterChip {
+  display: inline-flex;
+  align-items: center;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-pill);
+  background: var(--gold-50);
+  border: 1px solid var(--gold-border-soft);
+  color: var(--gold-700);
+}
+
+.clearFilterLink {
+  color: var(--gold-700);
+  text-decoration: underline;
+}
+
+.projectsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-24);
+  inline-size: 100%;
+}
+
+.projectCardCell {
+  display: flex;
+  inline-size: 100%;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-16);
+  padding-block: var(--space-64);
+  padding-inline: var(--space-24);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.emptyTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.emptyDescription {
+  margin: 0;
+  color: var(--body);
+  max-inline-size: 480px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  margin-block-start: var(--space-40);
+}
+
+.pageButton {
+  inline-size: 40px;
+  block-size: 40px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--body);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.pageButtonActive {
+  background: var(--gold-500);
+  border-color: var(--border);
+  color: var(--navy-950);
+}
+
+.pageButtonDisabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+:global([dir='rtl']) .paginationChevron {
+  transform: scaleX(-1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .pageButton:not(.pageButtonActive):not(.pageButtonDisabled):hover,
+  .pageButton:not(.pageButtonActive):not(.pageButtonDisabled):focus-visible {
+    border-color: var(--gold-500);
+    color: var(--navy-950);
+  }
+}
+
+/* ==========================================================================
+   Section 3: Impact in Numbers (19:884)
+   ========================================================================== */
+.impactSection {
+  position: relative;
+  background: var(--navy-950);
+  padding-block: 65px;
+  overflow: hidden;
+}
+
+.impactBgLayer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.impactBgImage {
+  object-fit: cover;
+}
+
+.impactOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-stats-overlay);
+}
+
+.impactHead {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-16);
+  margin-block-end: var(--space-52);
+}
+
+.impactTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.impactSubtitle {
+  margin: 0;
+  color: color-mix(in srgb, var(--white) 70%, transparent);
+  max-inline-size: 620px;
+}
+
+.goldDivider {
+  inline-size: 52px;
+  block-size: 3px;
+  background: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.sectionHeading {
+  margin: 0;
+  color: var(--navy-950);
+  display: flex;
+  flex-direction: column;
+}
+
+.headingGoldLine {
+  color: var(--gold-500);
+}
+
+.impactStatsGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-24);
+  inline-size: 100%;
+}
+
+.impactStatItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-6);
+}
+
+.impactStatValue {
+  color: var(--gold-500);
+}
+
+.impactStatLabel {
+  margin: 0;
+  color: color-mix(in srgb, var(--white) 65%, transparent);
+}
+
+/* ==========================================================================
+   Section 4: Portfolio (19:904)
+   ========================================================================== */
+.portfolioSection {
+  background: var(--white);
+  padding-block: var(--space-72);
+}
+
+.portfolioGrid {
+  display: flex;
+  align-items: center;
+  gap: var(--space-64);
+}
+
+.portfolioVisual {
+  position: relative;
+  flex-shrink: 0;
+  inline-size: 540px;
+  block-size: 420px;
+}
+
+.portfolioCornerBracket {
+  position: absolute;
+  inset-block-start: -12px;
+  inset-inline-start: -12px;
+  inline-size: 80px;
+  block-size: 80px;
+  color: var(--gold-500);
+  pointer-events: none;
+  z-index: 1;
+}
+
+:global([dir='rtl']) .portfolioCornerBracket {
+  transform: scaleX(-1);
+}
+
+.portfolioPhotoFrame {
+  position: absolute;
+  inset-block-start: var(--space-8);
+  inset-inline-start: var(--space-8);
+  inline-size: 520px;
+  block-size: 400px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-image);
+  background: var(--navy-900);
+}
+
+.portfolioPhoto {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.portfolioBadge {
+  position: absolute;
+  inset-block-start: 340px;
+  inset-inline-start: 360px;
+  z-index: 2;
+  background: var(--white);
+  border-radius: var(--radius-md);
+  padding-block: var(--space-18);
+  padding-inline: var(--space-26);
+  box-shadow: var(--shadow-badge);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  white-space: nowrap;
+}
+
+.portfolioBadgeValue {
+  color: var(--gold-500);
+}
+
+.portfolioBadgeLabel {
+  color: var(--body);
+}
+
+.portfolioContent {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-20);
+}
+
+.portfolioHead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
+}
+
+.portfolioParagraph {
+  margin: 0;
+  color: var(--body);
+  max-inline-size: 540px;
+}
+
+.portfolioQuoteBlock {
+  margin: 0;
+  display: flex;
+  align-items: stretch;
+  gap: var(--space-18);
+  inline-size: 100%;
+}
+
+.portfolioQuoteBar {
+  flex-shrink: 0;
+  inline-size: 3px;
+  background: var(--gold-500);
+  border-radius: var(--radius-xs);
+}
+
+.portfolioQuoteInner {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-8);
+}
+
+.portfolioQuoteText {
+  margin: 0;
+  color: var(--navy-950);
+  max-inline-size: 500px;
+}
+
+.portfolioQuoteAuthor {
+  color: var(--gold-700);
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+@media (max-width: 1279px) {
+  .container {
+    padding-inline: var(--gutter-tablet);
+  }
+
+  .projectsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .impactStatsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: var(--space-32);
+  }
+
+  .portfolioGrid {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-48);
+  }
+
+  .portfolioVisual {
+    inline-size: 100%;
+    max-inline-size: 540px;
+    margin-inline: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    padding-inline: var(--gutter-mobile);
+  }
+
+  .exploreSection,
+  .portfolioSection {
+    padding-block: var(--space-48);
+  }
+
+  .projectsGrid,
+  .impactStatsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .portfolioVisual {
+    block-size: auto;
+    padding-block-end: var(--space-24);
+  }
+
+  .portfolioPhotoFrame {
+    position: relative;
+    inset-block-start: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    block-size: 280px;
+  }
+
+  .portfolioBadge {
+    position: relative;
+    inset-block-start: auto;
+    inset-inline-start: auto;
+    margin-block-start: calc(var(--space-24) * -1);
+    margin-inline-start: auto;
+    margin-inline-end: var(--space-16);
+    inline-size: fit-content;
+  }
+}
