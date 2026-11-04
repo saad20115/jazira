@@ -42,7 +42,7 @@ export function PageHeader({
       : null
 
   return (
-    <section className={styles.pageHeader} data-theme="dark">
+    <section className={styles.pageHeader} data-page-header="true" data-theme="dark">
       <div className={styles.bgMedia} aria-hidden="true">
         {resolvedBg ? (
           <CspSafeImage

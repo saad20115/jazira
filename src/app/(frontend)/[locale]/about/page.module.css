@@ -1,0 +1,616 @@
+.aboutPage {
+  inline-size: 100%;
+  background-color: var(--white);
+}
+
+.blockLine {
+  display: block;
+}
+
+.goldText {
+  color: var(--gold-500);
+}
+
+.goldDivider {
+  inline-size: 60px;
+  block-size: 3px;
+  border-radius: var(--radius-xs);
+  background-color: var(--gold-500);
+}
+
+.centeredSectionHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-14);
+  max-inline-size: 620px;
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   2. Our Story (`21:1046`, `1440×680`)
+   ========================================================================== */
+
+.storySection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--white);
+  box-sizing: border-box;
+}
+
+.storyContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-64);
+}
+
+.storyVisualCol {
+  position: relative;
+  inline-size: 540px;
+  block-size: 440px;
+  flex-shrink: 0;
+}
+
+.storyCornerBracket {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 80px;
+  block-size: 80px;
+  color: var(--gold-500);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.storyPhotoWrap {
+  position: relative;
+  inline-size: 520px;
+  block-size: 420px;
+  margin-block-start: var(--space-10);
+  margin-inline-start: var(--space-10);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-who-image);
+  background-color: var(--navy-900);
+}
+
+.storyPhoto {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.storyBadgeCard {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-end: 0;
+  z-index: 3;
+  padding-block: var(--space-16);
+  padding-inline: var(--space-24);
+  border-radius: var(--radius-xl);
+  background-color: var(--white);
+  box-shadow: var(--shadow-who-badge);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-2);
+  box-sizing: border-box;
+}
+
+.storyBadgeNumber {
+  margin: 0;
+  color: var(--gold-500);
+}
+
+.storyBadgeLabel {
+  margin: 0;
+  color: var(--text-body);
+  white-space: nowrap;
+}
+
+.storyContentCol {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-20);
+}
+
+.storyTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.storyParagraph {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.storyQuoteBlock {
+  margin: 0;
+  inline-size: 100%;
+  border-inline-start: 3px solid var(--gold-500);
+  padding-inline-start: var(--space-20);
+  padding-block: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-6);
+  box-sizing: border-box;
+}
+
+.storyQuoteText {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.storyQuoteAuthor {
+  font-style: normal;
+  color: var(--gold-500);
+}
+
+/* ==========================================================================
+   3. Our Core Strengths (`21:1068`, `1440×586`)
+   ========================================================================== */
+
+.strengthsSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--navy-950);
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.strengthsBgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.strengthsBgImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  opacity: 0.38;
+  display: block;
+}
+
+.strengthsBgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-stats-overlay);
+  opacity: 0.85;
+}
+
+.strengthsContainer {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-48);
+}
+
+.strengthsTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.strengthsIntro {
+  margin: 0;
+  color: var(--text-on-dark-muted);
+}
+
+.strengthsGrid {
+  inline-size: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-24);
+}
+
+.strengthCard {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-dark);
+  border-radius: 18px;
+  padding-block: 28px;
+  padding-inline: 26px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+  box-sizing: border-box;
+}
+
+.strengthCardTop {
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.strengthIconBox {
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-md);
+  background-color: rgba(236, 173, 21, 0.14);
+  border: 1px solid rgba(236, 173, 21, 0.35);
+  color: var(--gold-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+
+.strengthNum {
+  color: var(--gold-500);
+  opacity: 0.12;
+  user-select: none;
+}
+
+.strengthCardTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.strengthMiniBar {
+  inline-size: 28px;
+  block-size: 2px;
+  border-radius: 1px;
+  background-color: var(--gold-500);
+}
+
+.strengthCardText {
+  margin: 0;
+  color: var(--text-on-dark-body);
+}
+
+/* ==========================================================================
+   4. Our Mission & Vision (`108:1576`, `1440×1272`)
+   ========================================================================== */
+
+.mvSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--white);
+  box-sizing: border-box;
+}
+
+.mvContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-80);
+}
+
+.mvSectionHead {
+  max-inline-size: 680px;
+}
+
+.mvTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.mvIntro {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.mvRow {
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-64);
+}
+
+.mvVisualCol {
+  position: relative;
+  inline-size: 540px;
+  block-size: 400px;
+  flex-shrink: 0;
+}
+
+.mvPhotoWrap {
+  position: relative;
+  inline-size: 540px;
+  block-size: 400px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow-mv-image);
+  background-color: var(--navy-900);
+}
+
+.mvPhoto {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.mvPhotoShade {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-mv-photo);
+  pointer-events: none;
+}
+
+.mvNumberBadge {
+  position: absolute;
+  inset-block-start: -16px;
+  inline-size: 64px;
+  block-size: 64px;
+  border-radius: var(--radius-xl);
+  background-color: var(--gold-500);
+  box-shadow: var(--shadow-mv-badge);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.mvNumberBadgeStart {
+  inset-inline-start: -16px;
+}
+
+.mvNumberBadgeEnd {
+  inset-inline-end: -16px;
+}
+
+.mvBadgeText {
+  color: var(--navy-950);
+}
+
+.mvContentCol {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-20);
+}
+
+.mvRowTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.mvGoldBar {
+  inline-size: 48px;
+  block-size: 3px;
+  border-radius: var(--radius-xs);
+  background-color: var(--gold-500);
+}
+
+.mvRowText {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.pillarsList {
+  margin: 0;
+  padding: 0;
+  padding-block-start: var(--space-4);
+  list-style: none;
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.pillarItem {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.pillarCheckBox {
+  inline-size: 22px;
+  block-size: 22px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(236, 173, 21, 0.14);
+  color: var(--gold-500);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-block-start: var(--space-2);
+}
+
+.pillarText {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.pillarTitle {
+  color: var(--navy-950);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   5. Meet Our Team (`21:1162`, `1440×1472`)
+   ========================================================================== */
+
+.teamSection {
+  position: relative;
+  inline-size: 100%;
+  padding-block: var(--section-padding-y);
+  background-color: var(--surface);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-56);
+  box-sizing: border-box;
+}
+
+.teamTopContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-56);
+}
+
+.teamHeaderRow {
+  inline-size: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-48);
+}
+
+.teamHeaderStart {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+  max-inline-size: 560px;
+}
+
+.teamTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.teamIntro {
+  margin: 0;
+  max-inline-size: 460px;
+  color: var(--text-body);
+}
+
+.leadershipGrid {
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-32);
+}
+
+.leadershipRow {
+  inline-size: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: var(--space-28);
+}
+
+.leadershipCardSlot {
+  display: flex;
+  justify-content: center;
+}
+
+.leadershipCardOffset {
+  padding-block-start: var(--space-64);
+}
+
+.widerTeamBlock {
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-28);
+}
+
+.widerTeamHead {
+  inline-size: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: start;
+  gap: var(--space-8);
+}
+
+.staffTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.staffText {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.widerTeamMarqueeWrap {
+  inline-size: 100%;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints (`<= 1023px` Tablet, `<= 767px` Mobile)
+   ========================================================================== */
+
+@media (max-width: 1023px) {
+  .storyContainer {
+    flex-direction: column;
+    gap: var(--space-40);
+  }
+
+  .storyVisualCol {
+    inline-size: 100%;
+    max-inline-size: 540px;
+  }
+
+  .storyPhotoWrap {
+    inline-size: calc(100% - var(--space-10));
+  }
+
+  .strengthsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mvRow {
+    flex-direction: column;
+    gap: var(--space-40);
+  }
+
+  .mvVisualCol,
+  .mvPhotoWrap {
+    inline-size: 100%;
+    max-inline-size: 540px;
+  }
+
+  .teamHeaderRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-20);
+  }
+
+  .leadershipCardOffset {
+    padding-block-start: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .storyVisualCol {
+    block-size: 320px;
+  }
+
+  .storyPhotoWrap {
+    block-size: 300px;
+  }
+
+  .strengthsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .mvVisualCol,
+  .mvPhotoWrap {
+    block-size: 300px;
+  }
+
+  .mvNumberBadgeStart {
+    inset-inline-start: 8px;
+  }
+
+  .mvNumberBadgeEnd {
+    inset-inline-end: 8px;
+  }
+}
