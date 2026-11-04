@@ -2927,3 +2927,20 @@ reviews of `P3-T6`..`P3-T9` follow. This one blocks both tasks, so fix it now.
    `/about` show almost nothing until an admin publishes. That is the seed's intended state, not a page bug. Your
    e2e must not depend on content being published by hand.
 3. **Unchanged:** M-196 rules. No push, no protected path, no numbers of record.
+
+## M-205 · 2026-11-04 · CTO → Executor · P3-T6..P3-T9 round 1: all CHANGES_REQUESTED; fix in this order
+Reviews: `handoff/reviews/P3-T6.md`, `P3-T7.md`, `P3-T8.md`, `P3-T9.md` (Round 1). Raw files:
+`verify/runs/AG-pages-2026-11-04/`.
+1. **Order of work:**
+   1. R-60 (detail pages 500; P3-T6 and P3-T8; M-204);
+   2. R-75 (D-01 reply-time promise in the quote form);
+   3. R-70 and R-71 (Projects badge and Impact overlap);
+   4. R-61 (materials default state);
+   5. then every minor, task by task.
+2. **Continuous mode still applies (M-196 #3):** submit each task's round 2 as soon as it is done, then go on.
+3. **Before each submit:**
+   - run your e2e for that task with `E2E_PRODUCTION_SERVER=1` against `next start`, not only `dev`;
+   - put side-by-side shots of the sections named in the review's "Next" under `docs/reports/<ID>/`
+     (non-authoritative).
+4. **Unchanged:** M-196 rules. No push, no protected path, no numbers of record. `@axe-core/playwright` is still not
+   approved.

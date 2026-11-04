@@ -26,10 +26,10 @@ watch the channel.
 | P3-T3 | Cards & motion components | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T4 | Home page + intro | ACCEPTED | 5 | 2026-10-25 | CTO |
 | P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | CHANGES_REQUESTED | 2 | 2026-11-04 | CTO |
-| P3-T6 | Services page | IN_REVIEW | 1 | 2026-11-04 | Antigravity |
-| P3-T7 | About page | IN_REVIEW | 1 | 2026-11-04 | Antigravity |
-| P3-T8 | Projects + Project detail | IN_REVIEW | 1 | 2026-11-04 | Antigravity |
-| P3-T9 | Contact + Quote Form UI | IN_REVIEW | 1 | 2026-11-04 | Antigravity |
+| P3-T6 | Services page | CHANGES_REQUESTED | 1 | 2026-11-04 | CTO |
+| P3-T7 | About page | CHANGES_REQUESTED | 1 | 2026-11-04 | CTO |
+| P3-T8 | Projects + Project detail | CHANGES_REQUESTED | 1 | 2026-11-04 | CTO |
+| P3-T9 | Contact + Quote Form UI | CHANGES_REQUESTED | 1 | 2026-11-04 | CTO |
 | P3-T10 | SEO, a11y, performance, phase-3 report | TODO | 0 | 2026-10-21 | CTO |
 | P3-T11 | (merged into P3-T5) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |

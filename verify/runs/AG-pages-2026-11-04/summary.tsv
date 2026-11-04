@@ -1,0 +1,22 @@
+step	exit	seconds
+install	0	1398
+migrate-up	0	125
+migrate-down	0	10
+migrate-up-again	0	9
+migrate-status	0	9
+lint	0	192
+typecheck	0	19
+format-check	0	13
+tokens-check	0	1
+test	0	520
+build	0	365
+audit-full	1	2
+audit-high	0	2
+seed	0	48
+e2e-default-pre	1	126
+publish-home	0	1
+e2e-default	1	127
+page-shots	0	127
+arabic-off	0	9
+server left running: 2802 38992
+done

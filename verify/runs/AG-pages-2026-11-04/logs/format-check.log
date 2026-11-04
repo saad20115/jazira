@@ -1,0 +1,6 @@
+
+> aljazira-website@0.1.0 format:check D:\jazira-verify\2026-11-04\ag-pages
+> prettier --check .
+
+Checking formatting...
+All matched files use Prettier code style!

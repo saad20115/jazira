@@ -1,0 +1,87 @@
+
+Running 16 tests using 1 worker
+
+  ok  1 [chromium] › tests\e2e\admin-smoke.spec.ts:9:3 › Payload Admin Login Smoke (en LTR & ar RTL) › renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language (3.7s)
+  ok  2 [chromium] › tests\e2e\p3-t12.e2e.spec.ts:22:3 › P3-T12 — English Default + Admin Arabic Switch E2E (R-1, R-3, R-5, R-7, R-9, R-10) › switch off redirects /ar -> 307 /en with no switcher and zero Arabic in 307/RSC bodies; admin toggle in /admin/globals/site-settings turns /ar live (200 RTL) with switcher (4.9s)
+  ok  3 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:153:3 › P3-T14 — Motion system: content never depends on JavaScript › with JavaScript disabled, every Home section and reveal target is visible and motion is off (2.0s)
+  ok  4 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:189:3 › P3-T14 — Motion system: content never depends on JavaScript › with every JS chunk blocked (no hydration), every reveal target is visible and motion is off (915ms)
+  ok  5 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:209:3 › P3-T14 — Motion system: content never depends on JavaScript › under prefers-reduced-motion, motion never turns on and no CSS animation is running (1.6s)
+  ok  6 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:254:3 › P3-T14 — Motion system: content never depends on JavaScript › with motion on, scrolling the whole Home page reveals every target and count-ups land on the CMS value (4.5s)
+  ok  7 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:313:5 › P3-T14 — Motion system: content never depends on JavaScript › R-42 fail-safe at 1440px: anchor jump (/en#cta), fast scroll to bottom, reload mid-page, and background tab leave no target hidden or clipped (10.1s)
+  ok  8 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:313:5 › P3-T14 — Motion system: content never depends on JavaScript › R-42 fail-safe at 390px: anchor jump (/en#cta), fast scroll to bottom, reload mid-page, and background tab leave no target hidden or clipped (17.2s)
+  ok  9 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:407:3 › P3-T14 — Motion system: content never depends on JavaScript › R-43: at 390px with hasTouch, ProjectCard .ctaRow is visible at rest on Home (5.1s)
+  ok 10 [chromium] › tests\e2e\p3-t14-motion.e2e.spec.ts:441:3 › P3-T14 — Motion system: content never depends on JavaScript › R-44, R-45, R-48: hero entrance & bg settle pause under data-intro="active" and play when intro ends; ServiceTile uses :focus-visible without clipping focus ring (6.2s)
+  x  11 [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click (7.8s)
+  x  12 [chromium] › tests\e2e\p3-t6.e2e.spec.ts:33:3 › P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E › returns 404 for unknown or draft-only service slugs when anonymous (3.9s)
+  ok 13 [chromium] › tests\e2e\p3-t6.e2e.spec.ts:41:3 › P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E › renders /en/services, /ar/services, and /en/services/[slug] with 73 materials, keyboard-accessible tablist, search filter, and responsive mobile cards (14.5s)
+  ok 14 [chromium] › tests\e2e\p3-t7.e2e.spec.ts:33:3 › P3-T7 — About Us Page (/en/about and /ar/about) › hides inactive team members on the anonymous public page and renders all 5 sections in staff draft preview (4.3s)
+  x  15 [chromium] › tests\e2e\p3-t8.e2e.spec.ts:33:3 › P3-T8 — Projects List, Project Detail, and Lightbox › filters projects on /en/projects, returns 404 for draft slugs to anonymous visitors, and opens/navigates/closes Lightbox with keyboard focus return (9.7s)
+  ok 16 [chromium] › tests\e2e\p3-t9.e2e.spec.ts:33:3 › P3-T9 — Contact Page, 3-Step Quote Form UI, Message Sent Dialog, and Privacy Page › renders /en/contact without third-party iframes, completes 3-step Quote Form via keyboard with validation error focus & Escape-dismissible Message Sent dialog, and verifies /en/privacy & /ar/contact (9.5s)
+
+
+  1) [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator: locator('header[data-component="navbar"] button[aria-controls]').first()
+    Expected: "false"
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toHaveAttribute" locator('header[data-component="navbar"] button[aria-controls]').first() with timeout 5000ms
+      - waiting for locator('header[data-component="navbar"] button[aria-controls]').first()
+
+
+       9 |
+      10 |     const menuButton = page.locator('header[data-component="navbar"] button[aria-controls]').first()
+    > 11 |     await expect(menuButton).toHaveAttribute('aria-expanded', 'false')
+         |                              ^
+      12 |
+      13 |     // 1. Open drawer via hamburger button click
+      14 |     await menuButton.click()
+        at D:\jazira-verify\2026-11-04\ag-pages\tests\e2e\p3-t2.e2e.spec.ts:11:30
+
+    Error Context: test-results\p3-t2.e2e-P3-T2-—-Shell-Pr-d61d1-and-language-switcher-click-chromium\error-context.md
+
+  2) [chromium] › tests\e2e\p3-t6.e2e.spec.ts:33:3 › P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E › returns 404 for unknown or draft-only service slugs when anonymous 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 404
+    Received: 500
+
+      33 |   test('returns 404 for unknown or draft-only service slugs when anonymous', async ({ page }) => {
+      34 |     const draftNotFoundRes = await page.goto('/en/services/general-contracting')
+    > 35 |     expect(draftNotFoundRes?.status()).toBe(404)
+         |                                        ^
+      36 |
+      37 |     const unknownNotFoundRes = await page.goto('/en/services/non-existent-service-slug-xyz')
+      38 |     expect(unknownNotFoundRes?.status()).toBe(404)
+        at D:\jazira-verify\2026-11-04\ag-pages\tests\e2e\p3-t6.e2e.spec.ts:35:40
+
+    Error Context: test-results\p3-t6.e2e-P3-T6-—-Services-1c285-ervice-slugs-when-anonymous-chromium\error-context.md
+
+  3) [chromium] › tests\e2e\p3-t8.e2e.spec.ts:33:3 › P3-T8 — Projects List, Project Detail, and Lightbox › filters projects on /en/projects, returns 404 for draft slugs to anonymous visitors, and opens/navigates/closes Lightbox with keyboard focus return 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 404
+    Received: 500
+
+      73 |       waitUntil: 'networkidle',
+      74 |     })
+    > 75 |     expect(draftSlugRes?.status()).toBe(404)
+         |                                    ^
+      76 |
+      77 |     // 3. Temporarily attach gallery images to sofitel-makkah-hotel via REST to test Lightbox keyboard navigation & focus return, then restore in finally
+      78 |     const findSofitelRes = await page.request.get(
+        at D:\jazira-verify\2026-11-04\ag-pages\tests\e2e\p3-t8.e2e.spec.ts:75:36
+
+    Error Context: test-results\p3-t8.e2e-P3-T8-—-Projects-da82c--with-keyboard-focus-return-chromium\error-context.md
+
+  3 failed
+    [chromium] › tests\e2e\p3-t2.e2e.spec.ts:4:3 › P3-T2 — Shell & Primitives Interactive E2E (R-9) › mobile drawer focus trap (Tab / Shift+Tab), Escape close + focus restore, Accordion click toggle, and language switcher click 
+    [chromium] › tests\e2e\p3-t6.e2e.spec.ts:33:3 › P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E › returns 404 for unknown or draft-only service slugs when anonymous 
+    [chromium] › tests\e2e\p3-t8.e2e.spec.ts:33:3 › P3-T8 — Projects List, Project Detail, and Lightbox › filters projects on /en/projects, returns 404 for draft slugs to anonymous visitors, and opens/navigates/closes Lightbox with keyboard focus return 
+  13 passed (2.1m)

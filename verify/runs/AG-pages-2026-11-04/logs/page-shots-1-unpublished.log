@@ -1,0 +1,29 @@
+service detail undefined project detail /en/projects/sofitel-makkah-hotel
+{"loc":"en","v":"1440","name":"services","url":"/services","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"service-detail","status":"no link found"}
+{"loc":"en","v":"1440","name":"about","url":"/about","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"projects","url":"/projects","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":500,"dir":"","horizontalScroll":false,"errors":["Failed to load resource: the server responded with a status of 500 (Internal Server Error)","Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MDYwZTQyMmMtYzI5ZC00MDAyLThhZGMtNzliZDExNGM1MzAy''. Either the 'unsafe-inline' keyword, a hash ('sha256-Wwucq8eX2r0YFymkQhDXm5hN0+FfSvI3s4JSSaqa4iw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.","Minified React error #441; visit https://react.dev/errors/441 for the full message or use the non-minified dev environment for full errors and additional helpful warnings."]}
+{"loc":"en","v":"1440","name":"contact","url":"/contact","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"privacy","url":"/privacy","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"services","url":"/services","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"service-detail","status":"no link found"}
+{"loc":"en","v":"390","name":"about","url":"/about","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"projects","url":"/projects","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":500,"dir":"","horizontalScroll":false,"errors":["Failed to load resource: the server responded with a status of 500 (Internal Server Error)","Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-YTFkNGE5OTEtNGM4Zi00NjhjLWFhY2QtNWU2OTI4NTNkMGUz''. Either the 'unsafe-inline' keyword, a hash ('sha256-Wwucq8eX2r0YFymkQhDXm5hN0+FfSvI3s4JSSaqa4iw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.","Minified React error #441; visit https://react.dev/errors/441 for the full message or use the non-minified dev environment for full errors and additional helpful warnings."]}
+{"loc":"en","v":"390","name":"contact","url":"/contact","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"privacy","url":"/privacy","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"services","url":"/services","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"service-detail","status":"no link found"}
+{"loc":"ar","v":"1440","name":"about","url":"/about","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"projects","url":"/projects","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":500,"dir":"","horizontalScroll":false,"errors":["Failed to load resource: the server responded with a status of 500 (Internal Server Error)","Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MTQ4ZjY5ZmMtOWU3NS00NzljLWFkODgtNTNlOGY0YjRjY2Yw''. Either the 'unsafe-inline' keyword, a hash ('sha256-Wwucq8eX2r0YFymkQhDXm5hN0+FfSvI3s4JSSaqa4iw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.","Minified React error #441; visit https://react.dev/errors/441 for the full message or use the non-minified dev environment for full errors and additional helpful warnings."]}
+{"loc":"ar","v":"1440","name":"contact","url":"/contact","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"privacy","url":"/privacy","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"services","url":"/services","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"service-detail","status":"no link found"}
+{"loc":"ar","v":"390","name":"about","url":"/about","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"projects","url":"/projects","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":500,"dir":"","horizontalScroll":false,"errors":["Failed to load resource: the server responded with a status of 500 (Internal Server Error)","Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-ZDkzNGVkODgtNThkMi00ZjFjLWEzN2QtZjUzNWIyZDU0MTVm''. Either the 'unsafe-inline' keyword, a hash ('sha256-Wwucq8eX2r0YFymkQhDXm5hN0+FfSvI3s4JSSaqa4iw='), or a nonce ('nonce-...') is required to enable inline execution. The action has been blocked.","Minified React error #441; visit https://react.dev/errors/441 for the full message or use the non-minified dev environment for full errors and additional helpful warnings."]}
+{"loc":"ar","v":"390","name":"contact","url":"/contact","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"privacy","url":"/privacy","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
