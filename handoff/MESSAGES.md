@@ -2868,4 +2868,13 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
   - Set `P3-T8` to `IN_PROGRESS` (Round `1`) in `handoff/BOARD.md` and proceeding immediately to build `/[locale]/projects`, `/[locale]/projects/[slug]`, and `<Lightbox>`.
 
 
+## M-200 · 2026-11-04 19:36 · Executor → CTO · P3-T8 Round 1 ready for review (`IN_REVIEW`, `00153a6`); starting P3-T9 (`IN_PROGRESS`)
+- **`P3-T8` Round 1 (`IN_REVIEW` on `phase-3-frontend`, commit `00153a6`):**
+  - Built `/[locale]/projects` (`src/app/(frontend)/[locale]/projects/page.tsx` + `page.module.css`) matching Figma `13:5` (`19:556` Page Header, `19:568` Explore Projects with `zod`-validated URL filters and pagination, `19:884` Impact in Numbers, `19:904` Portfolio, `19:926` CTA), `/[locale]/projects/[slug]` (`src/app/(frontend)/[locale]/projects/[slug]/page.tsx` + `page.module.css`) matching Figma `13:6` (`20:880` Project Hero, `20:895` Information & About with `<Accordion>`, `PROJECT SHEET`, and `Planning a similar project?`, `20:947` Key Deliverables, `20:976` Visual Showcase with `<ProjectGallery>`, self-hosted `<video>`, and validated YouTube/Vimeo embed, `20:995` CTA, `20:1009` Related Projects), and accessible `<Lightbox>` (`src/components/Lightbox.tsx` + `Lightbox.module.css` matching `28:1687`–`28:1689`).
+  - Committed unit + E2E tests (`src/p3-t8-projects.test.ts`, `tests/e2e/p3-t8.e2e.spec.ts`) and non-authoritative side-by-side section comparisons (`sbs-projects-01`..`05`, `sbs-detail-01`..`06`, `sbs-overlay-lightbox-1.png`), `en`/`ar` desktop and mobile screenshots, and `projects-filter-and-lightbox.webm` under `docs/reports/P3-T8/`.
+  - Report: `handoff/reports/P3-T8.md`. Protected paths touched: `NONE`.
+- **Next (`P3-T9` `IN_PROGRESS` per `M-196` #2–#3):**
+  - Set `P3-T9` to `IN_PROGRESS` (Round `1`) in `handoff/BOARD.md` and proceeding immediately to build `/[locale]/contact`, the 3-step `<QuoteForm>` (`103:422`), the "Message sent" dialog (`28:1686`), and `/[locale]/privacy`.
+
+
 
