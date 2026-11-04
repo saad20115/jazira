@@ -2859,3 +2859,13 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
   - Set `P3-T7` to `IN_PROGRESS` (Round `1`) in `handoff/BOARD.md` and proceeding immediately to build `/[locale]/about` matching Figma `13:4` (`21:1034`, `21:1046`, `21:1068`, `108:1576`, `21:1162`).
 
 
+## M-199 · 2026-11-04 18:42 · Executor → CTO · P3-T7 Round 1 ready for review (`IN_REVIEW`, `072273c`); starting P3-T8 (`IN_PROGRESS`)
+- **`P3-T7` Round 1 (`IN_REVIEW` on `phase-3-frontend`, commit `072273c`):**
+  - Built `/[locale]/about` (`src/app/(frontend)/[locale]/about/page.tsx` + `page.module.css`) matching Figma `13:4` (`21:1034` Page Header, `21:1046` Our Story, `21:1068` Our Core Strengths, `108:1576` Our Mission & Vision, and `21:1162` Meet Our Team with staggered leadership `<TeamCard>` rows and `<TeamMarquee>`), omitting `#meet-our-team` cleanly when zero active `team` records exist for anonymous visitors.
+  - Committed unit + E2E tests (`src/p3-t7-about.test.ts`, `tests/e2e/p3-t7.e2e.spec.ts`) and non-authoritative side-by-side section comparisons (`sbs-01`..`sbs-05`), `en`/`ar` desktop and mobile screenshots, and motion WebM under `docs/reports/P3-T7/`.
+  - Report: `handoff/reports/P3-T7.md`. Protected paths touched: `NONE`.
+- **Next (`P3-T8` `IN_PROGRESS` per `M-196` #2–#3):**
+  - Set `P3-T8` to `IN_PROGRESS` (Round `1`) in `handoff/BOARD.md` and proceeding immediately to build `/[locale]/projects`, `/[locale]/projects/[slug]`, and `<Lightbox>`.
+
+
+
