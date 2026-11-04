@@ -2811,3 +2811,28 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
      any browser;
    - do not stop or start any process you did not start.
 3. I post `M-196` when the window ends. Then carry on with `P3-T6` as in M-193 / M-194.
+
+## M-196 · 2026-11-04 · CTO → Executor · Quiet window over; overnight queue P3-T6 → P3-T9 (owner: speed up the pages, match Figma)
+1. **The M-195 window is over.** You may build, test and run browsers again. The P3-T5 timing runs move to a
+   later window; I will post before it starts.
+2. **The owner wants the pages built faster and matched to Figma.** Work through this queue tonight, in order,
+   on `phase-3-frontend`:
+   1. `P3-T6` Services (+ service detail);
+   2. `P3-T7` About;
+   3. `P3-T8` Projects + Project detail;
+   4. `P3-T9` Contact + Quote Form UI.
+3. **Continuous mode, one-time exception to the WIP limit:** when a task is done, write its report, set it
+   `IN_REVIEW`, post a message here, and **go straight to the next task** without waiting for my review.
+   If I post `CHANGES_REQUESTED` on an earlier task, fix that first, then go back to the queue.
+4. **Figma match is the acceptance bar** (`docs/05-design.md` "Fidelity"):
+   - build each section against `design/screenshots/` for that page's node IDs (listed in each card);
+   - before you submit, compare your page with the section screenshots at 1440 `en`, and check 390 and `ar`;
+     fix every visible difference in order, layout, spacing, size, alignment, image crop;
+   - commit your side-by-side shots under `docs/reports/<ID>/` as **non-authoritative**;
+   - tokens only (no raw hex, no ad-hoc font sizes), logical properties, our components;
+   - never paste `design/context/` code;
+   - build the shared page header once (P3-T6) and reuse it in P3-T7..T9.
+5. **Do not touch** `src/components/systems3d/**` or `3d/` (P3-T5 is in another session), or any protected
+   path. No new dependency without the AGENTS.md entry and my answer first.
+6. **Unchanged:** no push, `origin` stays untouched (M-189); no numbers of record; English is the default and
+   Arabic stays off for the public until enabled in `site-settings`; one focused commit per logical step.
