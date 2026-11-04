@@ -1,0 +1,5 @@
+
+> aljazira-website@0.1.0 lint D:\jazira-verify\2026-11-05\ag-pages2
+> cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs
+
+[css-logical-properties] Verified 43 public CSS files use logical directional properties (0 violations).

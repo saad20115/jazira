@@ -1,0 +1,10 @@
+
+Running 5 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\p3-t6.e2e.spec.ts:33:3 › P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E › renders 200 for published service slugs and returns 404 for unknown or draft-only service slugs when anonymous (1.8s)
+  ok 2 [chromium] › tests\e2e\p3-t6.e2e.spec.ts:133:3 › P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E › renders /en/services, /ar/services, and /en/services/[slug] with 73 materials, keyboard-accessible tablist, search filter, and responsive mobile cards (5.2s)
+  ok 3 [chromium] › tests\e2e\p3-t7.e2e.spec.ts:33:3 › P3-T7 — About Us Page (/en/about and /ar/about) › hides inactive team members on the anonymous public page and renders all 5 sections in staff draft preview (3.6s)
+  ok 4 [chromium] › tests\e2e\p3-t8.e2e.spec.ts:33:3 › P3-T8 — Projects List, Project Detail, and Lightbox › filters projects on /en/projects, returns 404 for draft slugs to anonymous visitors, and opens/navigates/closes Lightbox with keyboard focus return (8.9s)
+  ok 5 [chromium] › tests\e2e\p3-t9.e2e.spec.ts:33:3 › P3-T9 — Contact Page, 3-Step Quote Form UI, Message Sent Dialog, and Privacy Page › renders /en/contact without third-party iframes, completes 3-step Quote Form via keyboard with validation error focus & Escape-dismissible Message Sent dialog, and verifies /en/privacy & /ar/contact (3.8s)
+
+  5 passed (24.9s)

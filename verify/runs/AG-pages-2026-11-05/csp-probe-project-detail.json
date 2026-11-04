@@ -1,0 +1,12 @@
+[
+ {
+  "dir": "style-src-attr",
+  "src": "http://localhost:3323/en/projects/sofitel-makkah-hotel",
+  "line": 1,
+  "col": 12082,
+  "sample": "",
+  "tag": "IMG",
+  "cls": "_1nFDqq_heroImage",
+  "html": "<img alt=\"Sofitel Makkah Hotel — exterior\" fetchpriority=\"high\" decoding=\"async\" data-nimg=\"fill\" class=\"_1nFDqq_heroImage\" style=\"position:absolute;height:100%;width:100%;left:0;top:0;right:0;bottom:0\" sizes=\"100vw\" srcset=\"/_next/image?url=%2Fapi%2Fmedia%2Ffile%2Fsofitel-makkah-hotel-928x688.webp&"
+ }
+]

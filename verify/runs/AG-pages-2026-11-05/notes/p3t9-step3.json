@@ -1,0 +1,514 @@
+{
+ "390": {
+  "timeWords": [],
+  "form": [
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_stepBody",
+    "t": "PROJECT TYPE\nHotel / Tower\nCommercial / ",
+    "x": 37,
+    "y": 1370,
+    "w": 316,
+    "h": 627
+   }
+  ],
+  "step2btns": [
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_chipBtn M3S2nW_chipBtnSelected t-body-s",
+    "t": "WhatsApp",
+    "x": 37,
+    "y": 1764,
+    "w": 123,
+    "h": 38
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_chipBtn  t-body-s",
+    "t": "Phone call",
+    "x": 168,
+    "y": 1764,
+    "w": 102,
+    "h": 38
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_chipBtn  t-body-s",
+    "t": "Email",
+    "x": 278,
+    "y": 1764,
+    "w": 68,
+    "h": 38
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_backBtn t-label-button",
+    "t": "Back",
+    "x": 37,
+    "y": 1822,
+    "w": 88,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "iYV4-q_button iYV4-q_variantDark iYV4-q_sizeMd M3S2nW_flexSu",
+    "t": "Continue to review",
+    "x": 137,
+    "y": 1822,
+    "w": 216,
+    "h": 49
+   }
+  ],
+  "step3": [
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_stepBody",
+    "t": "Project\nHotel / Tower · Design stage\nSer",
+    "x": 37,
+    "y": 1372,
+    "w": 316,
+    "h": 511
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryBox",
+    "t": "Project\nHotel / Tower · Design stage\nSer",
+    "x": 37,
+    "y": 1372,
+    "w": 316,
+    "h": 184
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Project\nHotel / Tower · Design stage",
+    "x": 54,
+    "y": 1389,
+    "w": 282,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Services\nHVAC, Fire Fighting",
+    "x": 54,
+    "y": 1421,
+    "w": 282,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Location\nMakkah",
+    "x": 54,
+    "y": 1453,
+    "w": 282,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Files\nNo files attached",
+    "x": 54,
+    "y": 1485,
+    "w": 282,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Contact\nTest Name · +966 57 353 4185",
+    "x": 54,
+    "y": 1517,
+    "w": 282,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_fieldGroup",
+    "t": "MESSAGE (OPTIONAL)",
+    "x": 37,
+    "y": 1576,
+    "w": 316,
+    "h": 118
+   },
+   {
+    "tag": "LABEL",
+    "cls": "M3S2nW_fieldLabel t-label-caps",
+    "t": "MESSAGE (OPTIONAL)",
+    "x": 37,
+    "y": 1576,
+    "w": 316,
+    "h": 16
+   },
+   {
+    "tag": "TEXTAREA",
+    "cls": "M3S2nW_textareaControl  t-body-s",
+    "t": "",
+    "x": 37,
+    "y": 1598,
+    "w": 316,
+    "h": 96
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_replyNoteRow",
+    "t": "An engineer will review your inquiry and",
+    "x": 37,
+    "y": 1714,
+    "w": 316,
+    "h": 44
+   },
+   {
+    "tag": "SPAN",
+    "cls": "M3S2nW_replyNoteCheck",
+    "t": "",
+    "x": 37,
+    "y": 1727,
+    "w": 18,
+    "h": 18
+   },
+   {
+    "tag": "SPAN",
+    "cls": "M3S2nW_replyNoteText t-body-s",
+    "t": "An engineer will review your inquiry and",
+    "x": 63,
+    "y": 1714,
+    "w": 290,
+    "h": 44
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_consentBlock",
+    "t": "I agree to the processing of my details ",
+    "x": 37,
+    "y": 1778,
+    "w": 316,
+    "h": 36
+   },
+   {
+    "tag": "LABEL",
+    "cls": "M3S2nW_consentLabel",
+    "t": "I agree to the processing of my details ",
+    "x": 37,
+    "y": 1778,
+    "w": 316,
+    "h": 36
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_actionsRow",
+    "t": "Back\nSend request",
+    "x": 37,
+    "y": 1834,
+    "w": 316,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_backBtn t-label-button",
+    "t": "Back",
+    "x": 37,
+    "y": 1834,
+    "w": 88,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "iYV4-q_button iYV4-q_variantGold iYV4-q_sizeMd M3S2nW_flexSu",
+    "t": "Send request",
+    "x": 137,
+    "y": 1834,
+    "w": 216,
+    "h": 49
+   }
+  ],
+  "step3btns": [
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_backBtn t-label-button",
+    "t": "Back",
+    "x": 37,
+    "y": 1834,
+    "w": 88,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "iYV4-q_button iYV4-q_variantGold iYV4-q_sizeMd M3S2nW_flexSu",
+    "t": "Send request",
+    "x": 137,
+    "y": 1834,
+    "w": 216,
+    "h": 49
+   }
+  ],
+  "formCard": [
+   {
+    "tag": "FORM",
+    "cls": "M3S2nW_form",
+    "t": "Company website (leave empty)\nProject\nHo",
+    "x": 37,
+    "y": 1372,
+    "w": 316,
+    "h": 511
+   }
+  ]
+ },
+ "1440": {
+  "timeWords": [],
+  "form": [
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_stepBody",
+    "t": "PROJECT TYPE\nHotel / Tower\nCommercial / ",
+    "x": 813,
+    "y": 720,
+    "w": 454,
+    "h": 453
+   }
+  ],
+  "step2btns": [
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_chipBtn M3S2nW_chipBtnSelected t-body-s",
+    "t": "WhatsApp",
+    "x": 813,
+    "y": 950,
+    "w": 123,
+    "h": 38
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_chipBtn  t-body-s",
+    "t": "Phone call",
+    "x": 944,
+    "y": 950,
+    "w": 102,
+    "h": 38
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_chipBtn  t-body-s",
+    "t": "Email",
+    "x": 1054,
+    "y": 950,
+    "w": 68,
+    "h": 38
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_backBtn t-label-button",
+    "t": "Back",
+    "x": 813,
+    "y": 1008,
+    "w": 88,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "iYV4-q_button iYV4-q_variantDark iYV4-q_sizeMd M3S2nW_flexSu",
+    "t": "Continue to review",
+    "x": 913,
+    "y": 1008,
+    "w": 354,
+    "h": 49
+   }
+  ],
+  "step3": [
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_stepBody",
+    "t": "Project\nHotel / Tower · Design stage\nSer",
+    "x": 813,
+    "y": 746,
+    "w": 454,
+    "h": 471
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryBox",
+    "t": "Project\nHotel / Tower · Design stage\nSer",
+    "x": 813,
+    "y": 746,
+    "w": 454,
+    "h": 184
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Project\nHotel / Tower · Design stage",
+    "x": 830,
+    "y": 763,
+    "w": 420,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Services\nHVAC, Fire Fighting",
+    "x": 830,
+    "y": 795,
+    "w": 420,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Location\nMakkah",
+    "x": 830,
+    "y": 827,
+    "w": 420,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Files\nNo files attached",
+    "x": 830,
+    "y": 859,
+    "w": 420,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_summaryRow",
+    "t": "Contact\nTest Name · +966 57 353 4185",
+    "x": 830,
+    "y": 891,
+    "w": 420,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_fieldGroup",
+    "t": "MESSAGE (OPTIONAL)",
+    "x": 813,
+    "y": 950,
+    "w": 454,
+    "h": 118
+   },
+   {
+    "tag": "LABEL",
+    "cls": "M3S2nW_fieldLabel t-label-caps",
+    "t": "MESSAGE (OPTIONAL)",
+    "x": 813,
+    "y": 950,
+    "w": 454,
+    "h": 16
+   },
+   {
+    "tag": "TEXTAREA",
+    "cls": "M3S2nW_textareaControl  t-body-s",
+    "t": "",
+    "x": 813,
+    "y": 972,
+    "w": 454,
+    "h": 96
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_replyNoteRow",
+    "t": "An engineer will review your inquiry and",
+    "x": 813,
+    "y": 1088,
+    "w": 454,
+    "h": 22
+   },
+   {
+    "tag": "SPAN",
+    "cls": "M3S2nW_replyNoteCheck",
+    "t": "",
+    "x": 813,
+    "y": 1090,
+    "w": 18,
+    "h": 18
+   },
+   {
+    "tag": "SPAN",
+    "cls": "M3S2nW_replyNoteText t-body-s",
+    "t": "An engineer will review your inquiry and",
+    "x": 839,
+    "y": 1088,
+    "w": 392,
+    "h": 22
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_consentBlock",
+    "t": "I agree to the processing of my details ",
+    "x": 813,
+    "y": 1130,
+    "w": 454,
+    "h": 18
+   },
+   {
+    "tag": "LABEL",
+    "cls": "M3S2nW_consentLabel",
+    "t": "I agree to the processing of my details ",
+    "x": 813,
+    "y": 1130,
+    "w": 454,
+    "h": 18
+   },
+   {
+    "tag": "DIV",
+    "cls": "M3S2nW_actionsRow",
+    "t": "Back\nSend request",
+    "x": 813,
+    "y": 1168,
+    "w": 454,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_backBtn t-label-button",
+    "t": "Back",
+    "x": 813,
+    "y": 1168,
+    "w": 88,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "iYV4-q_button iYV4-q_variantGold iYV4-q_sizeMd M3S2nW_flexSu",
+    "t": "Send request",
+    "x": 913,
+    "y": 1168,
+    "w": 354,
+    "h": 49
+   }
+  ],
+  "step3btns": [
+   {
+    "tag": "BUTTON",
+    "cls": "M3S2nW_backBtn t-label-button",
+    "t": "Back",
+    "x": 813,
+    "y": 1168,
+    "w": 88,
+    "h": 49
+   },
+   {
+    "tag": "BUTTON",
+    "cls": "iYV4-q_button iYV4-q_variantGold iYV4-q_sizeMd M3S2nW_flexSu",
+    "t": "Send request",
+    "x": 913,
+    "y": 1168,
+    "w": 354,
+    "h": 49
+   }
+  ],
+  "formCard": [
+   {
+    "tag": "FORM",
+    "cls": "M3S2nW_form",
+    "t": "Company website (leave empty)\nProject\nHo",
+    "x": 813,
+    "y": 746,
+    "w": 454,
+    "h": 471
+   }
+  ]
+ }
+}

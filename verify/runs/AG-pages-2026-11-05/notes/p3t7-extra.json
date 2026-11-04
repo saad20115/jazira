@@ -1,0 +1,3470 @@
+{
+ "en-1440": {
+  "scrollW": 1440,
+  "docH": 5651,
+  "sections": [
+   {
+    "id": "HEADER",
+    "cls": "cJzEcG_navbar cJzEcG_themeLight",
+    "r": [
+     0,
+     0,
+     1440,
+     80
+    ]
+   },
+   {
+    "id": "SECTION",
+    "cls": "bRDKxW_pageHeader",
+    "r": [
+     0,
+     0,
+     1440,
+     539
+    ]
+   },
+   {
+    "id": "our-story",
+    "cls": "a8R8yG_storySection",
+    "r": [
+     0,
+     539,
+     1440,
+     727
+    ]
+   },
+   {
+    "id": "core-strengths",
+    "cls": "a8R8yG_strengthsSection",
+    "r": [
+     0,
+     1266,
+     1440,
+     683
+    ]
+   },
+   {
+    "id": "mission-vision",
+    "cls": "a8R8yG_mvSection",
+    "r": [
+     0,
+     1949,
+     1440,
+     1639
+    ]
+   },
+   {
+    "id": "meet-our-team",
+    "cls": "a8R8yG_teamSection",
+    "r": [
+     0,
+     3588,
+     1440,
+     1558
+    ]
+   },
+   {
+    "id": "SECTION",
+    "cls": "hpnIDq_marquee",
+    "r": [
+     0,
+     4828,
+     1440,
+     240
+    ]
+   },
+   {
+    "id": "FOOTER",
+    "cls": "S6Hkya_footer",
+    "r": [
+     0,
+     5146,
+     1440,
+     505
+    ]
+   }
+  ],
+  "els": [
+   {
+    "c": "bRDKxW_pageHeader",
+    "r": [
+     0,
+     0,
+     1440,
+     539
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "About Us\n\nDiscover the story behind 45+ "
+   },
+   {
+    "c": "bRDKxW_title t-display-l",
+    "r": [
+     594,
+     211,
+     253,
+     64
+    ],
+    "fs": "56px/64px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "About Us"
+   },
+   {
+    "c": "bRDKxW_subtitle t-body-l",
+    "r": [
+     400,
+     293,
+     640,
+     60
+    ],
+    "fs": "18px/30px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.82",
+    "t": "Discover the story behind 45+ years of M"
+   },
+   {
+    "c": "a8R8yG_storyVisualCol",
+    "r": [
+     140,
+     675,
+     540,
+     440
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "45+\n45+\n\nYears Experience"
+   },
+   {
+    "c": "a8R8yG_storyCornerBracket",
+    "r": [
+     128,
+     663,
+     80,
+     80
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "",
+    "sw": "4 4px"
+   },
+   {
+    "c": "a8R8yG_storyPhotoWrap",
+    "r": [
+     148,
+     683,
+     520,
+     420
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(11, 26, 51)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_storyBadgeCard",
+    "r": [
+     510,
+     1035,
+     170,
+     108
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "45+\n45+\n\nYears Experience"
+   },
+   {
+    "c": "a8R8yG_storyBadgeNumber t-stat-m",
+    "r": [
+     557,
+     1053,
+     77,
+     48
+    ],
+    "fs": "40px/48px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "45+\n45+"
+   },
+   {
+    "c": "a8R8yG_storyBadgeLabel t-body-s",
+    "r": [
+     536,
+     1103,
+     118,
+     22
+    ],
+    "fs": "14px/22px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Years Experience"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     744,
+     595,
+     120,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR STORY"
+   },
+   {
+    "c": "a8R8yG_storyTitle t-h2",
+    "r": [
+     744,
+     645,
+     511,
+     104
+    ],
+    "fs": "44px/52px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Engineering Excellence\nSince 1979"
+   },
+   {
+    "c": "a8R8yG_goldDivider",
+    "r": [
+     744,
+     769,
+     52,
+     3
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_storyParagraph t-body-m",
+    "r": [
+     744,
+     792,
+     556,
+     156
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Al Jazira for Imdad Smart Company is a l"
+   },
+   {
+    "c": "a8R8yG_storyParagraph t-body-m",
+    "r": [
+     744,
+     968,
+     556,
+     130
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Established in the Kingdom of Saudi Arab"
+   },
+   {
+    "c": "a8R8yG_storyQuoteBlock",
+    "r": [
+     744,
+     1118,
+     556,
+     76
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "“Developing and serving society with the"
+   },
+   {
+    "c": "a8R8yG_storyQuoteText t-body-quote",
+    "r": [
+     765,
+     1118,
+     535,
+     52
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "“Developing and serving society with the"
+   },
+   {
+    "c": "a8R8yG_storyQuoteAuthor t-label-caps",
+    "r": [
+     765,
+     1178,
+     276,
+     16
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(195, 143, 28)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "AL JAZIRA FOR IMDAD SMART COMPANY"
+   },
+   {
+    "c": "a8R8yG_centeredSectionHead",
+    "r": [
+     455,
+     1338,
+     530,
+     193
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "WHY CHOOSE US\nOur Core Strengths\n\nNearly"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneDark",
+    "r": [
+     642,
+     1338,
+     157,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(239, 203, 118)",
+    "bg": "rgba(255, 255, 255, 0.08)",
+    "op": "1",
+    "t": "WHY CHOOSE US"
+   },
+   {
+    "c": "a8R8yG_strengthsTitle t-h2",
+    "r": [
+     508,
+     1384,
+     424,
+     52
+    ],
+    "fs": "44px/52px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Core Strengths"
+   },
+   {
+    "c": "a8R8yG_strengthsIntro t-body-l",
+    "r": [
+     455,
+     1452,
+     530,
+     60
+    ],
+    "fs": "18px/30px",
+    "col": "color(srgb 1 1 1 / 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Nearly five decades of building trust, d"
+   },
+   {
+    "c": "a8R8yG_goldDivider",
+    "r": [
+     694,
+     1528,
+     52,
+     3
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_strengthsGrid",
+    "r": [
+     140,
+     1583,
+     1160,
+     294
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "1\nGulf Market Expertise\n\nNearly five dec"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     140,
+     1583,
+     275,
+     294
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "1\nGulf Market Expertise\n\nNearly five dec"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     167,
+     1612,
+     221,
+     48
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "1"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     373,
+     1612,
+     15,
+     48
+    ],
+    "fs": "40px/48px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "1"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     167,
+     1676,
+     214,
+     28
+    ],
+    "fs": "20px/28px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Gulf Market Expertise"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     167,
+     1738,
+     221,
+     110
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Nearly five decades of deep expertise op"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     435,
+     1583,
+     275,
+     294
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "2\nProven Track Record\n\n90+ completed pro"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     462,
+     1612,
+     221,
+     48
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "2"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     661,
+     1612,
+     22,
+     48
+    ],
+    "fs": "40px/48px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "2"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     462,
+     1676,
+     209,
+     28
+    ],
+    "fs": "20px/28px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Proven Track Record"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     462,
+     1738,
+     221,
+     110
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "90+ completed projects across 100+ build"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     730,
+     1583,
+     275,
+     294
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "3\nQuality & Reliability\n\nStrong reputati"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     757,
+     1612,
+     221,
+     48
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "3"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     954,
+     1612,
+     24,
+     48
+    ],
+    "fs": "40px/48px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "3"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     757,
+     1676,
+     199,
+     28
+    ],
+    "fs": "20px/28px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Quality & Reliability"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     757,
+     1738,
+     221,
+     88
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Strong reputation for quality, reliabili"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     1025,
+     1583,
+     275,
+     294
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "4\nIn-House Execution\n\n85% of MEP work is"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     1052,
+     1612,
+     221,
+     48
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "4"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     1246,
+     1612,
+     27,
+     48
+    ],
+    "fs": "40px/48px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "4"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     1052,
+     1676,
+     197,
+     28
+    ],
+    "fs": "20px/28px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "In-House Execution"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     1052,
+     1738,
+     221,
+     88
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "85% of MEP work is self-performed by our"
+   },
+   {
+    "c": "a8R8yG_centeredSectionHead a8R8yG_mvSectionHead",
+    "r": [
+     428,
+     2021,
+     584,
+     193
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     655,
+     2021,
+     131,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "WHO WE ARE"
+   },
+   {
+    "c": "a8R8yG_mvTitle t-h2",
+    "r": [
+     495,
+     2067,
+     451,
+     52
+    ],
+    "fs": "44px/52px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Mission & Vision"
+   },
+   {
+    "c": "a8R8yG_mvIntro t-body-l",
+    "r": [
+     428,
+     2135,
+     584,
+     60
+    ],
+    "fs": "18px/30px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "The purpose behind every project we deli"
+   },
+   {
+    "c": "a8R8yG_goldDivider",
+    "r": [
+     694,
+     2211,
+     52,
+     3
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvRow",
+    "r": [
+     140,
+     2294,
+     1160,
+     607
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "01\nOUR MISSION\nOur Mission\n\nTo safely de"
+   },
+   {
+    "c": "a8R8yG_mvVisualCol",
+    "r": [
+     140,
+     2398,
+     540,
+     400
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "01"
+   },
+   {
+    "c": "a8R8yG_mvPhotoWrap",
+    "r": [
+     140,
+     2398,
+     540,
+     400
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(11, 26, 51)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvPhotoShade",
+    "r": [
+     140,
+     2398,
+     540,
+     400
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvNumberBadge a8R8yG_mvNumberBadgeStart",
+    "r": [
+     120,
+     2378,
+     65,
+     60
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(223, 168, 42)",
+    "op": "1",
+    "t": "01"
+   },
+   {
+    "c": "a8R8yG_mvBadgeText t-h3",
+    "r": [
+     138,
+     2390,
+     29,
+     36
+    ],
+    "fs": "28px/36px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "01"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     752,
+     2294,
+     133,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR MISSION"
+   },
+   {
+    "c": "a8R8yG_mvRowTitle t-h2",
+    "r": [
+     752,
+     2342,
+     261,
+     52
+    ],
+    "fs": "44px/52px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Mission"
+   },
+   {
+    "c": "a8R8yG_mvRowText t-body-l",
+    "r": [
+     752,
+     2433,
+     548,
+     90
+    ],
+    "fs": "18px/30px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "To safely deliver world-class Quality ME"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     786,
+     2542,
+     186,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Engineering Excellence"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     786,
+     2632,
+     90,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Safety First"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     786,
+     2696,
+     112,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Sustainability"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     786,
+     2786,
+     133,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Customer Focus"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     786,
+     2850,
+     88,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Innovation"
+   },
+   {
+    "c": "a8R8yG_mvRow",
+    "r": [
+     140,
+     2981,
+     1160,
+     535
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "OUR VISION\nOur Vision\n\nTo become a regio"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     140,
+     2981,
+     123,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR VISION"
+   },
+   {
+    "c": "a8R8yG_mvRowTitle t-h2",
+    "r": [
+     140,
+     3029,
+     228,
+     52
+    ],
+    "fs": "44px/52px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Vision"
+   },
+   {
+    "c": "a8R8yG_mvRowText t-body-l",
+    "r": [
+     140,
+     3120,
+     548,
+     120
+    ],
+    "fs": "18px/30px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "To become a regional market leader in th"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     174,
+     3259,
+     252,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Expanding Core Competencies"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     174,
+     3349,
+     170,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Unique Technologies"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     174,
+     3439,
+     182,
+     23
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Strategic Partnerships"
+   },
+   {
+    "c": "a8R8yG_mvVisualCol",
+    "r": [
+     760,
+     3049,
+     540,
+     400
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "02"
+   },
+   {
+    "c": "a8R8yG_mvPhotoWrap",
+    "r": [
+     760,
+     3049,
+     540,
+     400
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(11, 26, 51)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvPhotoShade",
+    "r": [
+     760,
+     3049,
+     540,
+     400
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvNumberBadge a8R8yG_mvNumberBadgeEnd",
+    "r": [
+     1250,
+     3029,
+     70,
+     60
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(223, 168, 42)",
+    "op": "1",
+    "t": "02"
+   },
+   {
+    "c": "a8R8yG_mvBadgeText t-h3",
+    "r": [
+     1268,
+     3041,
+     34,
+     36
+    ],
+    "fs": "28px/36px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "02"
+   },
+   {
+    "c": "a8R8yG_teamHeaderRow",
+    "r": [
+     140,
+     3660,
+     1160,
+     174
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "OUR TEAM\nMeet Our Team\n\nA solid base of "
+   },
+   {
+    "c": "a8R8yG_teamHeaderStart",
+    "r": [
+     140,
+     3660,
+     610,
+     174
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "OUR TEAM\nMeet Our Team\n\nA solid base of "
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     140,
+     3660,
+     113,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR TEAM"
+   },
+   {
+    "c": "a8R8yG_teamTitle t-h2",
+    "r": [
+     140,
+     3706,
+     338,
+     52
+    ],
+    "fs": "44px/52px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Meet Our Team"
+   },
+   {
+    "c": "a8R8yG_teamIntro t-body-l",
+    "r": [
+     140,
+     3774,
+     610,
+     60
+    ],
+    "fs": "18px/30px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "A solid base of skilled engineers, an ef"
+   },
+   {
+    "c": "a8R8yG_teamIntroSecondary t-body-m",
+    "r": [
+     830,
+     3704,
+     470,
+     130
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "In today’s dynamic marketplace, Al Jazir"
+   },
+   {
+    "c": "a8R8yG_leadershipGrid",
+    "r": [
+     140,
+     3890,
+     1160,
+     768
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN\n\n[place"
+   },
+   {
+    "c": "a8R8yG_leadershipRow",
+    "r": [
+     140,
+     3890,
+     1160,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN\n\n[place"
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot",
+    "r": [
+     444,
+     3890,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     444,
+     3890,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     460,
+     3906,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     658,
+     3894,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot",
+    "r": [
+     732,
+     3890,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chief Executive Officer\n\nC"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     732,
+     3890,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Chief Executive Officer\n\nC"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     748,
+     3906,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     946,
+     3894,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipRow",
+    "r": [
+     140,
+     4254,
+     1160,
+     404
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Commercial Director\n\nCOMME"
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot a8R8yG_leadershipCardOffset",
+    "r": [
+     300,
+     4254,
+     264,
+     404
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Commercial Director\n\nCOMME"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     300,
+     4318,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Commercial Director\n\nCOMME"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     316,
+     4334,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     514,
+     4322,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot",
+    "r": [
+     588,
+     4254,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Engineering Manager\n\nENGIN"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     588,
+     4254,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Engineering Manager\n\nENGIN"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     604,
+     4270,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     802,
+     4258,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot a8R8yG_leadershipCardOffset",
+    "r": [
+     876,
+     4254,
+     264,
+     404
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Project Manager\n\nPROJECT M"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     876,
+     4318,
+     264,
+     340
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Project Manager\n\nPROJECT M"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     892,
+     4334,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     1090,
+     4322,
+     34,
+     34
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "HB3uaG_container a8R8yG_widerTeamHead",
+    "r": [
+     0,
+     4730,
+     1440,
+     70
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "The people behind every project\n\nEnginee"
+   },
+   {
+    "c": "a8R8yG_staffTitle t-h3",
+    "r": [
+     140,
+     4730,
+     457,
+     36
+    ],
+    "fs": "28px/36px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "The people behind every project"
+   },
+   {
+    "c": "a8R8yG_staffText t-body-m",
+    "r": [
+     140,
+     4774,
+     500,
+     26
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Engineers, supervisors and specialists f"
+   },
+   {
+    "c": "a8R8yG_widerTeamMarqueeWrap",
+    "r": [
+     0,
+     4828,
+     1440,
+     240
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Project Engineer\n\nProject "
+   },
+   {
+    "c": "hpnIDq_track hpnIDq_trackRow1Live",
+    "r": [
+     0,
+     4888,
+     1440,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Project Engineer\n\nProject "
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     156,
+     4888,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Project Engineer\n\nProject "
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     442,
+     4888,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Site Engineer\n\nSite Engine"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     728,
+     4888,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Mechanical Engineer\n\nMecha"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     1014,
+     4888,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Electrical Engineer\n\nElect"
+   },
+   {
+    "c": "hpnIDq_track hpnIDq_trackRow2Live",
+    "r": [
+     0,
+     4986,
+     1440,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Planning Engineer\n\nPlannin"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     156,
+     4986,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Planning Engineer\n\nPlannin"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     442,
+     4986,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Quantity Surveyor\n\nQuantit"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     728,
+     4986,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Safety Officer\n\nSafety Off"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     1014,
+     4986,
+     270,
+     82
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] MEP Supervisor\n\nMEP Superv"
+   }
+  ],
+  "badgeHTML": "<div class=\"a8R8yG_storyBadgeCard\" data-story-badge-stat=\"true\" data-reveal=\"fade\" data-reveal-step=\"3\"><p class=\"a8R8yG_storyBadgeNumber t-stat-m\"><bdi dir=\"ltr\"><span data-countup=\"45+\"><span aria-hidden=\"true\" data-countup-display=\"\">45+</span><span class=\"sr-only\">45+</span></span></bdi></p><p class=\"a8R8yG_storyBadgeLabel t-body-s\">Years Experience</p></div>",
+  "status": 200
+ },
+ "en-390": {
+  "scrollW": 390,
+  "docH": 10072,
+  "sections": [
+   {
+    "id": "HEADER",
+    "cls": "cJzEcG_navbar cJzEcG_themeLight",
+    "r": [
+     0,
+     0,
+     390,
+     80
+    ]
+   },
+   {
+    "id": "SECTION",
+    "cls": "bRDKxW_pageHeader",
+    "r": [
+     0,
+     0,
+     390,
+     415
+    ]
+   },
+   {
+    "id": "our-story",
+    "cls": "a8R8yG_storySection",
+    "r": [
+     0,
+     415,
+     390,
+     1181
+    ]
+   },
+   {
+    "id": "core-strengths",
+    "cls": "a8R8yG_strengthsSection",
+    "r": [
+     0,
+     1596,
+     390,
+     1425
+    ]
+   },
+   {
+    "id": "mission-vision",
+    "cls": "a8R8yG_mvSection",
+    "r": [
+     0,
+     3021,
+     390,
+     2469
+    ]
+   },
+   {
+    "id": "meet-our-team",
+    "cls": "a8R8yG_teamSection",
+    "r": [
+     0,
+     5490,
+     390,
+     3388
+    ]
+   },
+   {
+    "id": "SECTION",
+    "cls": "hpnIDq_marquee",
+    "r": [
+     0,
+     7972,
+     390,
+     828
+    ]
+   },
+   {
+    "id": "FOOTER",
+    "cls": "S6Hkya_footer",
+    "r": [
+     0,
+     8878,
+     390,
+     1194
+    ]
+   }
+  ],
+  "els": [
+   {
+    "c": "bRDKxW_pageHeader",
+    "r": [
+     0,
+     0,
+     390,
+     415
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "About Us\n\nDiscover the story behind 45+ "
+   },
+   {
+    "c": "bRDKxW_title t-display-l",
+    "r": [
+     114,
+     157,
+     162,
+     44
+    ],
+    "fs": "36px/44px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "About Us"
+   },
+   {
+    "c": "bRDKxW_subtitle t-body-l",
+    "r": [
+     16,
+     219,
+     358,
+     52
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.82",
+    "t": "Discover the story behind 45+ years of M"
+   },
+   {
+    "c": "a8R8yG_storyVisualCol",
+    "r": [
+     16,
+     471,
+     358,
+     348
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "45+\n45+\n\nYears Experience"
+   },
+   {
+    "c": "a8R8yG_storyCornerBracket",
+    "r": [
+     4,
+     459,
+     80,
+     80
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "",
+    "sw": "4 4px"
+   },
+   {
+    "c": "a8R8yG_storyPhotoWrap",
+    "r": [
+     24,
+     479,
+     342,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(11, 26, 51)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_storyBadgeCard",
+    "r": [
+     208,
+     711,
+     170,
+     100
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "45+\n45+\n\nYears Experience"
+   },
+   {
+    "c": "a8R8yG_storyBadgeNumber t-stat-m",
+    "r": [
+     262,
+     729,
+     62,
+     40
+    ],
+    "fs": "32px/40px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "45+\n45+"
+   },
+   {
+    "c": "a8R8yG_storyBadgeLabel t-body-s",
+    "r": [
+     234,
+     771,
+     118,
+     22
+    ],
+    "fs": "14px/22px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Years Experience"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     16,
+     859,
+     120,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR STORY"
+   },
+   {
+    "c": "a8R8yG_storyTitle t-h2",
+    "r": [
+     16,
+     909,
+     348,
+     76
+    ],
+    "fs": "30px/38px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Engineering Excellence\nSince 1979"
+   },
+   {
+    "c": "a8R8yG_goldDivider",
+    "r": [
+     16,
+     1005,
+     52,
+     3
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_storyParagraph t-body-m",
+    "r": [
+     16,
+     1028,
+     358,
+     192
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Al Jazira for Imdad Smart Company is a l"
+   },
+   {
+    "c": "a8R8yG_storyParagraph t-body-m",
+    "r": [
+     16,
+     1240,
+     358,
+     168
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Established in the Kingdom of Saudi Arab"
+   },
+   {
+    "c": "a8R8yG_storyQuoteBlock",
+    "r": [
+     16,
+     1428,
+     358,
+     96
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "“Developing and serving society with the"
+   },
+   {
+    "c": "a8R8yG_storyQuoteText t-body-quote",
+    "r": [
+     37,
+     1428,
+     337,
+     72
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "“Developing and serving society with the"
+   },
+   {
+    "c": "a8R8yG_storyQuoteAuthor t-label-caps",
+    "r": [
+     37,
+     1508,
+     276,
+     16
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(195, 143, 28)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "AL JAZIRA FOR IMDAD SMART COMPANY"
+   },
+   {
+    "c": "a8R8yG_centeredSectionHead",
+    "r": [
+     16,
+     1644,
+     358,
+     197
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "WHY CHOOSE US\nOur Core Strengths\n\nNearly"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneDark",
+    "r": [
+     117,
+     1644,
+     157,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(239, 203, 118)",
+    "bg": "rgba(255, 255, 255, 0.08)",
+    "op": "1",
+    "t": "WHY CHOOSE US"
+   },
+   {
+    "c": "a8R8yG_strengthsTitle t-h2",
+    "r": [
+     51,
+     1690,
+     289,
+     38
+    ],
+    "fs": "30px/38px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Core Strengths"
+   },
+   {
+    "c": "a8R8yG_strengthsIntro t-body-l",
+    "r": [
+     16,
+     1744,
+     358,
+     78
+    ],
+    "fs": "16px/26px",
+    "col": "color(srgb 1 1 1 / 0.72)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Nearly five decades of building trust, d"
+   },
+   {
+    "c": "a8R8yG_goldDivider",
+    "r": [
+     169,
+     1838,
+     52,
+     3
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_strengthsGrid",
+    "r": [
+     16,
+     1893,
+     358,
+     1080
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "1\nGulf Market Expertise\n\nNearly five dec"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     16,
+     1893,
+     358,
+     266
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "1\nGulf Market Expertise\n\nNearly five dec"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     43,
+     1922,
+     304,
+     44
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "1"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     335,
+     1922,
+     12,
+     40
+    ],
+    "fs": "32px/40px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "1"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     43,
+     1982,
+     193,
+     26
+    ],
+    "fs": "18px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Gulf Market Expertise"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     43,
+     2042,
+     304,
+     88
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Nearly five decades of deep expertise op"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     16,
+     2179,
+     358,
+     266
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "2\nProven Track Record\n\n90+ completed pro"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     43,
+     2208,
+     304,
+     44
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "2"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     329,
+     2208,
+     18,
+     40
+    ],
+    "fs": "32px/40px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "2"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     43,
+     2268,
+     188,
+     26
+    ],
+    "fs": "18px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Proven Track Record"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     43,
+     2328,
+     304,
+     88
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "90+ completed projects across 100+ build"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     16,
+     2465,
+     358,
+     244
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "3\nQuality & Reliability\n\nStrong reputati"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     43,
+     2494,
+     304,
+     44
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "3"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     328,
+     2494,
+     19,
+     40
+    ],
+    "fs": "32px/40px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "3"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     43,
+     2554,
+     179,
+     26
+    ],
+    "fs": "18px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Quality & Reliability"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     43,
+     2614,
+     304,
+     66
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Strong reputation for quality, reliabili"
+   },
+   {
+    "c": "a8R8yG_strengthCard",
+    "r": [
+     16,
+     2729,
+     358,
+     244
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(255, 255, 255, 0.06)",
+    "op": "1",
+    "t": "4\nIn-House Execution\n\n85% of MEP work is"
+   },
+   {
+    "c": "a8R8yG_strengthCardTop",
+    "r": [
+     43,
+     2758,
+     304,
+     44
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "4"
+   },
+   {
+    "c": "a8R8yG_strengthNum t-stat-m",
+    "r": [
+     326,
+     2758,
+     21,
+     40
+    ],
+    "fs": "32px/40px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.22",
+    "t": "4"
+   },
+   {
+    "c": "a8R8yG_strengthCardTitle t-h4",
+    "r": [
+     43,
+     2818,
+     177,
+     26
+    ],
+    "fs": "18px/26px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "In-House Execution"
+   },
+   {
+    "c": "a8R8yG_strengthCardText t-body-s",
+    "r": [
+     43,
+     2878,
+     304,
+     66
+    ],
+    "fs": "14px/22px",
+    "col": "color(srgb 1 1 1 / 0.78)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "85% of MEP work is self-performed by our"
+   },
+   {
+    "c": "a8R8yG_centeredSectionHead a8R8yG_mvSectionHead",
+    "r": [
+     16,
+     3069,
+     358,
+     171
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     130,
+     3069,
+     131,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "WHO WE ARE"
+   },
+   {
+    "c": "a8R8yG_mvTitle t-h2",
+    "r": [
+     41,
+     3115,
+     307,
+     38
+    ],
+    "fs": "30px/38px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Mission & Vision"
+   },
+   {
+    "c": "a8R8yG_mvIntro t-body-l",
+    "r": [
+     16,
+     3169,
+     358,
+     52
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "The purpose behind every project we deli"
+   },
+   {
+    "c": "a8R8yG_goldDivider",
+    "r": [
+     169,
+     3237,
+     52,
+     3
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvRow",
+    "r": [
+     16,
+     3320,
+     358,
+     1091
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "01\nOUR MISSION\nOur Mission\n\nTo safely de"
+   },
+   {
+    "c": "a8R8yG_mvVisualCol",
+    "r": [
+     16,
+     3320,
+     358,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "01"
+   },
+   {
+    "c": "a8R8yG_mvPhotoWrap",
+    "r": [
+     16,
+     3320,
+     358,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(11, 26, 51)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvPhotoShade",
+    "r": [
+     16,
+     3320,
+     358,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvNumberBadge a8R8yG_mvNumberBadgeStart",
+    "r": [
+     24,
+     3300,
+     58,
+     54
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(223, 168, 42)",
+    "op": "1",
+    "t": "01"
+   },
+   {
+    "c": "a8R8yG_mvBadgeText t-h3",
+    "r": [
+     42,
+     3312,
+     22,
+     30
+    ],
+    "fs": "22px/30px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "01"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     16,
+     3660,
+     133,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR MISSION"
+   },
+   {
+    "c": "a8R8yG_mvRowTitle t-h2",
+    "r": [
+     16,
+     3708,
+     178,
+     38
+    ],
+    "fs": "30px/38px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Mission"
+   },
+   {
+    "c": "a8R8yG_mvRowText t-body-l",
+    "r": [
+     16,
+     3785,
+     358,
+     104
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "To safely deliver world-class Quality ME"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     3908,
+     175,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Engineering Excellence"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     4016,
+     84,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Safety First"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     4124,
+     105,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Sustainability"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     4232,
+     124,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Customer Focus"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     4316,
+     82,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Innovation"
+   },
+   {
+    "c": "a8R8yG_mvRow",
+    "r": [
+     16,
+     4491,
+     358,
+     951
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "OUR VISION\nOur Vision\n\nTo become a regio"
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     16,
+     4491,
+     123,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR VISION"
+   },
+   {
+    "c": "a8R8yG_mvRowTitle t-h2",
+    "r": [
+     16,
+     4539,
+     156,
+     38
+    ],
+    "fs": "30px/38px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Our Vision"
+   },
+   {
+    "c": "a8R8yG_mvRowText t-body-l",
+    "r": [
+     16,
+     4616,
+     358,
+     156
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "To become a regional market leader in th"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     4791,
+     236,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Expanding Core Competencies"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     4899,
+     159,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Unique Technologies"
+   },
+   {
+    "c": "a8R8yG_pillarTitle",
+    "r": [
+     50,
+     5007,
+     170,
+     21
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Strategic Partnerships"
+   },
+   {
+    "c": "a8R8yG_mvVisualCol",
+    "r": [
+     16,
+     5142,
+     358,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "02"
+   },
+   {
+    "c": "a8R8yG_mvPhotoWrap",
+    "r": [
+     16,
+     5142,
+     358,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(11, 26, 51)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvPhotoShade",
+    "r": [
+     16,
+     5142,
+     358,
+     300
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_mvNumberBadge a8R8yG_mvNumberBadgeEnd",
+    "r": [
+     303,
+     5122,
+     63,
+     54
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(223, 168, 42)",
+    "op": "1",
+    "t": "02"
+   },
+   {
+    "c": "a8R8yG_mvBadgeText t-h3",
+    "r": [
+     321,
+     5134,
+     27,
+     30
+    ],
+    "fs": "22px/30px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "02"
+   },
+   {
+    "c": "a8R8yG_teamHeaderRow",
+    "r": [
+     16,
+     5562,
+     358,
+     342
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "OUR TEAM\nMeet Our Team\n\nA solid base of "
+   },
+   {
+    "c": "a8R8yG_teamHeaderStart",
+    "r": [
+     16,
+     5562,
+     358,
+     178
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "OUR TEAM\nMeet Our Team\n\nA solid base of "
+   },
+   {
+    "c": "HVoFbW_eyebrow HVoFbW_toneLight",
+    "r": [
+     16,
+     5562,
+     113,
+     30
+    ],
+    "fs": "12px/16px",
+    "col": "rgb(138, 100, 16)",
+    "bg": "rgb(251, 244, 227)",
+    "op": "1",
+    "t": "OUR TEAM"
+   },
+   {
+    "c": "a8R8yG_teamTitle t-h2",
+    "r": [
+     16,
+     5608,
+     231,
+     38
+    ],
+    "fs": "30px/38px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Meet Our Team"
+   },
+   {
+    "c": "a8R8yG_teamIntro t-body-l",
+    "r": [
+     16,
+     5662,
+     358,
+     78
+    ],
+    "fs": "16px/26px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "A solid base of skilled engineers, an ef"
+   },
+   {
+    "c": "a8R8yG_teamIntroSecondary t-body-m",
+    "r": [
+     16,
+     5760,
+     358,
+     144
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "In today’s dynamic marketplace, Al Jazir"
+   },
+   {
+    "c": "a8R8yG_leadershipGrid",
+    "r": [
+     16,
+     5960,
+     358,
+     1796
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN\n\n[place"
+   },
+   {
+    "c": "a8R8yG_leadershipRow",
+    "r": [
+     16,
+     5960,
+     358,
+     704
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN\n\n[place"
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot",
+    "r": [
+     63,
+     5960,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     63,
+     5960,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Chairman\n\nCHAIRMAN"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     79,
+     5976,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     277,
+     5964,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot",
+    "r": [
+     63,
+     6324,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Chief Executive Officer\n\nC"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     63,
+     6324,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Chief Executive Officer\n\nC"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     79,
+     6340,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     277,
+     6328,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipRow",
+    "r": [
+     16,
+     6688,
+     358,
+     1068
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Commercial Director\n\nCOMME"
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot a8R8yG_leadershipCardOffset",
+    "r": [
+     63,
+     6688,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Commercial Director\n\nCOMME"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     63,
+     6688,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Commercial Director\n\nCOMME"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     79,
+     6704,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     277,
+     6692,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot",
+    "r": [
+     63,
+     7052,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Engineering Manager\n\nENGIN"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     63,
+     7052,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Engineering Manager\n\nENGIN"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     79,
+     7068,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     277,
+     7056,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "a8R8yG_leadershipCardSlot a8R8yG_leadershipCardOffset",
+    "r": [
+     63,
+     7416,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Project Manager\n\nPROJECT M"
+   },
+   {
+    "c": "_138r5G_card",
+    "r": [
+     63,
+     7416,
+     264,
+     340
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(1, 16, 37)",
+    "op": "1",
+    "t": "[placeholder] Project Manager\n\nPROJECT M"
+   },
+   {
+    "c": "_138r5G_cornerBracket",
+    "r": [
+     79,
+     7432,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(223, 168, 42)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "0.9",
+    "t": "",
+    "sw": "null 1px"
+   },
+   {
+    "c": "_138r5G_linkedinBadge",
+    "r": [
+     277,
+     7420,
+     34,
+     34
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(255, 255, 255)",
+    "bg": "rgba(255, 255, 255, 0.14)",
+    "op": "0",
+    "t": ""
+   },
+   {
+    "c": "HB3uaG_container a8R8yG_widerTeamHead",
+    "r": [
+     0,
+     7828,
+     390,
+     116
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "The people behind every project\n\nEnginee"
+   },
+   {
+    "c": "a8R8yG_staffTitle t-h3",
+    "r": [
+     16,
+     7828,
+     358,
+     60
+    ],
+    "fs": "22px/30px",
+    "col": "rgb(1, 16, 37)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "The people behind every project"
+   },
+   {
+    "c": "a8R8yG_staffText t-body-m",
+    "r": [
+     16,
+     7896,
+     358,
+     48
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "Engineers, supervisors and specialists f"
+   },
+   {
+    "c": "a8R8yG_widerTeamMarqueeWrap",
+    "r": [
+     0,
+     7972,
+     390,
+     828
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Project Engineer\n\nProject "
+   },
+   {
+    "c": "hpnIDq_track hpnIDq_trackRow1Live",
+    "r": [
+     0,
+     8032,
+     390,
+     376
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Project Engineer\n\nProject "
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8032,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Project Engineer\n\nProject "
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8130,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Site Engineer\n\nSite Engine"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8228,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Mechanical Engineer\n\nMecha"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8326,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Electrical Engineer\n\nElect"
+   },
+   {
+    "c": "hpnIDq_track hpnIDq_trackRow2Live",
+    "r": [
+     0,
+     8424,
+     390,
+     376
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgba(0, 0, 0, 0)",
+    "op": "1",
+    "t": "[placeholder] Planning Engineer\n\nPlannin"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8424,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Planning Engineer\n\nPlannin"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8522,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Quantity Surveyor\n\nQuantit"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8620,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] Safety Officer\n\nSafety Off"
+   },
+   {
+    "c": "edlEIa_memberCard",
+    "r": [
+     60,
+     8718,
+     270,
+     82
+    ],
+    "fs": "15px/24px",
+    "col": "rgb(91, 100, 117)",
+    "bg": "rgb(255, 255, 255)",
+    "op": "1",
+    "t": "[placeholder] MEP Supervisor\n\nMEP Superv"
+   }
+  ],
+  "badgeHTML": "<div class=\"a8R8yG_storyBadgeCard\" data-story-badge-stat=\"true\" data-reveal=\"fade\" data-reveal-step=\"3\"><p class=\"a8R8yG_storyBadgeNumber t-stat-m\"><bdi dir=\"ltr\"><span data-countup=\"45+\"><span aria-hidden=\"true\" data-countup-display=\"\">45+</span><span class=\"sr-only\">45+</span></span></bdi></p><p class=\"a8R8yG_storyBadgeLabel t-body-s\">Years Experience</p></div>",
+  "status": 200
+ }
+}

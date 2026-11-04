@@ -1,0 +1,29 @@
+service detail /en/services/general-contracting project detail /en/projects/sofitel-makkah-hotel
+{"loc":"en","v":"1440","name":"services","url":"/services","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"service-detail","url":"/services/general-contracting","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"about","url":"/about","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"projects","url":"/projects","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":200,"dir":"ltr","horizontalScroll":false,"errors":["Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-OWNjNWJjYjctNzYzMy00ODFhLTg1MGUtNjg0YmU1NTJjNzM2''. Either the 'unsafe-inline' keyword, a hash ('sha256-fFiwGJFfGZ3i0Vt+xXYQgf88NKsgAfBwvY2aBowdoj4='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked."]}
+{"loc":"en","v":"1440","name":"contact","url":"/contact","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"1440","name":"privacy","url":"/privacy","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"services","url":"/services","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"service-detail","url":"/services/general-contracting","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"about","url":"/about","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"projects","url":"/projects","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":200,"dir":"ltr","horizontalScroll":false,"errors":["Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MWFjYTg5YjQtYWZjNC00ZTJkLThiMzktNzhiYzFmZTBkZDdi''. Either the 'unsafe-inline' keyword, a hash ('sha256-fFiwGJFfGZ3i0Vt+xXYQgf88NKsgAfBwvY2aBowdoj4='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked."]}
+{"loc":"en","v":"390","name":"contact","url":"/contact","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"en","v":"390","name":"privacy","url":"/privacy","status":200,"dir":"ltr","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"services","url":"/services","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"service-detail","url":"/services/general-contracting","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"about","url":"/about","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"projects","url":"/projects","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":200,"dir":"rtl","horizontalScroll":false,"errors":["Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MzRhN2ViZTMtMDMxMi00ZGQ1LTg4ZDQtYjMzZjIwNTA0YTA3''. Either the 'unsafe-inline' keyword, a hash ('sha256-fFiwGJFfGZ3i0Vt+xXYQgf88NKsgAfBwvY2aBowdoj4='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked."]}
+{"loc":"ar","v":"1440","name":"contact","url":"/contact","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"1440","name":"privacy","url":"/privacy","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"services","url":"/services","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"service-detail","url":"/services/general-contracting","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"about","url":"/about","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"projects","url":"/projects","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"project-detail","url":"/projects/sofitel-makkah-hotel","status":200,"dir":"rtl","horizontalScroll":false,"errors":["Applying inline style violates the following Content Security Policy directive 'style-src 'self' 'nonce-MDE1ZGQ2ZGYtOGZjMi00NDUzLTgyMjgtZjliNzMxMmZlMWQw''. Either the 'unsafe-inline' keyword, a hash ('sha256-fFiwGJFfGZ3i0Vt+xXYQgf88NKsgAfBwvY2aBowdoj4='), or a nonce ('nonce-...') is required to enable inline execution. Note that hashes do not apply to event handlers, style attributes and javascript: navigations unless the 'unsafe-hashes' keyword is present. The action has been blocked."]}
+{"loc":"ar","v":"390","name":"contact","url":"/contact","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}
+{"loc":"ar","v":"390","name":"privacy","url":"/privacy","status":200,"dir":"rtl","horizontalScroll":false,"errors":[]}

@@ -2995,3 +2995,22 @@ All four tasks (`P3-T6`..`P3-T9`) are now `IN_REVIEW` (WIP limit reached). Zero 
    runs.
 3. You may prepare round 3 in the editor only if you wish, but do not commit anything on top of `f958eb9` until the
    round 2 reviews are posted.
+
+## M-211 · 2026-11-05 · Executor → CTO · Re M-210 · Quiet window acknowledged (`HEAD` stays at `f958eb9`)
+1. **Quiet window active:** Zero processes started by me are running. Until you post the end of the quiet window, I will only use read-only file checks — no `pnpm build`, `pnpm test`, `pnpm dev`, `next start`, Playwright, Lighthouse, Docker, or browser runs.
+2. **`HEAD` preserved:** `phase-3-frontend` remains at `f958eb9` with no new commits on top until Round 2 reviews are posted.
+3. **Watching `handoff/MESSAGES.md`** for your Round 2 reviews on `P3-T6`..`P3-T9` and the end-of-window signal.
+
+## M-212 · 2026-11-05 · CTO → Executor · Re M-209 · Round 2 reviews posted: P3-T9 ACCEPTED, P3-T6..T8 small fixes
+1. **P3-T9 is ACCEPTED.**
+2. **P3-T6, P3-T7 and P3-T8 are CHANGES_REQUESTED.** The findings are in `handoff/reviews/P3-T6.md`, `P3-T7.md` and
+   `P3-T8.md`, Round 2. Raw files are in `verify/runs/AG-pages-2026-11-05/`. Fix in this order:
+   1. **R-79 [major]** (P3-T8): the CSP violation from `next/image` `fill`, plus an e2e check that fails on any
+      `securitypolicyviolation`.
+   2. **R-61** (P3-T6): the table row padding, 13 → 15.
+   3. **R-74, R-80, R-81** (P3-T8).
+   4. **R-66 and R-78** (P3-T7).
+3. **Quiet window still on.** It stays on until the 3D card is timed. You may edit and commit now, but run nothing:
+   no build, test, dev server, `next start`, Playwright, Lighthouse, Docker or browser runs. I post the end of the
+   window, and you run the e2e with `E2E_PRODUCTION_SERVER=1` before each submission after that.
+4. **Not yours, do not change:** the shared Button size note and the Arabic "،" note are logged for R-3.
