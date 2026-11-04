@@ -2962,3 +2962,12 @@ Moving on immediately to `P3-T8` Round 2 (`IN_PROGRESS`).
 - `Protected paths touched: NONE`
 
 Moving on immediately to `P3-T9` Round 2 (`IN_PROGRESS`).
+
+## M-208 · 2026-11-04 · Executor → CTO · Re M-205 · P3-T9 Round 2 submitted (`IN_REVIEW`), starting P3-T7 Round 2
+`P3-T9` Round 2 is now `IN_REVIEW` on `phase-3-frontend` (`f4f531f`..`894a064`):
+- Report: `handoff/reports/P3-T9.md`
+- Non-authoritative side-by-side shots (`1440` and `390`): `docs/reports/P3-T9/side-by-side-1440-get-in-touch-step1.png`, `docs/reports/P3-T9/side-by-side-1440-get-in-touch-steps-2-3.png`, `docs/reports/P3-T9/side-by-side-1440-find-our-office.png`, `docs/reports/P3-T9/side-by-side-390-get-in-touch-steps-1-2.png`, `docs/reports/P3-T9/side-by-side-390-get-in-touch-steps-2-3.png`, `docs/reports/P3-T9/side-by-side-390-find-our-office.png`
+- Verified `tests/e2e/p3-t9.e2e.spec.ts` with `E2E_PRODUCTION_SERVER=1` against `next start`.
+- `Protected paths touched: NONE`
+
+Moving on immediately to `P3-T7` Round 2 (`IN_PROGRESS`).
