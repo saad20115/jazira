@@ -1,0 +1,545 @@
+.card {
+  inline-size: 520px;
+  max-inline-size: 100%;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-4xl);
+  padding: var(--space-32);
+  box-shadow: var(--shadow-card-raised);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+}
+
+/* ==========================================================================
+   3-Segment Progress Bar (`103:373`)
+   ========================================================================== */
+.progressBar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  inline-size: 100%;
+}
+
+.progressSegment {
+  flex: 1 1 0%;
+  block-size: 4px;
+  border-radius: var(--radius-pill);
+  background: var(--border);
+  transition: background-color var(--motion-fast) var(--ease-out);
+}
+
+.progressSegmentActive {
+  background: var(--gold-500);
+}
+
+/* ==========================================================================
+   Step Header
+   ========================================================================== */
+.stepHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-4);
+}
+
+.stepCounter {
+  margin: 0;
+  color: var(--gold-700);
+}
+
+.stepTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.stepSubtitle {
+  margin: 0;
+  color: var(--body);
+}
+
+/* ==========================================================================
+   Form Layout & Controls
+   ========================================================================== */
+.form {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+}
+
+.honeypotWrap {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.stepBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-20);
+  inline-size: 100%;
+}
+
+.twoColRow {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+  inline-size: 100%;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--space-6);
+  min-inline-size: 0;
+}
+
+.fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-inline-size: 0;
+}
+
+.fieldLabel {
+  color: var(--muted);
+  margin: 0;
+}
+
+.selectWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  inline-size: 100%;
+}
+
+.selectControl {
+  appearance: none;
+  inline-size: 100%;
+  block-size: 46px;
+  padding-inline-start: var(--space-14);
+  padding-inline-end: var(--space-32);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--navy-950);
+  cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.selectControl:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+  border-color: var(--gold-500);
+}
+
+.selectChevron {
+  position: absolute;
+  inset-inline-end: var(--space-14);
+  pointer-events: none;
+  color: var(--muted);
+}
+
+.inputControl {
+  inline-size: 100%;
+  block-size: 46px;
+  padding-inline: var(--space-14);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--navy-950);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.inputControl::placeholder,
+.phoneBareInput::placeholder,
+.textareaControl::placeholder {
+  color: var(--muted);
+}
+
+.inputControl:focus-visible,
+.textareaControl:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+  border-color: var(--gold-500);
+}
+
+.phoneInputWrap {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  inline-size: 100%;
+  block-size: 46px;
+  padding-inline: var(--space-14);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.phoneInputWrap:focus-within {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+  border-color: var(--gold-500);
+}
+
+.phonePrefix {
+  color: var(--navy-950);
+  flex-shrink: 0;
+}
+
+.phoneBareInput {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  border: 0;
+  background: transparent;
+  color: var(--navy-950);
+  padding: 0;
+}
+
+.phoneBareInput:focus {
+  outline: none;
+}
+
+.textareaControl {
+  inline-size: 100%;
+  min-block-size: 96px;
+  padding-block: var(--space-12);
+  padding-inline: var(--space-14);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--navy-950);
+  resize: vertical;
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.inputError {
+  border-color: var(--danger);
+}
+
+.errorText {
+  margin: 0;
+  color: var(--danger);
+}
+
+/* ==========================================================================
+   Multi-Select & Preferred Channel Chips
+   ========================================================================== */
+.chipsRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+.chipBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  padding-block: 7px;
+  padding-inline: var(--space-14);
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border);
+  background: var(--white);
+  color: var(--body);
+  cursor: pointer;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    border-color var(--motion-fast) var(--ease-out),
+    color var(--motion-fast) var(--ease-out);
+}
+
+.chipBtn:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
+.chipBtnSelected {
+  background: var(--gold-50);
+  border-color: var(--gold-300);
+  color: var(--navy-950);
+}
+
+.chipCheckIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-600);
+}
+
+/* ==========================================================================
+   Upload Box (`103:387`)
+   ========================================================================== */
+.uploadBox {
+  position: relative;
+  border: 1px dashed var(--gold-300);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition: border-color var(--motion-fast) var(--ease-out);
+}
+
+.uploadBox:focus-within {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+  border-color: var(--gold-500);
+}
+
+.hiddenFileInput {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.uploadLabel {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  padding: var(--space-16);
+  cursor: pointer;
+}
+
+.uploadIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.uploadTextCol {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.uploadTitle {
+  color: var(--navy-950);
+}
+
+.uploadSubtitle {
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Step 3 Summary Box, Reply Note & Consent (`103:411`)
+   ========================================================================== */
+.summaryBox {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-10);
+}
+
+.summaryRow {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-16);
+}
+
+.summaryLabel {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+
+.summaryValue {
+  color: var(--navy-950);
+  text-align: end;
+}
+
+.replyNoteRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.replyNoteCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gold-600);
+  flex-shrink: 0;
+}
+
+.replyNoteText {
+  color: var(--body);
+}
+
+.consentBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.consentLabel {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-8);
+  cursor: pointer;
+}
+
+.consentCheckbox {
+  inline-size: 16px;
+  block-size: 16px;
+  margin-block-start: var(--space-2);
+  accent-color: var(--navy-950);
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.consentCheckbox:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
+.consentText {
+  color: var(--body);
+}
+
+.privacyLink {
+  color: var(--gold-700);
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Step 2 / Step 3 Action Buttons Row
+   ========================================================================== */
+.actionsRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+  inline-size: 100%;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: 13px;
+  padding-inline: var(--space-24);
+  border-radius: var(--radius-md);
+  border: 1.5px solid var(--navy-950);
+  background: var(--white);
+  color: var(--navy-950);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background-color var(--motion-fast) var(--ease-out),
+    transform var(--motion-fast) var(--ease-out);
+}
+
+.backBtn:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
+.flexSubmitBtn {
+  flex: 1 1 0%;
+}
+
+/* ==========================================================================
+   Message Sent Modal (`28:1686`)
+   ========================================================================== */
+.modalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: var(--overlay-navy-70);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-24);
+}
+
+.modalCard {
+  inline-size: 460px;
+  max-inline-size: 100%;
+  background: var(--white);
+  border-radius: var(--radius-5xl);
+  padding-block: 44px;
+  padding-inline: var(--space-48);
+  box-shadow: var(--shadow-panel-xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-16);
+}
+
+.modalEmblemOuter {
+  inline-size: 76px;
+  block-size: 76px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modalTitle {
+  margin: 0;
+  color: var(--navy-950);
+  white-space: nowrap;
+}
+
+.modalBody {
+  margin: 0;
+  color: var(--body);
+  max-inline-size: 364px;
+}
+
+.modalCloseBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--space-14);
+  padding-inline-start: 26px;
+  padding-inline-end: var(--space-24);
+  border-radius: var(--radius-sm);
+  border: 0;
+  background: var(--navy-950);
+  color: var(--white);
+  cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+
+.modalCloseBtn:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
+@media (max-width: 767px) {
+  .card {
+    inline-size: 100%;
+    padding: var(--space-20);
+  }
+
+  .twoColRow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .modalCard {
+    padding-block: var(--space-32);
+    padding-inline: var(--space-24);
+  }
+
+  .modalTitle {
+    white-space: normal;
+  }
+}

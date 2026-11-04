@@ -146,16 +146,6 @@ export interface UiDictionary {
     noResultsTitle: string
     noResultsText: string
   }
-  quoteForm: {
-    stepOfTotal: string
-    nextStep: string
-    previousStep: string
-    submitRequest: string
-    submitting: string
-    requiredField: string
-    invalidEmail: string
-    invalidPhone: string
-  }
   errors: {
     notFoundCode: string
     notFoundTitle: string
@@ -246,6 +236,129 @@ export interface UiDictionary {
       videoHeading: string
       relatedHeading: string
       relatedSubtitle: string
+    }
+  }
+  contact: {
+    callUsLabel: string
+    whatsappLabel: string
+    emailLabel: string
+    headOfficeLabel: string
+    workingHoursLabel: string
+    openInMapsLabel: string
+    officeAddressLabel: string
+    officePhoneLabel: string
+    officeEmailLabel: string
+    getDirectionsButton: string
+  }
+  overlays: {
+    messageSentTitle: string
+    messageSentBody: string
+    backToWebsite: string
+  }
+  privacy: {
+    emptyNotice: string
+  }
+  quoteForm: {
+    stepOfTotal: string
+    stepHeaderTemplate: string
+    nextStep: string
+    previousStep: string
+    submitRequest: string
+    submitting: string
+    requiredField: string
+    invalidEmail: string
+    invalidPhone: string
+    step1Title: string
+    step2Title: string
+    step2Subtitle: string
+    step3Title: string
+    step3Subtitle: string
+    projectTypeLabel: string
+    projectStageLabel: string
+    servicesNeededLabel: string
+    projectLocationLabel: string
+    uploadTitle: string
+    uploadSubtitle: string
+    uploadSelectedPrefix: string
+    continueToContact: string
+    fullNameLabel: string
+    fullNamePlaceholder: string
+    companyLabel: string
+    companyPlaceholder: string
+    mobileWhatsappLabel: string
+    mobilePrefix: string
+    mobilePlaceholder: string
+    emailLabel: string
+    emailPlaceholder: string
+    preferredContactLabel: string
+    backButton: string
+    continueToReview: string
+    summaryProjectLabel: string
+    summaryServicesLabel: string
+    summaryLocationLabel: string
+    summaryFilesLabel: string
+    summaryNoFiles: string
+    summaryOneFileAttached: string
+    summaryContactLabel: string
+    messageOptionalLabel: string
+    messagePlaceholder: string
+    replyNote: string
+    consentPrefix: string
+    consentPrivacyLinkLabel: string
+    honeypotLabel: string
+    sendRequestButton: string
+    sendingButton: string
+    projectTypes: {
+      'hotel-tower': string
+      'commercial-office': string
+      'hospital-healthcare': string
+      'industrial-warehouse': string
+      'residential-compound': string
+      'infrastructure-data-center': string
+      other: string
+    }
+    projectStages: {
+      design: string
+      tender: string
+      construction: string
+      retrofit: string
+      maintenance: string
+    }
+    services: {
+      hvac: string
+      'fire-fighting': string
+      plumbing: string
+      electrical: string
+      'low-current': string
+      'smart-systems': string
+      'supply-only': string
+    }
+    locations: {
+      makkah: string
+      riyadh: string
+      jeddah: string
+      madinah: string
+      'eastern-province': string
+      'neom-red-sea': string
+      other: string
+    }
+    preferredChannels: {
+      whatsapp: string
+      phone: string
+      email: string
+    }
+    errors: {
+      projectType: string
+      projectStage: string
+      servicesNeeded: string
+      projectLocation: string
+      name: string
+      company: string
+      phone: string
+      email: string
+      preferredContact: string
+      message: string
+      consent: string
     }
   }
 }
@@ -390,16 +503,6 @@ export const arDictionary = {
     noResultsTitle: 'لا توجد نتائج مطابقة',
     noResultsText: 'لم يتم العثور على عناصر تطابق عوامل التصفية المحددة.',
   },
-  quoteForm: {
-    stepOfTotal: '{current} / {total}',
-    nextStep: 'التالي',
-    previousStep: 'السابق',
-    submitRequest: 'إرسال الطلب',
-    submitting: 'جارٍ الإرسال...',
-    requiredField: 'هذا الحقل مطلوب.',
-    invalidEmail: 'يرجى إدخال بريد إلكتروني صحيح.',
-    invalidPhone: 'يرجى إدخال رقم جوال صحيح.',
-  },
   errors: {
     notFoundCode: '404',
     notFoundTitle: 'الصفحة غير موجودة',
@@ -490,6 +593,130 @@ export const arDictionary = {
       videoHeading: 'العرض المرئي بالفيديو',
       relatedHeading: 'مشاريع ذات صلة',
       relatedSubtitle: 'استكشف المزيد من المشاريع في نفس التصنيف.',
+    },
+  },
+  contact: {
+    callUsLabel: 'اتصل بنا',
+    whatsappLabel: 'واتساب',
+    emailLabel: 'البريد الإلكتروني',
+    headOfficeLabel: 'المقر الرئيسي',
+    workingHoursLabel: 'ساعات العمل',
+    openInMapsLabel: 'افتح في الخرائط',
+    officeAddressLabel: 'العنوان',
+    officePhoneLabel: 'الهاتف',
+    officeEmailLabel: 'البريد الإلكتروني',
+    getDirectionsButton: 'احصل على الاتجاهات',
+  },
+  overlays: {
+    messageSentTitle: 'تم إرسال رسالتك بنجاح',
+    messageSentBody:
+      'شكراً لتواصلكم مع شركة الجزيرة الإمداد الذكي. سيتواصل معكم فريقنا في أقرب وقت ممكن.',
+    backToWebsite: 'العودة إلى الموقع',
+  },
+  privacy: {
+    emptyNotice: 'يتم حالياً إعداد محتوى سياسة الخصوصية للنشر.',
+  },
+  quoteForm: {
+    stepOfTotal: '{current} / {total}',
+    stepHeaderTemplate: 'الخطوة {current} من {total}',
+    nextStep: 'التالي',
+    previousStep: 'السابق',
+    submitRequest: 'إرسال الطلب',
+    submitting: 'جارٍ الإرسال...',
+    requiredField: 'هذا الحقل مطلوب.',
+    invalidEmail: 'يرجى إدخال بريد إلكتروني صحيح.',
+    invalidPhone: 'يرجى إدخال رقم جوال صحيح.',
+    step1Title: 'مشروعك',
+    step2Title: 'بيانات التواصل',
+    step2Subtitle: 'ليتواصل معك المهندس المختص.',
+    step3Title: 'المراجعة والإرسال',
+    step3Subtitle: 'راجع البيانات ثم أرسل طلبك.',
+    projectTypeLabel: 'نوع المشروع',
+    projectStageLabel: 'مرحلة المشروع',
+    servicesNeededLabel: 'الخدمات المطلوبة',
+    projectLocationLabel: 'موقع المشروع',
+    uploadTitle: 'إرفاق المخططات أو جداول الكميات (BOQ)',
+    uploadSubtitle: 'PDF, DWG, XLSX · حتى 25 ميجابايت',
+    uploadSelectedPrefix: 'الملف المحدد:',
+    continueToContact: 'المتابعة إلى بيانات التواصل',
+    fullNameLabel: 'الاسم الكامل',
+    fullNamePlaceholder: 'أدخل اسمك الكامل',
+    companyLabel: 'الشركة',
+    companyPlaceholder: 'اسم الشركة',
+    mobileWhatsappLabel: 'الجوال / واتساب',
+    mobilePrefix: '+966',
+    mobilePlaceholder: '5X XXX XXXX',
+    emailLabel: 'البريد الإلكتروني',
+    emailPlaceholder: 'name@company.com',
+    preferredContactLabel: 'وسيلة التواصل المفضلة',
+    backButton: 'رجوع',
+    continueToReview: 'المتابعة إلى المراجعة',
+    summaryProjectLabel: 'المشروع',
+    summaryServicesLabel: 'الخدمات',
+    summaryLocationLabel: 'الموقع',
+    summaryFilesLabel: 'الملفات',
+    summaryNoFiles: 'بدون مرفقات',
+    summaryOneFileAttached: 'مرفق واحد',
+    summaryContactLabel: 'التواصل',
+    messageOptionalLabel: 'رسالة إضافية (اختياري)',
+    messagePlaceholder: 'أي تفاصيل أخرى تود إخبارنا بها عن المشروع؟',
+    replyNote: 'يرد عليك مهندس مختص خلال يوم عمل واحد.',
+    consentPrefix: 'أوافق على معالجة بياناتي وفقاً لـ',
+    consentPrivacyLinkLabel: 'سياسة الخصوصية',
+    honeypotLabel: 'الموقع الإلكتروني للشركة (اتركه فارغاً)',
+    sendRequestButton: 'إرسال الطلب',
+    sendingButton: 'جارٍ الإرسال...',
+    projectTypes: {
+      'hotel-tower': 'فندق / برج',
+      'commercial-office': 'تجاري / مكاتب',
+      'hospital-healthcare': 'مستشفى / رعاية صحية',
+      'industrial-warehouse': 'صناعي / مستودعات',
+      'residential-compound': 'مجمع سكني',
+      'infrastructure-data-center': 'بنية تحتية / مركز بيانات',
+      other: 'أخرى',
+    },
+    projectStages: {
+      design: 'مرحلة التصميم',
+      tender: 'مناقصة / تسعير',
+      construction: 'قيد الإنشاء',
+      retrofit: 'تحديث / تطوير',
+      maintenance: 'صيانة وتشغيل (O&M)',
+    },
+    services: {
+      hvac: 'التكييف (HVAC)',
+      'fire-fighting': 'مكافحة الحريق',
+      plumbing: 'السباكة والصحي',
+      electrical: 'الكهرباء',
+      'low-current': 'التيار الخفيف',
+      'smart-systems': 'الأنظمة الذكية / BMS',
+      'supply-only': 'توريد فقط',
+    },
+    locations: {
+      makkah: 'مكة المكرمة',
+      riyadh: 'الرياض',
+      jeddah: 'جدة',
+      madinah: 'المدينة المنورة',
+      'eastern-province': 'المنطقة الشرقية',
+      'neom-red-sea': 'نيوم / البحر الأحمر',
+      other: 'أخرى (المملكة / الخليج)',
+    },
+    preferredChannels: {
+      whatsapp: 'واتساب',
+      phone: 'مكالمة هاتفية',
+      email: 'بريد إلكتروني',
+    },
+    errors: {
+      projectType: 'يرجى اختيار نوع المشروع.',
+      projectStage: 'يرجى اختيار مرحلة المشروع.',
+      servicesNeeded: 'يرجى اختيار خدمة واحدة على الأقل.',
+      projectLocation: 'يرجى اختيار موقع المشروع.',
+      name: 'يرجى إدخال الاسم الكامل.',
+      company: 'اسم الشركة يجب ألا يتجاوز 160 حرفاً.',
+      phone: 'يرجى إدخال رقم جوال سعودي أو دولي صالح.',
+      email: 'يرجى إدخال بريد إلكتروني صالح.',
+      preferredContact: 'يرجى اختيار وسيلة التواصل المفضلة.',
+      message: 'الرسالة يجب ألا تتجاوز 3000 حرف.',
+      consent: 'يرجى الموافقة على سياسة الخصوصية لإرسال الطلب.',
     },
   },
 } satisfies UiDictionary

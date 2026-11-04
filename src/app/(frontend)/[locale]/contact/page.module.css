@@ -1,0 +1,365 @@
+.contactPage {
+  inline-size: 100%;
+  background: var(--surface);
+}
+
+.goldText {
+  color: var(--gold-500);
+}
+
+/* ==========================================================================
+   2. Get in Touch (`23:1378`, `1440×741`)
+   ========================================================================== */
+.getInTouchSection {
+  position: relative;
+  inline-size: 100%;
+  background: var(--surface);
+  padding-block-start: var(--space-56);
+  padding-block-end: var(--space-72);
+}
+
+.getInTouchContainer {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-48);
+}
+
+.getInTouchCol {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
+}
+
+.getInTouchTitle {
+  margin: 0;
+  color: var(--navy-950);
+  max-inline-size: 540px;
+}
+
+.getInTouchIntro {
+  margin: 0;
+  color: var(--body);
+  max-inline-size: 540px;
+}
+
+.channelsBlock {
+  margin-block-start: var(--space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  inline-size: 100%;
+}
+
+.channelsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-12);
+  inline-size: 100%;
+}
+
+.channelCard {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-16);
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  text-decoration: none;
+  color: inherit;
+  transition:
+    transform var(--motion-base) var(--ease-out),
+    box-shadow var(--motion-base) var(--ease-out),
+    border-color var(--motion-base) var(--ease-out);
+}
+
+a.channelCard:hover {
+  transform: translateY(calc(-1 * var(--hover-lift)));
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--gold-300);
+}
+
+a.channelCard:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
+.channelCardRow1 {
+  min-block-size: 78px;
+}
+
+.channelCardRow2 {
+  min-block-size: 104px;
+}
+
+.channelCardWide {
+  min-block-size: 78px;
+  inline-size: 100%;
+}
+
+.channelIconBox {
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--gold-50);
+  color: var(--gold-600);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.channelTextCol {
+  flex: 1 1 0%;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+}
+
+.channelLabel {
+  color: var(--muted);
+}
+
+.channelValue {
+  color: var(--navy-950);
+  word-break: break-word;
+}
+
+.quoteFormCol {
+  inline-size: 520px;
+  max-inline-size: 100%;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   3. Find Our Office (`23:1441`, `1440×771`)
+   ========================================================================== */
+.findOfficeSection {
+  position: relative;
+  inline-size: 100%;
+  background: var(--navy-950);
+  padding-block: var(--space-72);
+  overflow: hidden;
+}
+
+.findOfficeBg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.findOfficeBgImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.findOfficeBgOverlay {
+  position: absolute;
+  inset: 0;
+  background: var(--gradient-stats-overlay);
+}
+
+.findOfficeContainer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 44px;
+}
+
+.findOfficeHeader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-16);
+}
+
+.findOfficeTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.findOfficeSubtitle {
+  margin: 0;
+  color: var(--white);
+  opacity: 0.7;
+}
+
+.goldGradientDivider {
+  display: block;
+  inline-size: 52px;
+  block-size: 3px;
+  border-radius: var(--radius-xs);
+  background: var(--gradient-gold-accent-line);
+}
+
+.mapFrame {
+  position: relative;
+  inline-size: 100%;
+  block-size: 420px;
+  border-radius: var(--radius-4xl);
+  overflow: hidden;
+  background: var(--border);
+}
+
+.mapImage,
+.staticMapSvg {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.staticMapBgRect {
+  fill: color-mix(in srgb, var(--border) 75%, var(--surface) 25%);
+}
+
+.staticMapParks {
+  fill: color-mix(
+    in srgb,
+    color-mix(in srgb, var(--border) 94%, var(--whatsapp) 6%) 92%,
+    var(--gold-500) 8%
+  );
+}
+
+.openInMapsPill {
+  position: absolute;
+  inset-block-start: var(--space-16);
+  inset-inline-start: var(--space-16);
+  z-index: 3;
+  background: var(--white);
+  color: var(--navy-800);
+  padding-block: var(--space-8);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-card-soft);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  text-decoration: none;
+  transition: transform var(--motion-fast) var(--ease-out);
+}
+
+.openInMapsPill:hover {
+  transform: translateY(calc(-1 * var(--hover-lift)));
+}
+
+.openInMapsPill:focus-visible {
+  outline: 2px solid var(--navy-950);
+  outline-offset: 2px;
+}
+
+.officeCard {
+  position: absolute;
+  inset-block-start: var(--space-80);
+  inset-inline-start: var(--space-32);
+  z-index: 3;
+  inline-size: 280px;
+  background: var(--white);
+  border-radius: var(--radius-2xl);
+  padding: 22px;
+  box-shadow: var(--shadow-panel-lg);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+}
+
+.officeCardHead {
+  display: flex;
+  align-items: center;
+  gap: var(--space-10);
+}
+
+.officeCardIconBox {
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-lg);
+  background: var(--gold-500);
+  color: var(--navy-950);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.officeCardTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.officeFieldGroup {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-2);
+  inline-size: 100%;
+}
+
+.officeFieldLabel {
+  color: var(--muted);
+}
+
+.officeFieldValue,
+.officeFieldLink {
+  color: var(--navy-950);
+  text-decoration: none;
+}
+
+.officeFieldLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1024px) {
+  .getInTouchContainer {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .quoteFormCol {
+    inline-size: 100%;
+  }
+}
+
+@media (max-width: 767px) {
+  .channelsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .channelCardRow2 {
+    min-block-size: 78px;
+  }
+
+  .mapFrame {
+    block-size: auto;
+    min-block-size: 480px;
+    padding: var(--space-16);
+    padding-block-start: 72px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .mapImage,
+  .staticMapSvg {
+    position: absolute;
+    inset: 0;
+  }
+
+  .officeCard {
+    position: relative;
+    inset-block-start: auto;
+    inset-inline-start: auto;
+    inline-size: 100%;
+  }
+}

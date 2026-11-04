@@ -114,3 +114,129 @@ export const quotePhoneSchema = z
     message: QUOTE_PHONE_ERROR_MESSAGE,
   })
   .transform((val) => normalizeQuotePhone(val))
+
+// ============================================================================
+// 3-Step Quote Form Schema (`103:422` & `P3-T9` / `P5-T1`)
+// ============================================================================
+
+export const QUOTE_PROJECT_TYPE_VALUES = [
+  'hotel-tower',
+  'commercial-office',
+  'hospital-healthcare',
+  'industrial-warehouse',
+  'residential-compound',
+  'infrastructure-data-center',
+  'other',
+] as const
+export type QuoteProjectType = (typeof QUOTE_PROJECT_TYPE_VALUES)[number]
+
+export const QUOTE_PROJECT_STAGE_VALUES = [
+  'design',
+  'tender',
+  'construction',
+  'retrofit',
+  'maintenance',
+] as const
+export type QuoteProjectStage = (typeof QUOTE_PROJECT_STAGE_VALUES)[number]
+
+export const QUOTE_SERVICE_NEEDED_VALUES = [
+  'hvac',
+  'fire-fighting',
+  'plumbing',
+  'electrical',
+  'low-current',
+  'smart-systems',
+  'supply-only',
+] as const
+export type QuoteServiceNeeded = (typeof QUOTE_SERVICE_NEEDED_VALUES)[number]
+
+export const QUOTE_PROJECT_LOCATION_VALUES = [
+  'makkah',
+  'riyadh',
+  'jeddah',
+  'madinah',
+  'eastern-province',
+  'neom-red-sea',
+  'other',
+] as const
+export type QuoteProjectLocation = (typeof QUOTE_PROJECT_LOCATION_VALUES)[number]
+
+export const QUOTE_PREFERRED_CONTACT_VALUES = ['whatsapp', 'phone', 'email'] as const
+export type QuotePreferredContact = (typeof QUOTE_PREFERRED_CONTACT_VALUES)[number]
+
+export const QUOTE_EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/
+
+export const quoteStep1Schema = z.object({
+  projectType: z.enum(QUOTE_PROJECT_TYPE_VALUES),
+  projectStage: z.enum(QUOTE_PROJECT_STAGE_VALUES),
+  servicesNeeded: z
+    .array(z.enum(QUOTE_SERVICE_NEEDED_VALUES))
+    .min(1, 'يرجى اختيار خدمة واحدة على الأقل. / Please select at least one service.')
+    .max(7),
+  projectLocation: z.enum(QUOTE_PROJECT_LOCATION_VALUES),
+  attachmentFileName: z.string().trim().max(240).optional().default(''),
+})
+export type QuoteStep1Input = z.infer<typeof quoteStep1Schema>
+
+export const quoteStep2Schema = z.object({
+  name: z
+    .string()
+    .trim()
+    .min(1, 'الاسم الكامل مطلوب. / Full name is required.')
+    .max(120, 'الاسم الكامل طويل جداً. / Full name must be at most 120 characters.'),
+  company: z
+    .string()
+    .trim()
+    .max(160, 'اسم الشركة طويل جداً. / Company name must be at most 160 characters.')
+    .optional()
+    .default(''),
+  phone: quotePhoneSchema,
+  email: z
+    .string()
+    .trim()
+    .min(1, 'البريد الإلكتروني مطلوب. / Email is required.')
+    .max(254, 'البريد الإلكتروني طويل جداً. / Email is too long.')
+    .refine((val) => QUOTE_EMAIL_REGEX.test(val), {
+      message: 'يرجى إدخال بريد إلكتروني صالح. / Please provide a valid email address.',
+    }),
+  preferredContact: z.enum(QUOTE_PREFERRED_CONTACT_VALUES),
+})
+export type QuoteStep2Input = z.infer<typeof quoteStep2Schema>
+
+export const quoteStep3Schema = z.object({
+  message: z
+    .string()
+    .trim()
+    .max(3000, 'الرسالة يجب ألا تتجاوز 3000 حرف. / Message must not exceed 3000 characters.')
+    .optional()
+    .default(''),
+  consent: z.boolean().refine((val) => val, {
+    message:
+      'يجب الموافقة على سياسة الخصوصية ومعالجة البيانات. / Consent to the privacy policy is required.',
+  }),
+})
+export type QuoteStep3Input = z.infer<typeof quoteStep3Schema>
+
+export const quoteSubmissionSchema = quoteStep1Schema
+  .extend(quoteStep2Schema.shape)
+  .extend(quoteStep3Schema.shape)
+  .extend({
+    locale: z.enum(['en', 'ar']).default('en'),
+    sourcePage: z.string().trim().max(240).default('/en/contact'),
+    honeypot: z.string().max(240).optional().default(''),
+    startedAtMs: z.number().int().nonnegative(),
+  })
+export type QuoteSubmissionPayload = z.infer<typeof quoteSubmissionSchema>
+
+export type QuoteFieldErrorKey =
+  | 'projectType'
+  | 'projectStage'
+  | 'servicesNeeded'
+  | 'projectLocation'
+  | 'name'
+  | 'company'
+  | 'phone'
+  | 'email'
+  | 'preferredContact'
+  | 'message'
+  | 'consent'
