@@ -1,0 +1,375 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  background-color: var(--white);
+}
+
+/* ==========================================================================
+   Section 2 — Main Services (`24:1490`)
+   ========================================================================== */
+
+.mainServicesSection {
+  background-color: var(--white);
+  padding-block-start: var(--space-56);
+  padding-block-end: 78px;
+  padding-inline: var(--container-gutter);
+}
+
+.mainServicesContainer {
+  max-inline-size: var(--container-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-72);
+}
+
+.serviceRow {
+  display: flex;
+  align-items: center;
+  gap: var(--space-72);
+  scroll-margin-block-start: 112px;
+}
+
+.serviceRowReverse {
+  flex-direction: row-reverse;
+}
+
+.serviceVisual {
+  position: relative;
+  inline-size: 540px;
+  block-size: 400px;
+  flex-shrink: 0;
+}
+
+.servicePhotoWrap {
+  position: relative;
+  inline-size: 100%;
+  block-size: 100%;
+  border-radius: var(--radius-4xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-panel-lg);
+  background-color: var(--navy-900);
+}
+
+.serviceImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.serviceNumBadge {
+  position: absolute;
+  inset-block-start: -20px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding-inline: var(--space-18);
+  padding-block: var(--space-12);
+  border-radius: var(--radius-xl);
+  background-color: var(--gold-500);
+  color: var(--navy-950);
+  box-shadow: var(--shadow-dark-elevated);
+}
+
+.serviceNumBadgeStart {
+  inset-inline-start: -20px;
+}
+
+.serviceNumBadgeEnd {
+  inset-inline-end: -20px;
+}
+
+.serviceContent {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-18);
+}
+
+.serviceTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.serviceTitleLink {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--motion-hover-duration) var(--motion-ease-out);
+}
+
+.serviceTitleLink:hover,
+.serviceTitleLink:focus-visible {
+  color: var(--gold-600);
+}
+
+.goldDivider {
+  display: block;
+  inline-size: 52px;
+  block-size: 3px;
+  border-radius: var(--radius-xs);
+  background-image: var(--gradient-gold-accent-line);
+  flex-shrink: 0;
+}
+
+.serviceDesc {
+  margin: 0;
+  color: var(--text-body);
+  max-inline-size: 540px;
+}
+
+.highlightsList {
+  list-style: none;
+  margin: 0;
+  padding: var(--space-4) 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  inline-size: 100%;
+}
+
+.highlightItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+.checkIconBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 22px;
+  block-size: 22px;
+  border-radius: var(--radius-xs);
+  background-color: var(--gold-50);
+  color: var(--gold-600);
+  flex-shrink: 0;
+}
+
+.checkSvg {
+  inline-size: 12px;
+  block-size: 12px;
+}
+
+.highlightText {
+  color: var(--navy-950);
+}
+
+.serviceCtaWrap {
+  padding-block-start: var(--space-8);
+}
+
+/* ==========================================================================
+   Section 3 — Specialist Services (`126:1887`)
+   ========================================================================== */
+
+.specialistSection {
+  background-color: var(--surface);
+  padding-block-start: 65px;
+  padding-block-end: var(--section-padding-y);
+  padding-inline: var(--container-gutter);
+}
+
+.specialistContainer {
+  max-inline-size: var(--container-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-48);
+}
+
+.centeredHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-16);
+  text-align: center;
+}
+
+.sectionTitleLight {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.sectionIntroLight {
+  margin: 0;
+  color: var(--text-body);
+  max-inline-size: 640px;
+}
+
+.specialistGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-20);
+}
+
+.specialistGridItem {
+  min-inline-size: 0;
+}
+
+.specialistTile {
+  inline-size: 100%;
+}
+
+/* ==========================================================================
+   Section 5 — How We Work (`24:1646`)
+   ========================================================================== */
+
+.processSection {
+  position: relative;
+  background-color: var(--navy-950);
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--container-gutter);
+  overflow: hidden;
+}
+
+.processBgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.processBgImage {
+  object-fit: cover;
+}
+
+.processBgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-stats-overlay);
+}
+
+.processContainer {
+  position: relative;
+  z-index: 1;
+  max-inline-size: var(--container-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 52px;
+}
+
+.sectionTitleDark {
+  margin: 0;
+  color: var(--white);
+}
+
+.sectionIntroDark {
+  margin: 0;
+  color: var(--white);
+  opacity: 0.7;
+  max-inline-size: 640px;
+}
+
+.stepsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: var(--space-16);
+}
+
+.stepCard {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-12);
+  padding-inline: 22px;
+  padding-block: 26px;
+  border-radius: var(--radius-2xl);
+  background-color: var(--glass-white-5);
+  border: 1px solid var(--glass-border-white-14);
+}
+
+.stepCardGold {
+  background-color: var(--gold-500);
+  border-color: var(--gold-500);
+}
+
+.stepNumber {
+  margin: 0;
+  color: var(--gold-500);
+}
+
+.stepNumberGold {
+  color: var(--navy-950);
+}
+
+.stepTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.stepTitleGold {
+  color: var(--navy-950);
+}
+
+.stepDesc {
+  margin: 0;
+  color: var(--white);
+  opacity: 0.65;
+}
+
+.stepDescGold {
+  color: var(--navy-950);
+  opacity: 0.82;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 1279.98px) {
+  .serviceRow,
+  .serviceRowReverse {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-40);
+  }
+
+  .serviceVisual {
+    inline-size: 100%;
+    max-inline-size: 560px;
+    block-size: 360px;
+    margin-inline: auto;
+  }
+
+  .serviceNumBadgeStart,
+  .serviceNumBadgeEnd {
+    inset-inline-start: 16px;
+    inset-inline-end: auto;
+  }
+
+  .specialistGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stepsGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .mainServicesSection {
+    padding-block: var(--section-padding-y);
+  }
+
+  .mainServicesContainer {
+    gap: var(--space-48);
+  }
+
+  .serviceVisual {
+    block-size: 260px;
+  }
+
+  .specialistGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stepsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

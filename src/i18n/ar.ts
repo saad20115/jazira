@@ -21,6 +21,7 @@ export interface UiDictionary {
     lightboxPrev: string
     lightboxNext: string
     dialogClose: string
+    breadcrumbNav: string
   }
   localeSwitcher: {
     targetCode: string
@@ -162,6 +163,32 @@ export interface UiDictionary {
     serverErrorTitle: string
     serverErrorDescription: string
   }
+  services: {
+    serviceEyebrowTemplate: string
+    materialsTableCaption: string
+    materialsTabsLabel: string
+    materialsSearchLabel: string
+    materialsSearchPlaceholder: string
+    tabAll: string
+    tabElectrical: string
+    tabMechanical: string
+    tabStructural: string
+    tabArchitectural: string
+    colNumber: string
+    colMaterial: string
+    colBrand: string
+    colOrigin: string
+    showingItemsTemplate: string
+    showingSystemItemsTemplate: string
+    viewAllItemsTemplate: string
+    showFewerItems: string
+    noMaterialsMatch: string
+    overviewEyebrow: string
+    keyDeliverablesEyebrow: string
+    keyDeliverablesHeading: string
+    otherServicesEyebrow: string
+    otherServicesHeading: string
+  }
 }
 
 export const arDictionary = {
@@ -179,6 +206,7 @@ export const arDictionary = {
     lightboxPrev: 'الصورة السابقة',
     lightboxNext: 'الصورة التالية',
     dialogClose: 'إغلاق النافذة',
+    breadcrumbNav: 'مسار التنقل',
   },
   localeSwitcher: {
     targetCode: 'EN',
@@ -319,5 +347,31 @@ export const arDictionary = {
     notFoundDescription: 'عذراً، الصفحة التي تبحث عنها غير متوفرة أو تم نقلها.',
     serverErrorTitle: 'حدث خطأ غير متوقع',
     serverErrorDescription: 'يرجى المحاولة مرة أخرى بعد قليل.',
+  },
+  services: {
+    serviceEyebrowTemplate: 'الخدمة {number}',
+    materialsTableCaption: 'المواد المعتمدة والعلامات التجارية الشريكة',
+    materialsTabsLabel: 'تصفية المواد حسب النظام',
+    materialsSearchLabel: 'ابحث عن مادة أو علامة تجارية',
+    materialsSearchPlaceholder: 'ابحث عن مادة أو علامة تجارية',
+    tabAll: 'جميع الأنظمة',
+    tabElectrical: 'الكهرباء',
+    tabMechanical: 'الميكانيك',
+    tabStructural: 'الإنشائي',
+    tabArchitectural: 'المعماري',
+    colNumber: 'م.',
+    colMaterial: 'المادة / البند',
+    colBrand: 'العلامة التجارية',
+    colOrigin: 'بلد المنشأ',
+    showingItemsTemplate: 'عرض {shown} من أصل {total} بند',
+    showingSystemItemsTemplate: 'عرض {shown} من أصل {total} بند ({system})',
+    viewAllItemsTemplate: 'عرض جميع البنود ({total})',
+    showFewerItems: 'عرض أبرز البنود',
+    noMaterialsMatch: 'لا توجد مواد تطابق البحث أو التصفية الحالية.',
+    overviewEyebrow: 'نظرة عامة على الخدمة',
+    keyDeliverablesEyebrow: 'النطاق والقدرات',
+    keyDeliverablesHeading: 'أبرز المخرجات',
+    otherServicesEyebrow: 'استكشف المزيد',
+    otherServicesHeading: 'خدمات أخرى',
   },
 } satisfies UiDictionary

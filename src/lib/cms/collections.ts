@@ -293,7 +293,7 @@ export async function getMaterials(locale: SupportedLocale): Promise<Material[]>
       collection: 'materials',
       locale,
       fallbackLocale,
-      sort: 'order',
+      sort: 'itemNo',
       depth: 2,
     })
     return result.docs
@@ -338,6 +338,7 @@ export async function getStats(locale: SupportedLocale): Promise<Stat[]> {
 
 export interface GetTeamOptions {
   tier?: Team['tier']
+  includeInactive?: boolean
 }
 
 export async function getTeamMembers(
@@ -365,13 +366,13 @@ export async function getTeamMembers(
 
   const isDraft = await resolvePublicDraftFlag()
   if (isDraft) {
-    return fetchDirect(true)
+    return fetchDirect(Boolean(options.includeInactive))
   }
 
   const tags = [...buildCollectionTags('team'), `collection:team:${locale}`]
   const cachedGetter = withCmsCache(
-    () => fetchDirect(false),
-    ['cms-team', locale, options.tier ?? 'all'],
+    () => fetchDirect(Boolean(options.includeInactive)),
+    ['cms-team', locale, options.tier ?? 'all', options.includeInactive ? 'all' : 'active'],
     tags,
   )
   return cachedGetter()

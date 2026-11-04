@@ -30,6 +30,70 @@ export function formatStepCounter(template: string, current: number, total: numb
   return template.replace('{current}', String(current)).replace('{total}', String(total))
 }
 
+export function formatServiceEyebrow(template: string, paddedNumber: string): string {
+  return template.replace('{number}', paddedNumber)
+}
+
+export function formatMaterialsShowing(template: string, shown: number, total: number): string {
+  return template.replace('{shown}', String(shown)).replace('{total}', String(total))
+}
+
+export function formatMaterialsShowingSystem(
+  template: string,
+  shown: number,
+  total: number,
+  systemLabel: string,
+): string {
+  return template
+    .replace('{shown}', String(shown))
+    .replace('{total}', String(total))
+    .replace('{system}', systemLabel.toLowerCase())
+}
+
+export function formatViewAllItems(template: string, total: number): string {
+  return template.replace('{total}', String(total))
+}
+
+export function splitHeadingForGoldAccent(rawTitle: string | null | undefined): {
+  mainPart: string
+  accentPart: string | null
+} {
+  const trimmed = (rawTitle ?? '').trim()
+  if (!trimmed) {
+    return { mainPart: '', accentPart: null }
+  }
+
+  const lines = trimmed
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+  if (lines.length >= 2) {
+    return {
+      mainPart: `${lines.slice(0, -1).join(' ')} `,
+      accentPart: lines[lines.length - 1] ?? null,
+    }
+  }
+
+  const words = trimmed.split(/\s+/)
+  if (words.length <= 1) {
+    return { mainPart: trimmed, accentPart: null }
+  }
+
+  const lower = trimmed.toLowerCase()
+  if (lower.startsWith('approved ') && words.length >= 3) {
+    return {
+      mainPart: `${words[0] ?? ''} `,
+      accentPart: words.slice(1).join(' '),
+    }
+  }
+
+  const accentWordCount = words.length >= 4 && (words[words.length - 2]?.length ?? 0) <= 3 ? 2 : 1
+  return {
+    mainPart: `${words.slice(0, words.length - accentWordCount).join(' ')} `,
+    accentPart: words.slice(words.length - accentWordCount).join(' '),
+  }
+}
+
 /**
  * Replaces the leading locale segment (`/ar/...` or `/en/...`) in a pathname with `targetLocale`,
  * keeping the rest of the path intact (`handoff/tasks/P3-T2.md` §5).

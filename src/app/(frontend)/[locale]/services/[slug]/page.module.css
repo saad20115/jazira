@@ -1,0 +1,246 @@
+.pageRoot {
+  display: flex;
+  flex-direction: column;
+  inline-size: 100%;
+  background-color: var(--white);
+}
+
+/* ==========================================================================
+   Section 2 — Service Overview & RichText Body (`20:875` pattern)
+   ========================================================================== */
+
+.overviewSection {
+  background-color: var(--white);
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--container-gutter);
+}
+
+.overviewContainer {
+  max-inline-size: var(--container-max-width);
+  margin-inline: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-56);
+}
+
+.overviewContent {
+  flex: 1 1 0;
+  min-inline-size: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-18);
+}
+
+.overviewTitle {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.goldDivider {
+  display: block;
+  inline-size: 52px;
+  block-size: 3px;
+  border-radius: var(--radius-xs);
+  background-image: var(--gradient-gold-accent-line);
+  flex-shrink: 0;
+}
+
+.fallbackDescription {
+  margin: 0;
+  color: var(--text-body);
+}
+
+.ctaButtonWrap {
+  padding-block-start: var(--space-8);
+}
+
+.overviewVisual {
+  inline-size: 460px;
+  flex-shrink: 0;
+}
+
+.overviewImageWrap {
+  position: relative;
+  border-radius: var(--radius-4xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-panel-lg);
+  background-color: var(--navy-900);
+}
+
+.overviewImage {
+  display: block;
+  inline-size: 100%;
+  block-size: 360px;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   Section 3 — Key Deliverables / Highlights (`20:947` pattern)
+   ========================================================================== */
+
+.deliverablesSection {
+  position: relative;
+  background-color: var(--navy-950);
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--container-gutter);
+  overflow: hidden;
+}
+
+.deliverablesBgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.deliverablesBgImage {
+  object-fit: cover;
+}
+
+.deliverablesBgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-stats-overlay);
+}
+
+.deliverablesContainer {
+  position: relative;
+  z-index: 1;
+  max-inline-size: var(--container-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+}
+
+.sectionHeadStart {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-14);
+}
+
+.sectionTitleDark {
+  margin: 0;
+  color: var(--white);
+}
+
+.deliverablesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-18);
+}
+
+.deliverableCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-14);
+  padding: var(--space-20);
+  border-radius: var(--radius-xl);
+  background-color: var(--glass-white-5);
+  border: 1px solid var(--glass-border-white-14);
+}
+
+.deliverableIconWrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-12);
+  border-radius: var(--radius-lg);
+  background-color: var(--gold-tint-15);
+  border: 1px solid var(--gold-border-45);
+  color: var(--gold-500);
+  flex-shrink: 0;
+}
+
+.deliverableIcon {
+  inline-size: 20px;
+  block-size: 20px;
+}
+
+.deliverableText {
+  margin: 0;
+  color: var(--white);
+}
+
+/* ==========================================================================
+   Section 4 — Other Services (`ServiceTile` grid)
+   ========================================================================== */
+
+.otherServicesSection {
+  background-color: var(--surface);
+  padding-block: var(--section-padding-y);
+  padding-inline: var(--container-gutter);
+}
+
+.otherServicesContainer {
+  max-inline-size: var(--container-max-width);
+  margin-inline: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-40);
+}
+
+.centeredHead {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-14);
+  text-align: center;
+}
+
+.sectionTitleLight {
+  margin: 0;
+  color: var(--navy-950);
+}
+
+.otherServicesGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-20);
+}
+
+.otherServiceItem {
+  min-inline-size: 0;
+}
+
+.otherServiceTile {
+  inline-size: 100%;
+}
+
+/* ==========================================================================
+   Responsive Breakpoints
+   ========================================================================== */
+
+@media (max-width: 1279.98px) {
+  .overviewContainer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-40);
+  }
+
+  .overviewVisual {
+    inline-size: 100%;
+    max-inline-size: 560px;
+    margin-inline: auto;
+  }
+
+  .otherServicesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767.98px) {
+  .deliverablesGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .otherServicesGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .overviewImage {
+    block-size: 260px;
+  }
+}

@@ -1,0 +1,123 @@
+.ctaSection {
+  position: relative;
+  background-color: var(--navy-950);
+  padding-block: 83px;
+  padding-inline: var(--container-gutter);
+  overflow: hidden;
+}
+
+.ctaBgLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.ctaBgImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.ctaBgOverlay {
+  position: absolute;
+  inset: 0;
+  background-image: var(--gradient-cta-overlay);
+}
+
+.ctaSquareTopStart,
+.ctaSquareBottomStart,
+.ctaSquareTopEnd,
+.ctaSquareBottomEnd {
+  position: absolute;
+  border: 1.2px solid var(--glass-border-white-22);
+  border-radius: var(--radius-xl);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.ctaSquareTopStart {
+  inset-block-start: 68px;
+  inset-inline-start: 230px;
+  inline-size: 90px;
+  block-size: 90px;
+  transform: rotate(-14deg);
+}
+
+.ctaSquareBottomStart {
+  inset-block-start: 330px;
+  inset-inline-start: 290px;
+  inline-size: 60px;
+  block-size: 60px;
+  transform: rotate(10deg);
+}
+
+.ctaSquareTopEnd {
+  inset-block-start: 90px;
+  inset-inline-end: 230px;
+  inline-size: 90px;
+  block-size: 90px;
+  transform: rotate(14deg);
+}
+
+.ctaSquareBottomEnd {
+  inset-block-start: 318px;
+  inset-inline-end: 290px;
+  inline-size: 60px;
+  block-size: 60px;
+  transform: rotate(-12deg);
+}
+
+.ctaContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-24);
+  inline-size: 100%;
+  max-inline-size: 780px;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.ctaTitle {
+  margin: 0;
+  color: var(--white);
+}
+
+.headingAccentGold {
+  color: var(--gold-500);
+}
+
+.ctaSubtitle {
+  margin: 0;
+  max-inline-size: 560px;
+  color: var(--white);
+  opacity: 0.78;
+}
+
+.ctaButtonsRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  padding-block-start: var(--space-6);
+}
+
+@media (max-width: 1279.98px) {
+  .ctaSquareBottomStart,
+  .ctaSquareBottomEnd {
+    display: none;
+  }
+}
+
+@media (max-width: 767.98px) {
+  .ctaSquareTopStart,
+  .ctaSquareTopEnd {
+    display: none;
+  }
+}
