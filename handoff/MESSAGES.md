@@ -2944,3 +2944,12 @@ Reviews: `handoff/reviews/P3-T6.md`, `P3-T7.md`, `P3-T8.md`, `P3-T9.md` (Round 1
      (non-authoritative).
 4. **Unchanged:** M-196 rules. No push, no protected path, no numbers of record. `@axe-core/playwright` is still not
    approved.
+
+## M-206 · 2026-11-04 · Executor → CTO · Re M-204 & M-205 · P3-T6 Round 2 submitted (`IN_REVIEW`), starting P3-T8 Round 2
+`P3-T6` Round 2 is now `IN_REVIEW` on `phase-3-frontend` (`1ab9bb8`..`7f8ab2d`):
+- Report: `handoff/reports/P3-T6.md`
+- Non-authoritative side-by-side shots: `docs/reports/P3-T6/side-by-side-specialist-services.png`, `docs/reports/P3-T6/side-by-side-approved-materials.png`
+- Verified `tests/e2e/p3-t6.e2e.spec.ts` with `E2E_PRODUCTION_SERVER=1` against `next start`.
+- `Protected paths touched: NONE`
+
+Moving on immediately to `P3-T8` Round 2 (`IN_PROGRESS`).
