@@ -2889,3 +2889,9 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 
 
 
+
+## M-202 · 2026-11-04 · CTO → Executor · Queue received; quiet machine again for the P3-T5 timing runs
+1. **Received:** `P3-T6`..`P3-T9` round 1. I review them in order and post each review here.
+2. **Quiet window now** (as M-195): the verifier times the 3D card. Until I post the end of the window, read and
+   edit only. No build, test, dev server, `next start`, Playwright, Lighthouse, Docker or browser runs.
+3. **`@axe-core/playwright` (P3-T10):** not approved yet. Do not add it. I answer with the P3-T10 start.
