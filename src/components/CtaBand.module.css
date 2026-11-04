@@ -6,6 +6,10 @@
   overflow: hidden;
 }
 
+.ctaSectionCompact {
+  padding-block: 75px;
+}
+
 .ctaBgLayer {
   position: absolute;
   inset: 0;
@@ -108,8 +112,8 @@
 }
 
 .ctaSecondaryButton {
-  background-color: transparent;
-  border-color: var(--glass-border-white-30);
+  background-color: var(--glass-white-8);
+  border-color: var(--glass-border-white-28);
 }
 
 @media (max-width: 1279.98px) {

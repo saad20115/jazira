@@ -288,9 +288,9 @@ export default async function ProjectDetailPageRoute({
   const { isEnabled: isDraftMode } = await draftMode()
 
   const [projectsPage, homePage, relatedProjects] = await Promise.all([
-    getProjectsPage(locale).catch(() => null),
-    getHomePage(locale).catch(() => null),
-    getRelatedProjects(locale, project.category, project.slug, 3).catch(() => []),
+    getProjectsPage(locale),
+    getHomePage(locale),
+    getRelatedProjects(locale, project.category, project.slug, 3),
   ])
 
   const dict = getDictionary(locale)
@@ -376,7 +376,7 @@ export default async function ProjectDetailPageRoute({
     ? project.deliverables.filter((d) => typeof d.text === 'string' && d.text.trim().length > 0)
     : []
   const deliverablesBgMedia = resolveMediaAsset(
-    homePage?.statsSection?.backgroundImage,
+    homePage.statsSection?.backgroundImage,
     dict.projects.detail.deliverablesHeading,
     'hero',
   )
@@ -424,7 +424,8 @@ export default async function ProjectDetailPageRoute({
               <CspSafeImage
                 src={coverMedia.url}
                 alt={coverMedia.alt}
-                fill
+                width={coverMedia.width ?? 1440}
+                height={coverMedia.height ?? 560}
                 preload
                 fetchPriority="high"
                 sizes="100vw"
@@ -591,7 +592,8 @@ export default async function ProjectDetailPageRoute({
                 <CspSafeImage
                   src={deliverablesBgMedia.url}
                   alt=""
-                  fill
+                  width={deliverablesBgMedia.width ?? 1440}
+                  height={deliverablesBgMedia.height ?? 425}
                   sizes="100vw"
                   className={styles.deliverablesBgImage}
                 />
@@ -693,7 +695,12 @@ export default async function ProjectDetailPageRoute({
         ) : null}
 
         {/* Section 5: CTA (20:995) */}
-        <CtaBand cta={projectsPage?.cta} locale={locale} fallbackBackgroundSrc={coverMedia?.url} />
+        <CtaBand
+          cta={projectsPage.cta}
+          locale={locale}
+          fallbackBackgroundSrc={coverMedia?.url}
+          compact
+        />
 
         {/* Section 6: Related Projects (20:1009) */}
         {relatedProjects.length > 0 ? (

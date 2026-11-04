@@ -564,7 +564,8 @@ export default async function ProjectsPageRoute({
                 <CspSafeImage
                   src={impactBgMedia.url}
                   alt=""
-                  fill
+                  width={impactBgMedia.width ?? 1440}
+                  height={impactBgMedia.height ?? 421}
                   sizes="100vw"
                   className={styles.impactBgImage}
                 />

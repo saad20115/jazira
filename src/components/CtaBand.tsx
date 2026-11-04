@@ -79,13 +79,19 @@ export interface CtaBandProps {
   cta?: CtaBandData | null
   locale: SupportedLocale
   fallbackBackgroundSrc?: string
+  compact?: boolean
 }
 
 /**
  * Shared CTA Band section (`18:660`, `24:1677`, `19:639`, `20:1013`) used on
  * Services, Service Detail, Projects, and Project Detail pages.
  */
-export function CtaBand({ cta, locale, fallbackBackgroundSrc }: CtaBandProps): JSX.Element | null {
+export function CtaBand({
+  cta,
+  locale,
+  fallbackBackgroundSrc,
+  compact = false,
+}: CtaBandProps): JSX.Element | null {
   if (!cta || cta.enabled === false) {
     return null
   }
@@ -110,7 +116,10 @@ export function CtaBand({ cta, locale, fallbackBackgroundSrc }: CtaBandProps): J
   }
 
   return (
-    <section className={styles.ctaSection} data-theme="dark">
+    <section
+      className={`${styles.ctaSection}${compact ? ` ${styles.ctaSectionCompact}` : ''}`}
+      data-theme="dark"
+    >
       <div className={styles.ctaBgLayer} aria-hidden="true">
         {bgSrc ? (
           <CspSafeImage

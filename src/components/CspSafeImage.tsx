@@ -35,7 +35,7 @@ export function DraftImageBypassProvider({
   )
 }
 
-export type CspSafeImageProps = Omit<ImageProps, 'style'>
+export type CspSafeImageProps = Omit<ImageProps, 'style' | 'fill'>
 
 export function CspSafeImage({ alt, unoptimized, ...rest }: CspSafeImageProps): JSX.Element {
   const isDraftBypass = useContext(DraftImageBypassContext)

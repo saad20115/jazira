@@ -41,6 +41,44 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
 
     await page.setViewportSize({ width: 1440, height: 900 })
 
+    const cspViolations: Array<{
+      url: string
+      effectiveDirective: string
+      violatedDirective: string
+      blockedURI: string
+    }> = []
+    await page.exposeFunction(
+      '__recordCspViolation',
+      (violation: {
+        url: string
+        effectiveDirective: string
+        violatedDirective: string
+        blockedURI: string
+      }) => {
+        cspViolations.push(violation)
+      },
+    )
+    await page.addInitScript(() => {
+      window.addEventListener('securitypolicyviolation', (event) => {
+        const record = (
+          window as unknown as {
+            __recordCspViolation?: (v: {
+              url: string
+              effectiveDirective: string
+              violatedDirective: string
+              blockedURI: string
+            }) => void
+          }
+        ).__recordCspViolation
+        record?.({
+          url: window.location.pathname,
+          effectiveDirective: event.effectiveDirective,
+          violatedDirective: event.violatedDirective,
+          blockedURI: event.blockedURI,
+        })
+      })
+    })
+
     // 1. Anonymous visitor on /en/projects sees PageHeader, filter tabs, 15 cards on page 1, and pagination
     const listRes = await page.goto('/en/projects', { waitUntil: 'networkidle' })
     expect(listRes?.status()).toBe(200)
@@ -68,7 +106,7 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
       'page',
     )
 
-    // 2. Anonymous visitor gets 200 for published project slugs (en and ar) and 404 for draft-only or unknown project slugs
+    // 2. Anonymous visitor gets 200 for published project slugs (en and ar) with zero CSP violations, and 404 for draft-only or unknown project slugs
     const pubProjectEnRes = await page.goto('/en/projects/sofitel-makkah-hotel', {
       waitUntil: 'networkidle',
     })
@@ -76,12 +114,16 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
     await expect(page.locator('[data-section="project-hero"] h1')).toContainText(
       'Sofitel Makkah Hotel',
     )
+    await expect(page.locator('img[style]')).toHaveCount(0)
+    expect(cspViolations).toEqual([])
 
     const pubProjectArRes = await page.goto('/ar/projects/sofitel-makkah-hotel', {
       waitUntil: 'networkidle',
     })
     expect(pubProjectArRes?.status()).toBe(200)
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    await expect(page.locator('img[style]')).toHaveCount(0)
+    expect(cspViolations).toEqual([])
 
     const draftSlugRes = await page.goto('/en/projects/princess-noura-university-pnu', {
       waitUntil: 'networkidle',
@@ -179,6 +221,7 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
       const arListRes = await page.goto('/ar/projects', { waitUntil: 'networkidle' })
       expect(arListRes?.status()).toBe(200)
       await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+      expect(cspViolations).toEqual([])
     } finally {
       await page.request.patch(`${resolvedBase}/api/projects/${String(sofitelDoc.id)}?locale=en`, {
         headers: {

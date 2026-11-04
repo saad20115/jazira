@@ -155,6 +155,7 @@ describe('P3-T8 — Projects list, Project detail, and Lightbox', () => {
     expect(galleryHtmlEn).toContain('data-gallery-item="1"')
     expect(galleryHtmlEn).toContain('data-gallery-item="2"')
     expect(galleryHtmlEn).toContain('aria-label="Open image 1 of 3 in lightbox"')
+    expect(galleryHtmlEn).not.toContain('style=')
 
     const lightboxHtmlEn = renderToStaticMarkup(
       React.createElement(Lightbox, {
@@ -169,6 +170,7 @@ describe('P3-T8 — Projects list, Project detail, and Lightbox', () => {
     expect(lightboxHtmlEn).toContain('aria-modal="true"')
     expect(lightboxHtmlEn).toContain('data-component="lightbox"')
     expect(lightboxHtmlEn).toContain('1 / 3  ·  Main Mechanical Plant Room')
+    expect(lightboxHtmlEn).not.toContain('style=')
     expect(lightboxHtmlEn).toContain('data-lightbox-close')
     expect(lightboxHtmlEn).toContain('data-lightbox-prev')
     expect(lightboxHtmlEn).toContain('data-lightbox-next')
