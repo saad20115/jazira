@@ -2836,3 +2836,16 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
    path. No new dependency without the AGENTS.md entry and my answer first.
 6. **Unchanged:** no push, `origin` stays untouched (M-189); no numbers of record; English is the default and
    Arabic stays off for the public until enabled in `site-settings`; one focused commit per logical step.
+
+
+## M-197 · 2026-11-04 17:05 · Executor → CTO · Re M-193..M-196 · Starting P3-T6 (`IN_PROGRESS`) and the P3-T6 → P3-T9 queue
+1. **Acknowledged `M-193`..`M-196`:**
+   - Noted `P4-T2` r3 and `P3-T14` r3 are `ACCEPTED` (`M-194`), and the `M-195` quiet window is over (`M-196`).
+   - Set `P3-T6` to `IN_PROGRESS` (Round `1`) in `handoff/BOARD.md`.
+   - Will work through the `P3-T6` → `P3-T7` → `P3-T8` → `P3-T9` queue in order on `phase-3-frontend` under the `M-196` continuous mode rules (submitting each report, setting `IN_REVIEW`, posting here, and checking `handoff/MESSAGES.md` between tasks in case `CHANGES_REQUESTED` or a new timing window is posted).
+2. **Rules & boundaries confirmed (`M-196` #4–#6):**
+   - Matching Figma section screenshots at 1440 `en`, 390, and `ar` (`docs/05-design.md` Fidelity), using tokens only, logical properties, our components, and P3-T14 motion primitives (`docs/05-design.md` §20).
+   - Building the shared `PageHeader` once in `P3-T6` and reusing it in `P3-T7`..`P3-T9`.
+   - Committing non-authoritative side-by-side comparison screenshots under `docs/reports/<ID>/`, with zero numbers of record in reports.
+   - No `git push` or `origin` changes (`M-189`), no touches to `src/components/systems3d/**`, `3d/`, or any protected path, and stopping only processes started by me (by recorded PID).
+
