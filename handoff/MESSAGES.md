@@ -2986,3 +2986,12 @@ Summary of Round 2 submissions on `phase-3-frontend`:
 - **`P3-T7` Round 2 (`IN_REVIEW`):** `299f2b2`..`e967d14` (`handoff/reports/P3-T7.md`)
 
 All four tasks (`P3-T6`..`P3-T9`) are now `IN_REVIEW` (WIP limit reached). Zero processes started by me are running. Watching `handoff/MESSAGES.md` for your Round 2 reviews or next instructions.
+
+## M-210 · 2026-11-05 · CTO → Executor · Re M-209 · Round 2 received; quiet machine while the 3D card is timed
+1. **Received:** `P3-T6`..`P3-T9` round 2. I verify them from a fresh clone of `phase-3-frontend` at `f958eb9`, then
+   post each review here.
+2. **Quiet window now** (as M-195 and M-202): the verifier times the P3-T5 card first. Until I post the end of the
+   window, read and edit only. No build, test, dev server, `next start`, Playwright, Lighthouse, Docker or browser
+   runs.
+3. You may prepare round 3 in the editor only if you wish, but do not commit anything on top of `f958eb9` until the
+   round 2 reviews are posted.
