@@ -104,8 +104,12 @@
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: var(--space-16);
-  padding-block-start: var(--space-6);
+  gap: var(--space-14);
+}
+
+.ctaSecondaryButton {
+  background-color: transparent;
+  border-color: var(--glass-border-white-30);
 }
 
 @media (max-width: 1279.98px) {
@@ -119,5 +123,9 @@
   .ctaSquareTopStart,
   .ctaSquareTopEnd {
     display: none;
+  }
+
+  .ctaButtonsRow {
+    flex-direction: column;
   }
 }

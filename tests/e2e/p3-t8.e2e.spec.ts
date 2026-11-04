@@ -68,11 +68,30 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
       'page',
     )
 
-    // 2. Anonymous visitor requesting a draft-only project slug gets 404
+    // 2. Anonymous visitor gets 200 for published project slugs (en and ar) and 404 for draft-only or unknown project slugs
+    const pubProjectEnRes = await page.goto('/en/projects/sofitel-makkah-hotel', {
+      waitUntil: 'networkidle',
+    })
+    expect(pubProjectEnRes?.status()).toBe(200)
+    await expect(page.locator('[data-section="project-hero"] h1')).toContainText(
+      'Sofitel Makkah Hotel',
+    )
+
+    const pubProjectArRes = await page.goto('/ar/projects/sofitel-makkah-hotel', {
+      waitUntil: 'networkidle',
+    })
+    expect(pubProjectArRes?.status()).toBe(200)
+    await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+
     const draftSlugRes = await page.goto('/en/projects/princess-noura-university-pnu', {
       waitUntil: 'networkidle',
     })
     expect(draftSlugRes?.status()).toBe(404)
+
+    const unknownSlugRes = await page.goto('/en/projects/non-existent-project-slug-xyz', {
+      waitUntil: 'networkidle',
+    })
+    expect(unknownSlugRes?.status()).toBe(404)
 
     // 3. Temporarily attach gallery images to sofitel-makkah-hotel via REST to test Lightbox keyboard navigation & focus return, then restore in finally
     const findSofitelRes = await page.request.get(

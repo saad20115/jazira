@@ -19,14 +19,12 @@ import {
   formatDefaultProjectAboutSummary,
   getDictionary,
   isSupportedLocale,
-  SUPPORTED_LOCALES,
   type SupportedLocale,
 } from '@/i18n'
 import {
   getHomePage,
   getProjectBySlug,
   getProjectsPage,
-  getPublishedProjectSlugs,
   getRelatedProjects,
   getSiteSettings,
 } from '@/lib/cms'
@@ -226,21 +224,6 @@ interface ProjectDetailPageProps {
   params: Promise<{ locale: string; slug: string }>
 }
 
-export async function generateStaticParams(): Promise<Array<{ locale: string; slug: string }>> {
-  try {
-    const slugs = await getPublishedProjectSlugs()
-    const params: Array<{ locale: string; slug: string }> = []
-    for (const locale of SUPPORTED_LOCALES) {
-      for (const slug of slugs) {
-        params.push({ locale, slug })
-      }
-    }
-    return params
-  } catch {
-    return []
-  }
-}
-
 export async function generateMetadata({ params }: ProjectDetailPageProps): Promise<Metadata> {
   const { locale: rawLocale, slug } = await params
   if (!isSupportedLocale(rawLocale)) {
@@ -305,9 +288,9 @@ export default async function ProjectDetailPageRoute({
   const { isEnabled: isDraftMode } = await draftMode()
 
   const [projectsPage, homePage, relatedProjects] = await Promise.all([
-    getProjectsPage(locale),
-    getHomePage(locale),
-    getRelatedProjects(locale, project.category, project.slug, 3),
+    getProjectsPage(locale).catch(() => null),
+    getHomePage(locale).catch(() => null),
+    getRelatedProjects(locale, project.category, project.slug, 3).catch(() => []),
   ])
 
   const dict = getDictionary(locale)
@@ -393,7 +376,7 @@ export default async function ProjectDetailPageRoute({
     ? project.deliverables.filter((d) => typeof d.text === 'string' && d.text.trim().length > 0)
     : []
   const deliverablesBgMedia = resolveMediaAsset(
-    homePage.statsSection?.backgroundImage,
+    homePage?.statsSection?.backgroundImage,
     dict.projects.detail.deliverablesHeading,
     'hero',
   )
@@ -710,7 +693,7 @@ export default async function ProjectDetailPageRoute({
         ) : null}
 
         {/* Section 5: CTA (20:995) */}
-        <CtaBand cta={projectsPage.cta} locale={locale} fallbackBackgroundSrc={coverMedia?.url} />
+        <CtaBand cta={projectsPage?.cta} locale={locale} fallbackBackgroundSrc={coverMedia?.url} />
 
         {/* Section 6: Related Projects (20:1009) */}
         {relatedProjects.length > 0 ? (

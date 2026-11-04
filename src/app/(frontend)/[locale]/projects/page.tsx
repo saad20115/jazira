@@ -153,43 +153,17 @@ function formatCountNumber(n: number): string {
 
 function PaginationChevronPrevSvg(): ReactElement {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      className={styles.paginationChevron}
-    >
-      <path
-        d="M10 12L6 8L10 4"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span aria-hidden="true" className={styles.paginationChevron}>
+      ‹
+    </span>
   )
 }
 
 function PaginationChevronNextSvg(): ReactElement {
   return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      className={styles.paginationChevron}
-    >
-      <path
-        d="M6 4L10 8L6 12"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span aria-hidden="true" className={styles.paginationChevron}>
+      ›
+    </span>
   )
 }
 
@@ -290,10 +264,10 @@ export default async function ProjectsPageRoute({
 
   const [siteSettings, projectsPage, homePage, allStats, categoryCounts, projectsResult] =
     await Promise.all([
-      getSiteSettings(locale),
-      getProjectsPage(locale),
-      getHomePage(locale),
-      getStats(locale),
+      getSiteSettings(locale).catch(() => null),
+      getProjectsPage(locale).catch(() => null),
+      getHomePage(locale).catch(() => null),
+      getStats(locale).catch(() => []),
       getProjectCategoryCounts(locale, {
         status: filters.status,
         discipline: filters.scope,
@@ -312,10 +286,10 @@ export default async function ProjectsPageRoute({
   const dict = getDictionary(locale)
 
   // 1. Page Header (`19:556`)
-  const headerEnabled = projectsPage.pageHeader?.enabled !== false
-  const headerTitle = projectsPage.pageHeader?.title?.trim() || dict.nav.projects
-  const headerSubtitle = projectsPage.pageHeader?.subtitle?.trim() || null
-  const headerImage = resolveMediaAsset(projectsPage.pageHeader?.image, headerTitle, 'hero')
+  const headerEnabled = projectsPage?.pageHeader?.enabled !== false
+  const headerTitle = projectsPage?.pageHeader?.title?.trim() || dict.nav.projects
+  const headerSubtitle = projectsPage?.pageHeader?.subtitle?.trim() || null
+  const headerImage = resolveMediaAsset(projectsPage?.pageHeader?.image, headerTitle, 'hero')
 
   // 2. Explore Projects (`19:568`)
   const categoryTabs: Array<{
@@ -343,35 +317,35 @@ export default async function ProjectsPageRoute({
   const pageNumbers = Array.from({ length: totalPages }, (_, idx) => idx + 1)
 
   // 3. Impact in Numbers (`19:884`)
-  const impactEnabled = projectsPage.impact?.enabled !== false
-  const impactTitle = projectsPage.impact?.title?.trim() || ''
-  const impactText = projectsPage.impact?.text?.trim() || null
-  const impactStats = resolvePopulatedStats(projectsPage.impact?.stats, allStats)
+  const impactEnabled = projectsPage?.impact?.enabled !== false
+  const impactTitle = projectsPage?.impact?.title?.trim() || ''
+  const impactText = projectsPage?.impact?.text?.trim() || null
+  const impactStats = resolvePopulatedStats(projectsPage?.impact?.stats, allStats)
   const impactBgMedia = resolveMediaAsset(
-    homePage.statsSection?.backgroundImage,
+    homePage?.statsSection?.backgroundImage,
     impactTitle,
     'hero',
   )
 
   // 4. Portfolio (`19:904`)
-  const portfolioEnabled = projectsPage.portfolio?.enabled !== false
-  const portfolioEyebrow = projectsPage.portfolio?.eyebrow?.trim() || null
+  const portfolioEnabled = projectsPage?.portfolio?.enabled !== false
+  const portfolioEyebrow = projectsPage?.portfolio?.eyebrow?.trim() || null
   const { mainPart: portfolioMainTitle, accentPart: portfolioAccentTitle } =
-    splitHeadingForGoldAccent(projectsPage.portfolio?.title)
-  const portfolioParagraphs = extractLexicalParagraphStrings(projectsPage.portfolio?.text)
-  const portfolioQuote = projectsPage.portfolio?.quote?.trim() || null
+    splitHeadingForGoldAccent(projectsPage?.portfolio?.title)
+  const portfolioParagraphs = extractLexicalParagraphStrings(projectsPage?.portfolio?.text)
+  const portfolioQuote = projectsPage?.portfolio?.quote?.trim() || null
   const portfolioQuoteAuthor =
-    projectsPage.portfolio?.quoteAuthor?.trim() || siteSettings.companyName
+    projectsPage?.portfolio?.quoteAuthor?.trim() || siteSettings?.companyName || ''
   const portfolioImage = resolveMediaAsset(
-    projectsPage.portfolio?.image,
-    projectsPage.portfolio?.title || dict.nav.projects,
+    projectsPage?.portfolio?.image,
+    projectsPage?.portfolio?.title || dict.nav.projects,
     'card',
   )
   const fallbackProjectsStat =
     allStats.find((s) => s.value.includes('100')) ??
     (allStats.length > 0 ? (allStats[0] ?? null) : null)
   const portfolioBadgeStat = resolvePopulatedSingleStat(
-    projectsPage.portfolio?.badgeStat,
+    projectsPage?.portfolio?.badgeStat,
     fallbackProjectsStat,
   )
 
@@ -616,10 +590,9 @@ export default async function ProjectsPageRoute({
                     className={styles.impactStatItem}
                     {...revealAttributes({ variant: 'fade', step: idx % 4 })}
                   >
-                    <CountUp
-                      value={stat.value}
-                      className={`${styles.impactStatValue} t-stat-number`}
-                    />
+                    <bdi dir="ltr" className={`${styles.impactStatValue} t-stat-number`}>
+                      <CountUp value={stat.value} />
+                    </bdi>
                     <p className={`${styles.impactStatLabel} t-body-m`}>{stat.label}</p>
                   </div>
                 ))}
@@ -643,7 +616,7 @@ export default async function ProjectsPageRoute({
                     className={styles.portfolioCornerBracket}
                     {...revealAttributes({ variant: 'draw' })}
                   >
-                    <CornerBracketIcon size={80} />
+                    <CornerBracketIcon size={80} strokeWidth={4} strokeLinecap="round" />
                   </div>
 
                   <div
@@ -667,10 +640,9 @@ export default async function ProjectsPageRoute({
                       className={styles.portfolioBadge}
                       {...revealAttributes({ variant: 'fade', step: 2 })}
                     >
-                      <CountUp
-                        value={portfolioBadgeStat.value}
-                        className={`${styles.portfolioBadgeValue} t-stat-m`}
-                      />
+                      <bdi dir="ltr" className={`${styles.portfolioBadgeValue} t-stat-m`}>
+                        <CountUp value={portfolioBadgeStat.value} />
+                      </bdi>
                       <span className={`${styles.portfolioBadgeLabel} t-body-s`}>
                         {portfolioBadgeStat.label}
                       </span>
@@ -720,7 +692,7 @@ export default async function ProjectsPageRoute({
         ) : null}
 
         {/* Section 5: CTA (19:926) */}
-        <CtaBand cta={projectsPage.cta} locale={locale} fallbackBackgroundSrc={headerImage?.url} />
+        <CtaBand cta={projectsPage?.cta} locale={locale} fallbackBackgroundSrc={headerImage?.url} />
       </div>
     </DraftImageBypassProvider>
   )

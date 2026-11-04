@@ -75,7 +75,8 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-8);
-  inline-size: 100%;
+  margin-inline: -6px;
+  inline-size: calc(100% + 12px);
 }
 
 .categoryPill {
@@ -83,10 +84,10 @@
   align-items: center;
   justify-content: center;
   padding-block: 5px;
-  padding-inline: var(--space-12);
+  padding-inline: var(--space-10);
   border-radius: var(--radius-pill);
-  background-color: var(--overlay-navy-70);
-  border: 1px solid var(--glass-border-white-20);
+  background-color: var(--overlay-navy-55);
+  border: 1px solid var(--glass-border-white-16);
   color: var(--white);
   white-space: nowrap;
 }
@@ -96,10 +97,10 @@
   align-items: center;
   justify-content: center;
   padding-block: 5px;
-  padding-inline: var(--space-12);
+  padding-inline: var(--space-10);
   border-radius: var(--radius-pill);
-  background-color: var(--overlay-navy-70);
-  border: 1px solid var(--glass-border-white-22);
+  background-color: var(--overlay-navy-55);
+  border: 1px solid var(--glass-border-white-16);
   color: var(--white);
   text-transform: none;
   white-space: nowrap;
@@ -110,7 +111,7 @@
   align-items: center;
   gap: var(--space-6);
   padding-block: 5px;
-  padding-inline: var(--space-12);
+  padding-inline: var(--space-10);
   border-radius: var(--radius-pill);
   background-color: var(--success-bg);
   border: 1px solid var(--success-border);
@@ -167,13 +168,14 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  color: var(--gold-500);
+  color: var(--white);
+  opacity: 0.8;
   flex-shrink: 0;
 }
 
 .locationText {
   color: var(--white);
-  opacity: 0.78;
+  opacity: 0.8;
 }
 
 .ctaRow {
@@ -197,6 +199,18 @@
 
 /* R-43: on touch devices (`hover: none` / `pointer: coarse`), `.ctaRow` is visible at rest. */
 @media (hover: none), (pointer: coarse) {
+  .infoBlock {
+    transform: translateY(0);
+  }
+
+  .ctaRow {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* R-72: on mobile viewports (`< 768px`), `.ctaRow` is also visible at rest in both locales even in desktop pointer emulation. */
+@media (max-width: 767.98px) {
   .infoBlock {
     transform: translateY(0);
   }

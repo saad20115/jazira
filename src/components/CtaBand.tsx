@@ -159,6 +159,7 @@ export function CtaBand({ cta, locale, fallbackBackgroundSrc }: CtaBandProps): J
             {secondaryLabel ? (
               <Button
                 variant="Glass"
+                className={styles.ctaSecondaryButton}
                 label={secondaryLabel}
                 href={secondaryHref}
                 link={cta.secondaryButton?.link}

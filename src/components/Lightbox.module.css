@@ -14,7 +14,7 @@
   border: none;
   border-radius: var(--radius-md);
   background: var(--navy-900);
-  box-shadow: var(--shadow-card);
+  box-shadow: var(--shadow-card-rest);
   overflow: hidden;
   cursor: pointer;
 }

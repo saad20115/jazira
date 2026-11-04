@@ -103,7 +103,7 @@ export function ProjectCard({
           <h3 className={`${styles.title} t-h4`}>{project.title}</h3>
           <div className={styles.locationRow}>
             <span className={styles.pinIcon} aria-hidden="true">
-              <MapPinIcon size={13} />
+              <MapPinIcon size={14} />
             </span>
             <span className={`${styles.locationText} t-caption`}>{project.location}</span>
           </div>

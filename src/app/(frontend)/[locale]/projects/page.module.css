@@ -7,7 +7,7 @@
 
 .container {
   inline-size: 100%;
-  max-inline-size: calc(var(--container-max) + (var(--gutter-desktop) * 2));
+  max-inline-size: calc(var(--container-width) + (var(--gutter-desktop) * 2));
   margin-inline: auto;
   padding-inline: var(--gutter-desktop);
 }
@@ -16,7 +16,8 @@
   inline-size: 52px;
   block-size: 3px;
   border-radius: var(--radius-xs);
-  background: var(--gradient-gold-divider);
+  background: var(--gradient-gold-accent-line);
+  flex-shrink: 0;
 }
 
 .sectionHeading {
@@ -54,7 +55,7 @@
   padding-block: var(--space-10);
   padding-inline-start: var(--space-16);
   padding-inline-end: var(--space-10);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   background: transparent;
   color: var(--body);
   text-decoration: none;
@@ -86,7 +87,7 @@
 }
 
 .filterTabCountActive {
-  background: var(--glass-fill-strong);
+  background: var(--glass-border-white-16);
   color: var(--white);
 }
 
@@ -118,7 +119,7 @@
   padding-inline: var(--space-12);
   border-radius: var(--radius-pill);
   background: var(--gold-50);
-  border: 1px solid var(--gold-border-soft);
+  border: 1px solid var(--border-gold-light);
   color: var(--gold-700);
 }
 
@@ -174,7 +175,7 @@
 .pageButton {
   inline-size: 40px;
   block-size: 40px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-md);
   border: 1px solid var(--border);
   background: var(--white);
   color: var(--body);
@@ -195,11 +196,11 @@
 }
 
 .pageButtonDisabled {
-  opacity: 0.45;
-  cursor: not-allowed;
+  cursor: default;
 }
 
 :global([dir='rtl']) .paginationChevron {
+  display: inline-block;
   transform: scaleX(-1);
 }
 
@@ -245,7 +246,7 @@
   align-items: center;
   text-align: center;
   gap: var(--space-16);
-  margin-block-end: var(--space-52);
+  margin-block-end: 52px;
 }
 
 .impactTitle {
@@ -257,13 +258,6 @@
   margin: 0;
   color: color-mix(in srgb, var(--white) 70%, transparent);
   max-inline-size: 620px;
-}
-
-.goldDivider {
-  inline-size: 52px;
-  block-size: 3px;
-  background: var(--gold-500);
-  flex-shrink: 0;
 }
 
 .sectionHeading {
@@ -282,7 +276,8 @@
   z-index: 1;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-24);
+  column-gap: 0;
+  row-gap: var(--space-24);
   inline-size: 100%;
 }
 
@@ -296,6 +291,8 @@
 
 .impactStatValue {
   color: var(--gold-500);
+  unicode-bidi: isolate;
+  direction: ltr;
 }
 
 .impactStatLabel {
@@ -345,9 +342,9 @@
   inset-inline-start: var(--space-8);
   inline-size: 520px;
   block-size: 400px;
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-3xl);
   overflow: hidden;
-  box-shadow: var(--shadow-image);
+  box-shadow: var(--shadow-who-image);
   background: var(--navy-900);
 }
 
@@ -361,22 +358,28 @@
 .portfolioBadge {
   position: absolute;
   inset-block-start: 340px;
-  inset-inline-start: 360px;
+  inset-inline-end: 3px;
   z-index: 2;
+  min-inline-size: 177px;
+  min-block-size: 107px;
   background: var(--white);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-2xl);
   padding-block: var(--space-18);
-  padding-inline: var(--space-26);
-  box-shadow: var(--shadow-badge);
+  padding-inline: 26px;
+  box-shadow: var(--shadow-who-badge);
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: var(--space-2);
   white-space: nowrap;
+  box-sizing: border-box;
 }
 
 .portfolioBadgeValue {
   color: var(--gold-500);
+  unicode-bidi: isolate;
+  direction: ltr;
 }
 
 .portfolioBadgeLabel {
@@ -486,24 +489,22 @@
 
   .portfolioVisual {
     block-size: auto;
-    padding-block-end: var(--space-24);
+    padding-block-end: var(--space-40);
   }
 
   .portfolioPhotoFrame {
     position: relative;
     inset-block-start: 0;
     inset-inline-start: 0;
-    inline-size: 100%;
+    inline-size: calc(100% - 12px);
     block-size: 280px;
   }
 
   .portfolioBadge {
-    position: relative;
+    position: absolute;
     inset-block-start: auto;
+    inset-block-end: 0;
     inset-inline-start: auto;
-    margin-block-start: calc(var(--space-24) * -1);
-    margin-inline-start: auto;
-    margin-inline-end: var(--space-16);
-    inline-size: fit-content;
+    inset-inline-end: 3px;
   }
 }
