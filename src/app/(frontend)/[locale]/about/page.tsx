@@ -430,13 +430,15 @@ export default async function LocaleAboutPage({
               </div>
 
               <div className={styles.storyContentCol} {...revealAttributes({ stagger: true })}>
-                {storyEyebrow ? <Eyebrow label={storyEyebrow} tone="Light" /> : null}
-                {storyTitle ? (
-                  <h2 className={`${styles.storyTitle} t-h2`}>
-                    {renderAboutAccentHeading(storyTitle, true)}
-                  </h2>
-                ) : null}
-                <div aria-hidden="true" className={styles.goldDivider} />
+                <div className={styles.storyHead}>
+                  {storyEyebrow ? <Eyebrow label={storyEyebrow} tone="Light" /> : null}
+                  {storyTitle ? (
+                    <h2 className={`${styles.storyTitle} t-h2`}>
+                      {renderAboutAccentHeading(storyTitle, true)}
+                    </h2>
+                  ) : null}
+                  <div aria-hidden="true" className={styles.goldDivider} />
+                </div>
                 {storyParagraphs.map((paragraph, idx) => (
                   <p className={`${styles.storyParagraph} t-body-m`} key={`story-p-${String(idx)}`}>
                     {paragraph}

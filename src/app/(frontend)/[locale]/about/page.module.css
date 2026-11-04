@@ -43,7 +43,7 @@
 
 .storyContainer {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: var(--space-64);
 }
@@ -52,6 +52,7 @@
   position: relative;
   inline-size: 540px;
   block-size: 440px;
+  margin-block-start: 62.5px;
   flex-shrink: 0;
 }
 
@@ -123,6 +124,13 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--space-20);
+}
+
+.storyHead {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-16);
 }
 
 .storyTitle {
@@ -284,7 +292,8 @@
 .mvSection {
   position: relative;
   inline-size: 100%;
-  padding-block: var(--section-padding-y);
+  padding-block-start: 65px;
+  padding-block-end: 78px;
   background-color: var(--white);
   box-sizing: border-box;
 }
@@ -293,7 +302,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-80);
+  gap: 70px;
 }
 
 .mvSectionHead {
@@ -570,6 +579,7 @@
   .storyVisualCol {
     inline-size: 100%;
     max-inline-size: 540px;
+    margin-block-start: 0;
   }
 
   .storyPhotoWrap {
