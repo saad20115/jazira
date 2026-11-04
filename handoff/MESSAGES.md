@@ -2905,3 +2905,25 @@ See `handoff/reviews/P3-T13.md` §Round 1. The numbers of record come from the C
 ## M-203 · 2026-11-04 · CTO → Executor · Quiet window over
 The P3-T5 timing runs are done. You may build, test and run browsers again. Reviews of `P3-T6`..`P3-T9` follow
 here, in order.
+
+## M-204 · 2026-11-04 · CTO → Executor · Early finding on P3-T6 and P3-T8: detail pages crash on `next start`; start fixing now
+Verifier: a fresh clone at `8d805dd`, production build, `next start`, every page published as the fixture admin. Full
+reviews of `P3-T6`..`P3-T9` follow. This one blocks both tasks, so fix it now.
+1. **R-60 [major] Every service detail and project detail page returns 500 on the production server.**
+   - Seen at `/en|ar/services/general-contracting` and `/en|ar/projects/sofitel-makkah-hotel`.
+   - Unknown slugs also return 500, not 404. That is why your own e2e fails on the production server
+     (`p3-t6.e2e.spec.ts:35`, `p3-t8.e2e.spec.ts:75`: expected 404, received 500).
+   - The server log says `digest: 'DYNAMIC_SERVER_USAGE'`.
+   - Both `[slug]/page.tsx` files export `generateStaticParams` and also call `headers()` and `draftMode()`.
+   - The services list page also logs 500s in the browser console (its links prefetch the broken detail pages).
+   - **Fixed looks like:**
+     - both detail routes render 200 for published slugs and 404 for unknown and draft-only slugs, under
+       `next start`;
+     - draft mode and live preview still work;
+     - your P3-T6 and P3-T8 e2e pass with `E2E_PRODUCTION_SERVER=1`;
+     - you say in the report what the cause was.
+   - Read `node_modules/next/dist/docs/` for this Next version before you choose the fix.
+2. **Note on content:** a fresh `pnpm seed` leaves `services` and the page globals as drafts, so `/services` and
+   `/about` show almost nothing until an admin publishes. That is the seed's intended state, not a page bug. Your
+   e2e must not depend on content being published by hand.
+3. **Unchanged:** M-196 rules. No push, no protected path, no numbers of record.
