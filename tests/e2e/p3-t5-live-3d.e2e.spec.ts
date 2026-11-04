@@ -1218,15 +1218,20 @@ test.describe('P3-T5 live 3D card', () => {
     await page.waitForTimeout(1_000)
     const samples = await page.evaluate(
       () =>
-        (window as unknown as { __stillSamples: { state: string; same: boolean; opacity: number }[] })
-          .__stillSamples,
+        (
+          window as unknown as {
+            __stillSamples: { state: string; same: boolean; opacity: number }[]
+          }
+        ).__stillSamples,
     )
     const live = samples.filter((sample) => sample.state === 'live')
     expect(live.length).toBeGreaterThan(2)
     // Never unmounted and mounted again at the swap: the first live frames show the same still.
     expect(live[0].same).toBe(true)
     // It fades out over the canvas (values between shown and gone), then leaves.
-    expect(live.some((sample) => sample.same && sample.opacity > 0 && sample.opacity < 1)).toBe(true)
+    expect(live.some((sample) => sample.same && sample.opacity > 0 && sample.opacity < 1)).toBe(
+      true,
+    )
     expect(live[live.length - 1].same).toBe(false)
     await expect(still).toHaveCount(0)
   })
