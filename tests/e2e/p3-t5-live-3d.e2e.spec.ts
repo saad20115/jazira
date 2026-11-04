@@ -1001,8 +1001,10 @@ test.describe('P3-T5 live 3D card', () => {
     await rowHeader(rows(page).nth(2)).click()
     await expect(card).toHaveAttribute('data-viewer-state', 'loading')
     await expect(card.locator('[data-loading-indicator]')).toBeVisible()
-    // The image under it stays: the canvas is still fully transparent.
-    expect(await card.locator('canvas').evaluate((el) => getComputedStyle(el).opacity)).toBe('0')
+    // The image under it stays: the canvas is still fully transparent (O-9b: through its filter).
+    expect(await card.locator('canvas').evaluate((el) => getComputedStyle(el).filter)).toBe(
+      'opacity(0)',
+    )
     await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
     await expect(card.locator('[data-loading-indicator]')).toHaveCount(0)
   })
@@ -1177,6 +1179,56 @@ test.describe('P3-T5 live 3D card', () => {
     await page.waitForTimeout(800)
     const after = (await scaleSamples(page)).filter((sample) => sample.state === 'live')
     expect(after.filter((sample) => sample.scale !== held)).toEqual([])
+  })
+
+  test('@gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas', async ({
+    page,
+  }) => {
+    // Hold the model back, so the system's still is up and loaded before the swap.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2_500))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    const row = rows(page).nth(1)
+    await rowHeader(row).click()
+    const system = await systemOfRow(row)
+    await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+    const still = card.locator(`[data-entered-system="${system}"]`)
+    await expect(still).toHaveAttribute('data-loaded', 'true')
+    // Each frame: the state, and whether the still on screen now is still this same element.
+    await still.evaluate((layer) => {
+      const card = layer.closest('[data-interactive-3d-card]')
+      const samples: { state: string; same: boolean; opacity: number }[] = []
+      Object.assign(window, { __stillSamples: samples })
+      const sample = (): void => {
+        const current = card?.querySelector('[data-entered-system]') ?? null
+        samples.push({
+          state: card?.getAttribute('data-viewer-state') ?? '',
+          same: current === layer,
+          opacity: current ? Number(getComputedStyle(current).opacity) : 0,
+        })
+        requestAnimationFrame(sample)
+      }
+      requestAnimationFrame(sample)
+    })
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await page.waitForTimeout(1_000)
+    const samples = await page.evaluate(
+      () =>
+        (window as unknown as { __stillSamples: { state: string; same: boolean; opacity: number }[] })
+          .__stillSamples,
+    )
+    const live = samples.filter((sample) => sample.state === 'live')
+    expect(live.length).toBeGreaterThan(2)
+    // Never unmounted and mounted again at the swap: the first live frames show the same still.
+    expect(live[0].same).toBe(true)
+    // It fades out over the canvas (values between shown and gone), then leaves.
+    expect(live.some((sample) => sample.same && sample.opacity > 0 && sample.opacity < 1)).toBe(true)
+    expect(live[live.length - 1].same).toBe(false)
+    await expect(still).toHaveCount(0)
   })
 
   test('@gpu O-14: under heavy CPU throttling, within 10 s of the click the card is live or stills with a reason', async ({
