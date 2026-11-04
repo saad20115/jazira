@@ -48,6 +48,8 @@ const SYSTEM_TABS: readonly MaterialTabKey[] = [
   'architectural',
 ] as const
 
+const INITIAL_VISIBLE_ROWS = 10
+
 function resolveOriginsLabel(brands: ApprovedMaterialBrandItem[]): string {
   const uniqueOrigins: string[] = []
   for (const brand of brands) {
@@ -67,7 +69,8 @@ export function ApprovedMaterialsTable({
   dict,
 }: ApprovedMaterialsTableProps): JSX.Element {
   const baseId = useId()
-  const [activeSystem, setActiveSystem] = useState<MaterialTabKey>('all')
+  const [activeSystem, setActiveSystem] = useState<MaterialTabKey>('electrical')
+  const [isExpanded, setIsExpanded] = useState<boolean>(false)
   const [searchQuery, setSearchQuery] = useState<string>('')
   const tabRefs = useRef<Array<HTMLButtonElement | null>>([])
 
@@ -147,9 +150,20 @@ export function ApprovedMaterialsTable({
       event.preventDefault()
       const nextTab = SYSTEM_TABS[nextIndex] ?? 'all'
       setActiveSystem(nextTab)
+      setIsExpanded(nextTab === 'all')
       tabRefs.current[nextIndex]?.focus()
     }
   }
+
+  const hasSearch = searchQuery.trim().length > 0
+  const visibleMaterials = useMemo(() => {
+    if (!isExpanded && !hasSearch) {
+      return filteredMaterials.slice(0, INITIAL_VISIBLE_ROWS)
+    }
+    return filteredMaterials
+  }, [filteredMaterials, isExpanded, hasSearch])
+
+  const hasCollapsedRows = visibleMaterials.length < filteredMaterials.length
 
   const panelId = `${baseId}-materials-panel`
   const activeTabId = `${baseId}-tab-${activeSystem}`
@@ -158,17 +172,19 @@ export function ApprovedMaterialsTable({
     activeSystem === 'all'
       ? formatMaterialsShowing(
           dict.showingItemsTemplate,
-          filteredMaterials.length,
+          visibleMaterials.length,
           sortedMaterials.length,
         )
       : formatMaterialsShowingSystem(
           dict.showingSystemItemsTemplate,
-          filteredMaterials.length,
+          visibleMaterials.length,
           countsBySystem[activeSystem],
           getTabLabel(activeSystem),
         )
 
-  const viewAllLabel = formatViewAllItems(dict.viewAllItemsTemplate, sortedMaterials.length)
+  const viewAllTargetCount = hasCollapsedRows ? filteredMaterials.length : sortedMaterials.length
+  const viewAllLabel = formatViewAllItems(dict.viewAllItemsTemplate, viewAllTargetCount)
+  const showViewAllButton = hasCollapsedRows || activeSystem !== 'all' || hasSearch
 
   return (
     <section className={styles.section}>
@@ -225,6 +241,7 @@ export function ApprovedMaterialsTable({
                 tabIndex={isSelected ? 0 : -1}
                 onClick={() => {
                   setActiveSystem(tab)
+                  setIsExpanded(tab === 'all')
                 }}
                 onKeyDown={(e) => {
                   handleTabKeyDown(e, index)
@@ -267,36 +284,42 @@ export function ApprovedMaterialsTable({
               </tr>
             </thead>
             <tbody>
-              {filteredMaterials.length === 0 ? (
+              {visibleMaterials.length === 0 ? (
                 <tr>
                   <td colSpan={4} className={`${styles.emptyCell} t-body-m`}>
                     {dict.noMaterialsMatch}
                   </td>
                 </tr>
               ) : (
-                filteredMaterials.map((row, index) => {
+                visibleMaterials.map((row, index) => {
                   const isAlt = index % 2 === 1
                   const originsText = resolveOriginsLabel(row.brands)
                   const paddedItemNo = formatServiceNumber(row.itemNo)
                   return (
                     <tr key={row.id} className={isAlt ? `${styles.tr} ${styles.trAlt}` : styles.tr}>
-                      <td className={`${styles.td} ${styles.itemNoText} t-body-s-medium`}>
-                        {paddedItemNo}
+                      <td
+                        className={`${styles.td} ${styles.colNo} ${styles.itemNoText} t-body-s-medium`}
+                      >
+                        <bdi>{paddedItemNo}</bdi>
                       </td>
-                      <td className={`${styles.td} ${styles.materialDesc} t-body-s-medium`}>
-                        {row.description}
+                      <td
+                        className={`${styles.td} ${styles.colMaterial} ${styles.materialDesc} t-body-s-medium`}
+                      >
+                        <bdi>{row.description}</bdi>
                       </td>
-                      <td className={styles.td}>
+                      <td className={`${styles.td} ${styles.colBrand}`}>
                         <div className={styles.brandChips}>
                           {row.brands.map((brand) => (
                             <span key={brand.id} className={`${styles.brandChip} t-label-link`}>
-                              {brand.name}
+                              <bdi>{brand.name}</bdi>
                             </span>
                           ))}
                         </div>
                       </td>
-                      <td className={`${styles.td} ${styles.originText} t-body-s`}>
-                        {originsText}
+                      <td
+                        className={`${styles.td} ${styles.colOrigin} ${styles.originText} t-body-s`}
+                      >
+                        <bdi>{originsText}</bdi>
                       </td>
                     </tr>
                   )
@@ -306,10 +329,10 @@ export function ApprovedMaterialsTable({
           </table>
 
           <div className={styles.mobileCards}>
-            {filteredMaterials.length === 0 ? (
+            {visibleMaterials.length === 0 ? (
               <div className={`${styles.emptyCell} t-body-m`}>{dict.noMaterialsMatch}</div>
             ) : (
-              filteredMaterials.map((row, index) => {
+              visibleMaterials.map((row, index) => {
                 const isAlt = index % 2 === 1
                 const originsText = resolveOriginsLabel(row.brands)
                 const paddedItemNo = formatServiceNumber(row.itemNo)
@@ -321,14 +344,20 @@ export function ApprovedMaterialsTable({
                     }
                   >
                     <div className={styles.mobileCardHead}>
-                      <span className={`${styles.mobileNoBadge} t-label-tag`}>{paddedItemNo}</span>
-                      <span className={`${styles.mobileOrigin} t-caption`}>{originsText}</span>
+                      <span className={`${styles.mobileNoBadge} t-label-tag`}>
+                        <bdi>{paddedItemNo}</bdi>
+                      </span>
+                      <span className={`${styles.mobileOrigin} t-caption`}>
+                        <bdi>{originsText}</bdi>
+                      </span>
                     </div>
-                    <p className={`${styles.materialDesc} t-body-m-medium`}>{row.description}</p>
+                    <p className={`${styles.materialDesc} t-body-m-medium`}>
+                      <bdi>{row.description}</bdi>
+                    </p>
                     <div className={styles.brandChips}>
                       {row.brands.map((brand) => (
                         <span key={brand.id} className={`${styles.brandChip} t-label-link`}>
-                          {brand.name}
+                          <bdi>{brand.name}</bdi>
                         </span>
                       ))}
                     </div>
@@ -337,21 +366,26 @@ export function ApprovedMaterialsTable({
               })
             )}
           </div>
+        </div>
 
-          <div className={styles.tableFooter}>
-            <p className={`${styles.footerCount} t-body-s`}>{footerText}</p>
-            {activeSystem !== 'all' || searchQuery.trim().length > 0 ? (
-              <Button
-                variant="Outline"
-                label={viewAllLabel}
-                showArrow
-                onClick={() => {
+        <div className={styles.tableFooter}>
+          <p className={`${styles.footerCount} t-body-s`}>{footerText}</p>
+          {showViewAllButton ? (
+            <Button
+              variant="Outline"
+              label={viewAllLabel}
+              showArrow
+              onClick={() => {
+                if (hasCollapsedRows) {
+                  setIsExpanded(true)
+                } else {
                   setActiveSystem('all')
                   setSearchQuery('')
-                }}
-              />
-            ) : null}
-          </div>
+                  setIsExpanded(true)
+                }
+              }}
+            />
+          ) : null}
         </div>
       </div>
     </section>

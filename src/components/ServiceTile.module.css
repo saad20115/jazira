@@ -52,6 +52,15 @@
   flex-shrink: 0;
 }
 
+.tile:not(.variantCarousel) {
+  gap: var(--space-12);
+}
+
+.tile:not(.variantCarousel) .topGroup,
+.tile:not(.variantCarousel) .textBlock {
+  gap: var(--space-12);
+}
+
 .stateDefault {
   background-color: var(--white);
   border: 1px solid var(--border);

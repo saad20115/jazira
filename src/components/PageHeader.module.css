@@ -42,7 +42,7 @@
   align-items: center;
   gap: var(--space-18);
   inline-size: 100%;
-  max-inline-size: var(--container-max-width);
+  max-inline-size: var(--container-width);
 }
 
 .goldBar {
@@ -101,7 +101,7 @@
   color: var(--white);
   opacity: 0.6;
   text-decoration: none;
-  transition: opacity var(--motion-hover-duration) var(--motion-ease-out);
+  transition: opacity var(--motion-fast) var(--ease-out);
 }
 
 .breadcrumbLink:hover,

@@ -15,7 +15,6 @@ import {
   buildHreflangAlternates,
   getDictionary,
   isSupportedLocale,
-  SUPPORTED_LOCALES,
   type SupportedLocale,
 } from '@/i18n'
 import {
@@ -31,23 +30,6 @@ import styles from './page.module.css'
 
 export interface ServiceDetailPageProps {
   params: Promise<{ locale: string; slug: string }>
-}
-
-export async function generateStaticParams(): Promise<Array<{ locale: string; slug: string }>> {
-  const paramsList: Array<{ locale: string; slug: string }> = []
-  for (const locale of SUPPORTED_LOCALES) {
-    try {
-      const services = await getServices(locale)
-      for (const service of services) {
-        if (typeof service.slug === 'string' && service.slug.trim().length > 0) {
-          paramsList.push({ locale, slug: service.slug.trim() })
-        }
-      }
-    } catch {
-      // Allow build to proceed if DB is empty or unreachable during isolated static generation
-    }
-  }
-  return paramsList
 }
 
 export async function generateMetadata({ params }: ServiceDetailPageProps): Promise<Metadata> {

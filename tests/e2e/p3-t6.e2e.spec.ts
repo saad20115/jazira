@@ -30,12 +30,104 @@ function previewSecret(): string {
 }
 
 test.describe('P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMaterialsTable E2E', () => {
-  test('returns 404 for unknown or draft-only service slugs when anonymous', async ({ page }) => {
-    const draftNotFoundRes = await page.goto('/en/services/general-contracting')
-    expect(draftNotFoundRes?.status()).toBe(404)
+  test('renders 200 for published service slugs and returns 404 for unknown or draft-only service slugs when anonymous', async ({
+    page,
+    baseURL,
+  }) => {
+    const resolvedBase = (baseURL ?? 'http://localhost:3000').replace(/\/+$/, '')
+    const token = await ensureE2EAdminToken(resolvedBase)
 
-    const unknownNotFoundRes = await page.goto('/en/services/non-existent-service-slug-xyz')
-    expect(unknownNotFoundRes?.status()).toBe(404)
+    const unknownEnRes = await page.goto('/en/services/non-existent-service-slug-xyz')
+    expect(unknownEnRes?.status()).toBe(404)
+
+    const unknownArRes = await page.goto('/ar/services/non-existent-service-slug-xyz')
+    expect(unknownArRes?.status()).toBe(404)
+
+    // Query general-contracting and mep-works via REST with draft=true so this test does not depend on whether services were published by hand
+    const [gcQueryRes, mepQueryRes] = await Promise.all([
+      page.request.get(
+        `${resolvedBase}/api/services?where[slug][equals]=general-contracting&draft=true&depth=0&locale=en`,
+        { headers: { Authorization: `JWT ${token}` } },
+      ),
+      page.request.get(
+        `${resolvedBase}/api/services?where[slug][equals]=mep-works&draft=true&depth=0&locale=en`,
+        { headers: { Authorization: `JWT ${token}` } },
+      ),
+    ])
+    expect(gcQueryRes.ok()).toBe(true)
+    expect(mepQueryRes.ok()).toBe(true)
+
+    const gcDoc = (
+      (await gcQueryRes.json()) as { docs: Array<{ id: number; _status?: 'draft' | 'published' }> }
+    ).docs.at(0)
+    const mepDoc = (
+      (await mepQueryRes.json()) as { docs: Array<{ id: number; _status?: 'draft' | 'published' }> }
+    ).docs.at(0)
+
+    if (!gcDoc || !mepDoc) {
+      throw new Error('Expected seeded general-contracting and mep-works service documents')
+    }
+
+    const origGcStatus = gcDoc._status ?? 'draft'
+    const origMepStatus = mepDoc._status ?? 'draft'
+
+    try {
+      // Ensure general-contracting is draft and mep-works is published
+      if (origGcStatus !== 'draft') {
+        await page.request.patch(
+          `${resolvedBase}/api/services/${String(gcDoc.id)}?draft=true&locale=en`,
+          {
+            headers: {
+              Authorization: `JWT ${token}`,
+              'Content-Type': 'application/json',
+            },
+            data: { _status: 'draft' },
+          },
+        )
+      }
+      if (origMepStatus !== 'published') {
+        await page.request.patch(`${resolvedBase}/api/services/${String(mepDoc.id)}?locale=en`, {
+          headers: {
+            Authorization: `JWT ${token}`,
+            'Content-Type': 'application/json',
+          },
+          data: { _status: 'published' },
+        })
+      }
+
+      const draftNotFoundRes = await page.goto('/en/services/general-contracting')
+      expect(draftNotFoundRes?.status()).toBe(404)
+
+      const publishedEnRes = await page.goto('/en/services/mep-works')
+      expect(publishedEnRes?.status()).toBe(200)
+      await expect(page.locator('h1')).toContainText('MEP Works')
+
+      const publishedArRes = await page.goto('/ar/services/mep-works')
+      expect(publishedArRes?.status()).toBe(200)
+      await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    } finally {
+      if (origGcStatus !== 'draft') {
+        await page.request.patch(`${resolvedBase}/api/services/${String(gcDoc.id)}?locale=en`, {
+          headers: {
+            Authorization: `JWT ${token}`,
+            'Content-Type': 'application/json',
+          },
+          data: { _status: origGcStatus },
+        })
+      }
+      if (origMepStatus !== 'published') {
+        await page.request.patch(
+          `${resolvedBase}/api/services/${String(mepDoc.id)}?draft=true&locale=en`,
+          {
+            headers: {
+              Authorization: `JWT ${token}`,
+              'Content-Type': 'application/json',
+            },
+            data: { _status: origMepStatus },
+          },
+        )
+      }
+    }
   })
 
   test('renders /en/services, /ar/services, and /en/services/[slug] with 73 materials, keyboard-accessible tablist, search filter, and responsive mobile cards', async ({
@@ -92,39 +184,41 @@ test.describe('P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMat
     await expect(page.locator('article#general-contracting')).toBeVisible()
     await expect(page.locator('article#mep-works')).toBeVisible()
 
-    // 3. ApprovedMaterialsTable: semantic table with 73 rows sorted by itemNo
+    // 3. ApprovedMaterialsTable: default state is Electrical (20) with first 10 rows shown (R-61)
     const table = page.locator('table')
     await expect(table).toBeVisible()
     await expect(table.locator('caption')).toHaveCount(1)
     await expect(table.locator('thead th[scope="col"]')).toHaveCount(4)
 
-    const allRows = table.locator('tbody tr')
-    await expect(allRows).toHaveCount(73)
-    await expect(allRows.first().locator('td').first()).toHaveText('01')
-    await expect(allRows.last().locator('td').first()).toHaveText('73')
-
-    // 4. WAI-ARIA tablist filtering + keyboard ArrowRight/ArrowLeft navigation
     const tablist = page.locator('[role="tablist"]')
     const tabs = tablist.locator('[role="tab"]')
     await expect(tabs).toHaveCount(5)
-    await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true')
-
-    await tabs.nth(1).click() // Electrical
     await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true')
-    const electricalCount = await allRows.count()
-    expect(electricalCount).toBeGreaterThan(0)
-    expect(electricalCount).toBeLessThan(73)
 
+    const allRows = table.locator('tbody tr')
+    await expect(allRows).toHaveCount(10)
+    await expect(allRows.first().locator('td').first()).toHaveText('01')
+    await expect(allRows.last().locator('td').first()).toHaveText('10')
+
+    // Clicking "View all 20 items" expands to all 20 electrical rows
+    await page.getByRole('button', { name: /View all 20 items/i }).click()
+    await expect(allRows).toHaveCount(20)
+    await expect(allRows.last().locator('td').first()).toHaveText('20')
+
+    // 4. WAI-ARIA tablist filtering + keyboard ArrowRight/ArrowLeft navigation
     // Keyboard navigation from Electrical -> Mechanical via ArrowRight
     await tabs.nth(1).focus()
     await page.keyboard.press('ArrowRight')
     await expect(tabs.nth(2)).toHaveAttribute('aria-selected', 'true')
     await expect(tabs.nth(2)).toBeFocused()
+    await expect(allRows).toHaveCount(10)
 
-    // Reset back to All systems via "View all 73 items" button
-    await page.getByRole('button', { name: /View all 73 items/i }).click()
+    // Clicking "All Systems" tab shows all 73 items sorted by itemNo
+    await tabs.nth(0).click()
     await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true')
     await expect(allRows).toHaveCount(73)
+    await expect(allRows.first().locator('td').first()).toHaveText('01')
+    await expect(allRows.last().locator('td').first()).toHaveText('73')
 
     // 5. Search input filtering
     const searchInput = page.locator('input[type="search"]')
@@ -147,6 +241,8 @@ test.describe('P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMat
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/ar/services', { waitUntil: 'networkidle' })
     await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
+    await expect(page.locator('table tbody tr')).toHaveCount(10)
+    await page.locator('[role="tablist"] [role="tab"]').first().click()
     await expect(page.locator('table tbody tr')).toHaveCount(73)
 
     await page.setViewportSize({ width: 390, height: 844 })

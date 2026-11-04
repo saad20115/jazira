@@ -16,7 +16,7 @@
 }
 
 .overviewContainer {
-  max-inline-size: var(--container-max-width);
+  max-inline-size: var(--container-width);
   margin-inline: auto;
   display: flex;
   align-items: flex-start;
@@ -107,7 +107,7 @@
 .deliverablesContainer {
   position: relative;
   z-index: 1;
-  max-inline-size: var(--container-max-width);
+  max-inline-size: var(--container-width);
   margin-inline: auto;
   display: flex;
   flex-direction: column;
@@ -175,7 +175,7 @@
 }
 
 .otherServicesContainer {
-  max-inline-size: var(--container-max-width);
+  max-inline-size: var(--container-width);
   margin-inline: auto;
   display: flex;
   flex-direction: column;

@@ -97,13 +97,14 @@ describe('P3-T6 — Services page, Service detail, shared PageHeader, and Approv
     expect(htmlEn).toContain(dictEn.services.colMaterial)
     expect(htmlEn).toContain(dictEn.services.colBrand)
     expect(htmlEn).toContain(dictEn.services.colOrigin)
-    expect(htmlEn).toContain('Showing 73 of 73 items')
+    expect(htmlEn).toContain('Showing 10 of 20 electrical items')
+    expect(htmlEn).toContain('View all 20 items')
 
-    // Verify ascending itemNo order: 01 appears before 73 in the table body
-    const idx01 = htmlEn.indexOf('>01<')
-    const idx73 = htmlEn.lastIndexOf('>73<')
+    // Verify ascending itemNo order: 01 appears before 10 in the default 10-row electrical view
+    const idx01 = htmlEn.indexOf('<bdi>01</bdi>')
+    const idx10 = htmlEn.lastIndexOf('<bdi>10</bdi>')
     expect(idx01).toBeGreaterThan(-1)
-    expect(idx73).toBeGreaterThan(idx01)
+    expect(idx10).toBeGreaterThan(idx01)
 
     // Verify Arabic rendering
     const dictAr = getDictionary('ar')
