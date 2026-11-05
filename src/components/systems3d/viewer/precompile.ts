@@ -273,6 +273,25 @@ export function yieldToMain(): Promise<void> {
 /** The wait between two chunks of work: `yieldToMain`, or an idle slice while nothing is shown. */
 export type Pause = () => Promise<void>
 
+/** Longest wait for the next frame (none come while the tab is hidden or the card is off screen). */
+export const FRAME_WAIT_MAX_MS = 100
+
+/**
+ * O-9b: the next animation frame, at the latest after `FRAME_WAIT_MAX_MS`. Work done in slices with
+ * this wait in between takes at most one slice per frame, so a flight on screen keeps its rate.
+ */
+export function yieldToFrame(maxWaitMs = FRAME_WAIT_MAX_MS): Promise<void> {
+  return new Promise((resolve) => {
+    const fallback = window.setTimeout(done, maxWaitMs)
+    const frame = requestAnimationFrame(done)
+    function done(): void {
+      window.clearTimeout(fallback)
+      cancelAnimationFrame(frame)
+      resolve()
+    }
+  })
+}
+
 /** How often a fence is checked, and the longest wait for one (a lost context never signals). */
 const FENCE_POLL_MS = 4
 const FENCE_MAX_WAIT_MS = 2_000

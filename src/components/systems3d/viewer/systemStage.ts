@@ -85,6 +85,11 @@ export interface StageDeps {
   compileRoom?: () => Promise<void>
   /** O-12: true while no new program may be created. */
   compileFull?: () => boolean
+  /**
+   * O-9b: how long one compile task may run (default `COMPILE_TASK_MS`); 0 makes each task compile
+   * one object, so a flight on screen gets a frame between objects.
+   */
+  compileTaskMs?: () => number
   /** First use of the materials' programs, spread over short tasks (`warmPrograms`). */
   warm: (materials: readonly Material[]) => Promise<void>
   /**
@@ -539,7 +544,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
           } while (
             next < objects.length &&
             !deps.compileFull?.() &&
-            performance.now() - taskStart < COMPILE_TASK_MS
+            performance.now() - taskStart < (deps.compileTaskMs?.() ?? COMPILE_TASK_MS)
           )
           return Promise.all(started)
         }),

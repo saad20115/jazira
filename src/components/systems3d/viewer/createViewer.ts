@@ -89,6 +89,7 @@ import { type ViewerFailure, ViewerStartError } from './failure'
 import { inlineBasisuPlugin } from './inlineBasisuPlugin'
 import {
   compileInChunks,
+  COMPILE_TASK_MS,
   compileNow,
   computeBoundsInChunks,
   createLinkBudget,
@@ -104,6 +105,7 @@ import {
   uploadTexturesInChunks,
   waitForLinks,
   warmPrograms,
+  yieldToFrame,
   yieldToIdle,
   yieldToMain,
 } from './precompile'
@@ -635,6 +637,12 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     shown = true
   })
   const pace: Pause = () => (shown ? yieldToMain() : yieldToIdle())
+  /** O-9b: once shown, a system's warm-up does one slice per frame (unseen, idle slices as before). */
+  const nextFrameWhenShown = (): Promise<void> => (shown ? yieldToFrame() : Promise.resolve())
+  const framePace: Pause = async () => {
+    await pace()
+    await nextFrameWhenShown()
+  }
   /** O-12: the hero is ready; the systems' programs are being made. */
   let systemsWarming = false
   /** When the first visible frame was drawn. */
@@ -1140,11 +1148,15 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     },
     compileRoom: () => linkBudget.room(isDisposed),
     compileFull: () => linkBudget.full,
+    compileTaskMs: () => (shown ? 0 : COMPILE_TASK_MS),
     // The entered look's programs, then its textures (the variants' maps reach the GPU here, not
-    // in the first frames of the flight).
+    // in the first frames of the flight). O-9b: once shown, one slice per frame.
     warm: async (materials) => {
-      await warmPrograms(renderer, materials, isDisposed, pace)
-      await uploadMaterialTextures(renderer, materials, isDisposed, uploadPause)
+      await warmPrograms(renderer, materials, isDisposed, framePace)
+      await uploadMaterialTextures(renderer, materials, isDisposed, async () => {
+        await uploadPause()
+        await nextFrameWhenShown()
+      })
     },
     pause: async (system) => {
       await pace()
@@ -1155,6 +1167,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
           window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
         })
       }
+      await nextFrameWhenShown()
     },
     onEnterMix: applySystemLight,
   })
