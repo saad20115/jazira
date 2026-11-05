@@ -2,15 +2,24 @@ import fs from 'fs'
 import path from 'path'
 import { expect, test } from '@playwright/test'
 
+import { assertSafeE2ETarget, requireE2EAdminPassword } from './global-setup'
+
 const ADMIN_EMAIL = 'e2e-admin@aljazira.co'
-const ADMIN_PASSWORD = 'Strong!AdminPassword#2026'
 
 test.describe('Payload Admin Login Smoke (en LTR & ar RTL)', () => {
   test('renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language', async ({
+    baseURL,
     context,
     page,
     request,
   }) => {
+    const resolvedBaseUrl = (baseURL || process.env.SERVER_URL || 'http://localhost:3000').replace(
+      /\/+$/,
+      '',
+    )
+    assertSafeE2ETarget(resolvedBaseUrl)
+    const adminPassword = requireE2EAdminPassword()
+
     const outDir = path.resolve(process.cwd(), 'docs/reports/phase-1')
     fs.mkdirSync(outDir, { recursive: true })
 
@@ -19,7 +28,7 @@ test.describe('Payload Admin Login Smoke (en LTR & ar RTL)', () => {
       data: {
         name: 'أحمد المنصور',
         email: ADMIN_EMAIL,
-        password: ADMIN_PASSWORD,
+        password: adminPassword,
       },
     })
     expect([200, 201, 403]).toContain(registerRes.status())
@@ -46,7 +55,7 @@ test.describe('Payload Admin Login Smoke (en LTR & ar RTL)', () => {
 
     // 2. Log in, switch language to Arabic in /admin/account, log out, and verify /admin/login in Arabic (RTL)
     await page.locator('input[name="email"]').fill(ADMIN_EMAIL)
-    await page.locator('input[name="password"]').fill(ADMIN_PASSWORD)
+    await page.locator('input[name="password"]').fill(adminPassword)
     await page.getByRole('button', { name: /log\s*in/i }).click()
     await page.waitForURL((url) => url.pathname === '/admin' || url.pathname === '/admin/')
 

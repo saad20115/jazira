@@ -1,3 +1,4 @@
+import crypto from 'node:crypto'
 import type { Payload } from 'payload'
 import { getPayload } from 'payload'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
@@ -34,12 +35,13 @@ describe('P3-T12 Integration — English default + site-settings.arabicEnabled R
     })
     initialArabicEnabled = currentSettings.arabicEnabled === true
 
+    const ephemeralPassword = () => `Ephem!${crypto.randomBytes(16).toString('hex')}#9A`
     const adminUser = await payload.create({
       collection: 'users',
       data: {
         name: 'P3-T12 Admin',
         email: `p3-t12-admin-${String(Date.now())}@aljazira.co`,
-        password: 'Strong!AdminPassword#2026',
+        password: ephemeralPassword(),
         role: 'admin',
       },
       user: { id: 1, email: 'bootstrap@aljazira.co', role: 'admin', collection: 'users' },
@@ -52,7 +54,7 @@ describe('P3-T12 Integration — English default + site-settings.arabicEnabled R
       data: {
         name: 'P3-T12 Editor',
         email: `p3-t12-editor-${String(Date.now())}@aljazira.co`,
-        password: 'Strong!EditorPassword#2026',
+        password: ephemeralPassword(),
         role: 'editor',
       },
       overrideAccess: true,
