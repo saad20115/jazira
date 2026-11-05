@@ -3,6 +3,7 @@
 import {
   type ReactElement,
   type ReactNode,
+  startTransition,
   Suspense,
   use,
   useCallback,
@@ -152,18 +153,31 @@ export function SystemsExplorer({
       setStartSignal((n) => n + 1)
       return
     }
+    // O-9b: once live, a switch re-renders the card, the rows and the related panels in a
+    // transition, in slices between the flight's frames, not in one task on the click's frame.
+    const update = (change: () => void): void => {
+      if (cardPhase === 'live') {
+        startTransition(change)
+      } else {
+        change()
+      }
+    }
     // A click on an expanded header that is not entered (the pre-expanded first row) enters it.
     if (nextExpanded || (system !== null && system !== entered)) {
-      setExpandedIndex(idx)
-      enter(system)
+      update(() => {
+        setExpandedIndex(idx)
+        enter(system)
+      })
       if (system !== null) {
         setStartSignal((n) => n + 1)
       }
     } else {
-      setExpandedIndex(null)
-      if (system !== null && system === entered) {
-        enter(null)
-      }
+      update(() => {
+        setExpandedIndex(null)
+        if (system !== null && system === entered) {
+          enter(null)
+        }
+      })
     }
   }
 
