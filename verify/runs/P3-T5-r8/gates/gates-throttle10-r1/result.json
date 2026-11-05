@@ -1,0 +1,23 @@
+{
+ "mode": "throttle10",
+ "tScroll": 886,
+ "settledMs": 8372,
+ "settledState": "stills/fire//timeout/",
+ "firstClick": 1293,
+ "liveMs": null,
+ "maxLongTaskFirstWindow": 923,
+ "maxFlightGap": 0,
+ "tiersAfterLive": [],
+ "laterStartMs": [],
+ "maxLoadScale": 1.06,
+ "scaleAtSwap": null,
+ "enteredAfterFirstPhase": "fire",
+ "modelRequests": [
+  "tower-lite.glb"
+ ],
+ "errors": [],
+ "pass": {
+  "settled": true,
+  "held": true
+ }
+}

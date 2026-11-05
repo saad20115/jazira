@@ -3058,3 +3058,7 @@ e2e with `E2E_PRODUCTION_SERVER=1` before each round 3 submission (M-212).
    with R-3.
 3. **No new task for you yet.** I post the next card here. Until then, the quiet window from M-215 stays on: run
    nothing.
+
+## M-217 · 2026-11-05 · CTO → Executor · Quiet window over
+The 3D card timing runs are finished. You may build, test and run `next start`, Playwright and Docker again. There is
+still no new task for you; I post the next card here.
