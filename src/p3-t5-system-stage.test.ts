@@ -708,6 +708,98 @@ describe('P3-T5 O-9b: once shown, a system warm-up compiles one object per task'
   })
 })
 
+describe('P3-T5 round 11 (r12 O-12, O-9b): another system warm-up never compiles in a flight', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('waits for its turn before every task, the first one included: never in a flight or inside a system', async () => {
+    // The pause as createViewer gives it once shown: a task waits until `mayWarm` allows it.
+    const waiting: { system: SystemId; resolve: () => void }[] = []
+    const blocked = (system: SystemId): boolean => !f.stage.mayWarm(system)
+    const release = (): void => {
+      for (const w of waiting.splice(0)) {
+        if (blocked(w.system)) {
+          waiting.push(w)
+        } else {
+          w.resolve()
+        }
+      }
+    }
+    let watching = false
+    const movingAtCompile: boolean[] = []
+    const f: Fixture = buildFixture({
+      pause: (system) =>
+        new Promise<void>((resolve) => {
+          waiting.push({ system, resolve })
+        }),
+      onCompile: () => {
+        if (watching) {
+          movingAtCompile.push(f.stage.moving)
+        }
+      },
+    })
+    /** Gives waiting tasks their turn and settles compiles, up to `rounds` times or until `done`. */
+    const turns = async (rounds: number, done: () => boolean = () => false): Promise<void> => {
+      for (let i = 0; i < rounds && !done(); i += 1) {
+        release()
+        await settle()
+        finishCompiles(f)
+        await settle()
+      }
+    }
+    // Fire is ready before the visitor asks for it: in the flight, only hvac's warm-up can compile.
+    let fireReady = false
+    void f.stage.prepare('fire').then(() => {
+      fireReady = true
+    })
+    await turns(30, () => fireReady)
+    expect(fireReady).toBe(true)
+
+    watching = true
+    f.stage.request('fire')
+    let now = run(f.stage, 0, 5)
+    expect(f.stage.moving).toBe(true)
+    let hvacReady = false
+    void f.stage.prepare('hvac').then(() => {
+      hvacReady = true
+    })
+    for (let i = 0; i < 30 && f.stage.entered !== 'fire'; i += 1) {
+      await turns(1)
+      now = run(f.stage, now, 40)
+    }
+    expect(f.stage.entered).toBe('fire')
+    // Inside fire, at rest: still nothing of hvac (round 9's rule, r12 O-12 and O-9b).
+    await turns(3)
+    expect(movingAtCompile).toEqual([])
+    expect(hvacReady).toBe(false)
+    // Back at the overview, at rest: hvac's warm-up goes on, and only then.
+    f.stage.request(null)
+    for (let i = 0; i < 30 && (f.stage.moving || f.stage.entered !== null); i += 1) {
+      await turns(1)
+      now = run(f.stage, now, 40)
+    }
+    expect(f.stage.entered).toBeNull()
+    await turns(30, () => hvacReady)
+    expect(hvacReady).toBe(true)
+    expect(movingAtCompile.length).toBeGreaterThan(0)
+    expect(movingAtCompile.every((moving) => !moving)).toBe(true)
+  })
+
+  it('the system asked for may warm up at once; another may not while it is asked for', () => {
+    const f = buildFixture()
+    // At the overview at rest, nothing asked for: any system may warm up.
+    expect(f.stage.mayWarm('hvac')).toBe(true)
+    f.stage.request('fire')
+    run(f.stage, 0, 3)
+    expect(f.stage.mayWarm('fire')).toBe(true)
+    expect(f.stage.mayWarm('hvac')).toBe(false)
+  })
+})
+
 describe('P3-T5 O-12: label occlusion rays are spread over frames', () => {
   beforeEach(() => {
     vi.stubGlobal('window', { setTimeout })
