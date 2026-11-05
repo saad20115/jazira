@@ -802,7 +802,7 @@ test.describe('P3-T5 live 3D card', () => {
     }
   })
 
-  test('@gpu live: under CPU throttling the card ends in a lower tier, applied only off screen (O-9)', async ({
+  test('@gpu live: under CPU throttling the card ends in a lower tier: low only off screen (O-9), stills only at rest (O-14b)', async ({
     page,
     context,
   }) => {
@@ -816,15 +816,20 @@ test.describe('P3-T5 live 3D card', () => {
     // O-9: the GPU probe fixes the tier before the first visible frame: the model's, or low.
     const start = await tierNow()
     expect(start).toMatch(/^(lite|full|low)$/)
-    // Every change of tier or state, and whether the card was in the viewport at that moment.
+    // Every change of tier or state, whether the card was in the viewport at that moment, and
+    // whether the visitor held the view (a button down).
     await card.evaluate((el) => {
-      const changes: { value: string | null; inView: boolean }[] = []
+      const changes: { value: string | null; inView: boolean; held: boolean }[] = []
+      let held = false
+      window.addEventListener('pointerdown', () => (held = true), { capture: true })
+      window.addEventListener('pointerup', () => (held = false), { capture: true })
       Object.assign(window, { __tierChanges: changes })
       new MutationObserver(() => {
         const box = el.getBoundingClientRect()
         changes.push({
           value: `${el.getAttribute('data-viewer-state') ?? ''}/${el.getAttribute('data-viewer-tier') ?? ''}`,
           inView: box.bottom > 0 && box.top < window.innerHeight,
+          held,
         })
       }).observe(el, {
         attributes: true,
@@ -868,14 +873,134 @@ test.describe('P3-T5 live 3D card', () => {
         await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
         await expect(card.locator('img').first()).toBeVisible()
       }
-      // O-9: never in view.
       const changes = await page.evaluate(
         () =>
-          (window as unknown as { __tierChanges: { value: string; inView: boolean }[] })
-            .__tierChanges,
+          (
+            window as unknown as {
+              __tierChanges: { value: string; inView: boolean; held: boolean }[]
+            }
+          ).__tierChanges,
       )
       expect(changes.length).toBeGreaterThan(0)
-      expect(changes.filter((change) => change.inView)).toEqual([])
+      // O-9: a drop to low never in view. O-14b: the drop to stills may come in view, but only at
+      // rest (nothing held; this test makes no flight).
+      expect(
+        changes.filter((change) => change.inView && !change.value.startsWith('stills/')),
+      ).toEqual([])
+      expect(changes.filter((change) => change.held)).toEqual([])
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+  })
+
+  /** Drags the live view back and forth once (the canvas animates while the button is held). */
+  async function dragView(page: Page, card: Locator): Promise<void> {
+    const box = await card.boundingBox()
+    expect(box).not.toBeNull()
+    const x = (box?.x ?? 0) + (box?.width ?? 0) / 2
+    const y = (box?.y ?? 0) + (box?.height ?? 0) / 2
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    for (let i = 1; i <= 20; i += 1) {
+      await page.mouse.move(x + (i % 10 < 5 ? i * 6 : 60 - i * 3), y)
+    }
+    await page.mouse.up()
+  }
+
+  test('@gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page, '#systems-fire')
+    await expectHardwareGpu(page)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await goLive(card)
+    await card.scrollIntoViewIfNeeded()
+    const cdp = await context.newCDPSession(page)
+    try {
+      // The stills drop starts from the low tier. A card that started on its model first drops to
+      // low, which applies only off screen (O-9).
+      if ((await card.getAttribute('data-viewer-tier')) !== 'low') {
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 })
+        await card.click()
+        await expect
+          .poll(
+            async () => {
+              await card.scrollIntoViewIfNeeded()
+              await dragView(page, card)
+              await page.evaluate(() => {
+                window.scrollTo(0, 0)
+              })
+              await page.waitForTimeout(300)
+              await card.scrollIntoViewIfNeeded()
+              return card.getAttribute('data-viewer-tier')
+            },
+            { timeout: 90_000, intervals: [0] },
+          )
+          .toBe('low')
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+      }
+      await expect(card).toHaveAttribute('data-viewer-state', 'live')
+      await expect(card).toHaveAttribute('data-viewer-tier', 'low')
+
+      // Every state change: whether the card was in the viewport, whether the visitor held the view
+      // (a button down), and whether the canvas was still in the card (a crossfade, not a cut).
+      await card.evaluate((el) => {
+        const changes: { state: string | null; inView: boolean; held: boolean; canvas: boolean }[] =
+          []
+        let held = false
+        window.addEventListener('pointerdown', () => (held = true), { capture: true })
+        window.addEventListener('pointerup', () => (held = false), { capture: true })
+        Object.assign(window, { __stateChanges: changes })
+        new MutationObserver(() => {
+          const box = el.getBoundingClientRect()
+          changes.push({
+            state: el.getAttribute('data-viewer-state'),
+            inView: box.bottom > 0 && box.top < window.innerHeight,
+            held,
+            canvas: el.querySelector('canvas') !== null,
+          })
+        }).observe(el, { attributes: true, attributeFilter: ['data-viewer-state'] })
+      })
+
+      // Far too slow for §8b's stills floor; the card stays in view throughout.
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 20 })
+      await card.click()
+      await expect(card).toHaveAttribute('data-viewer-active', 'true')
+      await expect
+        .poll(
+          async () => {
+            await dragView(page, card)
+            await page.waitForTimeout(400)
+            return card.getAttribute('data-viewer-state')
+          },
+          { timeout: 90_000, intervals: [0] },
+        )
+        .toBe('stills')
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+
+      await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
+      const changes = await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              __stateChanges: { state: string; inView: boolean; held: boolean; canvas: boolean }[]
+            }
+          ).__stateChanges,
+      )
+      // In view, at rest (nothing held), with the canvas still there for the crossfade.
+      expect(changes).toEqual([{ state: 'stills', inView: true, held: false, canvas: true }])
+      // The visitor's place is kept: the system, its end still and labels, the hash, the accordion.
+      await expect(card).toHaveAttribute('data-entered', 'fire')
+      const layer = card.locator('[data-entered-system="fire"]')
+      await expect(layer).toBeVisible()
+      await expect(layer.locator('li button').filter({ visible: true }).first()).toBeVisible()
+      expect(new URL(page.url()).hash).toBe('#systems-fire')
+      const expanded = rows(page).and(page.locator('[data-accordion-state="Expanded"]'))
+      await expect(expanded).toHaveCount(1)
+      expect(await systemOfRow(expanded)).toBe('fire')
+      // After the crossfade the canvas leaves.
+      await expect(card.locator('canvas')).toHaveCount(0)
     } finally {
       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
     }
