@@ -140,7 +140,10 @@ describe('uploadValidation (I5)', () => {
 
   it("adds Content-Security-Policy: default-src 'none'; sandbox and X-Content-Type-Options: nosniff to /api/:collection(media|videos)/file/:path* (A-10)", async () => {
     expect(typeof nextConfig.headers).toBe('function')
-    const headerRules = await nextConfig.headers!()
+    if (!nextConfig.headers) {
+      throw new Error('nextConfig.headers must be defined')
+    }
+    const headerRules = await nextConfig.headers()
     const fileHeaderRule = headerRules.find(
       (rule) => rule.source === '/api/:collection(media|videos)/file/:path*',
     )
@@ -186,10 +189,14 @@ describe('uploadValidation (I5)', () => {
 
     const runBeforeOperation = async (
       hooks: NonNullable<typeof Media.hooks>['beforeOperation'],
-      arg: Parameters<NonNullable<NonNullable<typeof Media.hooks>['beforeOperation']>[number]>[0],
+      arg: {
+        args: { data: Record<string, unknown> }
+        operation: 'create' | 'update'
+        req: { data: Record<string, unknown> }
+      },
     ) => {
       for (const hook of hooks ?? []) {
-        await hook(arg)
+        await hook(arg as never)
       }
     }
 
@@ -199,12 +206,10 @@ describe('uploadValidation (I5)', () => {
         args: {
           data: { url: 'http://127.0.0.1:9999/ssrf.jpg', filename: 'ssrf.jpg', alt: 'ssrf' },
         },
-        collection: Media as never,
-        context: {},
         operation: 'create',
         req: {
           data: { url: 'http://127.0.0.1:9999/ssrf.jpg', filename: 'ssrf.jpg', alt: 'ssrf' },
-        } as never,
+        },
       }),
     ).rejects.toThrow(/file/i)
 
@@ -213,12 +218,10 @@ describe('uploadValidation (I5)', () => {
         args: {
           data: { url: 'http://127.0.0.1:9999/ssrf.mp4', filename: 'ssrf.mp4', title: 'ssrf' },
         },
-        collection: Videos as never,
-        context: {},
         operation: 'create',
         req: {
           data: { url: 'http://127.0.0.1:9999/ssrf.mp4', filename: 'ssrf.mp4', title: 'ssrf' },
-        } as never,
+        },
       }),
     ).rejects.toThrow(/file/i)
 
@@ -226,24 +229,20 @@ describe('uploadValidation (I5)', () => {
     await expect(
       runBeforeOperation(Media.hooks?.beforeOperation, {
         args: { data: { alt: 'updated' } },
-        collection: Media as never,
-        context: {},
         operation: 'update',
         req: {
           data: { url: 'http://127.0.0.1:9999/ssrf.jpg', filename: 'ssrf.jpg', alt: 'updated' },
-        } as never,
+        },
       }),
     ).rejects.toThrow(/file/i)
 
     await expect(
       runBeforeOperation(Videos.hooks?.beforeOperation, {
         args: { data: { title: 'updated' } },
-        collection: Videos as never,
-        context: {},
         operation: 'update',
         req: {
           data: { url: 'http://127.0.0.1:9999/ssrf.mp4', filename: 'ssrf.mp4', title: 'updated' },
-        } as never,
+        },
       }),
     ).rejects.toThrow(/file/i)
   })

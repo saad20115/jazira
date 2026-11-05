@@ -128,9 +128,9 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
 
     // Verify payload-jobs is included in enumerated collections and config.jobs.access defines explicit non-default access functions (A-06)
     expect(appCollections.some((c) => c.slug === 'payload-jobs')).toBe(true)
-    expect(config.jobs?.access, 'config.jobs.access is missing').toBeDefined()
+    expect(config.jobs.access, 'config.jobs.access is missing').toBeDefined()
     for (const op of JOBS_ACCESS_OPS) {
-      assertExplicitAccessFunction(config.jobs?.access?.[op], 'config.jobs', op)
+      assertExplicitAccessFunction(config.jobs.access?.[op], 'config.jobs', op)
     }
 
     // Negative self-test: prove assertExplicitAccessFunction catches missing, defaultAccess, and defaultUnlockAccess (R-19)
@@ -283,11 +283,14 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
       expect(await payloadJobsCol.access[op](adminArgs), `payload-jobs.${op}(admin)`).toBe(false)
     }
     for (const op of JOBS_ACCESS_OPS) {
-      const fn = config.jobs?.access?.[op]
+      const fn = config.jobs.access?.[op]
       expect(typeof fn, `config.jobs.access.${op} must be a function`).toBe('function')
-      expect(await fn!(anonArgs), `jobs.access.${op}(anon)`).toBe(false)
-      expect(await fn!(editorOtherArgs), `jobs.access.${op}(editor)`).toBe(false)
-      expect(await fn!(adminArgs), `jobs.access.${op}(admin)`).toBe(true)
+      if (!fn) {
+        throw new Error(`Missing config.jobs.access.${op}`)
+      }
+      expect(await fn(anonArgs), `jobs.access.${op}(anon)`).toBe(false)
+      expect(await fn(editorOtherArgs), `jobs.access.${op}(editor)`).toBe(false)
+      expect(await fn(adminArgs), `jobs.access.${op}(admin)`).toBe(true)
     }
 
     // 7. projects.reviewNote field-level access (A-05 / D-05): read, create, update are admin-only
@@ -299,17 +302,19 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
       expect(typeof fieldAccessFn, `projects.reviewNote.access.${fieldOp} must be a function`).toBe(
         'function',
       )
-      expect(await fieldAccessFn!(anonArgs as never), `projects.reviewNote.${fieldOp}(anon)`).toBe(
+      if (!fieldAccessFn) {
+        throw new Error(`Missing projects.reviewNote.access.${fieldOp}`)
+      }
+      expect(await fieldAccessFn(anonArgs as never), `projects.reviewNote.${fieldOp}(anon)`).toBe(
         false,
       )
       expect(
-        await fieldAccessFn!(editorOtherArgs as never),
+        await fieldAccessFn(editorOtherArgs as never),
         `projects.reviewNote.${fieldOp}(editor)`,
       ).toBe(false)
-      expect(
-        await fieldAccessFn!(adminArgs as never),
-        `projects.reviewNote.${fieldOp}(admin)`,
-      ).toBe(true)
+      expect(await fieldAccessFn(adminArgs as never), `projects.reviewNote.${fieldOp}(admin)`).toBe(
+        true,
+      )
     }
   })
 })

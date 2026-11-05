@@ -38,6 +38,9 @@ import { MAX_MEDIA_FILE_SIZE_BYTES } from './security/uploadValidation'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+const isAdminJobAccess = ({ req }: { req: Parameters<typeof isAdmin>[0]['req'] }): boolean =>
+  isAdmin({ req }) === true
+
 export default buildConfig({
   serverURL: env.SERVER_URL,
   cors: [env.SERVER_URL],
@@ -117,9 +120,9 @@ export default buildConfig({
   email: buildNonBlockingEmailAdapter(),
   jobs: {
     access: {
-      run: isAdmin,
-      queue: isAdmin,
-      cancel: isAdmin,
+      run: isAdminJobAccess,
+      queue: isAdminJobAccess,
+      cancel: isAdminJobAccess,
     },
     autoRun: [
       {

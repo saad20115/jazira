@@ -272,7 +272,8 @@ export function resolveSafeCmsLinkData(
  * while remaining 100% valid JSON (`JSON.parse` restores the exact original values).
  */
 export function serializeJsonLd(value: unknown): string {
-  const json = JSON.stringify(value) ?? 'null'
+  const serialized = JSON.stringify(value) as string | undefined
+  const json = serialized ?? 'null'
   return json
     .replace(/</g, '\\u003c')
     .replace(/>/g, '\\u003e')
@@ -280,4 +281,3 @@ export function serializeJsonLd(value: unknown): string {
     .replace(/\u2028/g, '\\u2028')
     .replace(/\u2029/g, '\\u2029')
 }
-

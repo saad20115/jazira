@@ -56,34 +56,37 @@ describe('A-03 / B-15 / E-03 — E2E global-setup safety & teardown', () => {
     process.env.TEST_DATABASE_URL = 'postgresql://aljazira_app:pass@127.0.0.1:5470/aljazira_test'
 
     const recordedPostBodies: Array<{ url: string; body: Record<string, unknown> }> = []
-    vi.spyOn(globalThis, 'fetch').mockImplementation(async (input, init) => {
+    vi.spyOn(globalThis, 'fetch').mockImplementation((input, init) => {
       const url =
         typeof input === 'string' ? input : input instanceof URL ? input.toString() : input.url
       const method = (init?.method ?? 'GET').toUpperCase()
       if (url.endsWith('/api/users/login') && method === 'POST') {
-        return Response.json({ token: 'mock-jwt-token' }, { status: 200 })
+        return Promise.resolve(Response.json({ token: 'mock-jwt-token' }, { status: 200 }))
       }
       if (url.includes('/api/globals/site-settings') && method === 'GET') {
         const isAr = url.includes('locale=ar')
-        return Response.json(
-          {
-            arabicEnabled: false,
-            companyName: isAr ? 'الاسم الأصلي' : 'Original Company Name',
-            tagline: isAr ? 'الشعار الأصلي' : 'Original Tagline',
-            defaultSeo: {
-              title: isAr ? 'عنوان أصلي' : 'Original SEO Title',
-              description: isAr ? 'وصف أصلي' : 'Original SEO Desc',
+        return Promise.resolve(
+          Response.json(
+            {
+              arabicEnabled: false,
+              companyName: isAr ? 'الاسم الأصلي' : 'Original Company Name',
+              tagline: isAr ? 'الشعار الأصلي' : 'Original Tagline',
+              defaultSeo: {
+                title: isAr ? 'عنوان أصلي' : 'Original SEO Title',
+                description: isAr ? 'وصف أصلي' : 'Original SEO Desc',
+              },
             },
-          },
-          { status: 200 },
+            { status: 200 },
+          ),
         )
       }
       if (url.includes('/api/globals/site-settings') && method === 'POST') {
-        const parsedBody = JSON.parse(String(init?.body ?? '{}')) as Record<string, unknown>
+        const rawBody = typeof init?.body === 'string' ? init.body : '{}'
+        const parsedBody = JSON.parse(rawBody) as Record<string, unknown>
         recordedPostBodies.push({ url, body: parsedBody })
-        return Response.json(parsedBody, { status: 200 })
+        return Promise.resolve(Response.json(parsedBody, { status: 200 }))
       }
-      return Response.json({}, { status: 200 })
+      return Promise.resolve(Response.json({}, { status: 200 }))
     })
 
     const teardown = await globalSetup({
@@ -94,7 +97,7 @@ describe('A-03 / B-15 / E-03 — E2E global-setup safety & teardown', () => {
     expect(recordedPostBodies.some((c) => c.body.arabicEnabled === true)).toBe(true)
 
     recordedPostBodies.length = 0
-    await (teardown as () => Promise<void>)()
+    await teardown()
 
     const enRestore = recordedPostBodies.find((c) => c.url.includes('locale=en'))
     const arRestore = recordedPostBodies.find((c) => c.url.includes('locale=ar'))
