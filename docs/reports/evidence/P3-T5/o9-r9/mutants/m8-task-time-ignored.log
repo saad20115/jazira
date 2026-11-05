@@ -1,0 +1,34 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-system-stage.test.ts (12 tests | 1 failed) 7684ms
+   ❯ P3-T5 O-9b: once shown, a system warm-up compiles one object per task (2)
+     × with no task time, every compile call is a task of its own 304ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 O-9b: once shown, a system warm-up compiles one object per task > with no task time, every compile call is a task of its own
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/p3-t5-system-stage.test.ts:529:33
+    527|     const tasks = await tasksOfCompiles(0)
+    528|     expect(tasks.length).toBeGreaterThan(1)
+    529|     expect(new Set(tasks).size).toBe(tasks.length)
+       |                                 ^
+    530|   })
+    531|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  05:46:57
+   Duration  8.13s (tests 98%, import 1%, transform 1%)
+

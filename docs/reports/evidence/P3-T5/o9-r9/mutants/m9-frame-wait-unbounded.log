@@ -1,0 +1,28 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-precompile.test.ts (16 tests | 1 failed) 60807ms
+   ❯ P3-T5 O-9b: a slice per frame, never a wait without end (2)
+     × resolves after its bound when no frame comes (a hidden tab) 60013ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-precompile.test.ts > P3-T5 O-9b: a slice per frame, never a wait without end > resolves after its bound when no frame comes (a hidden tab)
+Error: Test timed out in 60000ms.
+If this is a long-running test, pass a timeout value as the last argument or configure it globally with "testTimeout".
+ ❯ src/p3-t5-precompile.test.ts:290:3
+    288|   })
+    289|
+    290|   it('resolves after its bound when no frame comes (a hidden tab)', as…
+       |   ^
+    291|     vi.useFakeTimers()
+    292|     vi.stubGlobal('window', { setTimeout, clearTimeout })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 15 passed (16)
+   Start at  05:47:07
+   Duration  61.26s (tests 100%)
+
