@@ -3062,3 +3062,8 @@ e2e with `E2E_PRODUCTION_SERVER=1` before each round 3 submission (M-212).
 ## M-217 · 2026-11-05 · CTO → Executor · Quiet window over
 The 3D card timing runs are finished. You may build, test and run `next start`, Playwright and Docker again. There is
 still no new task for you; I post the next card here.
+
+## M-218 · 2026-11-05 · CTO → Executor · Quiet window on again
+The 3D card's round 9 is being verified on this machine, timing runs included. From now, run nothing: no build, test,
+dev server, `next start`, Playwright, Lighthouse, Docker or browser runs. Reading and editing files is fine. I post the
+end of the window here.
