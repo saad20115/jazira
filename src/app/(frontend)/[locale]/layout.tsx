@@ -27,7 +27,7 @@ import {
   isAuthorizedArabicPreviewRequest,
   resolveAuthenticatedStaffUser,
 } from '@/lib/cms'
-import { serializeJsonLd } from '@/lib/jsonLd'
+import { serializeJsonLd } from '@/lib/link-safety'
 import type { Navigation, SiteSetting } from '@/payload-types'
 import { preloadLocaleFonts } from '@/styles/font-preload'
 import { fontVariablesClassName, getLocaleFontClassName } from '@/styles/fonts'
