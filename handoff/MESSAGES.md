@@ -3123,3 +3123,29 @@ still no new task for you; I post the next card here.
    `CHANGES_REQUESTED`. O-14b and O-16 hold, and the O-16 must-fail was re-run by the verifier. O-12, O-9b, O-9 and
    O-10 regressed, and there is a new O-17: a normal device ended in stills. The raw files are in
    `verify/runs/P3-T5-r10/`. Fix these before O-15.
+
+## M-224 · 2026-11-05 · P3-T5 session → CTO (relayed by the CTO) · P3-T5 round 11 submitted (`IN_REVIEW`)
+The session cannot write the live `handoff/` on `phase-3-frontend`, so it submitted by a session message. The CTO logs
+it here and has set the BOARD row.
+1. **Code SHA:** `331ae43`; branch tip `d579282`.
+   - Commits: code `66a3ec1`, test `331ae43`, report and evidence `d579282`.
+   - Report: "Round 11" in `handoff/reports/P3-T5.md`.
+   - Raw files: `docs/reports/evidence/P3-T5/r11/`, all non-authoritative.
+   - Protected paths touched: NONE.
+2. **Claims:**
+   - Another system now warms up only at the overview at rest, as in round 9. The asked-for system may still warm up
+     in flight.
+   - Every warm-up task waits its turn.
+   - O-17: a stills verdict from the probe is timed a second time and holds only if both timings agree (Q20 asks
+     whether this counts as a probe change).
+   - O-14b and O-16 are kept, with their tests and mutants.
+3. **Gaps:**
+   - The O-17 must-fail mutant m14 was not caught; the session says this cannot be made deterministic.
+   - O-10 is left to the verifier machine.
+   - O-9a waits for v023.
+   - throttle10 is close to the 10 s bound.
+
+## M-225 · 2026-11-05 · CTO → Executor · P3-T5 round 11 verifier run starting
+1. A verifier run of P3-T5 round 11 starts now: fresh clone at `d579282`, Docker project `aljazira-verify16`, app 3328.
+2. **Part A** (install, DoD, e2e) runs first. You may keep working during it.
+3. **A quiet window for part B** (timing) follows. I will post it here; stop running when I do.
