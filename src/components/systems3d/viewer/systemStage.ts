@@ -107,11 +107,15 @@ export interface StageDeps {
    * one object, so a flight on screen gets a frame between objects.
    */
   compileTaskMs?: () => number
-  /** First use of the materials' programs, spread over short tasks (`warmPrograms`). */
-  warm: (materials: readonly Material[]) => Promise<void>
   /**
-   * The wait between two warm-up tasks of `system` (O-9: idle slices until the model is shown, and
-   * no other system's warm-up while the camera flies to the one asked for).
+   * First use of the materials' programs, then their textures, spread over short tasks
+   * (`warmPrograms`); each task of another system than the one asked for waits as `pause` does.
+   */
+  warm: (materials: readonly Material[], system: SystemId) => Promise<void>
+  /**
+   * The wait before each warm-up task of `system` (O-9: idle slices until the model is shown, and
+   * no other system's warm-up while the camera moves or flies to the one asked for). It resolves
+   * only while that still holds, so the task that follows never runs during a flight.
    */
   pause?: (system: SystemId) => Promise<void>
   /**
@@ -195,11 +199,18 @@ export interface SystemStage {
   /** True while shader warm-up work runs (its tasks lengthen frames; not a GPU speed sample). */
   readonly preparing: boolean
   /**
-   * True while the camera stands still (at rest, or inside a system: O-16), so a background warm-up
-   * may run. The asked-for system's own warm-up runs in any phase: each step puts the look back
-   * exactly.
+   * True while no system's look is on screen and the visitor has asked for none, so a background
+   * warm-up may start (round 11: as in round 9; r12 O-12, O-9b). The asked-for system's own warm-up
+   * runs in any phase (O-16: also while another system's look is on screen); each step puts the
+   * look back exactly.
    */
   readonly canPrepare: boolean
+  /**
+   * Round 11 (r12 O-12, O-9b): whether a warm-up task of `system` may run now, once the model is on
+   * screen. The system the visitor asked for: always (one task per frame). Any other: only at the
+   * overview at rest, nothing asked for; never while the camera moves, never inside a system.
+   */
+  mayWarm: (system: SystemId) => boolean
   /** The system the visitor asked for last (null = overview). */
   readonly wanted: SystemId | null
   /** The system the visitor wants (null = overview); the stage gets there step by step. */
@@ -533,10 +544,19 @@ export function createSystemStage(deps: StageDeps): SystemStage {
   // Shader warm-up: the entered look of a system (its variant, faded and section-clipped materials,
   // kept slabs) is applied for one synchronous moment, its programs are created and linked in
   // parallel, and the look on screen is put back exactly before any frame can draw it (O-16: also
-  // while another system's look is on screen, so a direct switch finds its target ready).
+  // while another system's look is on screen, so a direct switch can warm up its target in flight).
   const prepared = new Map<SystemId, Promise<void>>()
   const compileEntered = async (system: SystemId): Promise<void> => {
     const loaded = await loadVariant(system)
+    /**
+     * Round 11 (r12 O-12, O-9b): every task below waits its turn (`StageDeps.pause`, by
+     * `mayWarm`), the first one included. Another system's warm-up never works while the camera
+     * moves or inside a system: before O-16 a step refused to run then ("stage busy"); since the
+     * asked-for system's warm-up may run while another's look is on screen (a direct switch), the
+     * wait is what keeps the others out.
+     */
+    const turn = (): Promise<void> => (deps.pause ? deps.pause(system) : yieldToMain())
+    await turn()
     // Each step applies the entered look, works on it synchronously and puts the look on screen
     // back, so no frame ever draws it; the steps are separate tasks (no long task).
     const withEnteredLook = <T>(work: () => T): T => {
@@ -581,13 +601,12 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     const pending: Promise<unknown>[] = []
     let next = 0
     while (next < objects.length) {
-      if (next > 0) {
-        await (deps.pause ? deps.pause(system) : yieldToMain())
-      }
-      // O-12: only while few new programs are still linking; then at once, in the same task.
+      // O-12: only while few new programs are still linking; then its turn (the room can take
+      // frames to come, and a flight may have started meanwhile), and at once, in the same task.
       if (deps.compileRoom) {
         await deps.compileRoom()
       }
+      await turn()
       pending.push(
         withEnteredLook(() => {
           const taskStart = performance.now()
@@ -604,9 +623,9 @@ export function createSystemStage(deps: StageDeps): SystemStage {
         }),
       )
     }
-    await (deps.pause ? deps.pause(system) : yieldToMain())
+    await turn()
     await Promise.all(pending)
-    await deps.warm(used)
+    await deps.warm(used, system)
   }
   let preparing = 0
   const prepare = (system: SystemId): Promise<void> => {
@@ -966,7 +985,13 @@ export function createSystemStage(deps: StageDeps): SystemStage {
       return desired
     },
     get canPrepare() {
-      return phase === 'rest' || phase === 'easeBack' || phase === 'variant' || phase === 'entered'
+      return (phase === 'rest' || phase === 'easeBack' || phase === 'variant') && !variantAssigned
+    },
+    mayWarm(system) {
+      return (
+        system === desired ||
+        (phase === 'rest' && entered === null && desired === null && !variantAssigned)
+      )
     },
     get moving() {
       return phase !== 'rest' && phase !== 'entered'

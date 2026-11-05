@@ -1151,23 +1151,20 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     compileTaskMs: () => (shown ? 0 : COMPILE_TASK_MS),
     // The entered look's programs, then its textures (the variants' maps reach the GPU here, not
     // in the first frames of the flight). O-9b: once shown, one slice per frame.
-    warm: async (materials) => {
-      await warmPrograms(renderer, materials, isDisposed, framePace)
+    warm: async (materials, system) => {
+      await warmPrograms(renderer, materials, isDisposed, async () => {
+        await framePace()
+        await warmupTurn(system)
+      })
       await uploadMaterialTextures(renderer, materials, isDisposed, async () => {
         await uploadPause()
         await nextFrameWhenShown()
+        await warmupTurn(system)
       })
     },
     pause: async (system) => {
       await pace()
-      // O-9: once shown, another system's warm-up waits until the camera has reached the one asked
-      // for (O-12: also while that one's own programs are being made).
-      while (shown && !isDisposed() && visitorWaits() && stage.wanted !== system) {
-        await new Promise((resolve) => {
-          window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
-        })
-      }
-      await nextFrameWhenShown()
+      await warmupTurn(system)
     },
     onEnterMix: applySystemLight,
   })
@@ -1411,6 +1408,34 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   }
 
   /**
+   * Once shown, another system's warm-up has no turn while the camera moves or a system is entered
+   * (O-9; round 11: as in round 9, see `SystemStage.mayWarm`).
+   */
+  function warmupBlocked(system: SystemId): boolean {
+    return shown && !isDisposed() && !stage.mayWarm(system)
+  }
+
+  /**
+   * O-9 (round 11, r12 O-12 and O-9b): the wait before a warm-up task of `system`. Another system's
+   * waits until the camera is back at the overview at rest (also while the asked-for system's own
+   * programs are made, O-12), then for the next frame; it resolves only if that still holds then,
+   * so its task never lands in a flight that started in the meantime.
+   */
+  async function warmupTurn(system: SystemId): Promise<void> {
+    for (;;) {
+      while (warmupBlocked(system)) {
+        await new Promise((resolve) => {
+          window.setTimeout(resolve, WARMUP_BUSY_WAIT_MS)
+        })
+      }
+      await nextFrameWhenShown()
+      if (!warmupBlocked(system)) {
+        return
+      }
+    }
+  }
+
+  /**
    * O-9: each system's entered programs, after the hero's. Entering a system waits for its own; while
    * a system is entered (its look on screen) or the camera flies, the warm-up waits.
    */
@@ -1511,6 +1536,13 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       } else {
         verdict = 'ok'
       }
+    }
+    // O-17 (round 11): a stills verdict holds only if a second timing of the same frames agrees. One
+    // busy moment of the GPU (another page or process drawing) must not send a device that runs the
+    // model to the stills tier; a device that cannot fails both. The rates and the frame count are
+    // those above, and the start-up deadline still bounds it all (O-14).
+    if (verdict === 'stills') {
+      verdict = probeVerdict(await probeFrames(), true)
     }
     if (verdict === 'stills') {
       throw new ViewerStartError('too-slow', 'the GPU probe is below the stills rate')
