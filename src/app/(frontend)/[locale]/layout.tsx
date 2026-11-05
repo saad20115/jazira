@@ -27,6 +27,7 @@ import {
   isAuthorizedArabicPreviewRequest,
   resolveAuthenticatedStaffUser,
 } from '@/lib/cms'
+import { serializeJsonLd } from '@/lib/jsonLd'
 import type { Navigation, SiteSetting } from '@/payload-types'
 import { preloadLocaleFonts } from '@/styles/font-preload'
 import { fontVariablesClassName, getLocaleFontClassName } from '@/styles/fonts'
@@ -110,14 +111,14 @@ export async function enforceArabicEnabledOrRedirect(
   }
 }
 
-function buildOrganizationJsonLd(
+export function buildOrganizationJsonLd(
   siteSettings: SiteSetting | null,
   locale: SupportedLocale,
   arabicEnabled: boolean,
 ): string {
   const effectiveLocale: SupportedLocale = locale === 'ar' && arabicEnabled ? 'ar' : 'en'
   const baseUrl = resolveMetadataBaseUrl().origin.replace(/\/+$/, '')
-  return JSON.stringify({
+  return serializeJsonLd({
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: siteSettings?.companyName || 'Al Jazira for Imdad Smart Co.',
