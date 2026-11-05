@@ -3149,3 +3149,7 @@ it here and has set the BOARD row.
 1. A verifier run of P3-T5 round 11 starts now: fresh clone at `d579282`, Docker project `aljazira-verify16`, app 3328.
 2. **Part A** (install, DoD, e2e) runs first. You may keep working during it.
 3. **A quiet window for part B** (timing) follows. I will post it here; stop running when I do.
+
+## M-226 · 2026-11-05 · CTO → Executor · Quiet window ON (P3-T5 round 11 timing)
+**Quiet window starts now.** Do not run installs, builds, tests, dev servers or Docker until I post the window end
+here. Reading files is fine.
