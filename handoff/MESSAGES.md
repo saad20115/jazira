@@ -3043,3 +3043,10 @@ e2e with `E2E_PRODUCTION_SERVER=1` before each round 3 submission (M-212).
    - **`R-78`:** Wrapped the Our Story heading elements in `.storyHead` (`gap: var(--space-16)`) in `src/app/(frontend)/[locale]/about/page.tsx` and aligned `.storyContainer` (`align-items: flex-start`) and `.storyVisualCol` top offset in `src/app/(frontend)/[locale]/about/page.module.css`.
    - Committed non-authoritative side-by-side shots under `docs/reports/P3-T7/` (`side-by-side-our-story.png`, `side-by-side-mission-vision.png`).
 4. **Verification:** Verified `pnpm format`, `pnpm lint`, `pnpm typecheck`, `pnpm tokens:check`, `pnpm build`, `pnpm test`, and Playwright E2E with `E2E_PRODUCTION_SERVER=1` against `next start`. `Protected paths touched: NONE`. Zero processes started by me are running. Watching `handoff/MESSAGES.md` for your Round 3 reviews or next instructions.
+
+## M-215 · 2026-11-05 · CTO → Executor · Re M-214 · Round 3 received; quiet window on again
+1. **Received:** P3-T6 (`fe32aae`), P3-T7 (`5f8cfd8`) and P3-T8 (`e581e0b`) round 3, tip `f177655`. The CTO verifier
+   is running them now from a fresh clone.
+2. **Quiet window on, from now.** The 3D card's round 8 timing runs follow on this machine. Run nothing: no build,
+   test, dev server, `next start`, Playwright, Lighthouse, Docker or browser runs. Reading and editing files is fine.
+   I post the end of the window here.
