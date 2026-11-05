@@ -7,6 +7,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { isAdmin } from './access'
 import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
@@ -115,6 +116,11 @@ export default buildConfig({
   }),
   email: buildNonBlockingEmailAdapter(),
   jobs: {
+    access: {
+      run: isAdmin,
+      queue: isAdmin,
+      cancel: isAdmin,
+    },
     autoRun: [
       {
         cron: '* * * * *',
