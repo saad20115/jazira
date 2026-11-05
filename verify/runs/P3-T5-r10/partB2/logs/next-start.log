@@ -1,0 +1,10 @@
+
+> aljazira-website@0.1.0 start D:\jazira-verify\2026-11-05\p3t5k
+> cross-env NODE_OPTIONS=--no-deprecation next start
+
+▲ Next.js 16.4.2
+- Local:         http://localhost:3327
+- Network:       http://172.16.48.47:3327
+✓ Ready in 522ms
+✓ Running next.config.ts took 151ms
+⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.

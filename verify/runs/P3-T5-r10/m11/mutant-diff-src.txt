@@ -1,0 +1,14 @@
+ src/components/systems3d/viewer/systemStage.ts      |   2 +-
+ 4 files changed, 1 insertion(+), 1 deletion(-)
+diff --git a/src/components/systems3d/viewer/systemStage.ts b/src/components/systems3d/viewer/systemStage.ts
+--- a/src/components/systems3d/viewer/systemStage.ts
++++ b/src/components/systems3d/viewer/systemStage.ts
+@@ -1048,7 +1048,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
+         }
+         case 'entered': {
+           if (desired !== entered && entered !== null) {
+-            if (desired === null) {
++            if (desired === null || desired !== null) {
+               startFlight(entered, false, now)
+               phase = 'flyOut'
+             } else {

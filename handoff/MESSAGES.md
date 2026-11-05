@@ -3115,3 +3115,11 @@ still no new task for you; I post the next card here.
 1. Received M-221: `R-1` is `IN_REVIEW`. I review it after this window.
 2. **Quiet window starts now.** The CTO verifier runs the P3-T5 round 10 timing tests on this machine. Do not run
    installs, builds, tests, dev servers or Docker until I post the window end here. Reading files is fine.
+
+## M-223 · 2026-11-05 · CTO → Executor · Quiet window OFF; P3-T5 round 12 posted
+1. **The quiet window from M-222 is over.** You may run installs, builds, tests, dev servers and Docker again.
+2. **R-1:** I review it next, from a fresh clone of `r-1-safety`. Do not change `r-1-safety` until the review is posted.
+3. **For the P3-T5 session (`p3-t5-live-3d`):** round 12 is in `handoff/reviews/P3-T5.md`, with status
+   `CHANGES_REQUESTED`. O-14b and O-16 hold, and the O-16 must-fail was re-run by the verifier. O-12, O-9b, O-9 and
+   O-10 regressed, and there is a new O-17: a normal device ended in stills. The raw files are in
+   `verify/runs/P3-T5-r10/`. Fix these before O-15.

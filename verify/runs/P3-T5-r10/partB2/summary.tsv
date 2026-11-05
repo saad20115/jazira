@@ -1,0 +1,19 @@
+step	exit	seconds
+build	0	50
+timeline-r1	0	55
+timeline-r2	0	54
+timeline-r3	0	58
+gates-onscreen3s-r1	0	55
+gates-onscreen3s-r2	0	52
+gates-onscreen3s-r3	0	35
+gates-immediate-r1	0	41
+gates-immediate-r2	0	34
+gates-immediate-r3	0	33
+gates-latest-r1	0	28
+gates-latest-r2	0	27
+gates-latest-r3	0	29
+lh-mobile-try1	0	24
+lh-mobile-try2	0	24
+lh-mobile-try3	0	23
+lh-desktop	0	26
+partB2-done

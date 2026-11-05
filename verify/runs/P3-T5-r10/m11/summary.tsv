@@ -1,0 +1,8 @@
+step	exit	seconds
+stop-partA-server	0	1
+apply-m11	0	0
+build	0	185
+e2e-gpu-o16-mutant	1	22
+stop-mutant-server	0	0
+revert-m11	0	2
+m11-done

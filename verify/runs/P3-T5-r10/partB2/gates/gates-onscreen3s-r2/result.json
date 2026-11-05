@@ -1,0 +1,41 @@
+{
+ "mode": "onscreen3s",
+ "tScroll": 1221,
+ "settledMs": 7230,
+ "settledState": "live/fire/low//canvas",
+ "firstClick": 5153,
+ "liveMs": 7230,
+ "maxLongTaskFirstWindow": 701,
+ "maxFlightGap": 67,
+ "tiersAfterLive": [
+  "low"
+ ],
+ "laterStartMs": [
+  26,
+  25,
+  29
+ ],
+ "maxLoadScale": 1.06,
+ "scaleAtSwap": [
+  1.06,
+  1.06
+ ],
+ "enteredAfterFirstPhase": "fire",
+ "modelRequests": [
+  "tower-lite.glb"
+ ],
+ "errors": [],
+ "tRelease": 14414,
+ "stillsAfterLiveMs": null,
+ "maxLongAfterLive3s": 0,
+ "maxGapAfterLive3s": 0,
+ "pass": {
+  "settled": true,
+  "live": false,
+  "longTask": false,
+  "flightGap": true,
+  "tier": true,
+  "later": true,
+  "latest": true
+ }
+}

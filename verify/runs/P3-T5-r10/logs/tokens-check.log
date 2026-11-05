@@ -1,0 +1,5 @@
+
+> aljazira-website@0.1.0 tokens:check D:\jazira-verify\2026-11-05\p3t5k
+> node scripts/generate-tokens.mjs --check
+
+[tokens] Verified src/styles/tokens.css is up-to-date with design/tokens.json.
