@@ -90,13 +90,19 @@ export function chooseModelTier(caps: DeviceCaps, gpuRenderer: string | null): M
 /**
  * Run-time tier check (§8b): a rolling window of frame intervals measured while the view animates.
  * Below `lowFps` the viewer drops to the low tier (DPR 1, no bloom); below `stillsFps` while already
- * low it falls back to the stills tier. A decision needs a full window, and each interval counts at
- * most `MAX_INTERVAL_MS`, so one stall (shader compile, hidden tab, card scrolled away) never
- * changes the tier. O-9: the viewer applies a drop to low only while the card is off screen or the
- * tab hidden, never in view; O-14b: a drop from low to stills also in view, at rest (never during a
- * flight). The tier it starts with comes from `probeVerdict`.
+ * low it falls back to the stills tier. A decision needs a full window (in low: `FPS_WINDOW` frames
+ * or `STILLS_WINDOW_MS` of them, whichever comes first), and each interval counts at most
+ * `MAX_INTERVAL_MS`, so one stall (shader compile, hidden tab, card scrolled away) never changes the
+ * tier. O-9: the viewer applies a drop to low only while the card is off screen or the tab hidden,
+ * never in view; O-14b: a drop from low to stills also in view, at rest (never during a flight). The
+ * tier it starts with comes from `probeVerdict`.
  */
 export const FPS_WINDOW = 60
+/**
+ * O-14b (CTO ruling 2, card 8b "the first 2 s of interaction"): in low, the stills check decides on
+ * this much sampled time when it comes before `FPS_WINDOW` frames (a slow device gets there first).
+ */
+export const STILLS_WINDOW_MS = 2000
 export const LOW_TIER_FPS = 45
 export const STILLS_TIER_FPS = 24
 export const MAX_INTERVAL_MS = 250
@@ -104,15 +110,29 @@ export const MAX_INTERVAL_MS = 250
 export type FpsVerdict = 'ok' | 'low' | 'stills'
 
 export function fpsVerdict(intervalsMs: readonly number[], alreadyLow: boolean): FpsVerdict {
+  if (alreadyLow) {
+    // The newest intervals, until a full window of frames or of time.
+    let sum = 0
+    let count = 0
+    for (
+      let i = intervalsMs.length - 1;
+      i >= 0 && count < FPS_WINDOW && sum < STILLS_WINDOW_MS;
+      i -= 1
+    ) {
+      sum += Math.min(intervalsMs[i], MAX_INTERVAL_MS)
+      count += 1
+    }
+    if (count < FPS_WINDOW && sum < STILLS_WINDOW_MS) {
+      return 'ok'
+    }
+    return sum > 0 && 1000 / (sum / count) < STILLS_TIER_FPS ? 'stills' : 'ok'
+  }
   if (intervalsMs.length < FPS_WINDOW) {
     return 'ok'
   }
   const window = intervalsMs.slice(-FPS_WINDOW)
   const mean = window.reduce((sum, ms) => sum + Math.min(ms, MAX_INTERVAL_MS), 0) / window.length
   const fps = mean > 0 ? 1000 / mean : Infinity
-  if (alreadyLow) {
-    return fps < STILLS_TIER_FPS ? 'stills' : 'ok'
-  }
   return fps < LOW_TIER_FPS ? 'low' : 'ok'
 }
 

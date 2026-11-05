@@ -12,6 +12,7 @@ import {
   PROBE_FRAMES,
   probeVerdict,
   STILLS_TIER_FPS,
+  STILLS_WINDOW_MS,
   WARMUP_SKIP_CAP_MS,
   warmupSample,
 } from '@/components/systems3d/tier'
@@ -115,8 +116,21 @@ describe('P3-T5 device tiers', () => {
 describe('P3-T5 run-time FPS tier check', () => {
   const frames = (ms: number, n = FPS_WINDOW): number[] => Array.from({ length: n }, () => ms)
 
-  it('needs a full window before deciding', () => {
+  it('needs a full window before deciding: 60 frames, or in low 2 s of frames if that comes first', () => {
+    // Not low: 60 frames, however slow.
     expect(fpsVerdict(frames(100, FPS_WINDOW - 1), false)).toBe('ok')
+    expect(fpsVerdict(frames(100, FPS_WINDOW), false)).toBe('low')
+    // Low, slow: 2 s of frames decide, well before 60 frames; just under 2 s does not yet.
+    expect(fpsVerdict(frames(100, STILLS_WINDOW_MS / 100), true)).toBe('stills')
+    expect(fpsVerdict(frames(100, STILLS_WINDOW_MS / 100 - 1), true)).toBe('ok')
+    // Low, fast enough: a full 2 s (or 60 frames) does not drop.
+    expect(fpsVerdict(frames(1000 / 30, FPS_WINDOW), true)).toBe('ok')
+    expect(fpsVerdict(frames(40, STILLS_WINDOW_MS / 40), true)).toBe('ok')
+    // Low, just under the stills rate: the 2 s come before 60 frames and decide.
+    expect(fpsVerdict(frames(1000 / 23, 47), true)).toBe('stills')
+    expect(fpsVerdict(frames(1000 / 23, 45), true)).toBe('ok')
+    // One stall counts at most `MAX_INTERVAL_MS`: it cannot fill the 2 s alone.
+    expect(fpsVerdict([10_000], true)).toBe('ok')
   })
 
   it('drops to low below 45 fps, and to stills below 24 fps once low', () => {
