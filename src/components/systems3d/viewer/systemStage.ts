@@ -5,11 +5,14 @@
  *
  * A small state machine stepped by the render loop:
  *   rest → ease-back (turntable to 0) → variant → fly-in → entered → fly-out → rest.
- * A request for another system while entered goes out through the overview first (never through
- * the geometry). Every value comes from the validated extras.
+ * O-16 (owner 2026-11-05): a request for another system while entered is one direct flight,
+ *   entered → switch → entered: out along the first system's path until clear of the tower, round
+ *   the tower on an arc outside it, and in along the second's path. It never reaches the overview
+ *   and never passes through the geometry. Every value comes from the validated extras.
  */
 
 import {
+  Box3,
   CatmullRomCurve3,
   type Material,
   Mesh,
@@ -53,6 +56,20 @@ const OCCLUSION_INTERVAL_MS = 250
  * rest are cast in the next frames. All of them in one frame cost up to ~75 ms on the HD 530 box.
  */
 const OCCLUSION_FRAME_BUDGET_MS = 6
+/**
+ * O-16: a direct switch leaves a system's path where it gets this far from the tower's vertical
+ * axis (× the radius of the circle round the façade's and core's footprint), so it is clear of the
+ * tower.
+ */
+export const SWITCH_RING = 1.1
+/** O-16: halfway round, the arc bows out this much further (× its radius). */
+export const SWITCH_BULGE = 0.35
+/** O-16: the arc's steps are at most this angle apart. */
+const SWITCH_ARC_STEP = Math.PI / 12
+/** O-16: the share of the stretch outside the tower over which one look fades out, and the other in. */
+export const SWITCH_FADE_SHARE = 0.4
+/** O-16: samples along a system's path when finding where it leaves the ring. */
+const CORRIDOR_SAMPLES = 96
 
 export interface ProjectedLabel {
   name: string
@@ -104,7 +121,7 @@ export interface StageDeps {
   onEnterMix?: (k: number) => void
 }
 
-type Phase = 'rest' | 'easeBack' | 'variant' | 'flyIn' | 'entered' | 'flyOut'
+type Phase = 'rest' | 'easeBack' | 'variant' | 'flyIn' | 'entered' | 'flyOut' | 'switch'
 
 interface Flight {
   start: number
@@ -121,6 +138,23 @@ interface Flight {
   ease: (x: number) => number
   fadeStart: number
   fadeEnd: number
+}
+
+/**
+ * O-16: a direct flight from one system's look (`from`, at `fromK`) to another's (`system`). The
+ * curve is parametrised by length: out along `from`'s path to `uOut`, round the tower outside it to
+ * `uIn`, in along `system`'s path. Outside, `from`'s look fades out, the variants swap halfway (all
+ * opaque, nothing inside shows), and `system`'s look fades in before the camera goes back in.
+ */
+interface Switch extends Flight {
+  from: SystemId
+  fromK: number
+  uOut: number
+  uIn: number
+  /** Time flown so far: it stands still at the halfway swap until `system`'s look is ready. */
+  elapsedMs: number
+  lastNow: number
+  swapped: boolean
 }
 
 interface VariantMapping {
@@ -160,7 +194,11 @@ export interface SystemStage {
   readonly moving: boolean
   /** True while shader warm-up work runs (its tasks lengthen frames; not a GPU speed sample). */
   readonly preparing: boolean
-  /** True while no entered look is on screen, so `prepare` can run (it fails otherwise). */
+  /**
+   * True while the camera stands still (at rest, or inside a system: O-16), so a background warm-up
+   * may run. The asked-for system's own warm-up runs in any phase: each step puts the look back
+   * exactly.
+   */
   readonly canPrepare: boolean
   /** The system the visitor asked for last (null = overview). */
   readonly wanted: SystemId | null
@@ -189,6 +227,12 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     return found
   }
   const worldPos = (name: string): Vector3 => node(name).getWorldPosition(new Vector3())
+  /** The lens shift last applied (O-16: a switch starts from it). */
+  let lensShift = cameraLimits.heroShiftY
+  const setShift = (shiftY: number): void => {
+    lensShift = shiftY
+    deps.setShift(shiftY)
+  }
 
   const heroFov = camera.fov
   const base = new Map<string, { emissiveIntensity: number; aoMapIntensity: number }>()
@@ -226,7 +270,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
   }
 
   // Floor slabs of the entered system stay opaque and unclipped: they get their own material.
-  const slabs: { mesh: Mesh; shared: Material }[] = []
+  const slabs: { mesh: Mesh; shared: Material; own?: Material }[] = []
   deps.gltf.scene.traverse((object) => {
     if (isMesh(object) && object.name.startsWith('CORE_slab_')) {
       slabs.push({ mesh: object, shared: object.material as Material })
@@ -302,15 +346,17 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     const keep = k > 0 && system ? extras.systems[system].floorSlabs : []
     for (const slab of slabs) {
       if (keep.includes(slab.mesh.name)) {
-        if (slab.mesh.material === slab.shared && slab.shared instanceof MeshStandardMaterial) {
+        // O-16: one own material per kept slab, made once and kept, so a warm-up's look can be put
+        // back exactly (nothing is disposed while it is applied).
+        if (!slab.own && slab.shared instanceof MeshStandardMaterial) {
           const own = slab.shared.clone()
           setOpaque(own)
           own.clippingPlanes = null
           own.opacity = enter.floorSlabOpacity
-          slab.mesh.material = own
+          slab.own = own
         }
-      } else if (slab.mesh.material !== slab.shared) {
-        ;(slab.mesh.material as Material).dispose()
+        slab.mesh.material = slab.own ?? slab.shared
+      } else {
         slab.mesh.material = slab.shared
       }
     }
@@ -429,8 +475,21 @@ export function createSystemStage(deps: StageDeps): SystemStage {
   const programState = (material: Material): string =>
     `${String(material.transparent)}|${String(material.clippingPlanes?.length ?? 0)}`
 
-  /** Captures the look state the fades change; the returned function puts it back exactly. */
+  /** The meshes a variant can change (their material is part of the look). */
+  const variantMeshes: Mesh[] = []
+  deps.gltf.scene.traverse((object) => {
+    if (isMesh(object) && variantMappings(object).length > 0) {
+      variantMeshes.push(object)
+    }
+  })
+
+  /**
+   * Captures the look state the fades and the variants change; the returned function puts it back
+   * exactly (O-16: also while a system's look is on screen, its highlight materials included).
+   */
   const snapshotLook = (): (() => void) => {
+    const meshMaterials = variantMeshes.map((mesh) => ({ mesh, material: mesh.material }))
+    const assigned = variantAssigned
     const saved = [...materials.values()].map((material) => ({
       material,
       transparent: material.transparent,
@@ -461,30 +520,26 @@ export function createSystemStage(deps: StageDeps): SystemStage {
         m.visible = s.visible
       }
       for (const { mesh, material } of slabMaterials) {
-        if (mesh.material !== material) {
-          ;(mesh.material as Material).dispose()
-          mesh.material = material
-        }
+        mesh.material = material
       }
+      for (const { mesh, material } of meshMaterials) {
+        mesh.material = material
+      }
+      variantAssigned = assigned
       clipPlane.copy(plane)
     }
   }
 
   // Shader warm-up: the entered look of a system (its variant, faded and section-clipped materials,
   // kept slabs) is applied for one synchronous moment, its programs are created and linked in
-  // parallel, and the look is put back before any frame can draw it. Only while nothing of an
-  // entered look is on screen (no fade, no variant).
+  // parallel, and the look on screen is put back exactly before any frame can draw it (O-16: also
+  // while another system's look is on screen, so a direct switch finds its target ready).
   const prepared = new Map<SystemId, Promise<void>>()
-  const lookAtRest = (): boolean =>
-    (phase === 'rest' || phase === 'easeBack' || phase === 'variant') && !variantAssigned
   const compileEntered = async (system: SystemId): Promise<void> => {
     const loaded = await loadVariant(system)
-    // Each step applies the entered look, works on it synchronously and puts the rest look back,
-    // so no frame ever draws it; the steps are separate tasks (no long task).
+    // Each step applies the entered look, works on it synchronously and puts the look on screen
+    // back, so no frame ever draws it; the steps are separate tasks (no long task).
     const withEnteredLook = <T>(work: () => T): T => {
-      if (!lookAtRest()) {
-        throw new Error('stage busy')
-      }
       const restore = snapshotLook()
       try {
         assignVariant(loaded)
@@ -492,7 +547,6 @@ export function createSystemStage(deps: StageDeps): SystemStage {
         return work()
       } finally {
         restore()
-        assignVariant(new Map())
       }
     }
     // Only objects whose program the entered look can change: another material (variant, kept
@@ -576,8 +630,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
   const startVariant = (target: SystemId): void => {
     variantPending = true
     variantFor = target
-    // A switch while waiting leaves the previous system's highlight on; the warm-up needs the rest
-    // look (it refuses to run while an entered look is on).
+    // A switch while waiting leaves the previous system's highlight on: at the overview none shows.
     if (variantAssigned) {
       assignVariant(new Map())
     }
@@ -620,6 +673,241 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     controls.enabled = false
   }
 
+  // O-16: the tower's footprint (the façade's and core's meshes, seen from above): the switch
+  // flight stays outside a ring round it. Measured once, at the first switch (always inside a
+  // system, so the turntable stands at 0, as for every camera path).
+  let footprint: { center: Vector3; ring: number } | null = null
+  const towerFootprint = (): { center: Vector3; ring: number } => {
+    if (footprint) {
+      return footprint
+    }
+    const shell = new Set<Material>()
+    for (const name of [...FACADE_MATERIALS, ...CORE_MATERIALS]) {
+      const material = materials.get(name)
+      if (material) {
+        shell.add(material)
+      }
+    }
+    const box = new Box3()
+    deps.gltf.scene.updateMatrixWorld(true)
+    deps.gltf.scene.traverse((object) => {
+      if (isMesh(object) && !Array.isArray(object.material) && shell.has(object.material)) {
+        box.expandByObject(object)
+      }
+    })
+    const center = box.isEmpty() ? new Vector3() : box.getCenter(new Vector3())
+    const radius = box.isEmpty()
+      ? 0
+      : Math.hypot((box.max.x - box.min.x) / 2, (box.max.z - box.min.z) / 2)
+    footprint = { center, ring: radius * SWITCH_RING }
+    return footprint
+  }
+  const radial = (point: Vector3, center: Vector3): number =>
+    Math.hypot(point.x - center.x, point.z - center.z)
+
+  /**
+   * O-16: a system's own path (as flown in from the overview), from its camera back out to the first
+   * point outside the ring: the way in and out that the 3D lead made clear of the geometry.
+   */
+  const corridor = (system: SystemId): Vector3[] => {
+    const { center, ring } = towerFootprint()
+    const motion = extras.systems[system].enterMotion
+    const points = new CatmullRomCurve3(
+      [worldPos('CAM_hero'), ...motion.path.slice(1, -1).map(worldPos), worldPos(`CAM_${system}`)],
+      false,
+      'centripetal',
+    ).getSpacedPoints(CORRIDOR_SAMPLES)
+    const out: Vector3[] = []
+    for (let i = points.length - 1; i >= 0; i -= 1) {
+      out.push(points[i])
+      if (radial(points[i], center) >= ring) {
+        break
+      }
+    }
+    return out
+  }
+
+  /** The part of `path` (a corridor, inside → out) farther out than the point nearest `from`. */
+  const onwardFrom = (path: readonly Vector3[], from: Vector3): Vector3[] => {
+    let nearest = 0
+    for (let i = 1; i < path.length; i += 1) {
+      if (path[i].distanceToSquared(from) < path[nearest].distanceToSquared(from)) {
+        nearest = i
+      }
+    }
+    return path.slice(nearest + 1)
+  }
+
+  /**
+   * O-16: round the tower from `a` to `b` (the shorter way about its vertical axis), bowing outward
+   * halfway so the camera is well clear while the looks change over.
+   */
+  const arcRound = (a: Vector3, b: Vector3): Vector3[] => {
+    const { center } = towerFootprint()
+    const angleA = Math.atan2(a.z - center.z, a.x - center.x)
+    const angleB = Math.atan2(b.z - center.z, b.x - center.x)
+    const turn = shortestAngle(angleB - angleA)
+    const radiusA = radial(a, center)
+    const radiusB = radial(b, center)
+    const steps = Math.max(4, Math.ceil(Math.abs(turn) / SWITCH_ARC_STEP))
+    const points: Vector3[] = []
+    for (let i = 1; i < steps; i += 1) {
+      const t = i / steps
+      const angle = angleA + turn * t
+      const radius =
+        (radiusA + (radiusB - radiusA) * t) * (1 + SWITCH_BULGE * Math.sin(Math.PI * t))
+      points.push(
+        new Vector3(
+          center.x + Math.cos(angle) * radius,
+          a.y + (b.y - a.y) * t,
+          center.z + Math.sin(angle) * radius,
+        ),
+      )
+    }
+    return points
+  }
+
+  /** Where along `points` (as a fraction of the polyline's length) the point at `index` lies. */
+  const lengthShare = (points: readonly Vector3[], index: number): number => {
+    let total = 0
+    let upTo = 0
+    for (let i = 1; i < points.length; i += 1) {
+      total += points[i].distanceTo(points[i - 1])
+      if (i === index) {
+        upTo = total
+      }
+    }
+    return total > 0 ? upTo / total : 0
+  }
+
+  /** The look on screen during a switch, and how far in (O-16). */
+  const switchLook = (s: Switch, e: number): { system: SystemId; k: number } => {
+    const outside = Math.max(1e-3, s.uIn - s.uOut)
+    const fade = outside * SWITCH_FADE_SHARE
+    if (!s.swapped) {
+      return { system: s.from, k: s.fromK * (1 - Math.min(1, Math.max(0, (e - s.uOut) / fade))) }
+    }
+    return { system: s.system, k: Math.min(1, Math.max(0, (e - (s.uIn - fade)) / fade)) }
+  }
+
+  /** The highlight of the system a switch flies to, once warmed up and loaded (null until then). */
+  let switchVariant: { system: SystemId; loaded: ReadonlyMap<Mesh, Material> } | null = null
+  let switchJob = 0
+  const readySwitchVariant = (system: SystemId): void => {
+    switchJob += 1
+    const job = switchJob
+    switchVariant = null
+    void prepare(system)
+      .then(() => loadVariant(system))
+      .catch(() => new Map<Mesh, Material>())
+      .then((loaded) => {
+        if (job === switchJob) {
+          switchVariant = { system, loaded }
+        }
+      })
+  }
+
+  /**
+   * O-16: one flight from the look on screen (a system entered, or a switch under way) straight to
+   * `to`: out along the current system's path, round the tower, in along `to`'s path.
+   */
+  const startSwitch = (to: SystemId, now: number): void => {
+    const current = flight && 'from' in flight ? (flight as Switch) : null
+    let lookSystem: SystemId
+    let lookK: number
+    let out: Vector3[]
+    if (current) {
+      const e = current.ease(Math.min(1, current.elapsedMs / current.durationMs))
+      const look = switchLook(current, e)
+      lookSystem = look.system
+      lookK = look.k
+      // On a path inside the tower: back out along it; on the arc: round from here.
+      out =
+        e < current.uOut
+          ? onwardFrom(corridor(current.from), camera.position)
+          : e > current.uIn
+            ? onwardFrom(corridor(current.system), camera.position)
+            : []
+    } else {
+      lookSystem = entered ?? to
+      lookK = 1
+      out = corridor(lookSystem).slice(1)
+    }
+    const into = corridor(to)
+    const exitPoint = out.length > 0 ? out[out.length - 1] : camera.position.clone()
+    const arc = arcRound(exitPoint, into[into.length - 1])
+    const points = [camera.position.clone(), ...out, ...arc, ...[...into].reverse()]
+    const motion = extras.systems[to].enterMotion
+    const outIndex = out.length
+    const inIndex = outIndex + arc.length + 1
+    readySwitchVariant(to)
+    const next: Switch = {
+      start: now,
+      durationMs: motion.durationS * 1000,
+      curve: new CatmullRomCurve3(points, false, 'centripetal'),
+      into: true,
+      system: to,
+      target0: controls.target.clone(),
+      target1: worldPos(motion.targetTo),
+      fov0: camera.fov,
+      fov1: (motion.fovTo * 180) / Math.PI,
+      shift0: lensShift,
+      shift1: motion.shiftYTo,
+      ease: cubicBezier(motion.easing),
+      fadeStart: motion.fadeStart,
+      fadeEnd: motion.fadeEnd,
+      from: lookSystem,
+      fromK: lookK,
+      uOut: lengthShare(points, outIndex),
+      uIn: lengthShare(points, inIndex),
+      elapsedMs: 0,
+      lastNow: now,
+      swapped: false,
+    }
+    flight = next
+    phase = 'switch'
+    controls.enabled = false
+  }
+
+  /** One step of a switch flight (O-16); returns true while it flies. */
+  const stepSwitch = (s: Switch, now: number): boolean => {
+    const halfway = (s.uOut + s.uIn) / 2
+    const elapsed = Math.min(s.durationMs, s.elapsedMs + Math.max(0, now - s.lastNow))
+    s.lastNow = now
+    let e = s.ease(elapsed / s.durationMs)
+    if (!s.swapped && e >= halfway) {
+      if (switchVariant?.system === s.system) {
+        // Halfway, outside, all opaque: the highlights change over where nothing inside shows.
+        assignVariant(switchVariant.loaded)
+        variantFor = s.system
+        entered = null
+        s.swapped = true
+        s.elapsedMs = elapsed
+      } else {
+        // The target's look is not ready yet: the camera waits here, outside the tower.
+        e = s.ease(s.elapsedMs / s.durationMs)
+      }
+    } else {
+      s.elapsedMs = elapsed
+    }
+    camera.position.copy(s.curve.getPointAt(Math.min(1, Math.max(0, e))))
+    controls.target.lerpVectors(s.target0, s.target1, e)
+    camera.fov = s.fov0 + (s.fov1 - s.fov0) * e
+    setShift(s.shift0 + (s.shift1 - s.shift0) * e)
+    camera.lookAt(controls.target)
+    const look = switchLook(s, e)
+    applyFade(look.system, look.k)
+    deps.onEnterMix?.(look.k)
+    if (!s.swapped || s.elapsedMs < s.durationMs) {
+      return true
+    }
+    entered = s.system
+    phase = 'entered'
+    applyOrbitLimits(s.system)
+    flight = null
+    return true
+  }
+
   const applyOrbitLimits = (system: SystemId | null): void => {
     const limits = system ? extras.systems[system].orbitLimits : cameraLimits
     controls.minDistance = limits.minDistance
@@ -637,7 +925,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     camera.position.copy(flight.curve.getPoint(e))
     controls.target.lerpVectors(flight.target0, flight.target1, e)
     camera.fov = flight.fov0 + (flight.fov1 - flight.fov0) * e
-    deps.setShift(flight.shift0 + (flight.shift1 - flight.shift0) * e)
+    setShift(flight.shift0 + (flight.shift1 - flight.shift0) * e)
     camera.lookAt(controls.target)
     const span = Math.max(1e-3, flight.fadeEnd - flight.fadeStart)
     const k = flight.into
@@ -655,7 +943,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     } else {
       camera.quaternion.copy(deps.heroQuaternion)
       camera.fov = heroFov
-      deps.setShift(cameraLimits.heroShiftY)
+      setShift(cameraLimits.heroShiftY)
       applyFade(null, 0)
       deps.onEnterMix?.(0)
       void selectVariant(null)
@@ -678,7 +966,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
       return desired
     },
     get canPrepare() {
-      return lookAtRest()
+      return phase === 'rest' || phase === 'easeBack' || phase === 'variant' || phase === 'entered'
     },
     get moving() {
       return phase !== 'rest' && phase !== 'entered'
@@ -760,10 +1048,25 @@ export function createSystemStage(deps: StageDeps): SystemStage {
         }
         case 'entered': {
           if (desired !== entered && entered !== null) {
-            startFlight(entered, false, now)
-            phase = 'flyOut'
+            if (desired === null) {
+              startFlight(entered, false, now)
+              phase = 'flyOut'
+            } else {
+              // O-16: straight to the other system, never back to the overview first.
+              startSwitch(desired, now)
+            }
             again = true
           }
+          break
+        }
+        case 'switch': {
+          const current = flight as Switch
+          // O-16: another system picked during the move: a new direct flight from here. Leaving
+          // (no system) waits until this one has arrived, then flies out.
+          if (desired !== null && desired !== current.system) {
+            startSwitch(desired, now)
+          }
+          again = stepSwitch(flight as Switch, now) || again
           break
         }
       }
