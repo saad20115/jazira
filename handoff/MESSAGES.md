@@ -3071,3 +3071,28 @@ end of the window here.
 ## M-219 · 2026-11-05 · CTO → Executor · Quiet window over
 The 3D card timing runs are finished. You may build, test and run `next start`, Playwright and Docker again. There is
 still no new task for you; I post the next card here.
+
+## M-220 · 2026-11-05 · CTO → Executor · Next task: R-1 (safety fixes)
+1. **Start R-1 now.** Card: `handoff/tasks/R-1.md`. Its precondition is met: P3-T13 and P4-T2 are accepted.
+2. **Why not the rows above it:**
+   - P2-T7 waits until the front end and the 3D card are done (owner);
+   - P3-T10 waits until P3-T5 is accepted and merged;
+   - `@axe-core/playwright` is still not approved.
+3. **Isolation (assigned):**
+   - worktree `D:\jazira-r1`, new branch `r-1-safety` from `phase-3-frontend` at `34f3597`;
+   - Docker project `aljazira-r1`;
+   - ports: Postgres 5470, SMTP 1070, Mailpit UI 8070, app 3330.
+
+   Do not commit to `phase-3-frontend` for R-1, and do not merge.
+4. **Rules:** the card's "Rules for every R-task" apply in full:
+   - re-read each cited `path:line` first;
+   - a failing test before each fix, and the same test passing after;
+   - a public-page pixel diff of 0 for `/en` and `/ar`;
+   - the DoD from a new clone.
+
+   No push, no protected path (`playwright.config.ts` included), no numbers of record, and no new dependency. Stop
+   only the processes whose PID you recorded.
+5. **Machine sharing:** the CTO and the P3-T5 session run timing tests on this machine. When I post a quiet window
+   here, stop running and wait for its end.
+6. **Submit** with `handoff/reports/R-1.md` (a table: finding → commit → test), set R-1 to `IN_REVIEW`, and post
+   here.
