@@ -1,0 +1,27 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1077:3 › P3-T5 live 3D card › @gpu O-16: a click on another system flies there directly, never through the overview (three pairs)
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1077:3 › P3-T5 live 3D card › @gpu O-16: a click on another system flies there directly, never through the overview (three pairs) 
+
+    Error: hvac → fire: nearest the overview
+
+    expect(received).toBeGreaterThan(expected)
+
+    Expected: > 8
+    Received:   0.011188936781609196
+
+      1126 |       expect(shots.length, `${from} → ${to}: pictures during the move`).toBeGreaterThan(3)
+      1127 |       const diffs = await pictureDiffs(page, overview, shots)
+    > 1128 |       expect(Math.min(...diffs), `${from} → ${to}: nearest the overview`).toBeGreaterThan(
+           |                                                                           ^
+      1129 |         OVERVIEW_MATCH,
+      1130 |       )
+      1131 |     }
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:1128:75
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-1f99c-h-the-overview-three-pairs--gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1077:3 › P3-T5 live 3D card › @gpu O-16: a click on another system flies there directly, never through the overview (three pairs) 

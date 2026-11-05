@@ -1,0 +1,5 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1077:3 › P3-T5 live 3D card › @gpu O-16: a click on another system flies there directly, never through the overview (three pairs)
+  1 passed (23.7s)

@@ -1,0 +1,13 @@
+--- a/src/components/systems3d/viewer/createViewer.ts	2026-11-05 08:24:02.277331300 +0300
++++ b/src/components/systems3d/viewer/createViewer.ts	2026-11-05 08:24:02.182784200 +0300
+@@ -1272,10 +1272,6 @@
+     }
+     // O-14b: too slow while low (§8b): at rest (no flight, nothing held) the stills tier takes over
+     // in view too. No frame follows; the card crossfades from this one.
+-    if (pendingDrop === 'stills' && !visitorWaits() && !holding) {
+-      applyPendingDrop()
+-      return
+-    }
+     if (again) {
+       invalidate()
+     } else {

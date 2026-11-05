@@ -1,0 +1,11 @@
+--- a/src/components/systems3d/tier.ts	2026-11-05 08:45:26.429420100 +0300
++++ b/src/components/systems3d/tier.ts	2026-11-05 08:45:27.058963100 +0300
+@@ -102,7 +102,7 @@
+  * O-14b (CTO ruling 2, card 8b "the first 2 s of interaction"): in low, the stills check decides on
+  * this much sampled time when it comes before `FPS_WINDOW` frames (a slow device gets there first).
+  */
+-export const STILLS_WINDOW_MS = 2000
++export const STILLS_WINDOW_MS = Infinity
+ export const LOW_TIER_FPS = 45
+ export const STILLS_TIER_FPS = 24
+ export const MAX_INTERVAL_MS = 250

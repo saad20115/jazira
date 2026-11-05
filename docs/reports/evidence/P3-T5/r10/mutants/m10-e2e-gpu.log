@@ -1,0 +1,28 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:910:3 › P3-T5 live 3D card › @gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:910:3 › P3-T5 live 3D card › @gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: "stills"
+    Received: "live"
+
+    Call Log:
+    - Timeout 90000ms exceeded while waiting on the predicate
+
+      977 |           { timeout: 90_000, intervals: [0] },
+      978 |         )
+    > 979 |         .toBe('stills')
+          |          ^
+      980 |       await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+      981 |
+      982 |       await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:979:10
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-32959--at-rest-keeping-the-system-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:910:3 › P3-T5 live 3D card › @gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system 

@@ -1,0 +1,36 @@
+{
+ "mode": "latest",
+ "tScroll": 886,
+ "settledMs": 3902,
+ "settledState": "live/plumbing/low//canvas",
+ "firstClick": 1048,
+ "liveMs": 3902,
+ "maxLongTaskFirstWindow": 247,
+ "maxFlightGap": 100,
+ "tiersAfterLive": [
+  "low"
+ ],
+ "laterStartMs": [
+  21,
+  39
+ ],
+ "maxLoadScale": 1.06,
+ "scaleAtSwap": [
+  1.06,
+  1.06
+ ],
+ "enteredAfterFirstPhase": "plumbing",
+ "modelRequests": [
+  "tower-lite.glb"
+ ],
+ "errors": [],
+ "pass": {
+  "settled": true,
+  "live": false,
+  "longTask": false,
+  "flightGap": false,
+  "tier": true,
+  "later": true,
+  "latest": true
+ }
+}
