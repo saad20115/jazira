@@ -425,6 +425,178 @@ describe('P3-T5 system stage: entering waits for the shader warm-up', () => {
   })
 })
 
+/** Requests `system`, settles its warm-up and flies until it is entered; returns the last time. */
+async function enterSystem(f: Fixture, system: SystemId, start = 0): Promise<number> {
+  f.stage.request(system)
+  let now = run(f.stage, start, 60)
+  for (let i = 0; i < 5 && f.stage.entered !== system; i += 1) {
+    await settle()
+    finishCompiles(f)
+    await settle()
+    now = run(f.stage, now, 200)
+  }
+  expect(f.stage.entered).toBe(system)
+  return now
+}
+
+/** The look state the fades and variants change, for exact comparison. */
+function lookOf(f: Fixture): unknown {
+  return [f.facade, f.stone, f.hvacEquipment].map((mesh) => {
+    const m = mesh.material as MeshStandardMaterial
+    return {
+      material: m,
+      transparent: m.transparent,
+      opacity: m.opacity,
+      depthWrite: m.depthWrite,
+      clipping: m.clippingPlanes?.map((p) => [p.normal.toArray(), p.constant]) ?? null,
+      emissiveIntensity: m.emissiveIntensity,
+      aoMapIntensity: m.aoMapIntensity,
+      visible: m.visible,
+    }
+  })
+}
+
+describe('P3-T5 O-16: switching systems is one direct flight, never via the overview', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+  const HERO = new Vector3(0, 50, 200)
+
+  it('flies from one system to the other without reaching or stopping at the overview', async () => {
+    const f = buildFixture()
+    let now = await enterSystem(f, 'hvac')
+    f.stage.request('fire')
+    let nearestToHero = Infinity
+    let stoppedOutside = false
+    const entered = (): SystemId | null => f.stage.entered
+    for (let i = 0; i < 400 && entered() !== 'fire'; i += 1) {
+      now = run(f.stage, now, 1)
+      nearestToHero = Math.min(nearestToHero, f.camera.position.distanceTo(HERO))
+      // Standing still anywhere but inside the target (the overview included) is a stop.
+      if (!f.stage.moving && entered() !== 'fire') {
+        stoppedOutside = true
+      }
+      if (i % 20 === 0) {
+        await settle()
+        finishCompiles(f)
+      }
+    }
+    expect(f.stage.entered).toBe('fire')
+    expect(stoppedOutside).toBe(false)
+    // The overview camera is far from both systems; the direct flight keeps well away from it.
+    expect(nearestToHero).toBeGreaterThan(HERO.distanceTo(new Vector3(0, 20, 40)) / 2)
+    expect(f.hvacEquipment.material).toBe(f.highlight.fire)
+  })
+
+  it('fades the first look out and the second in, changing the highlights only while both are 0', async () => {
+    const f = buildFixture()
+    let now = await enterSystem(f, 'hvac')
+    // Warm the target up first, so the flight never waits.
+    void f.stage.prepare('fire')
+    await settle()
+    finishCompiles(f)
+    await settle()
+    f.mixes.length = 0
+    f.stage.request('fire')
+    const swaps: number[] = []
+    let material = f.hvacEquipment.material
+    for (let i = 0; i < 300 && f.stage.entered !== 'fire'; i += 1) {
+      now = run(f.stage, now, 1)
+      if (i % 10 === 0) {
+        await settle()
+      }
+      if (f.hvacEquipment.material !== material) {
+        material = f.hvacEquipment.material
+        swaps.push(f.mixes.at(-1) ?? -1)
+      }
+    }
+    expect(f.stage.entered).toBe('fire')
+    expect(swaps).toEqual([0])
+    // 1 → 0 (out), then 0 → 1 (in): falls, then rises, never jumps. (Here the system cameras are
+    // already outside the fixture's small tower, so the fade starts at once.)
+    const low = f.mixes.indexOf(0)
+    expect(f.mixes[0]).toBeGreaterThan(0.9)
+    expect(low).toBeGreaterThan(0)
+    expect(f.mixes.at(-1)).toBe(1)
+    for (let i = 1; i < f.mixes.length; i += 1) {
+      const step = (f.mixes[i] ?? 0) - (f.mixes[i - 1] ?? 0)
+      expect(Math.abs(step)).toBeLessThan(0.5)
+    }
+  })
+
+  it('waits halfway, outside the tower, until the target is warmed up, then goes in', async () => {
+    const f = buildFixture()
+    let now = await enterSystem(f, 'hvac')
+    const compilesBefore = f.compiles.length
+    f.stage.request('fire')
+    now = run(f.stage, now, 1)
+    await settle()
+    now = run(f.stage, now, 300)
+    // The target's warm-up has started but not finished: the camera holds before the swap.
+    expect(f.compiles.length).toBeGreaterThan(compilesBefore)
+    expect(f.stage.moving).toBe(true)
+    expect(f.stage.entered).toBe('hvac')
+    expect(f.hvacEquipment.material).toBe(f.highlight.hvac)
+    const held = f.camera.position.clone()
+    now = run(f.stage, now, 50)
+    expect(f.camera.position.equals(held)).toBe(true)
+    expect(f.mixes.at(-1)).toBe(0)
+    expect(f.camera.position.distanceTo(HERO)).toBeGreaterThan(50)
+    finishCompiles(f)
+    await settle()
+    run(f.stage, now, 300)
+    expect(f.stage.entered).toBe('fire')
+  })
+
+  it('a warm-up while a system is entered puts that look back exactly after each step', async () => {
+    const f = buildFixture()
+    await enterSystem(f, 'hvac')
+    const before = lookOf(f)
+    expect(f.hvacEquipment.material).toBe(f.highlight.hvac)
+    void f.stage.prepare('fire')
+    await settle()
+    expect(f.compiled.length).toBeGreaterThan(0)
+    expect(lookOf(f)).toEqual(before)
+    finishCompiles(f)
+    await settle()
+    expect(lookOf(f)).toEqual(before)
+    expect(f.hvacEquipment.material).toBe(f.highlight.hvac)
+  })
+
+  it('another system picked during the move flies on from where the camera is (no jump)', async () => {
+    const f = buildFixture()
+    let now = await enterSystem(f, 'hvac')
+    for (const id of ['fire', 'plumbing'] as const) {
+      void f.stage.prepare(id)
+      await settle()
+      finishCompiles(f)
+      await settle()
+    }
+    f.stage.request('fire')
+    now = run(f.stage, now, 30)
+    const previous = f.camera.position.clone()
+    now = run(f.stage, now, 1)
+    const before = f.camera.position.clone()
+    // A frame's move at full speed, mid-flight (with room for the new path's own pace).
+    const frameStep = before.distanceTo(previous)
+    expect(frameStep).toBeGreaterThan(0)
+    f.stage.request('plumbing')
+    now = run(f.stage, now, 1)
+    // About one frame's move, not a jump back to a system or to the overview.
+    expect(f.camera.position.distanceTo(before)).toBeLessThan(3 * frameStep)
+    for (let i = 0; i < 300 && f.stage.entered !== 'plumbing'; i += 1) {
+      now = run(f.stage, now, 1)
+      if (i % 10 === 0) {
+        await settle()
+      }
+    }
+    expect(f.stage.entered).toBe('plumbing')
+  })
+})
+
 describe('P3-T5 O-5: the system light blend follows the flight, never the warm-up', () => {
   beforeEach(() => {
     vi.stubGlobal('window', { setTimeout })

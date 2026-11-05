@@ -1006,6 +1006,131 @@ test.describe('P3-T5 live 3D card', () => {
     }
   })
 
+  /** O-16: the middle of the card as shown (the tower; clear of the panel, controls and labels). */
+  async function centerShot(page: Page, card: Locator): Promise<string> {
+    const box = await card.boundingBox()
+    if (!box) {
+      throw new Error('card has no box')
+    }
+    const png = await page.screenshot({
+      clip: {
+        x: box.x + box.width * 0.3,
+        y: box.y + box.height * 0.2,
+        width: box.width * 0.4,
+        height: box.height * 0.4,
+      },
+    })
+    return png.toString('base64')
+  }
+
+  /** O-16: mean absolute difference per channel (0–255) between a picture and each of `others`. */
+  async function pictureDiffs(page: Page, picture: string, others: string[]): Promise<number[]> {
+    return page.evaluate(
+      async ({ reference, list }) => {
+        const pixels = async (src: string): Promise<Uint8ClampedArray> => {
+          const img = new Image()
+          img.src = `data:image/png;base64,${src}`
+          await img.decode()
+          const canvas = document.createElement('canvas')
+          canvas.width = img.width
+          canvas.height = img.height
+          const ctx = canvas.getContext('2d')
+          if (!ctx) {
+            throw new Error('no 2d context')
+          }
+          ctx.drawImage(img, 0, 0)
+          return ctx.getImageData(0, 0, img.width, img.height).data
+        }
+        const base = await pixels(reference)
+        const diffs: number[] = []
+        for (const src of list) {
+          const data = await pixels(src)
+          const n = Math.min(base.length, data.length)
+          let sum = 0
+          for (let i = 0; i < n; i += 4) {
+            sum +=
+              Math.abs(base[i] - data[i]) +
+              Math.abs(base[i + 1] - data[i + 1]) +
+              Math.abs(base[i + 2] - data[i + 2])
+          }
+          diffs.push(sum / ((n / 4) * 3))
+        }
+        return diffs
+      },
+      { reference: picture, list: others },
+    )
+  }
+
+  /**
+   * O-16: a picture this close to the overview (mean per channel) shows the overview pose. Two
+   * pictures of the overview a moment apart are far closer than this; any view near a system is far
+   * further.
+   */
+  const OVERVIEW_MATCH = 8
+  const SYSTEM_ROWS: Record<string, string> = {
+    hvac: 'HVAC',
+    fire: 'Fire Fighting',
+    plumbing: 'Plumbing',
+    smart: 'Smart Systems',
+  }
+
+  test('@gpu O-16: a click on another system flies there directly, never through the overview (three pairs)', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    await card.scrollIntoViewIfNeeded()
+    await page.mouse.move(0, 0)
+    // After the cross-fade to the live view (well before the idle turntable starts).
+    await page.waitForTimeout(1_500)
+    // The overview as shown, twice: the metric must call these the same.
+    const overview = await centerShot(page, card)
+    await page.waitForTimeout(300)
+    const [overviewAgain] = await pictureDiffs(page, overview, [await centerShot(page, card)])
+    expect(overviewAgain).toBeLessThan(OVERVIEW_MATCH / 2)
+
+    const enter = async (system: string): Promise<void> => {
+      await rowHeader(rows(page).filter({ hasText: SYSTEM_ROWS[system] })).click()
+      await page.mouse.move(0, 0)
+    }
+    /** Arrived: the system is entered and its live labels show (the camera has stopped there). */
+    const arrived = async (system: string): Promise<boolean> =>
+      (await card.getAttribute('data-entered')) === system &&
+      (await card.locator('[data-live-labels] li button').filter({ visible: true }).count()) > 0
+
+    await enter('hvac')
+    await expect.poll(() => arrived('hvac'), { timeout: 30_000 }).toBe(true)
+    for (const [from, to] of [
+      ['hvac', 'fire'],
+      ['fire', 'plumbing'],
+      ['plumbing', 'smart'],
+    ] as const) {
+      // Inside `from`, the view is nothing like the overview (the metric can tell them apart).
+      const [inside] = await pictureDiffs(page, overview, [await centerShot(page, card)])
+      expect(inside, `inside ${from}`).toBeGreaterThan(OVERVIEW_MATCH)
+      await enter(to)
+      await expect(card).toHaveAttribute('data-entered', to)
+      // The flight has started once `from`'s labels are gone (they show only while a system is
+      // entered and the camera stands there).
+      await expect(
+        card.locator('[data-live-labels] li button').filter({ visible: true }),
+      ).toHaveCount(0)
+      // Every picture until the camera has arrived in `to`.
+      const shots: string[] = []
+      const deadline = Date.now() + 30_000
+      while (!(await arrived(to)) && Date.now() < deadline) {
+        shots.push(await centerShot(page, card))
+      }
+      expect(await arrived(to), `arrived in ${to}`).toBe(true)
+      expect(shots.length, `${from} → ${to}: pictures during the move`).toBeGreaterThan(3)
+      const diffs = await pictureDiffs(page, overview, shots)
+      expect(Math.min(...diffs), `${from} → ${to}: nearest the overview`).toBeGreaterThan(
+        OVERVIEW_MATCH,
+      )
+    }
+  })
+
   /** O-8: once live inside a system, the canvas renders: it changes when the view turns. */
   async function expectLiveSystem(page: Page, card: Locator, system: string): Promise<void> {
     await expect(card).toHaveAttribute('data-entered', system)
