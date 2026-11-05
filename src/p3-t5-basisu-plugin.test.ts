@@ -73,10 +73,18 @@ function fakeKtx2(calls: string[]): KTX2Loader {
 async function parseWith(usePlugin: boolean, calls: string[]): Promise<GLTF> {
   const ktx2 = fakeKtx2(calls)
   const loader = new GLTFLoader().setKTX2Loader(ktx2)
-  if (usePlugin) {
-    loader.register(inlineBasisuPlugin(ktx2))
+  if (!usePlugin) {
+    return loader.parseAsync(toGlb(), '')
   }
-  return loader.parseAsync(toGlb(), '')
+  // O-9a: the plugin's textures are filled once transcoded; compared after that.
+  const basisu = inlineBasisuPlugin(ktx2)
+  loader.register(basisu.plugin)
+  const gltf = await loader.parseAsync(toGlb(), '')
+  for (let index = 0; index < GLTF_JSON.textures.length; index += 1) {
+    await gltf.parser.getDependency('texture', index)
+  }
+  await basisu.fills.settled()
+  return gltf
 }
 
 function describeTexture(gltf: GLTF, texture: Texture | null): Record<string, unknown> {
@@ -130,7 +138,7 @@ describe('P3-T5 inlineBasisuPlugin vs three 0.186.1 loadTextureImage', () => {
   })
 
   it('handles only KHR_texture_basisu textures and refuses external KTX2 URIs', () => {
-    const plugin = inlineBasisuPlugin(fakeKtx2([]))({
+    const plugin = inlineBasisuPlugin(fakeKtx2([])).plugin({
       json: {
         textures: [{ source: 0 }, { extensions: { KHR_texture_basisu: { source: 1 } } }],
         images: [{ uri: 'a.png' }, { uri: 'https://elsewhere.example/x.ktx2' }],
