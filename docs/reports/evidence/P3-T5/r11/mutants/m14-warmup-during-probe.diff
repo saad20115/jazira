@@ -1,0 +1,22 @@
+diff --git a/src/components/systems3d/viewer/createViewer.ts b/src/components/systems3d/viewer/createViewer.ts
+index 283ccb8..f882d7a 100644
+--- a/src/components/systems3d/viewer/createViewer.ts
++++ b/src/components/systems3d/viewer/createViewer.ts
+@@ -1521,6 +1521,8 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
+     if (isDisposed()) {
+       throw new ContractError('disposed while compiling')
+     }
++    systemsWarming = true
++    void warmUpSystems()
+     const frames = await probeFrames()
+     let verdict = probeVerdict(frames, false)
+     if (verdict === 'low') {
+@@ -1553,8 +1555,6 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
+     // O-12: the systems' programs only after the timed frames (nothing compiles beside them, so the
+     // tier reflects the hero frame alone), a few at a time; once shown they wait for the swap and
+     // for any flight the visitor waits for.
+-    systemsWarming = true
+-    void warmUpSystems()
+     await Promise.race([options.whenShown, aborted])
+     shown = true
+     // The canvas is in the page now: its size, then the first visible frame.

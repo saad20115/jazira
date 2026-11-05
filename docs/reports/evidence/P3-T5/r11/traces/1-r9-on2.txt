@@ -1,0 +1,5 @@
+scroll -3013 click 0 live 324 stills null
+ -2911   71 ms | EvaluateScript 71, RunMicrotasks 70 | 
+ -2820   40 ms | SimpleWatcher::OnHandleReady 40, Receive mojo message 40 | 
+ -2287   42 ms | FireIdleCallback 42, RunMicrotasks 42 | 
+  5139   30 ms | FireAnimationFrame 24, FunctionCall 24 | 

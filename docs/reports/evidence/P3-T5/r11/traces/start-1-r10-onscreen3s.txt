@@ -1,0 +1,4 @@
+TASK 147 ms at +0
+  events: ThreadControllerImpl::RunTask 147 | EventDispatch 143 | v8.callFunction 141 | FunctionCall fW 26p85sg5w1pv9.js:1 141 | V8.StackGuard 141 | V8.HandleInterrupts 141 | V8.InvokeApiInterruptCallbacks 141 | CpuProfiler::StartProfiling 140
+  self: (program)@:undefined 16 | (idle)@:undefined 1 | (anon)@ktx2-worker.js:76 1 | receiveInstantiationResult@ktx2-worker.js:15 1
+  incl: (idle)@:undefined 1 | (anon)@ktx2-worker.js:76 1 | init@ktx2-worker.js:74 1 | (anon)@ktx2-worker.js:39 1 | receiveInstantiationResult@ktx2-worker.js:15 1

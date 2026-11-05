@@ -1,0 +1,28 @@
+{
+ "mode": "held",
+ "tScroll": 1022,
+ "settledMs": 8116,
+ "settledState": "stills/fire//timeout/",
+ "firstClick": 1159,
+ "liveMs": null,
+ "maxLongTaskFirstWindow": 76,
+ "maxFlightGap": 0,
+ "tiersAfterLive": [],
+ "laterStartMs": [],
+ "maxLoadScale": 1.06,
+ "scaleAtSwap": null,
+ "enteredAfterFirstPhase": "fire",
+ "modelRequests": [
+  "tower-lite.glb"
+ ],
+ "errors": [],
+ "tRelease": 12209,
+ "stillsAfterLiveMs": null,
+ "maxLongAfterLive3s": 0,
+ "maxGapAfterLive3s": 0,
+ "pass": {
+  "settled": true,
+  "o14b": true,
+  "held": true
+ }
+}

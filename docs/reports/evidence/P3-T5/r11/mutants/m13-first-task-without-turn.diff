@@ -1,0 +1,24 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/mut/systemStage.fix.ts	2026-11-05 13:04:12.126105700 +0300
++++ src/components/systems3d/viewer/systemStage.ts	2026-11-05 13:04:27.854178900 +0300
+@@ -556,7 +556,6 @@
+      * wait is what keeps the others out.
+      */
+     const turn = (): Promise<void> => (deps.pause ? deps.pause(system) : yieldToMain())
+-    await turn()
+     // Each step applies the entered look, works on it synchronously and puts the look on screen
+     // back, so no frame ever draws it; the steps are separate tasks (no long task).
+     const withEnteredLook = <T>(work: () => T): T => {
+@@ -603,10 +602,12 @@
+     while (next < objects.length) {
+       // O-12: only while few new programs are still linking; then its turn (the room can take
+       // frames to come, and a flight may have started meanwhile), and at once, in the same task.
++      if (next > 0) {
++        await turn()
++      }
+       if (deps.compileRoom) {
+         await deps.compileRoom()
+       }
+-      await turn()
+       pending.push(
+         withEnteredLook(() => {
+           const taskStart = performance.now()

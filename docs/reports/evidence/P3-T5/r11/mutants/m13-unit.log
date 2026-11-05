@@ -1,0 +1,37 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-system-stage.test.ts (19 tests | 1 failed | 17 skipped) 6179ms
+   ❯ P3-T5 round 11 (r12 O-12, O-9b): another system warm-up never compiles in a flight (2)
+     × waits for its turn before every task, the first one included: never in a flight or inside a system 6176ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 round 11 (r12 O-12, O-9b): another system warm-up never compiles in a flight > waits for its turn before every task, the first one included: never in a flight or inside a system
+AssertionError: expected [ true, true ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   true,
++   true,
++ ]
+
+ ❯ src/p3-t5-system-stage.test.ts:777:29
+    775|     // Inside fire, at rest: still nothing of hvac (round 9's rule, r1…
+    776|     await turns(3)
+    777|     expect(movingAtCompile).toEqual([])
+       |                             ^
+    778|     expect(hvacReady).toBe(false)
+    779|     // Back at the overview, at rest: hvac's warm-up goes on, and only…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 17 skipped (19)
+   Start at  13:04:31
+   Duration  6.80s (tests 95%, import 2%, transform 2%)
+

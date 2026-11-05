@@ -1,0 +1,8 @@
+TASK 169 ms at +0
+  events: ThreadControllerImpl::RunTask 169 | EventDispatch 169 | v8.callFunction 169 | FunctionCall fq 26p85sg5w1pv9.js:1 169 | V8.StackGuard 168 | V8.HandleInterrupts 168 | V8.InvokeApiInterruptCallbacks 168 | CpuProfiler::StartProfiling 168
+  self: (program)@:undefined 1 | (anon)@ktx2-worker.js:undefined 1 | init@ktx2-worker.js:74 1
+  incl: (anon)@ktx2-worker.js:undefined 1 | init@ktx2-worker.js:74 1 | (anon)@ktx2-worker.js:39 1
+TASK 184 ms at +332
+  events: ThreadControllerImpl::RunTask 184 | TimerFire 184 | v8.callFunction 184 | RunMicrotasks 184 | GLES2::GetString 23 | ImplementationBase::GetBucketContents 23 | ImplementationBase::WaitForCmd 23 | CommandBufferHelper::Finish 23 | CommandBufferProxyImpl::WaitForGetOffset 23 | GLES2::GetString 150 | ImplementationBase::GetBucketContents 150 | ImplementationBase::WaitForCmd 150
+  self: (anon)@ktx2-worker.js:undefined 305 | getBoundingClientRect@:undefined 5 | (program)@:undefined 2 | (anon)@28sh15qrnb8yw.js:0 1 | __embind_register_class_constructor@ktx2-worker.js:15 1 | appendChild@:undefined 1 | (anon)@37-4vaqwzl4yr.js:0 1
+  incl: (anon)@ktx2-worker.js:undefined 305 | (anon)@28sh15qrnb8yw.js:0 6 | getBoundingClientRect@:undefined 5 | R@28sh15qrnb8yw.js:0 5 | o@28sh15qrnb8yw.js:0 5 | (anon)@26p85sg5w1pv9.js:0 2 | z@26p85sg5w1pv9.js:0 2 | __embind_register_class_constructor@ktx2-worker.js:15 1 | wasm-to-js@:undefined 1 | wasm-function[110]@00202f96:0 1 | wasm-function[111]@00202f96:0 1 | js-to-wasm@:undefined 1 | callRuntimeCallbacks@ktx2-worker.js:15 1 | initRuntime@ktx2-worker.js:15 1

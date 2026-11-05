@@ -1,0 +1,12 @@
+TASK 165 ms at +0
+  events: ThreadControllerImpl::RunTask 165 | EventDispatch 165 | v8.callFunction 164 | FunctionCall fq 26p85sg5w1pv9.js:1 163 | V8.StackGuard 162 | V8.HandleInterrupts 162 | V8.InvokeApiInterruptCallbacks 162 | CpuProfiler::StartProfiling 160
+  self: (idle)@:undefined 3 | (program)@:undefined 2
+  incl: (idle)@:undefined 3
+TASK 104 ms at +185
+  events: ThreadControllerImpl::RunTask 104 | EvaluateScript 1t8_fvtg6x0wv.js:1 104 | v8.compile 1t8_fvtg6x0wv.js:1 21 | v8.run 82 | RunMicrotasks 81
+  self: whenDependentTypesAreResolved@ktx2-worker.js:15 67 | (idle)@:undefined 43 | (anon)@ktx2-worker.js:15 19 | wasm-function[116]@00202f96:0 10 | createNamedFunction@ktx2-worker.js:15 7 | transcode@ktx2-worker.js:95 7 | (anon)@:3 7 | wasm-function[87]@00202f96:0 6
+  incl: js-to-wasm@:undefined 115 | wasm-to-js@:undefined 84 | wasm-function[110]@00202f96:0 82 | wasm-function[111]@00202f96:0 82 | wasm-function[105]@00202f96:0 82 | callRuntimeCallbacks@ktx2-worker.js:15 82 | initRuntime@ktx2-worker.js:15 82 | doRun@ktx2-worker.js:15 82 | run@ktx2-worker.js:15 82 | runCaller@ktx2-worker.js:15 82 | removeRunDependency@ktx2-worker.js:15 82 | receiveInstance@ktx2-worker.js:15 82 | receiveInstantiationResult@ktx2-worker.js:15 82 | whenDependentTypesAreResolved@ktx2-worker.js:15 81
+TASK 118 ms at +562
+  events: ThreadControllerImpl::RunTask 118 | TimerFire 118 | v8.callFunction 118 | RunMicrotasks 117 | GLES2::GetString 27 | ImplementationBase::GetBucketContents 27 | ImplementationBase::WaitForCmd 27 | CommandBufferHelper::Finish 27 | CommandBufferProxyImpl::WaitForGetOffset 27 | GLES2Implementation::GetRequestableExtensionsCHROMIUM() 84 | ImplementationBase::GetBucketContents 84 | ImplementationBase::WaitForCmd 84
+  self: (anon)@ktx2-worker.js:39 157 | (idle)@:undefined 17 | (program)@:undefined 2
+  incl: (anon)@ktx2-worker.js:39 157 | (idle)@:undefined 17
