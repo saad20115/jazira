@@ -14,10 +14,9 @@ vi.mock('next/cache', async (importOriginal) => {
   }
 })
 
-process.env.DATABASE_URL =
-  process.env.TEST_DATABASE_URL ??
-  process.env.DATABASE_URL ??
-  'postgresql://aljazira_app:dev_only_local_pg_password_change_me@127.0.0.1:5434/aljazira_test'
+import { assertTestDatabaseIsolation } from './_helpers/testDbIsolation'
+
+process.env.DATABASE_URL = assertTestDatabaseIsolation()
 process.env.PAYLOAD_SECRET = 'test_payload_secret_with_at_least_forty_eight_random_bytes_1234567890'
 process.env.IP_HASH_SALT = 'test_ip_hash_salt_with_at_least_forty_eight_random_bytes_1234567890ab'
 process.env.SERVER_URL = 'http://localhost:3000'
@@ -155,7 +154,7 @@ async function callMultipartApi(
   return { status: res.status, data }
 }
 
-describe('P2-T4 integration suite (projects)', () => {
+describe('P2-T4 integration suite (projects)', { shuffle: false }, () => {
   beforeAll(async () => {
     const mediaDir = process.env.MEDIA_DIR ?? ''
     const videosDir = process.env.VIDEOS_DIR ?? ''

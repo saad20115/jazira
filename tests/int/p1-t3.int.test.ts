@@ -8,6 +8,7 @@ import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
 import { env } from '../../src/env'
 import { waitForPendingEmails } from '../../src/security/emailAdapter'
+import { assertTestDatabaseIsolation } from './_helpers/testDbIsolation'
 
 const BASE_URL = 'http://localhost:3000'
 
@@ -110,7 +111,7 @@ async function callMultipartUploadApi(
   }
 }
 
-describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
+describe('P1-T3 integration suite (Postgres test DB via migrations)', { shuffle: false }, () => {
   let payload: Payload
   let adminToken = ''
   let adminId: number | string = ''
@@ -119,6 +120,7 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
   const createdMediaFilenames: string[] = []
 
   beforeAll(async () => {
+    assertTestDatabaseIsolation()
     payload = await getPayload({ config: configPromise })
     // Build schema strictly from committed migrations on aljazira_test (never push)
     await payload.db.migrateFresh({ forceAcceptWarning: true })
@@ -133,9 +135,6 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
       } catch {
         // ignore missing files
       }
-    }
-    if (typeof payload.db.destroy === 'function') {
-      await payload.db.destroy()
     }
   })
 
@@ -837,5 +836,16 @@ describe('P1-T3 integration suite (Postgres test DB via migrations)', () => {
     expect(fileGetRes.headers.get('content-type')).toContain('image/webp')
     const servedBytes = await fileGetRes.arrayBuffer()
     expect(servedBytes.byteLength).toBe(diskStat.size)
+
+    // 6. A-02: Editor POST /api/media with JSON { url, filename, alt } (no multipart file) returns 400
+    const jsonUploadBypassAttempt = await callJsonApi('POST', '/api/media', {
+      token: editorToken,
+      body: {
+        url: 'http://127.0.0.1:9999/ssrf-attempt.jpg',
+        filename: 'ssrf-attempt.jpg',
+        alt: 'SSRF attempt without multipart file',
+      },
+    })
+    expect(jsonUploadBypassAttempt.status).toBe(400)
   })
 })
