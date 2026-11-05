@@ -85,6 +85,19 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/api/:collection(media|videos)/file/:path*',
+        headers: [
+          {
+            key: 'Content-Security-Policy',
+            value: "default-src 'none'; sandbox",
+          },
+          {
+            key: 'X-Content-Type-Options',
+            value: 'nosniff',
+          },
+        ],
+      },
     ])
   },
   webpack: (webpackConfig: WebpackConfigWithResolve) => {

@@ -3,8 +3,8 @@ import path from 'path'
 import { describe, expect, it } from 'vitest'
 import { env, parseEnv } from './env'
 
-const VALID_SECRET_A = 'A'.repeat(48) + '_valid_random_payload_secret_123456'
-const VALID_SECRET_B = 'B'.repeat(48) + '_valid_random_ip_hash_salt_654321'
+const VALID_SECRET_A = 'K9v#mP2$xL7@qR4!wZ8^nT5&yB3*jF6_hD1+gS0-cV9=aU2?eW4~pM7/kX3:uY8'
+const VALID_SECRET_B = 'Q3z!rN8#vH5$bK1@mW6^pL9&tF2*xC7_jG4+yD0-sV3=eA5?uJ8~wM1/nR6:kP4'
 
 function createValidRawEnv(): Record<string, string> {
   return {
@@ -41,6 +41,8 @@ describe('parseEnv (S1, S2)', () => {
       VIDEOS_DIR: path.resolve(process.cwd(), 'videos'),
       UPLOAD_TMP_DIR: path.resolve(os.tmpdir(), 'aljazira-uploads'),
       PAYLOAD_JOBS_AUTORUN: true,
+      SMTP_HOST: '127.0.0.1',
+      SMTP_PORT: 1025,
     })
   })
 
@@ -49,6 +51,8 @@ describe('parseEnv (S1, S2)', () => {
       parseEnv({
         ...createValidRawEnv(),
         NODE_ENV: 'production',
+        SMTP_HOST: 'smtp.aljazira.co',
+        SMTP_PORT: '587',
       }),
     ).toThrow(/PAYLOAD_JOBS_AUTORUN.*production/i)
 
@@ -57,6 +61,8 @@ describe('parseEnv (S1, S2)', () => {
         ...createValidRawEnv(),
         NODE_ENV: 'production',
         PAYLOAD_JOBS_AUTORUN: 'invalid',
+        SMTP_HOST: 'smtp.aljazira.co',
+        SMTP_PORT: '587',
       }),
     ).toThrow(/PAYLOAD_JOBS_AUTORUN/i)
 
@@ -65,6 +71,8 @@ describe('parseEnv (S1, S2)', () => {
         ...createValidRawEnv(),
         NODE_ENV: 'production',
         PAYLOAD_JOBS_AUTORUN: 'true',
+        SMTP_HOST: 'smtp.aljazira.co',
+        SMTP_PORT: '587',
       }).PAYLOAD_JOBS_AUTORUN,
     ).toBe(true)
 
@@ -73,6 +81,8 @@ describe('parseEnv (S1, S2)', () => {
         ...createValidRawEnv(),
         NODE_ENV: 'production',
         PAYLOAD_JOBS_AUTORUN: 'false',
+        SMTP_HOST: 'smtp.aljazira.co',
+        SMTP_PORT: '587',
       }).PAYLOAD_JOBS_AUTORUN,
     ).toBe(false)
   })
@@ -235,5 +245,71 @@ describe('parseEnv (S1, S2)', () => {
         'postgresql://CHANGE_ME_APP_DB_USER:CHANGE_ME_APP_DB_PASSWORD@127.0.0.1:5434/aljazira_dev',
     }
     expect(() => parseEnv(placeholderDb)).toThrow(/DATABASE_URL/)
+  })
+
+  it('rejects low-entropy secrets and superuser DB roles in DATABASE_URL (A-08)', () => {
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        PAYLOAD_SECRET: 'a'.repeat(64),
+      }),
+    ).toThrow(/PAYLOAD_SECRET[\s\S]*entropy/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        PAYLOAD_SECRET: 'A'.repeat(48) + '_valid_random_payload_secret_123456',
+      }),
+    ).toThrow(/PAYLOAD_SECRET[\s\S]*entropy/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        IP_HASH_SALT: '0123456789abcdef'.repeat(4),
+      }),
+    ).toThrow(/IP_HASH_SALT[\s\S]*entropy/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        DATABASE_URL: 'postgresql://postgres:strong_pass@127.0.0.1:5434/aljazira_dev',
+      }),
+    ).toThrow(/DATABASE_URL[\s\S]*superuser/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        DATABASE_URL: 'postgresql://aljazira_pg_super:strong_pass@127.0.0.1:5434/aljazira_dev',
+      }),
+    ).toThrow(/DATABASE_URL[\s\S]*superuser/i)
+  })
+
+  it('requires SMTP_HOST and SMTP_PORT in production instead of silently falling back to 127.0.0.1:1025 (A-09)', () => {
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'false',
+      }),
+    ).toThrow(/SMTP_HOST.*production/i)
+
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'false',
+        SMTP_HOST: 'smtp.aljazira.co',
+      }),
+    ).toThrow(/SMTP_PORT.*production/i)
+
+    const parsedProd = parseEnv({
+      ...createValidRawEnv(),
+      NODE_ENV: 'production',
+      PAYLOAD_JOBS_AUTORUN: 'false',
+      SMTP_HOST: 'smtp.aljazira.co',
+      SMTP_PORT: '587',
+    })
+    expect(parsedProd.SMTP_HOST).toBe('smtp.aljazira.co')
+    expect(parsedProd.SMTP_PORT).toBe(587)
   })
 })

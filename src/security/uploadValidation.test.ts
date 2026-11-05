@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
+import nextConfig from '../../next.config'
 import {
+  applyUploadFileSecurityHeaders,
+  createSafeUploadFileHandler,
   detectImageMimeFromMagicBytes,
   detectVideoMimeFromMagicBytes,
   MAX_VIDEO_FILE_SIZE_BYTES,
@@ -131,5 +134,45 @@ describe('uploadValidation (I5)', () => {
       ),
     }
     await expect(validateAndSanitizeVideoFile(disguisedHtmlMp4)).rejects.toThrow(/file/i)
+  })
+
+  it("adds Content-Security-Policy: default-src 'none'; sandbox and X-Content-Type-Options: nosniff to /api/:collection(media|videos)/file/:path* (A-10)", async () => {
+    expect(typeof nextConfig.headers).toBe('function')
+    const headerRules = await nextConfig.headers!()
+    const fileHeaderRule = headerRules.find(
+      (rule) => rule.source === '/api/:collection(media|videos)/file/:path*',
+    )
+    expect(fileHeaderRule).toBeDefined()
+    expect(fileHeaderRule?.headers).toEqual(
+      expect.arrayContaining([
+        {
+          key: 'Content-Security-Policy',
+          value: "default-src 'none'; sandbox",
+        },
+        {
+          key: 'X-Content-Type-Options',
+          value: 'nosniff',
+        },
+      ]),
+    )
+
+    const handler = createSafeUploadFileHandler('media')
+    const res = await handler(
+      {} as never,
+      {
+        doc: null,
+        headers: new Headers(),
+        params: { collection: 'media', filename: 'missing.jpg' },
+      } as never,
+    )
+    expect(res).toBeInstanceOf(Response)
+    expect((res as Response).headers.get('Content-Security-Policy')).toBe(
+      "default-src 'none'; sandbox",
+    )
+    expect((res as Response).headers.get('X-Content-Type-Options')).toBe('nosniff')
+
+    const modifiedHeaders = applyUploadFileSecurityHeaders({ headers: new Headers() })
+    expect(modifiedHeaders.get('Content-Security-Policy')).toBe("default-src 'none'; sandbox")
+    expect(modifiedHeaders.get('X-Content-Type-Options')).toBe('nosniff')
   })
 })
