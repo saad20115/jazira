@@ -21,6 +21,7 @@ import {
 import { createPublicAPIError } from '../security/apiError'
 import {
   ALLOWED_VIDEO_MIME_TYPES,
+  applyUploadFileSecurityHeaders,
   collectRequestTempFilePaths,
   createSafeUploadFileHandler,
   MAX_VIDEO_FILE_SIZE_BYTES,
@@ -55,6 +56,14 @@ type ActiveBeforeOperationArg = Exclude<
   { operation: 'read' | 'readDistinct' }
 >
 
+function hasForbiddenVideoUploadSourceFields(candidate: unknown): boolean {
+  if (!candidate || typeof candidate !== 'object') {
+    return false
+  }
+  const record = candidate as Record<string, unknown>
+  return record.url !== undefined || record.filename !== undefined
+}
+
 const validateVideoUploadBeforeOperation: CollectionBeforeOperationHook = async (rawArg) => {
   const { args, operation, req } = rawArg as ActiveBeforeOperationArg
   if (operation === 'create' || operation === 'update') {
@@ -79,8 +88,33 @@ const validateVideoUploadBeforeOperation: CollectionBeforeOperationHook = async 
         })
       }
     }
-    if (req.file) {
+    if (operation === 'create') {
+      if (!req.file) {
+        throw new ValidationError({
+          errors: [
+            {
+              path: 'file',
+              message:
+                'A video file upload is required; JSON { url, filename } uploads are forbidden.',
+            },
+          ],
+        })
+      }
       await validateAndSanitizeVideoFile(req.file)
+    } else if (req.file) {
+      await validateAndSanitizeVideoFile(req.file)
+    } else if (
+      hasForbiddenVideoUploadSourceFields((args as { data?: unknown }).data) ||
+      hasForbiddenVideoUploadSourceFields(req.data)
+    ) {
+      throw new ValidationError({
+        errors: [
+          {
+            path: 'file',
+            message: 'JSON { url, filename } video upload updates are forbidden.',
+          },
+        ],
+      })
     }
   }
   return args
@@ -243,6 +277,8 @@ export const Videos: CollectionConfig = withImmutableCreatedAt({
   upload: {
     staticDir: env.VIDEOS_DIR,
     mimeTypes: [...ALLOWED_VIDEO_MIME_TYPES],
+    pasteURL: false,
+    modifyResponseHeaders: applyUploadFileSecurityHeaders,
     handlers: [createSafeUploadFileHandler(env.VIDEOS_DIR)],
   },
   fields: [

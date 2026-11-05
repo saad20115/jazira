@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import nextConfig from '../../next.config'
+import { Media } from '../collections/Media'
+import { Videos } from '../collections/Videos'
 import {
   applyUploadFileSecurityHeaders,
   createSafeUploadFileHandler,
@@ -174,5 +176,75 @@ describe('uploadValidation (I5)', () => {
     const modifiedHeaders = applyUploadFileSecurityHeaders({ headers: new Headers() })
     expect(modifiedHeaders.get('Content-Security-Policy')).toBe("default-src 'none'; sandbox")
     expect(modifiedHeaders.get('X-Content-Type-Options')).toBe('nosniff')
+  })
+
+  it('closes the upload bypass on Media and Videos: disables pasteURL and rejects create/update JSON { url, filename } payloads when req.file is absent (A-02)', async () => {
+    expect(typeof Media.upload).toBe('object')
+    expect(typeof Videos.upload).toBe('object')
+    expect((Media.upload as { pasteURL?: unknown }).pasteURL).toBe(false)
+    expect((Videos.upload as { pasteURL?: unknown }).pasteURL).toBe(false)
+
+    const runBeforeOperation = async (
+      hooks: NonNullable<typeof Media.hooks>['beforeOperation'],
+      arg: Parameters<NonNullable<NonNullable<typeof Media.hooks>['beforeOperation']>[number]>[0],
+    ) => {
+      for (const hook of hooks ?? []) {
+        await hook(arg)
+      }
+    }
+
+    // 1. Create without req.file must throw ValidationError on both Media and Videos
+    await expect(
+      runBeforeOperation(Media.hooks?.beforeOperation, {
+        args: {
+          data: { url: 'http://127.0.0.1:9999/ssrf.jpg', filename: 'ssrf.jpg', alt: 'ssrf' },
+        },
+        collection: Media as never,
+        context: {},
+        operation: 'create',
+        req: {
+          data: { url: 'http://127.0.0.1:9999/ssrf.jpg', filename: 'ssrf.jpg', alt: 'ssrf' },
+        } as never,
+      }),
+    ).rejects.toThrow(/file/i)
+
+    await expect(
+      runBeforeOperation(Videos.hooks?.beforeOperation, {
+        args: {
+          data: { url: 'http://127.0.0.1:9999/ssrf.mp4', filename: 'ssrf.mp4', title: 'ssrf' },
+        },
+        collection: Videos as never,
+        context: {},
+        operation: 'create',
+        req: {
+          data: { url: 'http://127.0.0.1:9999/ssrf.mp4', filename: 'ssrf.mp4', title: 'ssrf' },
+        } as never,
+      }),
+    ).rejects.toThrow(/file/i)
+
+    // 2. Update without req.file that attempts to pass url or filename in args.data or req.data must throw ValidationError
+    await expect(
+      runBeforeOperation(Media.hooks?.beforeOperation, {
+        args: { data: { alt: 'updated' } },
+        collection: Media as never,
+        context: {},
+        operation: 'update',
+        req: {
+          data: { url: 'http://127.0.0.1:9999/ssrf.jpg', filename: 'ssrf.jpg', alt: 'updated' },
+        } as never,
+      }),
+    ).rejects.toThrow(/file/i)
+
+    await expect(
+      runBeforeOperation(Videos.hooks?.beforeOperation, {
+        args: { data: { title: 'updated' } },
+        collection: Videos as never,
+        context: {},
+        operation: 'update',
+        req: {
+          data: { url: 'http://127.0.0.1:9999/ssrf.mp4', filename: 'ssrf.mp4', title: 'updated' },
+        } as never,
+      }),
+    ).rejects.toThrow(/file/i)
   })
 })
