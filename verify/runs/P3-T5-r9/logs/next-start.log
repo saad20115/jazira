@@ -1,0 +1,276 @@
+
+> aljazira-website@0.1.0 start D:\jazira-verify\2026-11-05\p3t5j
+> cross-env NODE_OPTIONS=--no-deprecation next start
+
+▲ Next.js 16.4.2
+- Local:         http://localhost:3326
+- Network:       http://172.16.48.47:3326
+✓ Ready in 470ms
+✓ Running next.config.ts took 123ms
+⚠ "next start" does not work with "output: standalone" configuration. Use "node .next/standalone/server.js" instead.
+[07:08:57] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:09:04] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:09:09] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:09:44] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:36:17] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:36:19] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:36:25] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:36:28] [31mERROR[39m: [36maborted[39m
+    err: {
+      "type": "Error",
+      "message": "aborted",
+      "stack":
+          Error: aborted
+              at abortIncoming (node:_http_server:845:17)
+              at socketOnClose (node:_http_server:839:3)
+              at Socket.emit (node:events:520:35)
+              at TCP.<anonymous> (node:net:346:12)
+      "code": "ECONNRESET"
+    }
+[07:36:28] [31mERROR[39m: [36maborted[39m
+    err: {
+      "type": "Error",
+      "message": "aborted",
+      "stack":
+          Error: aborted
+              at abortIncoming (node:_http_server:845:17)
+              at socketOnClose (node:_http_server:839:3)
+              at Socket.emit (node:events:520:35)
+              at TCP.<anonymous> (node:net:346:12)
+      "code": "ECONNRESET"
+    }
+[07:36:30] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:37:04] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:38:21] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }
+[07:43:42] [31mERROR[39m: [36mYou are not allowed to perform this action.[39m
+    err: {
+      "type": "a",
+      "message": "You are not allowed to perform this action.",
+      "stack":
+          a: You are not allowed to perform this action.
+              at c (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:16:33573)
+              at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+              at async A (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:14:55241)
+              at async includes.i.handler (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\node_modules__pnpm_18kw7bsu9rykz._.js:36:142959)
+              at async B (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:16634)
+              at async D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:24952
+              at async r0.renderToResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:14352)
+              at async r0.executeRequest (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:5:17509)
+              at async Y (D:\jazira-verify\2026-11-05\p3t5j\.next\server\chunks\_1155xikg1q_4m._.js:1:28343)
+              at async r0.handleResponse (D:\jazira-verify\2026-11-05\p3t5j\node_modules\.pnpm\next@16.4.2_@babel+core@7.2_487179904287f11c145d2074b0aa986a\node_modules\next\dist\compiled\next-server\app-route-turbo.runtime.prod.js:1:132981)
+      "data": null,
+      "isOperational": true,
+      "isPublic": true,
+      "status": 403,
+      "name": "a"
+    }

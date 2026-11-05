@@ -1,0 +1,28 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-verify\2026-11-05\p3t5j
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[06:56:48] [32mINFO[39m: [36mReading migration files from D:\jazira-verify\2026-11-05\p3t5j\src\migrations[39m
+[06:56:48] [32mINFO[39m: [36mMigrating: 20261021_074848_initial_users_media[39m
+[06:56:48] [32mINFO[39m: [36mMigrated:  20261021_074848_initial_users_media (203ms)[39m
+[06:56:48] [32mINFO[39m: [36mMigrating: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261022_120943_p2_t2_videos_brands_stats_materials (55ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261022_140011_p2_t3_services_team[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261022_140011_p2_t3_services_team (63ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261022_160652_p2_t4_projects[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261022_160652_p2_t4_projects (175ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261022_221250_p2_t5_globals[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261022_221250_p2_t5_globals (399ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261022_231435_p2_t6_quote_requests[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261022_231435_p2_t6_quote_requests (19ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261023_005934_p2_t6_quote_requests_service_title (5ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (14ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261024_195628_p3_t12_site_settings_arabic_enabled[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261024_195628_p3_t12_site_settings_arabic_enabled (5ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261025_002404_p4_t2_projects_review_fields[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261025_002404_p4_t2_projects_review_fields (7ms)[39m
+[06:56:49] [32mINFO[39m: [36mMigrating: 20261101_133828_p4_t2_r2_media_placeholder[39m
+[06:56:49] [32mINFO[39m: [36mMigrated:  20261101_133828_p4_t2_r2_media_placeholder (5ms)[39m
+[06:56:49] [32mINFO[39m: [36mDone.[39m

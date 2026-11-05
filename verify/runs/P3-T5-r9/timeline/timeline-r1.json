@@ -1,0 +1,131 @@
+{
+ "hw": {
+  "cores": 8,
+  "mem": 16
+ },
+ "marks": [
+  [
+   2750,
+   "CLICK Fire Fighting"
+  ],
+  [
+   12479,
+   "CLICK Plumbing"
+  ],
+  [
+   21657,
+   "CLICK HVAC"
+  ],
+  [
+   30857,
+   "CLICK Smart Systems"
+  ]
+ ],
+ "log": [
+  [
+   348,
+   "still/none///"
+  ],
+  [
+   3367,
+   "still/fire///"
+  ],
+  [
+   3394,
+   "loading/fire//loading/"
+  ],
+  [
+   3397,
+   "loading/fire//loading/canvas"
+  ],
+  [
+   4153,
+   "live/fire/low//canvas"
+  ],
+  [
+   12625,
+   "live/plumbing/low//canvas"
+  ],
+  [
+   21798,
+   "live/hvac/low//canvas"
+  ],
+  [
+   31026,
+   "live/smart/low//canvas"
+  ]
+ ],
+ "longTasks": [
+  [
+   206,
+   77
+  ],
+  [
+   284,
+   60
+  ],
+  [
+   1365,
+   102
+  ]
+ ],
+ "gaps": [
+  [
+   193,
+   43
+  ],
+  [
+   276,
+   83
+  ],
+  [
+   626,
+   350
+  ],
+  [
+   726,
+   83
+  ],
+  [
+   876,
+   117
+  ],
+  [
+   943,
+   50
+  ],
+  [
+   1460,
+   83
+  ],
+  [
+   2393,
+   233
+  ],
+  [
+   3659,
+   217
+  ],
+  [
+   3843,
+   50
+  ],
+  [
+   5026,
+   50
+  ],
+  [
+   12759,
+   50
+  ],
+  [
+   18092,
+   50
+  ],
+  [
+   37741,
+   83
+  ]
+ ],
+ "errors": []
+}
