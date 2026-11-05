@@ -1,0 +1,31 @@
+login 200
+publish services-page en 200
+publish services-page ar 200
+publish about-page en 200
+publish about-page ar 200
+publish projects-page en 200
+publish projects-page ar 200
+publish contact-page en 200
+publish contact-page ar 200
+publish privacy-page en 200
+publish privacy-page ar 200
+publish service general-contracting en 200
+publish service general-contracting ar 200
+publish service mep-works en 200
+publish service mep-works ar 200
+publish service firefighting-systems en 200
+publish service firefighting-systems ar 200
+publish service smart-systems en 200
+publish service smart-systems ar 200
+publish service hvac-ventilation-refrigeration en 200
+publish service hvac-ventilation-refrigeration ar 200
+publish service plumbing-water-drainage en 200
+publish service plumbing-water-drainage ar 200
+publish service electrical-power-distribution en 200
+publish service electrical-power-distribution ar 200
+publish service mep-equipment-supply en 200
+publish service mep-equipment-supply ar 200
+publish service testing-commissioning-tab en 200
+publish service testing-commissioning-tab ar 200
+publish service maintenance-upgrades en 200
+publish service maintenance-upgrades ar 200

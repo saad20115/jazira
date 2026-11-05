@@ -1,0 +1,282 @@
+[
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "services",
+  "url": "/services",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "service-detail",
+  "url": "/services/general-contracting",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "about",
+  "url": "/about",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "projects",
+  "url": "/projects",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "project-detail",
+  "url": "/projects/sofitel-makkah-hotel",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "contact",
+  "url": "/contact",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "1440",
+  "name": "privacy",
+  "url": "/privacy",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "services",
+  "url": "/services",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "service-detail",
+  "url": "/services/general-contracting",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "about",
+  "url": "/about",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "projects",
+  "url": "/projects",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "project-detail",
+  "url": "/projects/sofitel-makkah-hotel",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "contact",
+  "url": "/contact",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "en",
+  "v": "390",
+  "name": "privacy",
+  "url": "/privacy",
+  "status": 200,
+  "dir": "ltr",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "services",
+  "url": "/services",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "service-detail",
+  "url": "/services/general-contracting",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "about",
+  "url": "/about",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "projects",
+  "url": "/projects",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "project-detail",
+  "url": "/projects/sofitel-makkah-hotel",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "contact",
+  "url": "/contact",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "1440",
+  "name": "privacy",
+  "url": "/privacy",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "services",
+  "url": "/services",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "service-detail",
+  "url": "/services/general-contracting",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "about",
+  "url": "/about",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "projects",
+  "url": "/projects",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "project-detail",
+  "url": "/projects/sofitel-makkah-hotel",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "contact",
+  "url": "/contact",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ },
+ {
+  "loc": "ar",
+  "v": "390",
+  "name": "privacy",
+  "url": "/privacy",
+  "status": 200,
+  "dir": "rtl",
+  "horizontalScroll": false,
+  "errors": []
+ }
+]

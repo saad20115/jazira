@@ -1,0 +1,2436 @@
+{
+ "en-1440-about": {
+  "status": 200,
+  "m": {
+   "storySection": [
+    {
+     "x": 0,
+     "y": 539,
+     "w": 1440,
+     "h": 719,
+     "pt": "56px",
+     "pb": "72px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nYears Experience\n\nOUR STORY\nEng"
+    }
+   ],
+   "storyContainer": [
+    {
+     "x": 0,
+     "y": 595,
+     "w": 1440,
+     "h": 591,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "64px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "45+\n45+\n\nYears Experience\n\nOUR STORY\nEng"
+    }
+   ],
+   "storyHead": [
+    {
+     "x": 744,
+     "y": 595,
+     "w": 511,
+     "h": 169,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "OUR STORY\nEngineering Excellence\nSince 1"
+    }
+   ],
+   "storyContentCol": [
+    {
+     "x": 744,
+     "y": 595,
+     "w": 556,
+     "h": 591,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "20px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "OUR STORY\nEngineering Excellence\nSince 1"
+    }
+   ],
+   "storyVisualCol": [
+    {
+     "x": 140,
+     "y": 658,
+     "w": 540,
+     "h": 440,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "62.5px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nYears Experience"
+    }
+   ],
+   "storyPhotoWrap": [
+    {
+     "x": 148,
+     "y": 666,
+     "w": 520,
+     "h": 420,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "8px",
+     "gap": "normal",
+     "bg": "rgb(11, 26, 51)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyTitle": [
+    {
+     "x": 744,
+     "y": 641,
+     "w": 511,
+     "h": 104,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "Engineering Excellence\nSince 1979"
+    }
+   ],
+   "goldDivider": [
+    {
+     "x": 744,
+     "y": 761,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 694,
+     "y": 1520,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 694,
+     "y": 2196,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyParagraph": [
+    {
+     "x": 744,
+     "y": 784,
+     "w": 556,
+     "h": 156,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Jazira for Imdad Smart Company is a l"
+    },
+    {
+     "x": 744,
+     "y": 960,
+     "w": 556,
+     "h": 130,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Established in the Kingdom of Saudi Arab"
+    }
+   ],
+   "mvSection": [
+    {
+     "x": 0,
+     "y": 1941,
+     "w": 1440,
+     "h": 1618,
+     "pt": "65px",
+     "pb": "78px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+    }
+   ],
+   "mvContainer": [
+    {
+     "x": 0,
+     "y": 2006,
+     "w": 1440,
+     "h": 1475,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "70px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+    }
+   ],
+   "mvSectionHead": [
+    {
+     "x": 428,
+     "y": 2006,
+     "w": 584,
+     "h": 193,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+    }
+   ],
+   "mvRow": [
+    {
+     "x": 140,
+     "y": 2269,
+     "w": 1160,
+     "h": 607,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "72px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "01\nOUR MISSION\nOur Mission\n\nTo safely de"
+    },
+    {
+     "x": 140,
+     "y": 2946,
+     "w": 1160,
+     "h": 535,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "72px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "OUR VISION\nOur Vision\n\nTo become a regio"
+    }
+   ]
+  }
+ },
+ "en-1440-services": {
+  "status": 200,
+  "m": {
+   "section": [
+    {
+     "x": 0,
+     "y": 3671,
+     "w": 1440,
+     "h": 1135,
+     "pt": "65px",
+     "pb": "72px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "MATERIALS & BRANDS\nApproved Materials & "
+    }
+   ],
+   "tableCard": [
+    {
+     "x": 140,
+     "y": 4008,
+     "w": 1160,
+     "h": 646,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "1px solid rgb(227, 231, 238)",
+     "align": "normal",
+     "text": "Approved materials and partner brands\nNO"
+    }
+   ],
+   "td": [
+    {
+     "x": 141,
+     "y": 4053,
+     "w": 88,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "01"
+    },
+    {
+     "x": 229,
+     "y": 4053,
+     "w": 456,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "EMT Conduit"
+    },
+    {
+     "x": 685,
+     "y": 4053,
+     "w": 360,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Rouf"
+    },
+    {
+     "x": 1045,
+     "y": 4053,
+     "w": 254,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Saudi Arabia"
+    },
+    {
+     "x": 141,
+     "y": 4113,
+     "w": 88,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "02"
+    },
+    {
+     "x": 229,
+     "y": 4113,
+     "w": 456,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "Electric Box"
+    },
+    {
+     "x": 685,
+     "y": 4113,
+     "w": 360,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Rouf\nalfanar"
+    },
+    {
+     "x": 1045,
+     "y": 4113,
+     "w": 254,
+     "h": 60,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Saudi Arabia"
+    }
+   ],
+   "th": [
+    {
+     "x": 141,
+     "y": 4009,
+     "w": 88,
+     "h": 44,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "NO."
+    },
+    {
+     "x": 229,
+     "y": 4009,
+     "w": 456,
+     "h": 44,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "MATERIAL / ITEM"
+    },
+    {
+     "x": 685,
+     "y": 4009,
+     "w": 360,
+     "h": 44,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "BRAND"
+    },
+    {
+     "x": 1045,
+     "y": 4009,
+     "w": 254,
+     "h": 44,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "ORIGIN"
+    }
+   ]
+  },
+  "rows": [
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60,
+   60
+  ]
+ },
+ "en-1440-projects": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 3459,
+     "w": 1440,
+     "h": 454,
+     "pt": "83px",
+     "pb": "83px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Have a Project\nin Mind?\n\nLet our 45+ yea"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 759,
+     "y": 3778,
+     "w": 141,
+     "h": 52,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "Call Us Now"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 540,
+     "y": 3778,
+     "w": 361,
+     "h": 52,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "Request a Quote\nCall Us Now"
+    }
+   ]
+  }
+ },
+ "en-1440-detail": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 1135,
+     "w": 1440,
+     "h": 438,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Have a Project\nin Mind?\n\nLet our 45+ yea"
+    }
+   ],
+   "ctaSectionCompact": [
+    {
+     "x": 0,
+     "y": 1135,
+     "w": 1440,
+     "h": 438,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Have a Project\nin Mind?\n\nLet our 45+ yea"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 759,
+     "y": 1446,
+     "w": 141,
+     "h": 52,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "Call Us Now"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 540,
+     "y": 1446,
+     "w": 361,
+     "h": 52,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "Request a Quote\nCall Us Now"
+    }
+   ]
+  },
+  "csp": [],
+  "imgStyle": 0
+ },
+ "en-390-about": {
+  "status": 200,
+  "m": {
+   "storySection": [
+    {
+     "x": 0,
+     "y": 415,
+     "w": 390,
+     "h": 1173,
+     "pt": "56px",
+     "pb": "72px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nYears Experience\n\nOUR STORY\nEng"
+    }
+   ],
+   "storyContainer": [
+    {
+     "x": 0,
+     "y": 471,
+     "w": 390,
+     "h": 1045,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "40px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "45+\n45+\n\nYears Experience\n\nOUR STORY\nEng"
+    }
+   ],
+   "storyHead": [
+    {
+     "x": 16,
+     "y": 859,
+     "w": 348,
+     "h": 141,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "OUR STORY\nEngineering Excellence\nSince 1"
+    }
+   ],
+   "storyContentCol": [
+    {
+     "x": 16,
+     "y": 859,
+     "w": 358,
+     "h": 657,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "20px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "OUR STORY\nEngineering Excellence\nSince 1"
+    }
+   ],
+   "storyVisualCol": [
+    {
+     "x": 16,
+     "y": 471,
+     "w": 358,
+     "h": 348,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nYears Experience"
+    }
+   ],
+   "storyPhotoWrap": [
+    {
+     "x": 24,
+     "y": 479,
+     "w": 342,
+     "h": 300,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "8px",
+     "gap": "normal",
+     "bg": "rgb(11, 26, 51)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyTitle": [
+    {
+     "x": 16,
+     "y": 905,
+     "w": 348,
+     "h": 76,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "Engineering Excellence\nSince 1979"
+    }
+   ],
+   "goldDivider": [
+    {
+     "x": 16,
+     "y": 997,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 169,
+     "y": 1830,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 169,
+     "y": 3246,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyParagraph": [
+    {
+     "x": 16,
+     "y": 1020,
+     "w": 358,
+     "h": 192,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Jazira for Imdad Smart Company is a l"
+    },
+    {
+     "x": 16,
+     "y": 1232,
+     "w": 358,
+     "h": 168,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Established in the Kingdom of Saudi Arab"
+    }
+   ],
+   "mvSection": [
+    {
+     "x": 0,
+     "y": 3013,
+     "w": 390,
+     "h": 2496,
+     "pt": "65px",
+     "pb": "78px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+    }
+   ],
+   "mvContainer": [
+    {
+     "x": 0,
+     "y": 3078,
+     "w": 390,
+     "h": 2353,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "70px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+    }
+   ],
+   "mvSectionHead": [
+    {
+     "x": 16,
+     "y": 3078,
+     "w": 358,
+     "h": 171,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "WHO WE ARE\nOur Mission & Vision\n\nThe pur"
+    }
+   ],
+   "mvRow": [
+    {
+     "x": 16,
+     "y": 3319,
+     "w": 358,
+     "h": 1091,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "40px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "01\nOUR MISSION\nOur Mission\n\nTo safely de"
+    },
+    {
+     "x": 16,
+     "y": 4480,
+     "w": 358,
+     "h": 951,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "40px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "OUR VISION\nOur Vision\n\nTo become a regio"
+    }
+   ]
+  }
+ },
+ "en-390-services": {
+  "status": 200,
+  "m": {
+   "section": [
+    {
+     "x": 0,
+     "y": 5861,
+     "w": 390,
+     "h": 2035,
+     "pt": "65px",
+     "pb": "48px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "MATERIALS & BRANDS\nApproved Materials & "
+    }
+   ],
+   "tableCard": [
+    {
+     "x": 16,
+     "y": 6418,
+     "w": 358,
+     "h": 1312,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "1px solid rgb(227, 231, 238)",
+     "align": "normal",
+     "text": "01\nSaudi Arabia\n\nEMT Conduit\n\nAl Rouf\n02"
+    }
+   ],
+   "td": [
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "01"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "EMT Conduit"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Rouf"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Saudi Arabia"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "02"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "Electric Box"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Roufalfanar"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Saudi Arabia"
+    }
+   ],
+   "th": [
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "NO."
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "MATERIAL / ITEM"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "BRAND"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "ORIGIN"
+    }
+   ]
+  },
+  "rows": []
+ },
+ "en-390-projects": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 7117,
+     "w": 390,
+     "h": 498,
+     "pt": "83px",
+     "pb": "83px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Have a Project\nin Mind?\n\nLet our 45+ yea"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 124,
+     "y": 7480,
+     "w": 141,
+     "h": 52,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "Call Us Now"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 92,
+     "y": 7414,
+     "w": 206,
+     "h": 118,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "Request a Quote\nCall Us Now"
+    }
+   ]
+  }
+ },
+ "en-390-detail": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 1275,
+     "w": 390,
+     "h": 482,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Have a Project\nin Mind?\n\nLet our 45+ yea"
+    }
+   ],
+   "ctaSectionCompact": [
+    {
+     "x": 0,
+     "y": 1275,
+     "w": 390,
+     "h": 482,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Have a Project\nin Mind?\n\nLet our 45+ yea"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 124,
+     "y": 1630,
+     "w": 141,
+     "h": 52,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "Call Us Now"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 92,
+     "y": 1564,
+     "w": 206,
+     "h": 118,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "Request a Quote\nCall Us Now"
+    }
+   ]
+  },
+  "csp": [],
+  "imgStyle": 0
+ },
+ "ar-1440-about": {
+  "status": 200,
+  "m": {
+   "storySection": [
+    {
+     "x": 0,
+     "y": 553,
+     "w": 1440,
+     "h": 681,
+     "pt": "56px",
+     "pb": "72px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nعاماً من الخبرة\n\nقصتنا\nتميز هند"
+    }
+   ],
+   "storyContainer": [
+    {
+     "x": 0,
+     "y": 609,
+     "w": 1440,
+     "h": 553,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "64px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "45+\n45+\n\nعاماً من الخبرة\n\nقصتنا\nتميز هند"
+    }
+   ],
+   "storyHead": [
+    {
+     "x": 419,
+     "y": 609,
+     "w": 277,
+     "h": 181,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "قصتنا\nتميز هندسي\nمنذ عام 1979"
+    }
+   ],
+   "storyContentCol": [
+    {
+     "x": 140,
+     "y": 609,
+     "w": 556,
+     "h": 553,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "20px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "قصتنا\nتميز هندسي\nمنذ عام 1979\n\nشركة الجز"
+    }
+   ],
+   "storyVisualCol": [
+    {
+     "x": 760,
+     "y": 672,
+     "w": 540,
+     "h": 440,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "62.5px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nعاماً من الخبرة"
+    }
+   ],
+   "storyPhotoWrap": [
+    {
+     "x": 772,
+     "y": 680,
+     "w": 520,
+     "h": 420,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "8px",
+     "gap": "normal",
+     "bg": "rgb(11, 26, 51)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyTitle": [
+    {
+     "x": 419,
+     "y": 657,
+     "w": 277,
+     "h": 114,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "تميز هندسي\nمنذ عام 1979"
+    }
+   ],
+   "goldDivider": [
+    {
+     "x": 644,
+     "y": 787,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 694,
+     "y": 1508,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 694,
+     "y": 2189,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyParagraph": [
+    {
+     "x": 140,
+     "y": 810,
+     "w": 556,
+     "h": 143,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "شركة الجزيرة الإمداد الذكي هي اسم رائد ف"
+    },
+    {
+     "x": 140,
+     "y": 973,
+     "w": 556,
+     "h": 114,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "تأسست الشركة في المملكة العربية السعودية"
+    }
+   ],
+   "mvSection": [
+    {
+     "x": 0,
+     "y": 1955,
+     "w": 1440,
+     "h": 1511,
+     "pt": "65px",
+     "pb": "78px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هويتنا\nرسالتنا ورؤيتنا\n\nالغاية وراء كل م"
+    }
+   ],
+   "mvContainer": [
+    {
+     "x": 0,
+     "y": 2020,
+     "w": 1440,
+     "h": 1368,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "70px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "هويتنا\nرسالتنا ورؤيتنا\n\nالغاية وراء كل م"
+    }
+   ],
+   "mvSectionHead": [
+    {
+     "x": 434,
+     "y": 2020,
+     "w": 572,
+     "h": 173,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "هويتنا\nرسالتنا ورؤيتنا\n\nالغاية وراء كل م"
+    }
+   ],
+   "mvRow": [
+    {
+     "x": 140,
+     "y": 2262,
+     "w": 1160,
+     "h": 597,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "72px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "01\nرسالتنا\nرسالتنا\n\nتسليم مشاريع كهروميك"
+    },
+    {
+     "x": 140,
+     "y": 2929,
+     "w": 1160,
+     "h": 458,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "72px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "رؤيتنا\nرؤيتنا\n\nأن نكون الشركة الرائدة إق"
+    }
+   ]
+  }
+ },
+ "ar-1440-services": {
+  "status": 200,
+  "m": {
+   "section": [
+    {
+     "x": 0,
+     "y": 3787,
+     "w": 1440,
+     "h": 1159,
+     "pt": "65px",
+     "pb": "72px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "المواد والعلامات المعتمدة\nالمواد والعلام"
+    }
+   ],
+   "tableCard": [
+    {
+     "x": 140,
+     "y": 4106,
+     "w": 1160,
+     "h": 686,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "1px solid rgb(227, 231, 238)",
+     "align": "normal",
+     "text": "المواد المعتمدة والعلامات التجارية الشري"
+    }
+   ],
+   "td": [
+    {
+     "x": 1211,
+     "y": 4153,
+     "w": 88,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "01"
+    },
+    {
+     "x": 755,
+     "y": 4153,
+     "w": 456,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "مواسير EMT"
+    },
+    {
+     "x": 395,
+     "y": 4153,
+     "w": 360,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Rouf"
+    },
+    {
+     "x": 141,
+     "y": 4153,
+     "w": 254,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "المملكة العربية السعودية"
+    },
+    {
+     "x": 1211,
+     "y": 4215,
+     "w": 88,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "02"
+    },
+    {
+     "x": 755,
+     "y": 4215,
+     "w": 456,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "علبة كهربائية"
+    },
+    {
+     "x": 395,
+     "y": 4215,
+     "w": 360,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Rouf\nalfanar"
+    },
+    {
+     "x": 141,
+     "y": 4215,
+     "w": 254,
+     "h": 62,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "المملكة العربية السعودية"
+    }
+   ],
+   "th": [
+    {
+     "x": 1211,
+     "y": 4107,
+     "w": 88,
+     "h": 46,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "م."
+    },
+    {
+     "x": 755,
+     "y": 4107,
+     "w": 456,
+     "h": 46,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "المادة / البند"
+    },
+    {
+     "x": 395,
+     "y": 4107,
+     "w": 360,
+     "h": 46,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "العلامة التجارية"
+    },
+    {
+     "x": 141,
+     "y": 4107,
+     "w": 254,
+     "h": 46,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "بلد المنشأ"
+    }
+   ]
+  },
+  "rows": [
+   62,
+   62,
+   62,
+   62,
+   62,
+   62,
+   62,
+   62,
+   62,
+   78
+  ]
+ },
+ "ar-1440-projects": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 3415,
+     "w": 1440,
+     "h": 508,
+     "pt": "83px",
+     "pb": "83px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هل لديك مشروع\nقيد التخطيط؟\n\nدع خبرتنا ال"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 548,
+     "y": 3786,
+     "w": 140,
+     "h": 54,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "اتصل بنا الآن"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 548,
+     "y": 3786,
+     "w": 344,
+     "h": 54,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "اطلب عرض سعر\nاتصل بنا الآن"
+    }
+   ]
+  }
+ },
+ "ar-1440-detail": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 1163,
+     "w": 1440,
+     "h": 492,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هل لديك مشروع\nقيد التخطيط؟\n\nدع خبرتنا ال"
+    }
+   ],
+   "ctaSectionCompact": [
+    {
+     "x": 0,
+     "y": 1163,
+     "w": 1440,
+     "h": 492,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هل لديك مشروع\nقيد التخطيط؟\n\nدع خبرتنا ال"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 548,
+     "y": 1526,
+     "w": 140,
+     "h": 54,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "اتصل بنا الآن"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 548,
+     "y": 1526,
+     "w": 344,
+     "h": 54,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "اطلب عرض سعر\nاتصل بنا الآن"
+    }
+   ]
+  },
+  "csp": [],
+  "imgStyle": 0
+ },
+ "ar-390-about": {
+  "status": 200,
+  "m": {
+   "storySection": [
+    {
+     "x": 0,
+     "y": 455,
+     "w": 390,
+     "h": 1121,
+     "pt": "56px",
+     "pb": "72px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nعاماً من الخبرة\n\nقصتنا\nتميز هند"
+    }
+   ],
+   "storyContainer": [
+    {
+     "x": 0,
+     "y": 511,
+     "w": 390,
+     "h": 993,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "40px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "45+\n45+\n\nعاماً من الخبرة\n\nقصتنا\nتميز هند"
+    }
+   ],
+   "storyHead": [
+    {
+     "x": 185,
+     "y": 899,
+     "w": 189,
+     "h": 150,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "قصتنا\nتميز هندسي\nمنذ عام 1979"
+    }
+   ],
+   "storyContentCol": [
+    {
+     "x": 16,
+     "y": 899,
+     "w": 358,
+     "h": 605,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "20px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "flex-start",
+     "text": "قصتنا\nتميز هندسي\nمنذ عام 1979\n\nشركة الجز"
+    }
+   ],
+   "storyVisualCol": [
+    {
+     "x": 16,
+     "y": 511,
+     "w": 358,
+     "h": 348,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "45+\n45+\n\nعاماً من الخبرة"
+    }
+   ],
+   "storyPhotoWrap": [
+    {
+     "x": 24,
+     "y": 519,
+     "w": 342,
+     "h": 300,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "8px",
+     "gap": "normal",
+     "bg": "rgb(11, 26, 51)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyTitle": [
+    {
+     "x": 185,
+     "y": 946,
+     "w": 189,
+     "h": 84,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "تميز هندسي\nمنذ عام 1979"
+    }
+   ],
+   "goldDivider": [
+    {
+     "x": 322,
+     "y": 1046,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 169,
+     "y": 1803,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    },
+    {
+     "x": 169,
+     "y": 3222,
+     "w": 52,
+     "h": 3,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": ""
+    }
+   ],
+   "storyParagraph": [
+    {
+     "x": 16,
+     "y": 1069,
+     "w": 358,
+     "h": 158,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "شركة الجزيرة الإمداد الذكي هي اسم رائد ف"
+    },
+    {
+     "x": 16,
+     "y": 1247,
+     "w": 358,
+     "h": 158,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "تأسست الشركة في المملكة العربية السعودية"
+    }
+   ],
+   "mvSection": [
+    {
+     "x": 0,
+     "y": 2979,
+     "w": 390,
+     "h": 2294,
+     "pt": "65px",
+     "pb": "78px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هويتنا\nرسالتنا ورؤيتنا\n\nالغاية وراء كل م"
+    }
+   ],
+   "mvContainer": [
+    {
+     "x": 0,
+     "y": 3044,
+     "w": 390,
+     "h": 2151,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "70px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "هويتنا\nرسالتنا ورؤيتنا\n\nالغاية وراء كل م"
+    }
+   ],
+   "mvSectionHead": [
+    {
+     "x": 16,
+     "y": 3044,
+     "w": 358,
+     "h": 182,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "16px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "هويتنا\nرسالتنا ورؤيتنا\n\nالغاية وراء كل م"
+    }
+   ],
+   "mvRow": [
+    {
+     "x": 16,
+     "y": 3295,
+     "w": 358,
+     "h": 992,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "40px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "01\nرسالتنا\nرسالتنا\n\nتسليم مشاريع كهروميك"
+    },
+    {
+     "x": 16,
+     "y": 4357,
+     "w": 358,
+     "h": 838,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "40px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "رؤيتنا\nرؤيتنا\n\nأن نكون الشركة الرائدة إق"
+    }
+   ]
+  }
+ },
+ "ar-390-services": {
+  "status": 200,
+  "m": {
+   "section": [
+    {
+     "x": 0,
+     "y": 5984,
+     "w": 390,
+     "h": 2103,
+     "pt": "65px",
+     "pb": "48px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "المواد والعلامات المعتمدة\nالمواد والعلام"
+    }
+   ],
+   "tableCard": [
+    {
+     "x": 16,
+     "y": 6538,
+     "w": 358,
+     "h": 1378,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(255, 255, 255)",
+     "border": "1px solid rgb(227, 231, 238)",
+     "align": "normal",
+     "text": "01\nالمملكة العربية السعودية\n\nمواسير EMT\n"
+    }
+   ],
+   "td": [
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "01"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "مواسير EMT"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Rouf"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "المملكة العربية السعودية"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(138, 147, 163)",
+     "align": "normal",
+     "text": "02"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(1, 16, 37)",
+     "align": "normal",
+     "text": "علبة كهربائية"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "Al Roufalfanar"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "15px",
+     "pb": "15px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "المملكة العربية السعودية"
+    }
+   ],
+   "th": [
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "م."
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "المادة / البند"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "العلامة التجارية"
+    },
+    {
+     "x": 0,
+     "y": 0,
+     "w": 0,
+     "h": 0,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(223, 168, 42)",
+     "align": "normal",
+     "text": "بلد المنشأ"
+    }
+   ]
+  },
+  "rows": []
+ },
+ "ar-390-projects": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 7178,
+     "w": 390,
+     "h": 519,
+     "pt": "83px",
+     "pb": "83px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هل لديك مشروع\nقيد التخطيط؟\n\nدع خبرتنا ال"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 125,
+     "y": 7560,
+     "w": 140,
+     "h": 54,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "اتصل بنا الآن"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 100,
+     "y": 7492,
+     "w": 190,
+     "h": 122,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "اطلب عرض سعر\nاتصل بنا الآن"
+    }
+   ]
+  }
+ },
+ "ar-390-detail": {
+  "status": 200,
+  "m": {
+   "ctaSection": [
+    {
+     "x": 0,
+     "y": 1326,
+     "w": 390,
+     "h": 503,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هل لديك مشروع\nقيد التخطيط؟\n\nدع خبرتنا ال"
+    }
+   ],
+   "ctaSectionCompact": [
+    {
+     "x": 0,
+     "y": 1326,
+     "w": 390,
+     "h": 503,
+     "pt": "75px",
+     "pb": "75px",
+     "mt": "0px",
+     "gap": "normal",
+     "bg": "rgb(1, 16, 37)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "normal",
+     "text": "هل لديك مشروع\nقيد التخطيط؟\n\nدع خبرتنا ال"
+    }
+   ],
+   "ctaSecondaryButton": [
+    {
+     "x": 125,
+     "y": 1700,
+     "w": 140,
+     "h": 54,
+     "pt": "14px",
+     "pb": "14px",
+     "mt": "0px",
+     "gap": "10px",
+     "bg": "rgba(255, 255, 255, 0.08)",
+     "border": "1px solid rgba(255, 255, 255, 0.28)",
+     "align": "center",
+     "text": "اتصل بنا الآن"
+    }
+   ],
+   "ctaButtonsRow": [
+    {
+     "x": 100,
+     "y": 1632,
+     "w": 190,
+     "h": 122,
+     "pt": "0px",
+     "pb": "0px",
+     "mt": "0px",
+     "gap": "14px",
+     "bg": "rgba(0, 0, 0, 0)",
+     "border": "0px none rgb(91, 100, 117)",
+     "align": "center",
+     "text": "اطلب عرض سعر\nاتصل بنا الآن"
+    }
+   ]
+  },
+  "csp": [],
+  "imgStyle": 0
+ }
+}

@@ -3050,3 +3050,11 @@ e2e with `E2E_PRODUCTION_SERVER=1` before each round 3 submission (M-212).
 2. **Quiet window on, from now.** The 3D card's round 8 timing runs follow on this machine. Run nothing: no build,
    test, dev server, `next start`, Playwright, Lighthouse, Docker or browser runs. Reading and editing files is fine.
    I post the end of the window here.
+
+## M-216 · 2026-11-05 · CTO → Executor · Re M-214 · P3-T6, P3-T7 and P3-T8 ACCEPTED
+1. **P3-T6, P3-T7 and P3-T8 are ACCEPTED** (round 3, `f177655`). Reviews: `handoff/reviews/P3-T6.md`, `P3-T7.md`,
+   `P3-T8.md`, Round 3. Raw files: `verify/runs/AG-pages-2026-11-05-r3/`.
+2. **Carried:** the P3-T8 Lightbox is checked once real gallery data exists. The Button size and Arabic "،" notes stay
+   with R-3.
+3. **No new task for you yet.** I post the next card here. Until then, the quiet window from M-215 stays on: run
+   nothing.

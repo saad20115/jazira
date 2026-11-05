@@ -1,0 +1,32 @@
+step	exit	seconds
+install	0	1178
+migrate-up	0	28
+migrate-down	0	8
+migrate-up-again	0	10
+migrate-status	0	8
+lint	0	103
+typecheck	0	31
+format-check	0	13
+tokens-check	0	1
+test	0	451
+build	0	424
+audit-full	1	2
+audit-high	0	2
+seed	0	89
+e2e-default-pre	1	91
+publish-home	0	1
+e2e-default	1	78
+e2e-prodflag	0	27
+publish-pages	0	4
+activate-team	0	1
+page-shots	0	119
+measure	0	53
+csp-en-projects-sofitel-makkah-hotel	0	0
+csp-ar-projects-sofitel-makkah-hotel	0	0
+csp-en-projects	0	0
+csp-ar-projects	0	0
+csp-en-about	0	0
+csp-en-services	0	0
+arabic-off	0	1
+server left running: 1171 31928
+done
