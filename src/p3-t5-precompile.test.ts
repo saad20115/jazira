@@ -16,10 +16,12 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
   createLinkBudget,
+  FRAME_WAIT_MAX_MS,
   LINK_MAX_WAIT_MS,
   hasPmremInternals,
   uploadGeometryInChunks,
   waitForLinks,
+  yieldToFrame,
 } from '@/components/systems3d/viewer/precompile'
 
 describe('P3-T5 shader warm-up', () => {
@@ -260,5 +262,45 @@ describe('P3-T5 O-14: every wait for links has a bound', () => {
   it('has a default bound of a few seconds', () => {
     expect(LINK_MAX_WAIT_MS).toBeGreaterThan(0)
     expect(LINK_MAX_WAIT_MS).toBeLessThan(10_000)
+  })
+})
+
+describe('P3-T5 O-9b: a slice per frame, never a wait without end', () => {
+  afterEach(() => {
+    vi.unstubAllGlobals()
+    vi.useRealTimers()
+  })
+
+  it('resolves on the next animation frame', async () => {
+    const frames: (() => void)[] = []
+    vi.stubGlobal('window', { setTimeout, clearTimeout })
+    vi.stubGlobal('requestAnimationFrame', (callback: () => void) => frames.push(callback))
+    vi.stubGlobal('cancelAnimationFrame', () => undefined)
+    let done = false
+    const waiting = yieldToFrame(60_000).then(() => {
+      done = true
+    })
+    await Promise.resolve()
+    expect(done).toBe(false)
+    frames[0]?.()
+    await waiting
+    expect(done).toBe(true)
+  })
+
+  it('resolves after its bound when no frame comes (a hidden tab)', async () => {
+    vi.useFakeTimers()
+    vi.stubGlobal('window', { setTimeout, clearTimeout })
+    vi.stubGlobal('requestAnimationFrame', () => 1)
+    vi.stubGlobal('cancelAnimationFrame', () => undefined)
+    let done = false
+    const waiting = yieldToFrame(100).then(() => {
+      done = true
+    })
+    await vi.advanceTimersByTimeAsync(99)
+    expect(done).toBe(false)
+    await vi.advanceTimersByTimeAsync(1)
+    await waiting
+    expect(done).toBe(true)
+    expect(FRAME_WAIT_MAX_MS).toBeGreaterThan(0)
   })
 })

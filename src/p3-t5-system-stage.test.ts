@@ -141,6 +141,11 @@ interface FixtureOptions {
   /** O-12: the link budget's wait and its state, as createViewer passes them. */
   compileRoom?: () => Promise<void>
   compileFull?: () => boolean
+  /** O-9b: how long one compile task may run, and the wait between tasks. */
+  compileTaskMs?: () => number
+  pause?: (system: SystemId) => Promise<void>
+  /** Called on each `compileObjects` call. */
+  onCompile?: () => void
   /** Hotspots (with their anchor nodes) and extra opaque meshes. */
   hotspots?: { name: string; system: SystemId; position: [number, number, number] }[]
   meshes?: Mesh[]
@@ -261,6 +266,7 @@ function buildFixture(options: FixtureOptions = {}): Fixture {
     },
     reducedMotion: true,
     compileObjects: (objects) => {
+      options.onCompile?.()
       compiled.push([...objects])
       const job = deferred()
       compiles.push(job)
@@ -268,6 +274,8 @@ function buildFixture(options: FixtureOptions = {}): Fixture {
     },
     ...(options.compileRoom ? { compileRoom: options.compileRoom } : {}),
     ...(options.compileFull ? { compileFull: options.compileFull } : {}),
+    ...(options.compileTaskMs ? { compileTaskMs: options.compileTaskMs } : {}),
+    ...(options.pause ? { pause: options.pause } : {}),
     warm: () => {
       fixture.warmed += 1
       return Promise.resolve()
@@ -483,6 +491,48 @@ describe('P3-T5 O-12: a system warm-up creates programs only while few are linki
     expect(f.compiled.length).toBeGreaterThan(1)
     expect(f.compiled.every((objects) => objects.length === 1)).toBe(true)
     expect(rooms).toBeGreaterThanOrEqual(f.compiled.length)
+  })
+})
+
+describe('P3-T5 O-9b: once shown, a system warm-up compiles one object per task', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  /** For each compile call, how many pauses (task boundaries) came before it. */
+  async function tasksOfCompiles(taskMs: number): Promise<number[]> {
+    let pauses = 0
+    const taskOf: number[] = []
+    const f = buildFixture({
+      compileTaskMs: () => taskMs,
+      pause: () => {
+        pauses += 1
+        return Promise.resolve()
+      },
+      onCompile: () => {
+        taskOf.push(pauses)
+      },
+    })
+    const prepared = f.stage.prepare('hvac')
+    await settle()
+    finishCompiles(f)
+    await prepared
+    return taskOf
+  }
+
+  it('with no task time, every compile call is a task of its own', async () => {
+    const tasks = await tasksOfCompiles(0)
+    expect(tasks.length).toBeGreaterThan(1)
+    expect(new Set(tasks).size).toBe(tasks.length)
+  })
+
+  it('with task time, several objects share a task (the comparison is not vacuous)', async () => {
+    const tasks = await tasksOfCompiles(60_000)
+    expect(tasks.length).toBeGreaterThan(1)
+    expect(new Set(tasks).size).toBeLessThan(tasks.length)
   })
 })
 
