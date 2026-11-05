@@ -256,10 +256,33 @@ describe('P4-T1 Integration — Materials + brands seed (73 rows, first-run base
       }),
     ).rejects.toThrow(/Refusing to run --reseed when NODE_ENV=production/)
 
+    // D-14 / E-09: --reseed without --i-understand-this-deletes-content, or with NODE_ENV unset, or against aljazira_prod fails before any delete
+    await expect(
+      seedMaterialsAndBrands(payload, {
+        nodeEnv: '',
+        argv: ['node', 'scripts/seed.ts'],
+      }),
+    ).rejects.toThrow(/NODE_ENV/)
+
+    await expect(
+      seedMaterialsAndBrands(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts', '--reseed'],
+      }),
+    ).rejects.toThrow(/--i-understand-this-deletes-content/)
+
+    await expect(
+      seedMaterialsAndBrands(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        databaseUrl: 'postgresql://aljazira_app:pass@127.0.0.1:5434/aljazira_prod',
+      }),
+    ).rejects.toThrow(/aljazira_prod/)
+
     // --reseed in development/test rebuilds the clean baseline (83 brands, 73 materials, 20 marquee)
     const reseedRun = await seedMaterialsAndBrands(payload, {
       nodeEnv: 'test',
-      argv: ['node', 'scripts/seed.ts', '--reseed'],
+      argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
     })
     expect(reseedRun.reseeded).toBe(true)
     expect(reseedRun.brandsDeleted).toBe(83)

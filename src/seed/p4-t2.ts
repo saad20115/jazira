@@ -758,6 +758,7 @@ export async function seedP4T2Content(
   payload: Payload,
   options?: {
     argv?: readonly string[]
+    databaseUrl?: string
     nodeEnv?: string
     reseed?: boolean
   },
@@ -766,7 +767,12 @@ export async function seedP4T2Content(
   const effectiveArgv = options?.argv ?? process.argv
   const reseed = options?.reseed === true || effectiveArgv.includes('--reseed')
 
-  assertSeedEnvironmentAllowed(effectiveNodeEnv, effectiveArgv, reseed)
+  assertSeedEnvironmentAllowed(
+    effectiveNodeEnv,
+    effectiveArgv,
+    reseed,
+    options?.databaseUrl ?? process.env.DATABASE_URL,
+  )
 
   const [
     existingBrandsCountRes,
@@ -877,9 +883,18 @@ export async function seedP4T2Content(
     })
     deletedCounts.brands = delBrands.docs.length
 
+    const seedPlanForMedia = buildP4T2SeedPlan()
+    const seedOwnedAltEnValues = [
+      ...DESIGN_ASSET_IMAGES_9.map((img) => img.altEn),
+      ...seedPlanForMedia.projects.flatMap((proj) => (proj.photoAltEn ? [proj.photoAltEn] : [])),
+    ]
+
     const delMedia = await payload.delete({
       collection: 'media',
-      where: { id: { exists: true } },
+      locale: 'en',
+      where: {
+        or: [{ placeholder: { equals: true } }, { alt: { in: seedOwnedAltEnValues } }],
+      },
       context: { disableRevalidate: true },
       overrideAccess: false,
       user: SEED_ADMIN_USER,

@@ -190,7 +190,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
   it('seeds the full Phase 4 baseline (P4-T1 + P4-T2) via --reseed and verifies all counts, locales, marquee order, and home-page interactiveSystems in both en & ar', async () => {
     const summary = await seedP4T2Content(payload, {
       nodeEnv: 'test',
-      argv: ['node', 'scripts/seed.ts', '--reseed'],
+      argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
       reseed: true,
     })
 
@@ -686,10 +686,66 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     expect(afterEditorUpdate.reviewNote).toBe(originalNote)
   }, 60_000)
 
-  it('logs all deleted counts on --reseed when rebuilding a populated Phase 4 database', async () => {
+  it('logs all deleted counts on --reseed when rebuilding a populated Phase 4 database and preserves non-seed media (D-14, E-09)', async () => {
+    // 1. Verify reseed guard fails before any delete when NODE_ENV is unset, confirmation flag is missing, or DB is aljazira_prod
+    await expect(
+      seedP4T2Content(payload, {
+        nodeEnv: '',
+        argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        reseed: true,
+      }),
+    ).rejects.toThrow(/NODE_ENV/)
+
+    await expect(
+      seedP4T2Content(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts', '--reseed'],
+        reseed: true,
+      }),
+    ).rejects.toThrow(/--i-understand-this-deletes-content/)
+
+    await expect(
+      seedP4T2Content(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        databaseUrl: 'postgresql://aljazira_app:pass@127.0.0.1:5434/aljazira_prod',
+        reseed: true,
+      }),
+    ).rejects.toThrow(/aljazira_prod/)
+
+    // 2. Upload a non-seed media item as an editor and verify it survives --reseed
+    const oneByOnePng = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+      'base64',
+    )
+    const editorUser = {
+      ...SEED_ADMIN_USER,
+      id: 999,
+      email: 'editor-test@aljazira.co',
+      name: 'Editor Test',
+      role: 'editor' as const,
+    }
+    const nonSeedMedia = await payload.create({
+      collection: 'media',
+      locale: 'en',
+      data: {
+        alt: 'Editor custom uploaded photo — must survive reseed',
+        placeholder: false,
+      },
+      file: {
+        data: oneByOnePng,
+        mimetype: 'image/png',
+        name: 'editor-custom-photo.png',
+        size: oneByOnePng.byteLength,
+      },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: editorUser,
+    })
+
     const reseedSummary = await seedP4T2Content(payload, {
       nodeEnv: 'test',
-      argv: ['node', 'scripts/seed.ts', '--reseed'],
+      argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
       reseed: true,
     })
 
@@ -702,6 +758,24 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       materials: 73,
       brands: 99,
       media: 26,
+    })
+
+    const survivingMedia = await payload.findByID({
+      collection: 'media',
+      id: nonSeedMedia.id,
+      locale: 'en',
+      overrideAccess: false,
+      user: editorUser,
+    })
+    expect(survivingMedia.id).toBe(nonSeedMedia.id)
+    expect(survivingMedia.alt).toBe('Editor custom uploaded photo — must survive reseed')
+
+    await payload.delete({
+      collection: 'media',
+      id: nonSeedMedia.id,
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
     })
 
     const lines = formatP4T2SummaryLines(reseedSummary).join('\n')
