@@ -429,9 +429,10 @@ function disposeObject(root: Object3D): void {
 }
 
 /**
- * Once the GLB bytes are in, parsing and KTX2 transcoding get `TRANSCODE_WATCHDOG_MS`. A transcoder
- * worker that cannot start (e.g. its CSP lacks what H3b grants) never answers, so without this the
- * card would wait for the whole start timeout before falling back to the stills.
+ * Once the GLB bytes are in, parsing and KTX2 transcoding get `TRANSCODE_WATCHDOG_MS` together (O-9a:
+ * the parse no longer waits for the transcode, so each has its own wait, against one deadline). A
+ * transcoder worker that cannot start (e.g. its CSP lacks what H3b grants) never answers, so without
+ * this the card would wait for the whole start timeout before falling back to the stills.
  */
 const TRANSCODE_WATCHDOG_MS = 15_000
 
@@ -451,23 +452,19 @@ async function downloadModel(url: string): Promise<ArrayBuffer> {
   return data
 }
 
-/** Parse + transcode of the downloaded model, bounded by the watchdog. */
-async function parseWithTranscodeWatchdog(
-  loader: GLTFLoader,
-  data: ArrayBuffer,
-  url: string,
-): Promise<GLTF> {
+/** `work`, bounded by the transcode watchdog that started at `since`. */
+async function withinTranscodeWatchdog<T>(work: Promise<T>, since: number): Promise<T> {
   let watchdog = 0
   const timeout = new Promise<never>((_resolve, reject) => {
-    watchdog = window.setTimeout(() => {
-      reject(new ContractError('model parse/transcode did not finish in time'))
-    }, TRANSCODE_WATCHDOG_MS)
+    watchdog = window.setTimeout(
+      () => {
+        reject(new ContractError('model parse/transcode did not finish in time'))
+      },
+      Math.max(0, since + TRANSCODE_WATCHDOG_MS - performance.now()),
+    )
   })
   try {
-    return await Promise.race([
-      loader.parseAsync(data, url.slice(0, url.lastIndexOf('/') + 1)),
-      timeout,
-    ])
+    return await Promise.race([work, timeout])
   } finally {
     window.clearTimeout(watchdog)
   }
@@ -699,7 +696,8 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   }
   ktx2.detectSupport(renderer)
   const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder)
-  loader.register(inlineBasisuPlugin(ktx2))
+  const basisu = inlineBasisuPlugin(ktx2)
+  loader.register(basisu.plugin)
   // O-9a: the transcoding workers start now, while the model downloads (the parse waits for the
   // same promise and reports its failure).
   ktx2.init().catch(() => undefined)
@@ -733,11 +731,22 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   let extras: ValidatedExtras
   let gltf: GLTF
   let nodes: Map<string, Object3D>
+  /**
+   * O-9a: every KTX2 texture is transcoded and in its material. The parse no longer waits for it,
+   * so the hero's programs link meanwhile; nothing uploads, bakes or draws a texture before it.
+   */
+  let texturesReady: Promise<void>
   try {
     const data = await modelData
     // O-12: the parse starts in a task of its own.
     await pace()
-    gltf = await parseWithTranscodeWatchdog(loader, data, modelUrl)
+    const parseStart = performance.now()
+    gltf = await withinTranscodeWatchdog(
+      loader.parseAsync(data, modelUrl.slice(0, modelUrl.lastIndexOf('/') + 1)),
+      parseStart,
+    )
+    texturesReady = withinTranscodeWatchdog(basisu.fills.settled(), parseStart)
+    texturesReady.catch(() => undefined)
     if (isDisposed()) {
       throw new ContractError('disposed while loading')
     }
@@ -836,6 +845,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     // Without the PMREM internals there is no stand-in: bake first, as before.
     try {
       await studioReady
+      await texturesReady
       environment = (await bakeEnvironment()).texture
       baked = true
       await pace()
@@ -1144,6 +1154,8 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     // in the first frames of the flight).
     warm: async (materials) => {
       await warmPrograms(renderer, materials, isDisposed, pace)
+      // O-9a: a variant's textures are transcoded on first use, like the hero's.
+      await withinTranscodeWatchdog(basisu.fills.settled(), performance.now())
       await uploadMaterialTextures(renderer, materials, isDisposed, uploadPause)
     },
     pause: async (system) => {
@@ -1428,15 +1440,18 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   // then a timed rehearsal of the hero frame that fixes the tier. O-12: only a few programs link at
   // a time (`linkBudget`), and the systems' programs come after the rehearsal.
   try {
-    // O-12: the textures go up while the programs are created (a few at a time) and link.
-    const uploads = uploadTexturesInChunks(renderer, scene, isDisposed, uploadPause)
+    // O-12: the textures go up while the programs are created (a few at a time) and link, once
+    // transcoded (O-9a).
+    const uploads = texturesReady.then(() =>
+      uploadTexturesInChunks(renderer, scene, isDisposed, uploadPause),
+    )
     uploads.catch(() => undefined)
-    // O-9a: the bake needs only the studio's programs (`studioReady`), so it runs while the hero's
-    // are created and link, not after them; then the real environment replaces the stand-in (the
-    // same programs, so nothing compiles again).
+    // O-9a: the bake needs only the studio's programs (`studioReady`) and its textures, so it runs
+    // while the hero's are created and link, not after them; then the real environment replaces
+    // the stand-in (the same programs, so nothing compiles again).
     const environmentReady = baked
       ? Promise.resolve()
-      : studioReady.then(async () => {
+      : Promise.all([studioReady, texturesReady]).then(async () => {
           const bakedTexture = (await bakeEnvironment()).texture
           for (const material of materials.values()) {
             if (material.envMap === environment) {
