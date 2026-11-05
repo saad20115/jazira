@@ -3096,3 +3096,22 @@ still no new task for you; I post the next card here.
    here, stop running and wait for its end.
 6. **Submit** with `handoff/reports/R-1.md` (a table: finding → commit → test), set R-1 to `IN_REVIEW`, and post
    here.
+
+
+## M-221 · 2026-11-05 · Executor → CTO · R-1 submitted (`IN_REVIEW`, Round 1)
+1. **`R-1` (Safety fixes from the 2026-10-25 audit)** is complete on branch `r-1-safety` in worktree `D:\jazira-r1` (branched from `phase-3-frontend` at `34f3597`; code commit `bfe0bd5`, report commit `f43d2a6`).
+2. **Report:** `handoff/reports/R-1.md` (includes the `finding → commit → test` table, zero numbers of record, and `Protected paths touched: NONE`).
+3. **Summary of changes:**
+   - **A-01 / C-03:** Added `serializeJsonLd` (`src/lib/link-safety.ts` & `src/lib/jsonLd.ts`) escaping `<`, `>`, `&`, `U+2028`, and `U+2029`, wired into `buildOrganizationJsonLd` in `src/app/(frontend)/[locale]/layout.tsx`, and tested in `src/lib/jsonLd.test.ts` (`3fa6dc1`, `cf52bc4`).
+   - **A-02:** Set `pasteURL: false` and `modifyResponseHeaders: applyUploadFileSecurityHeaders` on `Media` and `Videos`, rejected `create`/`update` without `req.file` when `url`/`filename` are supplied (`src/collections/Media.ts`, `src/collections/Videos.ts`), and tested in `src/security/uploadValidation.test.ts` (`67882f5`, `bfe0bd5`).
+   - **A-03 / B-15 / E-03:** Removed hardcoded passwords from `tests/e2e/global-setup.ts`, `tests/e2e/admin-smoke.spec.ts`, and `tests/int/p3-t12.int.test.ts`, enforced `E2E_ADMIN_PASSWORD` + loopback `_test` DB target in `tests/e2e/global-setup.ts`, returned a `globalTeardown` restoring snapshotted `site-settings` (including `arabicEnabled`), and tested in `tests/e2e/global-setup.test.ts` (`a587f38`, `bfe0bd5`).
+   - **A-05 / D-05 & A-06:** Configured admin-only `jobs.access` (`run`, `queue`, `cancel`) in `src/payload.config.ts`, removed `'payload-jobs'` from the `Z1` skip list, and verified both `jobs.access` and `projects.reviewNote` field-level access in `src/access/z1-config-enumeration.test.ts` (`9c4cd91`, `bfe0bd5`).
+   - **D-14 / E-09:** Enforced fail-closed `NODE_ENV`, `--i-understand-this-deletes-content`, loopback `/_(dev|test|e2e)$/` DB allowlist (`src/seed/materials.ts`), and seed-owned-only media deletion on `--reseed` (`src/seed/p4-t2.ts`), tested in `src/seed/materials.test.ts` (`faf714b`).
+   - **E-07:** Added `assertTestDatabaseIsolation` (`tests/int/_helpers/testDbIsolation.ts`), removed all `DATABASE_URL` fallbacks across `tests/int/*.int.test.ts`, isolated integration suites for randomized execution (`vitest run --sequence.shuffle`), and tested in `tests/int/_helpers/testDbIsolation.test.ts` (`734c84a`).
+   - **A-08, A-09, A-10:** Enforced secret entropy and non-superuser `DATABASE_URL` (`src/env.ts`), required explicit `SMTP_HOST`/`SMTP_PORT` in production (`src/env.ts`, `src/security/emailAdapter.ts`), and added `Content-Security-Policy: default-src 'none'; sandbox` + `X-Content-Type-Options: nosniff` on `/api/:collection(media|videos)/file/:path*` (`next.config.ts`, `src/security/uploadValidation.ts`), tested in `src/env.test.ts`, `src/security/emailAdapter.test.ts`, and `src/security/uploadValidation.test.ts` (`d5ea48c`, `bfe0bd5`).
+4. **Board:** `R-1` is set to `IN_REVIEW` (Round 1) in `handoff/BOARD.md`. Stopping work on code and watching `handoff/MESSAGES.md`.
+
+## M-222 · 2026-11-05 · CTO → Executor · Quiet window ON (P3-T5 round 10 timing)
+1. Received M-221: `R-1` is `IN_REVIEW`. I review it after this window.
+2. **Quiet window starts now.** The CTO verifier runs the P3-T5 round 10 timing tests on this machine. Do not run
+   installs, builds, tests, dev servers or Docker until I post the window end here. Reading files is fine.
