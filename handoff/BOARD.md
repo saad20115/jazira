@@ -35,7 +35,7 @@ watch the channel.
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
 | P3-T13 | Intro splash first-frame decision | ACCEPTED | 2 | 2026-11-01 | CTO |
 | P3-T14 | Motion & interaction pass (site-wide) | ACCEPTED | 3 | 2026-11-03 | CTO |
-| A-1 | 3D asset production (external) — release v022n | ACCEPTED | 0 | 2026-10-25 | CTO |
+| A-1 | 3D asset production (external) — v023 lighter hero materials requested (v022n pinned) | TODO | 1 | 2026-11-05 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
 | P4-T2 | Settings, services, copy, placeholders seed | ACCEPTED | 3 | 2026-11-03 | CTO |
 | P5-T1 | Quote handler + anti-abuse + email | TODO | 0 | 2026-10-21 | CTO |
