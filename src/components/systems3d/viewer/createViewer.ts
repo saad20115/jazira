@@ -1192,10 +1192,13 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   let lastDrawAt: number | null = null
   const minFrameMs = options.maxFps > 0 ? 1000 / options.maxFps - 1 : 0
   /**
-   * O-9: a drop the check asks for waits until nobody can see it (card off screen or tab hidden):
-   * never during a flight in view, never a visible jump.
+   * O-9: a drop to low waits until nobody can see it (card off screen or tab hidden): never during a
+   * flight in view, never a visible jump. O-14b (CTO 2026-11-05): a drop from low to stills also
+   * applies in view, at the next rest (`frame`); the card crossfades from the last frame.
    */
   let pendingDrop: 'low' | 'stills' | null = null
+  /** O-14b: the visitor holds the view (a drag or a pinch in progress), so it is not at rest. */
+  let holding = false
   const checkFps = (): void => {
     const verdict = fpsVerdict(intervals, lowTier)
     if (verdict === 'stills' || (verdict === 'low' && pendingDrop === null)) {
@@ -1221,7 +1224,8 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
 
   const frame = (now: number): void => {
     frameHandle = 0
-    if (disposed) {
+    // After a failure the card shows the stills (crossfading from the last frame): nothing to draw.
+    if (disposed || failed) {
       return
     }
     // Shader warm-up tasks lengthen frames on any GPU: those intervals say nothing about its speed,
@@ -1266,6 +1270,12 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       options.onLabels?.(labels)
       labelsShown = labels !== null
     }
+    // O-14b: too slow while low (§8b): at rest (no flight, nothing held) the stills tier takes over
+    // in view too. No frame follows; the card crossfades from this one.
+    if (pendingDrop === 'stills' && !visitorWaits() && !holding) {
+      applyPendingDrop()
+      return
+    }
     if (again) {
       invalidate()
     } else {
@@ -1296,9 +1306,16 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
 
   const onInput = (): void => {
     lastInputAt = performance.now()
+    holding = true
+    invalidate()
+  }
+  const onInputEnd = (): void => {
+    holding = false
+    // A stills drop waiting for rest applies on the next frame.
     invalidate()
   }
   controls.addEventListener('start', onInput)
+  controls.addEventListener('end', onInputEnd)
   controls.addEventListener('change', invalidate)
 
   const intersection = new IntersectionObserver((entries) => {

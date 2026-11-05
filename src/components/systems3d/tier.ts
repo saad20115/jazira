@@ -92,8 +92,9 @@ export function chooseModelTier(caps: DeviceCaps, gpuRenderer: string | null): M
  * Below `lowFps` the viewer drops to the low tier (DPR 1, no bloom); below `stillsFps` while already
  * low it falls back to the stills tier. A decision needs a full window, and each interval counts at
  * most `MAX_INTERVAL_MS`, so one stall (shader compile, hidden tab, card scrolled away) never
- * changes the tier. O-9: the viewer applies a drop only while the card is off screen or the tab
- * hidden, never in view; the tier it starts with comes from `probeVerdict`.
+ * changes the tier. O-9: the viewer applies a drop to low only while the card is off screen or the
+ * tab hidden, never in view; O-14b: a drop from low to stills also in view, at rest (never during a
+ * flight). The tier it starts with comes from `probeVerdict`.
  */
 export const FPS_WINDOW = 60
 export const LOW_TIER_FPS = 45

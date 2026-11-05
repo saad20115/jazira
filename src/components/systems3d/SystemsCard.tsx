@@ -72,6 +72,13 @@ const TAP_HINT_STILL_MS = 2_400
 const TAP_HINT_FADE_MS = 600
 /** O-11: the entered still's fade-out over the canvas at the swap (motion-slow, as its CSS). */
 const STILL_FADE_OUT_MS = 600
+/**
+ * O-14b: when the live view drops to the stills tier, the canvas stays this long after the stills
+ * are in place (the entered still's fade-in, motion-slow; the canvas's own fade-out is shorter).
+ */
+const CANVAS_FADE_OUT_MS = 600
+/** O-14b: the canvas leaves after this long even if the entered still never loads. */
+const CANVAS_LEAVE_MAX_MS = 4_000
 
 const STILLS_PATH = `${RELEASE_BASE_PATH}/stills`
 
@@ -88,14 +95,22 @@ function endStillSrcSet(system: SystemId, format: 'webp' | 'jpg'): string {
  */
 function EnteredStill({
   cardRef,
+  onLoaded,
   strings,
   system,
 }: {
   cardRef: RefObject<HTMLDivElement | null>
+  /** Called once the picture has loaded (its fade-in starts). */
+  onLoaded?: (system: SystemId) => void
   strings: Systems3dStrings
   system: SystemId
 }): ReactElement {
   const [loaded, setLoaded] = useState(false)
+  useEffect(() => {
+    if (loaded) {
+      onLoaded?.(system)
+    }
+  }, [loaded, onLoaded, system])
   const markLoaded = useCallback((img: HTMLImageElement | null): void => {
     // A cached picture can be complete before React listens for its load event.
     if (img?.complete && img.naturalWidth > 0) {
@@ -267,6 +282,13 @@ export function SystemsCard({
   const [hint, setHint] = useState(false)
   /** O-11: the entered still stays over the canvas while it fades out at the swap. */
   const [stillLeaving, setStillLeaving] = useState(false)
+  /** O-14b: the live view dropped to the stills tier; its canvas stays for the crossfade. */
+  const [canvasLeaving, setCanvasLeaving] = useState(false)
+  /** The viewer whose canvas is leaving: disposed once the crossfade is over. */
+  const leavingLiveRef = useRef<LiveViewer | null>(null)
+  /** The entered still that has loaded (the crossfade waits for it). */
+  const [loadedStill, setLoadedStill] = useState<SystemId | null>(null)
+  const phaseRef = useRef<Phase>(phase)
   const hintShownRef = useRef(false)
   const labelSinkRef = useRef<LiveLabelSink | null>(null)
   const enteredRef = useRef(entered)
@@ -274,6 +296,7 @@ export function SystemsCard({
     enteredRef.current = entered
   }, [entered])
   useEffect(() => {
+    phaseRef.current = phase
     onPhaseChange?.(phase)
   }, [phase, onPhaseChange])
 
@@ -409,6 +432,13 @@ export function SystemsCard({
     setActive(false)
     setFallbackReason(reason)
     setPhase('stills')
+    // O-14b: the live view found too slow at rest crossfades to the stills over its last frame; the
+    // canvas and the viewer leave after it (see the effect below).
+    if (live && reason === 'too-slow' && phaseRef.current === 'live') {
+      leavingLiveRef.current = live
+      setCanvasLeaving(true)
+      return
+    }
     // O-14: the stills first; disposing the viewer (the scene, its GPU resources) is a long task on a
     // loaded device, so it runs in a task of its own after the card has changed.
     if (live) {
@@ -630,6 +660,32 @@ export function SystemsCard({
     }
   }, [phase, stillLeaving])
 
+  // O-14b: inside a system its end still fades in over the canvas (once loaded); outside one the
+  // canvas fades out over the image (CSS). Then the canvas leaves, and the viewer is disposed in a
+  // task of its own (a long task on a slow device, as in `fallBack`).
+  useEffect(() => {
+    if (!canvasLeaving) {
+      return
+    }
+    const stillReady = entered === null || loadedStill === entered
+    const timer = window.setTimeout(
+      () => {
+        setCanvasLeaving(false)
+        const live = leavingLiveRef.current
+        leavingLiveRef.current = null
+        if (live) {
+          window.setTimeout(() => {
+            live.abort()
+          }, 0)
+        }
+      },
+      stillReady ? CANVAS_FADE_OUT_MS : CANVAS_LEAVE_MAX_MS,
+    )
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [canvasLeaving, entered, loadedStill])
+
   // The live view follows the entered system (camera flight); the stills overlay covers the rest.
   useEffect(() => {
     if (phase === 'live') {
@@ -792,7 +848,7 @@ export function SystemsCard({
     }
   }
 
-  const showCanvas = phase === 'loading' || phase === 'live'
+  const showCanvas = phase === 'loading' || phase === 'live' || canvasLeaving
   /** O-3: the badge and "Open the live 3D model" only until the model is live (as in Figma). */
   const showStartControls = hydrated && (phase === 'still' || phase === 'loading')
 
@@ -802,6 +858,7 @@ export function SystemsCard({
       className={className}
       data-entered={entered ?? 'none'}
       data-interactive-3d-card="true"
+      data-canvas-leaving={canvasLeaving ? 'true' : undefined}
       data-viewer-active={active ? 'true' : 'false'}
       data-viewer-fallback={phase === 'stills' ? (fallbackReason ?? undefined) : undefined}
       data-viewer-state={phase}
@@ -825,7 +882,13 @@ export function SystemsCard({
         <LiveLabels cardRef={cardRef} sinkRef={labelSinkRef} strings={strings} />
       ) : null}
       {entered && (phase !== 'live' || stillLeaving) ? (
-        <EnteredStill cardRef={cardRef} key={entered} strings={strings} system={entered} />
+        <EnteredStill
+          cardRef={cardRef}
+          key={entered}
+          onLoaded={setLoadedStill}
+          strings={strings}
+          system={entered}
+        />
       ) : null}
       {hydrated && phase === 'still' && tapHint ? (
         <TapHint

@@ -141,6 +141,12 @@
   filter: opacity(1);
 }
 
+/* O-14b: dropped to the stills tier inside a system, the canvas keeps its last frame while the
+   system's end still fades in over it (outside a system the canvas fades out over the image). */
+.buildingCard[data-canvas-leaving='true']:not([data-entered='none']) .liveCanvas {
+  filter: opacity(1);
+}
+
 .buildingCard[data-viewer-active='true'] .liveCanvas {
   pointer-events: auto;
   cursor: grab;
