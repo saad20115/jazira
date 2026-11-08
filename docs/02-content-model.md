@@ -165,6 +165,14 @@ Each: `hero` (`title` (L), `subtitle` (L), `image`) + page-specific intro text (
   report for client confirmation.
 - No invented projects, people, stats or testimonials. Where real content is missing, seed
   clearly-marked placeholders (`[placeholder]`) left in **draft** status so nothing fake is published.
+- **Owner decision 2026-11-08 (overrides the draft rule for the Figma baseline):** "ضع الصور مثل
+  ماهي موجوده في فيجما وتغييرها لاحقا يتم من لوحة التحكم". The seed publishes the Figma baseline:
+  - the 9 Figma photos are ordinary public media (`placeholder: false`, plain alt text);
+  - the 10 services and the 5 page globals (home, services, about, projects, contact) are published.
+
+  Still not public: the privacy page (legal text pending) and the 13 `[placeholder]` team members
+  (inactive). `needsClientReview` flags stay, so staff still see what the client must confirm. The
+  `placeholder` media flag and its access rule stay: an editor can still hide any image with it.
 
 ## Addendum — 2026-10-21 (CTO) — aligned with the Figma copy
 The Figma file contains more editable content than the original model. This addendum is binding

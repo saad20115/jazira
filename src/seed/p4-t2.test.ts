@@ -205,7 +205,7 @@ describe('P4-T2 seed plan & static specs (unit)', () => {
     expect(() => mapRawProjectScope('Unknown Scope')).toThrow(/Unrecognized raw project scope/)
   })
 
-  it('defines the 20 owner-approved marquee brands in exact Scope 4b order, 5 stats, 10 services, and [placeholder]-marked team & design images', () => {
+  it('defines the 20 owner-approved marquee brands in exact Scope 4b order, 5 stats, 10 services, [placeholder]-marked team and plain-alt Figma images', () => {
     expect(OWNER_MARQUEE_BRANDS_20.map((b) => `${b.name} (${b.originEn})`)).toEqual([
       'Schneider Electric (France)',
       'ABB (Switzerland)',
@@ -244,10 +244,14 @@ describe('P4-T2 seed plan & static specs (unit)', () => {
       expect(member.nameAr.startsWith('[placeholder]')).toBe(true)
     }
 
+    // Owner decision 2026-11-08: the 9 Figma images are public media, so their alt text is read
+    // by visitors and carries no `[placeholder]` marker.
     expect(DESIGN_ASSET_IMAGES_9).toHaveLength(9)
     for (const img of DESIGN_ASSET_IMAGES_9) {
-      expect(img.altEn.startsWith('[placeholder]')).toBe(true)
-      expect(img.altAr.startsWith('[placeholder]')).toBe(true)
+      expect(img.altEn).not.toContain('[placeholder]')
+      expect(img.altAr).not.toContain('[placeholder]')
+      expect(img.altEn.trim().length).toBeGreaterThan(10)
+      expect(img.altAr.trim().length).toBeGreaterThan(10)
     }
   })
 

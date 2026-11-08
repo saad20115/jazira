@@ -476,6 +476,11 @@ export interface FeaturedProjectSpec {
   figmaCardTitleEn: string
   scopeSummaryEn: string
   scopeSummaryAr: string
+  /**
+   * The Figma image on this card (`01-home/06-featured-projects`). Owner decision 2026-11-08: a
+   * featured project with no real photo is published with this image; editors replace it later.
+   */
+  figmaCoverKey: DesignAssetImageSpec['key']
 }
 
 export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
@@ -485,6 +490,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
     figmaCardTitleEn: 'Princess Noura University (PNU)',
     scopeSummaryEn: 'LOW CURRENT SCS',
     scopeSummaryAr: 'أنظمة التيار الخفيف والكابلات الهيكلية',
+    figmaCoverKey: 'svc-smart',
   },
   {
     ref: 'XLSX-13',
@@ -492,6 +498,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
     figmaCardTitleEn: 'Sofitel Makkah Hotel',
     scopeSummaryEn: 'FULL MEP WORKS',
     scopeSummaryAr: 'أعمال الكهروميكانيك المتكاملة',
+    figmaCoverKey: 'about-team',
   },
   {
     ref: 'A-p11-8',
@@ -499,6 +506,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
     figmaCardTitleEn: 'Stella Hotel (32 Floors)',
     scopeSummaryEn: 'FULL MEP WORKS',
     scopeSummaryAr: 'أعمال الكهروميكانيك المتكاملة',
+    figmaCoverKey: 'proj-tower',
   },
   {
     ref: 'A-p11-4',
@@ -506,6 +514,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
     figmaCardTitleEn: 'Roads & Transport Authority (RTA)',
     scopeSummaryEn: 'DATA CENTER MEP',
     scopeSummaryAr: 'أعمال الكهروميكانيك لمراكز البيانات',
+    figmaCoverKey: 'svc-smart',
   },
   {
     ref: 'A-p11-25',
@@ -513,6 +522,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
     figmaCardTitleEn: 'King Salman Oasis of Science',
     scopeSummaryEn: 'FULL MEP WORKS',
     scopeSummaryAr: 'أعمال الكهروميكانيك المتكاملة',
+    figmaCoverKey: 'svc-mep',
   },
   {
     ref: 'XLSX-27',
@@ -520,6 +530,7 @@ export const FIGMA_FEATURED_PROJECTS_6: readonly FeaturedProjectSpec[] = [
     figmaCardTitleEn: 'Al Maqam Towers (A, B, C, D)',
     scopeSummaryEn: 'FULL MEP WORKS',
     scopeSummaryAr: 'أعمال الكهروميكانيك المتكاملة',
+    figmaCoverKey: 'about-team',
   },
 ] as const
 
@@ -951,61 +962,62 @@ export interface DesignAssetImageSpec {
 
 /**
  * Scope 5 & 6 (`handoff/tasks/P4-T2.md` lines 78–82, `design/INDEX.md` lines 145–168):
- * The 9 Figma website photos in `design/assets/images/`, marked `[placeholder]` in both `en` and `ar` alt text.
+ * The 9 Figma website photos in `design/assets/images/`. Owner decision 2026-11-08: public media with plain
+ * alt text in both `en` and `ar`; editors replace them in the dashboard.
  */
 export const DESIGN_ASSET_IMAGES_9: readonly DesignAssetImageSpec[] = [
   {
     key: 'hero-city',
     file: 'design/assets/images/hero-city.png',
-    altEn: '[placeholder] Modern Gulf city skyline at dusk — Al Jazira MEP engineering',
-    altAr: '[placeholder] أفق مدينة خليجية حديثة عند الغسق — الجزيرة الإمداد الذكي للكهروميكانيك',
+    altEn: 'Modern Gulf city skyline at dusk — Al Jazira MEP engineering',
+    altAr: 'أفق مدينة خليجية حديثة عند الغسق — الجزيرة الإمداد الذكي للكهروميكانيك',
   },
   {
     key: 'about-team',
     file: 'design/assets/images/about-team.png',
-    altEn: '[placeholder] Al Jazira engineering team reviewing MEP drawings on site',
-    altAr: '[placeholder] فريق مهندسي الجزيرة يراجع مخططات الكهروميكانيك في الموقع',
+    altEn: 'Al Jazira engineering team reviewing MEP drawings on site',
+    altAr: 'فريق مهندسي الجزيرة يراجع مخططات الكهروميكانيك في الموقع',
   },
   {
     key: 'bg-pipes',
     file: 'design/assets/images/bg-pipes.png',
-    altEn: '[placeholder] Industrial chilled-water piping and mechanical plant room',
-    altAr: '[placeholder] شبكات أنابيب المياه المبردة وغرفة المضخات الميكانيكية',
+    altEn: 'Industrial chilled-water piping and mechanical plant room',
+    altAr: 'شبكات أنابيب المياه المبردة وغرفة المضخات الميكانيكية',
   },
   {
     key: 'header-office',
     file: 'design/assets/images/header-office.png',
-    altEn: '[placeholder] Corporate engineering office interior',
-    altAr: '[placeholder] المكتب الهندسي والإداري للشركة',
+    altEn: 'Corporate engineering office interior',
+    altAr: 'المكتب الهندسي والإداري للشركة',
   },
   {
     key: 'proj-tower',
     file: 'design/assets/images/proj-tower.png',
-    altEn: '[placeholder] High-rise commercial and hospitality tower development',
-    altAr: '[placeholder] برج فندقي وتجاري متعدد الطوابق',
+    altEn: 'High-rise commercial and hospitality tower development',
+    altAr: 'برج فندقي وتجاري متعدد الطوابق',
   },
   {
     key: 'svc-fire',
     file: 'design/assets/images/svc-fire.png',
-    altEn: '[placeholder] NFPA-compliant fire pump room and sprinkler manifold installation',
-    altAr: '[placeholder] غرفة مضخات الحريق وشبكة صمامات الرش الآلي المعتمدة وفق NFPA',
+    altEn: 'NFPA-compliant fire pump room and sprinkler manifold installation',
+    altAr: 'غرفة مضخات الحريق وشبكة صمامات الرش الآلي المعتمدة وفق NFPA',
   },
   {
     key: 'svc-mep',
     file: 'design/assets/images/svc-mep.png',
-    altEn: '[placeholder] MEP ductwork, cable trays and piping coordination in ceiling plenum',
-    altAr: '[placeholder] تنسيق مجاري التكييف وحوامل الكابلات والأنابيب الميكانيكية',
+    altEn: 'MEP ductwork, cable trays and piping coordination in ceiling plenum',
+    altAr: 'تنسيق مجاري التكييف وحوامل الكابلات والأنابيب الميكانيكية',
   },
   {
     key: 'svc-smart',
     file: 'design/assets/images/svc-smart.png',
-    altEn: '[placeholder] Smart building management system (BMS) and data center racks',
-    altAr: '[placeholder] أنظمة إدارة المباني الذكية (BMS) وكبائن مركز البيانات',
+    altEn: 'Smart building management system (BMS) and data center racks',
+    altAr: 'أنظمة إدارة المباني الذكية (BMS) وكبائن مركز البيانات',
   },
   {
     key: 'tower-render',
     file: 'design/assets/images/tower-render.png',
-    altEn: '[placeholder] Interactive 3D building MEP systems cut-away render',
-    altAr: '[placeholder] مجسم ثلاثي الأبعاد يوضح الأنظمة الكهروميكانيكية داخل المبنى',
+    altEn: 'Interactive 3D building MEP systems cut-away render',
+    altAr: 'مجسم ثلاثي الأبعاد يوضح الأنظمة الكهروميكانيكية داخل المبنى',
   },
 ] as const

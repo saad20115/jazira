@@ -210,11 +210,23 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     expect(summary.servicesCreatedDraft).toBe(10)
     expect(summary.projectsCreated).toEqual({
       publishedWithPhoto: 17,
-      draftWithoutPhoto: 74,
+      draftWithoutPhoto: 70,
       featured: 6,
       total: 91,
     })
     expect(summary.teamPlaceholdersCreatedInactive).toBe(13)
+    // Owner decision 2026-11-08: the Figma baseline is published at launch.
+    expect(summary.figmaBaseline).toEqual({
+      servicesPublished: 10,
+      pageGlobalsPublished: [
+        'home-page',
+        'services-page',
+        'about-page',
+        'projects-page',
+        'contact-page',
+      ],
+      featuredProjectsPublishedWithFigmaCover: 4,
+    })
     expect(summary.homeCopySource).toBe('design/copy/01-home.md')
 
     // Verify the 20 marquee brands in exact order 1..20
@@ -271,8 +283,8 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
-    expect(homeEn._status).toBe('draft')
-    expect(homeAr._status).toBe('draft')
+    expect(homeEn._status).toBe('published')
+    expect(homeAr._status).toBe('published')
     expect(homeEn.interactiveSystems?.systems?.map((s) => s.title)).toEqual(
       DEFAULT_INTERACTIVE_SYSTEMS_EN.map((s) => s.title),
     )
@@ -456,7 +468,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     expect(afterDigest).toBe(beforeDigest)
   }, 60_000)
 
-  it('hides all drafts, [placeholder] items, and admin-only review fields (needsClientReview, reviewNote) from anonymous visitors across Local API and REST endpoints', async () => {
+  it('shows the published Figma baseline and hides drafts, [placeholder] items, placeholder-flagged media and admin-only review fields (needsClientReview, reviewNote) from anonymous visitors across Local API and REST endpoints', async () => {
     // 1. Anonymous Local API (`overrideAccess: false`, `user: undefined`, `draft: false`)
     const [anonServices, anonTeam, anonProjects, anonMedia] = await Promise.all([
       payload.find({
@@ -481,11 +493,18 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       }),
     ])
 
-    expect(anonServices.totalDocs).toBe(0)
+    // Owner decision 2026-11-08: the 10 services are published; the team placeholders stay inactive.
+    expect(anonServices.totalDocs).toBe(10)
+    for (const svc of anonServices.docs) {
+      expect(svc._status).toBe('published')
+      expect(JSON.stringify(svc)).not.toContain('[placeholder]')
+    }
     expect(anonTeam.totalDocs).toBe(0)
-    expect(anonProjects.totalDocs).toBe(17)
-    // R-12: Only the 17 real project photos are visible to anonymous visitors; 0 placeholder media items
-    expect(anonMedia.totalDocs).toBe(17)
+    // 17 projects with a real photo + 4 featured projects published with their Figma image.
+    expect(anonProjects.totalDocs).toBe(21)
+    expect(anonProjects.docs.filter((p) => p.featured)).toHaveLength(6)
+    // Owner decision 2026-11-08: the 17 real project photos and the 9 Figma images are public.
+    expect(anonMedia.totalDocs).toBe(26)
 
     for (const mediaDoc of anonMedia.docs) {
       expect(JSON.stringify(mediaDoc)).not.toContain('[placeholder]')
@@ -536,7 +555,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
 
     const restServices = await callRestGet('/api/services?limit=200')
     expect(restServices.status).toBe(200)
-    expect((restServices.body as { totalDocs: number }).totalDocs).toBe(0)
+    expect((restServices.body as { totalDocs: number }).totalDocs).toBe(10)
 
     const restTeam = await callRestGet('/api/team?limit=200')
     expect(restTeam.status).toBe(200)
@@ -547,7 +566,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     const restProjectDocs = (
       restProjects.body as { docs: Array<Record<string, unknown>>; totalDocs: number }
     ).docs
-    expect((restProjects.body as { totalDocs: number }).totalDocs).toBe(17)
+    expect((restProjects.body as { totalDocs: number }).totalDocs).toBe(21)
     expect(JSON.stringify(restProjectDocs)).not.toContain('[placeholder]')
     for (const doc of restProjectDocs) {
       expect(doc.needsClientReview).toBeUndefined()
@@ -560,12 +579,35 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     const restMediaDocs = (
       restMedia.body as { docs: Array<Record<string, unknown>>; totalDocs: number }
     ).docs
-    expect((restMedia.body as { totalDocs: number }).totalDocs).toBe(17)
+    expect((restMedia.body as { totalDocs: number }).totalDocs).toBe(26)
     expect(JSON.stringify(restMediaDocs)).not.toContain('[placeholder]')
     for (const doc of restMediaDocs) {
       expect(doc.placeholder).toBeUndefined()
     }
 
+    // The seed flags no media as placeholder any more (owner decision 2026-11-08), but the R-12 rule
+    // still holds: media that an editor flags as placeholder is hidden from anonymous visitors.
+    const seededPlaceholderMedia = await payload.find({
+      collection: 'media',
+      where: { placeholder: { equals: true } },
+      limit: 50,
+      depth: 0,
+      locale: 'en',
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+    expect(seededPlaceholderMedia.totalDocs).toBe(0)
+
+    const flaggedMediaId = anonMedia.docs[anonMedia.docs.length - 1]?.id
+    expect(flaggedMediaId).toBeDefined()
+    await payload.update({
+      collection: 'media',
+      id: flaggedMediaId,
+      data: { placeholder: true },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
     const adminPlaceholderMedia = await payload.find({
       collection: 'media',
       where: { placeholder: { equals: true } },
@@ -575,7 +617,13 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
-    expect(adminPlaceholderMedia.totalDocs).toBe(9)
+    expect(adminPlaceholderMedia.totalDocs).toBe(1)
+    const anonMediaAfterFlag = await payload.find({
+      collection: 'media',
+      limit: 200,
+      overrideAccess: false,
+    })
+    expect(anonMediaAfterFlag.totalDocs).toBe(25)
     for (const placeholderDoc of adminPlaceholderMedia.docs) {
       const byIdRes = await callRestGet(`/api/media/${String(placeholderDoc.id)}`)
       expect(byIdRes.status).toBe(404)
@@ -593,6 +641,14 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
         expect(thumbRes.status).toBe(403)
       }
     }
+    await payload.update({
+      collection: 'media',
+      id: flaggedMediaId,
+      data: { placeholder: false },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
 
     const firstRealMedia = anonMedia.docs[0]
     expect(firstRealMedia.filename).toBeTruthy()
@@ -613,18 +669,28 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       'contact-page',
       'privacy-page',
     ] as const) {
+      // Owner decision 2026-11-08: every page global except the privacy page is published at launch.
+      const isPublishedAtLaunch = pageGlobalSlug !== 'privacy-page'
+      const headerKey = pageGlobalSlug === 'home-page' ? 'hero' : 'pageHeader'
       const res = await callRestGet(`/api/globals/${pageGlobalSlug}`)
       expect(res.status).toBe(200)
-      expect(res.body._status).toBeUndefined()
-      expect(res.body.hero).toBeUndefined()
-      expect(res.body.pageHeader).toBeUndefined()
+      if (isPublishedAtLaunch) {
+        expect(res.body[headerKey]).toBeTruthy()
+      } else {
+        expect(res.body._status).toBeUndefined()
+        expect(res.body.hero).toBeUndefined()
+        expect(res.body.pageHeader).toBeUndefined()
+      }
       expect(JSON.stringify(res.body)).not.toContain('[placeholder]')
 
       const draftAttempt = await callRestGet(`/api/globals/${pageGlobalSlug}?draft=true`)
       expect(draftAttempt.status).toBe(200)
-      expect(draftAttempt.body._status).toBeUndefined()
-      expect(draftAttempt.body.hero).toBeUndefined()
-      expect(draftAttempt.body.pageHeader).toBeUndefined()
+      expect(JSON.stringify(draftAttempt.body)).not.toContain('[placeholder]')
+      if (!isPublishedAtLaunch) {
+        expect(draftAttempt.body._status).toBeUndefined()
+        expect(draftAttempt.body.hero).toBeUndefined()
+        expect(draftAttempt.body.pageHeader).toBeUndefined()
+      }
 
       const versionsAttempt = await callRestGet(`/api/globals/${pageGlobalSlug}/versions`)
       expect(versionsAttempt.status).toBe(403)

@@ -66,6 +66,8 @@ export interface PlannedProjectSeed {
   photoAltEn: string | null
   photoAltAr: string | null
   publishStatus: 'published' | 'draft'
+  /** Figma card image for a featured project (owner decision 2026-11-08); null otherwise. */
+  figmaCoverKey: DesignAssetImageSpec['key'] | null
   needsClientReview: true
   reviewNote: string
 }
@@ -128,6 +130,12 @@ export interface P4T2SeedRunSummary {
     siteSettings: boolean
     navigation: boolean
     draftPageGlobals: readonly string[]
+  }
+  /** Owner decision 2026-11-08: the public site launches with the Figma baseline (see step 8g). */
+  figmaBaseline: {
+    servicesPublished: number
+    pageGlobalsPublished: readonly string[]
+    featuredProjectsPublishedWithFigmaCover: number
   }
   homeCopySource: 'design/copy/01-home.md' | 'docs/content/copy-v2/01-home.md'
   updatedAtDigest: string
@@ -387,6 +395,7 @@ export function buildP4T2SeedPlan(
       photoAltEn,
       photoAltAr,
       publishStatus,
+      figmaCoverKey: featuredSpec?.figmaCoverKey ?? null,
       needsClientReview: true,
       reviewNote: reviewNotes.join(' '),
     }
@@ -906,7 +915,9 @@ export async function seedP4T2Content(
   const plan = buildP4T2SeedPlan()
 
   // ---------------------------------------------------------------------------
-  // 1. Upload the 9 Figma design placeholder images + 17 real project photos
+  // 1. Upload the 9 Figma design images + 17 real project photos.
+  //    Owner decision 2026-11-08: the Figma images are ordinary public media (not `placeholder`), so
+  //    the site looks like Figma at launch; editors replace them later in the dashboard.
   // ---------------------------------------------------------------------------
   const designMediaIdByKey = new Map<DesignAssetImageSpec['key'], number>()
   for (const imgSpec of DESIGN_ASSET_IMAGES_9) {
@@ -914,7 +925,7 @@ export async function seedP4T2Content(
       relativeFilePath: imgSpec.file,
       altEn: imgSpec.altEn,
       altAr: imgSpec.altAr,
-      placeholder: true,
+      placeholder: false,
     })
     designMediaIdByKey.set(imgSpec.key, mediaId)
   }
@@ -1109,6 +1120,7 @@ export async function seedP4T2Content(
   // 4. Scope 3: Seed the 10 `services` (4 `main` + 6 `additional`) as `draft`
   // ---------------------------------------------------------------------------
   let servicesCreatedDraft = 0
+  const seededServiceIds: Array<number | string> = []
   for (const svcSpec of SEED_SERVICES_10) {
     const imageId = svcSpec.designImageKey
       ? (designMediaIdByKey.get(svcSpec.designImageKey) ?? null)
@@ -1156,6 +1168,7 @@ export async function seedP4T2Content(
       overrideAccess: false,
       user: SEED_ADMIN_USER,
     })
+    seededServiceIds.push(createdSvcEn.id)
     servicesCreatedDraft += 1
   }
 
@@ -1166,9 +1179,18 @@ export async function seedP4T2Content(
   let draftWithoutPhoto = 0
   let featuredCount = 0
 
+  let featuredPublishedWithFigmaCover = 0
   for (const projSpec of plan.projects) {
-    const coverImageId = projectPhotoMediaIdByRef.get(projSpec.ref) ?? null
-    const isPublished = projSpec.publishStatus === 'published' && coverImageId !== null
+    const realPhotoId = projectPhotoMediaIdByRef.get(projSpec.ref) ?? null
+    // Owner decision 2026-11-08: a featured project without a real photo is published with the
+    // Figma image of its card, so the home page shows all 6 Figma cards. Editors replace it later.
+    const figmaCoverId =
+      realPhotoId === null && projSpec.featured && projSpec.figmaCoverKey
+        ? (designMediaIdByKey.get(projSpec.figmaCoverKey) ?? null)
+        : null
+    const coverImageId = realPhotoId ?? figmaCoverId
+    const isPublished =
+      (projSpec.publishStatus === 'published' && realPhotoId !== null) || figmaCoverId !== null
 
     const createdProjEn = await payload.create({
       collection: 'projects',
@@ -1212,7 +1234,9 @@ export async function seedP4T2Content(
       user: SEED_ADMIN_USER,
     })
 
-    if (isPublished) {
+    if (figmaCoverId !== null) {
+      featuredPublishedWithFigmaCover += 1
+    } else if (isPublished) {
       publishedWithPhoto += 1
     } else {
       draftWithoutPhoto += 1
@@ -1344,7 +1368,12 @@ export async function seedP4T2Content(
     slug: 'navigation',
     locale: 'en',
     data: {
+      // Figma Navbar (`18:749`, `13:489`) starts with Home.
       header: [
+        {
+          label: 'Home',
+          link: { type: 'internal', internalRoute: '/' },
+        },
         {
           label: 'Services',
           link: { type: 'internal', internalRoute: '/services' },
@@ -1394,7 +1423,7 @@ export async function seedP4T2Content(
   })
 
   const headerRowsEn = Array.isArray(navEn.header) ? navEn.header : []
-  const headerLabelsAr = ['خدماتنا', 'من نحن', 'مشاريعنا', 'تواصل معنا']
+  const headerLabelsAr = ['الرئيسية', 'خدماتنا', 'من نحن', 'مشاريعنا', 'تواصل معنا']
   const footerColsEn = Array.isArray(navEn.footer) ? navEn.footer : []
   const footerCol0LinksEn = Array.isArray(footerColsEn[0]?.links) ? footerColsEn[0].links : []
   const footerLinksLabelsAr = ['الرئيسية', 'خدماتنا', 'من نحن', 'مشاريعنا', 'تواصل معنا']
@@ -2393,6 +2422,45 @@ export async function seedP4T2Content(
   })
 
   // ---------------------------------------------------------------------------
+  // 8g. Owner decision 2026-11-08 ("ضع الصور مثل ماهي موجوده في فيجما وتغييرها لاحقا يتم من لوحة
+  //     التحكم"): the public site launches with the Figma baseline. Publish the 10 services and the
+  //     5 page globals from the drafts seeded above; publishing copies the latest draft (both
+  //     locales). Still not public: the privacy page (legal text pending) and the inactive team
+  //     placeholders. Editors change any of it later in the dashboard.
+  // ---------------------------------------------------------------------------
+  for (const serviceId of seededServiceIds) {
+    await payload.update({
+      collection: 'services',
+      id: serviceId,
+      locale: 'en',
+      draft: false,
+      data: { _status: 'published' },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+  }
+
+  const figmaBaselinePageGlobals = [
+    'home-page',
+    'services-page',
+    'about-page',
+    'projects-page',
+    'contact-page',
+  ] as const
+  for (const pageGlobalSlug of figmaBaselinePageGlobals) {
+    await payload.updateGlobal({
+      slug: pageGlobalSlug,
+      locale: 'en',
+      draft: false,
+      data: { _status: 'published' },
+      context: { disableRevalidate: true },
+      overrideAccess: false,
+      user: SEED_ADMIN_USER,
+    })
+  }
+
+  // ---------------------------------------------------------------------------
   // 9. Compute final verification counts and deterministic updatedAt digest
   // ---------------------------------------------------------------------------
   const [
@@ -2507,6 +2575,11 @@ export async function seedP4T2Content(
         'privacy-page',
       ],
     },
+    figmaBaseline: {
+      servicesPublished: seededServiceIds.length,
+      pageGlobalsPublished: figmaBaselinePageGlobals,
+      featuredProjectsPublishedWithFigmaCover: featuredPublishedWithFigmaCover,
+    },
     homeCopySource: plan.homeCopySource,
     updatedAtDigest,
     plan,
@@ -2533,6 +2606,7 @@ export function formatP4T2SummaryLines(summary: P4T2SeedRunSummary): string[] {
     `projects: publishedWithPhoto=${String(summary.projectsCreated.publishedWithPhoto)}, draftWithoutPhoto=${String(summary.projectsCreated.draftWithoutPhoto)}, featured=${String(summary.projectsCreated.featured)}, total=${String(summary.projectsCreated.total)}`,
     `teamPlaceholders: createdInactive=${String(summary.teamPlaceholdersCreatedInactive)}`,
     `globals: site-settings=seeded(arabicEnabled=false), navigation=seeded, draftPageGlobals=${summary.globalsSeeded.draftPageGlobals.join(',')}`,
+    `figmaBaseline: servicesPublished=${String(summary.figmaBaseline.servicesPublished)}, pageGlobalsPublished=${summary.figmaBaseline.pageGlobalsPublished.join(',')}, featuredProjectsPublishedWithFigmaCover=${String(summary.figmaBaseline.featuredProjectsPublishedWithFigmaCover)}`,
     `homeCopySource: ${summary.homeCopySource}`,
     `p4t2UpdatedAtDigestSha256: ${digestSha256}`,
   )
