@@ -800,6 +800,36 @@ describe('P3-T5 round 11 (r12 O-12, O-9b): another system warm-up never compiles
   })
 })
 
+describe('P3-T5 round 12 (O-14b rest): the camera standing still for a warm-up is not flying', () => {
+  beforeEach(() => {
+    vi.stubGlobal('window', { setTimeout })
+  })
+  afterEach(() => {
+    vi.unstubAllGlobals()
+  })
+
+  it('flying in the ease-back and the flight, not while the asked-for system warms up', async () => {
+    const f = buildFixture()
+    expect(f.stage.flying).toBe(false)
+    f.stage.request('hvac')
+    let now = run(f.stage, 0, 60)
+    await settle()
+    // The ease-back is over and the stage waits for hvac's programs: still, but the visitor waits.
+    expect(f.compiles.length).toBeGreaterThan(0)
+    expect(f.stage.moving).toBe(true)
+    expect(f.stage.flying).toBe(false)
+    finishCompiles(f)
+    await settle()
+    now = run(f.stage, now, 3)
+    // The flight in.
+    expect(f.stage.entered).toBeNull()
+    expect(f.stage.flying).toBe(true)
+    run(f.stage, now, 400)
+    expect(f.stage.entered).toBe('hvac')
+    expect(f.stage.flying).toBe(false)
+  })
+})
+
 describe('P3-T5 O-12: label occlusion rays are spread over frames', () => {
   beforeEach(() => {
     vi.stubGlobal('window', { setTimeout })
