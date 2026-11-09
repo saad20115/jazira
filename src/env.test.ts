@@ -269,6 +269,14 @@ describe('parseEnv (S1, S2)', () => {
       }),
     ).toThrow(/IP_HASH_SALT[\s\S]*entropy/i)
 
+    // R1-5: 48 hex chars = 24 bytes (~192-213 estimated bits), below the 32-random-byte (256-bit) entropy floor
+    expect(() =>
+      parseEnv({
+        ...createValidRawEnv(),
+        PAYLOAD_SECRET: '0123456789abcdeffedcba9876543210a1b2c3d4e5f60718',
+      }),
+    ).toThrow(/PAYLOAD_SECRET[\s\S]*entropy/i)
+
     expect(() =>
       parseEnv({
         ...createValidRawEnv(),

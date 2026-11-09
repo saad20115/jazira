@@ -49,8 +49,13 @@ function shannonEntropyBitsPerChar(value: string): number {
     const p = count / value.length
     entropy -= p * Math.log2(p)
   }
-  return entropy
+  // Finite-sample bias correction so short samples (48-64 chars) from a larger alphabet
+  // are not systematically underestimated by birthday collisions.
+  const finiteSampleCorrection = (counts.size - 1) / (value.length * Math.LN2)
+  return entropy + finiteSampleCorrection
 }
+
+const MIN_SECRET_ENTROPY_BITS = 256
 
 function hasSufficientSecretEntropy(value: string): boolean {
   const trimmed = value.trim()
@@ -78,8 +83,9 @@ function hasSufficientSecretEntropy(value: string): boolean {
   if ((trimmed + trimmed).slice(1, -1).includes(trimmed)) {
     return false
   }
-  // Require Shannon entropy >= 3.5 bits/char
-  return shannonEntropyBitsPerChar(trimmed) >= 3.5
+  // R1-5: Require at least 256 estimated bits of entropy (length * bits per character >= 256, equivalent to 32 random bytes)
+  const estimatedEntropyBits = trimmed.length * shannonEntropyBitsPerChar(trimmed)
+  return estimatedEntropyBits >= MIN_SECRET_ENTROPY_BITS
 }
 
 const FORBIDDEN_SUPERUSER_DB_ROLES = new Set([
