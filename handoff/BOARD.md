@@ -45,7 +45,7 @@ watch the channel.
 | P6-T2 | HARD STOP — VPS deployment | DEFERRED | 0 | 2026-10-21 | CTO |
 | P7-T1 | Arabic editor guide | TODO | 0 | 2026-10-21 | CTO |
 | P7-T2 | Operations runbook, final report | TODO | 0 | 2026-10-21 | CTO |
-| R-1 | Safety fixes from the 2026-10-25 audit | TODO | 0 | 2026-10-25 | CTO |
+| R-1 | Safety fixes from the 2026-10-25 audit — worktree `D:\jazira-r1`, branch `r-1-safety` | IN_REVIEW | 2 | 2026-11-09 | Executor |
 | R-2 | Honest tests: proof harness, e2e on the production build, behaviour over source-text | TODO | 0 | 2026-10-25 | CTO |
 | R-3 | Front-end refactor (zero visual change) + front-end fixes | TODO | 0 | 2026-10-25 | CTO |
 | R-4 | Back-end and tooling refactor | TODO | 0 | 2026-10-25 | CTO |
