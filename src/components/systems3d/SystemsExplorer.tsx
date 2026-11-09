@@ -8,6 +8,7 @@ import {
   use,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from 'react'
 
@@ -104,6 +105,8 @@ export function SystemsExplorer({
     [systems],
   )
 
+  const accordionRef = useRef<HTMLDivElement>(null)
+
   const writeHash = useCallback((system: SystemId | null): void => {
     const { pathname, search } = window.location
     window.history.replaceState(
@@ -189,6 +192,16 @@ export function SystemsExplorer({
   // it as the header click does: the row collapses and the hash clears (in a transition, as a switch
   // while live, O-9b).
   const exitSystemAndCollapse = (): void => {
+    // O-19 focus ruling: focus inside the row's panel would be lost when the panel closes (it turns
+    // inert): it goes to that row's header button. Anywhere else (the card, for Escape) it stays.
+    const row = accordionRef.current?.querySelector<HTMLElement>(
+      ':scope > [data-component="accordion-item"][data-accordion-state="Expanded"]',
+    )
+    const header = row?.querySelector<HTMLButtonElement>(':scope > button')
+    const focused = document.activeElement
+    if (row && header && focused instanceof Node && row.contains(focused) && focused !== header) {
+      header.focus()
+    }
     startTransition(() => {
       setExpandedIndex(null)
       enter(null)
@@ -233,6 +246,7 @@ export function SystemsExplorer({
         <div
           className={`${accordionStyles.accordionList} ${styles.interactiveAccordion}`}
           data-component="accordion"
+          ref={accordionRef}
         >
           {systems.map((row, idx) => {
             const badge = String(idx + 1).padStart(2, '0')
