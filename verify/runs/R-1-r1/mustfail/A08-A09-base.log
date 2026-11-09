@@ -1,0 +1,108 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-09/r1
+
+ ❯ src/env.test.ts (10 tests | 3 failed) 287ms
+   ❯ parseEnv (S1, S2) (10)
+     × validates startup env singleton and accepts a valid environment configuration 92ms
+     × rejects low-entropy secrets and superuser DB roles in DATABASE_URL (A-08) 19ms
+     × requires SMTP_HOST and SMTP_PORT in production instead of silently falling back to 127.0.0.1:1025 (A-09) 18ms
+ ❯ src/security/emailAdapter.test.ts (1 test | 1 failed) 69ms
+   ❯ buildNonBlockingEmailAdapter (A-09) (1)
+     × requires SMTP_HOST and SMTP_PORT in production instead of silently falling back to 127.0.0.1:1025 66ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/env.test.ts > parseEnv (S1, S2) > validates startup env singleton and accepts a valid environment configuration
+AssertionError: expected { …(8) } to deeply equal { …(10) }
+
+- Expected
++ Received
+
+@@ -3,10 +3,8 @@
+    "IP_HASH_SALT": "Q3z!rN8#vH5$bK1@mW6^pL9&tF2*xC7_jG4+yD0-sV3=eA5?uJ8~wM1/nR6:kP4",
+    "MEDIA_DIR": "D:\\jazira-verify\\2026-11-09\\r1\\media",
+    "PAYLOAD_JOBS_AUTORUN": true,
+    "PAYLOAD_SECRET": "K9v#mP2$xL7@qR4!wZ8^nT5&yB3*jF6_hD1+gS0-cV9=aU2?eW4~pM7/kX3:uY8",
+    "SERVER_URL": "http://localhost:3000",
+-   "SMTP_HOST": "127.0.0.1",
+-   "SMTP_PORT": 1025,
+    "UPLOAD_TMP_DIR": "C:\\Users\\User21.CSE\\AppData\\Local\\Temp\\aljazira-uploads",
+    "VIDEOS_DIR": "D:\\jazira-verify\\2026-11-09\\r1\\videos",
+  }
+
+ ❯ src/env.test.ts:38:20
+     36|     const raw = createValidRawEnv()
+     37|     const parsed = parseEnv(raw)
+     38|     expect(parsed).toEqual({
+       |                    ^
+     39|       ...raw,
+     40|       MEDIA_DIR: path.resolve(process.cwd(), 'media'),
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/env.test.ts > parseEnv (S1, S2) > rejects low-entropy secrets and superuser DB roles in DATABASE_URL (A-08)
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ src/env.test.ts:256:7
+    254|         PAYLOAD_SECRET: 'a'.repeat(64),
+    255|       }),
+    256|     ).toThrow(/PAYLOAD_SECRET[\s\S]*entropy/i)
+       |       ^
+    257|
+    258|     expect(() =>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/env.test.ts > parseEnv (S1, S2) > requires SMTP_HOST and SMTP_PORT in production instead of silently falling back to 127.0.0.1:1025 (A-09)
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ src/env.test.ts:294:7
+    292|         PAYLOAD_JOBS_AUTORUN: 'false',
+    293|       }),
+    294|     ).toThrow(/SMTP_HOST.*production/i)
+       |       ^
+    295|
+    296|     expect(() =>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/security/emailAdapter.test.ts > buildNonBlockingEmailAdapter (A-09) > requires SMTP_HOST and SMTP_PORT in production instead of silently falling back to 127.0.0.1:1025
+AssertionError: expected [Function] to throw error matching /SMTP_HOST.*production/i but got '(0 , __vite_ssr_import_1__.resolveSmt…'
+
+- Expected:
+/SMTP_HOST.*production/i
+
++ Received:
+"(0 , __vite_ssr_import_1__.resolveSmtpTransportConfig) is not a function"
+
+ ❯ src/security/emailAdapter.test.ts:37:48
+     35|     delete mutableEnv.SMTP_PORT
+     36|
+     37|     expect(() => resolveSmtpTransportConfig()).toThrow(/SMTP_HOST.*pro…
+       |                                                ^
+     38|     await expect(buildNonBlockingEmailAdapter()).rejects.toThrow(/SMTP…
+     39|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  4 failed | 7 passed (11)
+   Start at  11:25:26
+   Duration  11.18s (import 92%, tests 5%, transform 3%, worker 1%)
+
+    Isolate  2 workers spawned · ~1.31s startup each (spawn + environment, per file)
+             at least ~1.31s faster with isolate: false — reuses workers across files instead of one per file
+

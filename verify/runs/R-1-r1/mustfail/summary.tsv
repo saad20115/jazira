@@ -1,0 +1,16 @@
+case	phase	exit	seconds
+A01	base	1	48
+A01	fix	0	36
+A02-A10	base	1	28
+A02-A10	fix	0	18
+A05-A06	base	1	24
+A05-A06	fix	0	42
+A08-A09	base	1	23
+A08-A09	fix	0	31
+D14	base	1	7
+D14	fix	0	15
+A03	base	1	14
+A03	fix	0	11
+E07	base	1	8
+E07	fix	0	13
+done

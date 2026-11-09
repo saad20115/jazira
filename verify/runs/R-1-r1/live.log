@@ -1,0 +1,13 @@
+admin-login 200
+editor-create {"status":201,"role":"editor"}
+editor-login 200
+A-02 media create JSON {url,filename} {"status":400,"id":null,"remoteHits":0,"message":"The following field is invalid: file"}
+A-02 videos create JSON {url,filename} {"status":400,"id":null,"remoteHits":0,"message":"The following field is invalid: file"}
+A-02 media update JSON {url,filename} {"status":400,"remoteHits":0,"message":"The following field is invalid: file"}
+A-10 media file headers {"status":200,"csp":"default-src 'none'; sandbox","nosniff":"nosniff"}
+A-10 media file 404 headers {"status":404,"csp":"default-src 'none'; sandbox","nosniff":"nosniff"}
+A-10 videos file 404 headers {"status":404,"csp":"default-src 'none'; sandbox","nosniff":"nosniff"}
+A-06 editor GET /api/payload-jobs/run 401
+A-06 anonymous GET /api/payload-jobs/run 401
+editor-delete 200
+listener total hits 0

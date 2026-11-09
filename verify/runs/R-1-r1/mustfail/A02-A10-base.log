@@ -1,0 +1,47 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-09/r1
+
+ ❯ src/security/uploadValidation.test.ts (7 tests | 2 failed) 56ms
+   ❯ uploadValidation (I5) (7)
+     × adds Content-Security-Policy: default-src 'none'; sandbox and X-Content-Type-Options: nosniff to /api/:collection(media|videos)/file/:path* (A-10) 19ms
+     × closes the upload bypass on Media and Videos: disables pasteURL and rejects create/update JSON { url, filename } payloads when req.file is absent (A-02) 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/security/uploadValidation.test.ts > uploadValidation (I5) > adds Content-Security-Policy: default-src 'none'; sandbox and X-Content-Type-Options: nosniff to /api/:collection(media|videos)/file/:path* (A-10)
+AssertionError: expected undefined to be defined
+ ❯ src/security/uploadValidation.test.ts:150:28
+    148|       (rule) => rule.source === '/api/:collection(media|videos)/file/:…
+    149|     )
+    150|     expect(fileHeaderRule).toBeDefined()
+       |                            ^
+    151|     expect(fileHeaderRule?.headers).toEqual(
+    152|       expect.arrayContaining([
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/security/uploadValidation.test.ts > uploadValidation (I5) > closes the upload bypass on Media and Videos: disables pasteURL and rejects create/update JSON { url, filename } payloads when req.file is absent (A-02)
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ src/security/uploadValidation.test.ts:187:63
+    185|     expect(typeof Media.upload).toBe('object')
+    186|     expect(typeof Videos.upload).toBe('object')
+    187|     expect((Media.upload as { pasteURL?: unknown }).pasteURL).toBe(fal…
+       |                                                               ^
+    188|     expect((Videos.upload as { pasteURL?: unknown }).pasteURL).toBe(fa…
+    189|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 5 passed (7)
+   Start at  11:23:24
+   Duration  17.03s (import 91%, transform 7%, worker 1%)
+

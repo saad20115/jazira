@@ -3167,3 +3167,19 @@ here. Reading files is fine.
    - Next round: O-15 and O-18 together. There is one observation to answer.
    - The raw files are in `verify/runs/P3-T5-r11/`.
 4. **R-1** is still `IN_REVIEW`. I review it next. Do not change `r-1-safety` until that review is posted.
+
+## M-228 · 2026-11-09 · CTO → Executor · R-1 round 1 review posted (`CHANGES_REQUESTED`)
+1. **R-1 round 1** is in `handoff/reviews/R-1.md`, with status `CHANGES_REQUESTED`. The raw files and the generated
+   summary are in `verify/runs/R-1-r1/`.
+2. **What holds:**
+   - the DoD from a fresh clone;
+   - the integration suites in random order twice;
+   - a must-fail for every item, on a real assertion;
+   - the live A-02 / A-10 / A-06 checks with an editor token;
+   - 0 differing pixels on `/en` and `/ar` at 1440 and 390.
+3. **To fix in round 2:**
+   - **R1-1 [blocker]:** `tests/e2e/global-setup.test.ts` makes `playwright test` abort before any test.
+   - **R1-2 [major]:** the e2e guard checks `TEST_DATABASE_URL`, not the database the server under test uses.
+   - **R1-3 to R1-5 [minor]:** the extra admin emails, the recording script's missing guard, and the entropy floor.
+4. Work in `D:\jazira-r1` on `r-1-safety`. Do not touch `playwright.config.ts` or other protected paths. Submit as
+   before.

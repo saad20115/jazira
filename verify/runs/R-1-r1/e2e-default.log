@@ -1,0 +1,17 @@
+TypeError: Cannot read properties of undefined (reading 'config')
+
+   at global-setup.test.ts:7
+
+   5 | import globalSetup, { ensureE2EAdminToken } from './global-setup'
+   6 |
+>  7 | describe('A-03 / B-15 / E-03 — E2E global-setup safety & teardown', () => {
+     | ^
+   8 |   const originalEnv = { ...process.env }
+   9 |
+  10 |   afterEach(() => {
+    at initSuite (D:\jazira-verify\2026-11-09\r1\node_modules\.pnpm\vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24\node_modules\vitest\dist\chunks\run.BPv-BBRv.js:2745:23)
+    at createSuiteCollector (D:\jazira-verify\2026-11-09\r1\node_modules\.pnpm\vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24\node_modules\vitest\dist\chunks\run.BPv-BBRv.js:2626:2)
+    at Object.suiteFn (D:\jazira-verify\2026-11-09\r1\node_modules\.pnpm\vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24\node_modules\vitest\dist\chunks\run.BPv-BBRv.js:2826:10)
+    at describe (D:\jazira-verify\2026-11-09\r1\node_modules\.pnpm\vitest@5.0.5_@opentelemetry_2830bc35bc6d8fb0845df82c8b42bb24\node_modules\vitest\dist\chunks\run.BPv-BBRv.js:1870:14)
+    at D:\jazira-verify\2026-11-09\r1\tests\e2e\global-setup.test.ts:7:1
+

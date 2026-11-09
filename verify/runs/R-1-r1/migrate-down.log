@@ -1,0 +1,29 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-verify\2026-11-09\r1
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate:down"
+
+[10:41:41] [32mINFO[39m: [36mReading migration files from D:\jazira-verify\2026-11-09\r1\src\migrations[39m
+[10:41:41] [32mINFO[39m: [36mRolling back batch 1 consisting of 11 migration(s).[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261101_133828_p4_t2_r2_media_placeholder[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261101_133828_p4_t2_r2_media_placeholder (11ms)[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261025_002404_p4_t2_projects_review_fields[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261025_002404_p4_t2_projects_review_fields (5ms)[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261024_195628_p3_t12_site_settings_arabic_enabled[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261024_195628_p3_t12_site_settings_arabic_enabled (5ms)[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261024_104400_p3_t4_r2_title_accent_and_stats_bg[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261024_104400_p3_t4_r2_title_accent_and_stats_bg (11ms)[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261023_005934_p2_t6_quote_requests_service_title[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261023_005934_p2_t6_quote_requests_service_title (4ms)[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261022_231435_p2_t6_quote_requests[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261022_231435_p2_t6_quote_requests (15ms)[39m
+[10:41:41] [32mINFO[39m: [36mMigrating down: 20261022_221250_p2_t5_globals[39m
+[10:41:41] [32mINFO[39m: [36mMigrated down:  20261022_221250_p2_t5_globals (209ms)[39m
+[10:41:42] [32mINFO[39m: [36mMigrating down: 20261022_160652_p2_t4_projects[39m
+[10:41:42] [32mINFO[39m: [36mMigrated down:  20261022_160652_p2_t4_projects (129ms)[39m
+[10:41:42] [32mINFO[39m: [36mMigrating down: 20261022_140011_p2_t3_services_team[39m
+[10:41:42] [32mINFO[39m: [36mMigrated down:  20261022_140011_p2_t3_services_team (52ms)[39m
+[10:41:42] [32mINFO[39m: [36mMigrating down: 20261022_120943_p2_t2_videos_brands_stats_materials[39m
+[10:41:42] [32mINFO[39m: [36mMigrated down:  20261022_120943_p2_t2_videos_brands_stats_materials (41ms)[39m
+[10:41:42] [32mINFO[39m: [36mMigrating down: 20261021_074848_initial_users_media[39m
+[10:41:42] [32mINFO[39m: [36mMigrated down:  20261021_074848_initial_users_media (18ms)[39m
+[10:41:42] [32mINFO[39m: [36mDone.[39m

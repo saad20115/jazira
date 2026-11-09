@@ -1,0 +1,9 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-09/r1
+
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  11:27:08
+   Duration  828ms (tests 38%, transform 31%, import 23%, worker 7%)
+
