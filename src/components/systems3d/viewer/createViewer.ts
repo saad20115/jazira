@@ -242,6 +242,7 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
     shader.fragmentShader =
       `uniform float imDepth;\n` +
       shader.fragmentShader.replace('#include <emissivemap_fragment>', INTERIOR_GLSL)
+    applyKeySheen(material, shader)
   }
   material.customProgramCacheKey = () => 'aljazira-interior-v022n'
   material.needsUpdate = true
@@ -250,33 +251,67 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
 const SHEEN_TARGET = '#include <aomap_fragment>'
 
 /**
- * O-15: a warm sheen on the faces turned toward the key light (`LiveLook.keySheen`), in view space
- * (`direction` is kept current by the caller). Added after any patch the material already has.
+ * O-15 (round 13, r14 O-17, O-9, O-12, O-9b): the warm sheen of the key light (`LiveLook.keySheen`)
+ * is in the program of every standard material, under one cache key, and is zero except on the
+ * sheen materials. A patch on the sheen materials alone split the programs they had shared with other
+ * materials (a hero program and an entered-look one), and each split program was one more shader to
+ * compile at the start and in the first flight. Now the materials share programs exactly as before
+ * O-15: the highlight variants loaded later and the slabs' own clones included, as they are standard
+ * materials too.
  */
-function addKeySheen(
-  material: MeshStandardMaterial,
-  direction: { value: Vector3 },
-  level: { value: Color },
-  sharpness: number,
-): void {
-  const previous = material.onBeforeCompile.bind(material)
-  const previousKey = material.customProgramCacheKey()
-  material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms, renderer) => {
-    previous(shader, renderer)
-    if (!shader.fragmentShader.includes(SHEEN_TARGET)) {
-      throw new ContractError('three standard shader: key sheen target not found')
-    }
-    shader.uniforms.uKeySheenDir = direction
-    shader.uniforms.uKeySheen = level
-    shader.fragmentShader =
-      'uniform vec3 uKeySheenDir;\nuniform vec3 uKeySheen;\n' +
-      shader.fragmentShader.replace(
-        SHEEN_TARGET,
-        `totalEmissiveRadiance += uKeySheen * pow(max(dot(normal, uKeySheenDir), 0.0), ${sharpness.toFixed(2)});\n${SHEEN_TARGET}`,
-      )
+const SHEEN_PROGRAM_KEY = 'aljazira-key-sheen-v1'
+
+interface KeySheen {
+  /** The key's direction (towards the light) in view space, kept current by the viewer. */
+  direction: { value: Vector3 }
+  level: { value: Color }
+  sharpness: { value: number }
+}
+
+const NO_SHEEN: KeySheen = {
+  direction: { value: new Vector3(0, 1, 0) },
+  level: { value: new Color(0, 0, 0) },
+  sharpness: { value: 1 },
+}
+
+/** The sheen of the sheen materials (any other standard material gets `NO_SHEEN`). */
+const keySheens = new WeakMap<Material, KeySheen>()
+
+function applyKeySheen(material: Material, shader: WebGLProgramParametersWithUniforms): void {
+  if (!shader.fragmentShader.includes(SHEEN_TARGET)) {
+    throw new ContractError('three standard shader: key sheen target not found')
   }
-  material.customProgramCacheKey = () => `${previousKey}-aljazira-key-sheen-${sharpness.toFixed(2)}`
-  material.needsUpdate = true
+  const sheen = keySheens.get(material) ?? NO_SHEEN
+  shader.uniforms.uKeySheenDir = sheen.direction
+  shader.uniforms.uKeySheen = sheen.level
+  shader.uniforms.uKeySheenSharpness = sheen.sharpness
+  shader.fragmentShader =
+    'uniform vec3 uKeySheenDir;\nuniform vec3 uKeySheen;\nuniform float uKeySheenSharpness;\n' +
+    shader.fragmentShader.replace(
+      SHEEN_TARGET,
+      `totalEmissiveRadiance += uKeySheen * pow(max(dot(normal, uKeySheenDir), 0.0), uKeySheenSharpness);\n${SHEEN_TARGET}`,
+    )
+}
+
+let sheenInstalled = false
+
+/**
+ * Once per page, before any program is made: every standard (and physical) material without a patch
+ * of its own gets the sheen code under one key. Materials with their own patch (the interior mapping,
+ * the room ground) keep their own key; the interior mapping adds the sheen itself.
+ */
+function installKeySheen(): void {
+  if (sheenInstalled) {
+    return
+  }
+  MeshStandardMaterial.prototype.onBeforeCompile = function (
+    this: MeshStandardMaterial,
+    shader: WebGLProgramParametersWithUniforms,
+  ): void {
+    applyKeySheen(this, shader)
+  }
+  MeshStandardMaterial.prototype.customProgramCacheKey = (): string => SHEEN_PROGRAM_KEY
+  sheenInstalled = true
 }
 
 /**
@@ -665,6 +700,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
 async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const { canvas, container } = options
   patchAgxLook()
+  installKeySheen()
 
   /** O-9: idle slices until the visitor asks for the model, then plain task boundaries. */
   let shown = false
@@ -1026,17 +1062,22 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       }
     }
   }
-  // O-15: the warm sheen of the key on the façade (after the interior mapping, which it extends).
+  // O-15: the warm sheen of the key on the façade (the code is in every standard program).
   const keyToLight = key.position.clone().normalize()
   const keySheenDirection = { value: new Vector3() }
   const keySheenFull = new Color()
     .setRGB(...look.keySheen.color)
     .multiplyScalar(look.keySheen.strength)
   const keySheenLevel = { value: keySheenFull.clone() }
+  const keySheen: KeySheen = {
+    direction: keySheenDirection,
+    level: keySheenLevel,
+    sharpness: { value: look.keySheen.sharpness },
+  }
   for (const name of look.keySheen.materials) {
     const material = materials.get(name)
     if (material) {
-      addKeySheen(material, keySheenDirection, keySheenLevel, look.keySheen.sharpness)
+      keySheens.set(material, keySheen)
     }
   }
 
