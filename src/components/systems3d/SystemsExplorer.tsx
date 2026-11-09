@@ -185,9 +185,10 @@ export function SystemsExplorer({
     enter(null)
   }
 
-  // O-18: a wheel-out past the entered system's limit exits it as the header click does: the row
-  // collapses and the hash clears (in a transition, as a switch while live, O-9b).
-  const exitSystemByWheel = (): void => {
+  // O-18 and O-19 (owner 2026-11-09): a wheel-out past the entered system's limit, and Escape, exit
+  // it as the header click does: the row collapses and the hash clears (in a transition, as a switch
+  // while live, O-9b).
+  const exitSystemAndCollapse = (): void => {
     startTransition(() => {
       setExpandedIndex(null)
       enter(null)
@@ -215,7 +216,7 @@ export function SystemsExplorer({
         entered={entered}
         liveLabel={posterAlt}
         onExitSystem={exitSystem}
-        onWheelExit={exitSystemByWheel}
+        onCollapseExit={exitSystemAndCollapse}
         onSelectRow={(idx) => {
           toggle(idx, true)
         }}

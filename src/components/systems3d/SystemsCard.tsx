@@ -160,8 +160,11 @@ export interface SystemsCardProps {
   /** The system entered through the accordion or the URL hash, if any. */
   entered: SystemId | null
   onExitSystem: () => void
-  /** O-18: a wheel-out past the entered system's limit (exit, and collapse its row). */
-  onWheelExit?: () => void
+  /**
+   * O-18, O-19: the exit of a wheel-out past the entered system's limit and of Escape: as the header
+   * click, the system exits and its row collapses (`onExitSystem` when not given).
+   */
+  onCollapseExit?: () => void
   /** Keys 1–5: enter the system of that accordion row. */
   onSelectRow: (index: number) => void
   /** The related-projects panel of the entered system (suspends on its own until the data arrives). */
@@ -240,7 +243,7 @@ export function SystemsCard({
   liveLabel,
   entered,
   onExitSystem,
-  onWheelExit,
+  onCollapseExit,
   onSelectRow,
   relatedPanel,
   startSignal,
@@ -299,10 +302,10 @@ export function SystemsCard({
     enteredRef.current = entered
   }, [entered])
   /** O-18: the exit a wheel-out at the limit asks for (the latest handler; the viewer outlives renders). */
-  const exitSystemRef = useRef(onWheelExit ?? onExitSystem)
+  const exitSystemRef = useRef(onCollapseExit ?? onExitSystem)
   useEffect(() => {
-    exitSystemRef.current = onWheelExit ?? onExitSystem
-  }, [onWheelExit, onExitSystem])
+    exitSystemRef.current = onCollapseExit ?? onExitSystem
+  }, [onCollapseExit, onExitSystem])
   useEffect(() => {
     phaseRef.current = phase
     onPhaseChange?.(phase)
@@ -847,7 +850,8 @@ export function SystemsCard({
             viewer.resetView()
           }
         : undefined,
-      Escape: entered ? onExitSystem : undefined,
+      // O-19: Escape exits as the header click does (the row collapses too).
+      Escape: entered ? (onCollapseExit ?? onExitSystem) : undefined,
     }
     const digit = /^[1-5]$/.test(event.key) ? Number(event.key) - 1 : -1
     const action =
