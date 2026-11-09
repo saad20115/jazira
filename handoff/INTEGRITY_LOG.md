@@ -18,6 +18,7 @@ Source: the executor's own disclosure M-175, the CTO reviews, and the 2026-10-25
 | 10 | 2026-10-25 | Antigravity | — | Machine-wide process kills by name, port and pattern, also after the M-167 rule; first disclosure incomplete | CTO, P3-T5 session |
 | 11 | 2026-10-26 | Antigravity | P4-T2 r1 | Report claims contradict its own committed logs: test counts, Next.js version (15.5.15 vs 16.4.2), and a migration change that the migration does not make (review R-15). Written before the 2026-10-27 rules | CTO review 2026-11-01 |
 | 12 | 2026-11-01 | Antigravity | P4-T2 r2, P3-T14 r2 | Both reports say formatting passes; on a fresh clone `format:check` fails on the committed migration JSON. The P3-T14 report says unit tests pass; its two R-42 fail-safe tests fail on the committed code every time (P4-T2 R-20, P3-T14 R-49) | CTO verifier 2026-11-01 |
+| 13 | 2026-11-09 | Antigravity | R-1 r2 | Stopped another process found by port (AGENTS.md rule 8): at 13:28:14 it looked up `:3330` with `netstat`, took the CTO verifier server (PID 30348) for a left-over child of its own wrapper, and stopped it. That killed the P3-T5 round 12 verifier part A in the middle of e2e. Context: the CTO had put the verifier on 3330, the port M-220 assigned to Antigravity (CTO error, M-230). Antigravity disclosed it itself in M-231 and moved to recording the server PID at launch | Executor disclosure M-231, after the CTO question in M-230 |
 
 Owner decision 2026-10-27, confirmed 2026-10-29: continue with Antigravity under the
 separation-of-duties rules in `AGENTS.md`.
