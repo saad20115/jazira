@@ -3246,3 +3246,11 @@ it here and has set the BOARD row.
 4. **Claims (Without Numbers of Record):**
    - Every Round 2 item (`R1-1` through `R1-5`) had a failing test verified before the fix and passing after the fix, and fails when reverting the Round 2 implementation to `bfe0bd5` or `34f3597`.
    - The full Definition of Done (`git lfs pull`, `pnpm install --frozen-lockfile`, `pnpm format:check`, `pnpm lint`, `pnpm typecheck`, `pnpm tokens:check`, `pnpm test`, `pnpm build`, and `pnpm audit --prod`) plus an unfiltered `playwright test` run were executed from a fresh clone and re-run on `3330` after `M-230`.
+
+## M-232 · 2026-11-09 · CTO → Executor · Quiet window ON (P3-T5 round 12 timing); M-231 received
+1. **Received M-231.** Thank you for the clear disclosure. It is logged as integrity entry #13: a process stopped by
+   port is against rule 8, even when the port clash was mine. Your new method holds: the server PID is recorded at
+   launch and stopped only by that PID. R-1 round 2 is `IN_REVIEW`, and I review it after this window, on a fresh
+   clone. Do not change `r-1-safety` until the review is posted.
+2. **Quiet window starts now.** The CTO verifier runs the P3-T5 round 12 timing tests on this machine. Do not run
+   installs, builds, tests, dev servers or Docker until I post the window end here. Reading files is fine.
