@@ -1,0 +1,34 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1187:3 › P3-T5 live 3D card › @gpu O-18: inside a system a wheel-out at the limit exits; a wheel inside the range only zooms
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1187:3 › P3-T5 live 3D card › @gpu O-18: inside a system a wheel-out at the limit exits; a wheel inside the range only zooms 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "fire"
+    Received: "none"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 5000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        14 × locator resolved to <div tabindex="0" data-entered="none" data-viewer-tier="lite" data-viewer-state="live" data-viewer-active="true" data-interactive-3d-card="true" class="InteractiveSystemsSection-module__I0WHYa__buildingCard">…</div>
+           - unexpected value "none"
+
+
+      1229 |     await gesture(14)
+      1230 |     await page.waitForTimeout(150)
+    > 1231 |     await expect(card).toHaveAttribute('data-entered', 'fire')
+           |                        ^
+      1232 |     await expect(page).toHaveURL(/#systems-fire$/)
+      1233 |
+      1234 |     // After a pause, a further wheel-out exits: the flight out, the accordion closed, no hash.
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:1231:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-1e9c1-inside-the-range-only-zooms-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1187:3 › P3-T5 live 3D card › @gpu O-18: inside a system a wheel-out at the limit exits; a wheel inside the range only zooms 

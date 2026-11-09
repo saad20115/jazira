@@ -1,0 +1,37 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "live"
+    Received: "stills"
+    Timeout:  60000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 60000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        15 × locator resolved to <div tabindex="0" aria-busy="true" data-entered="none" data-viewer-active="false" class="I0WHYa_buildingCard" data-viewer-state="loading" data-interactive-3d-card="true">…</div>
+           - unexpected value "loading"
+        99 × locator resolved to <div data-entered="none" data-viewer-active="false" data-viewer-state="stills" class="I0WHYa_buildingCard" data-viewer-fallback="timeout" data-interactive-3d-card="true">…</div>
+           - unexpected value "stills"
+
+
+      161 | async function goLive(card: Locator): Promise<void> {
+      162 |   await clickImage(card)
+    > 163 |   await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+          |                      ^
+      164 | }
+      165 |
+      166 | /** O-14 (CTO round 7): within this long of the click the card is live or in the stills tier. */
+        at goLive (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:163:22)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:782:5
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-21311-full-model-enters-and-exits-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 

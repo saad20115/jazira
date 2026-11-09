@@ -1,0 +1,11 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/r12/mut/wheelExit.fix.ts	2026-11-09 10:24:30.488452900 +0300
++++ src/components/systems3d/wheelExit.ts	2026-11-09 10:24:30.576598400 +0300
+@@ -63,7 +63,7 @@
+ ): { state: WheelExitState; exit: boolean } {
+   const newGesture =
+     state.lastWheelAt === null || sample.time - state.lastWheelAt >= WHEEL_EXIT_PAUSE_MS
+-  let armed = newGesture ? sample.eligible && sample.atLimit : state.armed
++  let armed = sample.eligible && sample.atLimit
+   let outPx = newGesture ? 0 : state.outPx
+   if (!sample.eligible || !sample.atLimit || sample.deltaPx <= 0) {
+     armed = false

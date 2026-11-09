@@ -1,0 +1,129 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-wheel-exit.test.ts (6 tests | 4 failed) 31ms
+   ❯ P3-T5 O-18: a wheel-out past the limit exits the system, never by a slip (6)
+     × mouse: the tick that reaches the limit stops there; a further tick after a pause exits 19ms
+     × trackpad: momentum that runs into the limit never exits by itself 3ms
+     × a deliberate trackpad wheel-out that starts at the limit exits once it adds up 2ms
+     × only while eligible: not during a flight, outside a system or with the card inactive 1ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-wheel-exit.test.ts > P3-T5 O-18: a wheel-out past the limit exits the system, never by a slip > mouse: the tick that reaches the limit stops there; a further tick after a pause exits
+AssertionError: expected [ 3, 4 ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   3,
++   4,
++ ]
+
+ ❯ src/p3-t5-wheel-exit.test.ts:39:52
+     37|     const reaching = [sample(0, 100, false), sample(100, 100, false), …
+     38|     const sameGesture = [sample(300, 100, true), sample(400, 100, true…
+     39|     expect(exitsOf([...reaching, ...sameGesture])).toEqual([])
+       |                                                    ^
+     40|     // After a pause, one more tick out exits.
+     41|     const later = sample(400 + WHEEL_EXIT_PAUSE_MS, 100, true)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/p3-t5-wheel-exit.test.ts > P3-T5 O-18: a wheel-out past the limit exits the system, never by a slip > trackpad: momentum that runs into the limit never exits by itself
+AssertionError: expected [ 65, 70, 75, 80, 85, 90, 95, …(20) ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   65,
++   70,
++   75,
++   80,
++   85,
++   90,
++   95,
++   100,
++   105,
++   110,
++   115,
++   120,
++   125,
++   130,
++   135,
++   140,
++   145,
++   150,
++   155,
++   160,
++   165,
++   170,
++   175,
++   180,
++   185,
++   190,
++   195,
++ ]
+
+ ❯ src/p3-t5-wheel-exit.test.ts:54:31
+     52|       momentum.push(sample(i * 16, 12, i > 60))
+     53|     }
+     54|     expect(exitsOf(momentum)).toEqual([])
+       |                               ^
+     55|   })
+     56|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/p3-t5-wheel-exit.test.ts > P3-T5 O-18: a wheel-out past the limit exits the system, never by a slip > a deliberate trackpad wheel-out that starts at the limit exits once it adds up
+AssertionError: expected [ 4, 9 ] to deeply equal [ 4 ]
+
+- Expected
++ Received
+
+  [
+    4,
++   9,
+  ]
+
+ ❯ src/p3-t5-wheel-exit.test.ts:64:30
+     62|     }
+     63|     // Before 5 small steps it has not added up; the fifth exits.
+     64|     expect(exitsOf(gesture)).toEqual([4])
+       |                              ^
+     65|   })
+     66|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  src/p3-t5-wheel-exit.test.ts > P3-T5 O-18: a wheel-out past the limit exits the system, never by a slip > only while eligible: not during a flight, outside a system or with the card inactive
+AssertionError: expected [ 1 ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   1,
++ ]
+
+ ❯ src/p3-t5-wheel-exit.test.ts:81:76
+     79|     expect(exitsOf([sample(0, 500, true, false), sample(1000, 500, tru…
+     80|     // A gesture that starts ineligible stays unarmed, even if it beco…
+     81|     expect(exitsOf([sample(0, 100, true, false), sample(100, 100, true…
+       |                                                                            ^
+     82|   })
+     83|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 2 passed (6)
+   Start at  10:24:46
+   Duration  1.31s (transform 77%, worker 11%, tests 6%, import 5%)
+

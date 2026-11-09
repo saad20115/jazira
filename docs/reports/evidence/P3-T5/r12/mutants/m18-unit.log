@@ -1,0 +1,34 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-system-stage.test.ts (20 tests | 1 failed | 19 skipped) 285ms
+   ❯ P3-T5 round 12 (O-14b rest): the camera standing still for a warm-up is not flying (1)
+     × flying in the ease-back and the flight, not while the asked-for system warms up 282ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 round 12 (O-14b rest): the camera standing still for a warm-up is not flying > flying in the ease-back and the flight, not while the asked-for system warms up
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/p3-t5-system-stage.test.ts:820:28
+    818|     expect(f.compiles.length).toBeGreaterThan(0)
+    819|     expect(f.stage.moving).toBe(true)
+    820|     expect(f.stage.flying).toBe(false)
+       |                            ^
+    821|     finishCompiles(f)
+    822|     await settle()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 19 skipped (20)
+   Start at  11:04:58
+   Duration  805ms (tests 56%, transform 23%, import 19%, worker 2%)
+

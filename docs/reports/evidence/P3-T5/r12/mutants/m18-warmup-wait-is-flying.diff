@@ -1,0 +1,11 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/r12/mut/systemStage.fix.ts	2026-11-09 11:04:55.804174600 +0300
++++ src/components/systems3d/viewer/systemStage.ts	2026-11-09 11:04:55.915807200 +0300
+@@ -1002,7 +1002,7 @@
+       return phase !== 'rest' && phase !== 'entered'
+     },
+     get flying() {
+-      return phase !== 'rest' && phase !== 'entered' && phase !== 'variant'
++      return phase !== 'rest' && phase !== 'entered'
+     },
+     request(system) {
+       desired = system

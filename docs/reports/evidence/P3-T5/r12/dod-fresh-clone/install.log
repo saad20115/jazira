@@ -1,0 +1,97 @@
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +773
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 773, reused 48, downloaded 0, added 0
+Progress: resolved 773, reused 129, downloaded 0, added 0
+Progress: resolved 773, reused 175, downloaded 0, added 0
+Progress: resolved 773, reused 248, downloaded 0, added 0
+Progress: resolved 773, reused 276, downloaded 0, added 0
+Progress: resolved 773, reused 277, downloaded 0, added 0
+Progress: resolved 773, reused 278, downloaded 0, added 0
+Progress: resolved 773, reused 336, downloaded 0, added 0
+Progress: resolved 773, reused 417, downloaded 0, added 0
+Progress: resolved 773, reused 602, downloaded 0, added 0
+Progress: resolved 773, reused 658, downloaded 0, added 0
+Progress: resolved 773, reused 763, downloaded 0, added 2
+Progress: resolved 773, reused 765, downloaded 5, added 5
+Progress: resolved 773, reused 765, downloaded 6, added 25
+Progress: resolved 773, reused 765, downloaded 6, added 51
+Progress: resolved 773, reused 765, downloaded 6, added 58
+Progress: resolved 773, reused 765, downloaded 6, added 75
+Progress: resolved 773, reused 765, downloaded 6, added 76
+Progress: resolved 773, reused 765, downloaded 6, added 81
+Progress: resolved 773, reused 765, downloaded 6, added 84
+Progress: resolved 773, reused 765, downloaded 6, added 118
+Progress: resolved 773, reused 765, downloaded 6, added 134
+Progress: resolved 773, reused 765, downloaded 7, added 145
+Progress: resolved 773, reused 765, downloaded 8, added 173
+Progress: resolved 773, reused 765, downloaded 8, added 183
+Progress: resolved 773, reused 765, downloaded 8, added 217
+Progress: resolved 773, reused 765, downloaded 8, added 251
+Progress: resolved 773, reused 765, downloaded 8, added 274
+Progress: resolved 773, reused 765, downloaded 8, added 291
+Progress: resolved 773, reused 765, downloaded 8, added 303
+Progress: resolved 773, reused 765, downloaded 8, added 321
+Progress: resolved 773, reused 765, downloaded 8, added 345
+Progress: resolved 773, reused 765, downloaded 8, added 372
+Progress: resolved 773, reused 765, downloaded 8, added 413
+Progress: resolved 773, reused 765, downloaded 8, added 463
+Progress: resolved 773, reused 765, downloaded 8, added 486
+Progress: resolved 773, reused 765, downloaded 8, added 548
+Progress: resolved 773, reused 765, downloaded 8, added 566
+Progress: resolved 773, reused 765, downloaded 8, added 610
+Progress: resolved 773, reused 765, downloaded 8, added 631
+Progress: resolved 773, reused 765, downloaded 8, added 637
+Progress: resolved 773, reused 765, downloaded 8, added 639
+Progress: resolved 773, reused 765, downloaded 8, added 640
+Progress: resolved 773, reused 765, downloaded 8, added 650
+Progress: resolved 773, reused 765, downloaded 8, added 653
+Progress: resolved 773, reused 765, downloaded 8, added 662
+Progress: resolved 773, reused 765, downloaded 8, added 663
+Progress: resolved 773, reused 765, downloaded 8, added 693
+Progress: resolved 773, reused 765, downloaded 8, added 722
+Progress: resolved 773, reused 765, downloaded 8, added 755
+Progress: resolved 773, reused 765, downloaded 8, added 763
+Progress: resolved 773, reused 765, downloaded 8, added 768
+Progress: resolved 773, reused 765, downloaded 8, added 769
+Progress: resolved 773, reused 765, downloaded 8, added 770
+Progress: resolved 773, reused 765, downloaded 8, added 771
+Progress: resolved 773, reused 765, downloaded 8, added 772
+Progress: resolved 773, reused 765, downloaded 8, added 773
+Progress: resolved 773, reused 765, downloaded 8, added 773, done
+
+dependencies:
++ @payloadcms/db-postgres 3.91.0
++ @payloadcms/email-nodemailer 3.91.0
++ @payloadcms/next 3.91.0
++ @payloadcms/plugin-seo 3.91.0
++ @payloadcms/richtext-lexical 3.91.0
++ @payloadcms/translations 3.91.0
++ @payloadcms/ui 3.91.0
++ graphql 16.14.2
++ next 16.4.2
++ payload 3.91.0
++ react 19.3.1
++ react-dom 19.3.1
++ sharp 0.35.5
++ three 0.186.1
++ zod 4.6.7
+
+devDependencies:
++ @playwright/test 1.64.1
++ @types/node 24.19.2
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ @types/three 0.186.0
++ cross-env 10.1.0
++ eslint 10.13.0
++ eslint-config-next 16.4.2
++ lighthouse 13.5.0
++ prettier 3.9.10
++ typescript 5.9.3
++ typescript-eslint 8.72.0
++ vitest 5.0.5
+
+Done in 1m 22.3s using pnpm v10.34.7
+exit=0
