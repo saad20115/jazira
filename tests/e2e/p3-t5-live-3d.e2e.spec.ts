@@ -1265,13 +1265,52 @@ test.describe('P3-T5 live 3D card', () => {
     await expect(card).toHaveAttribute('data-entered', 'none')
     await expect(expanded).toHaveCount(0)
     await expect(page).not.toHaveURL(/#systems-/)
-    // The keyboard stays with the card: it is still active, and a digit still enters a system.
+    // O-19 focus ruling: the keyboard stays with the card (document.activeElement is the card): it
+    // is still active, and a digit still enters a system.
     await expect(card).toBeFocused()
+    expect(
+      await card.evaluate((el) => document.activeElement === el),
+      'after the Escape exit, focus is on the card',
+    ).toBe(true)
     await expect(card).toHaveAttribute('data-viewer-active', 'true')
     await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
     await page.keyboard.press(String(fireIndex + 1))
     await expect(card).toHaveAttribute('data-entered', 'fire')
     await expect(expanded).toHaveCount(1)
+
+    // Focus inside the row's panel when the row collapses goes to that row's header button. Today's
+    // panel holds text only, so the test makes it focusable (as a link in it would be), focuses it,
+    // and leaves the system with the wheel (O-18), which works with the focus anywhere.
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    const fireRow = rows(page).nth(fireIndex)
+    await fireRow.locator('[data-row-system]').evaluate((el) => {
+      el.setAttribute('tabindex', '-1')
+      ;(el as HTMLElement).focus()
+    })
+    expect(
+      await fireRow.locator('[data-row-system]').evaluate((el) => document.activeElement === el),
+    ).toBe(true)
+    const box = await card.boundingBox()
+    if (!box) {
+      throw new Error('card has no box')
+    }
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    for (let i = 0; i < 16; i += 1) {
+      await page.mouse.wheel(0, 100)
+      await page.waitForTimeout(30)
+    }
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await page.waitForTimeout(700)
+    await page.mouse.wheel(0, 100)
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(expanded).toHaveCount(0)
+    await expect(rowHeader(fireRow)).toBeFocused()
+    expect(
+      await rowHeader(fireRow).evaluate((el) => document.activeElement === el),
+      "after a collapse with focus inside the panel, focus is on that row's header button",
+    ).toBe(true)
   })
 
   test('@gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn', async ({
