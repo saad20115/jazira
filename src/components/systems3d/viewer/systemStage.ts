@@ -196,6 +196,11 @@ export interface SystemStage {
   readonly entered: SystemId | null
   /** True while anything moves (ease-back, variant switch, flight). */
   readonly moving: boolean
+  /**
+   * True while the camera or the model moves on screen: the ease-back, a flight in or out, a switch.
+   * Not while the camera stands still waiting for a system's warm-up (`variant`) (O-14b rest).
+   */
+  readonly flying: boolean
   /** True while shader warm-up work runs (its tasks lengthen frames; not a GPU speed sample). */
   readonly preparing: boolean
   /**
@@ -995,6 +1000,9 @@ export function createSystemStage(deps: StageDeps): SystemStage {
     },
     get moving() {
       return phase !== 'rest' && phase !== 'entered'
+    },
+    get flying() {
+      return phase !== 'rest' && phase !== 'entered' && phase !== 'variant'
     },
     request(system) {
       desired = system

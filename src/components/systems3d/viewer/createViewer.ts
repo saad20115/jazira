@@ -1321,8 +1321,9 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       labelsShown = labels !== null
     }
     // O-14b: too slow while low (§8b): at rest (no flight, nothing held) the stills tier takes over
-    // in view too. No frame follows; the card crossfades from this one.
-    if (pendingDrop === 'stills' && !visitorWaits() && !holding) {
+    // in view too. No frame follows; the card crossfades from this one. Round 12: the camera standing
+    // still while a system's warm-up runs (a slow device waits there longest) is rest too.
+    if (pendingDrop === 'stills' && !stage.flying && !holding) {
       applyPendingDrop()
       return
     }
