@@ -1,0 +1,14 @@
+wrote 19 keys
+ Network aljazira-verify19_default Creating 
+ Network aljazira-verify19_default Created 
+ Volume aljazira-verify19_aljazira_pgdata Creating 
+ Volume aljazira-verify19_aljazira_pgdata Created 
+ Container aljazira-verify19-db-1 Creating 
+ Container aljazira-verify19-mailpit-1 Creating 
+ Container aljazira-verify19-mailpit-1 Created 
+ Container aljazira-verify19-db-1 Created 
+ Container aljazira-verify19-mailpit-1 Starting 
+ Container aljazira-verify19-db-1 Starting 
+ Container aljazira-verify19-mailpit-1 Started 
+ Container aljazira-verify19-db-1 Started 
+prep-done
