@@ -1,0 +1,6 @@
+CTO verifier machine diagnosis, 2026-11-05 ~16:45 (after the interleaved r9/r11 runs)
+- GPU 3D engine utilisation (Windows counter \GPU Engine(*engtype_3D)\Utilization Percentage), idle machine:
+  avpui (Kaspersky UI, PID 13636, started 2026-11-04 08:34, no visible window): 34.4-35.1 % in 5 samples over 10 s.
+  dwm: ~3 %. Nothing else above 0.5 %.
+- RAM: 4.2 GB free of 19.9 GB; uptime 32.2 h; the user's Chrome: 41 processes, ~5 GB (not touched).
+- The interleaved runs (summary.tsv): the round 9 build, which passed this morning, now also fails O-9a, O-9b and O-9.

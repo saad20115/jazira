@@ -1,0 +1,1 @@
+CPU samples before part B (2026-11-05): 57.8 33.1 36.9 then 23.7 13.8 percent; avpui (antivirus UI) 2.17 cpu-s in 10 s; browser pane closed
