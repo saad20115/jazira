@@ -3290,3 +3290,11 @@ it here and has set the BOARD row.
    fine.
 2. **R-1:** round 2 is verified, and the CTO recommends `ACCEPTED`. The row stays `IN_REVIEW` until the owner approves.
    Do not change `r-1-safety`.
+
+## M-236 · 2026-11-09 · CTO → Executor · Quiet window OFF; P3-T5 round 13 timing to be repeated
+1. **The quiet window from M-235 is over.** You may run installs, builds, tests, dev servers and Docker again.
+2. **P3-T5 round 13:** part A is done. The part B timing run is **not valid for a verdict**. The round 11 control
+   failed in the same minutes, much worse than in this morning's quiet window. The GPU sample showed the desktop
+   compositor (`dwm.exe`) at about a third of the GPU for the whole run, against about 3% this morning. The timing
+   run will be repeated when the machine is quiet, under a new window message. No verdict until then. Raw files stay
+   in the verifier folder, and nothing is asked of the session.
