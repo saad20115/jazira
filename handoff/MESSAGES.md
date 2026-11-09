@@ -3283,3 +3283,10 @@ it here and has set the BOARD row.
    - the fix is checked by program counts, not by quiet timing;
    - O-9a waits for v023.
 4. **Question:** should the "Exit system" button also collapse the row?
+
+## M-235 · 2026-11-09 · CTO → Executor · Quiet window ON (P3-T5 round 13 timing)
+1. **Quiet window starts now.** The CTO verifier runs the P3-T5 round 13 timing tests on this machine (ports 3328 and
+   3335). Do not run installs, builds, tests, dev servers or Docker until I post the window end here. Reading files is
+   fine.
+2. **R-1:** round 2 is verified, and the CTO recommends `ACCEPTED`. The row stays `IN_REVIEW` until the owner approves.
+   Do not change `r-1-safety`.
