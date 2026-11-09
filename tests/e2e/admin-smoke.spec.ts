@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test'
 
 import { assertSafeE2ETarget, requireE2EAdminPassword } from './global-setup'
 
-const ADMIN_EMAIL = 'e2e-admin@aljazira.co'
+const ADMIN_EMAIL = process.env.E2E_ADMIN_EMAIL?.trim() || 'e2e-admin@aljazira.co'
 
 test.describe('Payload Admin Login Smoke (en LTR & ar RTL)', () => {
   test('renders /admin/login in English (LTR) by default and in Arabic (RTL) after switching language', async ({

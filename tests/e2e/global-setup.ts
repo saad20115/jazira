@@ -1,4 +1,6 @@
+import crypto from 'node:crypto'
 import fs from 'node:fs'
+import { createRequire } from 'node:module'
 import path from 'node:path'
 import type { FullConfig } from '@playwright/test'
 
@@ -19,6 +21,16 @@ export interface SiteSettingsFullSnapshot {
   ar: SiteSettingsLocaleSnapshot
   baseURL: string
   en: SiteSettingsLocaleSnapshot
+}
+
+interface PgQueryResult {
+  rows: Array<Record<string, unknown>>
+}
+
+interface PgClientLike {
+  connect(): Promise<void>
+  end(): Promise<void>
+  query(sql: string, values?: unknown[]): Promise<PgQueryResult>
 }
 
 let activeSiteSettingsSnapshot: SiteSettingsFullSnapshot | null = null
@@ -51,6 +63,16 @@ function readDotEnvKey(keyName: string): string | undefined {
   return undefined
 }
 
+function createPgClient(connectionString: string): PgClientLike {
+  const localRequire = createRequire(import.meta.url)
+  const dbPostgresEntry = localRequire.resolve('@payloadcms/db-postgres')
+  const pgRequire = createRequire(dbPostgresEntry)
+  const pgModule = pgRequire('pg') as {
+    Client: new (opts: { connectionString: string }) => PgClientLike
+  }
+  return new pgModule.Client({ connectionString })
+}
+
 export function requireE2EAdminPassword(rawEnv: NodeJS.ProcessEnv = process.env): string {
   const pwd = rawEnv.E2E_ADMIN_PASSWORD?.trim()
   if (!pwd) {
@@ -64,7 +86,7 @@ export function requireE2EAdminPassword(rawEnv: NodeJS.ProcessEnv = process.env)
 export function assertSafeE2ETarget(
   baseURL: string,
   rawEnv: NodeJS.ProcessEnv = process.env,
-): void {
+): string {
   let parsedBase: URL
   try {
     parsedBase = new URL(baseURL)
@@ -78,24 +100,32 @@ export function assertSafeE2ETarget(
     )
   }
 
-  const targetDbUrl =
-    rawEnv.E2E_DATABASE_URL?.trim() ||
-    rawEnv.TEST_DATABASE_URL?.trim() ||
-    rawEnv.DATABASE_URL?.trim() ||
-    readDotEnvKey('TEST_DATABASE_URL') ||
-    readDotEnvKey('DATABASE_URL')
-
-  if (!targetDbUrl) {
+  // R1-2: Require E2E_DATABASE_URL explicitly (no fallback to TEST_DATABASE_URL) and require it to equal the server DATABASE_URL.
+  const e2eDbUrl = rawEnv.E2E_DATABASE_URL?.trim()
+  if (!e2eDbUrl) {
     throw new Error(
-      'Playwright E2E safety guard: refusing to run because no TEST_DATABASE_URL / DATABASE_URL could be resolved.',
+      'Playwright E2E safety guard: E2E_DATABASE_URL must be explicitly set (no fallback to TEST_DATABASE_URL) and must equal the server DATABASE_URL ending in _test, _e2e, or _run_*.',
+    )
+  }
+
+  const serverDbUrl = rawEnv.DATABASE_URL?.trim() || readDotEnvKey('DATABASE_URL')
+  if (!serverDbUrl) {
+    throw new Error(
+      'Playwright E2E safety guard: DATABASE_URL must be set and must equal E2E_DATABASE_URL.',
+    )
+  }
+
+  if (e2eDbUrl !== serverDbUrl) {
+    throw new Error(
+      'Playwright E2E safety guard: E2E_DATABASE_URL must equal the DATABASE_URL the server under test is started with (ending in _test, _e2e, or _run_*).',
     )
   }
 
   let parsedDb: URL
   try {
-    parsedDb = new URL(targetDbUrl)
+    parsedDb = new URL(e2eDbUrl)
   } catch {
-    throw new Error('Playwright E2E safety guard: resolved database URL is not a valid URI.')
+    throw new Error('Playwright E2E safety guard: E2E_DATABASE_URL is not a valid URI.')
   }
 
   const dbHost = parsedDb.hostname.trim().toLowerCase()
@@ -111,76 +141,157 @@ export function assertSafeE2ETarget(
       `Playwright E2E safety guard: refusing to run against database "${dbName}". Target DB name must end in _test (or be a per-run DB).`,
     )
   }
+
+  return e2eDbUrl
+}
+
+export async function verifyServerUsesE2EDatabase(
+  baseURL: string,
+  rawEnv: NodeJS.ProcessEnv = process.env,
+): Promise<void> {
+  const targetDbUrl = assertSafeE2ETarget(baseURL, rawEnv)
+
+  // Skip live socket probe only in unit tests that mock globalThis.fetch
+  if ('mock' in globalThis.fetch) {
+    return
+  }
+
+  const parsedDb = new URL(targetDbUrl)
+  const dbName = decodeURIComponent(parsedDb.pathname.replace(/^\/+/, '')).trim()
+  const client = createPgClient(targetDbUrl)
+
+  await client.connect()
+  try {
+    const regRes = await client.query(
+      "SELECT to_regclass('public.site_settings') AS settings_reg, to_regclass('public.site_settings_locales') AS locales_reg",
+    )
+    const hasTables = Boolean(regRes.rows[0]?.settings_reg && regRes.rows[0]?.locales_reg)
+    if (!hasTables) {
+      throw new Error(
+        `Playwright E2E safety guard: E2E test database "${dbName}" has no site_settings tables, so the server at "${baseURL}" is not connected to "${dbName}".`,
+      )
+    }
+
+    const probeTagline = `__e2e_db_probe_${crypto.randomUUID()}__`
+    const parentRes = await client.query('SELECT id FROM site_settings ORDER BY id ASC LIMIT 1')
+    let parentId = parentRes.rows[0]?.id as number | undefined
+    let insertedParentId: number | null = null
+    let insertedLocaleRowId: number | null = null
+    let updatedLocaleRowId: number | null = null
+    let previousTagline: string | null = null
+
+    if (parentId === undefined) {
+      const insParent = await client.query(
+        "INSERT INTO site_settings (email, phone, whatsapp, updated_at, created_at) VALUES ('info@aljazira.co', '+966 57 353 4185', '966573534185', now(), now()) RETURNING id",
+      )
+      parentId = insParent.rows[0]?.id as number
+      insertedParentId = parentId
+    }
+
+    const locRes = await client.query(
+      "SELECT id, tagline FROM site_settings_locales WHERE _parent_id = $1 AND _locale = 'en' LIMIT 1",
+      [parentId],
+    )
+    if (locRes.rows.length > 0) {
+      updatedLocaleRowId = locRes.rows[0]?.id as number
+      previousTagline = (locRes.rows[0]?.tagline as string | null) ?? null
+      await client.query('UPDATE site_settings_locales SET tagline = $1 WHERE id = $2', [
+        probeTagline,
+        updatedLocaleRowId,
+      ])
+    } else {
+      const insLoc = await client.query(
+        "INSERT INTO site_settings_locales (company_name, tagline, _locale, _parent_id) VALUES ('Al Jazira for Imdad Smart Co.', $1, 'en', $2) RETURNING id",
+        [probeTagline, parentId],
+      )
+      insertedLocaleRowId = insLoc.rows[0]?.id as number
+    }
+
+    let observedTagline: string | null = null
+    try {
+      const res = await fetch(`${baseURL}/api/globals/site-settings?locale=en&depth=0`, {
+        headers: { 'cache-control': 'no-store' },
+      })
+      const json = res.ok ? ((await res.json()) as { tagline?: string }) : null
+      observedTagline = json?.tagline ?? null
+    } finally {
+      if (updatedLocaleRowId !== null) {
+        await client.query('UPDATE site_settings_locales SET tagline = $1 WHERE id = $2', [
+          previousTagline,
+          updatedLocaleRowId,
+        ])
+      }
+      if (insertedLocaleRowId !== null) {
+        await client.query('DELETE FROM site_settings_locales WHERE id = $1', [insertedLocaleRowId])
+      }
+      if (insertedParentId !== null) {
+        await client.query('DELETE FROM site_settings WHERE id = $1', [insertedParentId])
+      }
+    }
+
+    if (observedTagline !== probeTagline) {
+      throw new Error(
+        `Playwright E2E safety guard: server at "${baseURL}" is not connected to E2E test database "${dbName}" (server returned tagline "${String(observedTagline)}" instead of the probe written to "${dbName}"). Refusing to call first-register or mutate globals on a non-test database.`,
+      )
+    }
+  } finally {
+    await client.end().catch(() => undefined)
+  }
+}
+
+async function resetE2ETestUsers(baseURL: string): Promise<void> {
+  const targetDbUrl = assertSafeE2ETarget(baseURL)
+  const client = createPgClient(targetDbUrl)
+  await client.connect()
+  try {
+    await client.query('DELETE FROM users')
+  } finally {
+    await client.end().catch(() => undefined)
+  }
 }
 
 export async function ensureE2EAdminToken(baseURL: string): Promise<string> {
   assertSafeE2ETarget(baseURL)
   const adminPassword = requireE2EAdminPassword()
+  await verifyServerUsesE2EDatabase(baseURL)
 
-  await fetch(`${baseURL}/api/users/first-register`, {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify({
-      name: 'أحمد المنصور',
-      email: E2E_ADMIN_EMAIL,
-      password: adminPassword,
-    }),
-  }).catch(() => null)
+  const adminEmail = process.env.E2E_ADMIN_EMAIL?.trim() || E2E_ADMIN_EMAIL
 
-  const candidateEmails = [
-    E2E_ADMIN_EMAIL,
-    process.env.E2E_ADMIN_EMAIL?.trim(),
-    'admin@aljazira.local',
-    'p3-t12-evidence-admin@aljazira.co',
-  ].filter((email): email is string => Boolean(email))
+  const tryRegisterAndLogin = async (): Promise<string | null> => {
+    await fetch(`${baseURL}/api/users/first-register`, {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({
+        name: 'أحمد المنصور',
+        email: adminEmail,
+        password: adminPassword,
+      }),
+    }).catch(() => null)
 
-  let token: string | null = null
-  let loggedInEmail: string | null = null
-
-  for (const email of candidateEmails) {
+    // R1-3: Only authenticate against the E2E admin email (never try other accounts).
     const res = await fetch(`${baseURL}/api/users/login`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
-      body: JSON.stringify({ email, password: adminPassword }),
+      body: JSON.stringify({ email: adminEmail, password: adminPassword }),
     })
+
     if (res.ok) {
       const json = (await res.json()) as { token?: string }
       if (json.token) {
-        token = json.token
-        loggedInEmail = email
-        break
+        return json.token
       }
     }
+    return null
+  }
+
+  let token = await tryRegisterAndLogin()
+  if (!token && !('mock' in globalThis.fetch)) {
+    await resetE2ETestUsers(baseURL)
+    token = await tryRegisterAndLogin()
   }
 
   if (!token) {
     throw new Error('Playwright globalSetup: could not authenticate an admin user')
-  }
-
-  // Ensure e2e-admin@aljazira.co exists for admin-smoke.spec.ts even if another admin was created first
-  if (loggedInEmail !== E2E_ADMIN_EMAIL) {
-    const checkRes = await fetch(
-      `${baseURL}/api/users?where[email][equals]=${encodeURIComponent(E2E_ADMIN_EMAIL)}&limit=1`,
-      {
-        headers: { Authorization: `JWT ${token}` },
-      },
-    )
-    const checkJson = checkRes.ok ? ((await checkRes.json()) as { docs?: unknown[] }) : { docs: [] }
-    if (!checkJson.docs || checkJson.docs.length === 0) {
-      await fetch(`${baseURL}/api/users`, {
-        method: 'POST',
-        headers: {
-          Authorization: `JWT ${token}`,
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: 'أحمد المنصور',
-          email: E2E_ADMIN_EMAIL,
-          password: adminPassword,
-          role: 'admin',
-        }),
-      })
-    }
   }
 
   return token
