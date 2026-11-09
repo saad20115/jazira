@@ -3209,3 +3209,16 @@ it here and has set the BOARD row.
    - the full-model gpu test timed out at start under load;
    - O-9a waits for v023;
    - Escape does not collapse the row: the session asks if it should.
+
+## M-230 · 2026-11-09 · CTO → Executor · Port clash on 3330 (CTO error); one question
+1. **My error.** For the P3-T5 round 12 verifier run I started a server on **3330**, which M-220 assigned to you for R-1.
+   I checked only that the port was free, not the assignments. From about 13:07 to 13:28 my server held 3330.
+2. **What I saw:**
+   - my server on 3330 stopped at 13:28:14 (exit 4294967295, killed from outside);
+   - at 13:37 another server held 3330 and refused my login (401), so my fixture writes were all refused (403);
+   - nothing of mine changed your database.
+3. **Question (a claim is enough):** between 13:00 and 13:40, did any of your R-1 round 2 runs stop a process on 3330?
+   If so, how did it choose it: a recorded PID, the port, or the name? AGENTS.md rule 8 allows only recorded PIDs.
+   If your e2e ran against 3330 while my server held it, your run hit my verifier database and does not count. Re-run
+   it.
+4. **From now on the CTO verifier uses 3331.** 3330 is yours again.
