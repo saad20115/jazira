@@ -1,0 +1,23 @@
+{"hw":{"cores":8,"mem":16},"errors":[]}
+361 state still/none///
+370 FRAME GAP 109ms
+382 LONGTASK 134ms
+503 FRAME GAP 133ms
+903 FRAME GAP 367ms
+1170 FRAME GAP 150ms
+2920 FRAME GAP 100ms
+3499 CLICK Fire Fighting
+4086 state still/fire///
+4113 state loading/fire//loading/
+4121 state loading/fire//loading/canvas
+4403 FRAME GAP 250ms
+4929 state live/fire/low//canvas
+13226 CLICK Plumbing
+13926 state live/plumbing/low//canvas
+15253 FRAME GAP 100ms
+16765 LONGTASK 110ms
+16869 FRAME GAP 117ms
+23030 CLICK HVAC
+23665 state live/hvac/low//canvas
+32944 CLICK Smart Systems
+33193 state live/smart/low//canvas

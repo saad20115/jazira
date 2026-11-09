@@ -1,0 +1,4 @@
+login 401
+publish home-page en 403 interactiveSystems.enabled undefined
+publish home-page ar 403 interactiveSystems.enabled undefined
+site-settings arabicEnabled true 403

@@ -1,0 +1,15 @@
+wrote 19 keys
+ Network aljazira-verify18_default Creating 
+ Network aljazira-verify18_default Created 
+ Volume aljazira-verify18_aljazira_pgdata Creating 
+ Volume aljazira-verify18_aljazira_pgdata Created 
+ Container aljazira-verify18-db-1 Creating 
+ Container aljazira-verify18-mailpit-1 Creating 
+ Container aljazira-verify18-mailpit-1 Created 
+ Container aljazira-verify18-db-1 Created 
+ Container aljazira-verify18-db-1 Starting 
+ Container aljazira-verify18-mailpit-1 Starting 
+ Container aljazira-verify18-db-1 Started 
+ Container aljazira-verify18-mailpit-1 Started 
+1cf1f8d6e4899a4496740e98502c8f11c619e509
+./.env: line 19: Jazira: command not found

@@ -1,0 +1,70 @@
+step	exit	seconds
+install	0	1602
+migrate-up	0	44
+migrate-down	0	9
+migrate-up-again	0	8
+migrate-status	0	8
+lint	0	453
+typecheck	0	60
+format-check	1	23
+tokens-check	0	1
+test	1	772
+build	0	305
+audit-full	1	2
+audit-high	0	3
+seed	0	49
+e2e-default-pre	1	1303
+publish-home-ar-on	1	1
+e2e-default	1	122
+e2e-gpu	1	44
+e2e-p3t5-prodflag	1	3
+owner-shots	1	33
+sky-swap-en	1	32
+sky-swap-ar	1	1
+arabic-off	1	0
+gates-throttle10-r1	1	2
+gates-throttle10-r2	1	2
+gates-throttle10-r3	1	2
+gates-held-r1	1	1
+gates-held-r2	1	3
+server left running: 14263 31988
+done
+--- A2 re-run (part A server died 13:28:14 during e2e-default-pre; cause unknown)
+server A2: 14407 3216 listen 35252
+e2e-default-pre-A2	1	4
+publish-home-ar-on-A2	0	1
+e2e-default-A2	1	5
+e2e-gpu-A2	1	5
+e2e-p3t5-prodflag-A2	1	5
+owner-shots-A2	1	34
+sky-swap-en-A2	1	33
+sky-swap-ar-A2	1	32
+arabic-off-A2	1	0
+gates-throttle10-r1-A2	1	2
+gates-throttle10-r2-A2	1	2
+gates-throttle10-r3-A2	1	2
+gates-held-r1-A2	1	3
+gates-held-r2-A2	1	3
+server still up at end: 000
+server left running: 14407 3216 listen 35252
+done-A2
+--- A3 re-run on 3331 (A and A2 broken by the CTO port clash on 3330, M-230)
+build-A3	0	360
+server A2: 14792 21772 listen 38924
+e2e-default-pre-A3	1	1660
+publish-home-ar-on-A3	0	1
+e2e-default-A3	1	129
+e2e-gpu-A3	0	377
+e2e-p3t5-prodflag-A3	0	73
+owner-shots-A3	0	94
+sky-swap-en-A3	0	15
+sky-swap-ar-A3	0	16
+arabic-off-A3	0	2
+gates-throttle10-r1-A3	0	15
+gates-throttle10-r2-A3	0	16
+gates-throttle10-r3-A3	0	22
+gates-held-r1-A3	0	15
+gates-held-r2-A3	0	14
+server still up at end: 200
+server left running: 14792 21772 listen 38924
+done-A3

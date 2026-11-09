@@ -1,0 +1,27 @@
+run	build	mode	exit	seconds
+r11-immediate-r1	r11	immediate	0	56
+r12-immediate-r1	r12	immediate	0	48
+r11-latest-r1	r11	latest	0	35
+r12-latest-r1	r12	latest	0	33
+r11-onscreen3s-r1	r11	onscreen3s	0	43
+r12-onscreen3s-r1	r12	onscreen3s	0	50
+r12-immediate-r2	r12	immediate	0	35
+r11-immediate-r2	r11	immediate	0	54
+r12-latest-r2	r12	latest	0	45
+r11-latest-r2	r11	latest	0	41
+r12-onscreen3s-r2	r12	onscreen3s	0	41
+r11-onscreen3s-r2	r11	onscreen3s	0	45
+r11-immediate-r3	r11	immediate	0	43
+r12-immediate-r3	r12	immediate	0	47
+r11-latest-r3	r11	latest	0	37
+r12-latest-r3	r12	latest	0	42
+r11-onscreen3s-r3	r11	onscreen3s	0	38
+r12-onscreen3s-r3	r12	onscreen3s	0	51
+timeline-r1	-	-	0	62
+timeline-r2	-	-	0	55
+timeline-r3	-	-	0	61
+lh-mobile-try1	-	-	0	54
+lh-mobile-try2	-	-	0	20
+lh-mobile-try3	-	-	0	21
+lh-desktop	-	-	0	22
+partB-done

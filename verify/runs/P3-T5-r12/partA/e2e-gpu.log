@@ -1,0 +1,16 @@
+[WebServer] ⚠ Slow filesystem detected. The benchmark took 209ms. If \\?\D:\jazira-verify\2026-11-09\p3t5m\.next\dev is a network drive, consider moving it to a local folder.
+[WebServer] See more: https://nextjs.org/docs/app/guides/local-development
+Error: Playwright globalSetup: could not authenticate an admin user
+
+   at global-setup.ts:43
+
+  41 |
+  42 |   if (!token) {
+> 43 |     throw new Error('Playwright globalSetup: could not authenticate an admin user')
+     |           ^
+  44 |   }
+  45 |
+  46 |   // Ensure e2e-admin@aljazira.co exists for admin-smoke.spec.ts even if another admin was created first
+    at ensureE2EAdminToken (D:\jazira-verify\2026-11-09\p3t5m\tests\e2e\global-setup.ts:43:11)
+    at globalSetup (D:\jazira-verify\2026-11-09\p3t5m\tests\e2e\global-setup.ts:129:17)
+

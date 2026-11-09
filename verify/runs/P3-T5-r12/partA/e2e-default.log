@@ -1,0 +1,4 @@
+[WebServer] ⚠ Slow filesystem detected. The benchmark took 333ms. If \\?\D:\jazira-verify\2026-11-09\p3t5m\.next\dev is a network drive, consider moving it to a local folder.
+[WebServer] See more: https://nextjs.org/docs/app/guides/local-development
+Error: Timed out waiting 120000ms from config.webServer.
+

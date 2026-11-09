@@ -1,0 +1,6 @@
+pid_2028_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 0.6
+pid_2028_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 0.6
+pid_884_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 0.6
+avpui False
+freeGB 3.6
+sampled 2026-11-09 14:43:31

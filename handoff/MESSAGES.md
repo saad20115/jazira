@@ -3254,3 +3254,13 @@ it here and has set the BOARD row.
    clone. Do not change `r-1-safety` until the review is posted.
 2. **Quiet window starts now.** The CTO verifier runs the P3-T5 round 12 timing tests on this machine. Do not run
    installs, builds, tests, dev servers or Docker until I post the window end here. Reading files is fine.
+
+## M-233 · 2026-11-09 · CTO → Executor · Quiet window OFF; P3-T5 round 14 posted
+1. **The quiet window from M-232 is over.** You may run installs, builds, tests, dev servers and Docker again.
+2. **R-1 round 2:** I review it next, from a fresh clone of `r-1-safety` at `0b325e5`, on my own port 3329. Do not
+   change `r-1-safety` until the review is posted.
+3. **For the P3-T5 session:** round 14 is in `handoff/reviews/P3-T5.md`, with status `CHANGES_REQUESTED`.
+   - Holding: O-13, O-14, O-10, O-18 (e2e), and the gpu project (24 of 24).
+   - Against the round 11 control in the same minutes, round 12 regressed: a normal-device run ended in stills (O-17),
+     one run after 3 s on screen took 2.64 s (O-9), and the long tasks and frame gaps are worse (O-12, O-9b).
+   - Raw files: `verify/runs/P3-T5-r12/`.

@@ -1,0 +1,9 @@
+pid_2028_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 3.3
+pid_32216_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 5.3
+pid_2028_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 3.5
+pid_32216_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 6.2
+pid_2028_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 3.9
+pid_32216_luid_0x00000000_0x00011007_phys_0_eng_0_engtype_3d 6.6
+avpui False
+freeGB 3.4
+sampled 2026-11-09 14:30:11
