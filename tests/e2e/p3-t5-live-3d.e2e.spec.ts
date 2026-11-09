@@ -1184,6 +1184,63 @@ test.describe('P3-T5 live 3D card', () => {
     expect(Buffer.compare(first, second), 'the HVAC fans do not turn').not.toBe(0)
   }
 
+  test('@gpu O-18: inside a system a wheel-out at the limit exits; a wheel inside the range only zooms', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    // Enter Fire Fighting with its digit (the card is focused once started from it).
+    const fireIndex = (await rows(page).allInnerTexts()).findIndex((t) =>
+      t.includes('Fire Fighting'),
+    )
+    expect(fireIndex).toBeGreaterThanOrEqual(0)
+    await card.focus()
+    await page.keyboard.press(String(fireIndex + 1))
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(page).toHaveURL(/#systems-fire$/)
+    const box = await card.boundingBox()
+    if (!box) {
+      throw new Error('card has no box')
+    }
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    const scrollBefore = await page.evaluate(() => window.scrollY)
+    /** One wheel gesture: ticks out (100 px each), close together. */
+    const gesture = async (ticks: number): Promise<void> => {
+      for (let i = 0; i < ticks; i += 1) {
+        await page.mouse.wheel(0, 100)
+        await page.waitForTimeout(30)
+      }
+    }
+
+    // Inside the range the wheel only zooms: the view changes, the system stays.
+    const before = await centerShot(page, card)
+    await gesture(2)
+    await page.waitForTimeout(600)
+    const [zoomed] = await pictureDiffs(page, before, [await centerShot(page, card)])
+    expect(zoomed, 'the wheel inside the range zooms the view').toBeGreaterThan(1)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+
+    // One gesture that runs into the limit and on: it stops there, and does not exit.
+    await gesture(14)
+    await page.waitForTimeout(150)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(page).toHaveURL(/#systems-fire$/)
+
+    // After a pause, a further wheel-out exits: the flight out, the accordion closed, no hash.
+    await page.waitForTimeout(700)
+    await page.mouse.wheel(0, 100)
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(page).not.toHaveURL(/#systems-/)
+    await expect(rows(page).and(page.locator('[data-accordion-state="Expanded"]'))).toHaveCount(0)
+    // The page never scrolled: the card is active and holds the wheel.
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore)
+  })
+
   test('@gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn', async ({
     page,
   }) => {
