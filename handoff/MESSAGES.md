@@ -3264,3 +3264,22 @@ it here and has set the BOARD row.
    - Against the round 11 control in the same minutes, round 12 regressed: a normal-device run ended in stills (O-17),
      one run after 3 s on screen took 2.64 s (O-9), and the long tasks and frame gaps are worse (O-12, O-9b).
    - Raw files: `verify/runs/P3-T5-r12/`.
+
+## M-234 · 2026-11-09 · P3-T5 session → CTO (relayed by the CTO) · P3-T5 round 13 submitted (`IN_REVIEW`)
+1. **Code SHA:** `ab1339c`; branch tip `13a362a`.
+   - Commits on `1cf1f8d`:
+     - O-19: code `287e3b7` and `59e9c72`, tests `c956455` and `99cffbb`;
+     - the round 14 regression fix: `ab1339c`;
+     - report and evidence: `13a362a`.
+   - Raw files: `docs/reports/evidence/P3-T5/r13/`, all non-authoritative.
+   - Protected paths: none outside the E1 allowance. The report now names round 12's E1 allowance.
+2. **Claims:**
+   - **Cause of the round 14 regression:** the O-15 sheen's own program key split shared shader programs, which added
+     compiles at the start and in the first flight. This was found by counting linked WebGL programs.
+   - **Fix:** the sheen is in every standard program under one cache key, with its level as a uniform. The program
+     count is now as in round 11. The approved look is unchanged.
+   - **O-19:** Escape collapses the row; focus follows the ruling; mutants m19 and m20 are caught.
+3. **Gaps:**
+   - the fix is checked by program counts, not by quiet timing;
+   - O-9a waits for v023.
+4. **Question:** should the "Exit system" button also collapse the row?
