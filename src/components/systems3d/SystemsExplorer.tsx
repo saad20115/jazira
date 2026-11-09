@@ -185,6 +185,15 @@ export function SystemsExplorer({
     enter(null)
   }
 
+  // O-18: a wheel-out past the entered system's limit exits it as the header click does: the row
+  // collapses and the hash clears (in a transition, as a switch while live, O-9b).
+  const exitSystemByWheel = (): void => {
+    startTransition(() => {
+      setExpandedIndex(null)
+      enter(null)
+    })
+  }
+
   const relatedSlot = (placement: 'card' | 'stacked'): ReactNode =>
     entered ? (
       <Suspense fallback={null}>
@@ -206,6 +215,7 @@ export function SystemsExplorer({
         entered={entered}
         liveLabel={posterAlt}
         onExitSystem={exitSystem}
+        onWheelExit={exitSystemByWheel}
         onSelectRow={(idx) => {
           toggle(idx, true)
         }}

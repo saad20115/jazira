@@ -57,6 +57,7 @@ import {
   validateExtras,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
+import { atZoomOutLimit, WHEEL_EXIT_START, wheelDeltaPx, wheelExitStep } from '../wheelExit'
 import {
   FPS_WINDOW,
   fpsVerdict,
@@ -148,6 +149,8 @@ export interface ViewerOptions {
   onLowTier?: () => void
   /** Projected hotspot labels of the entered system after each frame (null when none). */
   onLabels?: (labels: ProjectedLabel[] | null) => void
+  /** O-18: the visitor zoomed out past the entered system's limit with the wheel (exit it). */
+  onWheelExit?: () => void
   /**
    * O-12: the system the card has entered (null = overview), read while the systems' programs are
    * prepared: that one comes first, so its flight finds them ready.
@@ -1365,6 +1368,30 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   controls.addEventListener('end', onInputEnd)
   controls.addEventListener('change', invalidate)
 
+  // O-18: a deliberate wheel-out at the system's zoom-out limit exits the system (`wheelExit.ts`).
+  // In the capture phase, so the camera is read before the controls apply this event's zoom.
+  let wheelExit = WHEEL_EXIT_START
+  const onWheel = (event: WheelEvent): void => {
+    const eligible =
+      active &&
+      controls.enabled &&
+      controls.enableZoom &&
+      stage.entered !== null &&
+      !stage.moving &&
+      stage.wanted === stage.entered
+    const step = wheelExitStep(wheelExit, {
+      time: event.timeStamp,
+      deltaPx: wheelDeltaPx(event.deltaY, event.deltaMode, window.innerHeight),
+      atLimit: atZoomOutLimit(camera.position.distanceTo(controls.target), controls.maxDistance),
+      eligible,
+    })
+    wheelExit = step.state
+    if (step.exit) {
+      options.onWheelExit?.()
+    }
+  }
+  canvas.addEventListener('wheel', onWheel, { capture: true, passive: true })
+
   const intersection = new IntersectionObserver((entries) => {
     onScreen = entries.some((entry) => entry.isIntersecting)
     if (onScreen) {
@@ -1414,6 +1441,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     resizeObserver.disconnect()
     document.removeEventListener('visibilitychange', onVisibility)
     canvas.removeEventListener('webglcontextlost', onContextLost)
+    canvas.removeEventListener('wheel', onWheel, { capture: true })
     controls.dispose()
     cleanup()
   }

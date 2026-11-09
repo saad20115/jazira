@@ -160,6 +160,8 @@ export interface SystemsCardProps {
   /** The system entered through the accordion or the URL hash, if any. */
   entered: SystemId | null
   onExitSystem: () => void
+  /** O-18: a wheel-out past the entered system's limit (exit, and collapse its row). */
+  onWheelExit?: () => void
   /** Keys 1–5: enter the system of that accordion row. */
   onSelectRow: (index: number) => void
   /** The related-projects panel of the entered system (suspends on its own until the data arrives). */
@@ -238,6 +240,7 @@ export function SystemsCard({
   liveLabel,
   entered,
   onExitSystem,
+  onWheelExit,
   onSelectRow,
   relatedPanel,
   startSignal,
@@ -295,6 +298,11 @@ export function SystemsCard({
   useEffect(() => {
     enteredRef.current = entered
   }, [entered])
+  /** O-18: the exit a wheel-out at the limit asks for (the latest handler; the viewer outlives renders). */
+  const exitSystemRef = useRef(onWheelExit ?? onExitSystem)
+  useEffect(() => {
+    exitSystemRef.current = onWheelExit ?? onExitSystem
+  }, [onWheelExit, onExitSystem])
   useEffect(() => {
     phaseRef.current = phase
     onPhaseChange?.(phase)
@@ -588,6 +596,12 @@ export function SystemsCard({
           onFailure: fallBack,
           onLowTier: () => {
             setLiveTier('low')
+          },
+          // O-18: the same exit as Escape and the header (flight out, accordion closed, hash cleared).
+          onWheelExit: () => {
+            if (enteredRef.current) {
+              exitSystemRef.current()
+            }
           },
           onLabels: (labels) => {
             labelSinkRef.current?.(labels)
