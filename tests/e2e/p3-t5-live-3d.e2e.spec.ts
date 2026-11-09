@@ -1241,6 +1241,39 @@ test.describe('P3-T5 live 3D card', () => {
     expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore)
   })
 
+  test('@gpu O-19: Escape inside a system exits as the header does: the row collapses, the hash clears', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    const fireIndex = (await rows(page).allInnerTexts()).findIndex((t) =>
+      t.includes('Fire Fighting'),
+    )
+    expect(fireIndex).toBeGreaterThanOrEqual(0)
+    await card.focus()
+    await page.keyboard.press(String(fireIndex + 1))
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    const expanded = rows(page).and(page.locator('[data-accordion-state="Expanded"]'))
+    await expect(expanded).toHaveCount(1)
+    await expect(page).toHaveURL(/#systems-fire$/)
+
+    await page.keyboard.press('Escape')
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(expanded).toHaveCount(0)
+    await expect(page).not.toHaveURL(/#systems-/)
+    // The keyboard stays with the card: it is still active, and a digit still enters a system.
+    await expect(card).toBeFocused()
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+    await page.keyboard.press(String(fireIndex + 1))
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(expanded).toHaveCount(1)
+  })
+
   test('@gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn', async ({
     page,
   }) => {
