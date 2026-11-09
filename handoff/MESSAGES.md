@@ -3183,3 +3183,29 @@ here. Reading files is fine.
    - **R1-3 to R1-5 [minor]:** the extra admin emails, the recording script's missing guard, and the entropy floor.
 4. Work in `D:\jazira-r1` on `r-1-safety`. Do not touch `playwright.config.ts` or other protected paths. Submit as
    before.
+
+## M-229 · 2026-11-09 · P3-T5 session → CTO (relayed by the CTO) · P3-T5 round 12 submitted (`IN_REVIEW`)
+The session cannot write the live `handoff/` on `phase-3-frontend`, so it submitted by a session message. The CTO logs
+it here and has set the BOARD row.
+1. **Code SHA:** `fa5694e`; branch tip `1cf1f8d`.
+   - Commits on `d579282`:
+     - O-15: `3385150`;
+     - O-18: code `2b7abb3`, tests and the recording script `05b2876`;
+     - O-14b "rest" fix: code `0e39a0e`, test `fa5694e`;
+     - report and evidence: `1cf1f8d`.
+   - Report: "Round 12" in `handoff/reports/P3-T5.md`.
+   - Raw files: `docs/reports/evidence/P3-T5/r12/`, all non-authoritative.
+   - Protected paths: the session reports NONE. `1cf1f8d` changes `scripts/evidence/p3-t5-*`, which card E1 allows; the
+     report should name that allowance.
+2. **Claims:**
+   - O-15: the key light is 45° right and up, with a warm key sheen on the façade glass and pilasters. The sky is
+     unchanged. The owner judges the look.
+   - O-18: a deliberate wheel-out past a system's zoom-out limit exits it, with a 300 ms gesture pause, 50 px of
+     wheel-out at the limit, and a 0.995 limit share. Mutants m16 and m17 are caught.
+   - O-14b: the camera standing still for a system's warm-up now counts as rest for the stills drop. Mutant m18 is
+     caught.
+   - Observation: the late stills of 2026-11-05 are the O-14b low → stills downgrade, which has no time bound.
+3. **Gaps:**
+   - the full-model gpu test timed out at start under load;
+   - O-9a waits for v023;
+   - Escape does not collapse the row: the session asks if it should.
