@@ -70,7 +70,6 @@ async function shoot(browser, width, locale) {
     for (let i = 0; i < count; i += 1) {
       await card.focus()
       await page.keyboard.press(String(i + 1))
-      const system = await card.getAttribute('data-entered')
       await card.scrollIntoViewIfNeeded()
       await page
         .locator('[data-interactive-3d-card] [data-live-labels] li button')
@@ -78,6 +77,8 @@ async function shoot(browser, width, locale) {
         .first()
         .waitFor({ timeout: 15_000 })
       await page.waitForTimeout(SETTLE_MS)
+      // Read once landed: right after the key press the card may not show the system yet.
+      const system = await card.getAttribute('data-entered')
       await card.screenshot({ path: name(`${String(i + 1)}-${system ?? 'none'}`) })
       await card.focus()
       await page.keyboard.press('Escape')

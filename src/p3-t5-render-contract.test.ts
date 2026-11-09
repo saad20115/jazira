@@ -102,4 +102,26 @@ describe('P3-T5 O-5: the live look names only materials of the release', () => {
     expect(LIVE_LOOK.systemGlassScale).toBeGreaterThan(0)
     expect(LIVE_LOOK.systemGlassScale).toBeLessThanOrEqual(1)
   })
+
+  it('O-15: the key comes from the right of the hero view and above, at 45°; the façade catches it', () => {
+    // Positive azimuth: to the hero camera's right, the poster's warm side.
+    expect(LIVE_LOOK.key.azimuthDeg).toBe(45)
+    expect(LIVE_LOOK.key.elevationDeg).toBe(45)
+    // The sheen is on the façade glass and the pilasters, all of them in both models.
+    expect(LIVE_LOOK.keySheen.materials).toEqual(expect.arrayContaining([...INTERIOR_MATERIALS]))
+    expect(LIVE_LOOK.keySheen.materials).toContain('MAT_gold_fin')
+    for (const file of ['tower.glb', 'tower-lite.glb']) {
+      const inModel = materialNames(file)
+      for (const name of LIVE_LOOK.keySheen.materials) {
+        expect(inModel, `${file}: ${name}`).toContain(name)
+      }
+    }
+    // Warm (as the key), and a sheen, not a second light.
+    const [r, g, b] = LIVE_LOOK.keySheen.color
+    expect(r).toBeGreaterThan(g)
+    expect(g).toBeGreaterThan(b)
+    expect(LIVE_LOOK.keySheen.strength).toBeGreaterThan(0)
+    expect(LIVE_LOOK.keySheen.strength).toBeLessThanOrEqual(1)
+    expect(LIVE_LOOK.keySheen.sharpness).toBeGreaterThanOrEqual(1)
+  })
 })

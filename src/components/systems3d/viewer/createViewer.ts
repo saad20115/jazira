@@ -244,6 +244,38 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
   material.needsUpdate = true
 }
 
+const SHEEN_TARGET = '#include <aomap_fragment>'
+
+/**
+ * O-15: a warm sheen on the faces turned toward the key light (`LiveLook.keySheen`), in view space
+ * (`direction` is kept current by the caller). Added after any patch the material already has.
+ */
+function addKeySheen(
+  material: MeshStandardMaterial,
+  direction: { value: Vector3 },
+  level: { value: Color },
+  sharpness: number,
+): void {
+  const previous = material.onBeforeCompile.bind(material)
+  const previousKey = material.customProgramCacheKey()
+  material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms, renderer) => {
+    previous(shader, renderer)
+    if (!shader.fragmentShader.includes(SHEEN_TARGET)) {
+      throw new ContractError('three standard shader: key sheen target not found')
+    }
+    shader.uniforms.uKeySheenDir = direction
+    shader.uniforms.uKeySheen = level
+    shader.fragmentShader =
+      'uniform vec3 uKeySheenDir;\nuniform vec3 uKeySheen;\n' +
+      shader.fragmentShader.replace(
+        SHEEN_TARGET,
+        `totalEmissiveRadiance += uKeySheen * pow(max(dot(normal, uKeySheenDir), 0.0), ${sharpness.toFixed(2)});\n${SHEEN_TARGET}`,
+      )
+  }
+  material.customProgramCacheKey = () => `${previousKey}-aljazira-key-sheen-${sharpness.toFixed(2)}`
+  material.needsUpdate = true
+}
+
 /**
  * V-4: the room floor's inner disc (around the plinth) is lit flat in live and ends in a hard pale
  * ellipse at its edge. Its emissive is eased from 1 at the plinth edge to `edgeLevel` at the disc
@@ -991,6 +1023,19 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       }
     }
   }
+  // O-15: the warm sheen of the key on the façade (after the interior mapping, which it extends).
+  const keyToLight = key.position.clone().normalize()
+  const keySheenDirection = { value: new Vector3() }
+  const keySheenFull = new Color()
+    .setRGB(...look.keySheen.color)
+    .multiplyScalar(look.keySheen.strength)
+  const keySheenLevel = { value: keySheenFull.clone() }
+  for (const name of look.keySheen.materials) {
+    const material = materials.get(name)
+    if (material) {
+      addKeySheen(material, keySheenDirection, keySheenLevel, look.keySheen.sharpness)
+    }
+  }
 
   // O-12: the material set-up above, the camera and canvas below, each in its own task.
   await pace()
@@ -1067,6 +1112,9 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
 
   let lowTier = false
   const draw = (): void => {
+    // O-15: the sheen's key direction in view space, for this frame's camera.
+    camera.updateMatrixWorld()
+    keySheenDirection.value.copy(keyToLight).transformDirection(camera.matrixWorldInverse)
     if (composer && !lowTier) {
       composer.render()
     } else {
@@ -1116,6 +1164,8 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
     const lights = 1 + (look.systemLightScale - 1) * k
     key.intensity = look.key.intensity * lights
     fill.intensity = look.fill.intensity * lights
+    // O-15: the façade's sheen fades out with the façade.
+    keySheenLevel.value.copy(keySheenFull).multiplyScalar(1 - k)
     renderer.toneMappingExposure = baseExposure * (1 + (look.systemExposureScale - 1) * k)
     const glass = 1 + (look.systemGlassScale - 1) * k
     for (const name of INTERIOR_MATERIALS) {

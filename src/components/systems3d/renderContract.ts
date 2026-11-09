@@ -117,6 +117,19 @@ export interface LiveLook {
    */
   materialEnv: Readonly<Record<string, number>>
   key: KeyLight
+  /**
+   * O-15 (owner 2026-11-05, "from the side and above", 45°): the façade's light is baked, so the key
+   * light alone cannot tell one face of the tower from the other. These materials get a warm sheen in
+   * the key's direction: `color × strength × max(N·L, 0)^sharpness`, so the faces turned toward the
+   * key read lit and the others stay in soft shade. It fades out inside a system with the façade.
+   * Shader text only: no light, shadow map or texture is added.
+   */
+  keySheen: {
+    materials: readonly string[]
+    color: readonly [number, number, number]
+    strength: number
+    sharpness: number
+  }
   fill: FillLight
   /**
    * Emissive (baked light) scale per material, in place of `emissiveScale`: most of the model is lit
@@ -185,7 +198,14 @@ export const LIVE_LOOK: LiveLook = {
     MAT_stone: 1,
     MAT_bronze: 1,
   },
-  key: { color: [1, 0.74, 0.48], intensity: 1.6, azimuthDeg: 40, elevationDeg: 38 },
+  // O-15: 45° to the right of the hero camera's view (the poster's warm side), 45° above the horizon.
+  key: { color: [1, 0.74, 0.48], intensity: 1.6, azimuthDeg: 45, elevationDeg: 45 },
+  keySheen: {
+    materials: [...INTERIOR_MATERIALS, 'MAT_gold_fin'],
+    color: [1, 0.62, 0.3],
+    strength: 0.22,
+    sharpness: 2,
+  },
   fill: { sky: [0.45, 0.52, 0.78], ground: [0.45, 0.33, 0.22], intensity: 0.5 },
   systemLightScale: 1.5,
   systemExposureScale: 1,
