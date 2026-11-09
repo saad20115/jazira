@@ -1,0 +1,11 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/r13/mut/SystemsCard.fix.tsx	2026-11-09 13:51:47.262999500 +0300
++++ src/components/systems3d/SystemsCard.tsx	2026-11-09 13:51:47.412279800 +0300
+@@ -851,7 +851,7 @@
+           }
+         : undefined,
+       // O-19: Escape exits as the header click does (the row collapses too).
+-      Escape: entered ? (onCollapseExit ?? onExitSystem) : undefined,
++      Escape: entered ? onExitSystem : undefined,
+     }
+     const digit = /^[1-5]$/.test(event.key) ? Number(event.key) - 1 : -1
+     const action =

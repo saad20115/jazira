@@ -1,0 +1,34 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1244:3 › P3-T5 live 3D card › @gpu O-19: Escape inside a system exits as the header does: the row collapses, the hash clears
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1244:3 › P3-T5 live 3D card › @gpu O-19: Escape inside a system exits as the header does: the row collapses, the hash clears 
+
+    Error: expect(locator).toBeFocused() failed
+
+    Locator:  locator('[data-component="accordion-item"]').nth(1).locator(':scope > button')
+    Expected: focused
+    Received: inactive
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeFocused" locator('[data-component="accordion-item"]').nth(1).locator(':scope > button') with timeout 5000ms
+      - waiting for locator('[data-component="accordion-item"]').nth(1).locator(':scope > button')
+        14 × locator resolved to <button type="button" aria-expanded="false" id="6aeb76ca705ff31f149acfc3-trigger" aria-controls="6aeb76ca705ff31f149acfc3-panel" class="Accordion-module__rN-DYq__headerButton">…</button>
+           - unexpected value "inactive"
+
+
+      1307 |     await expect(card).toHaveAttribute('data-entered', 'none')
+      1308 |     await expect(expanded).toHaveCount(0)
+    > 1309 |     await expect(rowHeader(fireRow)).toBeFocused()
+           |                                      ^
+      1310 |     expect(
+      1311 |       await rowHeader(fireRow).evaluate((el) => document.activeElement === el),
+      1312 |       "after a collapse with focus inside the panel, focus is on that row's header button",
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:1309:38
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-15f95-w-collapses-the-hash-clears-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1244:3 › P3-T5 live 3D card › @gpu O-19: Escape inside a system exits as the header does: the row collapses, the hash clears 

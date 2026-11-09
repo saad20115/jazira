@@ -1,0 +1,62 @@
+[
+  {
+    "case": "ar-1440-dpr1",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 577,
+    "size": "600x581",
+    "topDelta": [
+      0.1,
+      -0.2,
+      -2.3
+    ],
+    "info_lumaDelta": 15.7,
+    "info_floorDelta": [
+      -117.4,
+      -77,
+      -10.5
+    ],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "case": "ar-1440-dpr2",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 263,
+    "size": "1200x1162",
+    "topDelta": [
+      0.2,
+      -0.1,
+      -2.2
+    ],
+    "info_lumaDelta": 15.4,
+    "info_floorDelta": [
+      -117.6,
+      -77.2,
+      -10.5
+    ],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "case": "ar-390-dpr3",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 194,
+    "size": "1074x1077",
+    "topDelta": [
+      2.6,
+      1.2,
+      -1
+    ],
+    "info_lumaDelta": 13.5,
+    "info_floorDelta": [
+      -105,
+      -67.7,
+      -5.5
+    ],
+    "errors": [],
+    "pass": true
+  }
+]
