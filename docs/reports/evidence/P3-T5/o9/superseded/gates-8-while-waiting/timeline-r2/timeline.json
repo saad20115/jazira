@@ -1,0 +1,214 @@
+{
+ "hw": {
+  "cores": 8,
+  "mem": 16
+ },
+ "marks": [
+  [
+   3926,
+   "CLICK Fire Fighting"
+  ],
+  [
+   13241,
+   "CLICK Plumbing"
+  ],
+  [
+   22545,
+   "CLICK HVAC"
+  ],
+  [
+   31958,
+   "CLICK Smart Systems"
+  ]
+ ],
+ "log": [
+  [
+   493,
+   "still/none///"
+  ],
+  [
+   4150,
+   "still/fire///"
+  ],
+  [
+   4166,
+   "loading/fire//loading/"
+  ],
+  [
+   4173,
+   "loading/fire//loading/canvas"
+  ],
+  [
+   4929,
+   "live/fire/low//canvas"
+  ],
+  [
+   13443,
+   "live/plumbing/low//canvas"
+  ],
+  [
+   22903,
+   "live/hvac/low//canvas"
+  ],
+  [
+   32148,
+   "live/smart/low//canvas"
+  ]
+ ],
+ "longTasks": [
+  [
+   224,
+   103
+  ],
+  [
+   332,
+   123
+  ],
+  [
+   1161,
+   70
+  ],
+  [
+   1400,
+   71
+  ],
+  [
+   2117,
+   59
+  ],
+  [
+   2778,
+   266
+  ],
+  [
+   3476,
+   54
+  ],
+  [
+   5687,
+   114
+  ],
+  [
+   5902,
+   58
+  ],
+  [
+   6090,
+   50
+  ]
+ ],
+ "gaps": [
+  [
+   314,
+   100
+  ],
+  [
+   914,
+   600
+  ],
+  [
+   1031,
+   100
+  ],
+  [
+   1081,
+   50
+  ],
+  [
+   1264,
+   167
+  ],
+  [
+   1348,
+   83
+  ],
+  [
+   1464,
+   67
+  ],
+  [
+   2547,
+   50
+  ],
+  [
+   3047,
+   267
+  ],
+  [
+   3547,
+   67
+  ],
+  [
+   4447,
+   250
+  ],
+  [
+   4631,
+   67
+  ],
+  [
+   5797,
+   150
+  ],
+  [
+   5947,
+   50
+  ],
+  [
+   6081,
+   50
+  ],
+  [
+   6131,
+   50
+  ],
+  [
+   10947,
+   50
+  ],
+  [
+   11114,
+   50
+  ],
+  [
+   13430,
+   50
+  ],
+  [
+   13730,
+   50
+  ],
+  [
+   19413,
+   50
+  ],
+  [
+   23647,
+   50
+  ],
+  [
+   31130,
+   50
+  ],
+  [
+   32430,
+   50
+  ],
+  [
+   34013,
+   50
+  ],
+  [
+   37863,
+   317
+  ]
+ ],
+ "errors": [
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)",
+  "error: Failed to load resource: the server responded with a status of 403 (Forbidden)"
+ ]
+}

@@ -1,0 +1,11 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/mut/systemStage.fix.ts	2026-11-05 13:04:12.126105700 +0300
++++ src/components/systems3d/viewer/systemStage.ts	2026-11-05 13:04:38.633639800 +0300
+@@ -990,7 +990,7 @@
+     mayWarm(system) {
+       return (
+         system === desired ||
+-        (phase === 'rest' && entered === null && desired === null && !variantAssigned)
++        ((phase === 'rest' || phase === 'entered') && desired === entered)
+       )
+     },
+     get moving() {

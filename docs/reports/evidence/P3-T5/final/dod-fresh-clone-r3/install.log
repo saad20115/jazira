@@ -1,0 +1,77 @@
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +773
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 773, reused 52, downloaded 0, added 0
+Progress: resolved 773, reused 102, downloaded 0, added 0
+Progress: resolved 773, reused 178, downloaded 0, added 0
+Progress: resolved 773, reused 308, downloaded 0, added 0
+Progress: resolved 773, reused 412, downloaded 0, added 0
+Progress: resolved 773, reused 653, downloaded 0, added 0
+Progress: resolved 773, reused 753, downloaded 0, added 0
+Progress: resolved 773, reused 773, downloaded 0, added 47
+Progress: resolved 773, reused 773, downloaded 0, added 80
+Progress: resolved 773, reused 773, downloaded 0, added 131
+Progress: resolved 773, reused 773, downloaded 0, added 156
+Progress: resolved 773, reused 773, downloaded 0, added 187
+Progress: resolved 773, reused 773, downloaded 0, added 206
+Progress: resolved 773, reused 773, downloaded 0, added 241
+Progress: resolved 773, reused 773, downloaded 0, added 292
+Progress: resolved 773, reused 773, downloaded 0, added 317
+Progress: resolved 773, reused 773, downloaded 0, added 336
+Progress: resolved 773, reused 773, downloaded 0, added 366
+Progress: resolved 773, reused 773, downloaded 0, added 389
+Progress: resolved 773, reused 773, downloaded 0, added 408
+Progress: resolved 773, reused 773, downloaded 0, added 410
+Progress: resolved 773, reused 773, downloaded 0, added 477
+Progress: resolved 773, reused 773, downloaded 0, added 505
+Progress: resolved 773, reused 773, downloaded 0, added 563
+Progress: resolved 773, reused 773, downloaded 0, added 617
+Progress: resolved 773, reused 773, downloaded 0, added 631
+Progress: resolved 773, reused 773, downloaded 0, added 642
+Progress: resolved 773, reused 773, downloaded 0, added 647
+Progress: resolved 773, reused 773, downloaded 0, added 655
+Progress: resolved 773, reused 773, downloaded 0, added 662
+Progress: resolved 773, reused 773, downloaded 0, added 676
+Progress: resolved 773, reused 773, downloaded 0, added 706
+Progress: resolved 773, reused 773, downloaded 0, added 760
+Progress: resolved 773, reused 773, downloaded 0, added 769
+Progress: resolved 773, reused 773, downloaded 0, added 771
+Progress: resolved 773, reused 773, downloaded 0, added 772
+Progress: resolved 773, reused 773, downloaded 0, added 773
+Progress: resolved 773, reused 773, downloaded 0, added 773, done
+
+dependencies:
++ @payloadcms/db-postgres 3.91.0
++ @payloadcms/email-nodemailer 3.91.0
++ @payloadcms/next 3.91.0
++ @payloadcms/plugin-seo 3.91.0
++ @payloadcms/richtext-lexical 3.91.0
++ @payloadcms/translations 3.91.0
++ @payloadcms/ui 3.91.0
++ graphql 16.14.2
++ next 16.4.2
++ payload 3.91.0
++ react 19.3.1
++ react-dom 19.3.1
++ sharp 0.35.5
++ three 0.186.1
++ zod 4.6.7
+
+devDependencies:
++ @playwright/test 1.64.1
++ @types/node 24.19.2
++ @types/react 19.3.0
++ @types/react-dom 19.3.0
++ @types/three 0.186.0
++ cross-env 10.1.0
++ eslint 10.13.0
++ eslint-config-next 16.4.2
++ lighthouse 13.5.0
++ prettier 3.9.10
++ typescript 5.9.3
++ typescript-eslint 8.72.0
++ vitest 5.0.5
+
+Done in 52.9s using pnpm v10.34.7
+exit=0

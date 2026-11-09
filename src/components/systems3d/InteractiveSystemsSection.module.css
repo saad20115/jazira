@@ -57,6 +57,384 @@
   display: block;
 }
 
+/* O-8: never an empty card. Until the Figma image (lazy) has loaded, a 24 px blurred copy of it
+   (generated from design/assets/images/tower-render.png with sharp: resize 24, blur 0.6, JPEG q55)
+   is painted from the first frame; the image covers it once loaded. */
+.poster {
+  position: absolute;
+  inset: 0;
+  background-image: url('data:image/jpeg;base64,/9j/2wBDAA4KCw0LCQ4NDA0QDw4RFiQXFhQUFiwgIRokNC43NjMuMjI6QVNGOj1OPjIySGJJTlZYXV5dOEVmbWVabFNbXVn/2wBDAQ8QEBYTFioXFypZOzI7WVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVlZWVn/wAARCAAYABgDASIAAhEBAxEB/8QAGQABAAMBAQAAAAAAAAAAAAAAAAEDBgQF/8QAIxAAAgIBAwQDAQAAAAAAAAAAAQIAAxESITEEExRBBUJxkf/EABgBAQADAQAAAAAAAAAAAAAAAAMAAQIE/8QAHBEAAwACAwEAAAAAAAAAAAAAAAECAxIhQUJR/9oADAMBAAIRAxEAPwDz61rWtm2JAzKq+qtNoGitV/s5HuCnS2743kq+LAMLzzGvPX0KcUro1nS+D20a1hqI3iZd71C5J425iY2t+hNZXRFfivXoe0a0yzEex+yyv5CphWBVSSPsecRE5rhNizTSKLinZCgqWubGV9RES1wR8n//2Q==');
+  background-position: center;
+  background-size: cover;
+}
+
+/* The <picture> must fill its layer: an inline <picture> leaves the <img> at its natural height,
+   which top-aligns the square still instead of the centred cover the live camera reproduces. */
+.stillPicture {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+/* Live 3D (P3-T5): the canvas exists only once JS created it, above the image, and cross-fades in
+   only after its first frame (O-4, docs/05-design.md §21: 500 ms, so there is no blank frame;
+   instant under reduced motion). The image under it is never hidden; the card size never changes. */
+/* O-9: holds the prepared canvas; no box of its own, so the canvas fills the card. */
+.canvasHost {
+  display: contents;
+}
+
+.liveCanvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+  /* O-9b: invisible until live through a filter, not `opacity: 0`. A layer at opacity 0 is not
+     rasterised, so the sky below was rasterised only at the swap, where its gradients' GPU shaders
+     compiled on the GPU main thread (~90 ms, a frame gap in the first frames: P3-T5 r8 trace). Under
+     `filter: opacity(0)` it is rasterised when the canvas joins the card at the click. */
+  filter: opacity(0);
+  pointer-events: none;
+  transition: filter 500ms cubic-bezier(0.65, 0, 0.35, 1);
+  /* O-13 (docs/05-design.md decision 22): the dusk sky of the poster behind the model (the canvas
+     is transparent, so it fades in with it): darkest at the top, lightening to a warm haze at the
+     horizon with a faint gold glow, then a dark evening ground with a soft gold pool under the
+     island. Browsers dither gradients, so there are no bands on 8-bit screens. The sky colours are
+     scene colours, not brand tokens: the poster's blue-hour azure cannot be mixed from them (Q12).
+     They are used in this rule only. */
+  --systems-sky-top: #306cab; /* sampled from tower-render.png: top edge of the card's 0–15 % band */
+  --systems-sky-upper: #8da3bb; /* sampled from tower-render.png: sky at 15 % of the card height */
+  --systems-sky-mid: #97a7bb; /* sampled from tower-render.png: sky above the skyline, 30–40 % band */
+  --systems-sky-horizon: #b0aca6; /* sampled from tower-render.png: warm haze at the horizon */
+
+  background-color: var(--navy-950);
+  background-image:
+    radial-gradient(
+      80% 12% at 50% 57%,
+      color-mix(in srgb, var(--gold-500) 30%, transparent) 0%,
+      transparent 100%
+    ),
+    radial-gradient(
+      60% 22% at 50% 72%,
+      color-mix(in srgb, var(--gold-500) 22%, transparent) 0%,
+      transparent 100%
+    ),
+    linear-gradient(
+      to bottom,
+      var(--systems-sky-top) 0%,
+      var(--systems-sky-upper) 15%,
+      var(--systems-sky-mid) 36%,
+      var(--systems-sky-horizon) 55%,
+      color-mix(in srgb, var(--navy-800) 60%, var(--navy-900)) 68%,
+      var(--navy-950) 100%
+    );
+}
+
+/* O-2: a click or tap on the image starts the model. */
+.buildingCard[data-viewer-state='still'] {
+  cursor: pointer;
+}
+
+.buildingCard[data-viewer-state='live'] .liveCanvas {
+  filter: opacity(1);
+}
+
+/* O-14b: dropped to the stills tier inside a system, the canvas keeps its last frame while the
+   system's end still fades in over it (outside a system the canvas fades out over the image). */
+.buildingCard[data-canvas-leaving='true']:not([data-entered='none']) .liveCanvas {
+  filter: opacity(1);
+}
+
+.buildingCard[data-viewer-active='true'] .liveCanvas {
+  pointer-events: auto;
+  cursor: grab;
+}
+
+.buildingCard[data-viewer-active='true'] .liveCanvas:active {
+  cursor: grabbing;
+}
+
+.buildingCard:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 2px;
+}
+
+/* Entered system (stills tier): the end still crossfades in over the overview, with its labels. */
+@keyframes systemsFadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+/* O-8: the end still shows only once it has loaded; until then the image under it stays. */
+.enteredLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  transition: opacity var(--motion-slow) var(--ease-in-out);
+}
+
+.enteredLayer[data-loaded='true'] {
+  opacity: 1;
+}
+
+/* O-11: while the model loads after a click, the image on screen (the poster, or the system's
+   still) slowly pushes in, then holds at the end scale; it never loops. Live, the same animation
+   stays applied but pauses, so the O-4 cross-fade starts from the zoomed image (no snap back). The
+   card clips it (overflow: hidden): no layout shift. */
+@keyframes systemsPushIn {
+  from {
+    transform: scale(1);
+  }
+
+  to {
+    transform: scale(1.06);
+  }
+}
+
+.buildingCard[data-viewer-state='loading'] :is(.poster, .enteredLayer),
+.buildingCard[data-viewer-state='live'] :is(.poster, .enteredLayer) {
+  animation: systemsPushIn calc(var(--motion-slow) * 5) var(--ease-out) both;
+}
+
+.buildingCard[data-viewer-state='live'] :is(.poster, .enteredLayer) {
+  animation-play-state: paused;
+}
+
+/* The system's still stays for the cross-fade and fades out over the canvas (`SystemsCard`). */
+.buildingCard[data-viewer-state='live'] .enteredLayer {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* O-8: while the model loads after a click, the current image stays with this small indicator. */
+@keyframes systemsSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingIndicator {
+  position: absolute;
+  inset-block-start: 19px;
+  inset-inline-end: 19px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-8);
+  margin: 0;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-pill);
+  background-color: var(--navy-950);
+  color: var(--white);
+}
+
+.loadingSpinner {
+  inline-size: 14px;
+  block-size: 14px;
+  border-radius: var(--radius-pill);
+  border: 2px solid var(--glass-border-white-16);
+  border-block-start-color: var(--gold-500);
+  animation: systemsSpin var(--motion-reveal) linear infinite;
+}
+
+/* Image coordinates are physical in both locales, so the layer is laid out LTR. */
+.labelLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  direction: ltr;
+  pointer-events: none;
+}
+
+.hotspot {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 0;
+  block-size: 0;
+}
+
+.hotspotDot {
+  position: absolute;
+  inset-block-start: -5px;
+  inset-inline-start: -5px;
+  inline-size: 10px;
+  block-size: 10px;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  background-color: var(--gold-500);
+  border: 2px solid var(--white);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+/* A 44 px touch target around the 10 px dot. */
+.hotspotDot::after {
+  content: '';
+  position: absolute;
+  inset: -17px;
+}
+
+.hotspotDot:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 2px;
+}
+
+.hotspotLabel {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  padding-block: var(--space-4);
+  padding-inline: var(--space-10);
+  border-radius: var(--radius-pill);
+  background-color: var(--navy-950);
+  border: 1px solid var(--gold-500);
+  color: var(--white);
+  white-space: nowrap;
+  unicode-bidi: isolate;
+}
+
+.relatedPanel {
+  position: absolute;
+  inset-block-end: 22px;
+  inset-inline-end: 22px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  max-inline-size: 240px;
+  padding-block: var(--space-12);
+  padding-inline: var(--space-14);
+  border-radius: var(--radius-2xl);
+  background-color: var(--white);
+  color: var(--navy-950);
+  animation: systemsFadeIn 600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.relatedPanelStacked {
+  display: none;
+  flex-direction: column;
+  gap: var(--space-8);
+  margin-block-start: var(--space-16);
+  padding-block: var(--space-12);
+  padding-inline: var(--space-14);
+  border-radius: var(--radius-2xl);
+  border: 1px solid var(--border);
+  background-color: var(--white);
+  color: var(--navy-950);
+}
+
+.relatedList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.relatedAllLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-6);
+  color: var(--gold-700);
+  text-decoration: none;
+}
+
+/* Card controls (bottom inline-start, where the design puts "Open the live 3D model"). O-3: that
+   button before the start, "Exit system" inside a system, and one "reset view" once live. The glyph
+   comes from CSS so JSX holds no literal text. */
+.cardControls {
+  position: absolute;
+  inset-block-end: 22px;
+  inset-inline-start: 22px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-8);
+}
+
+.cardControls .openModelButton {
+  position: static;
+}
+
+.viewControl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: 44px;
+  block-size: 44px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--glass-border-white-16);
+  background-color: var(--glass-white-8);
+  color: var(--white);
+  cursor: pointer;
+}
+
+.viewControl::before {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.viewControlReset::before {
+  content: '\21BA';
+}
+
+.viewControl:focus-visible {
+  outline: 2px solid var(--gold-300);
+  outline-offset: 2px;
+}
+
+.dragHint {
+  position: absolute;
+  inset-block-start: 19px;
+  inset-inline-end: 19px;
+  z-index: 3;
+  margin: 0;
+  padding-block: var(--space-6);
+  padding-inline: var(--space-12);
+  border-radius: var(--radius-pill);
+  background-color: var(--navy-950);
+  color: var(--white);
+  animation: systemsFadeIn 600ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .liveCanvas {
+    transition: none;
+  }
+
+  .dragHint {
+    animation: none;
+  }
+
+  .relatedPanel,
+  .loadingSpinner {
+    animation: none;
+  }
+
+  .enteredLayer {
+    transition: none;
+  }
+
+  .buildingCard[data-viewer-state] :is(.poster, .enteredLayer) {
+    animation: none;
+  }
+}
+
 .liveModelBadge {
   position: absolute;
   inset-block-start: 19px;
@@ -201,8 +579,26 @@
 }
 
 @media (max-width: 767.98px) {
+  /* Phones (§8c): a square card, labels as dots that expand on tap, the related projects below. */
   .buildingCard {
-    block-size: 360px;
+    block-size: auto;
+    aspect-ratio: 1 / 1;
+  }
+
+  .hotspotLabel {
+    visibility: hidden;
+  }
+
+  .hotspot[data-expanded='true'] .hotspotLabel {
+    visibility: visible;
+  }
+
+  .relatedPanel {
+    display: none;
+  }
+
+  .relatedPanelStacked {
+    display: flex;
   }
 
   .relatedProjectLink {
@@ -210,5 +606,187 @@
     min-block-size: 44px;
     padding-block: var(--space-10);
     padding-inline: var(--space-14);
+  }
+}
+
+/* ==========================================================================
+   O-7 tap hint (owner, 2026-11-02, docs/05-design.md §21): a neon-white hand drawn in light taps
+   the image. One cycle is calc(motion-slow × 5): the outline draws itself, the hand moves in and
+   taps twice (a press and a ring of light), then everything fades. A hint only: never a target.
+   The outline draws with stroke-dashoffset (the stroke-dash animation the spec asks for); all other
+   motion is transform and opacity.
+   ========================================================================== */
+@keyframes tapHintCycle {
+  0% {
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  84% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes tapHintDraw {
+  0% {
+    stroke-dashoffset: 1;
+  }
+
+  30%,
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes tapHintMove {
+  0%,
+  28% {
+    transform: translate(10px, 16px);
+  }
+
+  40%,
+  44% {
+    transform: translate(0, 0);
+  }
+
+  48% {
+    transform: translate(0, 2px) scale(0.9);
+  }
+
+  54%,
+  66% {
+    transform: translate(0, 0);
+  }
+
+  70% {
+    transform: translate(0, 2px) scale(0.9);
+  }
+
+  76%,
+  100% {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes tapHintRing {
+  0%,
+  46% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  48% {
+    opacity: 1;
+    transform: scale(0.3);
+  }
+
+  62% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+
+  68% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+
+  70% {
+    opacity: 1;
+    transform: scale(0.3);
+  }
+
+  84%,
+  100% {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+.tapHint {
+  position: absolute;
+  inset-block-start: 44%;
+  inset-inline-start: 50%;
+  z-index: 2;
+  inline-size: 72px;
+  block-size: 72px;
+  overflow: visible;
+  pointer-events: none;
+  color: var(--white);
+  filter: drop-shadow(0 0 3px var(--white)) drop-shadow(0 0 10px var(--white));
+  animation: tapHintCycle calc(var(--motion-slow) * 5) var(--ease-in-out) both;
+}
+
+/* Mirrored in RTL (the image coordinates stay physical; the hand comes from the other side). */
+:global([dir='rtl']) .tapHint {
+  scale: -1 1;
+}
+
+.tapHintStroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: tapHintDraw calc(var(--motion-slow) * 5) var(--ease-out) both;
+}
+
+.tapHintHand {
+  transform-box: fill-box;
+  transform-origin: 50% 0;
+  animation: tapHintMove calc(var(--motion-slow) * 5) var(--ease-in-out) both;
+}
+
+.tapHintRing {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  opacity: 0;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: tapHintRing calc(var(--motion-slow) * 5) var(--ease-out) both;
+}
+
+/* Off screen, the cycle waits where it is. */
+.tapHint[data-paused='true'],
+.tapHint[data-paused='true'] .tapHintStroke,
+.tapHint[data-paused='true'] .tapHintHand,
+.tapHint[data-paused='true'] .tapHintRing {
+  animation-play-state: paused;
+}
+
+/* Reduced motion: the hand drawn in full and still, shown once, then it fades. */
+.tapHint[data-tap-hint='still'],
+.tapHint[data-tap-hint='still'] .tapHintStroke,
+.tapHint[data-tap-hint='still'] .tapHintHand,
+.tapHint[data-tap-hint='still'] .tapHintRing {
+  animation: none;
+}
+
+.tapHint[data-tap-hint='still'] {
+  opacity: 1;
+  transition: opacity var(--motion-slow) var(--ease-in-out);
+}
+
+.tapHint[data-tap-hint='still'] .tapHintStroke {
+  stroke-dashoffset: 0;
+}
+
+.tapHint[data-tap-hint='still'][data-leaving='true'] {
+  opacity: 0;
+}
+
+@media (max-width: 767.98px) {
+  .tapHint {
+    inline-size: 56px;
+    block-size: 56px;
   }
 }

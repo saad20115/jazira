@@ -1,0 +1,6 @@
+scroll -3009 click 0 live 357 stills null
+ -2875   61 ms | EvaluateScript 61, RunMicrotasks 60 | 
+ -2322   54 ms | FireIdleCallback 54, RunMicrotasks 54 | 
+  -931   90 ms | MinorGC 90 | 
+  -840   30 ms | TimerFire 30, RunMicrotasks 30 | 
+  5086   30 ms | FireAnimationFrame 25, FunctionCall 25 | 

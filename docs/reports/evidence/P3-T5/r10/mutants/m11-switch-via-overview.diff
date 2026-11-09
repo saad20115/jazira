@@ -1,0 +1,11 @@
+--- a/src/components/systems3d/viewer/systemStage.ts	2026-11-05 08:37:30.349517900 +0300
++++ b/src/components/systems3d/viewer/systemStage.ts	2026-11-05 08:37:33.346085900 +0300
+@@ -1047,7 +1047,7 @@
+         }
+         case 'entered': {
+           if (desired !== entered && entered !== null) {
+-            if (desired === null) {
++            if (desired === null || desired !== null) {
+               startFlight(entered, false, now)
+               phase = 'flyOut'
+             } else {

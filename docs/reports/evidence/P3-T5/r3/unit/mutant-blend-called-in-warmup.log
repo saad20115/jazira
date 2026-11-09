@@ -1,0 +1,50 @@
+MUTANT: systemStage warm-up also calls onEnterMix(1)
+diff --git a/src/components/systems3d/viewer/systemStage.ts b/src/components/systems3d/viewer/systemStage.ts
+index 8f1e409..70db36b 100644
+--- a/src/components/systems3d/viewer/systemStage.ts
++++ b/src/components/systems3d/viewer/systemStage.ts
+@@ -446,6 +446,7 @@ export function createSystemStage(deps: StageDeps): SystemStage {
+       try {
+         assignVariant(loaded)
+         applyFade(system, 1)
++        deps.onEnterMix?.(1)
+         return work()
+       } finally {
+         restore()
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-system-stage.test.ts (8 tests | 1 failed) 4436ms
+   ❯ P3-T5 O-5: the system light blend follows the flight, never the warm-up (1)
+     × rises from 0 to 1 while flying in, ends at 0 after flying out, and the warm-up sends none 298ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 O-5: the system light blend follows the flight, never the warm-up > rises from 0 to 1 while flying in, ends at 0 after flying out, and the warm-up sends none
+AssertionError: expected [ 1, 1 ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   1,
++   1,
++ ]
+
+ ❯ src/p3-t5-system-stage.test.ts:416:21
+    414|     // The warm-up applies the entered look and puts it back: it must …
+    415|     expect(f.compiled.length).toBeGreaterThan(0)
+    416|     expect(f.mixes).toEqual([])
+       |                     ^
+    417|     finishCompiles(f)
+    418|     await settle()
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  10:55:56
+   Duration  4.97s (tests 96%, transform 2%, import 2%)
+

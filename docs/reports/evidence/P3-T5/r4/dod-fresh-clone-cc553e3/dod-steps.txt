@@ -1,0 +1,10 @@
+clone exit=0
+lfs-pull exit=0
+install exit=0
+lint exit=0
+typecheck exit=0
+format-check exit=1
+test exit=1
+build exit=0
+audit-prod exit=1
+audit-full exit=1

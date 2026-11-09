@@ -1,0 +1,69 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-system-stage.test.ts (17 tests | 3 failed) 32261ms
+   ❯ P3-T5 O-16: switching systems is one direct flight, never via the overview (5)
+     × flies from one system to the other without reaching or stopping at the overview 5133ms
+     × fades the first look out and the second in, changing the highlights only while both are 0 9262ms
+     × waits halfway, outside the tower, until the target is warmed up, then goes in 897ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 O-16: switching systems is one direct flight, never via the overview > flies from one system to the other without reaching or stopping at the overview
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/p3-t5-system-stage.test.ts:486:28
+    484|     }
+    485|     expect(f.stage.entered).toBe('fire')
+    486|     expect(stoppedOutside).toBe(false)
+       |                            ^
+    487|     // The overview camera is far from both systems; the direct flight…
+    488|     expect(nearestToHero).toBeGreaterThan(HERO.distanceTo(new Vector3(…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 O-16: switching systems is one direct flight, never via the overview > fades the first look out and the second in, changing the highlights only while both are 0
+AssertionError: expected [ +0, +0 ] to deeply equal [ +0 ]
+
+- Expected
++ Received
+
+  [
+    0,
++   0,
+  ]
+
+ ❯ src/p3-t5-system-stage.test.ts:515:19
+    513|     }
+    514|     expect(f.stage.entered).toBe('fire')
+    515|     expect(swaps).toEqual([0])
+       |                   ^
+    516|     // 1 → 0 (out), then 0 → 1 (in): falls, then rises, never jumps. (…
+    517|     // already outside the fixture's small tower, so the fade starts a…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/p3-t5-system-stage.test.ts > P3-T5 O-16: switching systems is one direct flight, never via the overview > waits halfway, outside the tower, until the target is warmed up, then goes in
+AssertionError: expected 2 to be greater than 2
+ ❯ src/p3-t5-system-stage.test.ts:537:31
+    535|     now = run(f.stage, now, 300)
+    536|     // The target's warm-up has started but not finished: the camera h…
+    537|     expect(f.compiles.length).toBeGreaterThan(compilesBefore)
+       |                               ^
+    538|     expect(f.stage.moving).toBe(true)
+    539|     expect(f.stage.entered).toBe('hvac')
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 14 passed (17)
+   Start at  08:37:36
+   Duration  37.08s (tests 99%)
+

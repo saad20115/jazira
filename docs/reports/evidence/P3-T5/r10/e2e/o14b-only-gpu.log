@@ -1,0 +1,6 @@
+
+Running 2 tests using 1 worker
+
+[1/2] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:805:3 › P3-T5 live 3D card › @gpu live: under CPU throttling the card ends in a lower tier: low only off screen (O-9), stills only at rest (O-14b)
+[2/2] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:910:3 › P3-T5 live 3D card › @gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system
+  2 passed (1.1m)

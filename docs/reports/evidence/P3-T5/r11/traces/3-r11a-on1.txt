@@ -1,0 +1,4 @@
+scroll -3028 click 0 live 183 stills null
+ -2866   50 ms | EvaluateScript 50, RunMicrotasks 49 | 
+ -2321   63 ms | FireIdleCallback 63, RunMicrotasks 63 | 
+ -1904   32 ms | FireIdleCallback 32, RunMicrotasks 32 | 

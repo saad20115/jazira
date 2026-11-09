@@ -1,0 +1,48 @@
+6a9a20229dd9cff60e69de0916a4b0fc21edcfd5
+?? scripts/evidence/p3-t5-setup-local.mjs
+
+> aljazira-website@0.1.0 build D:\jazira-p3t5
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 181ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 80s
+  Running TypeScript ...
+✓ Finished writing to filesystem cache in 10.2s
+  Finished TypeScript in 41s ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/7) ...
+  Generating static pages using 7 workers (1/7) 
+  Generating static pages using 7 workers (3/7) 
+  Generating static pages using 7 workers (5/7) 
+✓ Generating static pages using 7 workers (7/7) in 663ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /_not-found
+├ ƒ /[locale]
+├ ƒ /[locale]/_specimen
+├ ƒ /[locale]/[...rest]
+├ ƒ /[locale]/styleguide
+├ ƒ /admin/[[...segments]]
+├ ƒ /api/[...slug]
+├ ƒ /api/exit-preview
+├ ƒ /api/preview
+├ ƒ /api/preview/exit
+├ ○ /robots.txt
+└ ƒ /sitemap.xml
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
+[check-client-bundle-sentinels] Verified zero server-only sentinels or server library markers in .next/static
+build exit 0

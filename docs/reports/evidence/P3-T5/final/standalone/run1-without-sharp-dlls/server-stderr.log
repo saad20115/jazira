@@ -1,0 +1,210 @@
+Failed to prepare server Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+⨯ Failed to preload entries: Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Failed to prepare server Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)
+Error: An error occurred while loading instrumentation hook: Failed to load external module sharp-37f4bd8db776dc8d: Error: Could not load the "sharp" module using the win32-x64 runtime
+ERR_DLOPEN_FAILED: The specified module could not be found.
+\\?\D:\jazira-p3t5\.next\standalone\node_modules\.pnpm\@img+sharp-win32-x64@0.35.5\node_modules\@img\sharp-win32-x64\lib\sharp-win32-x64-0.35.5.node
+Possible solutions:
+- Ensure optional dependencies can be installed:
+    npm install --include=optional sharp
+- Ensure your package manager supports multi-platform installation:
+    See https://sharp.pixelplumbing.com/install#cross-platform
+- Add platform-specific dependencies:
+    npm install --os=win32 --cpu=x64 sharp
+- Consult the installation documentation:
+    See https://sharp.pixelplumbing.com/install
+    at Context.externalImport [as y] (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[turbopack]_runtime.js:810:15)
+    at async (D:\jazira-p3t5\.next\standalone\.next\server\chunks\[externals]__0c7id6sao4fdv._.js:1:4193)

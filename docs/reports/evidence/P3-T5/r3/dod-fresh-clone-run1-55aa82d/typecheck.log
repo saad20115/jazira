@@ -1,0 +1,7 @@
+
+> aljazira-website@0.1.0 typecheck C:\Users\User21.CSE\AppData\Local\Temp\claude\D--jazira-p3t5\1b1c303c-9b0c-4ef9-a782-162c77955636\scratchpad\dod-clone
+> tsc --noEmit
+
+src/components/systems3d/InteractiveSystemsSection.tsx(10,25): error TS2307: Cannot find module '../../../design/assets/images/tower-render.png' or its corresponding type declarations.
+ ELIFECYCLE  Command failed with exit code 2.
+exit=2

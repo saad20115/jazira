@@ -1,0 +1,60 @@
+
+Running 9 tests using 1 worker
+
+  ok 1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:187:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts (1.9s)
+  ok 2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:187:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts (1.1s)
+  ok 3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:215:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (35.8s)
+  ok 4 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:267:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active (4.7s)
+  ok 5 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:286:3 › P3-T5 live 3D card › @gpu live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (33.9s)
+  ok 6 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:320:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it (3.5s)
+  ok 7 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:339:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits (10.9s)
+  ok 8 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:386:3 › P3-T5 live 3D card › @gpu live: under 6× CPU throttling the card ends in the low or stills tier (6.5s)
+  x  9 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:506:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (12.4s)
+
+
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:506:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active › still card: tapping buttons inside it downloads nothing (§8c) 
+
+    TimeoutError: locator.tap: Timeout 10000ms exceeded.
+    Call log:
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-entered-system] li button').visible().first()
+        - locator resolved to <button type="button" aria-expanded="false" aria-label="Fire pumps" class="I0WHYa_hotspotDot"></button>
+      - attempting tap action
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-expanded="false" aria-label="Jockey pump" class="I0WHYa_hotspotDot"></button> from <li data-expanded="false" class="I0WHYa_hotspot">…</li> subtree intercepts pointer events
+        - retrying tap action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is visible, enabled and stable
+          - scrolling into view if needed
+          - done scrolling
+          - <button type="button" aria-expanded="false" aria-label="Jockey pump" class="I0WHYa_hotspotDot"></button> from <li data-expanded="false" class="I0WHYa_hotspot">…</li> subtree intercepts pointer events
+        - retrying tap action
+          - waiting 100ms
+        18 × waiting for element to be visible, enabled and stable
+           - element is visible, enabled and stable
+           - scrolling into view if needed
+           - done scrolling
+           - <button type="button" aria-expanded="false" aria-label="Jockey pump" class="I0WHYa_hotspotDot"></button> from <li data-expanded="false" class="I0WHYa_hotspot">…</li> subtree intercepts pointer events
+         - retrying tap action
+           - waiting 500ms
+
+
+      546 |       await card.scrollIntoViewIfNeeded()
+      547 |       const dot = card.locator('[data-entered-system] li button').filter({ visible: true }).first()
+    > 548 |       await dot.tap({ timeout: 10_000 })
+          |                 ^
+      549 |       await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
+      550 |       await expect(card).toHaveAttribute('data-entered', 'none')
+      551 |       await page.waitForTimeout(1_000)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:548:17
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:544:5
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-d029f-s-trapped-only-while-active-gpu\error-context.md
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:506:3 › P3-T5 live 3D card — phone › @gpu live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+  8 passed (1.9m)
+exit=1

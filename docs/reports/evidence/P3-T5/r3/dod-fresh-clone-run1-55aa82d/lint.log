@@ -1,0 +1,12 @@
+
+> aljazira-website@0.1.0 lint C:\Users\User21.CSE\AppData\Local\Temp\claude\D--jazira-p3t5\1b1c303c-9b0c-4ef9-a782-162c77955636\scratchpad\dod-clone
+> cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs
+
+
+C:\Users\User21.CSE\AppData\Local\Temp\claude\D--jazira-p3t5\1b1c303c-9b0c-4ef9-a782-162c77955636\scratchpad\dod-clone\src\components\systems3d\InteractiveSystemsSection.tsx
+  100:14  error  Unsafe assignment of an error typed value  @typescript-eslint/no-unsafe-assignment
+
+✖ 1 problem (1 error, 0 warnings)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1

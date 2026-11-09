@@ -1,0 +1,1900 @@
+import { type BrowserContext, expect, type Locator, type Page, test } from '@playwright/test'
+
+/**
+ * P3-T5 — the live 3D tower in the home "Interactive systems" card.
+ *
+ * `@gpu` tests need a live canvas on a hardware GPU and run only in the `gpu` project
+ * (`E2E_GPU=1 playwright test --project=gpu`); they fail, never skip, when the GPU is not usable.
+ * Every other test runs in the default project, CI included: there, a software renderer must end in
+ * the stills tier with the reason `software`. On Windows the GPU is used through ANGLE D3D11.
+ *
+ * `E2E_PRODUCTION_SERVER=1` (a `next start` or standalone server) also asserts that the page load
+ * itself is free of CSP violations; the dev server injects inline styles of its own.
+ */
+
+const GPU_ARGS = process.platform === 'win32' ? ['--use-angle=d3d11'] : []
+const SOFTWARE_RENDERER = /swiftshader|llvmpipe|softpipe|software|basic render|^none$/i
+
+test.use({ launchOptions: { args: GPU_ARGS } })
+
+const PRODUCTION_SERVER = process.env.E2E_PRODUCTION_SERVER === '1'
+const WORKER_PATH = '/systems/v022n/basis/ktx2-worker.js'
+const LIVE_TIMEOUT = 60_000
+/** H3b (CTO decision 2026-10-25, `handoff/reviews/P3-T5.md`): the KTX2 worker's own and only CSP. */
+const WORKER_CSP =
+  "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'"
+
+interface Recorder {
+  /** Same-origin `/systems/` requests other than the release stills (method + path). */
+  model: string[]
+  cspViolations: string[]
+  warnings: string[]
+  /** Every Content-Security-Policy header of each GET response for the worker script. */
+  workerGetCsp: string[][]
+}
+
+/** Skips the intro splash (a returning visit) and pins capable-device hints, so the 3D path runs. */
+async function prepare(context: BrowserContext): Promise<void> {
+  await context.addInitScript(() => {
+    try {
+      window.sessionStorage.setItem('aljazira_intro_seen', '1')
+    } catch {
+      // about:blank has no storage; the next navigation sets it.
+    }
+    Object.defineProperty(navigator, 'hardwareConcurrency', { get: () => 8 })
+    Object.defineProperty(navigator, 'deviceMemory', { get: () => 8 })
+    document.addEventListener('securitypolicyviolation', (event) => {
+      console.error(
+        `[csp-violation] ${event.effectiveDirective} ${event.blockedURI} ${event.sourceFile}`,
+      )
+    })
+  })
+}
+
+function record(page: Page): Recorder {
+  const recorder: Recorder = { model: [], cspViolations: [], warnings: [], workerGetCsp: [] }
+  page.on('response', (response) => {
+    if (response.request().method() === 'GET' && new URL(response.url()).pathname === WORKER_PATH) {
+      void response.headersArray().then((headers) => {
+        recorder.workerGetCsp.push(
+          headers
+            .filter((h) => h.name.toLowerCase() === 'content-security-policy')
+            .map((h) => h.value),
+        )
+      })
+    }
+  })
+  page.on('request', (request) => {
+    const url = new URL(request.url())
+    if (url.pathname.startsWith('/systems/') && !url.pathname.includes('/stills/')) {
+      recorder.model.push(`${request.method()} ${url.pathname}`)
+    }
+  })
+  page.on('console', (message) => {
+    const text = message.text()
+    if (text.startsWith('[csp-violation]') || text.includes('Content Security Policy')) {
+      recorder.cspViolations.push(text)
+    }
+    if (text.startsWith('[systems3d]')) {
+      recorder.warnings.push(text)
+    }
+  })
+  return recorder
+}
+
+async function openHome(page: Page, hash = ''): Promise<Locator> {
+  await page.goto(`/en${hash}`)
+  await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+  const card = page.locator('[data-interactive-3d-card]')
+  await card.scrollIntoViewIfNeeded()
+  return card
+}
+
+async function rendererName(page: Page): Promise<string> {
+  return page.evaluate(() => {
+    const gl = document.createElement('canvas').getContext('webgl2')
+    if (!gl) {
+      return 'none'
+    }
+    const info = gl.getExtension('WEBGL_debug_renderer_info')
+    return info ? String(gl.getParameter(info.UNMASKED_RENDERER_WEBGL)) : 'unknown'
+  })
+}
+
+/** `@gpu` tests: a software or missing renderer is a failure of the run, not a skip. */
+async function expectHardwareGpu(page: Page): Promise<void> {
+  const renderer = await rendererName(page)
+  expect(renderer, 'the gpu project needs a hardware WebGL renderer').not.toMatch(SOFTWARE_RENDERER)
+}
+
+/** The still card is interactive once hydrated: it is focusable then (O-2 start triggers). */
+async function waitHydrated(card: Locator): Promise<void> {
+  await expect(card).toHaveAttribute('tabindex', '0')
+}
+
+/** O-11: each frame, the card's state and the poster layer's scale (from its computed transform). */
+async function startScaleSampler(card: Locator): Promise<void> {
+  await card.evaluate((el) => {
+    const samples: { state: string; scale: number }[] = []
+    Object.assign(window, { __scaleSamples: samples })
+    const poster = el.querySelector(':scope > [class*="poster"]')
+    const sample = (): void => {
+      if (poster) {
+        const transform = getComputedStyle(poster).transform
+        samples.push({
+          state: el.getAttribute('data-viewer-state') ?? '',
+          scale: transform === 'none' ? 1 : new DOMMatrixReadOnly(transform).a,
+        })
+      }
+      requestAnimationFrame(sample)
+    }
+    requestAnimationFrame(sample)
+  })
+}
+
+async function scaleSamples(page: Page): Promise<{ state: string; scale: number }[]> {
+  return page.evaluate(
+    () =>
+      (window as unknown as { __scaleSamples: { state: string; scale: number }[] }).__scaleSamples,
+  )
+}
+
+/**
+ * O-9: before a click, a tap or a key the model may be prepared out of sight (near the viewport,
+ * on a capable device), but nothing of it is shown: the card is still, without a canvas or a
+ * loading indicator.
+ */
+async function expectNothingShown(card: Locator): Promise<void> {
+  await expect(card).toHaveAttribute('data-viewer-state', 'still')
+  await expect(card.locator('canvas')).toHaveCount(0)
+  await expect(card.locator('[data-loading-indicator]')).toHaveCount(0)
+}
+
+/** O-2: a click on the image starts the model (and, on a mouse, activates it once live). */
+async function clickImage(card: Locator): Promise<void> {
+  await waitHydrated(card)
+  const box = await card.boundingBox()
+  expect(box).not.toBeNull()
+  await card.click({ position: { x: (box?.width ?? 0) / 2, y: (box?.height ?? 0) / 2 } })
+}
+
+async function goLive(card: Locator): Promise<void> {
+  await clickImage(card)
+  await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+}
+
+/** O-14 (CTO round 7): within this long of the click the card is live or in the stills tier. */
+const START_BOUND_MS = 10_000
+
+/**
+ * O-14: logs, in the page, the time of the pointerdown on the card and of every state change, with
+ * the stills reason. Real time (`performance.now()`), unaffected by CPU throttling.
+ */
+async function startStateLog(card: Locator): Promise<void> {
+  await card.evaluate((el) => {
+    const log: { at: number; state: string | null; reason: string | null }[] = []
+    let clickAt: number | null = null
+    el.addEventListener(
+      'pointerdown',
+      () => {
+        clickAt ??= performance.now()
+      },
+      { capture: true },
+    )
+    new MutationObserver(() => {
+      log.push({
+        at: performance.now(),
+        state: el.getAttribute('data-viewer-state'),
+        reason: el.getAttribute('data-viewer-fallback'),
+      })
+    }).observe(el, {
+      attributes: true,
+      attributeFilter: ['data-viewer-state', 'data-viewer-fallback'],
+    })
+    Object.assign(window, { __startLog: { log, clickAt: () => clickAt } })
+  })
+}
+
+/** O-14: the first time after the click the card was live or stills (null: never). */
+async function firstEnd(
+  page: Page,
+): Promise<{ state: string; reason: string | null; afterClickMs: number } | null> {
+  return page.evaluate(() => {
+    const { log, clickAt } = (
+      window as unknown as {
+        __startLog: {
+          log: { at: number; state: string | null; reason: string | null }[]
+          clickAt: () => number | null
+        }
+      }
+    ).__startLog
+    const click = clickAt()
+    const end = log.find((entry) => entry.state === 'live' || entry.state === 'stills')
+    if (click === null || !end?.state) {
+      return null
+    }
+    return { state: end.state, reason: end.reason, afterClickMs: Math.round(end.at - click) }
+  })
+}
+
+/** Mean colour of a band of the card as shown (from `top` to `bottom`, fractions of its height). */
+async function meanRgb(
+  page: Page,
+  card: Locator,
+  top: number,
+  bottom: number,
+): Promise<{ r: number; g: number; b: number }> {
+  const box = await card.boundingBox()
+  if (!box) {
+    throw new Error('card has no box')
+  }
+  // The left half only: the live "Drag to rotate" chip sits at the top right.
+  const png = await page.screenshot({
+    clip: {
+      x: box.x + box.width * 0.1,
+      y: box.y + box.height * top,
+      width: box.width * 0.4,
+      height: box.height * (bottom - top),
+    },
+  })
+  return page.evaluate(async (src) => {
+    const img = new Image()
+    img.src = `data:image/png;base64,${src}`
+    await img.decode()
+    const canvas = document.createElement('canvas')
+    canvas.width = img.width
+    canvas.height = img.height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      throw new Error('no 2d context')
+    }
+    ctx.drawImage(img, 0, 0)
+    const data = ctx.getImageData(0, 0, img.width, img.height).data
+    let r = 0
+    let g = 0
+    let b = 0
+    for (let i = 0; i < data.length; i += 4) {
+      r += data[i]
+      g += data[i + 1]
+      b += data[i + 2]
+    }
+    const n = data.length / 4
+    return { r: r / n, g: g / n, b: b / n }
+  }, png.toString('base64'))
+}
+
+function rows(page: Page): Locator {
+  return page.locator('[data-component="accordion-item"]')
+}
+
+function rowHeader(row: Locator): Locator {
+  return row.locator(':scope > button')
+}
+
+/** The system a row shows (the row must be expanded). */
+async function systemOfRow(row: Locator): Promise<string> {
+  const value = await row.locator('[data-row-system]').getAttribute('data-row-system')
+  expect(value).not.toBeNull()
+  return value ?? ''
+}
+
+/** O-3: the controls the owner removed are nowhere on the page. */
+async function expectRemovedControlsAbsent(page: Page): Promise<void> {
+  await expect(page.locator('[data-show-in-3d]')).toHaveCount(0)
+  await expect(page.locator('[data-done]')).toHaveCount(0)
+  for (const name of ['Show in 3D', 'Zoom in', 'Zoom out', 'Done']) {
+    await expect(
+      page.locator('#interactive-systems').getByRole('button', { name, exact: true }),
+    ).toHaveCount(0)
+  }
+}
+
+/**
+ * O-6: every visible hotspot dot in `layer` is the topmost element at its own centre, so a tap on it
+ * reaches it (no other dot or tap area covers it). Returns the accessible names checked.
+ */
+async function expectEveryDotTappable(layer: Locator): Promise<string[]> {
+  const dots = layer.locator('li button').filter({ visible: true })
+  await expect(dots.first()).toBeVisible({ timeout: 15_000 })
+  const names: string[] = []
+  const count = await dots.count()
+  for (let i = 0; i < count; i += 1) {
+    const dot = dots.nth(i)
+    const name = (await dot.getAttribute('aria-label')) ?? ''
+    const onTop = await dot.evaluate((el) => {
+      const r = el.getBoundingClientRect()
+      return document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2) === el
+    })
+    expect(onTop, `the "${name}" dot is covered`).toBe(true)
+    names.push(name)
+  }
+  return names
+}
+
+async function wheelScrolls(page: Page, card: Locator): Promise<number> {
+  const box = await card.boundingBox()
+  expect(box).not.toBeNull()
+  if (!box) {
+    return 0
+  }
+  await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+  const before = await page.evaluate(() => window.scrollY)
+  await page.mouse.wheel(0, 200)
+  await page.waitForTimeout(400)
+  const after = await page.evaluate(() => window.scrollY)
+  await page.evaluate((y) => {
+    window.scrollTo(0, y)
+  }, before)
+  await page.waitForTimeout(100)
+  return after - before
+}
+
+test.describe('P3-T5 live 3D card', () => {
+  test.setTimeout(120_000)
+
+  test.beforeEach(async ({ context }) => {
+    await prepare(context)
+  })
+
+  test('@smoke image first: the Figma image paints, hover changes nothing, a click starts', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    // O-1: the Figma image through Next image optimisation, not a release still.
+    const poster = card.locator('img').first()
+    await expect(poster).toBeVisible()
+    await expect.poll(() => poster.evaluate((img: HTMLImageElement) => img.complete)).toBe(true)
+    expect(await poster.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0)
+    const src = await poster.evaluate((img: HTMLImageElement) => img.currentSrc)
+    expect(src).toContain('/_next/image?url=')
+    expect(src).toContain('tower-render')
+    expect(src).not.toContain('/stills/')
+    // O-3 at rest: the badge and "Open the live 3D model", as in Figma; no removed control.
+    await expect(card.locator('[data-open-3d-model]')).toBeVisible()
+    await expect(card.locator(':scope > [class*="liveModelBadge"]')).toBeVisible()
+    await expect(card.locator('[data-reset-view]')).toHaveCount(0)
+    await expectRemovedControlsAbsent(page)
+    await page.waitForTimeout(2_000)
+    await expectNothingShown(card)
+    expect(await wheelScrolls(page, card)).toBeGreaterThan(0)
+
+    // O-2: hover never swaps (it may only fetch the viewer code).
+    await card.hover()
+    await page.waitForTimeout(1_500)
+    await expectNothingShown(card)
+
+    await clickImage(card)
+    await expect(card).not.toHaveAttribute('data-viewer-state', 'still')
+  })
+
+  test('reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const recorder = record(page)
+    const card = await openHome(page)
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await expect(card).toHaveAttribute('data-viewer-fallback', 'device')
+    // One click on the pre-expanded first header enters it (O-2).
+    const first = rows(page).first()
+    await rowHeader(first).click()
+    const system = await systemOfRow(first)
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(first).toHaveAttribute('data-accordion-state', 'Expanded')
+    await expect(page).toHaveURL(new RegExp(`#systems-${system}$`))
+    const layer = card.locator(`[data-entered-system="${system}"]`)
+    await expect(layer).toBeVisible()
+    await expect(layer.locator('li button').filter({ visible: true }).first()).toBeVisible()
+    expect(recorder.model).toEqual([])
+
+    // Another hash later (an in-page link) exits the system; a system hash enters again.
+    await page.evaluate(() => {
+      window.location.hash = 'stats'
+    })
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await page.evaluate(() => {
+      window.location.hash = 'systems-fire'
+    })
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+  })
+
+  test('a #systems hash on load enters that system without starting the model', async ({
+    page,
+  }) => {
+    const card = await openHome(page, '#systems-fire')
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(card.locator('[data-entered-system="fire"]')).toBeVisible()
+    await expect(card.locator('[data-exit-system]')).toBeVisible()
+    await expect(card.locator('[data-open-3d-model]')).toHaveCount(0)
+    await page.waitForTimeout(1_500)
+    await expectNothingShown(card)
+  })
+
+  test('O-7: the tap hint appears once the card is half on screen, never as a target, and starts nothing', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveAttribute('data-tap-hint', 'play', { timeout: 5_000 })
+    await expect(hand).toHaveAttribute('aria-hidden', 'true')
+    expect(await hand.evaluate((el) => getComputedStyle(el).pointerEvents)).toBe('none')
+    // The hand's taps start nothing: after a whole cycle nothing of the model is shown.
+    await expect(hand).toHaveCount(0, { timeout: 6_000 })
+    await expectNothingShown(card)
+  })
+
+  test('O-7: the hint stops at once on hover, and never returns', async ({ page }) => {
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveCount(1, { timeout: 5_000 })
+    await card.hover()
+    // At once: well before the cycle would end by itself.
+    await expect(hand).toHaveCount(0, { timeout: 400 })
+    await page.mouse.move(0, 0)
+    // Without the hover a second cycle would come 8 s after the first; it never does.
+    for (let t = 0; t < 14_000; t += 250) {
+      expect(await hand.count(), `a hint came back after ${String(t)} ms`).toBe(0)
+      await page.waitForTimeout(250)
+    }
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+  })
+
+  test('O-7: the hint stops at once on a click (the click itself starts the model)', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveCount(1, { timeout: 5_000 })
+    // A click through the hand reaches the card (the hand is never a target).
+    const box = await hand.boundingBox()
+    await page.mouse.click((box?.x ?? 0) + 10, (box?.y ?? 0) + 10)
+    await expect(hand).toHaveCount(0, { timeout: 400 })
+    await expect(card).not.toHaveAttribute('data-viewer-state', 'still')
+  })
+
+  test('O-7: under reduced motion the hand is shown still, once, and does not animate', async ({
+    page,
+  }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const card = await openHome(page)
+    await waitHydrated(card)
+    const hand = card.locator('[data-tap-hint]')
+    await expect(hand).toHaveAttribute('data-tap-hint', 'still', { timeout: 5_000 })
+    const running = await hand.evaluate(
+      (el) => (el as unknown as Element).getAnimations({ subtree: true }).length,
+    )
+    expect(running).toBe(0)
+    await expect(hand).toHaveCount(0, { timeout: 6_000 })
+    // Shown once only.
+    for (let t = 0; t < 12_000; t += 250) {
+      expect(await hand.count(), `a hint came back after ${String(t)} ms`).toBe(0)
+      await page.waitForTimeout(250)
+    }
+  })
+
+  test('O-8: after a reload with the hash, no frame shows an empty card (slow images)', async ({
+    page,
+  }) => {
+    // Every frame from the first one: is the card on screen with nothing painted in it?
+    await page.addInitScript(() => {
+      const w = window as unknown as { __cardFrames: number; __emptyFrames: number }
+      w.__cardFrames = 0
+      w.__emptyFrames = 0
+      const sample = (): void => {
+        const card = document.querySelector('[data-interactive-3d-card]')
+        const box = card?.getBoundingClientRect()
+        if (card && box && box.bottom > 0 && box.top < window.innerHeight) {
+          w.__cardFrames += 1
+          const poster = card.firstElementChild
+          const img = poster?.querySelector('img')
+          const posterPainted =
+            (img?.complete === true && img.naturalWidth > 0) ||
+            (poster !== null && getComputedStyle(poster).backgroundImage !== 'none')
+          const layer = card.querySelector('[data-entered-system]')
+          const layerImg = layer?.querySelector('img')
+          const layerEmpty =
+            layer?.getAttribute('data-loaded') === 'true' &&
+            !(layerImg?.complete === true && layerImg.naturalWidth > 0)
+          if (!posterPainted || layerEmpty) {
+            w.__emptyFrames += 1
+          }
+        }
+        requestAnimationFrame(sample)
+      }
+      requestAnimationFrame(sample)
+    })
+    // A slow network for the pictures, so the first frames come before any image arrives.
+    await page.route(/\/_next\/image|\/stills\//, async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 1_500))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await page.evaluate(() => {
+      window.history.replaceState(null, '', '/en#systems-hvac')
+    })
+    await page.reload()
+    await expect(card).toHaveAttribute('data-entered', 'hvac')
+    await expect(card.locator('[data-entered-system="hvac"]')).toHaveAttribute(
+      'data-loaded',
+      'true',
+      { timeout: 15_000 },
+    )
+    const frames = await page.evaluate(() => {
+      const w = window as unknown as { __cardFrames: number; __emptyFrames: number }
+      return { card: w.__cardFrames, empty: w.__emptyFrames }
+    })
+    expect(frames.card).toBeGreaterThan(0)
+    expect(frames.empty).toBe(0)
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+  })
+
+  for (const variant of ['missing', 'different'] as const) {
+    test(`@gpu C3-3: a ${variant} worker CSP fails closed to stills before any worker starts`, async ({
+      page,
+    }) => {
+      const workerMethods: string[] = []
+      await page.route(`**${WORKER_PATH}`, async (route) => {
+        workerMethods.push(route.request().method())
+        const response = await route.fetch()
+        const headers = { ...response.headers() }
+        if (variant === 'missing') {
+          delete headers['content-security-policy']
+        } else {
+          headers['content-security-policy'] = "default-src 'none'; script-src *"
+        }
+        await route.fulfill({ response, headers })
+      })
+      const recorder = record(page)
+      const card = await openHome(page)
+      await expectHardwareGpu(page)
+      await clickImage(card)
+      await expect(card).toHaveAttribute('data-viewer-state', 'stills', { timeout: LIVE_TIMEOUT })
+      await expect(card).toHaveAttribute('data-viewer-fallback', 'worker-policy')
+      expect(workerMethods).toEqual(['HEAD'])
+      expect(recorder.warnings).toEqual([
+        '[systems3d] KTX2 worker policy check failed; staying on the still images',
+      ])
+    })
+  }
+
+  test('@gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    const sizeBefore = await card.boundingBox()
+    await goLive(card)
+    // O-4: a soft cross-fade, and the card size does not change.
+    const fade = await card
+      .locator('canvas')
+      .evaluate((el) => getComputedStyle(el).transitionDuration)
+    expect(fade).toBe('0.5s')
+    const sizeAfter = await card.boundingBox()
+    expect([sizeAfter?.width, sizeAfter?.height]).toEqual([sizeBefore?.width, sizeBefore?.height])
+    // O-13 (Q13): the canvas is transparent over its dusk sky (CSS), and the top of the card shows
+    // that sky: a clear blue, darker at the very top than lower down (not the grey studio room, not
+    // a flat colour, not black).
+    const sky = await card.locator('canvas').evaluate((el) => ({
+      alpha: (el as HTMLCanvasElement).getContext('webgl2')?.getContextAttributes()?.alpha,
+      image: getComputedStyle(el).backgroundImage,
+    }))
+    expect(sky.alpha).toBe(true)
+    expect(sky.image).toContain('linear-gradient')
+    await page.waitForTimeout(600)
+    const zenith = await meanRgb(page, card, 0, 0.04)
+    const upper = await meanRgb(page, card, 0.1, 0.14)
+    for (const band of [zenith, upper]) {
+      expect(band.b).toBeGreaterThan(band.g)
+      expect(band.g).toBeGreaterThan(band.r)
+      expect(band.b - band.r).toBeGreaterThan(40)
+    }
+    expect(zenith.r + zenith.g + zenith.b).toBeLessThan(upper.r + upper.g + upper.b)
+    expect(recorder.model).toEqual(
+      expect.arrayContaining([`HEAD ${WORKER_PATH}`, `GET ${WORKER_PATH}`]),
+    )
+    // C3-3 (CTO 2c): the GET the Worker itself makes carries exactly the H3b policy, once.
+    await expect.poll(() => recorder.workerGetCsp.length).toBeGreaterThan(0)
+    for (const policies of recorder.workerGetCsp) {
+      expect(policies).toEqual([WORKER_CSP])
+    }
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    // O-3 live, overview: one "reset view"; the badge and the open button are gone.
+    await expect(card.locator('[data-reset-view]')).toHaveCount(1)
+    await expect(card.locator('[data-open-3d-model]')).toHaveCount(0)
+    await expect(card.locator(':scope > [class*="liveModelBadge"]')).toHaveCount(0)
+    await expect(card.locator('button').filter({ visible: true })).toHaveCount(1)
+    await expectRemovedControlsAbsent(page)
+
+    // The pre-expanded first row enters with one header click, and exits from the card.
+    const first = rows(page).first()
+    await rowHeader(first).click()
+    const firstSystem = await systemOfRow(first)
+    await expect(card).toHaveAttribute('data-entered', firstSystem)
+    await expect(first).toHaveAttribute('data-accordion-state', 'Expanded')
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({
+      timeout: 15_000,
+    })
+    // Inside a system: "Exit system" and "reset view".
+    await expect(card.locator('[data-exit-system]')).toHaveCount(1)
+    await expect(card.locator('[data-reset-view]')).toHaveCount(1)
+    await card.locator('[data-exit-system]').click()
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    expect(new URL(page.url()).hash).toBe('')
+
+    // Opening a collapsed row enters its system; collapsing it exits. Focus stays on the header.
+    const count = await rows(page).count()
+    for (let i = 1; i < count; i += 1) {
+      const row = rows(page).nth(i)
+      const header = rowHeader(row)
+      await header.click()
+      const system = await systemOfRow(row)
+      await expect(card).toHaveAttribute('data-entered', system)
+      await expect(page).toHaveURL(new RegExp(`#systems-${system}$`))
+      await expect(header).toBeFocused()
+      await expect(
+        card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+      ).toBeVisible({
+        timeout: 15_000,
+      })
+      await expect(card).toHaveAttribute('data-viewer-state', 'live')
+      await header.click()
+      await expect(card).toHaveAttribute('data-entered', 'none')
+    }
+
+    if (PRODUCTION_SERVER) {
+      expect(recorder.cspViolations).toEqual([])
+    }
+  })
+
+  test('@gpu live: a system card click on the still card starts the model in that system', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    const row = rows(page).nth(1)
+    await rowHeader(row).click()
+    const system = await systemOfRow(row)
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    expect(recorder.model.some((entry) => entry.endsWith('.glb'))).toBe(true)
+    // A start from a system card leaves the page wheel alone.
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+  })
+
+  test('@gpu live: the page scroll is never trapped — the wheel zooms only while the card is active', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    // A click on the image starts the model and takes the wheel once it is live.
+    await goLive(card)
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    expect(await wheelScrolls(page, card)).toBe(0)
+    await page.keyboard.press('Escape')
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+    expect(await wheelScrolls(page, card)).toBeGreaterThan(0)
+    await card.click()
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    expect(await wheelScrolls(page, card)).toBe(0)
+    await page.locator('h1, h2').first().click()
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+  })
+
+  test('@gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    // Focus alone starts nothing (O-2); Enter on the focused card does. The card is focusable once
+    // hydrated (its keyboard handlers exist only then).
+    await waitHydrated(card)
+    await card.focus()
+    await expect(card).toBeFocused()
+    await page.waitForTimeout(1_000)
+    await expectNothingShown(card)
+    await page.keyboard.press('Enter')
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    await expect(card).toBeFocused()
+    const scrollBefore = await page.evaluate(() => window.scrollY)
+    for (const key of ['ArrowLeft', 'ArrowUp', '+', '-', '0']) {
+      await page.keyboard.press(key)
+    }
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore)
+
+    // Each digit enters its row's system (labels show once the flight lands); Escape exits it.
+    const count = await rows(page).count()
+    expect(count).toBe(5)
+    for (let i = 0; i < count; i += 1) {
+      await page.keyboard.press(String(i + 1))
+      const system = await systemOfRow(rows(page).nth(i))
+      await expect(card).toHaveAttribute('data-entered', system)
+      await expect(card).toBeFocused()
+      await expect(
+        card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+      ).toBeVisible({ timeout: 15_000 })
+      await page.keyboard.press('Escape')
+      await expect(card).toHaveAttribute('data-entered', 'none')
+      await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+      await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    }
+    await page.keyboard.press('Escape')
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+  })
+
+  test('@gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it', async ({
+    page,
+  }) => {
+    const card = await openHome(page, '#systems-fire')
+    await expectHardwareGpu(page)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    await goLive(card)
+    await page.evaluate(() => {
+      const canvas = document.querySelector('[data-interactive-3d-card] canvas')
+      const gl = canvas instanceof HTMLCanvasElement ? canvas.getContext('webgl2') : null
+      gl?.getExtension('WEBGL_lose_context')?.loseContext()
+    })
+    await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await expect(card).toHaveAttribute('data-viewer-fallback', 'context-lost')
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(card.locator('[data-entered-system="fire"]')).toBeVisible()
+    expect(new URL(page.url()).hash).toBe('#systems-fire')
+  })
+
+  test('@gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits', async ({
+    page,
+    context,
+    browser,
+  }) => {
+    // The real GPU is checked in a context without the name override below.
+    const probe = await browser.newContext()
+    try {
+      await expectHardwareGpu(await probe.newPage())
+    } finally {
+      await probe.close()
+    }
+    // Device hint from outside the code under test: the renderer name the tier rules read.
+    await context.addInitScript(() => {
+      const UNMASKED_RENDERER_WEBGL = 0x9246
+      for (const proto of [WebGL2RenderingContext.prototype, WebGLRenderingContext.prototype]) {
+        const original = Reflect.get(proto, 'getParameter') as (name: GLenum) => unknown
+        proto.getParameter = function (this: WebGLRenderingContext, name: GLenum): unknown {
+          return name === UNMASKED_RENDERER_WEBGL
+            ? 'ANGLE (NVIDIA, NVIDIA GeForce RTX 3050 Laptop GPU Direct3D11 vs_5_0 ps_5_0, D3D11)'
+            : Reflect.apply(original, this, [name])
+        }
+      }
+    })
+    const recorder = record(page)
+    const card = await openHome(page)
+    await goLive(card)
+    // The name picks the full model. O-9: the GPU probe before the first frame times the real GPU
+    // under the name (an HD 530 here), so it may start that model on the low tier (DPR 1, no bloom).
+    expect(await card.getAttribute('data-viewer-tier')).toMatch(/^(full|low)$/)
+    expect(recorder.model).toContain('GET /systems/v022n/tower.glb')
+    expect(recorder.model).not.toContain('GET /systems/v022n/tower-lite.glb')
+
+    await card.focus()
+    await page.keyboard.press('1')
+    const system = await systemOfRow(rows(page).first())
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    await page.keyboard.press('Escape')
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+    await expect(card).toHaveAttribute('data-viewer-state', 'live')
+    if (PRODUCTION_SERVER) {
+      expect(recorder.cspViolations).toEqual([])
+    }
+  })
+
+  test('@gpu live: under CPU throttling the card ends in a lower tier: low only off screen (O-9), stills only at rest (O-14b)', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    const tierNow = async (): Promise<string | null> =>
+      (await card.getAttribute('data-viewer-state')) === 'stills'
+        ? 'stills'
+        : card.getAttribute('data-viewer-tier')
+    // O-9: the GPU probe fixes the tier before the first visible frame: the model's, or low.
+    const start = await tierNow()
+    expect(start).toMatch(/^(lite|full|low)$/)
+    // Every change of tier or state, whether the card was in the viewport at that moment, and
+    // whether the visitor held the view (a button down).
+    await card.evaluate((el) => {
+      const changes: { value: string | null; inView: boolean; held: boolean }[] = []
+      let held = false
+      window.addEventListener('pointerdown', () => (held = true), { capture: true })
+      window.addEventListener('pointerup', () => (held = false), { capture: true })
+      Object.assign(window, { __tierChanges: changes })
+      new MutationObserver(() => {
+        const box = el.getBoundingClientRect()
+        changes.push({
+          value: `${el.getAttribute('data-viewer-state') ?? ''}/${el.getAttribute('data-viewer-tier') ?? ''}`,
+          inView: box.bottom > 0 && box.top < window.innerHeight,
+          held,
+        })
+      }).observe(el, {
+        attributes: true,
+        attributeFilter: ['data-viewer-state', 'data-viewer-tier'],
+      })
+    })
+
+    const cdp = await context.newCDPSession(page)
+    // Below low the only tier left is the stills: from low, a heavier load makes the device that slow.
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: start === 'low' ? 20 : 6 })
+    try {
+      await card.click()
+      await expect(card).toHaveAttribute('data-viewer-active', 'true')
+      // Keep the canvas animating (drag-orbit back and forth) while the rolling FPS check runs; then
+      // the card leaves the viewport (where a drop may apply) and comes back.
+      await expect
+        .poll(
+          async () => {
+            await card.scrollIntoViewIfNeeded()
+            const box = await card.boundingBox()
+            expect(box).not.toBeNull()
+            const x = (box?.x ?? 0) + (box?.width ?? 0) / 2
+            const y = (box?.y ?? 0) + (box?.height ?? 0) / 2
+            await page.mouse.move(x, y)
+            await page.mouse.down()
+            for (let i = 1; i <= 20; i += 1) {
+              await page.mouse.move(x + (i % 10 < 5 ? i * 6 : 60 - i * 3), y)
+            }
+            await page.mouse.up()
+            await page.evaluate(() => {
+              window.scrollTo(0, 0)
+            })
+            await page.waitForTimeout(300)
+            await card.scrollIntoViewIfNeeded()
+            return tierNow()
+          },
+          { timeout: 90_000, intervals: [0] },
+        )
+        .toMatch(start === 'low' ? /^stills$/ : /^(low|stills)$/)
+      if ((await tierNow()) === 'stills') {
+        await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
+        await expect(card.locator('img').first()).toBeVisible()
+      }
+      const changes = await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              __tierChanges: { value: string; inView: boolean; held: boolean }[]
+            }
+          ).__tierChanges,
+      )
+      expect(changes.length).toBeGreaterThan(0)
+      // O-9: a drop to low never in view. O-14b: the drop to stills may come in view, but only at
+      // rest (nothing held; this test makes no flight).
+      expect(
+        changes.filter((change) => change.inView && !change.value.startsWith('stills/')),
+      ).toEqual([])
+      expect(changes.filter((change) => change.held)).toEqual([])
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+  })
+
+  /** Drags the live view back and forth once (the canvas animates while the button is held). */
+  async function dragView(page: Page, card: Locator): Promise<void> {
+    const box = await card.boundingBox()
+    expect(box).not.toBeNull()
+    const x = (box?.x ?? 0) + (box?.width ?? 0) / 2
+    const y = (box?.y ?? 0) + (box?.height ?? 0) / 2
+    await page.mouse.move(x, y)
+    await page.mouse.down()
+    for (let i = 1; i <= 20; i += 1) {
+      await page.mouse.move(x + (i % 10 < 5 ? i * 6 : 60 - i * 3), y)
+    }
+    await page.mouse.up()
+  }
+
+  test('@gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page, '#systems-fire')
+    await expectHardwareGpu(page)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await goLive(card)
+    await card.scrollIntoViewIfNeeded()
+    const cdp = await context.newCDPSession(page)
+    try {
+      // The stills drop starts from the low tier. A card that started on its model first drops to
+      // low, which applies only off screen (O-9).
+      if ((await card.getAttribute('data-viewer-tier')) !== 'low') {
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 6 })
+        await card.click()
+        await expect
+          .poll(
+            async () => {
+              await card.scrollIntoViewIfNeeded()
+              await dragView(page, card)
+              await page.evaluate(() => {
+                window.scrollTo(0, 0)
+              })
+              await page.waitForTimeout(300)
+              await card.scrollIntoViewIfNeeded()
+              return card.getAttribute('data-viewer-tier')
+            },
+            { timeout: 90_000, intervals: [0] },
+          )
+          .toBe('low')
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+      }
+      await expect(card).toHaveAttribute('data-viewer-state', 'live')
+      await expect(card).toHaveAttribute('data-viewer-tier', 'low')
+
+      // Every state change: whether the card was in the viewport, whether the visitor held the view
+      // (a button down), and whether the canvas was still in the card (a crossfade, not a cut).
+      await card.evaluate((el) => {
+        const changes: { state: string | null; inView: boolean; held: boolean; canvas: boolean }[] =
+          []
+        let held = false
+        window.addEventListener('pointerdown', () => (held = true), { capture: true })
+        window.addEventListener('pointerup', () => (held = false), { capture: true })
+        Object.assign(window, { __stateChanges: changes })
+        new MutationObserver(() => {
+          const box = el.getBoundingClientRect()
+          changes.push({
+            state: el.getAttribute('data-viewer-state'),
+            inView: box.bottom > 0 && box.top < window.innerHeight,
+            held,
+            canvas: el.querySelector('canvas') !== null,
+          })
+        }).observe(el, { attributes: true, attributeFilter: ['data-viewer-state'] })
+      })
+
+      // Far too slow for §8b's stills floor; the card stays in view throughout.
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 20 })
+      await card.click()
+      await expect(card).toHaveAttribute('data-viewer-active', 'true')
+      await expect
+        .poll(
+          async () => {
+            await dragView(page, card)
+            await page.waitForTimeout(400)
+            return card.getAttribute('data-viewer-state')
+          },
+          { timeout: 90_000, intervals: [0] },
+        )
+        .toBe('stills')
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+
+      await expect(card).toHaveAttribute('data-viewer-fallback', 'too-slow')
+      const changes = await page.evaluate(
+        () =>
+          (
+            window as unknown as {
+              __stateChanges: { state: string; inView: boolean; held: boolean; canvas: boolean }[]
+            }
+          ).__stateChanges,
+      )
+      // In view, at rest (nothing held), with the canvas still there for the crossfade.
+      expect(changes).toEqual([{ state: 'stills', inView: true, held: false, canvas: true }])
+      // The visitor's place is kept: the system, its end still and labels, the hash, the accordion.
+      await expect(card).toHaveAttribute('data-entered', 'fire')
+      const layer = card.locator('[data-entered-system="fire"]')
+      await expect(layer).toBeVisible()
+      await expect(layer.locator('li button').filter({ visible: true }).first()).toBeVisible()
+      expect(new URL(page.url()).hash).toBe('#systems-fire')
+      const expanded = rows(page).and(page.locator('[data-accordion-state="Expanded"]'))
+      await expect(expanded).toHaveCount(1)
+      expect(await systemOfRow(expanded)).toBe('fire')
+      // After the crossfade the canvas leaves.
+      await expect(card.locator('canvas')).toHaveCount(0)
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+  })
+
+  /** O-16: the middle of the card as shown (the tower; clear of the panel, controls and labels). */
+  async function centerShot(page: Page, card: Locator): Promise<string> {
+    const box = await card.boundingBox()
+    if (!box) {
+      throw new Error('card has no box')
+    }
+    const png = await page.screenshot({
+      clip: {
+        x: box.x + box.width * 0.3,
+        y: box.y + box.height * 0.2,
+        width: box.width * 0.4,
+        height: box.height * 0.4,
+      },
+    })
+    return png.toString('base64')
+  }
+
+  /** O-16: mean absolute difference per channel (0–255) between a picture and each of `others`. */
+  async function pictureDiffs(page: Page, picture: string, others: string[]): Promise<number[]> {
+    return page.evaluate(
+      async ({ reference, list }) => {
+        const pixels = async (src: string): Promise<Uint8ClampedArray> => {
+          const img = new Image()
+          img.src = `data:image/png;base64,${src}`
+          await img.decode()
+          const canvas = document.createElement('canvas')
+          canvas.width = img.width
+          canvas.height = img.height
+          const ctx = canvas.getContext('2d')
+          if (!ctx) {
+            throw new Error('no 2d context')
+          }
+          ctx.drawImage(img, 0, 0)
+          return ctx.getImageData(0, 0, img.width, img.height).data
+        }
+        const base = await pixels(reference)
+        const diffs: number[] = []
+        for (const src of list) {
+          const data = await pixels(src)
+          const n = Math.min(base.length, data.length)
+          let sum = 0
+          for (let i = 0; i < n; i += 4) {
+            sum +=
+              Math.abs(base[i] - data[i]) +
+              Math.abs(base[i + 1] - data[i + 1]) +
+              Math.abs(base[i + 2] - data[i + 2])
+          }
+          diffs.push(sum / ((n / 4) * 3))
+        }
+        return diffs
+      },
+      { reference: picture, list: others },
+    )
+  }
+
+  /**
+   * O-16: a picture this close to the overview (mean per channel) shows the overview pose. Two
+   * pictures of the overview a moment apart are far closer than this; any view near a system is far
+   * further.
+   */
+  const OVERVIEW_MATCH = 8
+  const SYSTEM_ROWS: Record<string, string> = {
+    hvac: 'HVAC',
+    fire: 'Fire Fighting',
+    plumbing: 'Plumbing',
+    smart: 'Smart Systems',
+  }
+
+  test('@gpu O-16: a click on another system flies there directly, never through the overview (three pairs)', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    await card.scrollIntoViewIfNeeded()
+    await page.mouse.move(0, 0)
+    // After the cross-fade to the live view (well before the idle turntable starts).
+    await page.waitForTimeout(1_500)
+    // The overview as shown, twice: the metric must call these the same.
+    const overview = await centerShot(page, card)
+    await page.waitForTimeout(300)
+    const [overviewAgain] = await pictureDiffs(page, overview, [await centerShot(page, card)])
+    expect(overviewAgain).toBeLessThan(OVERVIEW_MATCH / 2)
+
+    const enter = async (system: string): Promise<void> => {
+      await rowHeader(rows(page).filter({ hasText: SYSTEM_ROWS[system] })).click()
+      await page.mouse.move(0, 0)
+    }
+    /** Arrived: the system is entered and its live labels show (the camera has stopped there). */
+    const arrived = async (system: string): Promise<boolean> =>
+      (await card.getAttribute('data-entered')) === system &&
+      (await card.locator('[data-live-labels] li button').filter({ visible: true }).count()) > 0
+
+    await enter('hvac')
+    await expect.poll(() => arrived('hvac'), { timeout: 30_000 }).toBe(true)
+    for (const [from, to] of [
+      ['hvac', 'fire'],
+      ['fire', 'plumbing'],
+      ['plumbing', 'smart'],
+    ] as const) {
+      // Inside `from`, the view is nothing like the overview (the metric can tell them apart).
+      const [inside] = await pictureDiffs(page, overview, [await centerShot(page, card)])
+      expect(inside, `inside ${from}`).toBeGreaterThan(OVERVIEW_MATCH)
+      await enter(to)
+      await expect(card).toHaveAttribute('data-entered', to)
+      // The flight has started once `from`'s labels are gone (they show only while a system is
+      // entered and the camera stands there).
+      await expect(
+        card.locator('[data-live-labels] li button').filter({ visible: true }),
+      ).toHaveCount(0)
+      // Every picture until the camera has arrived in `to`.
+      const shots: string[] = []
+      const deadline = Date.now() + 30_000
+      while (!(await arrived(to)) && Date.now() < deadline) {
+        shots.push(await centerShot(page, card))
+      }
+      expect(await arrived(to), `arrived in ${to}`).toBe(true)
+      expect(shots.length, `${from} → ${to}: pictures during the move`).toBeGreaterThan(3)
+      const diffs = await pictureDiffs(page, overview, shots)
+      expect(Math.min(...diffs), `${from} → ${to}: nearest the overview`).toBeGreaterThan(
+        OVERVIEW_MATCH,
+      )
+    }
+  })
+
+  /** O-8: once live inside a system, the canvas renders: it changes when the view turns. */
+  async function expectLiveSystem(page: Page, card: Locator, system: string): Promise<void> {
+    await expect(card).toHaveAttribute('data-entered', system)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card.locator('canvas')).toHaveCount(1)
+    await card.scrollIntoViewIfNeeded()
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    await page.waitForTimeout(800)
+    const box = await card.locator('canvas').boundingBox()
+    expect(box).not.toBeNull()
+    // Below the top band, where the drag hint may appear when the card is focused.
+    const clip = {
+      x: box?.x ?? 0,
+      y: (box?.y ?? 0) + 80,
+      width: box?.width ?? 0,
+      height: (box?.height ?? 0) - 80,
+    }
+    const before = await page.screenshot({ clip })
+    await card.focus()
+    await page.keyboard.press('ArrowLeft')
+    await page.keyboard.press('ArrowLeft')
+    await page.waitForTimeout(600)
+    expect(Buffer.compare(before, await page.screenshot({ clip }))).not.toBe(0)
+  }
+
+  /** O-8: in HVAC the fans turn by themselves: the fan region changes between captures 500 ms apart. */
+  async function expectFansTurning(page: Page, card: Locator): Promise<void> {
+    const towers = card.locator('[data-live-labels] li button[aria-label="Cooling towers"]')
+    await expect(towers).toBeVisible({ timeout: 15_000 })
+    await page.waitForTimeout(1_500)
+    const dot = await towers.boundingBox()
+    const canvas = await card.locator('canvas').boundingBox()
+    expect(dot).not.toBeNull()
+    expect(canvas).not.toBeNull()
+    const cx = (dot?.x ?? 0) + (dot?.width ?? 0) / 2
+    const cy = (dot?.y ?? 0) + (dot?.height ?? 0) / 2
+    const left = Math.max(canvas?.x ?? 0, cx - 110)
+    const top = Math.max(canvas?.y ?? 0, cy - 40)
+    const clip = {
+      x: left,
+      y: top,
+      width: Math.min((canvas?.x ?? 0) + (canvas?.width ?? 0), cx + 110) - left,
+      height: Math.min((canvas?.y ?? 0) + (canvas?.height ?? 0), cy + 150) - top,
+    }
+    await page.mouse.move(0, 0)
+    const first = await page.screenshot({ clip })
+    await page.waitForTimeout(500)
+    const second = await page.screenshot({ clip })
+    expect(Buffer.compare(first, second), 'the HVAC fans do not turn').not.toBe(0)
+  }
+
+  test('@gpu O-18: inside a system a wheel-out at the limit exits; a wheel inside the range only zooms', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    // Enter Fire Fighting with its digit (the card is focused once started from it).
+    const fireIndex = (await rows(page).allInnerTexts()).findIndex((t) =>
+      t.includes('Fire Fighting'),
+    )
+    expect(fireIndex).toBeGreaterThanOrEqual(0)
+    await card.focus()
+    await page.keyboard.press(String(fireIndex + 1))
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    await expect(page).toHaveURL(/#systems-fire$/)
+    const box = await card.boundingBox()
+    if (!box) {
+      throw new Error('card has no box')
+    }
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    const scrollBefore = await page.evaluate(() => window.scrollY)
+    /** One wheel gesture: ticks out (100 px each), close together. */
+    const gesture = async (ticks: number): Promise<void> => {
+      for (let i = 0; i < ticks; i += 1) {
+        await page.mouse.wheel(0, 100)
+        await page.waitForTimeout(30)
+      }
+    }
+
+    // Inside the range the wheel only zooms: the view changes, the system stays.
+    const before = await centerShot(page, card)
+    await gesture(2)
+    await page.waitForTimeout(600)
+    const [zoomed] = await pictureDiffs(page, before, [await centerShot(page, card)])
+    expect(zoomed, 'the wheel inside the range zooms the view').toBeGreaterThan(1)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+
+    // One gesture that runs into the limit and on: it stops there, and does not exit.
+    await gesture(14)
+    await page.waitForTimeout(150)
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(page).toHaveURL(/#systems-fire$/)
+
+    // After a pause, a further wheel-out exits: the flight out, the accordion closed, no hash.
+    await page.waitForTimeout(700)
+    await page.mouse.wheel(0, 100)
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(page).not.toHaveURL(/#systems-/)
+    await expect(rows(page).and(page.locator('[data-accordion-state="Expanded"]'))).toHaveCount(0)
+    // The page never scrolled: the card is active and holds the wheel.
+    expect(await page.evaluate(() => window.scrollY)).toBe(scrollBefore)
+  })
+
+  test('@gpu O-19: Escape inside a system exits as the header does: the row collapses, the hash clears', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await goLive(card)
+    const fireIndex = (await rows(page).allInnerTexts()).findIndex((t) =>
+      t.includes('Fire Fighting'),
+    )
+    expect(fireIndex).toBeGreaterThanOrEqual(0)
+    await card.focus()
+    await page.keyboard.press(String(fireIndex + 1))
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    const expanded = rows(page).and(page.locator('[data-accordion-state="Expanded"]'))
+    await expect(expanded).toHaveCount(1)
+    await expect(page).toHaveURL(/#systems-fire$/)
+
+    await page.keyboard.press('Escape')
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(expanded).toHaveCount(0)
+    await expect(page).not.toHaveURL(/#systems-/)
+    // O-19 focus ruling: the keyboard stays with the card (document.activeElement is the card): it
+    // is still active, and a digit still enters a system.
+    await expect(card).toBeFocused()
+    expect(
+      await card.evaluate((el) => document.activeElement === el),
+      'after the Escape exit, focus is on the card',
+    ).toBe(true)
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+    await page.keyboard.press(String(fireIndex + 1))
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await expect(expanded).toHaveCount(1)
+
+    // Focus inside the row's panel when the row collapses goes to that row's header button. Today's
+    // panel holds text only, so the test makes it focusable (as a link in it would be), focuses it,
+    // and leaves the system with the wheel (O-18), which works with the focus anywhere.
+    await expect(
+      card.locator('[data-live-labels] li button').filter({ visible: true }).first(),
+    ).toBeVisible({ timeout: 15_000 })
+    const fireRow = rows(page).nth(fireIndex)
+    await fireRow.locator('[data-row-system]').evaluate((el) => {
+      el.setAttribute('tabindex', '-1')
+      ;(el as HTMLElement).focus()
+    })
+    expect(
+      await fireRow.locator('[data-row-system]').evaluate((el) => document.activeElement === el),
+    ).toBe(true)
+    const box = await card.boundingBox()
+    if (!box) {
+      throw new Error('card has no box')
+    }
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2)
+    for (let i = 0; i < 16; i += 1) {
+      await page.mouse.wheel(0, 100)
+      await page.waitForTimeout(30)
+    }
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await page.waitForTimeout(700)
+    await page.mouse.wheel(0, 100)
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await expect(expanded).toHaveCount(0)
+    await expect(rowHeader(fireRow)).toBeFocused()
+    expect(
+      await rowHeader(fireRow).evaluate((el) => document.activeElement === el),
+      "after a collapse with focus inside the panel, focus is on that row's header button",
+    ).toBe(true)
+  })
+
+  test('@gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    const count = await rows(page).count()
+    expect(count).toBe(5)
+    for (let i = 0; i < count; i += 1) {
+      const row = rows(page).nth(i)
+      await rowHeader(row).click()
+      const system = await systemOfRow(row)
+      await expectLiveSystem(page, card, system)
+      if (system === 'hvac') {
+        await expectFansTurning(page, card)
+      }
+      // After exit, the next card goes live again (the loop).
+      await rowHeader(row).click()
+      await expect(card).toHaveAttribute('data-entered', 'none')
+    }
+  })
+
+  test('@gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+
+    // A plain reload, then a system card.
+    await page.reload()
+    await waitHydrated(card)
+    await card.scrollIntoViewIfNeeded()
+    const fire = rows(page).nth(1)
+    await rowHeader(fire).click()
+    await expectLiveSystem(page, card, await systemOfRow(fire))
+
+    // A reload with the hash: the HVAC still and its expanded card; one click on that card goes live
+    // inside HVAC (it does not exit), and the fans turn.
+    await page.evaluate(() => {
+      window.history.replaceState(null, '', '/en#systems-hvac')
+    })
+    await page.reload()
+    await waitHydrated(card)
+    await expect(card).toHaveAttribute('data-entered', 'hvac')
+    await expect(card).toHaveAttribute('data-viewer-state', 'still')
+    const hvac = rows(page).first()
+    await expect(hvac).toHaveAttribute('data-accordion-state', 'Expanded')
+    await rowHeader(hvac).click()
+    await expectLiveSystem(page, card, 'hvac')
+    await expect(hvac).toHaveAttribute('data-accordion-state', 'Expanded')
+    expect(new URL(page.url()).hash).toBe('#systems-hvac')
+    await expectFansTurning(page, card)
+  })
+
+  test('@gpu O-8: while the model loads after a click, the image stays with a small loading indicator', async ({
+    page,
+  }) => {
+    // Hold the model back, so the loading state lasts long enough to look at.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2_500))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await rowHeader(rows(page).nth(2)).click()
+    await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+    await expect(card.locator('[data-loading-indicator]')).toBeVisible()
+    // The image under it stays: the canvas is still fully transparent (O-9b: through its filter).
+    expect(await card.locator('canvas').evaluate((el) => getComputedStyle(el).filter)).toBe(
+      'opacity(0)',
+    )
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card.locator('[data-loading-indicator]')).toHaveCount(0)
+  })
+
+  test('O-9: at the top of the page nothing of the model is fetched (the card is far below)', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    await page.goto('/en')
+    await expect(page.locator('html')).toHaveAttribute('data-intro', 'seen')
+    await waitHydrated(page.locator('[data-interactive-3d-card]'))
+    await page.waitForTimeout(3_000)
+    expect(recorder.model).toEqual([])
+  })
+
+  test('O-9: with Save-Data nothing is prepared; a click shows the stills tier', async ({
+    page,
+    context,
+  }) => {
+    // Device hint from outside the code under test: the browser's Save-Data setting.
+    await context.addInitScript(() => {
+      Object.defineProperty(navigator, 'connection', {
+        get: () => ({ saveData: true, effectiveType: '4g' }),
+      })
+    })
+    const recorder = record(page)
+    const card = await openHome(page)
+    await waitHydrated(card)
+    await page.waitForTimeout(3_000)
+    expect(recorder.model).toEqual([])
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await expect(card).toHaveAttribute('data-viewer-fallback', 'device')
+    expect(recorder.model).toEqual([])
+  })
+
+  test('@gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more', async ({
+    page,
+  }) => {
+    const recorder = record(page)
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await expect
+      .poll(() => recorder.model.filter((entry) => entry.endsWith('.glb')).length, {
+        timeout: LIVE_TIMEOUT,
+      })
+      .toBe(1)
+    await page.waitForTimeout(3_000)
+    await expectNothingShown(card)
+    const before = recorder.model.length
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card.locator('canvas')).toHaveCount(1)
+    expect(recorder.model.slice(before)).toEqual([])
+  })
+
+  test('@gpu O-9: the tier never changes in view: system after system keeps the tier it started with', async ({
+    page,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await card.evaluate((el) => {
+      const tiers: string[] = []
+      Object.assign(window, { __tiers: tiers })
+      new MutationObserver(() => {
+        const tier = el.getAttribute('data-viewer-tier')
+        if (tier !== null && tiers.at(-1) !== tier) {
+          tiers.push(tier)
+        }
+      }).observe(el, { attributes: true, attributeFilter: ['data-viewer-tier'] })
+    })
+    for (const index of [1, 2, 0, 4]) {
+      const row = rows(page).nth(index)
+      await rowHeader(row).click()
+      await expectLiveSystem(page, card, await systemOfRow(row))
+    }
+    const tiers = await page.evaluate(() => (window as unknown as { __tiers: string[] }).__tiers)
+    expect(tiers).toHaveLength(1)
+  })
+
+  test('@gpu O-9: a click during loading keeps only the latest system (no flight to the first)', async ({
+    page,
+  }) => {
+    // Hold the model back, so both clicks land while the card loads.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 3_000))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    // Every hotspot label the live card ever shows.
+    await card.evaluate((el) => {
+      const seen = new Set<string>()
+      Object.assign(window, { __labelsSeen: seen })
+      new MutationObserver(() => {
+        for (const button of el.querySelectorAll('[data-live-labels] li button')) {
+          seen.add(button.textContent.trim())
+        }
+      }).observe(el, { childList: true, subtree: true, characterData: true })
+    })
+    const fire = rows(page).nth(1)
+    const plumbing = rows(page).nth(2)
+    await rowHeader(fire).click()
+    await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+    await rowHeader(plumbing).click()
+    await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+    await expectLiveSystem(page, card, await systemOfRow(plumbing))
+    await page.waitForTimeout(1_500)
+    const shown = await card
+      .locator('[data-live-labels] li button')
+      .evaluateAll((buttons) => buttons.map((button) => button.textContent.trim()))
+    const seen = await page.evaluate(() => [
+      ...(window as unknown as { __labelsSeen: Set<string> }).__labelsSeen,
+    ])
+    expect(shown.length).toBeGreaterThan(0)
+    // Only the latest system's labels ever appeared: the camera never stopped inside the first.
+    expect(seen.filter((name) => !shown.includes(name))).toEqual([])
+  })
+
+  test('O-11: under reduced motion the image never pushes in', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' })
+    const card = await openHome(page)
+    await startScaleSampler(card)
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'stills')
+    await page.waitForTimeout(1_500)
+    const samples = await scaleSamples(page)
+    expect(samples.length).toBeGreaterThan(0)
+    expect(samples.filter((sample) => sample.scale !== 1)).toEqual([])
+  })
+
+  test('@gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale', async ({
+    page,
+  }) => {
+    // Hold the model back, so the load lasts after the click.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 3_000))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startScaleSampler(card)
+    await clickImage(card)
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await page.waitForTimeout(1_000)
+    const samples = await scaleSamples(page)
+    const loading = samples.filter((sample) => sample.state === 'loading')
+    const live = samples.filter((sample) => sample.state === 'live')
+    expect(loading.length).toBeGreaterThan(1)
+    expect(live.length).toBeGreaterThan(1)
+    // It grows while loading, never shrinks, and stays within the addendum's end scale.
+    const last = loading[loading.length - 1].scale
+    expect(last).toBeGreaterThan(1)
+    expect(last).toBeLessThanOrEqual(1.06)
+    loading.forEach((sample, i) => {
+      if (i > 0) {
+        expect(sample.scale).toBeGreaterThanOrEqual(loading[i - 1].scale)
+      }
+    })
+    // The swap: no snap back; the image holds one scale through the cross-fade.
+    expect(live[0].scale).toBeGreaterThanOrEqual(last)
+    expect(live.filter((sample) => sample.scale !== live[0].scale)).toEqual([])
+
+    // O-11: a click while live (a system card) does not zoom the image.
+    const held = live[0].scale
+    await rowHeader(rows(page).nth(1)).click()
+    await expect(card).toHaveAttribute('data-entered', await systemOfRow(rows(page).nth(1)))
+    await page.waitForTimeout(800)
+    const after = (await scaleSamples(page)).filter((sample) => sample.state === 'live')
+    expect(after.filter((sample) => sample.scale !== held)).toEqual([])
+  })
+
+  test('@gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas', async ({
+    page,
+  }) => {
+    // Hold the model back, so the system's still is up and loaded before the swap.
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await new Promise((resolve) => setTimeout(resolve, 2_500))
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    const row = rows(page).nth(1)
+    await rowHeader(row).click()
+    const system = await systemOfRow(row)
+    await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+    const still = card.locator(`[data-entered-system="${system}"]`)
+    await expect(still).toHaveAttribute('data-loaded', 'true')
+    // Each frame: the state, and whether the still on screen now is still this same element.
+    await still.evaluate((layer) => {
+      const card = layer.closest('[data-interactive-3d-card]')
+      const samples: { state: string; same: boolean; opacity: number }[] = []
+      Object.assign(window, { __stillSamples: samples })
+      const sample = (): void => {
+        const current = card?.querySelector('[data-entered-system]') ?? null
+        samples.push({
+          state: card?.getAttribute('data-viewer-state') ?? '',
+          same: current === layer,
+          opacity: current ? Number(getComputedStyle(current).opacity) : 0,
+        })
+        requestAnimationFrame(sample)
+      }
+      requestAnimationFrame(sample)
+    })
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await page.waitForTimeout(1_000)
+    const samples = await page.evaluate(
+      () =>
+        (
+          window as unknown as {
+            __stillSamples: { state: string; same: boolean; opacity: number }[]
+          }
+        ).__stillSamples,
+    )
+    const live = samples.filter((sample) => sample.state === 'live')
+    expect(live.length).toBeGreaterThan(2)
+    // Never unmounted and mounted again at the swap: the first live frames show the same still.
+    expect(live[0].same).toBe(true)
+    // It fades out over the canvas (values between shown and gone), then leaves.
+    expect(live.some((sample) => sample.same && sample.opacity > 0 && sample.opacity < 1)).toBe(
+      true,
+    )
+    expect(live[live.length - 1].same).toBe(false)
+    await expect(still).toHaveCount(0)
+  })
+
+  test('@gpu O-14: under heavy CPU throttling, within 10 s of the click the card is live or stills with a reason', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startStateLog(card)
+    const cdp = await context.newCDPSession(page)
+    // 10×: a device far slower than the test box. (At 20× one of the start's tasks can hold the card's
+    // timer back for seconds, longer than any real device the site serves.)
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 10 })
+    try {
+      await clickImage(card)
+      await page.waitForTimeout(START_BOUND_MS + 1_000)
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+    const ended = await firstEnd(page)
+    expect(ended, 'live or stills within 10 s of the click').not.toBeNull()
+    expect(ended?.afterClickMs, JSON.stringify(ended)).toBeLessThanOrEqual(START_BOUND_MS)
+    if (ended?.state === 'stills') {
+      expect(ended.reason).toMatch(/^(timeout|too-slow|context-lost|load-error|render-error)$/)
+    }
+  })
+
+  test('@gpu O-14: a start that never ends (the model download held) shows the stills, reason timeout, within 10 s', async ({
+    page,
+    context,
+  }) => {
+    // The model never arrives: the start waits on it for ever, as on a stalled network or GPU.
+    await page.route('**/systems/v022n/tower*.glb', () => new Promise<void>(() => undefined))
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startStateLog(card)
+    const cdp = await context.newCDPSession(page)
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 10 })
+    try {
+      await clickImage(card)
+      await page.waitForTimeout(START_BOUND_MS + 1_000)
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+    const ended = await firstEnd(page)
+    expect(ended, 'stills within 10 s of the click').toEqual({
+      state: 'stills',
+      reason: 'timeout',
+      afterClickMs: expect.any(Number),
+    })
+    expect(ended?.afterClickMs, JSON.stringify(ended)).toBeLessThanOrEqual(START_BOUND_MS)
+  })
+
+  test('@gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s', async ({
+    page,
+    context,
+  }) => {
+    // The model download is held until the click, so the start is early when the context goes: the
+    // viewer has its context (it asks for the model right after creating it), and has not yet got to
+    // its own context-loss handling, which comes later in the start.
+    let release = (): void => undefined
+    const held = new Promise<void>((resolve) => {
+      release = resolve
+    })
+    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+      await held
+      await route.continue()
+    })
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    await waitHydrated(card)
+    await startStateLog(card)
+    const cdp = await context.newCDPSession(page)
+    await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 })
+    try {
+      await clickImage(card)
+      await expect(card).toHaveAttribute('data-viewer-state', 'loading')
+      await expect(card.locator('canvas')).toHaveCount(1)
+      const downloaded = page.waitForEvent('requestfinished', (request) =>
+        /\/systems\/v022n\/tower[^/]*\.glb$/.test(request.url()),
+      )
+      release()
+      await downloaded
+      await card.locator('canvas').evaluate((el) => {
+        const gl = (el as HTMLCanvasElement).getContext('webgl2')
+        gl?.getExtension('WEBGL_lose_context')?.loseContext()
+      })
+      await page.waitForTimeout(START_BOUND_MS + 1_000)
+    } finally {
+      await cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 })
+    }
+    const ended = await firstEnd(page)
+    expect(ended).toEqual({
+      state: 'stills',
+      reason: 'context-lost',
+      afterClickMs: expect.any(Number),
+    })
+    expect(ended?.afterClickMs).toBeLessThanOrEqual(START_BOUND_MS)
+  })
+})
+
+test.describe('P3-T5 live 3D card — WebGL disabled', () => {
+  test.setTimeout(120_000)
+
+  // Launch options are per worker, so this test starts its own browser with WebGL switched off.
+  test('a browser without WebGL falls back to the stills tier', async ({
+    playwright,
+    channel,
+    baseURL,
+  }) => {
+    const browser = await playwright.chromium.launch({
+      ...(channel ? { channel } : {}),
+      args: [...GPU_ARGS, '--disable-webgl', '--disable-webgl2'],
+    })
+    try {
+      const context = await browser.newContext({ baseURL, viewport: { width: 1440, height: 900 } })
+      await prepare(context)
+      const page = await context.newPage()
+      const card = await openHome(page)
+      expect(await rendererName(page)).toBe('none')
+      await clickImage(card)
+      await expect(card).toHaveAttribute('data-viewer-state', 'stills', {
+        timeout: LIVE_TIMEOUT,
+      })
+      await expect(card).toHaveAttribute('data-viewer-fallback', 'no-webgl')
+      await expect(card.locator('canvas')).toHaveCount(0)
+    } finally {
+      await browser.close()
+    }
+  })
+})
+
+test.describe('P3-T5 live 3D card — software renderer', () => {
+  test.setTimeout(120_000)
+
+  // CI's renderer; forced here so the test means the same on every machine.
+  test('a software WebGL renderer ends in the stills tier, without a canvas or a 3D download', async ({
+    playwright,
+    channel,
+    baseURL,
+  }) => {
+    const browser = await playwright.chromium.launch({
+      ...(channel ? { channel } : {}),
+      args: ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'],
+    })
+    try {
+      const context = await browser.newContext({ baseURL, viewport: { width: 1440, height: 900 } })
+      await prepare(context)
+      const page = await context.newPage()
+      const recorder = record(page)
+      const card = await openHome(page)
+      expect(await rendererName(page)).toMatch(/swiftshader/i)
+      await clickImage(card)
+      await expect(card).toHaveAttribute('data-viewer-state', 'stills', {
+        timeout: LIVE_TIMEOUT,
+      })
+      await expect(card).toHaveAttribute('data-viewer-fallback', /^(software|too-slow)$/)
+      await expect(card.locator('canvas')).toHaveCount(0)
+      await expect(card.locator('img').first()).toBeVisible()
+      expect(recorder.model.filter((entry) => entry.endsWith('.glb'))).toEqual([])
+    } finally {
+      await browser.close()
+    }
+  })
+})
+
+test.describe('P3-T5 live 3D card — phone', () => {
+  test.setTimeout(120_000)
+  test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true })
+
+  test.beforeEach(async ({ context }) => {
+    await prepare(context)
+  })
+
+  test('O-6: every Fire dot of the still can be tapped at 390 px, and a tap starts nothing', async ({
+    page,
+  }) => {
+    const card = await openHome(page, '#systems-fire')
+    await expect(card).toHaveAttribute('data-entered', 'fire')
+    await card.scrollIntoViewIfNeeded()
+    const layer = card.locator('[data-entered-system="fire"]')
+    const names = await expectEveryDotTappable(layer)
+    expect(names).toEqual(expect.arrayContaining(['Fire pumps', 'Jockey pump']))
+    for (const name of ['Fire pumps', 'Jockey pump']) {
+      const dot = layer.getByRole('button', { name, exact: true })
+      await dot.tap({ timeout: 10_000 })
+      await expect(dot).toHaveAttribute('aria-expanded', 'true')
+    }
+    // Buttons inside the still card (dots, Exit system) never start the model (§8c).
+    await card.locator('[data-exit-system]').tap({ timeout: 10_000 })
+    await expect(card).toHaveAttribute('data-entered', 'none')
+    await page.waitForTimeout(1_000)
+    await expectNothingShown(card)
+  })
+
+  test('@gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active', async ({
+    page,
+    context,
+  }) => {
+    const card = await openHome(page)
+    await expectHardwareGpu(page)
+    const cdp = await context.newCDPSession(page)
+    // A one-finger upward swipe over the card centre; the finger rests before lifting (no fling,
+    // which would swallow the next tap).
+    const swipeScrolls = async (): Promise<number> => {
+      const box = await card.boundingBox()
+      expect(box).not.toBeNull()
+      const x = Math.round((box?.x ?? 0) + (box?.width ?? 0) / 2)
+      const y = Math.round((box?.y ?? 0) + (box?.height ?? 0) / 2)
+      const before = await page.evaluate(() => window.scrollY)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] })
+      for (let i = 1; i <= 10; i += 1) {
+        await cdp.send('Input.dispatchTouchEvent', {
+          type: 'touchMove',
+          touchPoints: [{ x, y: y - i * 25 }],
+        })
+        await page.waitForTimeout(16)
+      }
+      await page.waitForTimeout(150)
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] })
+      await page.waitForTimeout(500)
+      const after = await page.evaluate(() => window.scrollY)
+      await page.evaluate((top) => {
+        window.scrollTo(0, top)
+      }, before)
+      await page.waitForTimeout(150)
+      return after - before
+    }
+
+    await test.step('still card: the page scrolls', async () => {
+      expect(await swipeScrolls()).toBeGreaterThan(0)
+    })
+    // O-2: a tap on the image starts the model; on touch it does not take the page scroll yet.
+    await waitHydrated(card)
+    const box = await card.boundingBox()
+    await page.touchscreen.tap(
+      (box?.x ?? 0) + (box?.width ?? 0) / 2,
+      (box?.y ?? 0) + (box?.height ?? 0) / 2,
+    )
+    await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+    expect(await swipeScrolls()).toBeGreaterThan(0)
+
+    await page.touchscreen.tap((box?.x ?? 0) + 40, (box?.y ?? 0) + 60)
+    await expect(card).toHaveAttribute('data-viewer-active', 'true')
+    expect(await swipeScrolls()).toBe(0)
+    // No Done button (O-3): a tap outside the card hands the scroll back.
+    await expectRemovedControlsAbsent(page)
+    await page.locator('h1, h2').first().tap({ timeout: 10_000 })
+    await expect(card).toHaveAttribute('data-viewer-active', 'false')
+    await card.scrollIntoViewIfNeeded()
+    expect(await swipeScrolls()).toBeGreaterThan(0)
+
+    // Every system by touch: one tap on its header enters it (the pre-expanded first row too), a
+    // second tap on the same header exits.
+    const count = await rows(page).count()
+    expect(count).toBe(5)
+    for (let i = 0; i < count; i += 1) {
+      const row = rows(page).nth(i)
+      await rowHeader(row).tap({ timeout: 10_000 })
+      const system = await systemOfRow(row)
+      await expect(card).toHaveAttribute('data-entered', system)
+      await expect(page.locator('[data-related-panel="card"]')).toBeHidden()
+      // On phones the accordion is below the card: the viewer renders only while the card is on
+      // screen, so scroll back to it as a visitor would.
+      await card.scrollIntoViewIfNeeded()
+      const labels = card.locator('[data-live-labels]')
+      const dot = labels.locator('li button').filter({ visible: true }).first()
+      await expect(dot).toBeVisible({ timeout: 15_000 })
+      // O-6: no dot is covered by another (Fire: the pumps and the jockey pump).
+      await page.waitForTimeout(500)
+      await expectEveryDotTappable(labels)
+      if (i === 2) {
+        await dot.tap({ timeout: 10_000 })
+        await expect(card.locator('[data-live-labels] li[data-expanded="true"]')).toHaveCount(1)
+      }
+      await rowHeader(row).tap({ timeout: 10_000 })
+      await expect(card).toHaveAttribute('data-entered', 'none')
+      await card.scrollIntoViewIfNeeded()
+      await expect(card.locator('[data-live-labels] li')).toHaveCount(0, { timeout: 15_000 })
+    }
+  })
+})

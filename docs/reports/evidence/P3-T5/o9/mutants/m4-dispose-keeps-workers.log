@@ -1,0 +1,34 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-ktx2-workers.test.ts (4 tests | 1 failed) 46ms
+   ❯ P3-T5 O-9a: the KTX2 workers start before the parse, never before the policy check (4)
+     × dispose ends the started workers, and none start or get the transcoder after it 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-ktx2-workers.test.ts > P3-T5 O-9a: the KTX2 workers start before the parse, never before the policy check > dispose ends the started workers, and none start or get the transcoder after it
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ src/p3-t5-ktx2-workers.test.ts:100:58
+     98|     expect(started).toHaveLength(ktx2.workerPool.pool)
+     99|     ktx2.dispose()
+    100|     expect(started.every((worker) => worker.terminated)).toBe(true)
+       |                                                          ^
+    101|     await ktx2.init()
+    102|     expect(FakeWorker.created).toHaveLength(started.length)
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  23:34:22
+   Duration  493ms (import 45%, transform 26%, tests 23%, worker 6%)
+

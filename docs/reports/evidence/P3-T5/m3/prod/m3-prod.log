@@ -1,0 +1,6 @@
+2026-10-25T16:49:19.845Z headers: 5 URLs recorded
+2026-10-25T16:49:28.342Z swap swap-1440-dpr1: live in 3434 ms, dLuma -1.6, align {"dx":0,"dy":0,"score":0.9196}
+2026-10-25T16:49:37.270Z swap swap-1440-dpr2: live in 2047 ms, dLuma -1.8, align {"dx":0,"dy":0,"score":0.8956}
+2026-10-25T16:49:43.083Z swap swap-390-phone: live in 1325 ms, dLuma -1.6, align {"dx":1,"dy":0,"score":0.7962}
+2026-10-25T16:49:53.292Z systems: viewer live, 0 CSP violations
+2026-10-25T16:50:10.431Z negative: stills after 15269 ms, canvases 0

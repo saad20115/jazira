@@ -1,0 +1,73 @@
+{
+ "shot": "power",
+ "camera": "CAM_power",
+ "image": "power_end_2048.png",
+ "resolution": [
+  2048,
+  2048
+ ],
+ "origin": "top-left",
+ "note": "x/y may fall outside 0-1 for anchors out of frame: filter on in_frame",
+ "points": [
+  {
+   "id": "HOT_power_1",
+   "label": "generator",
+   "x": 0.3954,
+   "y": 0.7699,
+   "in_frame": true,
+   "world": [
+    23.601,
+    4.175,
+    1.6
+   ]
+  },
+  {
+   "id": "HOT_power_2",
+   "label": "transformers",
+   "x": 0.5732,
+   "y": 0.4021,
+   "in_frame": true,
+   "world": [
+    16.074,
+    -2.513,
+    1.3
+   ]
+  },
+  {
+   "id": "HOT_power_3",
+   "label": "mv_switchgear",
+   "x": 0.6319,
+   "y": 0.6106,
+   "in_frame": true,
+   "world": [
+    18.54,
+    3.155,
+    1.2
+   ]
+  },
+  {
+   "id": "HOT_power_4",
+   "label": "lv_panels",
+   "x": 0.3001,
+   "y": 0.5063,
+   "in_frame": true,
+   "world": [
+    22.702,
+    -2.385,
+    1.2
+   ]
+  },
+  {
+   "id": "HOT_power_5",
+   "label": "cable_risers",
+   "x": 3.5084,
+   "y": -6.6899,
+   "in_frame": false,
+   "world": [
+    6.863,
+    -0.559,
+    30.0
+   ]
+  }
+ ]
+}

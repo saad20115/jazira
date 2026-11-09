@@ -1,0 +1,13 @@
+diff --git a/src/components/systems3d/SystemsCard.tsx b/src/components/systems3d/SystemsCard.tsx
+index 113fe5d..b218fd9 100644
+--- a/src/components/systems3d/SystemsCard.tsx
++++ b/src/components/systems3d/SystemsCard.tsx
+@@ -45,7 +45,7 @@ type Phase = CardPhase
+  * the start waits for. The viewer is aborted, which ends its waits. 8 s leaves room for the stills to
+  * show on a loaded device, where the timer and the render run late.
+  */
+-const START_TIMEOUT_MS = 8_000
++const START_TIMEOUT_MS = 45_000
+ 
+ /**
+  * O-9 / Q6: the model is prepared once the card is this close to the viewport (two viewport heights

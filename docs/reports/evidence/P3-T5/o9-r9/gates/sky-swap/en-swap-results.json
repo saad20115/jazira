@@ -1,0 +1,62 @@
+[
+  {
+    "case": "en-1440-dpr1",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 590,
+    "size": "600x580",
+    "topDelta": [
+      -1.4,
+      -1.1,
+      -2.9
+    ],
+    "info_lumaDelta": 15.8,
+    "info_floorDelta": [
+      -106.1,
+      -67.4,
+      -7.2
+    ],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "case": "en-1440-dpr2",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 188,
+    "size": "1200x1160",
+    "topDelta": [
+      -1.1,
+      -1,
+      -2.9
+    ],
+    "info_lumaDelta": 15.4,
+    "info_floorDelta": [
+      -106.1,
+      -67.4,
+      -7.2
+    ],
+    "errors": [],
+    "pass": true
+  },
+  {
+    "case": "en-390-dpr3",
+    "state": "live",
+    "tier": "lite",
+    "liveMs": 178,
+    "size": "1074x1074",
+    "topDelta": [
+      0.9,
+      0.1,
+      -1.5
+    ],
+    "info_lumaDelta": 13.8,
+    "info_floorDelta": [
+      -101.8,
+      -63.9,
+      -2
+    ],
+    "errors": [],
+    "pass": true
+  }
+]

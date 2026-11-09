@@ -1,0 +1,6 @@
+scroll -3020 click 0 live 407 stills null
+ -2852   71 ms | EvaluateScript 71, RunMicrotasks 70 | 
+ -2313   52 ms | FireIdleCallback 52, RunMicrotasks 52 | 
+ -2015   36 ms | FireIdleCallback 36, RunMicrotasks 36 | 
+    83   30 ms | EventDispatch 24, RunMicrotasks 22, FunctionCall 17 | 
+   397   31 ms | SimpleWatcher::OnHandleReady 31, RunMicrotasks 21, FunctionCall 21, Layout 19 | 

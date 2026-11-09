@@ -1,0 +1,32 @@
+
+Running 4 tests using 1 worker
+
+[1/4] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:660:3 › P3-T5 live 3D card › @gpu live: under CPU throttling the card ends in a lower tier, applied only off screen (O-9)
+[2/4] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:897:3 › P3-T5 live 3D card › @gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:897:3 › P3-T5 live 3D card › @gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: 1
+    Received: 0
+
+    Call Log:
+    - Timeout 60000ms exceeded while waiting on the predicate
+
+      906 |         timeout: LIVE_TIMEOUT,
+      907 |       })
+    > 908 |       .toBe(1)
+          |        ^
+      909 |     await page.waitForTimeout(3_000)
+      910 |     await expectNothingShown(card)
+      911 |     const before = recorder.model.length
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:908:8
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-f40f4--and-downloads-nothing-more-gpu\error-context.md
+
+
+[3/4] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:918:3 › P3-T5 live 3D card › @gpu O-9: the tier never changes in view: system after system keeps the tier it started with
+[4/4] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:943:3 › P3-T5 live 3D card › @gpu O-9: a click during loading keeps only the latest system (no flight to the first)
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:897:3 › P3-T5 live 3D card › @gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more 
+  3 passed (2.0m)

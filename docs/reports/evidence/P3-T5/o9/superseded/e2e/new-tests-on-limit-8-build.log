@@ -1,0 +1,6 @@
+
+Running 2 tests using 1 worker
+
+[1/2] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:991:3 › P3-T5 live 3D card › @gpu O-8: while the model loads after a click, the image stays with a small loading indicator
+[2/2] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1184:3 › P3-T5 live 3D card › @gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas
+  2 passed (13.5s)

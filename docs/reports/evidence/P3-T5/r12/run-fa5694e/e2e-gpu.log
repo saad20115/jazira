@@ -1,0 +1,61 @@
+
+Running 24 tests using 1 worker
+
+[1/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:536:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts
+[2/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:536:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts
+[3/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:564:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters
+[4/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:656:3 › P3-T5 live 3D card › @gpu live: a system card click on the still card starts the model in that system
+[5/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:675:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active
+[6/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:694:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates
+[7/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:736:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it
+[8/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "live"
+    Received: "stills"
+    Timeout:  60000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 60000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        18 × locator resolved to <div tabindex="0" aria-busy="true" data-entered="none" data-viewer-active="false" class="I0WHYa_buildingCard" data-viewer-state="loading" data-interactive-3d-card="true">…</div>
+           - unexpected value "loading"
+        98 × locator resolved to <div data-entered="none" data-viewer-active="false" data-viewer-state="stills" class="I0WHYa_buildingCard" data-viewer-fallback="timeout" data-interactive-3d-card="true">…</div>
+           - unexpected value "stills"
+
+
+      161 | async function goLive(card: Locator): Promise<void> {
+      162 |   await clickImage(card)
+    > 163 |   await expect(card).toHaveAttribute('data-viewer-state', 'live', { timeout: LIVE_TIMEOUT })
+          |                      ^
+      164 | }
+      165 |
+      166 | /** O-14 (CTO round 7): within this long of the click the card is live or in the stills tier. */
+        at goLive (D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:163:22)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:782:5
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-21311-full-model-enters-and-exits-gpu\error-context.md
+
+
+[9/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:805:3 › P3-T5 live 3D card › @gpu live: under CPU throttling the card ends in a lower tier: low only off screen (O-9), stills only at rest (O-14b)
+[10/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:910:3 › P3-T5 live 3D card › @gpu O-14b: too slow while live in low, the card crossfades to stills in view at rest, keeping the system
+[11/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1077:3 › P3-T5 live 3D card › @gpu O-16: a click on another system flies there directly, never through the overview (three pairs)
+[12/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1187:3 › P3-T5 live 3D card › @gpu O-18: inside a system a wheel-out at the limit exits; a wheel inside the range only zooms
+[13/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1244:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn
+[14/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1266:3 › P3-T5 live 3D card › @gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside
+[15/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1298:3 › P3-T5 live 3D card › @gpu O-8: while the model loads after a click, the image stays with a small loading indicator
+[16/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1351:3 › P3-T5 live 3D card › @gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more
+[17/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1372:3 › P3-T5 live 3D card › @gpu O-9: the tier never changes in view: system after system keeps the tier it started with
+[18/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1397:3 › P3-T5 live 3D card › @gpu O-9: a click during loading keeps only the latest system (no flight to the first)
+[19/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1449:3 › P3-T5 live 3D card › @gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale
+[20/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1491:3 › P3-T5 live 3D card › @gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas
+[21/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1546:3 › P3-T5 live 3D card › @gpu O-14: under heavy CPU throttling, within 10 s of the click the card is live or stills with a reason
+[22/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1572:3 › P3-T5 live 3D card › @gpu O-14: a start that never ends (the model download held) shows the stills, reason timeout, within 10 s
+[23/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1599:3 › P3-T5 live 3D card › @gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s
+[24/24] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1741:3 › P3-T5 live 3D card — phone › @gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits 
+  23 passed (7.1m)

@@ -1,0 +1,52 @@
+MUTANT: SystemsExplorer toggle -> 'if (nextExpanded) {' (the old rule)
+diff --git a/src/components/systems3d/SystemsExplorer.tsx b/src/components/systems3d/SystemsExplorer.tsx
+index 7e01616..e661802 100644
+--- a/src/components/systems3d/SystemsExplorer.tsx
++++ b/src/components/systems3d/SystemsExplorer.tsx
+@@ -141,7 +141,7 @@ export function SystemsExplorer({
+   const toggle = (idx: number, nextExpanded: boolean): void => {
+     const system = systems[idx]?.system ?? null
+     // A click on an expanded header that is not entered (the pre-expanded first row) enters it.
+-    if (nextExpanded || (system !== null && system !== entered)) {
++    if (nextExpanded) {
+       setExpandedIndex(idx)
+       enter(system)
+       if (system !== null) {
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-late-related.test.ts (5 tests | 1 failed) 9522ms
+   ❯ P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (real React, real Chromium) (4)
+     × hover never starts; one click on the pre-expanded HVAC header enters it and starts the model 2449ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-late-related.test.ts > P3-T5 round 3 (owner review O-2, O-3): start triggers and controls (real React, real Chromium) > hover never starts; one click on the pre-expanded HVAC header enters it and starts the model
+AssertionError: expected 'none' to be 'hvac' // Object.is equality
+
+Expected: "hvac"
+Received: "none"
+
+ ❯ src/p3-t5-late-related.test.ts:337:66
+    335|       // One click enters the pre-expanded row (never "click twice"); …
+    336|       await header(page, 0).click()
+    337|       await expect.poll(() => card.getAttribute('data-entered')).toBe(…
+       |                                                                  ^
+    338|       expect(await rowState(page, 0)).toBe('Expanded')
+    339|       await expect.poll(() => card.getAttribute('data-viewer-state')).…
+ ❯ withExplorer src/p3-t5-late-related.test.ts:238:5
+ ❯ src/p3-t5-late-related.test.ts:325:5
+
+Caused by: Error: Matcher did not succeed in time.
+ ❯ src/p3-t5-late-related.test.ts:337:7
+ ❯ withExplorer src/p3-t5-late-related.test.ts:238:5
+ ❯ src/p3-t5-late-related.test.ts:325:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  10:55:42
+   Duration  11.39s (tests 87%, import 12%, transform 1%)
+

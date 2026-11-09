@@ -1,0 +1,127 @@
+
+Running 10 tests using 1 worker
+
+  ok  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:140:3 › P3-T5 live 3D card › @smoke still first: the release still paints and no 3D asset loads before intent (10.5s)
+  x   2 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:161:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels (7.2s)
+  ok  3 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:180:5 › P3-T5 live 3D card › C3-3: a missing worker CSP fails closed to stills before any worker starts (6.7s)
+  ok  4 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:180:5 › P3-T5 live 3D card › C3-3: a different worker CSP fails closed to stills before any worker starts (5.8s)
+  x   5 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:206:3 › P3-T5 live 3D card › @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (20.8s)
+  ok  6 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:250:3 › P3-T5 live 3D card › live: the page scroll is never trapped — the wheel zooms only while the card is active (7.2s)
+  x   7 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:269:3 › P3-T5 live 3D card › live: keyboard — focus activates, digits enter systems, Escape exits then deactivates (8.5s)
+  ok  8 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:294:3 › P3-T5 live 3D card › live: a #systems hash enters on load, and a lost context falls back to stills keeping it (6.2s)
+  ok  9 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:317:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier (2.9s)
+  x  10 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:351:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active (24.0s)
+
+
+  1) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:161:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('[data-interactive-3d-card]').locator('[data-entered-system="hvac"]').locator('li').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-interactive-3d-card]').locator('[data-entered-system="hvac"]').locator('li').first() with timeout 5000ms
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-entered-system="hvac"]').locator('li').first()
+        13 × locator resolved to <li data-expanded="false" class="InteractiveSystemsSection-module__I0WHYa__hotspot">…</li>
+           - unexpected value "hidden"
+
+
+      173 |     const layer = card.locator(`[data-entered-system="${system}"]`)
+      174 |     await expect(layer).toBeVisible()
+    > 175 |     await expect(layer.locator('li').first()).toBeVisible()
+          |                                               ^
+      176 |     expect(recorder.model).toEqual([])
+      177 |   })
+      178 |
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:175:47
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-5865f-ws-its-end-still-and-labels-chromium\error-context.md
+
+  2) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:206:3 › P3-T5 live 3D card › @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator:  locator('[data-interactive-3d-card]').locator('[data-live-labels] li').first()
+    Expected: visible
+    Received: hidden
+    Timeout:  15000ms
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-interactive-3d-card]').locator('[data-live-labels] li').first() with timeout 15000ms
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-live-labels] li').first()
+        21 × locator resolved to <li data-expanded="false" class="InteractiveSystemsSection-module__I0WHYa__hotspot">…</li>
+           - unexpected value "hidden"
+
+
+      222 |     await expect(card).toHaveAttribute('data-entered', firstSystem)
+      223 |     await expect(first.locator('[data-show-in-3d]')).toHaveAttribute('aria-pressed', 'true')
+    > 224 |     await expect(card.locator('[data-live-labels] li').first()).toBeVisible({ timeout: 15_000 })
+          |                                                                 ^
+      225 |     await card.locator('[data-exit-system]').click()
+      226 |     await expect(card).toHaveAttribute('data-entered', 'none')
+      227 |     expect(new URL(page.url()).hash).toBe('')
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:224:65
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-54a39-rows-enter-and-exit-systems-chromium\error-context.md
+
+  3) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:269:3 › P3-T5 live 3D card › live: keyboard — focus activates, digits enter systems, Escape exits then deactivates 
+
+    Error: expect(locator).toHaveAttribute(expected) failed
+
+    Locator:  locator('[data-interactive-3d-card]')
+    Expected: "true"
+    Received: "false"
+    Timeout:  5000ms
+
+    Call log:
+      - Expect "toHaveAttribute" locator('[data-interactive-3d-card]') with timeout 5000ms
+      - waiting for locator('[data-interactive-3d-card]')
+        14 × locator resolved to <div tabindex="0" data-entered="none" data-viewer-state="live" data-viewer-active="false" data-interactive-3d-card="true" class="InteractiveSystemsSection-module__I0WHYa__buildingCard">…</div>
+           - unexpected value "false"
+
+
+      287 |     await page.keyboard.press('Escape')
+      288 |     await expect(card).toHaveAttribute('data-entered', 'none')
+    > 289 |     await expect(card).toHaveAttribute('data-viewer-active', 'true')
+          |                        ^
+      290 |     await page.keyboard.press('Escape')
+      291 |     await expect(card).toHaveAttribute('data-viewer-active', 'false')
+      292 |   })
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:289:24
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-8395c-cape-exits-then-deactivates-chromium\error-context.md
+
+  4) [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:351:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: locator('[data-interactive-3d-card]').locator('[data-live-labels] li button').first()
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" locator('[data-interactive-3d-card]').locator('[data-live-labels] li button').first() with timeout 15000ms
+      - waiting for locator('[data-interactive-3d-card]').locator('[data-live-labels] li button').first()
+
+
+      402 |     await expect(page.locator('[data-related-panel="card"]')).toBeHidden()
+      403 |     const dot = card.locator('[data-live-labels] li button').first()
+    > 404 |     await expect(dot).toBeVisible({ timeout: 15_000 })
+          |                       ^
+      405 |     await dot.tap()
+      406 |     await expect(card.locator('[data-live-labels] li[data-expanded="true"]')).toHaveCount(1)
+      407 |   })
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:404:23
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-3371e-s-trapped-only-while-active-chromium\error-context.md
+
+  4 failed
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:161:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels 
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:206:3 › P3-T5 live 3D card › @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems 
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:269:3 › P3-T5 live 3D card › live: keyboard — focus activates, digits enter systems, Escape exits then deactivates 
+    [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:351:3 › P3-T5 live 3D card — phone › live: touch — tap opens, rows enter, dots expand their label, scroll is trapped only while active 
+  6 passed (1.8m)

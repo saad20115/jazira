@@ -1,0 +1,13 @@
+diff --git a/src/components/systems3d/InteractiveSystemsSection.module.css b/src/components/systems3d/InteractiveSystemsSection.module.css
+index 2572fa0..349d6ca 100644
+--- a/src/components/systems3d/InteractiveSystemsSection.module.css
++++ b/src/components/systems3d/InteractiveSystemsSection.module.css
+@@ -159,7 +159,7 @@
+ 
+ .buildingCard[data-viewer-state='loading'] :is(.poster, .enteredLayer),
+ .buildingCard[data-viewer-state='live'] :is(.poster, .enteredLayer) {
+-  animation: systemsPushIn calc(var(--motion-slow) * 5) var(--ease-out) both;
++  animation: none;
+ }
+ 
+ .buildingCard[data-viewer-state='live'] :is(.poster, .enteredLayer) {

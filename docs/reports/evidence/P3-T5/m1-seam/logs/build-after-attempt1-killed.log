@@ -1,0 +1,20 @@
+6a9a20229dd9cff60e69de0916a4b0fc21edcfd5
+ M src/app/(frontend)/[locale]/page.module.css
+ M src/app/(frontend)/[locale]/page.tsx
+?? docs/reports/evidence/P3-T5/
+?? scripts/evidence/p3-t5-seam-proof.mjs
+?? scripts/evidence/p3-t5-setup-local.mjs
+?? src/components/systems3d/
+
+> aljazira-website@0.1.0 build D:\jazira-p3t5
+> cross-env NODE_OPTIONS="--no-deprecation --max-old-space-size=8000" next build && node scripts/check-client-bundle-sentinels.mjs
+
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env
+✓ Running next.config.ts took 198ms
+- Experiments (use with caution):
+  ✓ globalNotFound
+  ⨯ turbopackServerFastRefresh
+
+  Creating an optimized production build ...
+build exit 127

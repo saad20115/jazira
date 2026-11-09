@@ -1,0 +1,14 @@
+diff --git a/src/components/systems3d/viewer/createViewer.ts b/src/components/systems3d/viewer/createViewer.ts
+index 8188987..59a7313 100644
+--- a/src/components/systems3d/viewer/createViewer.ts
++++ b/src/components/systems3d/viewer/createViewer.ts
+@@ -610,8 +610,7 @@ export async function createViewer(options: ViewerOptions): Promise<ViewerHandle
+   const lost = new Promise<never>((_resolve, reject) => {
+     onLost = (event) => {
+       event.preventDefault()
+-      start.abort()
+-      reject(new ViewerStartError('context-lost', 'WebGL context lost while starting'))
++      void reject
+     }
+   })
+   options.canvas.addEventListener('webglcontextlost', onLost)

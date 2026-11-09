@@ -3,7 +3,9 @@ import path from 'node:path'
 
 import React from 'react'
 import { renderToStaticMarkup } from 'react-dom/server'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+vi.mock('server-only', () => ({}))
 
 import {
   InteractiveSystemsSection,
@@ -75,6 +77,19 @@ describe('P3-T5 M1 seam: InteractiveSystemsSection', () => {
     expect(html).toContain('alt="Tower render"')
   })
 
+  it('O-1: the poster is the Figma image through Next image optimisation, lazy, never the release still', () => {
+    const html = render()
+    const poster = /<img [^>]*alt="Tower render"[^>]*>/.exec(html)?.[0] ?? ''
+    expect(poster).toContain('tower-render.png')
+    expect(poster).toContain('/_next/image?url=')
+    expect(poster).toContain('srcSet="')
+    expect(poster).toContain('loading="lazy"')
+    expect(poster).not.toContain('style=')
+    expect(html).not.toContain('/stills/hero_')
+    // No "Show in 3D" in the rows (O-3): the system card itself enters and starts the model.
+    expect(html).not.toContain('data-show-in-3d')
+  })
+
   it('renders one numbered accordion item per system, the first one expanded', () => {
     const html = render()
     expect(html.match(/data-accordion-state="/g)).toHaveLength(3)
@@ -124,10 +139,25 @@ describe('P3-T5 M1 seam: InteractiveSystemsSection', () => {
     for (const match of tokensCss.matchAll(/(--[a-z0-9-]+)\s*:/gi)) {
       definedVars.add(match[1])
     }
-    const stripped = sectionCss.replace(/\/\*[\s\S]*?\*\//g, '')
+    const uncommented = sectionCss.replace(/\/\*[\s\S]*?\*\//g, '')
+    // O-13 (docs/05-design.md decision 22): the sky's scene colours are the only literal colours,
+    // declared as `--systems-sky-*` in the live canvas rule and used nowhere else.
+    const skyDeclaration = /^\s*(--systems-sky-[a-z-]+)\s*:\s*#[0-9a-fA-F]{6}\s*;\s*$/gm
+    const skyNames = [...uncommented.matchAll(skyDeclaration)].map((m) => m[1])
+    expect(skyNames.length).toBeGreaterThan(0)
+    const canvasRule = /\.liveCanvas \{[^}]*\}/.exec(uncommented)?.[0] ?? ''
+    for (const name of skyNames) {
+      expect(canvasRule, `${name} declared in .liveCanvas`).toMatch(new RegExp(`${name}\\s*:`))
+      expect(canvasRule, `${name} used in .liveCanvas`).toContain(`var(${name})`)
+      const outside = uncommented.replace(canvasRule, '')
+      expect(outside, `${name} outside .liveCanvas`).not.toContain(name)
+    }
+    const stripped = uncommented.replace(skyDeclaration, '')
     expect(stripped).not.toMatch(/#[0-9a-fA-F]{3,8}\b/)
     expect(stripped).not.toMatch(/\brgba?\s*\(/i)
-    const usedVars = [...stripped.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)].map((m) => m[1])
+    const usedVars = [...stripped.matchAll(/var\(\s*(--[a-z0-9-]+)/gi)]
+      .map((m) => m[1])
+      .filter((name) => !skyNames.includes(name))
     expect(usedVars.length).toBeGreaterThan(0)
     for (const varName of usedVars) {
       expect(definedVars.has(varName), `undefined ${varName}`).toBe(true)

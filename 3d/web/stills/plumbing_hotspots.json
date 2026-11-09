@@ -1,0 +1,73 @@
+{
+ "shot": "plumbing",
+ "camera": "CAM_plumbing",
+ "image": "plumbing_end_2048.png",
+ "resolution": [
+  2048,
+  2048
+ ],
+ "origin": "top-left",
+ "note": "x/y may fall outside 0-1 for anchors out of frame: filter on in_frame",
+ "points": [
+  {
+   "id": "HOT_plumbing_1",
+   "label": "break_tanks",
+   "x": 0.7581,
+   "y": 0.8779,
+   "in_frame": true,
+   "world": [
+    1.57,
+    11.899,
+    1.7
+   ]
+  },
+  {
+   "id": "HOT_plumbing_2",
+   "label": "booster_pumps",
+   "x": 0.3192,
+   "y": 0.8675,
+   "in_frame": true,
+   "world": [
+    10.72,
+    4.867,
+    0.8
+   ]
+  },
+  {
+   "id": "HOT_plumbing_3",
+   "label": "water_risers",
+   "x": 0.4434,
+   "y": -0.1939,
+   "in_frame": false,
+   "world": [
+    4.862,
+    1.505,
+    30.0
+   ]
+  },
+  {
+   "id": "HOT_plumbing_4",
+   "label": "drainage_stacks",
+   "x": 0.2191,
+   "y": 0.186,
+   "in_frame": true,
+   "world": [
+    10.955,
+    -2.424,
+    20.0
+   ]
+  },
+  {
+   "id": "HOT_plumbing_5",
+   "label": "roof_tank",
+   "x": 1.3263,
+   "y": -2.1616,
+   "in_frame": false,
+   "world": [
+    -22.323,
+    5.295,
+    86.0
+   ]
+  }
+ ]
+}

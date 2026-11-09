@@ -9,8 +9,8 @@
     "node": ">=24 <25"
   },
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--no-deprecation next dev",
-    "build": "cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build && node scripts/check-client-bundle-sentinels.mjs",
+    "dev": "node scripts/sync-3d-assets.mjs && cross-env NODE_OPTIONS=--no-deprecation next dev",
+    "build": "node scripts/sync-3d-assets.mjs && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build && node scripts/check-client-bundle-sentinels.mjs",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
     "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs",
     "typecheck": "tsc --noEmit",
@@ -25,7 +25,8 @@
     "seed": "cross-env NODE_OPTIONS=--no-deprecation payload run scripts/seed.ts",
     "check:citations": "node scripts/check-citations.mjs",
     "tokens": "node scripts/generate-tokens.mjs",
-    "tokens:check": "node scripts/generate-tokens.mjs --check"
+    "tokens:check": "node scripts/generate-tokens.mjs --check",
+    "sync:3d": "node scripts/sync-3d-assets.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.91.0",
@@ -41,6 +42,7 @@
     "react": "19.3.1",
     "react-dom": "19.3.1",
     "sharp": "0.35.5",
+    "three": "0.186.1",
     "zod": "4.6.7"
   },
   "devDependencies": {
@@ -48,6 +50,7 @@
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
+    "@types/three": "0.186.0",
     "cross-env": "10.1.0",
     "eslint": "10.13.0",
     "eslint-config-next": "16.4.2",

@@ -1,0 +1,12 @@
+diff --git a/src/components/systems3d/InteractiveSystemsSection.module.css b/src/components/systems3d/InteractiveSystemsSection.module.css
+index ca182d7..17fee56 100644
+--- a/src/components/systems3d/InteractiveSystemsSection.module.css
++++ b/src/components/systems3d/InteractiveSystemsSection.module.css
+@@ -780,3 +780,7 @@
+     block-size: 56px;
+   }
+ }
++
++.mutantA {
++  color: #123456;
++}

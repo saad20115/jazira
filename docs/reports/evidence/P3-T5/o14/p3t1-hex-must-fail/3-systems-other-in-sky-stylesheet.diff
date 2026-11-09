@@ -1,0 +1,12 @@
+diff --git a/src/components/systems3d/InteractiveSystemsSection.module.css b/src/components/systems3d/InteractiveSystemsSection.module.css
+index ca182d7..a7b76fd 100644
+--- a/src/components/systems3d/InteractiveSystemsSection.module.css
++++ b/src/components/systems3d/InteractiveSystemsSection.module.css
+@@ -100,6 +100,7 @@
+      island. Browsers dither gradients, so there are no bands on 8-bit screens. The sky colours are
+      scene colours, not brand tokens: the poster's blue-hour azure cannot be mixed from them (Q12).
+      They are used in this rule only. */
++  --systems-other: #123456;
+   --systems-sky-top: #306cab; /* sampled from tower-render.png: top edge of the card's 0–15 % band */
+   --systems-sky-upper: #8da3bb; /* sampled from tower-render.png: sky at 15 % of the card height */
+   --systems-sky-mid: #97a7bb; /* sampled from tower-render.png: sky above the skyline, 30–40 % band */

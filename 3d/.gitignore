@@ -1,0 +1,45 @@
+# Al Jazira tower 3D: core project only (allowlist).
+# Everything else (renders/evidence, build candidates, old versions) lives in C:\aljazira-3d-backup.
+/*
+!/.gitignore
+!/.gitattributes
+!/README.md
+
+# Release served to the site (v022n)
+!/web/
+/web/*
+!/web/tower.glb
+!/web/tower-lite.glb
+!/web/manifest.json
+!/web/stills/
+!/web/guard.mjs
+!/web/compress.ps1
+!/web/tris_by_system.mjs
+!/web/viewer-test/
+/web/viewer-test/node_modules/
+!/web/build/
+/web/build/*
+!/web/build/v022n/
+/web/build/v022n/*
+!/web/build/v022n/extras-schema.md
+
+# Blender masters and the build scripts
+!/blend/
+/blend/*
+!/blend/aljazira_tower.blend
+!/blend/aljazira_tower_r5c_v022n.blend
+!/blend/scripts/
+*.blend1
+*.tmp
+__pycache__/
+
+# Textures of the current release
+!/textures_v022n/
+
+# Poly Haven CC0 assets used by v022n (island_tree_02 was city-only, re-downloadable)
+!/assets/
+/assets/polyhaven/island_tree_02/
+
+# References and reports
+!/ref/
+!/reports/

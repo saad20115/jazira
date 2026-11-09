@@ -1,0 +1,17 @@
+[console] info %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[console] error eval() is not supported in this environment. If this page was served with a `Content-Security-Policy` header, make sure that `unsafe-eval` is included. React requires eval() in development mode for va
+[console] log [HMR] connected
+[console] error A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client bran
+[console] warning Image with src "/api/media/file/sofitel-makkah-hotel-800x593.webp" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'wid
+[console] warning Image with src "/api/media/file/al-maqam-towers-800x595.webp" has either width or height modified, but not the other. If you use CSS to change the size of your image, also include the styles 'width: "
+{"label":"outside card (heading), still","scrolledBy":235,"state":"still","active":"false"}
+{"label":"over card, still","scrolledBy":235,"state":"still","active":"false"}
+{"afterOpenTap":"loading"}
+{"stateAfterWait":"live"}
+{"label":"over card, live inactive","scrolledBy":235,"state":"live","active":"false"}
+{"afterCardTap":"true"}
+{"label":"over card, live ACTIVE (should not scroll)","scrolledBy":0,"state":"live","active":"true"}
+{"doneVisible":true}
+{"label":"over card, after Done","scrolledBy":235,"state":"live","active":"false"}

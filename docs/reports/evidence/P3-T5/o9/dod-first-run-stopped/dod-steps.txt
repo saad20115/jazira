@@ -1,0 +1,14 @@
+clone exit=0
+### lfs-pull: git lfs pull --include=3d/web/**
+lfs-pull exit=0
+### install: corepack pnpm install --frozen-lockfile
+install exit=0
+### lint: corepack pnpm lint
+lint exit=0
+### typecheck: corepack pnpm typecheck
+typecheck exit=0
+### format-check: corepack pnpm format:check
+format-check exit=1
+### test: corepack pnpm test
+test exit=1
+### build: corepack pnpm build

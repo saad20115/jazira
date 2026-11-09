@@ -1,0 +1,9 @@
+MUTANT (dev server, HMR; reverted right after): src/components/systems3d/StillLabels.tsx
+  - const spread = spreadDots(inFrame, width, height)
+  + const spread = inFrame.length > 99 ? spreadDots(inFrame, width, height) : inFrame
+Command: SERVER_URL=http://localhost:3170 pnpm exec playwright test tests/e2e/p3-t5-live-3d.e2e.spec.ts --project=chromium -g "O-6"
+Only these lines of the output were kept (filtered with grep at the time):
+  x  1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:644:3 › P3-T5 live 3D card — phone › O-6: every Fire dot of the still can be tapped at 390 px, and a tap downloads nothing (5.5s)
+    Error: the "Fire pumps" dot is covered
+    > 164 |     expect(onTop, `the "${name}" dot is covered`).toBe(true)
+  1 failed

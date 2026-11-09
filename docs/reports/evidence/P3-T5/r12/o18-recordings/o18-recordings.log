@@ -1,0 +1,4 @@
+inside: entered=fire hash=#systems-fire
+after two ticks: entered=fire hash=#systems-fire
+after the run into the limit: entered=fire hash=#systems-fire
+after a pause and one more tick: entered=none hash=

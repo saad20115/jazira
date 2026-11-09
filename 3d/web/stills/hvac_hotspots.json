@@ -1,0 +1,73 @@
+{
+ "shot": "hvac",
+ "camera": "CAM_hvac",
+ "image": "hvac_end_2048.png",
+ "resolution": [
+  2048,
+  2048
+ ],
+ "origin": "top-left",
+ "note": "x/y may fall outside 0-1 for anchors out of frame: filter on in_frame",
+ "points": [
+  {
+   "id": "HOT_hvac_1",
+   "label": "chillers",
+   "x": 0.6582,
+   "y": 0.1578,
+   "in_frame": true,
+   "world": [
+    -2.617,
+    10.018,
+    86.5
+   ]
+  },
+  {
+   "id": "HOT_hvac_2",
+   "label": "cooling_towers",
+   "x": 0.8069,
+   "y": 0.4129,
+   "in_frame": true,
+   "world": [
+    18.371,
+    -1.258,
+    88.5
+   ]
+  },
+  {
+   "id": "HOT_hvac_3",
+   "label": "ahus_roof",
+   "x": 0.4805,
+   "y": 0.1257,
+   "in_frame": true,
+   "world": [
+    -9.122,
+    3.623,
+    87.2
+   ]
+  },
+  {
+   "id": "HOT_hvac_4",
+   "label": "duct_riser",
+   "x": 0.5576,
+   "y": 0.7424,
+   "in_frame": true,
+   "world": [
+    1.699,
+    3.427,
+    46.0
+   ]
+  },
+  {
+   "id": "HOT_hvac_5",
+   "label": "fcus_L12",
+   "x": 0.2094,
+   "y": 0.8011,
+   "in_frame": true,
+   "world": [
+    -5.432,
+    -20.176,
+    47.7
+   ]
+  }
+ ]
+}

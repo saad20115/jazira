@@ -150,12 +150,18 @@ describe('P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, 
       const files = walkFiles(dir, (f) => /\.(tsx?|css|mjs)$/.test(f))
       for (const file of files) {
         const content = fs.readFileSync(file, 'utf8')
+        const relative = path.relative(repoRoot, file).replace(/\\/g, '/')
+        // docs/05-design.md decision 22: the 3D card's sky scene colours, whole declarations in its stylesheet only.
+        const scoped =
+          relative === 'src/components/systems3d/InteractiveSystemsSection.module.css'
+            ? content.replace(/^\s*--systems-sky-[a-z0-9-]+:\s*#[0-9a-fA-F]{6};/gm, '')
+            : content
         // Strip `#main-content` anchor hashes so only color hex literals are matched
-        const stripped = content.replace(/#main-content\b/g, '')
+        const stripped = scoped.replace(/#main-content\b/g, '')
         const matches = stripped.match(hexRegex)
         if (matches && matches.length > 0) {
           violations.push({
-            file: path.relative(repoRoot, file).replace(/\\/g, '/'),
+            file: relative,
             matches,
           })
         }
@@ -290,7 +296,7 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
     expect(csp).toContain("'strict-dynamic'")
   })
 
-  it('builds strict H3 public CSP with H3a (wasm-unsafe-eval + blob worker) ONLY on /ar and /en home', () => {
+  it('builds strict H3 public CSP with H3a/H3b (wasm-unsafe-eval + same-origin worker) ONLY on /ar and /en home', () => {
     const nonce = generateCspNonce()
     expect(nonce.length).toBeGreaterThan(16)
 
@@ -305,7 +311,8 @@ describe('P3-T1 Scope 5 — proxy.ts and Content Security Policy (H3 & H3a)', ()
       `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' 'wasm-unsafe-eval'`,
     )
     expect(homeCsp).toContain(`style-src 'self' 'nonce-${nonce}'`)
-    expect(homeCsp).toContain("worker-src 'self' blob:")
+    expect(homeCsp).toContain("worker-src 'self';")
+    expect(homeCsp).not.toMatch(/worker-src[^;]*blob:/)
     expect(homeCsp).toContain(`frame-src ${I4_VIDEO_FRAME_SOURCES.join(' ')}`)
     expect(homeCsp).not.toContain("'unsafe-eval'")
     expect(homeCsp).not.toContain("'unsafe-inline'")

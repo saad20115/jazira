@@ -1,0 +1,123 @@
+diff --git a/src/components/systems3d/viewer/inlineBasisuPlugin.ts b/src/components/systems3d/viewer/inlineBasisuPlugin.ts
+index 68c92d9..93a139b 100644
+--- a/src/components/systems3d/viewer/inlineBasisuPlugin.ts
++++ b/src/components/systems3d/viewer/inlineBasisuPlugin.ts
+@@ -7,10 +7,13 @@
+  * wins) and hands the embedded bytes straight to `KTX2Loader.parse()`; transcoding still runs in the
+  * KTX2 worker (`worker-src 'self' blob:`, H3a). Texture setup mirrors `GLTFParser.loadTextureImage`
+  * of three 0.186.1 (flipY, name, sampler filters and wrapping, association).
++ *
++ * O-9a: the parse does not wait for the transcode. Each texture is a `PendingTexture`, filled when
++ * its transcode lands; `fills.settled()` says when every one has (the viewer uploads after it).
+  */
+ 
+ import {
+-  type CompressedTexture,
++  CompressedTexture,
+   LinearFilter,
+   LinearMipmapLinearFilter,
+   LinearMipmapNearestFilter,
+@@ -19,6 +22,7 @@ import {
+   NearestFilter,
+   NearestMipmapLinearFilter,
+   NearestMipmapNearestFilter,
++  NoColorSpace,
+   RepeatWrapping,
+   ClampToEdgeWrapping,
+   MirroredRepeatWrapping,
+@@ -79,8 +83,60 @@ function parseKtx2(loader: KTX2Loader, buffer: ArrayBuffer): Promise<CompressedT
+   })
+ }
+ 
+-export function inlineBasisuPlugin(ktx2: KTX2Loader): (parser: GLTFParser) => GLTFLoaderPlugin {
+-  return (parser) => ({
++/**
++ * O-9a: a texture the parse hands to its materials at once, before it is transcoded. Creating a
++ * material's programs reads only which maps it has, never their pixels, so the hero's programs link
++ * while the KTX2 workers transcode. The transcoded texture then fills this one, and every clone
++ * GLTFLoader made of it (a second UV set, a texture transform), in place.
++ */
++export class PendingTexture extends CompressedTexture {
++  private readonly copies: PendingTexture[] = []
++
++  constructor() {
++    super([], 1, 1)
++  }
++
++  override clone(): this {
++    const copy = super.clone()
++    this.copies.push(copy)
++    return copy
++  }
++
++  /** Takes the transcoded data; colour space only where the parse did not set one (as before). */
++  fill(from: CompressedTexture): void {
++    this.mipmaps = from.mipmaps
++    this.image = from.image
++    this.format = from.format
++    this.type = from.type
++    this.premultiplyAlpha = from.premultiplyAlpha
++    if (this.colorSpace === NoColorSpace) {
++      this.colorSpace = from.colorSpace
++    }
++    this.generateMipmaps = false
++    this.needsUpdate = true
++  }
++}
++
++/** The transcodes still running; nothing uploads or draws a texture before they are done. */
++export interface TextureFills {
++  /** Resolves once every transcode started so far has filled its texture (rejects on a failure). */
++  settled: () => Promise<void>
++}
++
++export function inlineBasisuPlugin(ktx2: KTX2Loader): {
++  plugin: (parser: GLTFParser) => GLTFLoaderPlugin
++  fills: TextureFills
++} {
++  const pending = new Set<Promise<void>>()
++  const fills: TextureFills = {
++    async settled() {
++      // Transcodes started while waiting (a variant's textures) are waited for too.
++      while (pending.size > 0) {
++        await Promise.all([...pending])
++      }
++    },
++  }
++  const plugin = (parser: GLTFParser): GLTFLoaderPlugin => ({
+     name: EXTENSION,
+     loadTexture(textureIndex: number): Promise<Texture> | null {
+       const json = parser.json as GltfJsonSubset
+@@ -96,9 +152,18 @@ export function inlineBasisuPlugin(ktx2: KTX2Loader): (parser: GLTFParser) => GL
+       }
+       const sampler =
+         (textureDef.sampler !== undefined && json.samplers?.[textureDef.sampler]) || {}
+-      return (parser.getDependency('bufferView', imageDef.bufferView) as Promise<ArrayBuffer>)
+-        .then((bufferView) => parseKtx2(ktx2, bufferView.slice(0)))
+-        .then((texture) => {
++      return (parser.getDependency('bufferView', imageDef.bufferView) as Promise<ArrayBuffer>).then(
++        (bufferView) => {
++          const texture = new PendingTexture()
++          const fill = parseKtx2(ktx2, bufferView.slice(0)).then((transcoded) => {
++            texture.fill(transcoded)
++          })
++          pending.add(fill)
++          // Settled ones leave the set; a failure stays, so `settled()` reports it.
++          fill.then(
++            () => pending.delete(fill),
++            () => undefined,
++          )
+           texture.flipY = false
+           // `||` as in three: an empty texture name falls back to the image name.
+           texture.name = textureDef.name || imageDef.name || ''
+@@ -118,7 +183,9 @@ export function inlineBasisuPlugin(ktx2: KTX2Loader): (parser: GLTFParser) => GL
+           texture.userData.mimeType = imageDef.mimeType ?? 'image/ktx2'
+           parser.associations.set(texture, { textures: textureIndex })
+           return texture
+-        })
++        },
++      )
+     },
+   })
++  return { plugin, fills }
+ }

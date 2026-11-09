@@ -1,0 +1,25 @@
+
+Running 1 test using 1 worker
+
+[1/1] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1184:3 › P3-T5 live 3D card › @gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas
+  1) [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1184:3 › P3-T5 live 3D card › @gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas 
+
+    Error: expect(received).toBe(expected) // Object.is equality
+
+    Expected: true
+    Received: false
+
+      1225 |     expect(live.length).toBeGreaterThan(2)
+      1226 |     // Never unmounted and mounted again at the swap: the first live frames show the same still.
+    > 1227 |     expect(live[0].same).toBe(true)
+           |                          ^
+      1228 |     // It fades out over the canvas (values between shown and gone), then leaves.
+      1229 |     expect(live.some((sample) => sample.same && sample.opacity > 0 && sample.opacity < 1)).toBe(true)
+      1230 |     expect(live[live.length - 1].same).toBe(false)
+        at D:\jazira-p3t5\tests\e2e\p3-t5-live-3d.e2e.spec.ts:1227:26
+
+    Error Context: test-results\p3-t5-live-3d.e2e-P3-T5-li-10f33-d-fades-out-over-the-canvas-gpu\error-context.md
+
+
+  1 failed
+    [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1184:3 › P3-T5 live 3D card › @gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas 

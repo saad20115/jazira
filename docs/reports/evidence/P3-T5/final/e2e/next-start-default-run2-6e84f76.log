@@ -1,0 +1,10 @@
+
+Running 4 tests using 1 worker
+
+  ok 1 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:139:3 › P3-T5 live 3D card › @smoke still first: the release still paints and no 3D asset loads before intent (4.5s)
+  ok 2 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:157:3 › P3-T5 live 3D card › reduced motion keeps the stills tier: no 3D download; a system shows its end still and labels (717ms)
+  ok 3 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:427:3 › P3-T5 live 3D card — WebGL disabled › a browser without WebGL falls back to the stills tier (1.7s)
+  ok 4 [chromium] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:458:3 › P3-T5 live 3D card — software renderer › a software WebGL renderer ends in the stills tier, without a canvas or a 3D download (2.8s)
+
+  4 passed (12.8s)
+exit=0

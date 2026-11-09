@@ -1,0 +1,9 @@
+1 r11b exit=0 cpu=41              
+2 r12 exit=0 cpu=42              
+3 r12 exit=0 cpu=36              
+4 r11b exit=0 cpu=37              
+5 r11b exit=0 cpu=38              
+6 r12 exit=0 cpu=34              
+ALLDONE
+
+[exited with code 0]

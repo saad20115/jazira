@@ -1,0 +1,28 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-tier.test.ts (19 tests | 1 failed) 21ms
+   ❯ P3-T5 run-time FPS tier check (4)
+     × needs a full window before deciding: 60 frames, or in low 2 s of frames if that comes first 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-tier.test.ts > P3-T5 run-time FPS tier check > needs a full window before deciding: 60 frames, or in low 2 s of frames if that comes first
+RangeError: Invalid array length
+ ❯ frames src/p3-t5-tier.test.ts:117:66
+    115|
+    116| describe('P3-T5 run-time FPS tier check', () => {
+    117|   const frames = (ms: number, n = FPS_WINDOW): number[] => Array.from(…
+       |                                                                  ^
+    118|
+    119|   it('needs a full window before deciding: 60 frames, or in low 2 s of…
+ ❯ src/p3-t5-tier.test.ts:124:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 18 passed (19)
+   Start at  08:45:31
+   Duration  523ms (transform 71%, import 16%, tests 10%, worker 3%)
+

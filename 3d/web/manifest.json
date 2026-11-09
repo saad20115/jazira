@@ -1,0 +1,469 @@
+{
+ "generated": "2026-10-25T11:22:37.499Z",
+ "files": [
+  {
+   "file": "tower.glb",
+   "bytes": 7081536,
+   "sha256": "2fd419908dbe8bacdc97c08ba6ac26b75b61d30c65b6785653ab897f8fcd8af5",
+   "budgetBytes": 8000000,
+   "gpuTextureEstimate": 12860779,
+   "gpuTextureCap": 24000000,
+   "trianglesStored": 61496,
+   "extensionsUsed": [
+    "EXT_mesh_gpu_instancing",
+    "EXT_meshopt_compression",
+    "KHR_materials_clearcoat",
+    "KHR_materials_emissive_strength",
+    "KHR_materials_specular",
+    "KHR_materials_variants",
+    "KHR_mesh_quantization",
+    "KHR_texture_basisu",
+    "KHR_texture_transform"
+   ],
+   "extensionsRequired": [
+    "EXT_meshopt_compression",
+    "KHR_mesh_quantization",
+    "KHR_texture_basisu",
+    "KHR_texture_transform"
+   ],
+   "textures": [
+    {
+     "name": "tex_roomlight",
+     "codec": "UASTC",
+     "size": [
+      512,
+      512
+     ],
+     "bytes": 155519,
+     "gpuEstimate": 349525
+    },
+    {
+     "name": "LM_arch",
+     "codec": "UASTC",
+     "size": [
+      2048,
+      2048
+     ],
+     "bytes": 4047600,
+     "gpuEstimate": 5592405
+    },
+    {
+     "name": "tex_slablight",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 16861,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_black",
+     "codec": "UASTC",
+     "size": [
+      4,
+      4
+     ],
+     "bytes": 371,
+     "gpuEstimate": 21
+    },
+    {
+     "name": "tex_pilaster_wash",
+     "codec": "UASTC",
+     "size": [
+      8,
+      128
+     ],
+     "bytes": 1470,
+     "gpuEstimate": 1365
+    },
+    {
+     "name": "tex_cw_emit_night",
+     "codec": "ETC1S",
+     "size": [
+      2048,
+      1536
+     ],
+     "bytes": 209312,
+     "gpuEstimate": 2097152
+    },
+    {
+     "name": "tex_cw_normal",
+     "codec": "UASTC",
+     "size": [
+      64,
+      128
+     ],
+     "bytes": 1633,
+     "gpuEstimate": 10923
+    },
+    {
+     "name": "tex_cw_mr",
+     "codec": "UASTC",
+     "size": [
+      64,
+      24
+     ],
+     "bytes": 2451,
+     "gpuEstimate": 2048
+    },
+    {
+     "name": "tex_podium_emit",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      384
+     ],
+     "bytes": 41075,
+     "gpuEstimate": 262144
+    },
+    {
+     "name": "tex_sitelight",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 113079,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_plinthlight",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 90300,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_vegetation",
+     "codec": "ETC1S",
+     "size": [
+      512,
+      512
+     ],
+     "bytes": 107721,
+     "gpuEstimate": 174763
+    },
+    {
+     "name": "tex_sys_shade",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 118117,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "LM_systems",
+     "codec": "UASTC",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 1064557,
+     "gpuEstimate": 1398101
+    },
+    {
+     "name": "tex_glow_palette",
+     "codec": "ETC1S",
+     "size": [
+      128,
+      16
+     ],
+     "bytes": 954,
+     "gpuEstimate": 1365
+    },
+    {
+     "name": "tex_hvac_fans",
+     "codec": "ETC1S",
+     "size": [
+      512,
+      512
+     ],
+     "bytes": 18018,
+     "gpuEstimate": 174763
+    }
+   ]
+  },
+  {
+   "file": "tower-lite.glb",
+   "bytes": 2109740,
+   "sha256": "382f8f67f83adfcd9f9f7060401a0cfa49da2dcdb0f677273d39dbcebafbe62e",
+   "budgetBytes": 2500000,
+   "gpuTextureEstimate": 6613005,
+   "gpuTextureCap": 12000000,
+   "trianglesStored": 52120,
+   "extensionsUsed": [
+    "EXT_mesh_gpu_instancing",
+    "EXT_meshopt_compression",
+    "KHR_materials_clearcoat",
+    "KHR_materials_emissive_strength",
+    "KHR_materials_specular",
+    "KHR_materials_variants",
+    "KHR_mesh_quantization",
+    "KHR_texture_basisu",
+    "KHR_texture_transform"
+   ],
+   "extensionsRequired": [
+    "EXT_meshopt_compression",
+    "KHR_mesh_quantization",
+    "KHR_texture_basisu",
+    "KHR_texture_transform"
+   ],
+   "textures": [
+    {
+     "name": "tex_roomlight",
+     "codec": "UASTC",
+     "size": [
+      512,
+      512
+     ],
+     "bytes": 155519,
+     "gpuEstimate": 349525
+    },
+    {
+     "name": "LM_arch",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 250292,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_slablight",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 16861,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_black",
+     "codec": "ETC1S",
+     "size": [
+      4,
+      4
+     ],
+     "bytes": 467,
+     "gpuEstimate": 11
+    },
+    {
+     "name": "tex_cw_emit_night",
+     "codec": "ETC1S",
+     "size": [
+      2048,
+      1536
+     ],
+     "bytes": 209312,
+     "gpuEstimate": 2097152
+    },
+    {
+     "name": "tex_cw_normal",
+     "codec": "UASTC",
+     "size": [
+      64,
+      128
+     ],
+     "bytes": 1633,
+     "gpuEstimate": 10923
+    },
+    {
+     "name": "tex_cw_mr",
+     "codec": "UASTC",
+     "size": [
+      64,
+      24
+     ],
+     "bytes": 2451,
+     "gpuEstimate": 2048
+    },
+    {
+     "name": "tex_pilaster_wash",
+     "codec": "UASTC",
+     "size": [
+      8,
+      128
+     ],
+     "bytes": 1470,
+     "gpuEstimate": 1365
+    },
+    {
+     "name": "tex_podium_emit",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      384
+     ],
+     "bytes": 41075,
+     "gpuEstimate": 262144
+    },
+    {
+     "name": "tex_sitelight",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 113079,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_plinthlight",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 90300,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_vegetation",
+     "codec": "ETC1S",
+     "size": [
+      512,
+      512
+     ],
+     "bytes": 107721,
+     "gpuEstimate": 174763
+    },
+    {
+     "name": "tex_sys_shade_lite",
+     "codec": "ETC1S",
+     "size": [
+      512,
+      512
+     ],
+     "bytes": 42241,
+     "gpuEstimate": 174763
+    },
+    {
+     "name": "LM_systems_lite",
+     "codec": "ETC1S",
+     "size": [
+      1024,
+      1024
+     ],
+     "bytes": 131158,
+     "gpuEstimate": 699051
+    },
+    {
+     "name": "tex_glow_palette",
+     "codec": "ETC1S",
+     "size": [
+      128,
+      16
+     ],
+     "bytes": 954,
+     "gpuEstimate": 1365
+    },
+    {
+     "name": "tex_hvac_fans",
+     "codec": "ETC1S",
+     "size": [
+      256,
+      256
+     ],
+     "bytes": 9901,
+     "gpuEstimate": 43691
+    }
+   ]
+  }
+ ],
+ "camera_limits": {
+  "target": [
+   -4.592,
+   65.5,
+   9.075
+  ],
+  "pan_center": [
+   -4.592,
+   65.5,
+   9.075
+  ],
+  "pan_radius": 20,
+  "min_distance": 56.24,
+  "max_distance": 420,
+  "min_polar": 0.2618,
+  "max_polar": 1.693,
+  "min_camera_height": 3,
+  "fov_y": 0.55426,
+  "tower_height": 88.75,
+  "tower_fill_at_max": 0.55,
+  "hero_distance": 381.16,
+  "hero_shift_y": 0.1475,
+  "note": "OrbitControls: min/maxDistance, min/maxPolarAngle; clamp controls.target to pan_center + pan_radius; keep camera.y >= min_camera_height (glTF Y up)"
+ },
+ "runtime": {
+  "three": "0.186.1",
+  "basisTranscoder": {
+   "source": "three/examples/jsm/libs/basis (bundled with this three version; self-host these exact files, no CDN)",
+   "note": "the transcoder build carries no upstream version string; identify it by three version + hashes",
+   "basis_transcoder.js": "8478b5b6d6b74e7d3082b89f6417321d8d1dc0307f2b30d4484bb11b441696a1",
+   "basis_transcoder.wasm": "6cf17dc889352c42e9acf8897107978d127005fe3386c36a0e3845e27967630a"
+  },
+  "meshoptDecoder": {
+   "source": "three/examples/jsm/libs/meshopt_decoder.module.js",
+   "build": "meshoptimizer 1.1",
+   "sha256": "d428e73a000057c6c94bfcedc3412d0c2dc14ca8800e88553aab05113ad2bf19"
+  }
+ },
+ "tools": {
+  "gltfTransform": "4.5.1",
+  "toktx": "'toktx' is not recognized as an internal or external command, operable program or batch file."
+ },
+ "render": {
+  "tone_mapping": {
+   "live": "THREE.AgXToneMapping + Blender's 'Medium High Contrast' look patched into three's AgX (AgX-log contrast 1.2 about pivot 0.606, a CALIBRATED value = AgX-log mid-grey, not OCIO's 0.4; viewer override ?piv=, before the sigmoid), toneMappingExposure 1, outputColorSpace SRGB (applied once, in OutputPass)",
+   "cycles": "AgX, look 'Medium High Contrast', exposure 0, gamma 1 (the stills)",
+   "note": "pivot: OCIO's log pivot (-0.2 -> 0.4) brightened live by +18 luma vs the stills, mid-grey matches them (thirds within 1-8); the GLB emissive strengths / site light were calibrated by luma against the Cycles stills under these settings"
+  },
+  "environment": "v022 studio (scene extras.studio; there is no extras.sky, no CITY_card, no fog): scene.environment = PMREMGenerator.fromScene(a scene holding copies of extras.studio.room and every extras.studio.env_only node at their world matrices, plus, at night, the extras.studio.night_glow sphere; near 1, far 3000, position extras.studio.env_position). scene.background = null: the room mesh is the visible background (clear colour #d8d8d6 day / #1b2130 night). env_only nodes and the glow sphere are NEVER drawn in the main view. Never a flat colour. (v020 / v021: extras.sky -> float equirect.)",
+  "studio": {
+   "note": "v022 studio maquette (owner 2026-10-25), mode = extras.studio.mode. day (v022): white daylight studio, bloom off, window / lobby emission a daytime glimmer. night (v022n, the owner-adopted release): the studio dimmed cool; extras.studio.moon = one THREE.DirectionalLight(color, intensity) along direction_to_light (Cycles light-links it to the model only: the lightmapped room / plinth / site have black base colour, so it cannot light them twice); extras.studio.night_glow = an env-only inward sphere, unlit colour = color x gain x mix(min, 1, smoothstep(height_from, height_to, y)), the dark-navy sheen of the glass; bloom = extras.studio.bloom on tower.glb, off on tower-lite.glb. Both: renderer.toneMappingExposure = 2 ** extras.studio.exposure_stops; extras.turntable: rotate the root node (it carries ARCH_*, SITE, SYS_*, plinth) about +Y while idle, ease back to 0 before a system entry; camera_limits.hero_shift_y replaces the hard-coded 0.227. Full schema: extras-schema.md."
+  },
+  "city": {
+   "note": "v022 city attempt (superseded by the studio maquette; kept for reference): the Cycles stills had a full procedural city; the GLB carried a light backdrop only",
+   "CITY_card": "700 m cylinder round PIVOT_hero, KHR_materials_unlit, alphaMode BLEND, tex_city_band (4096 x 512 full / 2048 x 256 lite: 360 deg x latitude -20..+15 deg), baked from the stills city beyond 235 m",
+   "CITY_ring": "34 low blocks at 150-228 m, one instanced unit box (EXT_mesh_gpu_instancing), unlit, tex_city_ring toned from the band",
+   "SITE_ground": "radius 240 m, MAT_ground_live: unlit, alpha BLEND, tex_city_ground (1024 full / 512 lite) = a top-down Cycles render of the stills city ground (streets, lamp pools, cars, tree canopies), alpha fades 205 -> 240 m"
+  },
+  "bloom": {
+   "pass": "UnrealBloomPass on a HalfFloat, 4x MSAA EffectComposer target, before OutputPass",
+   "threshold": 8,
+   "strength": 0.22,
+   "radius": 0.25,
+   "note": "linear HDR threshold above the lit office windows: only the light sources (crown LED line, lamps, lobby, uplit pilaster bases, trails) bloom"
+  },
+  "interior_mapping": {
+   "tiers": [
+    "full"
+   ],
+   "materials": [
+    "MAT_glass_cw",
+    "MAT_glass_wing",
+    "MAT_glass_side",
+    "MAT_glass_terrace"
+   ],
+   "grid": "64 x 24 modules over the emissive UV (1.2 x 3.6 m; v runs down the facade)",
+   "window_band": [
+    0.12,
+    0.74
+   ],
+   "room": {
+    "depth_m": 7,
+    "head_above_sill_m": 2.23,
+    "floor_below_sill_m": 0.75
+   },
+   "note": "ray traced into an open-plan room per fragment, hit mapped back onto the band of tex_cw_emit (onBeforeCompile on emissivemap_fragment); lite keeps the baked room picture (ceiling-panel perspective = the depth cue)"
+  }
+ }
+}

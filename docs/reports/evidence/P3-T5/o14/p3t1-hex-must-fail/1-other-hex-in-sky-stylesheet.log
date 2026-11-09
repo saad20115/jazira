@@ -1,0 +1,41 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t1-foundations.test.ts (12 tests | 1 failed) 435ms
+   ❯ P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, and no raw hex (3)
+     × enforces zero raw hex colors (#...) across src/app/(frontend) and src/components 87ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t1-foundations.test.ts > P3-T1 Scope 1 & 2 — Design tokens, CSS Modules, logical properties, and no raw hex > enforces zero raw hex colors (#...) across src/app/(frontend) and src/components
+AssertionError: expected [ { …(2) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "file": "src/components/systems3d/InteractiveSystemsSection.module.css",
++     "matches": [
++       "#123456",
++     ],
++   },
++ ]
+
+ ❯ src/p3-t1-foundations.test.ts:171:24
+    169|     }
+    170|
+    171|     expect(violations).toEqual([])
+       |                        ^
+    172|   })
+    173|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 passed (12)
+   Start at  14:10:27
+   Duration  5.20s (import 87%, tests 9%, transform 3%)
+

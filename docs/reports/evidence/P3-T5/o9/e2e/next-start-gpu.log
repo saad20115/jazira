@@ -1,0 +1,27 @@
+
+Running 21 tests using 1 worker
+
+[1/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:536:5 › P3-T5 live 3D card › @gpu C3-3: a missing worker CSP fails closed to stills before any worker starts
+[2/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:536:5 › P3-T5 live 3D card › @gpu C3-3: a different worker CSP fails closed to stills before any worker starts
+[3/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:564:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — a click cross-fades to the model with the CSP intact; one header click enters
+[4/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:656:3 › P3-T5 live 3D card › @gpu live: a system card click on the still card starts the model in that system
+[5/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:675:3 › P3-T5 live 3D card › @gpu live: the page scroll is never trapped — the wheel zooms only while the card is active
+[6/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:694:3 › P3-T5 live 3D card › @gpu live: keyboard — Enter starts, digits enter systems, Escape exits then deactivates
+[7/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:736:3 › P3-T5 live 3D card › @gpu live: a #systems hash enters on load, and a lost context falls back to stills keeping it
+[8/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:756:3 › P3-T5 live 3D card › @gpu live: a high-performance GPU name (set by the test) gets the full model, enters and exits
+[9/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:805:3 › P3-T5 live 3D card › @gpu live: under CPU throttling the card ends in a lower tier, applied only off screen (O-9)
+[10/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:937:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn
+[11/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:959:3 › P3-T5 live 3D card › @gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside
+[12/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:991:3 › P3-T5 live 3D card › @gpu O-8: while the model loads after a click, the image stays with a small loading indicator
+[13/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1044:3 › P3-T5 live 3D card › @gpu O-9: near the viewport the model is prepared out of sight; the click shows it and downloads nothing more
+[14/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1065:3 › P3-T5 live 3D card › @gpu O-9: the tier never changes in view: system after system keeps the tier it started with
+[15/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1090:3 › P3-T5 live 3D card › @gpu O-9: a click during loading keeps only the latest system (no flight to the first)
+[16/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1142:3 › P3-T5 live 3D card › @gpu O-11: while the model loads the image pushes in; the cross-fade starts from that scale
+[17/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1184:3 › P3-T5 live 3D card › @gpu O-11 / O-9b: the entered still stays through the swap and fades out over the canvas
+[18/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1234:3 › P3-T5 live 3D card › @gpu O-14: under heavy CPU throttling, within 10 s of the click the card is live or stills with a reason
+[19/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1260:3 › P3-T5 live 3D card › @gpu O-14: a start that never ends (the model download held) shows the stills, reason timeout, within 10 s
+[20/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1287:3 › P3-T5 live 3D card › @gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s
+[21/21] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1429:3 › P3-T5 live 3D card — phone › @gpu live: touch — a tap on the image opens, headers enter, dots can be tapped, scroll is trapped only while active
+  Slow test file: [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts (5.2m)
+  Consider running tests from slow files in parallel. See: https://playwright.dev/docs/test-parallel
+  21 passed (5.2m)

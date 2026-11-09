@@ -1,0 +1,12 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/r12/mut/createViewer.fix.ts	2026-11-09 10:25:58.630103500 +0300
++++ src/components/systems3d/viewer/createViewer.ts	2026-11-09 10:25:58.718516800 +0300
+@@ -1386,9 +1386,6 @@
+       eligible,
+     })
+     wheelExit = step.state
+-    if (step.exit) {
+-      options.onWheelExit?.()
+-    }
+   }
+   canvas.addEventListener('wheel', onWheel, { capture: true, passive: true })
+ 

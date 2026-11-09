@@ -1,17 +1,26 @@
 import type React from 'react'
 
-import { Accordion, type AccordionEntry } from '@/components/Accordion'
 import { CspSafeImage } from '@/components/CspSafeImage'
 import { Eyebrow } from '@/components/Eyebrow'
 import { resolveMediaAsset } from '@/components/media-utils'
-import type { SupportedLocale } from '@/i18n'
+import { getDictionary, type SupportedLocale } from '@/i18n'
 import type { HomePage } from '@/payload-types'
 import gridStyles from '@/styles/grid.module.css'
 
+import towerRender from '../../../design/assets/images/tower-render.png'
+
+import { CARD_IMAGE_SIZES } from './cardImageSizes'
+import { isSystemId } from './contract'
 import styles from './InteractiveSystemsSection.module.css'
+import { loadRelatedProjects } from './loadRelatedProjects'
+import { getSystems3dStrings } from './strings'
+import { type ExplorerSystem, SystemsExplorer, type SystemsExplorerProps } from './SystemsExplorer'
 
 type InteractiveSystemsData = HomePage['interactiveSystems']
 type InteractiveSystemItem = NonNullable<NonNullable<InteractiveSystemsData>['systems']>[number]
+
+/** The Figma image's own size (`design/assets/images/tower-render.png`, square). */
+const POSTER_SIZE = 1024
 
 /** Class names of the split section head shared with other home sections (stay in `page.module.css`). */
 export interface InteractiveSystemsHeadClassNames {
@@ -30,8 +39,10 @@ export interface InteractiveSystemsSectionProps {
 }
 
 /**
- * Home section 4, "Interactive Systems" (`111:1608`, `handoff/tasks/P3-T5.md` E3 step 1).
- * Moved verbatim out of `src/app/(frontend)/[locale]/page.tsx`; renders the same markup.
+ * Home section 4, "Interactive Systems" (`111:1608`, `handoff/tasks/P3-T5.md`).
+ * The related projects are read inside the section (C3-1): the read starts here, unawaited, and its
+ * promise goes to the client explorer, which suspends only the panels on it. The card and the
+ * accordion never wait for it and are never remounted when it arrives.
  */
 export function InteractiveSystemsSection({
   companyName,
@@ -57,16 +68,45 @@ export function InteractiveSystemsSection({
   if (!interactiveEnabled || !hasInteractiveContent) {
     return null
   }
+  const dict = getDictionary(locale)
+  const strings = getSystems3dStrings(locale)
+  // The poster is always the Figma image (owner review O-1, 2026-11-02, docs/05-design.md §21); the
+  // CMS heroImage only supplies its alt text.
+  const cmsAlt =
+    typeof data?.heroImage === 'object' && data.heroImage ? data.heroImage.alt.trim() : ''
+  const posterAlt = cmsAlt || strings.posterAlt
 
-  const accordionEntries: AccordionEntry[] = interactiveSystemsList.map(
+  const explorerSystems: ExplorerSystem[] = interactiveSystemsList.map(
     (sysItem: InteractiveSystemItem, idx: number) => ({
-      id: sysItem.id ?? `system-${String(idx + 1)}`,
-      numberBadge: String(idx + 1).padStart(2, '0'),
+      key: sysItem.id ?? `system-${String(idx + 1)}`,
+      system: isSystemId(sysItem.shot) ? sysItem.shot : null,
       title: sysItem.title,
-      defaultExpanded: idx === 0,
-      body: <p className={`${styles.systemDescription} t-body-m`}>{sysItem.text}</p>,
+      text: sysItem.text,
     }),
   )
+
+  const explorerProps: SystemsExplorerProps = {
+    badgeLabel: dict.home.interactive3dBadge,
+    locale,
+    openLabel: data?.liveModelLabel?.trim() || dict.actions.openLive3dModel,
+    poster: (
+      // Next image optimisation (responsive srcset, lazy): below the fold, never the LCP element.
+      <CspSafeImage
+        alt={posterAlt}
+        className={styles.buildingRender}
+        height={POSTER_SIZE}
+        loading="lazy"
+        sizes={CARD_IMAGE_SIZES}
+        src={towerRender}
+        width={POSTER_SIZE}
+      />
+    ),
+    posterAlt,
+    related: loadRelatedProjects(locale, data),
+    relatedHeading: dict.home.relatedProjectsHeading,
+    strings,
+    systems: explorerSystems,
+  }
 
   return (
     <section
@@ -89,30 +129,7 @@ export function InteractiveSystemsSection({
           ) : null}
         </div>
 
-        <div className={styles.explorerRow}>
-          <div className={styles.buildingCard} data-interactive-3d-card="true">
-            {interactiveHeroImage ? (
-              <CspSafeImage
-                alt={interactiveHeroImage.alt}
-                className={styles.buildingRender}
-                height={580}
-                sizes="(max-width: 1279px) 100vw, 600px"
-                src={interactiveHeroImage.url}
-                width={600}
-              />
-            ) : null}
-          </div>
-
-          <div className={styles.accordionCol}>
-            <Accordion
-              className={styles.interactiveAccordion}
-              defaultExpandedIndex={0}
-              items={accordionEntries}
-              locale={locale}
-              singleExpand
-            />
-          </div>
-        </div>
+        <SystemsExplorer {...explorerProps} />
       </div>
     </section>
   )

@@ -1,0 +1,10 @@
+
+Running 2 tests using 1 worker
+
+(node:25536) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1/2] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1182:3 › P3-T5 live 3D card › @gpu O-14: under heavy CPU throttling, within 10 s of the click the card is live or stills with a reason
+[2/2] [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:1206:3 › P3-T5 live 3D card › @gpu O-14: a context lost early in the start ends in the stills tier, with that reason, within 10 s
+  2 passed (37.2s)

@@ -1,0 +1,57 @@
+
+ RUN  v5.0.5 D:/jazira-p3t5
+
+ ❯ src/p3-t5-pending-textures.test.ts (3 tests | 1 failed) 22ms
+   ❯ P3-T5 O-9a: textures are filled after the parse, clones included (3)
+     × a transcode fills its texture and every clone in place, and settled() waits for it 10ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/p3-t5-pending-textures.test.ts > P3-T5 O-9a: textures are filled after the parse, clones included > a transcode fills its texture and every clone in place, and settled() waits for it
+AssertionError: expected [] to be [ { …(3) } ] // Object.is equality
+
+- Expected
++ Received
+
+- [
+-   {
+-     "data": Uint8Array [
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-       0,
+-     ],
+-     "height": 4,
+-     "width": 4,
+-   },
+- ]
++ []
+
+ ❯ src/p3-t5-pending-textures.test.ts:152:28
+    150|     expect(done).toBe(true)
+    151|     for (const map of [uv.map, xf.map]) {
+    152|       expect(map?.mipmaps).toBe(colour.mipmaps)
+       |                            ^
+    153|       expect(map?.format).toBe(RGBA_ASTC_4x4_Format)
+    154|       expect(map?.image).toEqual({ width: 4, height: 4 })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  03:00:46
+   Duration  460ms (import 52%, transform 29%, tests 13%, worker 5%)
+

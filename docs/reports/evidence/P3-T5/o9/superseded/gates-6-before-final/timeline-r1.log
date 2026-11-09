@@ -1,0 +1,21 @@
+{"hw":{"cores":8,"mem":16},"errors":["error: Failed to load resource: the server responded with a status of 403 (Forbidden)","error: Failed to load resource: the server responded with a status of 403 (Forbidden)","error: Failed to load resource: the server responded with a status of 403 (Forbidden)","error: Failed to load resource: the server responded with a status of 403 (Forbidden)","error: Failed to load resource: the server responded with a status of 403 (Forbidden)","error: Failed to load resource: the server responded with a status of 403 (Forbidden)"]}
+248 state still/none///
+317 FRAME GAP 117ms
+700 FRAME GAP 383ms
+967 FRAME GAP 133ms
+2394 LONGTASK 166ms
+2566 FRAME GAP 167ms
+2789 CLICK Fire Fighting
+3847 state still/fire///
+3860 state loading/fire//loading/
+3870 state loading/fire//loading/canvas
+4016 FRAME GAP 133ms
+4133 FRAME GAP 117ms
+4602 state live/fire/low//canvas
+12955 CLICK Plumbing
+13086 state live/plumbing/low//canvas
+22141 CLICK HVAC
+22251 state live/hvac/low//canvas
+31338 CLICK Smart Systems
+31571 state live/smart/low//canvas
+37265 FRAME GAP 183ms

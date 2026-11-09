@@ -1,0 +1,48 @@
+{
+ "/systems/v022n/basis/ktx2-worker.js": {
+  "status": 200,
+  "headers": {
+   "content-security-policy": "default-src 'none'; script-src 'self' 'unsafe-eval' 'wasm-unsafe-eval'; connect-src 'self'",
+   "content-type": "application/javascript; charset=UTF-8",
+   "cross-origin-opener-policy": "same-origin",
+   "cross-origin-resource-policy": "same-origin",
+   "x-content-type-options": "nosniff"
+  }
+ },
+ "/en": {
+  "status": 200,
+  "headers": {
+   "content-security-policy": "default-src 'self'; script-src 'self' 'nonce-<per-request>' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-<per-request>'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+   "content-type": "text/html; charset=utf-8",
+   "cross-origin-opener-policy": "same-origin",
+   "x-content-type-options": "nosniff"
+  }
+ },
+ "/ar": {
+  "status": 200,
+  "headers": {
+   "content-security-policy": "default-src 'self'; script-src 'self' 'nonce-<per-request>' 'strict-dynamic' 'wasm-unsafe-eval'; style-src 'self' 'nonce-<per-request>'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; worker-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+   "content-type": "text/html; charset=utf-8",
+   "cross-origin-opener-policy": "same-origin",
+   "x-content-type-options": "nosniff"
+  }
+ },
+ "/en/projects": {
+  "status": 404,
+  "headers": {
+   "content-security-policy": "default-src 'self'; script-src 'self' 'nonce-<per-request>' 'strict-dynamic'; style-src 'self' 'nonce-<per-request>'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self'; frame-src https://www.youtube-nocookie.com https://player.vimeo.com; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+   "content-type": "text/html; charset=utf-8",
+   "cross-origin-opener-policy": "same-origin",
+   "x-content-type-options": "nosniff"
+  }
+ },
+ "/admin": {
+  "status": 200,
+  "headers": {
+   "content-security-policy": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://www.gravatar.com; font-src 'self' data:; media-src 'self' data: blob:; connect-src 'self'; frame-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'self'",
+   "content-type": "text/html; charset=utf-8",
+   "cross-origin-opener-policy": "same-origin",
+   "x-content-type-options": "nosniff"
+  }
+ }
+}

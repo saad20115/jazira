@@ -1,0 +1,20 @@
+set -u
+SRC=/d/jazira-p3t5
+DIR="C:/Users/User21.CSE/AppData/Local/Temp/claude/D--jazira-p3t5/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/dod-clone"
+LOGS="C:/Users/User21.CSE/AppData/Local/Temp/claude/D--jazira-p3t5/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/dod-logs"
+rm -rf "$DIR" "$LOGS"
+mkdir -p "$LOGS"
+step() { name=$1; shift; echo "### $name: $*"; ( cd "$DIR" && timeout 2400 "$@" ) > "$LOGS/$name.log" 2>&1; code=$?; echo "exit=$code" >> "$LOGS/$name.log"; echo "$name exit=$code"; }
+GIT_LFS_SKIP_SMUDGE=1 git clone --branch p3-t5-live-3d "file:///D:/jazira-p3t5" "$DIR" > "$LOGS/clone.log" 2>&1; echo "clone exit=$?"
+( cd "$DIR" && git log --format='%H %an %s' -1 ) >> "$LOGS/clone.log"
+step lfs-pull git lfs pull --include="3d/web/**"
+cp "$SRC/.env" "$DIR/.env"
+step install corepack pnpm install --frozen-lockfile
+step lint corepack pnpm lint
+step typecheck corepack pnpm typecheck
+step format-check corepack pnpm format:check
+step test corepack pnpm test
+step build corepack pnpm build
+step audit-prod corepack pnpm audit --prod
+step audit-full corepack pnpm audit
+echo DODDONE

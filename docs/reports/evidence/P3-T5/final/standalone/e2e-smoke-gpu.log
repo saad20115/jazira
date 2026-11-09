@@ -1,0 +1,7 @@
+
+Running 1 test using 1 worker
+
+  ok 1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:205:3 › P3-T5 live 3D card › @gpu @smoke live: mouse — hover goes live with the CSP intact; rows enter and exit systems (36.8s)
+
+  1 passed (39.0s)
+exit=0

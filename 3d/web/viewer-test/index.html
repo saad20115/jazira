@@ -1,0 +1,652 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tower Viewer Test</title>
+<!-- R3a proof only (not site code): three.js 0.186.1 from a local copy, GLTFLoader + MeshoptDecoder + KTX2Loader. -->
+<style>
+  :root { --bg: #0b1222; --fg: #e8edf5; --muted: #8a96aa; --gold: #dfa82a; --panel: rgba(8, 14, 28, 0.82); }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--fg); font: 13px/1.4 system-ui, sans-serif; }
+  #wrap { display: flex; gap: 16px; padding: 16px; box-sizing: border-box; height: 100%; }
+  #stage { position: relative; flex: 0 0 auto; }
+  canvas { display: block; border-radius: 8px; }
+  #side { flex: 1 1 260px; min-width: 240px; max-width: 360px; display: flex; flex-direction: column; gap: 10px; }
+  .row { display: flex; flex-wrap: wrap; gap: 6px; }
+  button { background: #16223a; color: var(--fg); border: 1px solid #2a3a5a; border-radius: 6px; padding: 7px 10px; cursor: pointer; font: inherit; }
+  button.on { border-color: var(--gold); color: var(--gold); }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 6px 0 0; }
+  pre { background: var(--panel); border-radius: 6px; padding: 10px; margin: 0; white-space: pre-wrap; font: 12px/1.45 ui-monospace, monospace; }
+  #status { position: absolute; left: 12px; top: 10px; background: var(--panel); padding: 4px 8px; border-radius: 4px; }
+  @media (max-width: 760px) { #wrap { flex-direction: column; padding: 16px; } #side { max-width: none; } }
+</style>
+<script type="importmap">
+{ "imports": {
+  "three": "./node_modules/three/build/three.module.js",
+  "three/addons/": "./node_modules/three/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<div id="wrap">
+  <div id="stage"><canvas id="c"></canvas><div id="status">loading…</div></div>
+  <div id="side">
+    <h2>Model</h2>
+    <div class="row"><button data-model="tower">tower.glb</button><button data-model="tower-lite">tower-lite.glb</button></div>
+    <h2>Systems (enter / exit)</h2>
+    <div class="row" id="systems"></div>
+    <h2>Benchmark</h2>
+    <div class="row"><button id="bench">Orbit 8 s</button></div>
+    <h2>Stats</h2>
+    <pre id="stats">…</pre>
+  </div>
+</div>
+<script src="bench.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { KTX2Loader } from 'three/addons/loaders/KTX2Loader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+const SYSTEMS = ['hvac', 'fire', 'plumbing', 'power', 'smart'];
+const FACADE = ['MAT_glass_cw', 'MAT_glass_wing', 'MAT_glass_side', 'MAT_glass_terrace', 'MAT_mullion', 'MAT_gold_fin', 'MAT_crown_light', 'MAT_podium_glass'];
+const GLASS = ['MAT_glass_cw', 'MAT_glass_wing', 'MAT_glass_side', 'MAT_glass_terrace', 'MAT_podium_glass'];
+const SITE_LIT = ['MAT_stone', 'MAT_bronze', 'MAT_paving', 'MAT_planting'];   // baked site light (lobby-lit) on SITE / POD
+let HERO_SHIFT_Y = 0.227;                   // default; v022: read from extras camera_limits.hero_shift_y (= -Blender CAM_hero shift_y)
+const model = new URLSearchParams(location.search).get('model') || 'tower';
+const T0 = performance.now();
+
+const canvas = document.getElementById('c');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' });
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.toneMapping = THREE.AgXToneMapping;
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+const scene = new THREE.Scene();               // R5: no fog (the ground fades out by vertex alpha), sky from extras.sky
+
+let camera = new THREE.PerspectiveCamera(31.76, 1, 0.5, 6000);
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+
+// v021 N-6 live look (stated in manifest.json 'render'; guard.mjs RENDER must match):
+//  - AgX tone mapping, exposure 1 (Cycles: AgX + 'Medium High Contrast' look, exposure 0)
+//  - bloom on light sources only: HDR threshold above the lit windows, so the crown line, lamps, lobby and trails
+//    glow and the facade does not (full and lite)
+//  - full only: interior mapping on the curtain-wall glass (tex_cw_emit's 64 x 24 module grid); lite keeps the
+//    baked room picture (its ceiling-panel perspective is the depth cue)
+const P = new URLSearchParams(location.search);
+// Blender's 'AgX - Medium High Contrast' look (config.ocio: GradingPrimary, style log, contrast 1.2, pivot -0.2,
+// in AgX Log space = 0.5 + 0.5 * pivot = 0.4) applied right before three's AgX sigmoid, so live matches the stills
+const PIV = (P.get('piv') || '0.606');
+if (P.get('look') !== '0') THREE.ShaderChunk.tonemapping_pars_fragment = THREE.ShaderChunk.tonemapping_pars_fragment.replace(
+  'color = agxDefaultContrastApprox( color );', `color = ( color - ${PIV} ) * 1.2 + ${PIV};\n\tcolor = agxDefaultContrastApprox( color );`);
+const BLOOM = { threshold: 8.0, strength: 0.22, radius: 0.25 };
+let useBloom = P.has('bloom') ? P.get('bloom') !== '0' : !model.includes('lite');   // v022 QA: lite has no bloom by default
+const useInterior = P.has('interior') ? P.get('interior') !== '0' : !model.includes('lite');
+const rt = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });   // MSAA keeps the mullions crisp
+const composer = new EffectComposer(renderer, rt);
+const scenePass = new RenderPass(scene, camera), drawInfo = { scene: 0, total: 0 };
+const _rp = scenePass.render.bind(scenePass);
+scenePass.render = (...a) => { const c0 = renderer.info.render.calls; _rp(...a); drawInfo.scene = renderer.info.render.calls - c0; };
+renderer.info.autoReset = false;                   // draw() resets once per frame: calls = scene + post passes
+composer.addPass(scenePass);
+const bloomPass = new UnrealBloomPass(new THREE.Vector2(256, 256), BLOOM.strength, BLOOM.radius, BLOOM.threshold);
+composer.addPass(bloomPass);
+window.bloomPass = bloomPass;                      // test hook
+composer.addPass(new OutputPass());                // AgX + sRGB happen here (renderer.toneMapping)
+function draw() {                                  // every frame, snapshot and saved frame goes through here
+  renderer.info.reset();
+  if (!useBloom) { renderer.render(scene, camera); drawInfo.scene = drawInfo.total = renderer.info.render.calls; return; }
+  scenePass.camera = camera; composer.render(); drawInfo.total = renderer.info.render.calls;
+}
+function sizeComposer() {
+  const w = renderer.domElement.width, h = renderer.domElement.height;
+  composer.setPixelRatio(1); composer.setSize(w, h);
+}
+
+function size() {
+  const side = Math.max(240, Math.min(innerWidth - (innerWidth > 760 ? 420 : 32), innerHeight - 32));
+  renderer.setSize(side, side, false); canvas.style.width = canvas.style.height = side + 'px';
+  camera.aspect = 1; applyShift(currentShift); camera.updateProjectionMatrix(); sizeComposer();
+}
+let currentShift = HERO_SHIFT_Y;
+function applyShift(s) {
+  currentShift = s;
+  const w = canvas.width || 1024, h = canvas.height || 1024;
+  if (s === 0) camera.clearViewOffset(); else camera.setViewOffset(w, h, 0, s * h, w, h);
+}
+addEventListener('resize', size);
+
+const ktx2 = new KTX2Loader().setTranscoderPath('./node_modules/three/examples/jsm/libs/basis/').detectSupport(renderer);
+const loader = new GLTFLoader().setKTX2Loader(ktx2).setMeshoptDecoder(MeshoptDecoder);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+
+// R5: the dusk sky is data in the GLB (extras.sky, the same stops the Cycles world uses). It is evaluated into a
+// small float equirect that serves as the background AND, through PMREM, as the environment light/reflections.
+//   colour(dir) = ramp(elevation_deg, linear) + glow_color * max(0, dot(dir, glow_dir)) ^ glow_exponent
+//                 * exp(-(elevation_deg / glow_height_deg)^2)
+function skyColor(sky, d) {
+  const el = THREE.MathUtils.radToDeg(Math.asin(THREE.MathUtils.clamp(d.y, -1, 1)));
+  const st = sky.stops;
+  let c;
+  if (el <= st[0].elevation_deg) c = st[0].color;
+  else if (el >= st[st.length - 1].elevation_deg) c = st[st.length - 1].color;
+  else {
+    const i = st.findIndex((s) => s.elevation_deg > el) - 1;
+    const t = (el - st[i].elevation_deg) / (st[i + 1].elevation_deg - st[i].elevation_deg);
+    c = st[i].color.map((v, k) => v + (st[i + 1].color[k] - v) * t);
+  }
+  const hf = sky.glow_height_deg ? Math.exp(-((el / sky.glow_height_deg) ** 2)) : 1;   // Gaussian band on the horizon
+  const g = hf * Math.pow(Math.max(0, d.x * sky.glow_dir[0] + d.y * sky.glow_dir[1] + d.z * sky.glow_dir[2]), sky.glow_exponent);
+  return c.map((v, k) => v + sky.glow_color[k] * g);
+}
+function applySky(sky) {
+  const W = 512, H = 256, data = new Float32Array(W * H * 4), d = new THREE.Vector3();
+  for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) {     // three's equirectUv: u = atan(z, x)/2pi + .5, v = asin(y)/pi + .5
+    const phi = ((i + 0.5) / W - 0.5) * 2 * Math.PI, th = ((j + 0.5) / H - 0.5) * Math.PI;
+    d.set(Math.cos(th) * Math.cos(phi), Math.sin(th), Math.cos(th) * Math.sin(phi));
+    const c = skyColor(sky, d), o = (j * W + i) * 4;
+    data[o] = c[0]; data[o + 1] = c[1]; data[o + 2] = c[2]; data[o + 3] = 1;
+  }
+  const tex = new THREE.DataTexture(data, W, H, THREE.RGBAFormat, THREE.FloatType);
+  tex.mapping = THREE.EquirectangularReflectionMapping; tex.colorSpace = THREE.LinearSRGBColorSpace;
+  tex.magFilter = tex.minFilter = THREE.LinearFilter; tex.needsUpdate = true;
+  scene.background = tex;
+  scene.environment = pmrem.fromEquirectangular(tex).texture;
+  scene.environmentIntensity = 1;
+}
+
+const stats = { model, loadMs: null, firstFrameMs: null, fps: 0, bench: null };
+window.__stats = stats;
+let gltf, root, nodes = {}, mats = {}, base = {}, enter, active = null, tween = null;
+
+loader.load(`../${model}.glb`, (g) => {
+  stats.loadMs = Math.round(performance.now() - T0);
+  gltf = g; root = g.scene; scene.add(root);
+  enter = root.userData.enter || g.scene.userData.enter || {};
+  if (root.userData.sky) applySky(root.userData.sky);
+  root.traverse((o) => {
+    nodes[o.name] = o;
+    if (o.isMesh) {
+      const m = o.material; mats[m.name] = m;
+    }
+  });
+  if (nodes['CITY_card'] && scene.background) {     // v022: the glass reflects the city backdrop, not only the sky
+    root.updateMatrixWorld(true);
+    const envScene = new THREE.Scene(), card = nodes['CITY_card'].clone();
+    card.matrixAutoUpdate = false; card.matrix.copy(nodes['CITY_card'].matrixWorld); envScene.add(card);
+    envScene.background = scene.background;
+    scene.environment = pmrem.fromScene(envScene, 0, 1, 3000, { position: nodes['PIVOT_hero'].getWorldPosition(new THREE.Vector3()) }).texture;
+  }
+  const studio = root.userData.studio;
+  if (studio && nodes[studio.room]) {               // v022 studio maquette: environment = the lit room + softboxes
+    root.updateMatrixWorld(true);
+    const envScene = new THREE.Scene();
+    const envOnly = studio.env_only || studio.softboxes || [];
+    for (const n of [studio.room, ...envOnly]) {
+      if (!nodes[n]) continue;
+      const c = nodes[n].clone(); c.matrixAutoUpdate = false; c.matrix.copy(nodes[n].matrixWorld); envScene.add(c);
+    }
+    if (studio.night_glow) {                         // night: the env-only glow shell = the glass's dark-navy sheen
+      const g = studio.night_glow, geo = new THREE.SphereGeometry(g.radius, 64, 32), pos = geo.attributes.position, cols = [];
+      const ctr = new THREE.Vector3().fromArray(g.centre);
+      for (let i = 0; i < pos.count; i++) {
+        const y = pos.getY(i) + ctr.y, t = THREE.MathUtils.clamp((y - g.height_from) / (g.height_to - g.height_from), 0, 1);
+        const f = g.gain * (g.min + (1 - g.min) * t); cols.push(g.color[0] * f, g.color[1] * f, g.color[2] * f);
+      }
+      geo.setAttribute('color', new THREE.Float32BufferAttribute(cols, 3));
+      const shell = new THREE.Mesh(geo, new THREE.MeshBasicMaterial({ vertexColors: true, side: THREE.BackSide }));
+      shell.position.copy(ctr); envScene.add(shell);
+      for (const c of envScene.children) if (c.name === studio.room) c.visible = false;   // (the shell sits just inside it)
+    }
+    scene.background = null; renderer.setClearColor(studio.mode === 'night' ? 0x1b2130 : 0xd8d8d6);
+    scene.environment = pmrem.fromScene(envScene, 0, 1, 3000, { position: new THREE.Vector3().fromArray(studio.env_position) }).texture;
+    for (const n of envOnly) if (nodes[n]) nodes[n].visible = false;   // env-only panels: reflections only (= Cycles)
+    if (studio.exposure_stops) renderer.toneMappingExposure = 2 ** studio.exposure_stops;
+    if (studio.moon) {                               // night: the moon lights the unbaked PBR surfaces (glass sheen, palms, gold)
+      const m = studio.moon, L = new THREE.DirectionalLight(new THREE.Color().setRGB(...m.color), m.intensity);
+      L.position.fromArray(m.direction_to_light).multiplyScalar(1000); L.target.position.set(0, 0, 0); scene.add(L, L.target);
+    }
+    if (!P.has('bloom')) useBloom = !!studio.bloom && !model.includes('lite');   // day: off; night: full on, lite off
+  }
+  const lim0 = root.userData.camera_limits;
+  if (lim0 && lim0.hero_shift_y !== undefined) { HERO_SHIFT_Y = lim0.hero_shift_y; currentShift = HERO_SHIFT_Y; }
+  ttCfg = root.userData.turntable || null; tt = ttCfg && nodes[ttCfg.root];
+  if (tt) ttBase = tt.quaternion.clone();
+  for (const m of Object.values(mats)) base[m.name] = { opacity: m.opacity, emissiveIntensity: m.emissiveIntensity, depthWrite: m.depthWrite };
+  // R4: the facade/core materials ship as BLEND (alpha 0.999) only so they CAN fade. GLTFLoader gives every BLEND
+  // material depthWrite=false, which at rest lets the glass paint over the fins/mullions in front of it (the gap
+  // vs the Cycles stills). At rest they are drawn opaque; transparency is switched on only while a system is entered.
+  for (const n of [...FACADE, 'MAT_concrete', 'MAT_concrete_floor']) if (mats[n]) { base[n].opacity = 1; base[n].depthWrite = true; setOpaque(mats[n]); }
+  for (const s of SYSTEMS) if (mats[`MAT_${s}_glow`]) mats[`MAT_${s}_glow`].visible = false;   // glow only when entered
+  if (useInterior) for (const n of INTERIOR) if (mats[n]) addInterior(mats[n]);
+  const heroCam = nodes['CAM_hero'].isCamera ? nodes['CAM_hero'] : nodes['CAM_hero'].children.find((c) => c.isCamera);
+  root.updateMatrixWorld(true);
+  heroCam.getWorldPosition(camera.position); heroCam.getWorldQuaternion(camera.quaternion);
+  camera.fov = heroCam.fov; camera.near = 0.5; camera.far = 6000;
+  controls.target.copy(nodes['PIVOT_hero'].getWorldPosition(new THREE.Vector3()));
+  size(); controls.update();
+  heroCam.getWorldQuaternion(camera.quaternion);       // keep the exact hero rotation for the first frame
+  heroCam.getWorldQuaternion(heroQuat);
+  limits = root.userData.camera_limits || null; idleCfg = root.userData.idle || null;
+  for (const s of SYSTEMS) {                       // v020: extras SYS_<s>.fan_spin -> rotate that material's texture
+    const cfg = nodes['SYS_' + s]?.userData.fan_spin, map = cfg && mats[cfg.material]?.map;
+    if (!map) continue;
+    map.center.set(0.5, 0.5);                      // every rotor disc's UV is the full centred square
+    fanSpin.list.push({ s, cfg, map, level: cfg.play === 'entered' ? 0 : 1 });
+  }
+  applyOrbitLimits(limits);
+  requestAnimationFrame(() => { stats.firstFrameMs = Math.round(performance.now() - T0); document.getElementById('status').textContent = model; });
+}, undefined, (e) => { document.getElementById('status').textContent = 'load error: ' + e.message; console.error(e); });
+
+// KHR_materials_variants, the way three.js' webgl_loader_gltf_variants example does it
+async function selectVariant(name) {
+  const parser = gltf.parser;
+  const variants = gltf.userData.gltfExtensions?.KHR_materials_variants?.variants || [];
+  const idx = variants.findIndex((v) => v.name === name);
+  const jobs = [];
+  root.traverse((o) => {
+    if (!o.isMesh || !o.userData.gltfExtensions?.KHR_materials_variants) return;
+    if (!o.userData.originalMaterial) o.userData.originalMaterial = o.material;
+    const map = o.userData.gltfExtensions.KHR_materials_variants.mappings.find((m) => m.variants.includes(idx));
+    if (idx < 0 || !map) { o.material = o.userData.originalMaterial; return; }
+    jobs.push(parser.getDependency('material', map.material).then((m) => { o.material = m; parser.assignFinalMaterial(o); }));
+  });
+  await Promise.all(jobs);
+}
+
+function setOpaque(m) {
+  if (m.transparent) m.needsUpdate = true;            // blending is part of the compiled program
+  m.transparent = false; m.opacity = 1; m.depthWrite = true;
+}
+// v021 N-6 interior mapping (full). The curtain-wall UV is world-scaled (CW_UV: u = 76.8 m, v = 86.4 m, a 64 x 24
+// grid of 1.2 x 3.6 m modules, v running DOWN the facade in glTF). Inside a module's window band (12-74 % of the
+// cell from its top) the view ray is traced into an open-plan room: ceiling at the window head, floor 0.75 m below
+// the sill, back wall imDepth m in. The hit point is mapped back onto the band's baked room picture (ceiling panels
+// near -> far, back wall, desks, floor), so the lit / dimmed bays and their colour stay those of tex_cw_emit (the
+// Cycles look) while the ceiling panels and the floor shift with the view. Plenum and spandrel keep the flat lookup.
+const INTERIOR = ['MAT_glass_cw', 'MAT_glass_wing', 'MAT_glass_side', 'MAT_glass_terrace'];
+const interiorU = { imDepth: { value: 7.0 }, imGain: { value: 1.0 } };
+const INTERIOR_GLSL = /* glsl */`
+#ifdef USE_EMISSIVEMAP
+  vec2 imUv = vEmissiveMapUv, imDx = dFdx(imUv), imDy = dFdy(imUv);
+  vec3 imP = -vViewPosition, imPx = dFdx(imP), imPy = dFdy(imP);
+  vec2 imG = imUv * vec2(64.0, 24.0), imCell = floor(imG), imF = imG - imCell;
+  float imDet = imDx.x * imDy.y - imDx.y * imDy.x;
+  vec4 emissiveColor;
+  if (gl_FrontFacing && imF.y > 0.12 && imF.y < 0.74 && abs(imDet) > 1e-14) {
+    vec3 imTu = (imPx * imDy.y - imPy * imDx.y) / imDet;             // dP/du, view space
+    vec3 imTv = (imPy * imDx.x - imPx * imDy.x) / imDet;             // dP/dv (down the facade)
+    vec3 imR = normalize(imP), imN = normalize(cross(imTu, imTv));
+    if (dot(imN, imR) < 0.0) imN = -imN;                             // into the building
+    float rx = dot(imR, normalize(imTu)), ry = -dot(imR, normalize(imTv)), rz = max(dot(imR, imN), 0.05);
+    float y0 = (1.0 - (imF.y - 0.12) / 0.62) * 2.23;                 // height above the sill (window head 2.23 m)
+    float tb = imDepth / rz;
+    float ty = ry > 1e-4 ? (2.23 - y0) / ry : (ry < -1e-4 ? (-0.75 - y0) / ry : 1e9);
+    float t = min(tb, ty), zh = rz * t, yh = y0 + ry * t, yp, k = 1.0;
+    if (ty < tb && ry > 0.0) yp = 0.24 * zh / imDepth;                              // ceiling: near panel rows first
+    else if (ty < tb) yp = 0.86 + 0.13 * (1.0 - zh / imDepth);                      // floor
+    else { yp = yh > 0.0 ? 0.24 + 0.48 * (2.23 - yh) / 2.23 : 0.72 + 0.27 * clamp(-yh / 0.75, 0.0, 1.0); k = 0.85; }
+    float u2 = imUv.x + rx * t / 76.8, fx = fract(u2 * 64.0);
+    if (fx < 0.05) u2 += (0.05 - fx) / 64.0;                         // step over the baked mullion gap
+    vec2 uv2 = vec2(u2, (imCell.y + 0.12 + clamp(yp, 0.005, 0.995) * 0.62) / 24.0);
+    emissiveColor = textureGrad(emissiveMap, uv2, imDx, imDy);
+    emissiveColor.rgb *= k * imGain;
+  } else emissiveColor = texture2D(emissiveMap, imUv);
+  totalEmissiveRadiance *= emissiveColor.rgb;
+#endif
+`;
+function addInterior(m) {
+  m.onBeforeCompile = (sh) => {
+    Object.assign(sh.uniforms, interiorU);
+    sh.fragmentShader = 'uniform float imDepth;\nuniform float imGain;\n' +
+      sh.fragmentShader.replace('#include <emissivemap_fragment>', INTERIOR_GLSL);
+  };
+  m.customProgramCacheKey = () => 'interior-v021';
+  m.needsUpdate = true;
+}
+window.interiorU = interiorU;                       // test hook
+
+function setFade(m, opacity) {
+  if (!m.transparent) m.needsUpdate = true;
+  m.transparent = true; m.opacity = opacity; m.depthWrite = !!enter.transparent_depth_write;
+}
+
+// R5: entering a system is a gradual state k in [0, 1] (0 = rest, 1 = entered), driven by the eased camera move:
+// facade / interior opacity and glass emissive ramp, and the system's section plane (extras SYS_<s>.section) slides in
+// from behind the camera. The system's own floor slabs stay opaque and unclipped.
+const clipPlane = new THREE.Plane();
+renderer.localClippingEnabled = true;
+function setClip(m, on) {
+  const want = on ? [clipPlane] : null;
+  if ((m.clippingPlanes || null) === want || (!want && !m.clippingPlanes)) return;
+  m.clippingPlanes = want; m.needsUpdate = true;
+}
+function applyFade(sys, k) {
+  const sec = sys && nodes['SYS_' + sys].userData.section;
+  if (sec) { clipPlane.normal.fromArray(sec.normal); clipPlane.constant = sec.constant + (1 - k) * 150; }
+  const lerp = (a, b) => a + (b - a) * k;
+  for (const n of FACADE) {
+    const m = mats[n]; if (!m) continue;
+    if (k > 0) setFade(m, lerp(1, enter.facade_opacity)); else setOpaque(m);
+    if (GLASS.includes(n)) m.emissiveIntensity = base[n].emissiveIntensity * lerp(1, enter.glass_emissive_scale);
+    setClip(m, k > 0 && !!sec);
+  }
+  for (const n of SITE_LIT) {                           // the lobby that lit them is faded too (extras, v019c)
+    const m = mats[n]; if (!m) continue;
+    if (enter.site_emissive_scale !== undefined) m.emissiveIntensity = base[n].emissiveIntensity * lerp(1, enter.site_emissive_scale);
+    if (enter.site_occlusion_scale !== undefined) m.aoMapIntensity = lerp(1, enter.site_occlusion_scale);
+  }
+  for (const c of [mats['MAT_concrete'], mats['MAT_concrete_floor']]) {   // interior; MAT_concrete_floor = the floor slabs
+    if (!c) continue;                                                   // (kept ones get an opaque clone below)
+    if (k > 0) setFade(c, lerp(1, enter.interior_opacity)); else setOpaque(c);
+    setClip(c, k > 0 && !!sec);
+  }
+  for (const o of SYSTEMS) {
+    // glow (LEDs, screens, gold accents, chevrons) shows only for the entered system: never through the facade at
+    // rest, never on the systems that stepped back
+    const g = mats[`MAT_${o}_glow`]; if (g) g.visible = k > 0 && o === sys;
+    if (o === sys) continue;                  // the other systems step back (extras enter.other_systems_opacity)
+    for (const m of [mats[`MAT_${o}_metal`], mats[`MAT_${o}_fans`]]) {   // fans: v020 rotor discs (alpha MASK)
+      if (!m) continue;
+      if (k > 0 && enter.other_systems_opacity !== undefined) setFade(m, lerp(1, enter.other_systems_opacity)); else setOpaque(m);
+    }
+  }
+  const keep = k > 0 ? (nodes['SYS_' + sys].userData.floor_slabs || '').split(',') : [];
+  root.traverse((o) => {
+    if (!o.isMesh || !o.name.startsWith('CORE_slab_')) return;
+    if (!o.userData.sharedMaterial) o.userData.sharedMaterial = o.material;
+    if (keep.includes(o.name)) {
+      if (o.material === o.userData.sharedMaterial) { o.material = o.userData.sharedMaterial.clone(); setOpaque(o.material); setClip(o.material, false); }
+    } else o.material = o.userData.sharedMaterial;
+  });
+}
+function setGhost(on, sys) { applyFade(sys, on ? 1 : 0); }
+
+// R5 camera limits (scene extras.camera_limits outside, SYS_<s>.orbit_limits inside a system): never hard-coded.
+let limits = null, idleCfg = null, panCenter = new THREE.Vector3(), panRadius = Infinity, heroQuat = new THREE.Quaternion();
+function applyOrbitLimits(L) {
+  if (!L) return;
+  controls.minDistance = L.min_distance; controls.maxDistance = L.max_distance;
+  controls.minPolarAngle = L.min_polar; controls.maxPolarAngle = L.max_polar;
+  panCenter.fromArray(L.pan_center || L.target); panRadius = L.pan_radius;
+}
+controls.addEventListener('change', () => {                 // pan clamp: the target stays within pan_radius
+  if (tween) return;
+  const d = controls.target.clone().sub(panCenter);
+  if (d.length() > panRadius) { d.setLength(panRadius); const shift = panCenter.clone().add(d).sub(controls.target);
+    controls.target.add(shift); camera.position.add(shift); }
+});
+const NOIDLE = new URLSearchParams(location.search).has('noidle');
+let lastInput = performance.now();
+controls.addEventListener('start', () => { lastInput = performance.now(); controls.autoRotate = false; });
+
+// cubic-bezier(x1, y1, x2, y2) easing, as in CSS (Newton on x, then y)
+function cubicBezier(x1, y1, x2, y2) {
+  const bx = (t) => 3 * x1 * t * (1 - t) ** 2 + 3 * x2 * t * t * (1 - t) + t ** 3;
+  const by = (t) => 3 * y1 * t * (1 - t) ** 2 + 3 * y2 * t * t * (1 - t) + t ** 3;
+  const dx = (t) => 3 * x1 * (1 - t) ** 2 + 6 * (x2 - x1) * t * (1 - t) + 3 * (1 - x2) * t * t;
+  return (x) => { let t = x; for (let i = 0; i < 8; i++) { const d = dx(t); if (Math.abs(d) < 1e-6) break; t -= (bx(t) - x) / d; t = Math.min(1, Math.max(0, t)); } return by(t); };
+}
+
+// test-only labels at the HOT anchors of the entered system (the site renders its own)
+const labelLayer = document.createElement('div');
+labelLayer.style.cssText = 'position:absolute;inset:0;pointer-events:none;overflow:hidden';
+document.getElementById('stage').appendChild(labelLayer);
+function updateLabels() {
+  labelLayer.innerHTML = '';
+  if (!active || tween) return;
+  const r = canvas.getBoundingClientRect();
+  for (const [name, o] of Object.entries(nodes)) {
+    if (!name.startsWith(`HOT_${active}_`)) continue;
+    const p = o.getWorldPosition(new THREE.Vector3()).project(camera);
+    if (p.z > 1 || Math.abs(p.x) > 1 || Math.abs(p.y) > 1) continue;
+    const d = document.createElement('div');
+    d.textContent = o.userData.label || name;
+    d.style.cssText = `position:absolute;left:${(p.x + 1) / 2 * r.width}px;top:${(1 - p.y) / 2 * r.height}px;` +
+      'transform:translate(-50%,-130%);background:rgba(8,14,28,.85);color:#dfa82a;border:1px solid #dfa82a;' +
+      'border-radius:4px;padding:2px 6px;font:11px system-ui;white-space:nowrap';
+    labelLayer.appendChild(d);
+  }
+}
+
+function worldPos(name) { return nodes[name].getWorldPosition(new THREE.Vector3()); }
+function camOf(name) { const n = nodes[name]; return n.isCamera ? n : n.children.find((c) => c.isCamera); }
+
+// R5 entry / exit, all from extras SYS_<s>.enter_motion: centripetal Catmull-Rom through CAM_hero -> PATH_<s>_* ->
+// CAM_<s>, cubic-bezier easing, target PIVOT_hero -> PIVOT_<s>, fov and lens shift blended, fade + section over
+// [fade_start, fade_end]. Exit plays the same path reversed with the same easing and lands exactly on CAM_hero.
+function flyTo(sys) {
+  const into = !!sys;
+  const s = sys || active;
+  const m = nodes['SYS_' + s].userData.enter_motion;
+  const mid = m.path.slice(1, -1);
+  const dest = into ? `CAM_${s}` : 'CAM_hero';
+  const pts = [camera.position.clone(), ...(into ? mid : mid.slice().reverse()).map(worldPos),
+               camOf(dest).getWorldPosition(new THREE.Vector3())];
+  const curve = new THREE.CatmullRomCurve3(pts, false, 'centripetal');
+  tween = { start: performance.now(), dur: m.duration_s * 1000, curve, into, s,
+            t0: controls.target.clone(), t1: worldPos(into ? m.target_to : m.target_from),
+            fov0: camera.fov, fov1: THREE.MathUtils.radToDeg(into ? m.fov_to : m.fov_from),
+            sh0: currentShift, sh1: into ? m.shift_y_to : m.shift_y_from,
+            ease: cubicBezier(...m.easing_cubic_bezier), fs: m.fade_start, fe: m.fade_end };
+}
+function stepTween(t) {                       // t = linear time 0..1; returns true when the move has finished
+  const w = tween, e = w.ease(Math.min(1, Math.max(0, t)));
+  camera.position.copy(w.curve.getPoint(e));
+  controls.target.lerpVectors(w.t0, w.t1, e);
+  camera.fov = w.fov0 + (w.fov1 - w.fov0) * e;
+  applyShift(w.sh0 + (w.sh1 - w.sh0) * e);
+  camera.lookAt(controls.target); camera.updateProjectionMatrix();
+  const span = Math.max(1e-3, w.fe - w.fs);
+  const k = w.into ? THREE.MathUtils.clamp((e - w.fs) / span, 0, 1) : 1 - THREE.MathUtils.clamp((e - (1 - w.fe)) / span, 0, 1);
+  applyFade(w.s, k);
+  if (t < 1) return false;
+  if (w.into) applyOrbitLimits(nodes['SYS_' + w.s].userData.orbit_limits);
+  else {                                      // back on the hero: exact pose, exterior limits, no highlight
+    camera.quaternion.copy(heroQuat); applyFade(null, 0); selectVariant(null); applyOrbitLimits(limits);
+  }
+  tween = null; lastInput = performance.now();
+  return true;
+}
+
+const sysRow = document.getElementById('systems');
+for (const s of SYSTEMS) {
+  const b = document.createElement('button'); b.textContent = s; b.dataset.sys = s; sysRow.appendChild(b);
+  b.onclick = async () => {
+    if (!gltf || tween) return;
+    const entering = active !== s;
+    document.querySelectorAll('[data-sys]').forEach((x) => x.classList.toggle('on', entering && x.dataset.sys === s));
+    controls.autoRotate = false;
+    if (entering) { active = s; await turntableHome(); await selectVariant('highlight_' + s); flyTo(s); }
+    else { flyTo(null); active = null; }
+  };
+}
+document.querySelectorAll('[data-model]').forEach((b) => {
+  b.classList.toggle('on', b.dataset.model === model);
+  b.onclick = () => { location.search = '?model=' + b.dataset.model; };
+});
+
+let bench = null;
+document.getElementById('bench').onclick = () => {
+  if (!gltf || tween) return;
+  const c = controls.target.clone(); const r = camera.position.clone().sub(c);
+  bench = { start: performance.now(), dur: 8000, c, r, frames: [], last: performance.now() };
+};
+
+// Synchronous render benchmark (works even when the page is hidden and rAF is throttled):
+// renders N frames around the orbit, gl.finish() after each, returns ms per frame.
+window.syncBench = (n = 120, px = 0) => {     // px: force an N x N drawing buffer for the test (0 = as shown)
+  const gl = renderer.getContext();
+  const prev = [renderer.domElement.width, renderer.domElement.height];
+  if (px) { renderer.setPixelRatio(1); renderer.setSize(px, px, false); applyShift(currentShift); sizeComposer(); }
+  const c = controls.target.clone(), r = camera.position.clone().sub(c), pos = camera.position.clone(), q = camera.quaternion.clone();
+  draw(); gl.finish();
+  const times = [];
+  for (let i = 0; i < n; i++) {
+    camera.position.copy(c).add(r.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), (i / n) * Math.PI * 2));
+    camera.lookAt(c);
+    const t = performance.now(); draw(); gl.finish(); times.push(performance.now() - t);
+  }
+  camera.position.copy(pos); camera.quaternion.copy(q);
+  times.sort((a, b) => a - b);
+  const avg = times.reduce((s, x) => s + x, 0) / n;
+  const res = { frames: n, avgMs: +avg.toFixed(2), p95Ms: +times[Math.floor(n * 0.95)].toFixed(2), equivFps: +(1000 / avg).toFixed(1),
+                width: renderer.domElement.width, height: renderer.domElement.height, calls: drawInfo.scene, callsWithPost: drawInfo.total };
+  if (px) { renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); size(); }
+  return res;
+};
+window.enterSystem = (s) => document.querySelector(`[data-sys="${s}"]`).click();
+window.__viewer = { scene, renderer, get camera() { return camera; }, get enter() { return enter; }, get nodes() { return nodes; },
+                   get controls() { return controls; }, get limits() { return limits; } };    // test hooks only
+window.snapshot = (w = 360) => {                // render now and return a small JPEG data URL of the canvas
+  draw();
+  const c = document.createElement('canvas'); c.width = c.height = w;
+  c.getContext('2d').drawImage(renderer.domElement, 0, 0, w, w);
+  return c.toDataURL('image/jpeg', 0.7);
+};
+window.saveFrame = async (name, px = 1024) => {   // R4: render px x px now and POST the PNG to save-server.mjs
+  renderer.setPixelRatio(1); renderer.setSize(px, px, false); applyShift(currentShift); sizeComposer();
+  draw();
+  const url = renderer.domElement.toDataURL('image/png');     // same task as the render: no preserveDrawingBuffer needed
+  const info = { calls: drawInfo.scene, callsWithPost: drawInfo.total, triangles: renderer.info.render.triangles, ...renderer.info.memory };
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2)); size();
+  const blob = await (await fetch(url)).blob();
+  const r = await fetch('http://127.0.0.1:8091/save?name=' + encodeURIComponent(name), { method: 'POST', body: blob });
+  return { file: await r.text(), info };
+};
+window.skipTween = () => { if (tween) stepTween(1); };   // jump to the end of the current camera move
+window.seekTween = (t) => {                   // test hook: hold the current move at linear time t (0..1)
+  if (!tween) return false;
+  tween.paused = true; return stepTween(t);
+};
+// test hook: a strip of n frames along the move into system s and back out (PNG via save-server.mjs)
+window.frameStrip = async (s, n = 6, px = 512) => {
+  const files = [];
+  enterSystem(s); await new Promise((r) => setTimeout(r, 300));
+  for (let i = 0; i <= n; i++) { seekTween(i / n); files.push((await saveFrame(`strip_${s}_in_${i}`, px)).file); }
+  updateLabels(); files.push((await saveFrame(`strip_${s}_in_labels`, px)).file);
+  enterSystem(s); await new Promise((r) => setTimeout(r, 300));
+  for (let i = 0; i <= n; i++) { seekTween(i / n); files.push((await saveFrame(`strip_${s}_out_${i}`, px)).file); }
+  const q = camera.quaternion, h = heroQuat;
+  return { files, backOnHero: { dPos: camera.position.distanceTo(camOf('CAM_hero').getWorldPosition(new THREE.Vector3())),
+                                dAngleDeg: THREE.MathUtils.radToDeg(q.angleTo(h)), shift: currentShift, fov: camera.fov } };
+};
+// test hook: the lowest view the limits allow: hero azimuth, max_polar, distance d, target dropped by the pan radius
+window.atLowest = (d) => {
+  const L = limits, t = panCenter.clone().add(new THREE.Vector3(0, -L.pan_radius, 0));
+  const dir = camera.position.clone().sub(controls.target); dir.y = 0; dir.normalize();
+  const dist = d || L.min_distance;
+  camera.position.copy(t).addScaledVector(dir, dist * Math.sin(L.max_polar)).add(new THREE.Vector3(0, dist * Math.cos(L.max_polar), 0));
+  camera.position.y = Math.max(camera.position.y, L.min_camera_height);
+  controls.target.copy(t); applyShift(0); camera.lookAt(t); camera.updateProjectionMatrix();
+  return { camera: camera.position.toArray().map((v) => +v.toFixed(2)), target: t.toArray() };
+};
+// test hook: the hero direction pulled back to max_distance (the farthest the user can zoom out)
+window.atMaxDistance = () => {
+  const dir = camera.position.clone().sub(controls.target).normalize();
+  camera.position.copy(controls.target).addScaledVector(dir, limits.max_distance);
+  camera.lookAt(controls.target); camera.updateProjectionMatrix();
+  return { distance: camera.position.distanceTo(controls.target), limits };
+};
+
+// v020 spinning fans: level ramps 0 -> 1 over ramp_s while the system is entered (play 'entered') and back on exit;
+// the texture turns rpm / 60 turns per second at full level (clockwise seen from above)
+const fanSpin = { list: [], paused: false, last: null,
+  advance(dt) {
+    for (const f of this.list) {
+      const want = f.cfg.play === 'entered' ? (active === f.s ? 1 : 0) : 1;
+      f.level += Math.sign(want - f.level) * Math.min(Math.abs(want - f.level), dt / (f.cfg.ramp_s || 1));
+      f.map.rotation = (f.map.rotation - f.cfg.rpm / 60 * 2 * Math.PI * dt * f.level) % (2 * Math.PI);
+    }
+  } };
+window.fanSpin = fanSpin;                          // test hook: paused + advance(dt) for deterministic frame strips
+// v021 QA: the rotors hold still when the viewer asks for reduced motion, when the tab is hidden and while the canvas
+// is scrolled off-screen (no catch-up jump afterwards: dt restarts from the next visible frame). Reduced motion also
+// turns off the idle auto-rotate.
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let onScreen = true;
+new IntersectionObserver((e) => { onScreen = e[0].isIntersecting; }).observe(canvas);
+const motionAllowed = () => !reduceMotion.matches && !document.hidden && onScreen;
+// v022 turntable (extras.turntable): the model's root turns about +Y while idle (no input for resume_after_s, no
+// system entered, motion allowed); entering a system first eases it back to 0 by the shortest way over ease_back_s
+// (the enter_motion cubic-bezier), so the world-space HOT / PIVOT / CAM / PATH extras stay valid. The camera's own
+// idle auto-rotate is off while there is a turntable.
+let ttCfg = null, tt = null, ttBase = null, ttAngle = 0, ttLast = null, ttHome = null;
+function ttApply() { tt.quaternion.copy(ttBase).multiply(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), ttAngle)); }
+function turntableStep(now) {
+  if (!tt) return;
+  const dt = ttLast === null ? 0 : Math.min((now - ttLast) / 1000, 0.1); ttLast = now;
+  if (ttHome) {
+    const t = Math.min(1, (now - ttHome.start) / ttHome.dur);
+    ttAngle = ttHome.from * (1 - ttHome.ease(t)); ttApply();
+    if (t >= 1) { ttAngle = 0; ttApply(); const r = ttHome.resolve; ttHome = null; r(); }
+    return;
+  }
+  if (!active && !tween && !bench && motionAllowed() && now - lastInput > (ttCfg.resume_after_s || 8) * 1000) {
+    ttAngle = (ttAngle + ttCfg.rpm / 60 * 2 * Math.PI * dt) % (2 * Math.PI); ttApply();
+  }
+}
+function turntableHome() {                         // resolves when the model is back at 0
+  if (!tt || Math.abs(ttAngle) < 1e-4) return Promise.resolve();
+  let a = ((ttAngle + Math.PI) % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI) - Math.PI;   // shortest way home
+  ttAngle = a;
+  const m = nodes['SYS_hvac']?.userData.enter_motion;
+  return new Promise((resolve) => { ttHome = { from: a, start: performance.now(), dur: (ttCfg.ease_back_s || 0.7) * 1000,
+    ease: m ? cubicBezier(...m.easing_cubic_bezier) : (x) => x, resolve }; });
+}
+window.turntable = { get angle() { return ttAngle; }, set(a) { if (tt) { ttAngle = a; ttApply(); } } };   // test hook
+let frames = 0, fpsT = performance.now();
+function loop(now) {
+  requestAnimationFrame(loop);
+  if (!fanSpin.paused && fanSpin.last !== null && motionAllowed()) fanSpin.advance(Math.min((now - fanSpin.last) / 1000, 0.1));
+  fanSpin.last = now;
+  turntableStep(now);
+  if (tween) {
+    if (!tween.paused) stepTween((now - tween.start) / tween.dur);
+  } else if (bench) {
+    const t = (now - bench.start) / bench.dur;
+    bench.frames.push(now - bench.last); bench.last = now;
+    const v = bench.r.clone().applyAxisAngle(new THREE.Vector3(0, 1, 0), t * Math.PI * 2);
+    camera.position.copy(bench.c).add(v); camera.lookAt(bench.c);
+    if (t >= 1) {
+      const f = bench.frames.slice(5).sort((a, b) => a - b);
+      const avg = f.reduce((s, x) => s + x, 0) / f.length;
+      stats.bench = { frames: f.length, avgFps: +(1000 / avg).toFixed(1), p95FrameMs: +f[Math.floor(f.length * 0.95)].toFixed(1),
+                      worstFrameMs: +f[f.length - 1].toFixed(1) };
+      bench = null; controls.update();
+    }
+  } else {
+    // idle: slow auto-rotate outside a system after extras.idle.resume_after_s without input; any input stops it
+    if (idleCfg && !NOIDLE) {
+      controls.autoRotate = !tt && !active && !reduceMotion.matches && now - lastInput > idleCfg.resume_after_s * 1000;
+      controls.autoRotateSpeed = idleCfg.auto_rotate_speed;
+    }
+    controls.update();
+    const minY = limits && limits.min_camera_height;               // never below ground (camera_limits)
+    if (minY !== undefined && camera.position.y < minY) { camera.position.y = minY; camera.lookAt(controls.target); }
+    updateLabels();
+  }
+  draw();
+  frames++;
+  if (now - fpsT > 1000) {
+    stats.fps = Math.round(frames * 1000 / (now - fpsT)); frames = 0; fpsT = now;
+    const gl = renderer.getContext(); const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    stats.gpu = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : 'n/a';
+    stats.info = { calls: drawInfo.scene, callsWithPost: drawInfo.total, triangles: renderer.info.render.triangles,
+                   geometries: renderer.info.memory.geometries, textures: renderer.info.memory.textures };
+    stats.jsHeapMB = performance.memory ? +(performance.memory.usedJSHeapSize / 1048576).toFixed(1) : null;
+    stats.active = active;
+    window.__stats = stats;
+    document.getElementById('stats').textContent = JSON.stringify(stats, null, 1);
+  }
+}
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+
+Running 3 tests using 1 worker
+
+  ok 1 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:755:3 › P3-T5 live 3D card › @gpu O-8: every system card on a fresh page goes live inside its system, and the HVAC fans turn (51.9s)
+  ok 2 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:777:3 › P3-T5 live 3D card › @gpu O-8: after a reload, and after a reload with #systems-hvac, one card click goes live inside (23.1s)
+  ok 3 [gpu] › tests\e2e\p3-t5-live-3d.e2e.spec.ts:809:3 › P3-T5 live 3D card › @gpu O-8: while the model loads after a click, the image stays with a small loading indicator (8.6s)
+
+  3 passed (1.4m)
