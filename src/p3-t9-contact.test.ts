@@ -4,7 +4,6 @@ import { describe, expect, it, vi } from 'vitest'
 
 vi.mock('server-only', () => ({}))
 
-import { submitQuoteRequestStubAction } from './app/(frontend)/[locale]/contact/actions'
 import { QuoteForm, resolvePhoneCandidate } from './components/QuoteForm'
 import {
   quoteStep1Schema,
@@ -86,60 +85,8 @@ describe('P3-T9 — Shared Quote Form Zod Schema & Stub Server Action', () => {
     expect(fullOk.success).toBe(true)
   })
 
-  it('validates payloads in submitQuoteRequestStubAction and returns localized fieldErrors on invalid input', async () => {
-    const validRes = await submitQuoteRequestStubAction({
-      projectType: 'hotel-tower',
-      projectStage: 'design',
-      servicesNeeded: ['hvac', 'fire-fighting'],
-      projectLocation: 'makkah',
-      attachmentFileName: '',
-      name: 'Eng. Tariq Al-Harbi',
-      company: 'Al-Kholoud Contracting',
-      phone: '+966 57 353 4185',
-      email: 'tariq@alkholoud.sa',
-      preferredContact: 'whatsapp',
-      message: 'Please send a proposal.',
-      consent: true,
-      locale: 'en',
-      sourcePage: '/en/contact',
-      honeypot: '',
-      startedAtMs: Date.now() - 4000,
-    })
-    expect(validRes.ok).toBe(true)
-
-    const invalidEnRes = await submitQuoteRequestStubAction({
-      projectType: 'hotel-tower',
-      projectStage: 'design',
-      servicesNeeded: [],
-      projectLocation: 'makkah',
-      name: '',
-      phone: 'bad',
-      email: 'bad',
-      preferredContact: 'whatsapp',
-      consent: false,
-      locale: 'en',
-    })
-    expect(invalidEnRes.ok).toBe(false)
-    expect(invalidEnRes.fieldErrors?.servicesNeeded).toContain('service')
-    expect(invalidEnRes.fieldErrors?.name).toContain('full name')
-    expect(invalidEnRes.fieldErrors?.consent).toContain('privacy policy')
-
-    const invalidArRes = await submitQuoteRequestStubAction({
-      projectType: 'hotel-tower',
-      projectStage: 'design',
-      servicesNeeded: [],
-      projectLocation: 'makkah',
-      name: '',
-      phone: 'bad',
-      email: 'bad',
-      preferredContact: 'whatsapp',
-      consent: false,
-      locale: 'ar',
-    })
-    expect(invalidArRes.ok).toBe(false)
-    expect(invalidArRes.fieldErrors?.name).toContain('الاسم')
-    expect(invalidArRes.fieldErrors?.consent).toContain('سياسة الخصوصية')
-  })
+  // The stub action's field-error checks moved to
+  // src/app/(frontend)/[locale]/contact/quote-handler.test.ts when P5-T1 replaced the stub.
 })
 
 describe('P3-T9 — <QuoteForm> 3-step UI, Honeypot, Consent Link, and Message Sent Dialog', () => {

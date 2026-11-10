@@ -617,3 +617,110 @@ export async function cmsCount<TSlug extends CmsCollectionSlug>(
     overrideAccess: false,
   })
 }
+
+// ============================================================================
+// P5-T1 — the public quote form's only writes (Z4, I6, D2)
+// ============================================================================
+
+/** Hits older than this are pruned; the longest window counted is one day. */
+export const QUOTE_RATE_LIMIT_RETENTION_MS = 2 * 24 * 60 * 60 * 1000
+
+export interface QuoteAttemptCounts {
+  lastMinute: number
+  lastDay: number
+}
+
+/**
+ * Records one quote-form submission attempt for a salted IP hash and returns how many attempts
+ * that hash made in the last minute and the last day, this one included. The row is written
+ * before counting, so concurrent requests from one IP see each other (no in-memory store).
+ */
+export async function recordQuoteSubmissionAttempt(
+  ipHash: string,
+  nowMs: number,
+): Promise<QuoteAttemptCounts> {
+  const payload = await getInternalPayload()
+  await payload.create({
+    collection: 'quote-rate-limits',
+    data: { ipHash },
+    // z6-allow-override-access: the collection denies every API write; only this server-side handler records rate-limit hits (I6).
+    overrideAccess: true,
+  })
+  const since = (ms: number): string => new Date(nowMs - ms).toISOString()
+  const [lastMinute, lastDay] = await Promise.all([
+    payload.count({
+      collection: 'quote-rate-limits',
+      where: {
+        and: [{ ipHash: { equals: ipHash } }, { createdAt: { greater_than: since(60_000) } }],
+      },
+      // z6-allow-override-access: the collection denies every API read; counting hits is the handler's own check (I6).
+      overrideAccess: true,
+    }),
+    payload.count({
+      collection: 'quote-rate-limits',
+      where: {
+        and: [{ ipHash: { equals: ipHash } }, { createdAt: { greater_than: since(86_400_000) } }],
+      },
+      // z6-allow-override-access: the collection denies every API read; counting hits is the handler's own check (I6).
+      overrideAccess: true,
+    }),
+  ])
+  await payload.delete({
+    collection: 'quote-rate-limits',
+    where: { createdAt: { less_than: since(QUOTE_RATE_LIMIT_RETENTION_MS) } },
+    // z6-allow-override-access: pruning expired rate-limit hits; the collection denies every API delete.
+    overrideAccess: true,
+  })
+  return { lastMinute: lastMinute.totalDocs, lastDay: lastDay.totalDocs }
+}
+
+export type PublicQuoteRequestData = Pick<
+  Config['collections']['quote-requests'],
+  | 'name'
+  | 'company'
+  | 'email'
+  | 'phone'
+  | 'serviceTitle'
+  | 'projectType'
+  | 'projectStage'
+  | 'servicesNeeded'
+  | 'projectLocation'
+  | 'preferredContact'
+  | 'message'
+  | 'locale'
+  | 'sourcePage'
+  | 'consent'
+  | 'ipHash'
+  | 'userAgent'
+>
+
+/**
+ * Saves a validated quote request, then queues its notification job. The visitor's success
+ * depends only on the save (P5-T1 §2): a failed enqueue is logged by ID and never thrown, and the
+ * record keeps `emailStatus: 'pending'` so staff can see it was not announced.
+ */
+export async function createPublicQuoteRequest(
+  data: PublicQuoteRequestData,
+): Promise<{ id: number }> {
+  const payload = await getInternalPayload()
+  const doc = await payload.create({
+    collection: 'quote-requests',
+    data: { ...data, status: 'new', emailStatus: 'pending', emailAttempts: 0 },
+    // z6-allow-override-access: Z4 — the collection denies every API create; this handler writes it after its own zod validation and anti-abuse checks.
+    overrideAccess: true,
+  })
+  try {
+    await payload.jobs.queue({
+      task: 'notifyQuoteRequest',
+      input: { quoteRequestId: doc.id },
+      queue: 'default',
+      overrideAccess: true,
+    })
+  } catch {
+    payload.logger.error(
+      { quoteRequestId: doc.id },
+      'quote notification job could not be queued; the request is saved',
+    )
+  }
+  return { id: doc.id }
+}

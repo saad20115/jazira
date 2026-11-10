@@ -21,7 +21,7 @@ import { getAboutPage, getContactPage, getHomePage, getSiteSettings } from '@/li
 import gridStyles from '@/styles/grid.module.css'
 
 import { canServeArabicLocaleForCurrentRequest, enforceArabicEnabledOrRedirect } from '../layout'
-import { submitQuoteRequestStubAction } from './actions'
+import { startQuoteFormAction, submitQuoteRequestAction } from './actions'
 import styles from './page.module.css'
 
 interface LocaleContactPageProps {
@@ -582,7 +582,8 @@ export default async function LocaleContactPage({
                   sourcePage={`/${locale}/contact`}
                   initialStep={initialStep}
                   initialSuccessOpen={initialSuccessOpen}
-                  onSubmitAction={submitQuoteRequestStubAction}
+                  onSubmitAction={submitQuoteRequestAction}
+                  onStartAction={startQuoteFormAction}
                 />
               </div>
             </div>
