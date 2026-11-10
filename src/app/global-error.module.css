@@ -1,0 +1,87 @@
+/*
+ * P3-T10 §3: global-error replaces the root layout, so globals.css and its tokens are not loaded.
+ * The literal values below mirror the tokens in src/styles (navy-950, gold-500, gold-300, white).
+ */
+.body {
+  margin: 0;
+  min-block-size: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #011025;
+  color: #ffffff;
+  font-family: system-ui, 'Segoe UI', Tahoma, sans-serif;
+}
+
+.card {
+  inline-size: 100%;
+  max-inline-size: 560px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.code {
+  margin: 0;
+  font-size: 48px;
+  font-weight: 700;
+  color: #dfa82a;
+}
+
+.block {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.3;
+}
+
+.description {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.6;
+  color: #ffffff;
+  opacity: 0.85;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.button,
+.link {
+  min-block-size: 44px;
+  display: inline-flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.button {
+  border: 0;
+  background: #dfa82a;
+  color: #011025;
+  cursor: pointer;
+}
+
+.link {
+  border: 1px solid #efcb76;
+  color: #ffffff;
+}
+
+.button:focus-visible,
+.link:focus-visible {
+  outline: 2px solid #efcb76;
+  outline-offset: 2px;
+}

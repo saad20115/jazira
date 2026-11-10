@@ -129,6 +129,7 @@ export interface UiDictionary {
     showAll: string
     readMore: string
     backToHome: string
+    tryAgain: string
     backToProjects: string
     backToServices: string
     openInGoogleMaps: string
@@ -150,6 +151,7 @@ export interface UiDictionary {
     notFoundCode: string
     notFoundTitle: string
     notFoundDescription: string
+    serverErrorCode: string
     serverErrorTitle: string
     serverErrorDescription: string
   }
@@ -491,6 +493,7 @@ export const arDictionary = {
     showAll: 'إظهار الكل',
     readMore: 'اقرأ المزيد',
     backToHome: 'العودة إلى الرئيسية',
+    tryAgain: 'حاول مرة أخرى',
     backToProjects: 'العودة إلى المشاريع',
     backToServices: 'العودة إلى الخدمات',
     openInGoogleMaps: 'فتح في خرائط Google',
@@ -512,6 +515,7 @@ export const arDictionary = {
     notFoundCode: '404',
     notFoundTitle: 'الصفحة غير موجودة',
     notFoundDescription: 'عذراً، الصفحة التي تبحث عنها غير متوفرة أو تم نقلها.',
+    serverErrorCode: '500',
     serverErrorTitle: 'حدث خطأ غير متوقع',
     serverErrorDescription: 'يرجى المحاولة مرة أخرى بعد قليل.',
   },
