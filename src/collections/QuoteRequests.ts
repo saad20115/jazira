@@ -30,6 +30,7 @@ import {
   quotePhoneSchema,
 } from '../lib/quote/schema'
 import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
+import { quoteRequestEndpoints } from './quoteRequestEndpoints'
 
 export {
   E164_GENERAL_PHONE_REGEX,
@@ -410,6 +411,8 @@ export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
   hooks: {
     beforeValidate: [validateQuoteRequestBeforeValidate],
   },
+  // P5-T2: admin-only resend of a failed notification and the CSV export (see the file).
+  endpoints: quoteRequestEndpoints,
   fields: [
     // =========================================================================
     // 1. Customer Submission Fields (read-only in admin and via API — Scope 1 & 3)
@@ -774,6 +777,22 @@ export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
       access: readOnlyFieldAccess,
       admin: {
         readOnly: true,
+      },
+    },
+    // P5-T2 §2: the admin-only Resend notification button (shown when emailStatus is failed).
+    // A UI field stores nothing; the endpoint checks the admin role on the server.
+    {
+      name: 'resendNotification',
+      type: 'ui',
+      label: {
+        ar: 'إعادة إرسال الإشعار',
+        en: 'Resend notification',
+      },
+      admin: {
+        position: 'sidebar',
+        components: {
+          Field: '/components/admin/ResendNotificationButton#ResendNotificationButton',
+        },
       },
     },
     {

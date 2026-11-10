@@ -17,6 +17,7 @@ import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { QuoteStatusPillCell as QuoteStatusPillCell_001d2763ef747d84acdcc781a226c8d4 } from '../../../components/admin/QuoteStatusPillCell'
 import { EmailStatusPillCell as EmailStatusPillCell_f502a048fcd3d644beb1be6f6358dc46 } from '../../../components/admin/EmailStatusPillCell'
+import { ResendNotificationButton as ResendNotificationButton_5d368ea4088bd79e9b3dce8068d2c2fe } from '../../../components/admin/ResendNotificationButton'
 import { QuoteRequestsFilterBar as QuoteRequestsFilterBar_c878668df3d51817110d29c90a9c7629 } from '../../../components/admin/QuoteRequestsFilterBar'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
@@ -41,6 +42,7 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "/components/admin/QuoteStatusPillCell#QuoteStatusPillCell": QuoteStatusPillCell_001d2763ef747d84acdcc781a226c8d4,
   "/components/admin/EmailStatusPillCell#EmailStatusPillCell": EmailStatusPillCell_f502a048fcd3d644beb1be6f6358dc46,
+  "/components/admin/ResendNotificationButton#ResendNotificationButton": ResendNotificationButton_5d368ea4088bd79e9b3dce8068d2c2fe,
   "/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar": QuoteRequestsFilterBar_c878668df3d51817110d29c90a9c7629,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

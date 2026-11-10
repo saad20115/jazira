@@ -1,6 +1,6 @@
 'use client'
 
-import { useTranslation } from '@payloadcms/ui'
+import { useAuth, useConfig, useTranslation } from '@payloadcms/ui'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import React from 'react'
 
@@ -24,6 +24,21 @@ export const QuoteRequestsFilterBar: React.FC = () => {
   const activeStatus = searchParams.get('where[status][equals]') ?? ''
   const activeAssignedExists = searchParams.get('where[assignedTo][exists]') ?? ''
   const activeDateGte = searchParams.get('where[createdAt][greater_than_equal]') ?? ''
+  // P5-T2 §3: "Mine" = requests assigned to the logged-in user.
+  const { user } = useAuth<{ id?: number | string; role?: string }>()
+  const { config } = useConfig()
+  const myId = user?.id === undefined ? '' : String(user.id)
+  const activeMine = myId !== '' && searchParams.get('where[assignedTo][equals]') === myId
+  // P5-T2 §4: the CSV export takes the list's current filter and search (admin only; the
+  // endpoint re-checks the role).
+  const exportQuery = new URLSearchParams()
+  for (const [key, value] of searchParams.entries()) {
+    if (key.startsWith('where') || key === 'search') {
+      exportQuery.append(key, value)
+    }
+  }
+  const exportQueryString = exportQuery.toString()
+  const exportHref = `${config.serverURL}${config.routes.api}/quote-requests/export-csv${exportQueryString ? `?${exportQueryString}` : ''}`
 
   const applyFilter = (updates: Record<string, string | null>) => {
     const next = new URLSearchParams(searchParams.toString())
@@ -138,7 +153,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
         <button
           type="button"
           onClick={() => {
-            applyFilter({ 'where[assignedTo][exists]': null })
+            applyFilter({ 'where[assignedTo][exists]': null, 'where[assignedTo][equals]': null })
           }}
           style={{
             padding: '0.2rem 0.65rem',
@@ -160,6 +175,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           type="button"
           onClick={() => {
             applyFilter({
+              'where[assignedTo][equals]': null,
               'where[assignedTo][exists]': activeAssignedExists === 'true' ? null : 'true',
             })
           }}
@@ -184,6 +200,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           type="button"
           onClick={() => {
             applyFilter({
+              'where[assignedTo][equals]': null,
               'where[assignedTo][exists]': activeAssignedExists === 'false' ? null : 'false',
             })
           }}
@@ -204,6 +221,32 @@ export const QuoteRequestsFilterBar: React.FC = () => {
         >
           {isEnglish ? 'Unassigned' : 'غير معيّن'}
         </button>
+        {myId !== '' ? (
+          <button
+            type="button"
+            data-testid="quote-filter-mine"
+            onClick={() => {
+              applyFilter({
+                'where[assignedTo][exists]': null,
+                'where[assignedTo][equals]': activeMine ? null : myId,
+              })
+            }}
+            style={{
+              padding: '0.2rem 0.65rem',
+              borderRadius: '9999px',
+              fontSize: '0.75rem',
+              fontWeight: activeMine ? 700 : 500,
+              border: activeMine
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
+              background: activeMine ? 'var(--theme-elevation-150)' : 'transparent',
+              color: 'var(--theme-text, inherit)',
+              cursor: 'pointer',
+            }}
+          >
+            {isEnglish ? 'Mine' : 'طلباتي'}
+          </button>
+        ) : null}
       </div>
 
       {/* Date quick filters */}
@@ -269,6 +312,17 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           {isEnglish ? 'Last 30 days' : 'آخر 30 يوماً'}
         </button>
       </div>
+
+      {user?.role === 'admin' ? (
+        <a
+          href={exportHref}
+          data-testid="quote-export-csv"
+          className="btn btn--style-secondary btn--size-small"
+          style={{ marginInlineStart: 'auto' }}
+        >
+          {isEnglish ? 'Export CSV (current filter)' : 'تصدير CSV (حسب التصفية الحالية)'}
+        </a>
+      ) : null}
     </div>
   )
 }

@@ -94,6 +94,8 @@ describe('QuoteRequests collection configuration & validators (P2-T6)', () => {
       'emailStatus',
       'emailAttempts',
       'emailLastError',
+      // P5-T2 §2: UI-only field (the admin Resend notification button); stores nothing.
+      'resendNotification',
       'ipHash',
       'userAgent',
       'createdAt',
