@@ -117,6 +117,19 @@ Created only by the server-side quote form handler (Phase 5). Never writable thr
   `preferredContact`. The form has no service-document picker, so `service` stays empty for web
   submissions and `serviceTitle` holds the chosen service labels in the request locale (max 200).
   The form's file picker uploads nothing; no attachment is stored (open question for the owner).
+- **Notification, resend, export, retention (CTO decisions 2026-11-10, P5-T2).**
+  - The job `notifyQuoteRequest` (slug kept from P5-T1; the card calls it `notifySalesOfQuote`)
+    e-mails `SALES_INBOX` only, 5 attempts with exponential backoff (about one hour), under a
+    Postgres row lock so it never sends twice. `emailStatus` stays `pending` between attempts and
+    becomes `failed` after the last one; `emailLastError` is scrubbed of SMTP user, password, host,
+    addresses, URLs and IPs.
+  - `resendNotification` is a UI-only field (stores nothing): an admin-only button, shown when
+    `emailStatus` is `failed`, calling `POST /api/quote-requests/:id/resend-notification`
+    (admin only on the server; 409 unless the request is `failed`).
+  - `GET /api/quote-requests/export-csv` (admin only) exports the list's current filter and search.
+  - Retention runs daily (job `purgeExpiredQuoteRequests`) and deletes only while
+    `site-settings.quoteRetentionDeleteEnabled` is on; until then each run is a dry run that logs
+    the count. Scheduling adds Payload's system global `payload-jobs-stats`, denied to everyone.
 
 ### `quote-rate-limits` — hidden (CTO decision 2026-11-10, P5-T1, I6)
 - One row per quote-form submission attempt: `ipHash` (SHA-256 of IP + salt, D2) and `createdAt`.
@@ -134,6 +147,8 @@ Created only by the server-side quote form handler (Phase 5). Never writable thr
 - `socials` (array: `platform` select `linkedin|x|instagram|facebook|youtube|tiktok|snapchat`, `url`)
   — rendered as icon-only buttons (per design).
 - `footerText` (L), `defaultSeo` (title, description, og image)
+- `quoteRetentionDeleteEnabled` (checkbox, default off; read and update admin only, never public)
+  — P5-T2 retention switch, see `quote-requests`.
 
 ### `navigation` — update: admin+editor; read: public
 - `header` (array: `label` (L), `link` — internal page select or external URL)
