@@ -194,6 +194,52 @@ const smtpPortSchema = z
   }, 'SMTP_PORT must be a valid TCP port integer between 1 and 65535.')
   .transform((val) => Number.parseInt(val, 10))
 
+/**
+ * P5-T1 §5 — the sales inbox that receives quote notifications (Q1: never the visitor's
+ * address). Optional in development; required at production runtime (checked in `parseEnv`).
+ */
+const salesInboxSchema = z
+  .string()
+  .trim()
+  .max(254, 'SALES_INBOX is too long.')
+  .refine(
+    (val) => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(val),
+    'SALES_INBOX must be an email address.',
+  )
+  .refine(
+    (val) => !val.toUpperCase().includes('CHANGE_ME'),
+    'SALES_INBOX must not contain placeholder values.',
+  )
+  .optional()
+
+const optionalSmtpCredentialSchema = (varName: 'SMTP_USER' | 'SMTP_PASS') =>
+  z
+    .string()
+    .trim()
+    .min(1)
+    .max(512, `${varName} is too long.`)
+    .refine(
+      (val) => !val.toUpperCase().includes('CHANGE_ME'),
+      `${varName} must not contain placeholder values.`,
+    )
+    .optional()
+
+/** P5-T1 §6 — Cloudflare Turnstile switch, off by default. */
+const turnstileEnabledSchema = z
+  .string()
+  .trim()
+  .toLowerCase()
+  .refine(
+    (val) => val === 'true' || val === 'false' || val === '1' || val === '0',
+    'TURNSTILE_ENABLED must be "true", "false", "1", or "0".',
+  )
+  .transform((val) => val === 'true' || val === '1')
+
+function emptyToUndefined(value: string | undefined): string | undefined {
+  const trimmed = value?.trim()
+  return trimmed ? trimmed : undefined
+}
+
 const envSchema = z
   .object({
     DATABASE_URL: z
@@ -231,6 +277,29 @@ const envSchema = z
     PAYLOAD_JOBS_AUTORUN: jobsAutoRunSchema,
     SMTP_HOST: smtpHostSchema,
     SMTP_PORT: smtpPortSchema,
+    SMTP_USER: optionalSmtpCredentialSchema('SMTP_USER'),
+    SMTP_PASS: optionalSmtpCredentialSchema('SMTP_PASS'),
+    SALES_INBOX: salesInboxSchema,
+    TURNSTILE_ENABLED: turnstileEnabledSchema,
+    TURNSTILE_SECRET_KEY: z
+      .string()
+      .trim()
+      .min(1)
+      .max(512)
+      .refine(
+        (val) => !val.toUpperCase().includes('CHANGE_ME'),
+        'TURNSTILE_SECRET_KEY must not contain placeholder values.',
+      )
+      .optional(),
+  })
+  .refine((data) => (data.SMTP_USER === undefined) === (data.SMTP_PASS === undefined), {
+    path: ['SMTP_PASS'],
+    message:
+      'SMTP_USER and SMTP_PASS must be set together (or both left empty for a local catcher).',
+  })
+  .refine((data) => !data.TURNSTILE_ENABLED || data.TURNSTILE_SECRET_KEY !== undefined, {
+    path: ['TURNSTILE_SECRET_KEY'],
+    message: 'TURNSTILE_SECRET_KEY is required when TURNSTILE_ENABLED is true.',
   })
   .refine((data) => data.PAYLOAD_SECRET !== data.IP_HASH_SALT, {
     path: ['IP_HASH_SALT'],
@@ -294,15 +363,28 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
         : 'true',
     SMTP_HOST: rawSmtpHost ? rawSmtpHost : isProductionRuntime ? undefined : '127.0.0.1',
     SMTP_PORT: rawSmtpPort ? rawSmtpPort : isProductionRuntime ? undefined : '1025',
+    SMTP_USER: emptyToUndefined(rawEnv.SMTP_USER),
+    SMTP_PASS: emptyToUndefined(rawEnv.SMTP_PASS),
+    SALES_INBOX: emptyToUndefined(rawEnv.SALES_INBOX),
+    TURNSTILE_ENABLED: emptyToUndefined(rawEnv.TURNSTILE_ENABLED) ?? 'false',
+    TURNSTILE_SECRET_KEY: emptyToUndefined(rawEnv.TURNSTILE_SECRET_KEY),
   })
 
-  if (!result.success) {
-    const details = result.error.issues
-      .map((issue) => {
+  const productionIssues: string[] = []
+  if (result.success && isProductionRuntime && result.data.SALES_INBOX === undefined) {
+    productionIssues.push(
+      '  - SALES_INBOX: SALES_INBOX must be explicitly set in production (the sales inbox for quote notifications).',
+    )
+  }
+
+  if (!result.success || productionIssues.length > 0) {
+    const details = [
+      ...(result.success ? [] : result.error.issues).map((issue) => {
         const field = issue.path.join('.') || 'env'
         return `  - ${field}: ${issue.message}`
-      })
-      .join('\n')
+      }),
+      ...productionIssues,
+    ].join('\n')
 
     throw new Error(
       `Invalid environment configuration (src/env.ts, ${ENV_SERVER_ONLY_SENTINEL}):\n${details}\nHint: generate secrets using \`openssl rand -base64 48\`.`,

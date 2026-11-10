@@ -12,6 +12,7 @@ function createValidRawEnv(): Record<string, string> {
     SERVER_URL: 'http://localhost:3000',
     PAYLOAD_SECRET: VALID_SECRET_A,
     IP_HASH_SALT: VALID_SECRET_B,
+    SALES_INBOX: 'sales-inbox@example.test',
   }
 }
 
@@ -43,6 +44,7 @@ describe('parseEnv (S1, S2)', () => {
       PAYLOAD_JOBS_AUTORUN: true,
       SMTP_HOST: '127.0.0.1',
       SMTP_PORT: 1025,
+      TURNSTILE_ENABLED: false,
     })
   })
 
@@ -319,5 +321,66 @@ describe('parseEnv (S1, S2)', () => {
     })
     expect(parsedProd.SMTP_HOST).toBe('smtp.aljazira.co')
     expect(parsedProd.SMTP_PORT).toBe(587)
+  })
+
+  it('P5-T1: SALES_INBOX is required at production runtime and optional in development', () => {
+    const { SALES_INBOX: _omitted, ...withoutInbox } = createValidRawEnv()
+    expect(parseEnv(withoutInbox).SALES_INBOX).toBeUndefined()
+    expect(() =>
+      parseEnv({
+        ...withoutInbox,
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'false',
+        SMTP_HOST: 'smtp.aljazira.co',
+        SMTP_PORT: '587',
+      }),
+    ).toThrow(/SALES_INBOX.*production/i)
+    expect(() => parseEnv({ ...withoutInbox, SALES_INBOX: 'not-an-email' })).toThrow(/SALES_INBOX/)
+    expect(() => parseEnv({ ...withoutInbox, SALES_INBOX: 'CHANGE_ME@example.test' })).toThrow(
+      /SALES_INBOX.*placeholder/i,
+    )
+    expect(
+      parseEnv({
+        ...withoutInbox,
+        NODE_ENV: 'production',
+        PAYLOAD_JOBS_AUTORUN: 'false',
+        SMTP_HOST: 'smtp.aljazira.co',
+        SMTP_PORT: '587',
+        SALES_INBOX: 'sales-inbox@example.test',
+      }).SALES_INBOX,
+    ).toBe('sales-inbox@example.test')
+  })
+
+  it('P5-T1: SMTP_USER and SMTP_PASS must be set together; placeholders are rejected', () => {
+    expect(() => parseEnv({ ...createValidRawEnv(), SMTP_USER: 'mailer' })).toThrow(/SMTP_PASS/)
+    expect(() => parseEnv({ ...createValidRawEnv(), SMTP_PASS: 'x7K9mP2qR4wZ8' })).toThrow(
+      /SMTP_PASS/,
+    )
+    expect(() =>
+      parseEnv({ ...createValidRawEnv(), SMTP_USER: 'mailer', SMTP_PASS: 'CHANGE_ME' }),
+    ).toThrow(/SMTP_PASS.*placeholder/i)
+    const parsed = parseEnv({
+      ...createValidRawEnv(),
+      SMTP_USER: 'mailer',
+      SMTP_PASS: 'x7K9mP2qR4wZ8',
+    })
+    expect(parsed.SMTP_USER).toBe('mailer')
+    expect(parsed.SMTP_PASS).toBe('x7K9mP2qR4wZ8')
+  })
+
+  it('P5-T1: Turnstile is off by default and needs its secret key when switched on', () => {
+    expect(parseEnv(createValidRawEnv()).TURNSTILE_ENABLED).toBe(false)
+    expect(() => parseEnv({ ...createValidRawEnv(), TURNSTILE_ENABLED: 'true' })).toThrow(
+      /TURNSTILE_SECRET_KEY/,
+    )
+    expect(() => parseEnv({ ...createValidRawEnv(), TURNSTILE_ENABLED: 'maybe' })).toThrow(
+      /TURNSTILE_ENABLED/,
+    )
+    const on = parseEnv({
+      ...createValidRawEnv(),
+      TURNSTILE_ENABLED: 'true',
+      TURNSTILE_SECRET_KEY: '0x4AAAAAAAtestSecretKeyValue',
+    })
+    expect(on.TURNSTILE_ENABLED).toBe(true)
   })
 })
