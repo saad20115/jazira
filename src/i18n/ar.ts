@@ -261,6 +261,10 @@ export interface UiDictionary {
     messageSentTitle: string
     messageSentBody: string
     backToWebsite: string
+    messageFailedTitle: string
+    messageFailedInvalid: string
+    messageFailedRateLimited: string
+    messageFailedUnavailable: string
   }
   privacy: {
     emptyNotice: string
@@ -627,6 +631,10 @@ export const arDictionary = {
     messageSentBody:
       'شكراً لتواصلكم مع شركة الجزيرة الإمداد الذكي. سيتواصل معكم فريقنا في أقرب وقت ممكن.',
     backToWebsite: 'العودة إلى الموقع',
+    messageFailedTitle: 'لم يتم إرسال طلبك',
+    messageFailedInvalid: 'يرجى مراجعة بيانات النموذج ثم المحاولة مرة أخرى.',
+    messageFailedRateLimited: 'محاولات كثيرة خلال وقت قصير. يرجى المحاولة لاحقاً.',
+    messageFailedUnavailable: 'حدث خطأ مؤقت من جهتنا. يرجى المحاولة مرة أخرى بعد قليل.',
   },
   privacy: {
     emptyNotice: 'يتم حالياً إعداد محتوى سياسة الخصوصية للنشر.',

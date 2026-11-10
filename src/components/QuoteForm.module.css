@@ -505,6 +505,13 @@
   justify-content: center;
 }
 
+/* P5-T1: "Message failed" emblem (docs/05-design.md decision 10: danger icon colour). */
+.modalEmblemDanger {
+  border-radius: 50%;
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
 .modalTitle {
   margin: 0;
   color: var(--navy-950);

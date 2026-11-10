@@ -257,6 +257,10 @@ export const enDictionary = {
     messageSentBody:
       'Thank you for contacting Al Jazira for Imdad Smart Company. Our team will get back to you as soon as possible.',
     backToWebsite: 'Back to Website',
+    messageFailedTitle: 'Your Request Was Not Sent',
+    messageFailedInvalid: 'Please check the form and try again.',
+    messageFailedRateLimited: 'Too many attempts in a short time. Please try again later.',
+    messageFailedUnavailable: 'Something went wrong on our side. Please try again in a moment.',
   },
   privacy: {
     emptyNotice: 'Privacy policy content is currently being prepared for publication.',
