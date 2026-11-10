@@ -84,8 +84,14 @@ async function main() {
           if (!response || response.status() !== 200) {
             throw new Error(`${url} answered ${response?.status() ?? 'no response'}`)
           }
-          const file = `${entry.key}-${locale}-${width}.png`
-          await page.screenshot({ path: path.join(OUT_DIR, file), fullPage: true })
+          const file = `${entry.key}-${locale}-${width}.jpg`
+          // JPEG keeps the committed pack small (full-page PNGs were about 70 MB).
+          await page.screenshot({
+            path: path.join(OUT_DIR, file),
+            fullPage: true,
+            type: 'jpeg',
+            quality: 80,
+          })
           written.push(file)
         }
         await context.close()
@@ -103,7 +109,7 @@ async function main() {
         ? `<img src="${escapeHtml(figmaRel)}" alt="Figma ${escapeHtml(entry.key)}">`
         : '<p>No Figma export</p>'
       return `<tr><th scope="row">${escapeHtml(entry.key)}</th><td>${figmaCell}</td><td><img src="${escapeHtml(
-        `${entry.key}-en-1440.png`,
+        `${entry.key}-en-1440.jpg`,
       )}" alt="Site ${escapeHtml(entry.key)} en 1440"></td></tr>`
     })
     .join('\n')

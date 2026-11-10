@@ -141,8 +141,11 @@ test.describe('P3-T10 — accessibility (axe), CSP and hydration on every public
       } finally {
         await context.close()
       }
-      expect(results.filter((r) => r.violations.length > 0)).toEqual([])
-      expect(problems).toEqual([])
+      // One assertion for both, so a failing run always shows the axe findings and the console findings.
+      expect({
+        axe: results.filter((r) => r.violations.length > 0),
+        console: problems,
+      }).toEqual({ axe: [], console: [] })
     })
   }
 
