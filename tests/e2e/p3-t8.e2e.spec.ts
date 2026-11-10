@@ -125,7 +125,20 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
     await expect(page.locator('img[style]')).toHaveCount(0)
     expect(cspViolations).toEqual([])
 
-    const draftSlugRes = await page.goto('/en/projects/princess-noura-university-pnu', {
+    // Since F-1 (owner 2026-11-08) PNU is published with its Figma image, so the draft slug is read
+    // from the CMS: any project whose only version is a draft (P3-T10 fix).
+    const draftQueryRes = await page.request.get(
+      `${resolvedBase}/api/projects?where[_status][equals]=draft&draft=true&depth=0&limit=1&locale=en`,
+      { headers: { Authorization: `JWT ${token}` } },
+    )
+    expect(draftQueryRes.ok()).toBe(true)
+    const draftSlug = ((await draftQueryRes.json()) as { docs: Array<{ slug?: string }> }).docs.at(
+      0,
+    )?.slug
+    if (!draftSlug) {
+      throw new Error('Expected at least one draft-only project in the seed')
+    }
+    const draftSlugRes = await page.goto(`/en/projects/${draftSlug}`, {
       waitUntil: 'networkidle',
     })
     expect(draftSlugRes?.status()).toBe(404)
@@ -213,7 +226,7 @@ test.describe('P3-T8 — Projects List, Project Detail, and Lightbox', () => {
       await expect(firstThumb).toBeFocused()
 
       // 4. Staff in draft mode can also view draft-only project and Arabic RTL /ar/projects
-      const staffDraftProjectRes = await page.goto('/en/projects/princess-noura-university-pnu', {
+      const staffDraftProjectRes = await page.goto(`/en/projects/${draftSlug}`, {
         waitUntil: 'networkidle',
       })
       expect(staffDraftProjectRes?.status()).toBe(200)
