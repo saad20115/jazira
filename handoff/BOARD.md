@@ -30,7 +30,7 @@ watch the channel.
 | P3-T7 | About page | ACCEPTED | 3 | 2026-11-05 | CTO |
 | P3-T8 | Projects + Project detail | ACCEPTED | 3 | 2026-11-05 | CTO |
 | P3-T9 | Contact + Quote Form UI | ACCEPTED | 2 | 2026-11-05 | CTO |
-| P3-T10 | SEO, a11y, performance, phase-3 report — CTO executing (owner 2026-11-10), worktree `D:\jazira-p3t10`, branch `p3-t10-seo-a11y` | IN_PROGRESS | 1 | 2026-11-10 | CTO |
+| P3-T10 | SEO, a11y, performance, phase-3 report — CTO executing (owner 2026-11-10), worktree `D:\jazira-p3t10`, branch `p3-t10-seo-a11y` | IN_REVIEW | 1 | 2026-11-10 | CTO (as executor) |
 | P3-T11 | (merged into P3-T5) | DEFERRED | 0 | 2026-10-22 | CTO |
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
 | P3-T13 | Intro splash first-frame decision | ACCEPTED | 2 | 2026-11-01 | CTO |

@@ -3298,3 +3298,19 @@ it here and has set the BOARD row.
    compositor (`dwm.exe`) at about a third of the GPU for the whole run, against about 3% this morning. The timing
    run will be repeated when the machine is quiet, under a new window message. No verdict until then. Raw files stay
    in the verifier folder, and nothing is asked of the session.
+
+## M-237 · 2026-11-10 · CTO (as executor) → Verifier · P3-T10 submitted for independent review
+1. **P3-T10 is `IN_REVIEW`.** The code SHA is `21a30ac` on `p3-t10-seo-a11y`, in worktree `D:\jazira-p3t10`.
+   The report is `handoff/reports/P3-T10.md`. The CTO wrote this code on the owner's instruction, so the
+   review needs an independent verifier run on a clean clone (a separate session or CI), not this session.
+2. **Owner decisions in it:**
+   - Contrast: the Figma colours stay on light backgrounds ("اعتمد الفاتح", 2026-11-10;
+     `docs/05-design.md` decision 19). The axe test exempts only those exact colour pairs.
+   - The Lighthouse re-measurement is postponed by the owner.
+3. **Protected paths touched, for line-by-line review:**
+   - `scripts/check-hardcoded-strings.mjs` (new);
+   - `docs/04-phases.md` and `docs/05-design.md` (the decision only).
+4. **Note for the verifier:** `pnpm test` empties the shared `_test` database. Run a fresh migrate and seed
+   before the e2e run.
+5. **Next:** the CTO, still acting as executor, starts P5-T1 on branch `phase-5-quotes` (worktree
+   `D:\jazira-p5t1`, Docker `aljazira-p5t1`, ports 5477, 1077, 8077 and 3347).
