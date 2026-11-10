@@ -1,6 +1,7 @@
 import AxeBuilder from '@axe-core/playwright'
 import { type BrowserContext, expect, type Page, test } from '@playwright/test'
 
+import { blockingViolations } from './a11y-exceptions'
 import {
   ensureE2EAdminToken,
   restoreSiteSettingsViaApi,
@@ -12,7 +13,8 @@ import {
 /**
  * P3-T10 §4 + Phase 3 acceptance:
  * - axe-core on every public page in `en` and `ar`: zero serious or critical violations
- *   (WCAG 2.0/2.1/2.2 A and AA rules);
+ *   (WCAG 2.0/2.1/2.2 A and AA rules), except the owner-approved Figma colour pairs
+ *   (docs/05-design.md decision 19, owner 2026-11-10; see ./a11y-exceptions.ts);
  * - zero CSP violations and zero hydration warnings in the console on every page;
  * - 404 and the sitemap/robots basics.
  * Arabic is switched on for the Arabic pass and the site settings are restored afterwards.
@@ -73,16 +75,7 @@ async function auditPage(
     const response = await page.goto(path, { waitUntil: 'networkidle' })
     expect(response?.status(), `${path} status`).toBeLessThan(400)
     const results = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze()
-    const violations = results.violations
-      .filter((violation) => violation.impact === 'serious' || violation.impact === 'critical')
-      .map(
-        (violation) =>
-          `${String(violation.impact)} ${violation.id}: ${violation.nodes
-            .slice(0, 3)
-            .map((node) => node.target.join(' '))
-            .join(' | ')}`,
-      )
-    return { path, violations }
+    return { path, violations: blockingViolations(results.violations) }
   } finally {
     page.off('console', onConsole)
   }
@@ -132,9 +125,7 @@ test.describe('P3-T10 — accessibility (axe), CSP and hydration on every public
         const notFoundAudit = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze()
         results.push({
           path: `/${locale}/<404>`,
-          violations: notFoundAudit.violations
-            .filter((v) => v.impact === 'serious' || v.impact === 'critical')
-            .map((v) => `${String(v.impact)} ${v.id}`),
+          violations: blockingViolations(notFoundAudit.violations),
         })
         await expect(page.locator('html')).toHaveAttribute('lang', locale)
         await expect(page.locator('html')).toHaveAttribute('dir', locale === 'ar' ? 'rtl' : 'ltr')

@@ -67,7 +67,8 @@ CSP with nonce (H3); SEO: metadata from CMS, `hreflang`, sitemap, robots (H7), J
 - [ ] Lighthouse (mobile) on Home and Project detail: Performance ≥ 90, Accessibility ≥ 95,
       Best Practices 100, SEO 100. Report attached.
 - [ ] WCAG 2.2 AA: keyboard navigation, focus visible, alt text required, contrast, `lang`/`dir`
-      correct per locale. axe-core e2e test with zero serious/critical violations.
+      correct per locale. axe-core e2e test with zero serious/critical violations. Exception:
+      the owner-approved Figma colour pairs in `docs/05-design.md` decision 19 (owner 2026-11-10).
 - [ ] Zero CSP violations in the console on all pages; zero hydration warnings.
 - [ ] Content changes in admin appear on the site after publish without redeploy.
 - [ ] No hard-coded business content in components (all from CMS or i18n dictionaries).
