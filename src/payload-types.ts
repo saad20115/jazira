@@ -694,8 +694,8 @@ export interface QuoteRequest {
 export interface QuoteRateLimit {
   id: number;
   ipHash: string;
-  updatedAt: string;
   createdAt: string;
+  updatedAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1182,8 +1182,8 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
  */
 export interface QuoteRateLimitsSelect<T extends boolean = true> {
   ipHash?: T;
-  updatedAt?: T;
   createdAt?: T;
+  updatedAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
