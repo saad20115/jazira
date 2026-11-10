@@ -40,6 +40,9 @@ test.describe('P3-T9 — Contact Page, 3-Step Quote Form UI, Message Sent Dialog
     const secret = previewSecret()
 
     await page.setViewportSize({ width: 1440, height: 900 })
+    // P5-T1: the form now posts to the real handler. Its own X-Real-IP (as Nginx sets in
+    // production) keeps this test out of other tests' rate-limit buckets.
+    await page.setExtraHTTPHeaders({ 'x-real-ip': '198.51.100.9' })
 
     // 1. Anonymous visitor on /en/contact sees PageHeader, contact channels from site-settings, QuoteForm, and static map with zero iframes
     const contactRes = await page.goto('/en/contact', { waitUntil: 'networkidle' })
@@ -91,6 +94,9 @@ test.describe('P3-T9 — Contact Page, 3-Step Quote Form UI, Message Sent Dialog
     await expect(consentCheckbox).toBeChecked()
 
     const submitBtn = page.locator('[data-quote-submit]')
+    // P5-T1 (I6): the server refuses a form sent less than 3 s after it opened; a person takes
+    // longer than this keyboard script does.
+    await page.waitForTimeout(3_500)
     await submitBtn.focus()
     await page.keyboard.press('Enter')
 
