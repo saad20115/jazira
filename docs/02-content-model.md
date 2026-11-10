@@ -110,6 +110,21 @@ Created only by the server-side quote form handler (Phase 5). Never writable thr
   **only** the workflow fields (customer and system fields are read-only for everyone); delete —
   admin only.
 - Retention: auto-delete after 24 months (scheduled job) — confirm with client.
+- **Form answers (CTO decision 2026-11-10, P5-T1).** The Figma quote form built in P3-T9 asks five
+  choice questions that this model did not store. They are added as read-only customer fields, with
+  the same option values as `src/lib/quote/schema.ts` and bilingual labels from the form's
+  dictionaries: `projectType`, `projectStage`, `servicesNeeded` (multi-select), `projectLocation`,
+  `preferredContact`. The form has no service-document picker, so `service` stays empty for web
+  submissions and `serviceTitle` holds the chosen service labels in the request locale (max 200).
+  The form's file picker uploads nothing; no attachment is stored (open question for the owner).
+
+### `quote-rate-limits` — hidden (CTO decision 2026-11-10, P5-T1, I6)
+- One row per quote-form submission attempt: `ipHash` (SHA-256 of IP + salt, D2) and `createdAt`.
+  The handler counts rows per hash in the last minute and the last day, in Postgres, so the limit
+  survives restarts and works across instances.
+- Access: `create`, `read`, `update`, `delete` all `() => false`; hidden from the admin. Only the
+  server-side quote handler writes, counts and prunes it (Local API, `overrideAccess: true` with a
+  `z6-allow-override-access` reason). Rows older than two days are deleted on each attempt.
 
 ## Globals
 

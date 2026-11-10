@@ -77,6 +77,7 @@ export interface Config {
     team: Team;
     projects: Project;
     'quote-requests': QuoteRequest;
+    'quote-rate-limits': QuoteRateLimit;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -95,6 +96,7 @@ export interface Config {
     team: TeamSelect<false> | TeamSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'quote-requests': QuoteRequestsSelect<false> | QuoteRequestsSelect<true>;
+    'quote-rate-limits': QuoteRateLimitsSelect<false> | QuoteRateLimitsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -132,6 +134,7 @@ export interface Config {
   user: User;
   jobs: {
     tasks: {
+      notifyQuoteRequest: TaskNotifyQuoteRequest;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -647,6 +650,22 @@ export interface QuoteRequest {
    * Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).
    */
   serviceTitle?: string | null;
+  projectType?:
+    | (
+        | 'hotel-tower'
+        | 'commercial-office'
+        | 'hospital-healthcare'
+        | 'industrial-warehouse'
+        | 'residential-compound'
+        | 'infrastructure-data-center'
+        | 'other'
+      )
+    | null;
+  projectStage?: ('design' | 'tender' | 'construction' | 'retrofit' | 'maintenance') | null;
+  servicesNeeded?:
+    ('hvac' | 'fire-fighting' | 'plumbing' | 'electrical' | 'low-current' | 'smart-systems' | 'supply-only')[] | null;
+  projectLocation?: ('makkah' | 'riyadh' | 'jeddah' | 'madinah' | 'eastern-province' | 'neom-red-sea' | 'other') | null;
+  preferredContact?: ('whatsapp' | 'phone' | 'email') | null;
   message?: string | null;
   locale: 'ar' | 'en';
   sourcePage?: string | null;
@@ -667,6 +686,16 @@ export interface QuoteRequest {
   userAgent?: string | null;
   createdAt: string;
   updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-rate-limits".
+ */
+export interface QuoteRateLimit {
+  id: number;
+  ipHash: string;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -737,7 +766,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'notifyQuoteRequest' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -770,7 +799,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'notifyQuoteRequest' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -823,6 +852,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quote-requests';
         value: number | QuoteRequest;
+      } | null)
+    | ({
+        relationTo: 'quote-rate-limits';
+        value: number | QuoteRateLimit;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1123,6 +1156,11 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   phone?: T;
   service?: T;
   serviceTitle?: T;
+  projectType?: T;
+  projectStage?: T;
+  servicesNeeded?: T;
+  projectLocation?: T;
+  preferredContact?: T;
   message?: T;
   locale?: T;
   sourcePage?: T;
@@ -1137,6 +1175,15 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   userAgent?: T;
   createdAt?: T;
   updatedAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-rate-limits_select".
+ */
+export interface QuoteRateLimitsSelect<T extends boolean = true> {
+  ipHash?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2758,6 +2805,18 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskNotifyQuoteRequest".
+ */
+export interface TaskNotifyQuoteRequest {
+  input: {
+    quoteRequestId: number;
+  };
+  output: {
+    handled?: boolean | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

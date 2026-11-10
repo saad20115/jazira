@@ -12,6 +12,7 @@ import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
+import { QuoteRateLimits } from './collections/QuoteRateLimits'
 import { QuoteRequests } from './collections/QuoteRequests'
 import { Services } from './collections/Services'
 import { Stats } from './collections/Stats'
@@ -30,6 +31,7 @@ import {
   ServicesPage,
   SiteSettings,
 } from './globals'
+import { notifyQuoteRequestTask } from './jobs/notifyQuoteRequest'
 import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
 import { ensurePublicErrorMessageAfterError } from './security/apiError'
 import { buildNonBlockingEmailAdapter } from './security/emailAdapter'
@@ -88,6 +90,7 @@ export default buildConfig({
     Team,
     Projects,
     QuoteRequests,
+    QuoteRateLimits,
   ],
   globals: [
     SiteSettings,
@@ -132,6 +135,7 @@ export default buildConfig({
       },
     ],
     shouldAutoRun: () => shouldAutoRunJobs(),
+    tasks: [notifyQuoteRequestTask],
   },
   upload: {
     limits: {

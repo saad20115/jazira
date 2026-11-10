@@ -4,11 +4,14 @@ import {
   type CollectionConfig,
   type FieldAccess,
   type PayloadRequest,
+  type SelectField,
 } from 'payload'
 
 import { isAdmin } from '../access/isAdmin'
 import { isAdminOrEditor } from '../access/isAdminOrEditor'
 import { DEFAULT_LOCALE } from '../i18n'
+import { arDictionary } from '../i18n/ar'
+import { enDictionary } from '../i18n/en'
 import { isValidIpHash } from '../lib/ipHash'
 import {
   E164_GENERAL_PHONE_REGEX,
@@ -19,6 +22,11 @@ import {
   KSA_LOCAL_PHONE_CHARS_REGEX,
   normalizeQuotePhone,
   QUOTE_PHONE_ERROR_MESSAGE,
+  QUOTE_PREFERRED_CONTACT_VALUES,
+  QUOTE_PROJECT_LOCATION_VALUES,
+  QUOTE_PROJECT_STAGE_VALUES,
+  QUOTE_PROJECT_TYPE_VALUES,
+  QUOTE_SERVICE_NEEDED_VALUES,
   quotePhoneSchema,
 } from '../lib/quote/schema'
 import { withImmutableCreatedAt } from './_shared/immutableTimestamps'
@@ -98,6 +106,38 @@ export const validateQuoteConsent = (value: unknown): true | string => {
     return 'يجب الموافقة على سياسة الخصوصية ومعالجة البيانات. / Consent to the privacy policy is required.'
   }
   return true
+}
+
+type QuoteOptionDictionaryKey =
+  'projectTypes' | 'projectStages' | 'services' | 'locations' | 'preferredChannels'
+
+/**
+ * A read-only select for one of the quote form's choice questions. Option labels come from the
+ * same i18n dictionaries the public form uses, so the admin shows what the visitor saw.
+ */
+function quoteSelectField(
+  name: string,
+  label: { ar: string; en: string },
+  dictionaryKey: QuoteOptionDictionaryKey,
+  values: readonly string[],
+  hasMany = false,
+): SelectField {
+  const arLabels = arDictionary.quoteForm[dictionaryKey] as Record<string, string>
+  const enLabels = enDictionary.quoteForm[dictionaryKey] as Record<string, string>
+  const field = {
+    name,
+    type: 'select' as const,
+    label,
+    options: values.map((value) => ({
+      value,
+      label: { ar: arLabels[value] ?? value, en: enLabels[value] ?? value },
+    })),
+    access: readOnlyFieldAccess,
+    admin: {
+      readOnly: true,
+    },
+  }
+  return hasMany ? { ...field, hasMany: true } : { ...field, hasMany: false }
 }
 
 const isNonEmptyInput = (val: unknown): boolean => val !== null && val !== undefined && val !== ''
@@ -465,6 +505,40 @@ export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
         },
       },
     },
+    // P5-T1 (CTO decision 2026-11-10, docs/02-content-model.md): the Figma quote form (P3-T9)
+    // asks for these; they are stored as submitted, read-only for everyone like the other
+    // customer fields.
+    quoteSelectField(
+      'projectType',
+      { ar: 'نوع المشروع', en: 'Project Type' },
+      'projectTypes',
+      QUOTE_PROJECT_TYPE_VALUES,
+    ),
+    quoteSelectField(
+      'projectStage',
+      { ar: 'مرحلة المشروع', en: 'Project Stage' },
+      'projectStages',
+      QUOTE_PROJECT_STAGE_VALUES,
+    ),
+    quoteSelectField(
+      'servicesNeeded',
+      { ar: 'الخدمات المطلوبة', en: 'Services Needed' },
+      'services',
+      QUOTE_SERVICE_NEEDED_VALUES,
+      true,
+    ),
+    quoteSelectField(
+      'projectLocation',
+      { ar: 'موقع المشروع', en: 'Project Location' },
+      'locations',
+      QUOTE_PROJECT_LOCATION_VALUES,
+    ),
+    quoteSelectField(
+      'preferredContact',
+      { ar: 'طريقة التواصل المفضلة', en: 'Preferred Contact' },
+      'preferredChannels',
+      QUOTE_PREFERRED_CONTACT_VALUES,
+    ),
     {
       name: 'message',
       type: 'textarea',
