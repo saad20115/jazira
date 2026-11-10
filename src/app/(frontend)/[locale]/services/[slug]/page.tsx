@@ -7,6 +7,8 @@ import { Button } from '@/components/Button'
 import { CspSafeImage, DraftImageBypassProvider } from '@/components/CspSafeImage'
 import { CtaBand, extractMediaDisplay, renderAccentHeading } from '@/components/CtaBand'
 import { Eyebrow } from '@/components/Eyebrow'
+import { resolveMediaAsset } from '@/components/media-utils'
+import { buildPageOpenGraph } from '@/components/open-graph'
 import { PageHeader } from '@/components/PageHeader'
 import { revealAttributes } from '@/components/Reveal'
 import { hasLexicalContent, RichTextRenderer } from '@/components/RichTextRenderer'
@@ -61,6 +63,11 @@ export async function generateMetadata({ params }: ServiceDetailPageProps): Prom
     site?.tagline?.trim() ||
     title
 
+  const ogImage =
+    resolveMediaAsset(service.meta?.image, service.title, 'og') ??
+    resolveMediaAsset(service.image, service.title, 'og') ??
+    resolveMediaAsset(site?.defaultSeo?.image, service.title, 'og')
+
   return {
     title,
     description,
@@ -68,6 +75,14 @@ export async function generateMetadata({ params }: ServiceDetailPageProps): Prom
       canonical: `/${locale}/services/${service.slug}`,
       languages: buildHreflangAlternates(`/services/${service.slug}`, arabicEnabled),
     },
+    openGraph: buildPageOpenGraph({
+      title,
+      description,
+      siteName: site?.companyName.trim() || undefined,
+      path: `/${locale}/services/${service.slug}`,
+      locale,
+      image: ogImage,
+    }),
   }
 }
 

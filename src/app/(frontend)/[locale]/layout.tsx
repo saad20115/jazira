@@ -127,6 +127,40 @@ export function buildOrganizationJsonLd(
   })
 }
 
+/**
+ * P3-T10 §2: `LocalBusiness` JSON-LD built only from `site-settings` (no business data in code).
+ * Empty fields are left out. Serialized with the same `<`-escaping serializer as `Organization` (I2).
+ * Returns null when there is no site-settings document, so nothing is emitted.
+ */
+export function buildLocalBusinessJsonLd(
+  siteSettings: SiteSetting | null,
+  locale: SupportedLocale,
+  arabicEnabled: boolean,
+): string | null {
+  if (!siteSettings?.companyName) {
+    return null
+  }
+  const effectiveLocale: SupportedLocale = locale === 'ar' && arabicEnabled ? 'ar' : 'en'
+  const baseUrl = resolveMetadataBaseUrl().origin.replace(/\/+$/, '')
+  const address = siteSettings.office?.address?.trim() || siteSettings.address?.trim() || ''
+  const mapUrl = siteSettings.office?.mapUrl?.trim() || siteSettings.mapUrl?.trim() || ''
+  const sameAs = (siteSettings.socials ?? [])
+    .map((social) => social.url.trim())
+    .filter((url) => /^https:\/\//i.test(url))
+  return serializeJsonLd({
+    '@context': 'https://schema.org',
+    '@type': 'LocalBusiness',
+    name: siteSettings.companyName,
+    url: `${baseUrl}/${effectiveLocale}`,
+    ...(siteSettings.tagline?.trim() ? { description: siteSettings.tagline.trim() } : {}),
+    ...(siteSettings.phone.trim() ? { telephone: siteSettings.phone.trim() } : {}),
+    ...(siteSettings.email.trim() ? { email: siteSettings.email.trim() } : {}),
+    ...(address ? { address } : {}),
+    ...(/^https:\/\//i.test(mapUrl) ? { hasMap: mapUrl } : {}),
+    ...(sameAs.length > 0 ? { sameAs } : {}),
+  })
+}
+
 function resolveMetadataBaseUrl(): URL {
   const rawUrl =
     process.env.NEXT_PUBLIC_SERVER_URL || process.env.SERVER_URL || 'http://localhost:3000'
@@ -290,6 +324,8 @@ async function LocaleShellHeader({
         }))
       : undefined
 
+  const localBusinessJsonLd = buildLocalBusinessJsonLd(siteSettings, locale, arabicEnabled)
+
   return (
     <>
       <script
@@ -299,6 +335,13 @@ async function LocaleShellHeader({
           __html: buildOrganizationJsonLd(siteSettings, locale, arabicEnabled),
         }}
       />
+      {localBusinessJsonLd ? (
+        <script
+          nonce={cspNonce}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: localBusinessJsonLd }}
+        />
+      ) : null}
       {isStaffDraftPreview ? (
         <aside className={`${gridStyles.draftBanner} t-body-s-medium`}>
           <span>{dict.draftMode.bannerText}</span>

@@ -13,7 +13,8 @@ import { Button } from '@/components/Button'
 import { CspSafeImage, DraftImageBypassProvider } from '@/components/CspSafeImage'
 import { CtaBand, extractMediaDisplay, renderAccentHeading } from '@/components/CtaBand'
 import { Eyebrow } from '@/components/Eyebrow'
-import { formatServiceNumber } from '@/components/media-utils'
+import { formatServiceNumber, resolveMediaAsset } from '@/components/media-utils'
+import { buildPageOpenGraph } from '@/components/open-graph'
 import { PageHeader } from '@/components/PageHeader'
 import { revealAttributes } from '@/components/Reveal'
 import { ServiceTile } from '@/components/ServiceTile'
@@ -61,6 +62,11 @@ export async function generateMetadata({ params }: ServicesPageProps): Promise<M
     site?.tagline?.trim() ||
     title
 
+  const ogImage =
+    resolveMediaAsset(servicesPage?.meta?.image, title, 'og') ??
+    resolveMediaAsset(servicesPage?.pageHeader?.image, title, 'og') ??
+    resolveMediaAsset(site?.defaultSeo?.image, title, 'og')
+
   return {
     title,
     description,
@@ -68,6 +74,14 @@ export async function generateMetadata({ params }: ServicesPageProps): Promise<M
       canonical: `/${locale}/services`,
       languages: buildHreflangAlternates('/services', arabicEnabled),
     },
+    openGraph: buildPageOpenGraph({
+      title,
+      description,
+      siteName: site?.companyName.trim() || undefined,
+      path: `/${locale}/services`,
+      locale,
+      image: ogImage,
+    }),
   }
 }
 

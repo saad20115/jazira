@@ -126,8 +126,9 @@ describe(
       })
 
       expect(await isArabicEnabled()).toBe(false)
-      const sitemapWhenOff = await sitemap()
-      expect(sitemapWhenOff.map((e) => e.url)).toEqual(['http://localhost:3000/en'])
+      const sitemapWhenOff = (await sitemap()).map((e) => e.url)
+      expect(sitemapWhenOff[0]).toBe('http://localhost:3000/en')
+      expect(sitemapWhenOff.some((url) => url.startsWith('http://localhost:3000/ar'))).toBe(false)
 
       // Editor attempts to set arabicEnabled: true with overrideAccess: false -> 403 Forbidden
       await expect(
@@ -158,11 +159,17 @@ describe(
       expect(afterAdminEnable.arabicEnabled).toBe(true)
       expect(await isArabicEnabled()).toBe(true)
 
-      const sitemapWhenOn = await sitemap()
-      expect(sitemapWhenOn.map((e) => e.url)).toEqual([
+      const sitemapWhenOn = (await sitemap()).map((e) => e.url)
+      expect(sitemapWhenOn.slice(0, 2)).toEqual([
         'http://localhost:3000/en',
         'http://localhost:3000/ar',
       ])
+      // P3-T10 §1: with Arabic on, every English page has its Arabic twin right after it.
+      for (let i = 0; i < sitemapWhenOn.length; i += 2) {
+        expect(sitemapWhenOn[i + 1]).toBe(
+          sitemapWhenOn[i]?.replace('http://localhost:3000/en', 'http://localhost:3000/ar'),
+        )
+      }
 
       // Editor attempts to set arabicEnabled: false -> 403 Forbidden, remains true
       await expect(

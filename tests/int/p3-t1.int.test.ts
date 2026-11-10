@@ -421,9 +421,18 @@ describe(
         allow: '/',
         disallow: ['/admin', '/api'],
       })
+      expect(robotsCfg.sitemap).toBe('http://localhost:3000/sitemap.xml')
 
-      const sitemapEntries = await sitemap()
-      expect(sitemapEntries.map((e) => e.url)).toEqual(['http://localhost:3000/en'])
+      // P3-T10 §1: every published page; Arabic is off here, so English only, home first.
+      const sitemapUrls = (await sitemap()).map((e) => e.url)
+      expect(sitemapUrls.slice(0, 5)).toEqual([
+        'http://localhost:3000/en',
+        'http://localhost:3000/en/services',
+        'http://localhost:3000/en/about',
+        'http://localhost:3000/en/projects',
+        'http://localhost:3000/en/contact',
+      ])
+      expect(sitemapUrls.every((url) => url.startsWith('http://localhost:3000/en'))).toBe(true)
 
       expect(fs.existsSync(path.resolve(process.cwd(), 'public/favicon.ico'))).toBe(true)
       expect(fs.existsSync(path.resolve(process.cwd(), 'public/icon.svg'))).toBe(true)
