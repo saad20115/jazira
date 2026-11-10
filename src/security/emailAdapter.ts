@@ -3,6 +3,21 @@ import type { EmailAdapter, SendEmailOptions } from 'payload'
 
 const pendingEmailTasks = new Set<Promise<unknown>>()
 
+/**
+ * P5-T2 (Q2): the blocking sender for each initialised Payload instance. The adapter Payload uses
+ * (auth emails, previews) stays non-blocking; the sales-inbox job needs to know whether the SMTP
+ * server accepted the message, so it calls `sendEmailAndWait`, which rejects when sending fails.
+ */
+const blockingSenders = new WeakMap<object, (message: SendEmailOptions) => Promise<unknown>>()
+
+export async function sendEmailAndWait(payload: object, message: SendEmailOptions): Promise<void> {
+  const send = blockingSenders.get(payload)
+  if (!send) {
+    throw new Error('sendEmailAndWait: the email adapter is not initialised for this instance')
+  }
+  await send(message)
+}
+
 export async function waitForPendingEmails(): Promise<void> {
   while (pendingEmailTasks.size > 0) {
     await Promise.allSettled([...pendingEmailTasks])
@@ -51,8 +66,18 @@ export function resolveSmtpTransportConfig(rawEnv: NodeJS.ProcessEnv = process.e
   }
 }
 
+/** P5-T2: SMTP login, only when both SMTP_USER and SMTP_PASS are set (src/env.ts enforces the pair). */
+export function resolveSmtpAuth(
+  rawEnv: NodeJS.ProcessEnv = process.env,
+): { user: string; pass: string } | undefined {
+  const user = rawEnv.SMTP_USER?.trim()
+  const pass = rawEnv.SMTP_PASS
+  return user && pass ? { user, pass } : undefined
+}
+
 export async function buildNonBlockingEmailAdapter(): Promise<EmailAdapter> {
   const { host, port } = resolveSmtpTransportConfig(process.env)
+  const auth = resolveSmtpAuth(process.env)
   const innerAdapterFactory = await nodemailerAdapter({
     defaultFromAddress: process.env.SMTP_FROM_ADDRESS ?? 'no-reply@aljazira.co',
     defaultFromName: process.env.SMTP_FROM_NAME ?? 'Al Jazira for Imdad Smart Co.',
@@ -62,11 +87,18 @@ export async function buildNonBlockingEmailAdapter(): Promise<EmailAdapter> {
       port,
       pool: true,
       secure: false,
+      ...(auth ? { auth } : {}),
+      // P5-T2: a dead SMTP server must fail the job attempt quickly (it is retried with backoff),
+      // not hold it for nodemailer's two-minute default.
+      connectionTimeout: 10_000,
+      greetingTimeout: 10_000,
+      socketTimeout: 20_000,
     },
   })
 
   return ({ payload }) => {
     const inner = innerAdapterFactory({ payload })
+    blockingSenders.set(payload, (message) => inner.sendEmail(message))
     return {
       name: inner.name,
       defaultFromAddress: inner.defaultFromAddress,
