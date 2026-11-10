@@ -21,8 +21,13 @@ import { OWNER_MARQUEE_BRANDS_20 } from '../../src/seed/p4-t2-data'
 const getHandler = REST_GET(Promise.resolve(payloadConfig))
 let payload: Payload
 
-describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), marquee (20), copy & placeholders seed', () => {
+describe(
+  'P4-T2 Integration — Settings, services, projects (91 + 17 photos), marquee (20), copy & placeholders seed',
+  { shuffle: false },
+  () => {
   beforeAll(async () => {
+      const { assertTestDatabaseIsolation } = await import('./_helpers/testDbIsolation')
+      assertTestDatabaseIsolation()
     payload = await getPayload({ config: payloadConfig })
     await payload.db.migrate()
 
@@ -114,8 +119,14 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       /Refusing to run seed on a non-empty database \(brands=1, materials=0, stats=0, services=0, projects=0, team=0\)/,
     )
 
-    const [brandsAfterA, materialsAfterA, statsAfterA, servicesAfterA, projectsAfterA, teamAfterA] =
-      await Promise.all([
+      const [
+        brandsAfterA,
+        materialsAfterA,
+        statsAfterA,
+        servicesAfterA,
+        projectsAfterA,
+        teamAfterA,
+      ] = await Promise.all([
         payload.count({ collection: 'brands', overrideAccess: false, user: SEED_ADMIN_USER }),
         payload.count({ collection: 'materials', overrideAccess: false, user: SEED_ADMIN_USER }),
         payload.count({ collection: 'stats', overrideAccess: false, user: SEED_ADMIN_USER }),
@@ -161,8 +172,14 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       /Refusing to run seed on a non-empty database \(brands=0, materials=1, stats=0, services=0, projects=0, team=0\)/,
     )
 
-    const [brandsAfterB, materialsAfterB, statsAfterB, servicesAfterB, projectsAfterB, teamAfterB] =
-      await Promise.all([
+      const [
+        brandsAfterB,
+        materialsAfterB,
+        statsAfterB,
+        servicesAfterB,
+        projectsAfterB,
+        teamAfterB,
+      ] = await Promise.all([
         payload.count({ collection: 'brands', overrideAccess: false, user: SEED_ADMIN_USER }),
         payload.count({ collection: 'materials', overrideAccess: false, user: SEED_ADMIN_USER }),
         payload.count({ collection: 'stats', overrideAccess: false, user: SEED_ADMIN_USER }),
@@ -190,7 +207,7 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
   it('seeds the full Phase 4 baseline (P4-T1 + P4-T2) via --reseed and verifies all counts, locales, marquee order, and home-page interactiveSystems in both en & ar', async () => {
     const summary = await seedP4T2Content(payload, {
       nodeEnv: 'test',
-      argv: ['node', 'scripts/seed.ts', '--reseed'],
+        argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
       reseed: true,
     })
 
@@ -241,7 +258,9 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       user: SEED_ADMIN_USER,
     })
     expect(marqueeEn.totalDocs).toBe(20)
-    expect(marqueeEn.docs.map((b) => b.order)).toEqual(Array.from({ length: 20 }, (_, i) => i + 1))
+      expect(marqueeEn.docs.map((b) => b.order)).toEqual(
+        Array.from({ length: 20 }, (_, i) => i + 1),
+      )
     expect(marqueeEn.docs.map((b) => b.name.toLowerCase())).toEqual(
       OWNER_MARQUEE_BRANDS_20.map((b) => b.name.toLowerCase()),
     )
@@ -752,11 +771,67 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
     expect(afterEditorUpdate.reviewNote).toBe(originalNote)
   }, 60_000)
 
-  it('logs all deleted counts on --reseed when rebuilding a populated Phase 4 database', async () => {
-    const reseedSummary = await seedP4T2Content(payload, {
+    it('logs all deleted counts on --reseed when rebuilding a populated Phase 4 database and preserves non-seed media (D-14, E-09)', async () => {
+      // 1. Verify reseed guard fails before any delete when NODE_ENV is unset, confirmation flag is missing, or DB is aljazira_prod
+      await expect(
+        seedP4T2Content(payload, {
+          nodeEnv: '',
+          argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+          reseed: true,
+        }),
+      ).rejects.toThrow(/NODE_ENV/)
+
+      await expect(
+        seedP4T2Content(payload, {
       nodeEnv: 'test',
       argv: ['node', 'scripts/seed.ts', '--reseed'],
       reseed: true,
+        }),
+      ).rejects.toThrow(/--i-understand-this-deletes-content/)
+
+      await expect(
+        seedP4T2Content(payload, {
+          nodeEnv: 'test',
+          argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+          databaseUrl: 'postgresql://aljazira_app:pass@127.0.0.1:5434/aljazira_prod',
+          reseed: true,
+        }),
+      ).rejects.toThrow(/aljazira_prod/)
+
+      // 2. Upload a non-seed media item as an editor and verify it survives --reseed
+      const oneByOnePng = Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==',
+        'base64',
+      )
+      const editorUser = {
+        ...SEED_ADMIN_USER,
+        id: 999,
+        email: 'editor-test@aljazira.co',
+        name: 'Editor Test',
+        role: 'editor' as const,
+      }
+      const nonSeedMedia = await payload.create({
+        collection: 'media',
+        locale: 'en',
+        data: {
+          alt: 'Editor custom uploaded photo — must survive reseed',
+          placeholder: false,
+        },
+        file: {
+          data: oneByOnePng,
+          mimetype: 'image/png',
+          name: 'editor-custom-photo.png',
+          size: oneByOnePng.byteLength,
+        },
+        context: { disableRevalidate: true },
+        overrideAccess: false,
+        user: editorUser,
+      })
+
+      const reseedSummary = await seedP4T2Content(payload, {
+        nodeEnv: 'test',
+        argv: ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        reseed: true,
     })
 
     expect(reseedSummary.reseeded).toBe(true)
@@ -770,9 +845,28 @@ describe('P4-T2 Integration — Settings, services, projects (91 + 17 photos), m
       media: 26,
     })
 
+      const survivingMedia = await payload.findByID({
+        collection: 'media',
+        id: nonSeedMedia.id,
+        locale: 'en',
+        overrideAccess: false,
+        user: editorUser,
+      })
+      expect(survivingMedia.id).toBe(nonSeedMedia.id)
+      expect(survivingMedia.alt).toBe('Editor custom uploaded photo — must survive reseed')
+
+      await payload.delete({
+        collection: 'media',
+        id: nonSeedMedia.id,
+        context: { disableRevalidate: true },
+        overrideAccess: false,
+        user: SEED_ADMIN_USER,
+      })
+
     const lines = formatP4T2SummaryLines(reseedSummary).join('\n')
     expect(lines).toContain(
       'mode: reseed (--reseed, deleted projects=91, services=10, team=13, stats=5, materials=73, brands=99, media=26)',
     )
   }, 180_000)
-})
+  },
+)

@@ -7,6 +7,7 @@ import { buildConfig } from 'payload'
 import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
+import { isAdmin } from './access'
 import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
@@ -36,6 +37,9 @@ import { MAX_MEDIA_FILE_SIZE_BYTES } from './security/uploadValidation'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
+
+const isAdminJobAccess = ({ req }: { req: Parameters<typeof isAdmin>[0]['req'] }): boolean =>
+  isAdmin({ req }) === true
 
 export default buildConfig({
   serverURL: env.SERVER_URL,
@@ -115,6 +119,11 @@ export default buildConfig({
   }),
   email: buildNonBlockingEmailAdapter(),
   jobs: {
+    access: {
+      run: isAdminJobAccess,
+      queue: isAdminJobAccess,
+      cancel: isAdminJobAccess,
+    },
     autoRun: [
       {
         cron: '* * * * *',

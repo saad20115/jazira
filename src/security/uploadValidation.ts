@@ -340,6 +340,18 @@ export function doesSafeUploadFileExist(staticDir: string, filename: unknown): b
   }
 }
 
+export const UPLOAD_FILE_SECURITY_HEADERS: Record<string, string> = {
+  'Content-Security-Policy': "default-src 'none'; sandbox",
+  'X-Content-Type-Options': 'nosniff',
+}
+
+export function applyUploadFileSecurityHeaders({ headers }: { headers: Headers }): Headers {
+  for (const [key, value] of Object.entries(UPLOAD_FILE_SECURITY_HEADERS)) {
+    headers.set(key, value)
+  }
+  return headers
+}
+
 /**
  * Custom upload `handlers` guard that runs before Payload's local filesystem fallback in `getFileHandler`.
  * - Rejects dot-files, subdirectory paths (`videos/foo.mp4`, `.tmp/...`), and non-regular files with HTTP 404.
@@ -350,7 +362,10 @@ export function createSafeUploadFileHandler(
 ): NonNullable<UploadConfig['handlers']>[number] {
   return (_req, args) => {
     if (!doesSafeUploadFileExist(staticDir, args.params.filename)) {
-      return Response.json({ errors: [{ message: 'Not Found' }] }, { status: 404 })
+      return Response.json(
+        { errors: [{ message: 'Not Found' }] },
+        { status: 404, headers: UPLOAD_FILE_SECURITY_HEADERS },
+      )
     }
   }
 }

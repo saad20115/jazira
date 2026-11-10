@@ -9,14 +9,57 @@ export async function waitForPendingEmails(): Promise<void> {
   }
 }
 
+export function resolveSmtpTransportConfig(rawEnv: NodeJS.ProcessEnv = process.env): {
+  host: string
+  port: number
+} {
+  const isProductionRuntime =
+    rawEnv.NODE_ENV === 'production' &&
+    rawEnv.NEXT_PHASE !== 'phase-production-build' &&
+    rawEnv.NEXT_PHASE !== 'phase-export' &&
+    rawEnv.NEXT_PHASE !== 'phase-production-compile'
+
+  const rawHost = rawEnv.SMTP_HOST?.trim()
+  const rawPort = rawEnv.SMTP_PORT?.trim()
+
+  if (isProductionRuntime) {
+    if (!rawHost || rawHost.toUpperCase().includes('CHANGE_ME')) {
+      throw new Error(
+        'SMTP_HOST must be explicitly set in production (silent fallback to 127.0.0.1 is forbidden).',
+      )
+    }
+    if (!rawPort || !/^\d+$/.test(rawPort)) {
+      throw new Error(
+        'SMTP_PORT must be explicitly set to a valid port (1-65535) in production (silent fallback to 1025 is forbidden).',
+      )
+    }
+    const parsedPort = Number.parseInt(rawPort, 10)
+    if (!Number.isInteger(parsedPort) || parsedPort < 1 || parsedPort > 65535) {
+      throw new Error(
+        'SMTP_PORT must be explicitly set to a valid port (1-65535) in production (silent fallback to 1025 is forbidden).',
+      )
+    }
+    return {
+      host: rawHost,
+      port: parsedPort,
+    }
+  }
+
+  return {
+    host: rawHost || '127.0.0.1',
+    port: rawPort ? Number(rawPort) : 1025,
+  }
+}
+
 export async function buildNonBlockingEmailAdapter(): Promise<EmailAdapter> {
+  const { host, port } = resolveSmtpTransportConfig(process.env)
   const innerAdapterFactory = await nodemailerAdapter({
     defaultFromAddress: process.env.SMTP_FROM_ADDRESS ?? 'no-reply@aljazira.co',
     defaultFromName: process.env.SMTP_FROM_NAME ?? 'Al Jazira for Imdad Smart Co.',
     skipVerify: true,
     transportOptions: {
-      host: process.env.SMTP_HOST ?? '127.0.0.1',
-      port: Number(process.env.SMTP_PORT ?? '1025'),
+      host,
+      port,
       pool: true,
       secure: false,
     },

@@ -36,6 +36,78 @@ function isPlaceholderSecret(value: string): boolean {
   )
 }
 
+function shannonEntropyBitsPerChar(value: string): number {
+  if (value.length === 0) {
+    return 0
+  }
+  const counts = new Map<string, number>()
+  for (const ch of value) {
+    counts.set(ch, (counts.get(ch) ?? 0) + 1)
+  }
+  let entropy = 0
+  for (const count of counts.values()) {
+    const p = count / value.length
+    entropy -= p * Math.log2(p)
+  }
+  // Finite-sample bias correction so short samples (48-64 chars) from a larger alphabet
+  // are not systematically underestimated by birthday collisions.
+  const finiteSampleCorrection = (counts.size - 1) / (value.length * Math.LN2)
+  return entropy + finiteSampleCorrection
+}
+
+const MIN_SECRET_ENTROPY_BITS = 256
+
+function hasSufficientSecretEntropy(value: string): boolean {
+  const trimmed = value.trim()
+  if (trimmed.length < 48) {
+    return false
+  }
+  const counts = new Map<string, number>()
+  for (const ch of trimmed) {
+    counts.set(ch, (counts.get(ch) ?? 0) + 1)
+  }
+  // Require at least 16 distinct characters
+  if (counts.size < 16) {
+    return false
+  }
+  // Reject any single character repeated 6+ times consecutively (e.g. 'a'.repeat(64) or 'A'.repeat(48) + ...)
+  if (/(.)\1{5,}/.test(trimmed)) {
+    return false
+  }
+  // Reject if a single character accounts for more than 25% of the secret
+  const maxCharCount = Math.max(...counts.values())
+  if (maxCharCount / trimmed.length > 0.25) {
+    return false
+  }
+  // Reject pure periodic repetitions (e.g. '0123456789abcdef'.repeat(4))
+  if ((trimmed + trimmed).slice(1, -1).includes(trimmed)) {
+    return false
+  }
+  // R1-5: Require at least 256 estimated bits of entropy (length * bits per character >= 256, equivalent to 32 random bytes)
+  const estimatedEntropyBits = trimmed.length * shannonEntropyBitsPerChar(trimmed)
+  return estimatedEntropyBits >= MIN_SECRET_ENTROPY_BITS
+}
+
+const FORBIDDEN_SUPERUSER_DB_ROLES = new Set([
+  'postgres',
+  'postgresql',
+  'root',
+  'superuser',
+  'rdsadmin',
+  'avnadmin',
+  'aljazira_pg_super',
+])
+
+function isSuperuserDbRoleInUri(connectionUri: string): boolean {
+  try {
+    const parsed = new URL(connectionUri)
+    const username = decodeURIComponent(parsed.username).trim().toLowerCase()
+    return !username || FORBIDDEN_SUPERUSER_DB_ROLES.has(username)
+  } catch {
+    return true
+  }
+}
+
 function secretFieldSchema(varName: 'PAYLOAD_SECRET' | 'IP_HASH_SALT') {
   return z
     .string({
@@ -48,6 +120,10 @@ function secretFieldSchema(varName: 'PAYLOAD_SECRET' | 'IP_HASH_SALT') {
     .refine(
       (val) => !isPlaceholderSecret(val),
       `${varName} must not use a placeholder value from .env.example. Generate a real secret with: openssl rand -base64 48`,
+    )
+    .refine(
+      (val) => hasSufficientSecretEntropy(val),
+      `${varName} has insufficient entropy (repeated characters or low diversity). Generate a high-entropy secret with: openssl rand -base64 48`,
     )
 }
 
@@ -89,6 +165,35 @@ const jobsAutoRunSchema = z
   )
   .transform((val) => val === 'true' || val === '1')
 
+const smtpHostSchema = z
+  .string({
+    error:
+      'SMTP_HOST must be explicitly set in production (silent fallback to 127.0.0.1 is forbidden).',
+  })
+  .trim()
+  .min(
+    1,
+    'SMTP_HOST must be explicitly set in production (silent fallback to 127.0.0.1 is forbidden).',
+  )
+  .refine(
+    (val) => !val.toUpperCase().includes('CHANGE_ME'),
+    'SMTP_HOST must not contain placeholder values.',
+  )
+
+const smtpPortSchema = z
+  .string({
+    error: 'SMTP_PORT must be explicitly set in production (silent fallback to 1025 is forbidden).',
+  })
+  .trim()
+  .refine((val) => {
+    if (!/^\d+$/.test(val)) {
+      return false
+    }
+    const port = Number.parseInt(val, 10)
+    return Number.isInteger(port) && port >= 1 && port <= 65535
+  }, 'SMTP_PORT must be a valid TCP port integer between 1 and 65535.')
+  .transform((val) => Number.parseInt(val, 10))
+
 const envSchema = z
   .object({
     DATABASE_URL: z
@@ -101,6 +206,10 @@ const envSchema = z
           (val.startsWith('postgresql://') || val.startsWith('postgres://')) &&
           !val.includes('CHANGE_ME'),
         'DATABASE_URL must be a valid PostgreSQL URI (postgresql://...) and must not contain placeholder credentials.',
+      )
+      .refine(
+        (val) => !isSuperuserDbRoleInUri(val),
+        'DATABASE_URL must use a least-privilege application role and must not connect as a PostgreSQL superuser role (e.g. postgres or aljazira_pg_super).',
       ),
     SERVER_URL: z
       .string({
@@ -120,6 +229,8 @@ const envSchema = z
     VIDEOS_DIR: storageDirSchema('VIDEOS_DIR'),
     UPLOAD_TMP_DIR: storageDirSchema('UPLOAD_TMP_DIR'),
     PAYLOAD_JOBS_AUTORUN: jobsAutoRunSchema,
+    SMTP_HOST: smtpHostSchema,
+    SMTP_PORT: smtpPortSchema,
   })
   .refine((data) => data.PAYLOAD_SECRET !== data.IP_HASH_SALT, {
     path: ['IP_HASH_SALT'],
@@ -158,6 +269,8 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
   const rawVideosDir = rawEnv.VIDEOS_DIR?.trim()
   const rawUploadTmpDir = rawEnv.UPLOAD_TMP_DIR?.trim()
   const rawJobsAutoRun = rawEnv.PAYLOAD_JOBS_AUTORUN?.trim()
+  const rawSmtpHost = rawEnv.SMTP_HOST?.trim()
+  const rawSmtpPort = rawEnv.SMTP_PORT?.trim()
   const isProductionRuntime =
     rawEnv.NODE_ENV === 'production' &&
     rawEnv.NEXT_PHASE !== 'phase-production-build' &&
@@ -179,6 +292,8 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
       : isProductionRuntime
         ? undefined
         : 'true',
+    SMTP_HOST: rawSmtpHost ? rawSmtpHost : isProductionRuntime ? undefined : '127.0.0.1',
+    SMTP_PORT: rawSmtpPort ? rawSmtpPort : isProductionRuntime ? undefined : '1025',
   })
 
   if (!result.success) {
@@ -200,9 +315,11 @@ export function parseEnv(rawEnv: Record<string, string | undefined>): Env {
 const BUILD_PHASE_FALLBACK_ENV: Record<string, string> = {
   DATABASE_URL: 'postgresql://build_only:build_only@127.0.0.1:5432/build_only',
   SERVER_URL: 'http://localhost:3000',
-  PAYLOAD_SECRET: 'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-0001',
-  IP_HASH_SALT: 'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-00002',
+  PAYLOAD_SECRET: 'build-phase-only-ephemeral-payload-secret-not-used-at-runtime-x7K9mP2qR4wZ8',
+  IP_HASH_SALT: 'build-phase-only-ephemeral-ip-hash-salt-not-used-at-runtime-v3N8bH5kW6pL9',
   PAYLOAD_JOBS_AUTORUN: 'false',
+  SMTP_HOST: '127.0.0.1',
+  SMTP_PORT: '1025',
 }
 
 function loadEnv(): Env {
@@ -219,6 +336,8 @@ function loadEnv(): Env {
       UPLOAD_TMP_DIR: process.env.UPLOAD_TMP_DIR || path.resolve(os.tmpdir(), 'aljazira-uploads'),
       PAYLOAD_JOBS_AUTORUN:
         process.env.PAYLOAD_JOBS_AUTORUN || BUILD_PHASE_FALLBACK_ENV.PAYLOAD_JOBS_AUTORUN,
+      SMTP_HOST: process.env.SMTP_HOST || BUILD_PHASE_FALLBACK_ENV.SMTP_HOST,
+      SMTP_PORT: process.env.SMTP_PORT || BUILD_PHASE_FALLBACK_ENV.SMTP_PORT,
     })
   }
 

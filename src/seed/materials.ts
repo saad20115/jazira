@@ -159,24 +159,82 @@ export const SEED_ADMIN_USER: User = {
  * 3. First-run baseline seed is refused when `NODE_ENV === 'production'` unless `--force-production`
  *    is passed explicitly.
  */
+const LOOPBACK_DB_HOSTS = new Set(['127.0.0.1', 'localhost', '::1', '[::1]'])
+
+function assertSafeReseedDatabaseUrl(databaseUrl: string | undefined): void {
+  if (!databaseUrl || !databaseUrl.trim()) {
+    throw new Error(
+      '[seed] Refusing to run --reseed when DATABASE_URL is unset. --reseed requires a loopback host and a database name ending in _dev, _test, or _e2e.',
+    )
+  }
+  let parsed: URL
+  try {
+    parsed = new URL(databaseUrl)
+  } catch {
+    throw new Error('[seed] Refusing to run --reseed: DATABASE_URL is not a valid URL.')
+  }
+  const hostname = parsed.hostname.trim().toLowerCase()
+  const dbName = decodeURIComponent(parsed.pathname.replace(/^\/+/, '')).trim()
+  if (!LOOPBACK_DB_HOSTS.has(hostname)) {
+    throw new Error(
+      `[seed] Refusing to run --reseed against non-loopback database host "${hostname}". --reseed is only allowed against a loopback host (127.0.0.1, localhost, ::1).`,
+    )
+  }
+  if (!/_(dev|test|e2e)$/.test(dbName)) {
+    throw new Error(
+      `[seed] Refusing to run --reseed against database "${dbName}". --reseed requires a database name matching /_(dev|test|e2e)$/.`,
+    )
+  }
+}
+
 export function assertSeedEnvironmentAllowed(
-  nodeEnv: string | undefined = process.env.NODE_ENV,
-  argv: readonly string[] = process.argv,
-  reseedOption?: boolean,
+  ...callArgs: [
+    nodeEnv?: string | undefined,
+    argv?: readonly string[],
+    reseedOption?: boolean,
+    databaseUrl?: string | undefined,
+  ]
 ): void {
   if (typeof window !== 'undefined') {
     throw new Error(SEED_SERVER_ONLY_SENTINEL)
   }
+  const nodeEnv = callArgs.length >= 1 ? callArgs[0] : process.env.NODE_ENV
+  const argv = callArgs[1] ?? process.argv
+  const reseedOption = callArgs[2]
+  const databaseUrl = callArgs.length >= 4 ? callArgs[3] : process.env.DATABASE_URL
+  const normalizedNodeEnv = nodeEnv?.trim()
+  if (!normalizedNodeEnv) {
+    throw new Error(
+      '[seed] Refusing to run seed when NODE_ENV is unset. Set NODE_ENV=development or NODE_ENV=test.',
+    )
+  }
   const hasReseedFlag = reseedOption === true || argv.includes('--reseed')
-  if (nodeEnv === 'production' && hasReseedFlag) {
+  if (normalizedNodeEnv === 'production' && hasReseedFlag) {
     throw new Error(
       '[seed] Refusing to run --reseed when NODE_ENV=production. --reseed is a development-only flag and is never allowed in production.',
     )
   }
-  if (nodeEnv === 'production' && !argv.includes('--force-production')) {
+  if (normalizedNodeEnv === 'production' && !argv.includes('--force-production')) {
     throw new Error(
       '[seed] Refusing to run seed when NODE_ENV=production unless --force-production is passed explicitly.',
     )
+  }
+  if (
+    normalizedNodeEnv !== 'development' &&
+    normalizedNodeEnv !== 'test' &&
+    normalizedNodeEnv !== 'production'
+  ) {
+    throw new Error(
+      `[seed] Refusing to run seed when NODE_ENV="${normalizedNodeEnv}". Allowed values are 'development' or 'test' (or 'production' with --force-production).`,
+    )
+  }
+  if (hasReseedFlag) {
+    if (!argv.includes('--i-understand-this-deletes-content')) {
+      throw new Error(
+        '[seed] Refusing to run --reseed without --i-understand-this-deletes-content confirmation flag.',
+      )
+    }
+    assertSafeReseedDatabaseUrl(databaseUrl)
   }
 }
 
@@ -1142,6 +1200,7 @@ export async function seedMaterialsAndBrands(
   payload: Payload,
   options?: {
     argv?: readonly string[]
+    databaseUrl?: string
     nodeEnv?: string
     rawRows?: readonly RawMaterialSeedRow[]
     reseed?: boolean
@@ -1151,7 +1210,12 @@ export async function seedMaterialsAndBrands(
   const effectiveArgv = options?.argv ?? process.argv
   const reseed = options?.reseed === true || effectiveArgv.includes('--reseed')
 
-  assertSeedEnvironmentAllowed(effectiveNodeEnv, effectiveArgv, reseed)
+  assertSeedEnvironmentAllowed(
+    effectiveNodeEnv,
+    effectiveArgv,
+    reseed,
+    options?.databaseUrl ?? process.env.DATABASE_URL,
+  )
 
   const [existingBrandsCountRes, existingMaterialsCountRes] = await Promise.all([
     payload.count({

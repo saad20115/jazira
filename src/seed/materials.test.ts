@@ -58,11 +58,62 @@ describe('P4-T1 materials + brands seed plan (unit)', () => {
     }).not.toThrow()
 
     expect(() => {
+      assertSeedEnvironmentAllowed('test', ['node', 'scripts/seed.ts'])
+    }).not.toThrow()
+
+    // D-14 / E-09: Fail closed when NODE_ENV is unset, empty, or not development/test
+    expect(() => {
+      assertSeedEnvironmentAllowed(undefined, ['node', 'scripts/seed.ts'])
+    }).toThrow(/NODE_ENV/)
+
+    expect(() => {
+      assertSeedEnvironmentAllowed('', ['node', 'scripts/seed.ts'])
+    }).toThrow(/NODE_ENV/)
+
+    expect(() => {
+      assertSeedEnvironmentAllowed('staging', ['node', 'scripts/seed.ts'])
+    }).toThrow(/NODE_ENV/)
+
+    // D-14 / E-09: Require --i-understand-this-deletes-content in addition to --reseed
+    expect(() => {
       assertSeedEnvironmentAllowed('development', ['node', 'scripts/seed.ts', '--reseed'])
+    }).toThrow(/--i-understand-this-deletes-content/)
+
+    // D-14 / E-09: Verify DB host is loopback and DB name matches _(dev|test|e2e)$ before any reseed
+    expect(() => {
+      assertSeedEnvironmentAllowed(
+        'development',
+        ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        true,
+        'postgresql://aljazira_app:pass@127.0.0.1:5434/aljazira_prod',
+      )
+    }).toThrow(/aljazira_prod/)
+
+    expect(() => {
+      assertSeedEnvironmentAllowed(
+        'development',
+        ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        true,
+        'postgresql://aljazira_app:pass@db.example.com:5432/aljazira_dev',
+      )
+    }).toThrow(/loopback/i)
+
+    expect(() => {
+      assertSeedEnvironmentAllowed(
+        'development',
+        ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        true,
+        'postgresql://aljazira_app:pass@127.0.0.1:5434/aljazira_dev',
+      )
     }).not.toThrow()
 
     expect(() => {
-      assertSeedEnvironmentAllowed('test', ['node', 'scripts/seed.ts'])
+      assertSeedEnvironmentAllowed(
+        'test',
+        ['node', 'scripts/seed.ts', '--reseed', '--i-understand-this-deletes-content'],
+        true,
+        'postgresql://aljazira_app:pass@localhost:5434/aljazira_test',
+      )
     }).not.toThrow()
   })
 

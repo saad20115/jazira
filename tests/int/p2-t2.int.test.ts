@@ -4,10 +4,9 @@ import { getPayload, type Payload } from 'payload'
 import sharp from 'sharp'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-process.env.DATABASE_URL =
-  process.env.TEST_DATABASE_URL ??
-  process.env.DATABASE_URL ??
-  'postgresql://aljazira_app:dev_only_local_pg_password_change_me@127.0.0.1:5434/aljazira_test'
+import { assertTestDatabaseIsolation } from './_helpers/testDbIsolation'
+
+process.env.DATABASE_URL = assertTestDatabaseIsolation()
 process.env.PAYLOAD_SECRET = 'test_payload_secret_with_at_least_forty_eight_random_bytes_1234567890'
 process.env.IP_HASH_SALT = 'test_ip_hash_salt_with_at_least_forty_eight_random_bytes_1234567890ab'
 process.env.SERVER_URL = 'http://localhost:3000'
@@ -144,7 +143,7 @@ function createPolyglotMp4BufferWithFreeBoxScript(): Buffer {
   return Buffer.concat([ftypBox, freeBox, mdatBox])
 }
 
-describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
+describe('P2-T2 integration suite (videos, brands, stats, materials)', { shuffle: false }, () => {
   beforeAll(async () => {
     const mediaDir = process.env.MEDIA_DIR ?? ''
     const videosDir = process.env.VIDEOS_DIR ?? ''
@@ -369,6 +368,19 @@ describe('P2-T2 integration suite (videos, brands, stats, materials)', () => {
       payloadFields: { title: 'Disguised HTML' },
     })
     expect(disguisedHtmlMp4.status).toBe(400)
+
+    // 5. A-02: Editor POST /api/videos with JSON { url, filename, title } (no multipart file) returns 400
+    const jsonVideoUploadBypassAttempt = await callJsonApi({
+      method: 'POST',
+      slug: ['videos'],
+      cookie: `payload-token=${editorToken}`,
+      body: {
+        url: 'http://127.0.0.1:9999/ssrf-attempt.mp4',
+        filename: 'ssrf-attempt.mp4',
+        title: 'SSRF video attempt without multipart file',
+      },
+    })
+    expect(jsonVideoUploadBypassAttempt.status).toBe(400)
   }, 60_000)
 
   it('allows editor CRUD on stats, brands, and materials, validates brand website scheme, and blocks deleting a brand referenced by materials', async () => {

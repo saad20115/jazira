@@ -9,6 +9,7 @@ import {
   type GlobalSlug,
   type SanitizedCollectionConfig,
   type SanitizedGlobalConfig,
+  ValidationError,
   type Where,
 } from 'payload'
 
@@ -22,6 +23,7 @@ import {
 import { createPublicAPIError } from '../security/apiError'
 import {
   ALLOWED_IMAGE_MIME_TYPES,
+  applyUploadFileSecurityHeaders,
   createSafeUploadFileHandler,
   doesSafeUploadFileExist,
   validateAndSanitizeMediaFile,
@@ -33,10 +35,44 @@ type ActiveBeforeOperationArg = Exclude<
   { operation: 'read' | 'readDistinct' }
 >
 
+function hasForbiddenUploadSourceFields(candidate: unknown): boolean {
+  if (!candidate || typeof candidate !== 'object') {
+    return false
+  }
+  const record = candidate as Record<string, unknown>
+  return record.url !== undefined || record.filename !== undefined
+}
+
 const validateUploadBeforeOperation: CollectionBeforeOperationHook = async (rawArg) => {
   const { args, operation, req } = rawArg as ActiveBeforeOperationArg
-  if ((operation === 'create' || operation === 'update') && req.file) {
+  if (operation === 'create') {
+    if (!req.file) {
+      throw new ValidationError({
+        errors: [
+          {
+            path: 'file',
+            message: 'A file upload is required; JSON { url, filename } uploads are forbidden.',
+          },
+        ],
+      })
+    }
     await validateAndSanitizeMediaFile(req.file)
+  } else if (operation === 'update') {
+    if (req.file) {
+      await validateAndSanitizeMediaFile(req.file)
+    } else if (
+      hasForbiddenUploadSourceFields((args as { data?: unknown }).data) ||
+      hasForbiddenUploadSourceFields(req.data)
+    ) {
+      throw new ValidationError({
+        errors: [
+          {
+            path: 'file',
+            message: 'JSON { url, filename } upload updates are forbidden.',
+          },
+        ],
+      })
+    }
   }
   return args
 }
@@ -608,6 +644,8 @@ export const Media: CollectionConfig = withImmutableCreatedAt({
     // Stored outside public/ at the validated absolute MEDIA_DIR path (default <cwd>/media in dev)
     staticDir: env.MEDIA_DIR,
     mimeTypes: [...ALLOWED_IMAGE_MIME_TYPES],
+    pasteURL: false,
+    modifyResponseHeaders: applyUploadFileSecurityHeaders,
     handlers: [createSafeUploadFileHandler(env.MEDIA_DIR)],
     focalPoint: true,
     formatOptions: {
