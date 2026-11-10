@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { isAdmin } from './access'
+import { lockDownJobStatsGlobal } from './access/jobStatsGlobal'
 import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
 import { Media } from './collections/Media'
@@ -32,6 +33,7 @@ import {
   SiteSettings,
 } from './globals'
 import { notifyQuoteRequestTask } from './jobs/notifyQuoteRequest'
+import { purgeExpiredQuoteRequestsTask } from './jobs/purgeExpiredQuoteRequests'
 import { shouldAutoRunJobs } from './jobs/shouldAutoRun'
 import { ensurePublicErrorMessageAfterError } from './security/apiError'
 import { buildNonBlockingEmailAdapter } from './security/emailAdapter'
@@ -43,7 +45,7 @@ const dirname = path.dirname(filename)
 const isAdminJobAccess = ({ req }: { req: Parameters<typeof isAdmin>[0]['req'] }): boolean =>
   isAdmin({ req }) === true
 
-export default buildConfig({
+const config = buildConfig({
   serverURL: env.SERVER_URL,
   cors: [env.SERVER_URL],
   csrf: [env.SERVER_URL],
@@ -135,7 +137,7 @@ export default buildConfig({
       },
     ],
     shouldAutoRun: () => shouldAutoRunJobs(),
-    tasks: [notifyQuoteRequestTask],
+    tasks: [notifyQuoteRequestTask, purgeExpiredQuoteRequestsTask],
   },
   upload: {
     limits: {
@@ -173,3 +175,6 @@ export default buildConfig({
     }),
   ],
 })
+
+// P5-T2: the scheduler's system global gets explicit deny-all access (Z1).
+export default config.then(lockDownJobStatsGlobal)

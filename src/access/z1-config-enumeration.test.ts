@@ -247,6 +247,15 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
 
     // 5. Globals: site-settings & navigation (public read, editor/admin update; site-settings admin update only per content model)
     for (const g of config.globals) {
+      // P5-T2: the scheduler's system global (added by Payload when a task has a `schedule`)
+      // is denied to every caller, for read and update alike; the scheduler uses the DB adapter.
+      if (g.slug === 'payload-jobs-stats') {
+        for (const args of [anonArgs, editorOtherArgs, adminArgs]) {
+          expect(await g.access.read(args), `global:${g.slug}.read`).toBe(false)
+          expect(await g.access.update(args), `global:${g.slug}.update`).toBe(false)
+        }
+        continue
+      }
       const anonRead = await g.access.read(anonArgs)
       const editorRead = await g.access.read(editorOtherArgs)
       const adminRead = await g.access.read(adminArgs)

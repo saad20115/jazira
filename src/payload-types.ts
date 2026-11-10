@@ -116,6 +116,7 @@ export interface Config {
     'projects-page': ProjectsPage;
     'contact-page': ContactPage;
     'privacy-page': PrivacyPage;
+    'payload-jobs-stats': PayloadJobsStat;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -126,6 +127,7 @@ export interface Config {
     'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'privacy-page': PrivacyPageSelect<false> | PrivacyPageSelect<true>;
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
   };
   locale: 'ar' | 'en';
   widgets: {
@@ -135,6 +137,7 @@ export interface Config {
   jobs: {
     tasks: {
       notifyQuoteRequest: TaskNotifyQuoteRequest;
+      purgeExpiredQuoteRequests: TaskPurgeExpiredQuoteRequests;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -766,7 +769,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'notifyQuoteRequest' | 'schedulePublish';
+        taskSlug: 'inline' | 'notifyQuoteRequest' | 'purgeExpiredQuoteRequests' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -799,10 +802,19 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'notifyQuoteRequest' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'notifyQuoteRequest' | 'purgeExpiredQuoteRequests' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1221,6 +1233,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  meta?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1268,6 +1281,10 @@ export interface SiteSetting {
    * Show the Arabic version of the website to visitors
    */
   arabicEnabled?: boolean | null;
+  /**
+   * While off, the daily job is a dry run: it logs how many old requests it would delete and deletes nothing.
+   */
+  quoteRetentionDeleteEnabled?: boolean | null;
   /**
    * Official company name in Arabic and English used across header, footer, and metadata.
    */
@@ -2109,10 +2126,29 @@ export interface PrivacyPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: number;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   arabicEnabled?: T;
+  quoteRetentionDeleteEnabled?: T;
   companyName?: T;
   tagline?: T;
   email?: T;
@@ -2798,6 +2834,16 @@ export interface PrivacyPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -2816,6 +2862,19 @@ export interface TaskNotifyQuoteRequest {
   };
   output: {
     handled?: boolean | null;
+    outcome?: string | null;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskPurgeExpiredQuoteRequests".
+ */
+export interface TaskPurgeExpiredQuoteRequests {
+  input?: unknown;
+  output: {
+    dryRun?: boolean | null;
+    matched?: number | null;
+    deleted?: number | null;
   };
 }
 /**
