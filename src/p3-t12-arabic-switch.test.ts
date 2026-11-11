@@ -70,6 +70,8 @@ vi.mock('next/navigation', () => ({
     throw new Error(`NEXT_REDIRECT:${url}`)
   },
   usePathname: () => '/en',
+  // P2-T7 §3: the layout renders `LivePreviewRefresh` in a staff draft preview; it only needs a router.
+  useRouter: () => ({ refresh: () => undefined }),
 }))
 
 vi.mock('@/styles/font-preload', () => ({
