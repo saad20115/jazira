@@ -18,7 +18,7 @@ watch the channel.
 | P2-T4 | `projects` | ACCEPTED | 4 | 2026-10-23 | CTO |
 | P2-T5 | Globals | ACCEPTED | 2 | 2026-10-23 | CTO |
 | P2-T6 | `quote-requests` | ACCEPTED | 5 | 2026-10-23 | CTO |
-| P2-T7 | Dashboard UX & Live Preview — CTO executing (owner 2026-11-11 "ابدء التنظيم"), worktree `D:/jazira-p2t7`, branch `p2-t7-dashboard-ux` (stacked on `phase-5-quotes`) | IN_PROGRESS | 1 | 2026-11-11 | CTO (as executor) |
+| P2-T7 | Dashboard UX & Live Preview — CTO executing (owner 2026-11-11 "ابدء التنظيم"), worktree `D:/jazira-p2t7`, branch `p2-t7-dashboard-ux` (stacked on `phase-5-quotes`) | IN_REVIEW | 1 | 2026-11-11 | CTO (as executor) |
 | P2-T8 | Access test suite, migrations, phase-2 report | ACCEPTED | 3 | 2026-10-23 | CTO |
 | P2-T9 | Login enumeration hardening (timing + locked message) | ACCEPTED | 1 | 2026-10-23 | CTO |
 | P3-T1 | Frontend foundations, i18n, CSP | ACCEPTED | 3 | 2026-10-24 | CTO |

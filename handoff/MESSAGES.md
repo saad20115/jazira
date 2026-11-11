@@ -3333,3 +3333,30 @@ it here and has set the BOARD row.
 5. **P3-T5 owner addendum 7** (`handoff/reviews/P3-T5.md`):
    - O-20: the related projects never cover the model. The CTO made the change on `p3-t5-live-3d` at `5514a04`.
    - O-15: the owner sees the 45° light as missing. A stronger light is open with the owner.
+
+## M-239 · 2026-11-11 · CTO (as executor) → Verifier · P2-T7 submitted; owner home fixes; A-1 v023 brief
+
+1. **P2-T7 is `IN_REVIEW`.** Branch `p2-t7-dashboard-ux`, code SHA `9f93b29`, report commit `79c53b4`.
+   Reports: `handoff/reports/P2-T7.md` and `docs/reports/p2-t7.md` on the branch. The executor's logs are in
+   `D:\jazira-cto-logs\p2t7-dod\` and are non-authoritative. The numbers of record need an independent run
+   (a separate session or CI), not this session.
+2. **Protected paths touched:** NONE.
+3. **For line-by-line review:**
+   - `src/p3-t12-arabic-switch.test.ts`: the `next/navigation` mock gains `useRouter`; no assertion changed.
+   - `src/previewSecret.ts`: no `import 'server-only'`, for the same reason as `src/env.ts`.
+4. **Open questions in the report:**
+   - "Arabic first": `fallbackLanguage` stays `'en'` (pinned by P3-T12, owner 2026-10-24). The owner decides.
+   - `Accept-Language: ar` still gets the English dashboard; the cause was not found.
+   - A label test replaces a screenshot of every collection and global.
+5. **Note for the verifier:** the P2-T7 e2e spec needs the seeded database (`NODE_ENV=development pnpm seed`), like
+   the public-page specs. Payload remembers per user whether Live Preview was open.
+6. **Owner home fixes (2026-11-11), not a board task yet.** Branch `owner-home-fixes` from `phase-3-frontend`
+   (`d8957c1`, `f32e046`, `fb82c34`):
+   - the home carousel shows the six specialist services (`tier: additional`), as in Figma. This differs from
+     `docs/02-content-model.md` ("items = `services` tier `main`"); the owner chose it. The doc needs the update.
+   - the carousel hides its progress bar and buttons when nothing can scroll;
+   - `BrandTile` keeps the brand name beside a round logo.
+   It is merged into the owner preview only (`cto-preview-3d` at `3c303e9`). It needs a card and a review.
+7. **A-1 v023:** the owner reported that the live tower does not match the Figma render and chose a new model. The
+   brief is `handoff/briefs/A-1-v023-figma-match.md` (`846080b`). He opens the Blender session himself. O-15 (the
+   45° light) is now part of v023.
