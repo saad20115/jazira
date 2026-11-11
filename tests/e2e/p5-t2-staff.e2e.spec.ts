@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+
 import { type Browser, expect, type Page, test } from '@playwright/test'
 
 import { ensureE2EAdminToken } from './global-setup'
@@ -107,9 +109,13 @@ test.describe('P5-T2 — staff work a quote request in the dashboard', () => {
     await admin.goto(`${baseURL}/admin/collections/quote-requests`, { waitUntil: 'networkidle' })
     await expect(admin.locator('[data-testid="quote-requests-filter-bar"]')).toBeVisible()
 
-    await admin.locator('[data-testid="quote-filter-mine"]').click()
+    const mine = admin.locator('[data-testid="quote-filter-mine"]')
+    await expect(mine).toHaveAttribute('aria-pressed', 'false')
+    await mine.click()
+    await expect(mine).toHaveAttribute('aria-pressed', 'true')
     await expect.poll(() => decodeURIComponent(admin.url())).toContain('where[assignedTo][equals]')
-    await admin.locator('[data-testid="quote-filter-mine"]').click()
+    await mine.click()
+    await expect(mine).toHaveAttribute('aria-pressed', 'false')
     await expect.poll(() => decodeURIComponent(admin.url())).not.toContain('[assignedTo][equals]')
 
     const exportLink = admin.locator('[data-testid="quote-export-csv"]')
@@ -117,10 +123,10 @@ test.describe('P5-T2 — staff work a quote request in the dashboard', () => {
     const href = await exportLink.getAttribute('href')
     expect(href).toContain('/api/quote-requests/export-csv')
 
-    const response = await admin.context().request.get(new URL(href ?? '', baseURL).toString())
-    expect(response.status()).toBe(200)
-    expect(response.headers()['content-type']).toBe('text/csv; charset=utf-8')
-    const bytes = await response.body()
+    // Click it like a person does: the browser sends the same-origin request with the session cookie.
+    const [download] = await Promise.all([admin.waitForEvent('download'), exportLink.click()])
+    expect(download.suggestedFilename()).toMatch(/^quote-requests-.*\.csv$/)
+    const bytes = await readFile(await download.path())
     expect([...bytes.subarray(0, 3)]).toEqual([0xef, 0xbb, 0xbf])
     const text = bytes.subarray(3).toString('utf8')
     expect(text.split('\r\n')[0]).toContain('Request ID')

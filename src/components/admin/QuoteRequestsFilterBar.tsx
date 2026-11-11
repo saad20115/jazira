@@ -1,7 +1,8 @@
 'use client'
 
-import { useAuth, useConfig, useTranslation } from '@payloadcms/ui'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useAuth, useConfig, useListQuery, useTranslation } from '@payloadcms/ui'
+import { useSearchParams } from 'next/navigation'
+import type { Where } from 'payload'
 import React from 'react'
 
 import { QUOTE_STATUS_PILL_STYLES, type QuoteRequestStatusValue } from './QuoteStatusPillCell'
@@ -17,9 +18,10 @@ const STATUS_OPTIONS: readonly QuoteRequestStatusValue[] = [
 export const QuoteRequestsFilterBar: React.FC = () => {
   const { i18n } = useTranslation()
   const isEnglish = i18n.language === 'en'
-  const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
+  // The list keeps its own copy of the query and writes it back into the URL. Changing the filter
+  // through that copy (not by pushing a new URL) is what lets a cleared filter stay cleared.
+  const { query, refineListData } = useListQuery()
 
   const activeStatus = searchParams.get('where[status][equals]') ?? ''
   const activeAssignedExists = searchParams.get('where[assignedTo][exists]') ?? ''
@@ -41,17 +43,30 @@ export const QuoteRequestsFilterBar: React.FC = () => {
   const exportHref = `${config.serverURL}${config.routes.api}/quote-requests/export-csv${exportQueryString ? `?${exportQueryString}` : ''}`
 
   const applyFilter = (updates: Record<string, string | null>) => {
-    const next = new URLSearchParams(searchParams.toString())
+    const where = new Map<string, unknown>(Object.entries(query.where ?? {}))
     for (const [key, val] of Object.entries(updates)) {
+      const match = /^where\[(\w+)\]\[(\w+)\]$/.exec(key)
+      const field = match?.[1]
+      const operator = match?.[2]
+      if (field === undefined || operator === undefined) {
+        continue
+      }
+      const current = where.get(field)
+      const constraint = new Map<string, unknown>(
+        typeof current === 'object' && current !== null ? Object.entries(current) : [],
+      )
       if (val === null || val === '') {
-        next.delete(key)
+        constraint.delete(operator)
       } else {
-        next.set(key, val)
+        constraint.set(operator, val)
+      }
+      if (constraint.size === 0) {
+        where.delete(field)
+      } else {
+        where.set(field, Object.fromEntries(constraint))
       }
     }
-    next.set('page', '1')
-    const qs = next.toString()
-    router.push(qs ? `${pathname}?${qs}` : pathname)
+    void refineListData({ where: Object.fromEntries(where) as Where, page: 1 })
   }
 
   const setDateDaysAgo = (days: number | null) => {
@@ -225,6 +240,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           <button
             type="button"
             data-testid="quote-filter-mine"
+            aria-pressed={activeMine}
             onClick={() => {
               applyFilter({
                 'where[assignedTo][exists]': null,
