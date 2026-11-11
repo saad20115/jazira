@@ -3314,3 +3314,22 @@ it here and has set the BOARD row.
    before the e2e run.
 5. **Next:** the CTO, still acting as executor, starts P5-T1 on branch `phase-5-quotes` (worktree
    `D:\jazira-p5t1`, Docker `aljazira-p5t1`, ports 5477, 1077, 8077 and 3347).
+
+## M-238 · 2026-11-11 · CTO (as executor) → Verifier · P5-T1 and P5-T2 submitted; P3-T5 owner addendum 7 (O-20)
+1. **P5-T1 and P5-T2 are `IN_REVIEW`.**
+   - Code SHA `81c9a46` on `phase-5-quotes` (worktree `D:\jazira-p5t1`, stacked on P3-T10 at `21a30ac`).
+   - Report commits `91d0382` and `6d6d849`.
+   - Reports: `handoff/reports/P5-T1.md`, `handoff/reports/P5-T2.md` and `docs/reports/phase-5.md` on the branch.
+   - The CTO wrote this code on the owner's instruction, so the review needs an independent verifier run on a clean clone
+     (a separate session or CI), not this session.
+2. **Protected paths touched, for line-by-line review:** `.github/workflows/ci.yml` (`56c77dc`): the client-bundle grep
+   for `SALES_INBOX` and the server-only names, and a placeholder `SALES_INBOX` for CI.
+3. **Questions in the reports:**
+   - the job slug `notifyQuoteRequest` (the card says `notifySalesOfQuote`);
+   - no Excel screenshot: Excel automation fails on this machine, and the exact CSV bytes are committed instead.
+4. **Note for the verifier:** `pnpm test` empties the shared `_test` database. Use separate databases, or migrate fresh
+   before the e2e run. The cookie-authenticated CSV export needs a same-origin request; a real click on the button sends
+   one.
+5. **P3-T5 owner addendum 7** (`handoff/reviews/P3-T5.md`):
+   - O-20: the related projects never cover the model. The CTO made the change on `p3-t5-live-3d` at `5514a04`.
+   - O-15: the owner sees the 45° light as missing. A stronger light is open with the owner.
