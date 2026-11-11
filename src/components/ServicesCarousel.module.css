@@ -228,7 +228,7 @@
 }
 
 /* Owner 2026-11-11: nothing to scroll to, so no progress bar and no pause/previous/next buttons. */
-.progressTrack[hidden],
-.arrowPair[hidden] {
+.progressTrack.controlHidden,
+.arrowPair.controlHidden {
   display: none;
 }
