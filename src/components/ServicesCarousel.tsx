@@ -447,15 +447,22 @@ export function ServicesCarousel({
       <div className={styles.controlsRow}>
         <div
           ref={progressTrackRef}
-          className={styles.progressTrack}
+          className={
+            hasNothingToScroll
+              ? `${styles.progressTrack} ${styles.controlHidden}`
+              : styles.progressTrack
+          }
           aria-hidden="true"
-          hidden={hasNothingToScroll}
         >
           <div ref={progressThumbRef} className={styles.progressThumb} data-carousel-thumb="true" />
         </div>
 
         <div className={styles.actionsGroup}>
-          <div className={styles.arrowPair} hidden={hasNothingToScroll}>
+          <div
+            className={
+              hasNothingToScroll ? `${styles.arrowPair} ${styles.controlHidden}` : styles.arrowPair
+            }
+          >
             <button
               type="button"
               onClick={() => {
