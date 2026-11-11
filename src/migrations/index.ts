@@ -10,6 +10,7 @@ import * as migration_20261024_195628_p3_t12_site_settings_arabic_enabled from '
 import * as migration_20261025_002404_p4_t2_projects_review_fields from './20261025_002404_p4_t2_projects_review_fields'
 import * as migration_20261101_133828_p4_t2_r2_media_placeholder from './20261101_133828_p4_t2_r2_media_placeholder'
 import * as migration_20261110_134937_p5_t1_quote_answers_rate_limits from './20261110_134937_p5_t1_quote_answers_rate_limits'
+import * as migration_20261111_065443_p5_t2_jobs_retention from './20261111_065443_p5_t2_jobs_retention'
 
 export const migrations = [
   {
@@ -71,5 +72,10 @@ export const migrations = [
     up: migration_20261110_134937_p5_t1_quote_answers_rate_limits.up,
     down: migration_20261110_134937_p5_t1_quote_answers_rate_limits.down,
     name: '20261110_134937_p5_t1_quote_answers_rate_limits',
+  },
+  {
+    up: migration_20261111_065443_p5_t2_jobs_retention.up,
+    down: migration_20261111_065443_p5_t2_jobs_retention.down,
+    name: '20261111_065443_p5_t2_jobs_retention',
   },
 ]
