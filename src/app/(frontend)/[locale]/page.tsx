@@ -353,21 +353,27 @@ export default async function LocaleHomePage({
     isDraftMode = false
   }
 
-  const [siteSettings, homePage, carouselServices, allStats, featuredProjectsResult, marqueeBrands] =
-    await Promise.all([
-      getSiteSettings(locale).catch(() => null),
-      getHomePage(locale).catch(() => null),
-      // Owner 2026-11-11: the home carousel shows the specialist services, as in Figma (17:254).
-      getServices(locale, { tier: 'additional' }).catch(() => []),
-      getStats(locale).catch(() => []),
-      getProjects(locale, { featuredOnly: true, limit: 6 }).catch(() => ({
-        docs: [] as Project[],
-        totalDocs: 0,
-        totalPages: 0,
-        page: 1,
-      })),
-      getBrands(locale, { marqueeOnly: true }).catch(() => []),
-    ])
+  const [
+    siteSettings,
+    homePage,
+    carouselServices,
+    allStats,
+    featuredProjectsResult,
+    marqueeBrands,
+  ] = await Promise.all([
+    getSiteSettings(locale).catch(() => null),
+    getHomePage(locale).catch(() => null),
+    // Owner 2026-11-11: the home carousel shows the specialist services, as in Figma (17:254).
+    getServices(locale, { tier: 'additional' }).catch(() => []),
+    getStats(locale).catch(() => []),
+    getProjects(locale, { featuredOnly: true, limit: 6 }).catch(() => ({
+      docs: [] as Project[],
+      totalDocs: 0,
+      totalPages: 0,
+      page: 1,
+    })),
+    getBrands(locale, { marqueeOnly: true }).catch(() => []),
+  ])
 
   const companyName = siteSettings?.companyName || null
 
