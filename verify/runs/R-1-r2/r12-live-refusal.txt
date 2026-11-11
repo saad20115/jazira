@@ -1,0 +1,8 @@
+dev users before: Password for user verify_su: 
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: fe_sendauth: no password supplied
+"arabicEnabled":false
+dev users after: Password for user verify_su: 
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: fe_sendauth: no password supplied
+"arabicEnabled":false
+e2e users after: Password for user verify_su: 
+psql: error: connection to server on socket "/var/run/postgresql/.s.PGSQL.5432" failed: fe_sendauth: no password supplied

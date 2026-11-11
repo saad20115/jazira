@@ -1,0 +1,16 @@
+Error: Playwright E2E safety guard: server at "http://localhost:3329" is not connected to E2E test database "aljazira_verify_test" (server returned tagline "MEP CONTRACTING · FIREFIGHTING · SMART SYSTEMS" instead of the probe written to "aljazira_verify_test"). Refusing to call first-register or mutate globals on a non-test database.
+
+   at global-setup.ts:233
+
+  231 |
+  232 |     if (observedTagline !== probeTagline) {
+> 233 |       throw new Error(
+      |             ^
+  234 |         `Playwright E2E safety guard: server at "${baseURL}" is not connected to E2E test database "${dbName}" (server returned tagline "${String(observedTagline)}" instead of the probe written to "${dbName}"). Refusing to call first-register or mutate globals on a non-test database.`,
+  235 |       )
+  236 |     }
+    at verifyServerUsesE2EDatabase (D:\jazira-verify\2026-11-09\r1b\tests\e2e\global-setup.ts:233:13)
+    at ensureE2EAdminToken (D:\jazira-verify\2026-11-09\r1b\tests\e2e\global-setup.ts:256:3)
+    at globalSetup (D:\jazira-verify\2026-11-09\r1b\tests\e2e\global-setup.ts:451:17)
+
+Assertion failed: !(handle->flags & UV_HANDLE_CLOSING), file src\win\async.c, line 76

@@ -1,0 +1,6 @@
+
+> aljazira-website@0.1.0 payload D:\jazira-verify\2026-11-09\r1b
+> cross-env NODE_OPTIONS=--no-deprecation payload "migrate"
+
+[16:49:34] [32mINFO[39m: [36mReading migration files from D:\jazira-verify\2026-11-09\r1b\src\migrations[39m
+[16:49:34] [32mINFO[39m: [36mDone.[39m

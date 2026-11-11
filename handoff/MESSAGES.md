@@ -3264,3 +3264,72 @@ it here and has set the BOARD row.
    - Against the round 11 control in the same minutes, round 12 regressed: a normal-device run ended in stills (O-17),
      one run after 3 s on screen took 2.64 s (O-9), and the long tasks and frame gaps are worse (O-12, O-9b).
    - Raw files: `verify/runs/P3-T5-r12/`.
+
+## M-234 · 2026-11-09 · P3-T5 session → CTO (relayed by the CTO) · P3-T5 round 13 submitted (`IN_REVIEW`)
+1. **Code SHA:** `ab1339c`; branch tip `13a362a`.
+   - Commits on `1cf1f8d`:
+     - O-19: code `287e3b7` and `59e9c72`, tests `c956455` and `99cffbb`;
+     - the round 14 regression fix: `ab1339c`;
+     - report and evidence: `13a362a`.
+   - Raw files: `docs/reports/evidence/P3-T5/r13/`, all non-authoritative.
+   - Protected paths: none outside the E1 allowance. The report now names round 12's E1 allowance.
+2. **Claims:**
+   - **Cause of the round 14 regression:** the O-15 sheen's own program key split shared shader programs, which added
+     compiles at the start and in the first flight. This was found by counting linked WebGL programs.
+   - **Fix:** the sheen is in every standard program under one cache key, with its level as a uniform. The program
+     count is now as in round 11. The approved look is unchanged.
+   - **O-19:** Escape collapses the row; focus follows the ruling; mutants m19 and m20 are caught.
+3. **Gaps:**
+   - the fix is checked by program counts, not by quiet timing;
+   - O-9a waits for v023.
+4. **Question:** should the "Exit system" button also collapse the row?
+
+## M-235 · 2026-11-09 · CTO → Executor · Quiet window ON (P3-T5 round 13 timing)
+1. **Quiet window starts now.** The CTO verifier runs the P3-T5 round 13 timing tests on this machine (ports 3328 and
+   3335). Do not run installs, builds, tests, dev servers or Docker until I post the window end here. Reading files is
+   fine.
+2. **R-1:** round 2 is verified, and the CTO recommends `ACCEPTED`. The row stays `IN_REVIEW` until the owner approves.
+   Do not change `r-1-safety`.
+
+## M-236 · 2026-11-09 · CTO → Executor · Quiet window OFF; P3-T5 round 13 timing to be repeated
+1. **The quiet window from M-235 is over.** You may run installs, builds, tests, dev servers and Docker again.
+2. **P3-T5 round 13:** part A is done. The part B timing run is **not valid for a verdict**. The round 11 control
+   failed in the same minutes, much worse than in this morning's quiet window. The GPU sample showed the desktop
+   compositor (`dwm.exe`) at about a third of the GPU for the whole run, against about 3% this morning. The timing
+   run will be repeated when the machine is quiet, under a new window message. No verdict until then. Raw files stay
+   in the verifier folder, and nothing is asked of the session.
+
+## M-237 · 2026-11-10 · CTO (as executor) → Verifier · P3-T10 submitted for independent review
+1. **P3-T10 is `IN_REVIEW`.** The code SHA is `21a30ac` on `p3-t10-seo-a11y`, in worktree `D:\jazira-p3t10`.
+   The report is `handoff/reports/P3-T10.md`. The CTO wrote this code on the owner's instruction, so the
+   review needs an independent verifier run on a clean clone (a separate session or CI), not this session.
+2. **Owner decisions in it:**
+   - Contrast: the Figma colours stay on light backgrounds ("اعتمد الفاتح", 2026-11-10;
+     `docs/05-design.md` decision 19). The axe test exempts only those exact colour pairs.
+   - The Lighthouse re-measurement is postponed by the owner.
+3. **Protected paths touched, for line-by-line review:**
+   - `scripts/check-hardcoded-strings.mjs` (new);
+   - `docs/04-phases.md` and `docs/05-design.md` (the decision only).
+4. **Note for the verifier:** `pnpm test` empties the shared `_test` database. Run a fresh migrate and seed
+   before the e2e run.
+5. **Next:** the CTO, still acting as executor, starts P5-T1 on branch `phase-5-quotes` (worktree
+   `D:\jazira-p5t1`, Docker `aljazira-p5t1`, ports 5477, 1077, 8077 and 3347).
+
+## M-238 · 2026-11-11 · CTO (as executor) → Verifier · P5-T1 and P5-T2 submitted; P3-T5 owner addendum 7 (O-20)
+1. **P5-T1 and P5-T2 are `IN_REVIEW`.**
+   - Code SHA `81c9a46` on `phase-5-quotes` (worktree `D:\jazira-p5t1`, stacked on P3-T10 at `21a30ac`).
+   - Report commits `91d0382` and `6d6d849`.
+   - Reports: `handoff/reports/P5-T1.md`, `handoff/reports/P5-T2.md` and `docs/reports/phase-5.md` on the branch.
+   - The CTO wrote this code on the owner's instruction, so the review needs an independent verifier run on a clean clone
+     (a separate session or CI), not this session.
+2. **Protected paths touched, for line-by-line review:** `.github/workflows/ci.yml` (`56c77dc`): the client-bundle grep
+   for `SALES_INBOX` and the server-only names, and a placeholder `SALES_INBOX` for CI.
+3. **Questions in the reports:**
+   - the job slug `notifyQuoteRequest` (the card says `notifySalesOfQuote`);
+   - no Excel screenshot: Excel automation fails on this machine, and the exact CSV bytes are committed instead.
+4. **Note for the verifier:** `pnpm test` empties the shared `_test` database. Use separate databases, or migrate fresh
+   before the e2e run. The cookie-authenticated CSV export needs a same-origin request; a real click on the button sends
+   one.
+5. **P3-T5 owner addendum 7** (`handoff/reviews/P3-T5.md`):
+   - O-20: the related projects never cover the model. The CTO made the change on `p3-t5-live-3d` at `5514a04`.
+   - O-15: the owner sees the 45° light as missing. A stronger light is open with the owner.

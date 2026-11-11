@@ -281,6 +281,10 @@ describe('P3-T3 — Cards & motion components', () => {
       )
       expect(brandLogoHtml).toContain('data-component="brand-tile"')
       expect(brandLogoHtml).toContain('<img')
+      // Owner 2026-11-11: the logo does not replace the name; both show, the logo in a round badge.
+      expect(brandLogoHtml).toContain('data-brand-logo="true"')
+      expect(brandLogoHtml).toContain('ABB')
+      expect(brandLogoHtml).toContain('Switzerland')
     })
 
     it('selects design-system heading tokens (t-h3, t-h4, t-h5) by wordmark length without ad-hoc clamp()', () => {

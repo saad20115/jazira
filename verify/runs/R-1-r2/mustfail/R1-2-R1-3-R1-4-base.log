@@ -1,0 +1,101 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-09/r1b
+
+ ❯ tests/unit/e2e-global-setup.test.ts (8 tests | 4 failed) 957ms
+   ❯ A-03 / B-15 / E-03 / R1-1..R1-4 — E2E global-setup & recording script safety (8)
+     × R1-2: refuses when E2E_DATABASE_URL is unset (no fallback to TEST_DATABASE_URL), when DATABASE_URL is a non-test DB, or when target host is not loopback 8ms
+     × R1-2 live must-fail: refuses a running server connected to a non-test database before calling first-register 45ms
+     × R1-3: tries E2E_ADMIN_PASSWORD only against the e2e admin email and never against other accounts 4ms
+     × R1-4: scripts/record/p3-t14-motion-recordings.mjs refuses non-loopback or non-test DB targets before calling first-register 888ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/e2e-global-setup.test.ts > A-03 / B-15 / E-03 / R1-1..R1-4 — E2E global-setup & recording script safety > R1-2: refuses when E2E_DATABASE_URL is unset (no fallback to TEST_DATABASE_URL), when DATABASE_URL is a non-test DB, or when target host is not loopback
+AssertionError: promise resolved "'mock-jwt-token'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"mock-jwt-token"
+
+ ❯ tests/unit/e2e-global-setup.test.ts:68:63
+     66|       'postgresql://aljazira_app:pass@127.0.0.1:5470/aljazira_verify_t…
+     67|
+     68|     await expect(ensureE2EAdminToken('http://localhost:3330')).rejects…
+       |                                                               ^
+     69|       /E2E_DATABASE_URL|_test/i,
+     70|     )
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  tests/unit/e2e-global-setup.test.ts > A-03 / B-15 / E-03 / R1-1..R1-4 — E2E global-setup & recording script safety > R1-2 live must-fail: refuses a running server connected to a non-test database before calling first-register
+AssertionError: promise resolved "'should-not-be-reached'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"should-not-be-reached"
+
+ ❯ tests/unit/e2e-global-setup.test.ts:128:54
+    126|
+    127|     try {
+    128|       await expect(ensureE2EAdminToken(localBaseUrl)).rejects.toThrow(
+       |                                                      ^
+    129|         /not connected|test database|site_settings/i,
+    130|       )
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  tests/unit/e2e-global-setup.test.ts > A-03 / B-15 / E-03 / R1-1..R1-4 — E2E global-setup & recording script safety > R1-3: tries E2E_ADMIN_PASSWORD only against the e2e admin email and never against other accounts
+AssertionError: expected [ 'e2e-admin@aljazira.co', …(2) ] to deeply equal [ 'e2e-admin@aljazira.co' ]
+
+- Expected
++ Received
+
+  [
+    "e2e-admin@aljazira.co",
++   "admin@aljazira.local",
++   "p3-t12-evidence-admin@aljazira.co",
+  ]
+
+ ❯ tests/unit/e2e-global-setup.test.ts:166:29
+    164|       /could not authenticate/i,
+    165|     )
+    166|     expect(attemptedEmails).toEqual(['e2e-admin@aljazira.co'])
+       |                             ^
+    167|   })
+    168|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  tests/unit/e2e-global-setup.test.ts > A-03 / B-15 / E-03 / R1-1..R1-4 — E2E global-setup & recording script safety > R1-4: scripts/record/p3-t14-motion-recordings.mjs refuses non-loopback or non-test DB targets before calling first-register
+AssertionError: expected 1 to be +0 // Object.is equality
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ tests/unit/e2e-global-setup.test.ts:209:33
+    207|       }
+    208|
+    209|       expect(firstRegisterHits).toBe(0)
+       |                                 ^
+    210|       expect(nonTestDbStderr).toMatch(/E2E_DATABASE_URL|_test|safety g…
+    211|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed | 4 passed (8)
+   Start at  16:51:49
+   Duration  1.94s (tests 80%, transform 12%, import 6%, worker 2%)
+

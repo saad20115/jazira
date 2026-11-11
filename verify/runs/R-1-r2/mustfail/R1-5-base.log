@@ -1,0 +1,34 @@
+
+ RUN  v5.0.5 D:/jazira-verify/2026-11-09/r1b
+
+ ❯ src/env.test.ts (10 tests | 1 failed) 35ms
+   ❯ parseEnv (S1, S2) (10)
+     × rejects low-entropy secrets and superuser DB roles in DATABASE_URL (A-08) 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/env.test.ts > parseEnv (S1, S2) > rejects low-entropy secrets and superuser DB roles in DATABASE_URL (A-08)
+AssertionError: expected [Function] to throw an error
+
+- Expected:
+null
+
++ Received:
+undefined
+
+ ❯ src/env.test.ts:278:7
+    276|         PAYLOAD_SECRET: '0123456789abcdeffedcba9876543210a1b2c3d4e5f60…
+    277|       }),
+    278|     ).toThrow(/PAYLOAD_SECRET[\s\S]*entropy/i)
+       |       ^
+    279|
+    280|     expect(() =>
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 passed (10)
+   Start at  16:51:56
+   Duration  565ms (import 60%, transform 25%, tests 12%, worker 3%)
+

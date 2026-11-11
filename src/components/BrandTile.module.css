@@ -35,13 +35,55 @@
   }
 }
 
+/* Owner 2026-11-11: with a logo the tile is a row: round logo badge, then name and origin. */
+.withLogo {
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: var(--space-12);
+  inline-size: auto;
+  min-inline-size: 200px;
+  padding-inline: var(--space-12) var(--space-20);
+}
+
+.logoBadge {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  inline-size: 48px;
+  block-size: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+  background-color: var(--gold-50);
+  border: 1px solid var(--border);
+  box-sizing: border-box;
+}
+
 .logoImage {
-  object-fit: contain;
-  max-inline-size: 152px;
-  max-block-size: 46px;
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  min-inline-size: 0;
+}
+
+.withLogo .text {
+  align-items: flex-start;
+}
+
+.withLogo .name,
+.withLogo .origin {
+  text-align: start;
 }
 
 .name {
+  display: block;
   margin: 0;
   color: var(--navy-950);
   white-space: nowrap;
@@ -49,6 +91,7 @@
 }
 
 .origin {
+  display: block;
   margin: 0;
   color: var(--text-muted);
   white-space: nowrap;

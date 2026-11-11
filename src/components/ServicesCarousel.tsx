@@ -92,6 +92,10 @@ export function ServicesCarousel({
       ? Math.max(0, Math.min(totalSlides - 1, Math.max(4, totalSlides - visibleCount)))
       : Math.max(0, totalSlides - visibleCount)
 
+  // Owner 2026-11-11: with nothing to scroll to (every slide fits), the progress bar and the
+  // pause/previous/next buttons are not shown; they would do nothing.
+  const hasNothingToScroll = position === undefined && maxIndex === 0
+
   const initialIndex = position ? Math.min(maxIndex, Math.max(0, position - 1)) : 0
   const [activeIndex, setActiveIndex] = useState<number>(initialIndex)
   const [isHovered, setIsHovered] = useState<boolean>(false)
@@ -441,12 +445,17 @@ export function ServicesCarousel({
       </div>
 
       <div className={styles.controlsRow}>
-        <div ref={progressTrackRef} className={styles.progressTrack} aria-hidden="true">
+        <div
+          ref={progressTrackRef}
+          className={styles.progressTrack}
+          aria-hidden="true"
+          hidden={hasNothingToScroll}
+        >
           <div ref={progressThumbRef} className={styles.progressThumb} data-carousel-thumb="true" />
         </div>
 
         <div className={styles.actionsGroup}>
-          <div className={styles.arrowPair}>
+          <div className={styles.arrowPair} hidden={hasNothingToScroll}>
             <button
               type="button"
               onClick={() => {
