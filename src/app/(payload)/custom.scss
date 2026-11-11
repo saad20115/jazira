@@ -240,3 +240,11 @@
   border-color: var(--admin-gold-500);
   background-color: var(--admin-gold-50);
 }
+
+/* P2-T7 §6 — Arabic (RTL). The rich-text editor parks its floating menus about 10 000 px to the
+   left. In a left-to-right page that is outside the scrollable area; in a right-to-left page it
+   makes every edit view scroll sideways by that much. The page itself never needs to scroll
+   sideways (wide tables scroll inside their own box). */
+html[dir='rtl' i] {
+  overflow-x: hidden;
+}

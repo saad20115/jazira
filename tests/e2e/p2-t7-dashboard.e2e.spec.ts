@@ -107,6 +107,26 @@ test.describe('P2-T7 — dashboard UX', () => {
     await context.close()
   })
 
+  test('Arabic: an edit view with a rich-text editor does not scroll sideways', async ({
+    browser,
+  }) => {
+    const context = await staffContext(browser, baseURL, token)
+    await context.addCookies([
+      { name: 'payload-lng', value: 'ar', domain: new URL(baseURL).hostname, path: '/' },
+    ])
+    const page = await context.newPage()
+    await page.goto(`${baseURL}/admin/globals/privacy-page`, { waitUntil: 'networkidle' })
+    await expect(page.locator('html')).toHaveAttribute('dir', /^rtl$/i)
+    await expect(page.locator('.rich-text-lexical').first()).toBeVisible()
+    // The editor's parked menus sit about 10 000 px to the left; the page must not grow to reach them.
+    const widths = await page.evaluate(() => ({
+      page: document.documentElement.scrollWidth,
+      viewport: window.innerWidth,
+    }))
+    expect(widths.page).toBeLessThanOrEqual(widths.viewport)
+    await context.close()
+  })
+
   test('dashboard home: an admin has the site-settings link and the Users section; an editor has neither', async ({
     browser,
   }) => {

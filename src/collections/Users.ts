@@ -384,6 +384,11 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     {
       name: 'email',
       type: 'email',
+      // P2-T7 §1: without a label Payload shows the field name ("Email") in the Arabic dashboard.
+      label: {
+        ar: 'البريد الإلكتروني',
+        en: 'Email',
+      },
       required: true,
       unique: true,
       access: {
