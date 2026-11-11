@@ -353,11 +353,12 @@ export default async function LocaleHomePage({
     isDraftMode = false
   }
 
-  const [siteSettings, homePage, mainServices, allStats, featuredProjectsResult, marqueeBrands] =
+  const [siteSettings, homePage, carouselServices, allStats, featuredProjectsResult, marqueeBrands] =
     await Promise.all([
       getSiteSettings(locale).catch(() => null),
       getHomePage(locale).catch(() => null),
-      getServices(locale, { tier: 'main' }).catch(() => []),
+      // Owner 2026-11-11: the home carousel shows the specialist services, as in Figma (17:254).
+      getServices(locale, { tier: 'additional' }).catch(() => []),
       getStats(locale).catch(() => []),
       getProjects(locale, { featuredOnly: true, limit: 6 }).catch(() => ({
         docs: [] as Project[],
@@ -416,7 +417,7 @@ export default async function LocaleHomePage({
   const coreServicesButtonHref =
     resolveButtonGroupHref(coreServices?.button, locale) ?? `/${locale}/services`
   const hasCoreServicesContent = Boolean(
-    mainServices.length > 0 || coreServicesTitle || coreServicesIntro,
+    carouselServices.length > 0 || coreServicesTitle || coreServicesIntro,
   )
 
   // 5. Trusted by Industry Leaders / Stats section data (`18:285`)
@@ -670,11 +671,11 @@ export default async function LocaleHomePage({
                   </div>
                 </div>
 
-                {mainServices.length > 0 ? (
+                {carouselServices.length > 0 ? (
                   <div className={styles.carouselOuter} {...revealAttributes({ step: 1 })}>
                     <ServicesCarousel
                       locale={locale}
-                      services={mainServices.map((s) => ({
+                      services={carouselServices.map((s) => ({
                         id: s.id,
                         title: s.title,
                         slug: s.slug,
