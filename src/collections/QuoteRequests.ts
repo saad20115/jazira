@@ -471,6 +471,11 @@ export const QuoteRequests: CollectionConfig = withImmutableCreatedAt({
       validate: validateQuotePhone,
       admin: {
         readOnly: true,
+        // P2-T7 §5b: grouped for reading in the list and the edit view; stored as E.164.
+        components: {
+          Cell: '/components/admin/QuotePhone#QuotePhoneCell',
+          Field: '/components/admin/QuotePhone#QuotePhoneField',
+        },
         description: {
           ar: 'رقم جوال سعودي أو دولي (مثال: +966 57 353 4185).',
           en: 'KSA or international phone number (e.g. +966 57 353 4185).',

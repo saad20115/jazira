@@ -260,6 +260,8 @@ export const Users: CollectionConfig = withImmutableCreatedAt({
     },
   },
   admin: {
+    // P2-T7 §4: only an admin manages users. An editor edits their own account on the Account page.
+    hidden: ({ user }) => (user as { role?: string } | null)?.role !== 'admin',
     useAsTitle: 'name',
     defaultColumns: ['name', 'email', 'role', 'updatedAt'],
     group: {

@@ -8,6 +8,7 @@ import sharp from 'sharp'
 import { fileURLToPath } from 'url'
 
 import { isAdmin } from './access'
+import { livePreviewConfig } from './admin/livePreview'
 import { lockDownJobStatsGlobal } from './access/jobStatsGlobal'
 import { Brands } from './collections/Brands'
 import { Materials } from './collections/Materials'
@@ -45,6 +46,14 @@ const dirname = path.dirname(filename)
 const isAdminJobAccess = ({ req }: { req: Parameters<typeof isAdmin>[0]['req'] }): boolean =>
   isAdmin({ req }) === true
 
+/**
+ * P2-T7: the staff are not technical, so the "API" tab of every edit view is hidden. It only hides
+ * the tab; access to the REST API is decided by each collection's access rules, as before.
+ */
+function withoutApiTab<T extends { admin?: { hideAPIURL?: boolean } }>(entity: T): T {
+  return { ...entity, admin: { ...entity.admin, hideAPIURL: true } }
+}
+
 const config = buildConfig({
   serverURL: env.SERVER_URL,
   cors: [env.SERVER_URL],
@@ -54,9 +63,34 @@ const config = buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    // P2-T7 §5: one look for every member of staff (the brand colours are tuned for light).
+    theme: 'light',
+    // P2-T7 §3: Live Preview of projects, services and every page, at 1440 / 768 / 390.
+    livePreview: livePreviewConfig,
+    meta: {
+      titleSuffix: ' | Al Jazira',
+      icons: [{ rel: 'icon', type: 'image/x-icon', url: '/favicon.ico' }],
+      defaultOGImageType: 'off',
+    },
+    components: {
+      // P2-T7 §2: Payload's nav with its groups in the card order.
+      Nav: '/admin/AdminNav#AdminNav',
+      // P2-T7 §1: the language switch, always visible in the header.
+      actions: ['/components/admin/AdminLanguageToggle#AdminLanguageToggle'],
+      // P2-T7 §4: the dashboard home (summary cards, then every section in the card order).
+      views: {
+        dashboard: { Component: '/admin/AdminDashboard#AdminDashboard' },
+      },
+      graphics: {
+        Logo: '/components/admin/AdminBrand#AdminLogo',
+        Icon: '/components/admin/AdminBrand#AdminIcon',
+      },
+    },
   },
   i18n: {
     supportedLanguages: { en, ar },
+    // English stays the fallback (owner decision 2026-10-24, pinned by the P3-T12 tests). A browser
+    // set to Arabic gets the Arabic dashboard, and the header switch (P2-T7 §1) changes it for anyone.
     fallbackLanguage: 'en',
   },
   localization: {
@@ -93,7 +127,7 @@ const config = buildConfig({
     Projects,
     QuoteRequests,
     QuoteRateLimits,
-  ],
+  ].map(withoutApiTab),
   globals: [
     SiteSettings,
     Navigation,
@@ -103,7 +137,7 @@ const config = buildConfig({
     ProjectsPage,
     ContactPage,
     PrivacyPage,
-  ],
+  ].map(withoutApiTab),
   hooks: {
     afterError: [ensurePublicErrorMessageAfterError],
   },

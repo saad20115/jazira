@@ -8,6 +8,7 @@ import type React from 'react'
 import { DraftImageBypassProvider } from '@/components/CspSafeImage'
 import { Footer, type FooterColumnItem, type FooterSocialItem } from '@/components/Footer'
 import { INTRO_PREPAINT_INLINE_SCRIPT, IntroSplash } from '@/components/IntroSplash'
+import { LivePreviewRefresh } from '@/components/LivePreviewRefresh'
 import { MotionRoot } from '@/components/MotionRoot'
 import { Navbar, type NavbarNavItem } from '@/components/Navbar'
 import { WhatsAppFab } from '@/components/WhatsAppFab'
@@ -342,6 +343,7 @@ async function LocaleShellHeader({
           dangerouslySetInnerHTML={{ __html: localBusinessJsonLd }}
         />
       ) : null}
+      {isStaffDraftPreview ? <LivePreviewRefresh /> : null}
       {isStaffDraftPreview ? (
         <aside className={`${gridStyles.draftBanner} t-body-s-medium`}>
           <span>{dict.draftMode.bannerText}</span>

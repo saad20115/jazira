@@ -3,19 +3,13 @@ import 'server-only'
 import crypto from 'node:crypto'
 import { z } from 'zod'
 
-import { env } from '@/env'
 import type { SupportedLocale } from '@/i18n'
 import { isValidInternalCmsPath, prefixInternalPathWithLocale } from '@/lib/link-safety'
+import { getPreviewSecret } from '@/previewSecret'
 
-/**
- * Derives the HMAC-SHA256 preview secret from `PAYLOAD_SECRET` (`handoff/tasks/P3-T1.md` §7, `S1`).
- */
-export function getPreviewSecret(): string {
-  return crypto
-    .createHmac('sha256', env.PAYLOAD_SECRET)
-    .update('aljazira-live-preview-secret-v1')
-    .digest('hex')
-}
+// The derivation lives in `src/security/previewSecret.ts` so that `payload.config.ts` can use it
+// for the Live Preview URL (P2-T7 §3); this module stays the server-only entry for the site.
+export { getPreviewSecret }
 
 export function verifyPreviewSecret(candidate: string): boolean {
   const expected = getPreviewSecret()

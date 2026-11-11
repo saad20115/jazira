@@ -394,6 +394,8 @@ export const SiteSettings: GlobalConfig = {
     en: 'Site Settings',
   },
   admin: {
+    // P2-T7 §4: only an admin may change the site settings, so only an admin sees them listed.
+    hidden: ({ user }) => (user as { role?: string } | null)?.role !== 'admin',
     group: SETTINGS_ADMIN_GROUP,
     description: {
       ar: 'البيانات الرسمية للشركة ومعلومات التواصل وساعات العمل وروابط الشبكات الاجتماعية وإعدادات SEO الافتراضية (تعديلها متاح لمدير النظام فقط).',
