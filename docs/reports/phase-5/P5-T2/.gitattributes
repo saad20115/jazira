@@ -1,0 +1,2 @@
+# Exact bytes of the CSV export (UTF-8 BOM, CRLF), kept as evidence.
+*.csv binary
