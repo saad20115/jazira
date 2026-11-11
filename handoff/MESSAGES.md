@@ -3360,3 +3360,18 @@ it here and has set the BOARD row.
 7. **A-1 v023:** the owner reported that the live tower does not match the Figma render and chose a new model. The
    brief is `handoff/briefs/A-1-v023-figma-match.md` (`846080b`). He opens the Blender session himself. O-15 (the
    45° light) is now part of v023.
+
+## M-240 · 2026-11-11 · CTO → Verifier, Executor · Owner decisions of 2026-11-11 (evening); verifier session; two new rows
+
+1. **Independent verification is done by a new, separate session** (owner's choice). Its brief is
+   `handoff/briefs/VERIFIER-2026-11-11-kickoff.md`. Order: R-1 (`45a1bd3`), P3-T10 (`21a30ac`), P5-T1 and P5-T2
+   (`81c9a46`), P2-T7 (`9f93b29`), P3-T5 (`5514a04`), P3-T15 (`fb82c34`). The verifier writes verdicts; the owner
+   gives the final acceptance in the CTO session.
+2. **Dashboard language stays as it is:** English by default, with the visible Arabic switch. The 2026-10-24
+   decision stands; `fallbackLanguage` stays `'en'`. This closes the "Arabic first" question of P2-T7.
+3. **Quote form attachments will really upload** (owner: "يرفع ملفات"). New row `P5-T4`, `TODO`. Its card is not
+   written yet: it needs a security design first (type and size checks, storage, abuse limits). Not a defect of the
+   P5-T1 / P5-T2 submission.
+4. **The team section stays hidden** until real names and photos are entered from the dashboard. No change.
+5. **New row `P3-T15`** for the owner home fixes (`owner-home-fixes` at `fb82c34`), `IN_REVIEW`. Card:
+   `handoff/tasks/P3-T15.md`, written after the fact. `docs/02-content-model.md` is updated on acceptance.

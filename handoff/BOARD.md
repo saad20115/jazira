@@ -35,11 +35,13 @@ watch the channel.
 | P3-T12 | English default + admin Arabic switch | ACCEPTED | 2 | 2026-10-25 | CTO |
 | P3-T13 | Intro splash first-frame decision | ACCEPTED | 2 | 2026-11-01 | CTO |
 | P3-T14 | Motion & interaction pass (site-wide) | ACCEPTED | 3 | 2026-11-03 | CTO |
+| P3-T15 | Owner home fixes: services carousel shows six, partner tile keeps the name with a round logo (owner 2026-11-11) — CTO executed, worktree `D:\jazira-owner-fixes`, branch `owner-home-fixes` | IN_REVIEW | 1 | 2026-11-11 | CTO (as executor) |
 | A-1 | 3D asset production (external) — v023 lighter hero materials requested (v022n pinned) | TODO | 1 | 2026-11-05 | CTO |
 | P4-T1 | Materials + brands seed | ACCEPTED | 2 | 2026-10-24 | CTO |
 | P4-T2 | Settings, services, copy, placeholders seed | ACCEPTED | 3 | 2026-11-03 | CTO |
 | P5-T1 | Quote handler + anti-abuse + email — CTO executing (owner 2026-11-10), worktree `D:\jazira-p5t1`, branch `phase-5-quotes` | IN_REVIEW | 1 | 2026-11-11 | CTO (as executor) |
 | P5-T2 | Email job, staff workflow, CSV export, retention — CTO executing, same worktree and branch as P5-T1 | IN_REVIEW | 1 | 2026-11-11 | CTO (as executor) |
+| P5-T4 | Quote form attachments: real file upload (owner 2026-11-11 "يرفع ملفات") — card not written yet | TODO | 0 | 2026-11-11 | CTO |
 | P5-T3 | CANCELLED — Odoo integration removed (owner 2026-10-23) | DEFERRED | 0 | 2026-10-21 | CTO |
 | P6-T1 | Production packaging (local only) | TODO | 0 | 2026-10-21 | CTO |
 | P6-T2 | HARD STOP — VPS deployment | DEFERRED | 0 | 2026-10-21 | CTO |
