@@ -52,6 +52,23 @@ async function api(
   return { status: response.status, json: (await response.json()) as unknown }
 }
 
+/** The dashboard specs run on the seeded e2e database, like the public-page specs. */
+async function firstPublishedProject(
+  baseURL: string,
+  token: string,
+): Promise<{ id: number; title: string }> {
+  const projects = await api(
+    baseURL,
+    token,
+    '/api/projects?limit=1&depth=0&sort=order&locale=en&where[_status][equals]=published',
+  )
+  const project = (projects.json as { docs: { id: number; title: string }[] }).docs.at(0)
+  if (!project) {
+    throw new Error('Expected at least one published project in the seed')
+  }
+  return project
+}
+
 async function homeGroups(page: Page): Promise<string[]> {
   return page
     .locator('[data-admin-group]')
@@ -115,10 +132,13 @@ test.describe('P2-T7 — dashboard UX', () => {
       { name: 'payload-lng', value: 'ar', domain: new URL(baseURL).hostname, path: '/' },
     ])
     const page = await context.newPage()
-    await page.goto(`${baseURL}/admin/globals/privacy-page`, { waitUntil: 'networkidle' })
+    const project = await firstPublishedProject(baseURL, token)
+    await page.goto(`${baseURL}/admin/collections/projects/${String(project.id)}`, {
+      waitUntil: 'networkidle',
+    })
     await expect(page.locator('html')).toHaveAttribute('dir', /^rtl$/i)
-    await expect(page.locator('.rich-text-lexical').first()).toBeVisible()
     // The editor's parked menus sit about 10 000 px to the left; the page must not grow to reach them.
+    await expect(page.locator('.link-editor').first()).toBeAttached()
     const widths = await page.evaluate(() => ({
       page: document.documentElement.scrollWidth,
       viewport: window.innerWidth,
@@ -179,16 +199,7 @@ test.describe('P2-T7 — dashboard UX', () => {
   test('a project edit view has no API tab, and Live Preview follows the typing', async ({
     browser,
   }) => {
-    const projects = await api(
-      baseURL,
-      token,
-      '/api/projects?limit=1&depth=0&sort=order&locale=en&where[_status][equals]=published',
-    )
-    const project = (projects.json as { docs: { id: number; title: string }[] }).docs.at(0)
-    expect(project).toBeDefined()
-    if (!project) {
-      return
-    }
+    const project = await firstPublishedProject(baseURL, token)
 
     const context = await staffContext(browser, baseURL, token)
     const page = await context.newPage()
