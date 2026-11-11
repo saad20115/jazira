@@ -327,7 +327,7 @@ describe('P3-T5 C3-1: late related projects never reset the card (real React, re
           },
         })
       })
-      await expect.poll(() => page.locator('[data-related-panel="card"]').count()).toBe(1)
+      await expect.poll(() => page.locator('[data-related-panel="stacked"]').count()).toBe(1)
       await page.waitForTimeout(200)
 
       const after = await page.evaluate(() => {
@@ -345,7 +345,7 @@ describe('P3-T5 C3-1: late related projects never reset the card (real React, re
           entered: cardNow?.getAttribute('data-entered'),
           state: cardNow?.getAttribute('data-viewer-state'),
           active: cardNow?.getAttribute('data-viewer-active'),
-          panelLinks: [...document.querySelectorAll('[data-related-panel="card"] a')].map((a) =>
+          panelLinks: [...document.querySelectorAll('[data-related-panel="stacked"] a')].map((a) =>
             a.getAttribute('href'),
           ),
         }

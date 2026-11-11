@@ -11,24 +11,15 @@ export interface RelatedPanelProps {
   related: SystemRelatedProjects
   heading: string
   strings: Systems3dStrings
-  /** `card`: over the card's inline-end side (≥ 768 px); `stacked`: below the accordion (phones). */
-  placement: 'card' | 'stacked'
 }
 
-/** Related projects of the entered system (§6): up to 3 links and "All related projects". */
-export function RelatedPanel({
-  related,
-  heading,
-  strings,
-  placement,
-}: RelatedPanelProps): ReactElement {
+/**
+ * Related projects of the entered system (§6): up to 3 links and "All related projects". Owner O-20
+ * (2026-11-11): shown below the accordion at every width, never over the model.
+ */
+export function RelatedPanel({ related, heading, strings }: RelatedPanelProps): ReactElement {
   return (
-    <aside
-      aria-label={heading}
-      className={placement === 'card' ? styles.relatedPanel : styles.relatedPanelStacked}
-      data-label-obstacle={placement === 'card' ? 'true' : undefined}
-      data-related-panel={placement}
-    >
+    <aside aria-label={heading} className={styles.relatedPanelStacked} data-related-panel="stacked">
       <p className={`${styles.relatedProjectsLabel} t-label-caps`}>{heading}</p>
       <ul className={styles.relatedList}>
         {related.projects.map((project) => (

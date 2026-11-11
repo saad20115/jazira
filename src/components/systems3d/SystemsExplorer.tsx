@@ -54,23 +54,16 @@ interface RelatedSlotProps {
   system: SystemId | null
   heading: string
   strings: Systems3dStrings
-  placement: 'card' | 'stacked'
 }
 
 /** The related-projects panel of the entered system, once the read has arrived (none while it has not). */
-function RelatedSlot({
-  related,
-  system,
-  heading,
-  strings,
-  placement,
-}: RelatedSlotProps): ReactElement | null {
+function RelatedSlot({ related, system, heading, strings }: RelatedSlotProps): ReactElement | null {
   const bySystem = use(related)
   const entry = system ? bySystem[system] : undefined
   if (!entry || entry.projects.length === 0) {
     return null
   }
-  return <RelatedPanel heading={heading} placement={placement} related={entry} strings={strings} />
+  return <RelatedPanel heading={heading} related={entry} strings={strings} />
 }
 
 /**
@@ -208,12 +201,13 @@ export function SystemsExplorer({
     })
   }
 
-  const relatedSlot = (placement: 'card' | 'stacked'): ReactNode =>
+  // Owner O-20 (2026-11-11): the related projects never cover the model. At every width they sit
+  // below the accordion, outside the card.
+  const relatedSlot = (): ReactNode =>
     entered ? (
       <Suspense fallback={null}>
         <RelatedSlot
           heading={relatedHeading}
-          placement={placement}
           related={related}
           strings={strings}
           system={entered}
@@ -234,7 +228,6 @@ export function SystemsExplorer({
           toggle(idx, true)
         }}
         openLabel={openLabel}
-        relatedPanel={relatedSlot('card')}
         onPhaseChange={setCardPhase}
         startSignal={startSignal}
         strings={strings}
@@ -274,7 +267,7 @@ export function SystemsExplorer({
             )
           })}
         </div>
-        {relatedSlot('stacked')}
+        {relatedSlot()}
       </div>
     </div>
   )

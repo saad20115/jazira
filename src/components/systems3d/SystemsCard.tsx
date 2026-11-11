@@ -167,8 +167,6 @@ export interface SystemsCardProps {
   onCollapseExit?: () => void
   /** Keys 1–5: enter the system of that accordion row. */
   onSelectRow: (index: number) => void
-  /** The related-projects panel of the entered system (suspends on its own until the data arrives). */
-  relatedPanel: ReactNode
   /** Increases on each system the visitor picks; each increase starts the model (O-2). */
   startSignal: number
   /** The card's phase, for the accordion (O-8: a click on the entered header goes live from a still). */
@@ -245,7 +243,6 @@ export function SystemsCard({
   onExitSystem,
   onCollapseExit,
   onSelectRow,
-  relatedPanel,
   startSignal,
   onPhaseChange,
   strings,
@@ -775,7 +772,7 @@ export function SystemsCard({
     }
   }
   // A click or tap on the image starts the model; once live, it activates the card. Buttons and
-  // links inside the card (exit, reset, label dots, related projects) do neither.
+  // links inside the card (exit, reset, label dots) do neither.
   const onClick = (event: MouseEvent<HTMLDivElement>): void => {
     stopTapHint()
     if (
@@ -978,7 +975,6 @@ export function SystemsCard({
           {strings.dragHint}
         </p>
       ) : null}
-      {entered ? relatedPanel : null}
     </div>
   )
 }

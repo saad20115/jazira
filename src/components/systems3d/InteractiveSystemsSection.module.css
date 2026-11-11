@@ -306,25 +306,8 @@
   unicode-bidi: isolate;
 }
 
-.relatedPanel {
-  position: absolute;
-  inset-block-end: 22px;
-  inset-inline-end: 22px;
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-8);
-  max-inline-size: 240px;
-  padding-block: var(--space-12);
-  padding-inline: var(--space-14);
-  border-radius: var(--radius-2xl);
-  background-color: var(--white);
-  color: var(--navy-950);
-  animation: systemsFadeIn 600ms cubic-bezier(0.65, 0, 0.35, 1);
-}
-
 .relatedPanelStacked {
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: var(--space-8);
   margin-block-start: var(--space-16);
@@ -421,7 +404,6 @@
     animation: none;
   }
 
-  .relatedPanel,
   .loadingSpinner {
     animation: none;
   }
@@ -591,14 +573,6 @@
 
   .hotspot[data-expanded='true'] .hotspotLabel {
     visibility: visible;
-  }
-
-  .relatedPanel {
-    display: none;
-  }
-
-  .relatedPanelStacked {
-    display: flex;
   }
 
   .relatedProjectLink {

@@ -1877,7 +1877,8 @@ test.describe('P3-T5 live 3D card — phone', () => {
       await rowHeader(row).tap({ timeout: 10_000 })
       const system = await systemOfRow(row)
       await expect(card).toHaveAttribute('data-entered', system)
-      await expect(page.locator('[data-related-panel="card"]')).toBeHidden()
+      // O-20: the related projects never sit on the model.
+      await expect(card.locator('[data-related-panel]')).toHaveCount(0)
       // On phones the accordion is below the card: the viewer renders only while the card is on
       // screen, so scroll back to it as a visitor would.
       await card.scrollIntoViewIfNeeded()
