@@ -1,0 +1,10 @@
+--- /c/Users/User21.CSE/AppData/Local/Temp/claude/55d5332796bc9398/1b1c303c-9b0c-4ef9-a782-162c77955636/scratchpad/r13/mut/SystemsExplorer.fix.tsx	2026-11-09 13:59:55.566196200 +0300
++++ src/components/systems3d/SystemsExplorer.tsx	2026-11-09 13:59:55.721949600 +0300
+@@ -200,7 +200,6 @@
+     const header = row?.querySelector<HTMLButtonElement>(':scope > button')
+     const focused = document.activeElement
+     if (row && header && focused instanceof Node && row.contains(focused) && focused !== header) {
+-      header.focus()
+     }
+     startTransition(() => {
+       setExpandedIndex(null)
