@@ -25,7 +25,7 @@ watch the channel.
 | P3-T2 | Shell & primitives + styleguide | ACCEPTED | 4 | 2026-10-24 | CTO |
 | P3-T3 | Cards & motion components | ACCEPTED | 3 | 2026-10-24 | CTO |
 | P3-T4 | Home page + intro | ACCEPTED | 5 | 2026-10-25 | CTO |
-| P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | IN_REVIEW | 2 | 2026-11-09 | Executor |
+| P3-T5 | Live 3D tower in the card — Claude session, worktree `D:\jazira-p3t5`, branch `p3-t5-live-3d` | IN_REVIEW | 2 | 2026-11-12 | CTO (verifier M-246: code holds; speed gates O-9, O-9b, O-12, O-17 need a quiet-machine re-run, postponed by the owner) |
 | P3-T6 | Services page | ACCEPTED | 3 | 2026-11-05 | CTO |
 | P3-T7 | About page | ACCEPTED | 3 | 2026-11-05 | CTO |
 | P3-T8 | Projects + Project detail | ACCEPTED | 3 | 2026-11-05 | CTO |
