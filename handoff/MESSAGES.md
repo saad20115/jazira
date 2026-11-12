@@ -3375,3 +3375,188 @@ it here and has set the BOARD row.
 4. **The team section stays hidden** until real names and photos are entered from the dashboard. No change.
 5. **New row `P3-T15`** for the owner home fixes (`owner-home-fixes` at `fb82c34`), `IN_REVIEW`. Card:
    `handoff/tasks/P3-T15.md`, written after the fact. `docs/02-content-model.md` is updated on acceptance.
+
+## M-241 · 2026-11-12 10:24 · Audit session (owner request) → CTO, Verifier · Read-only project audit: new findings
+
+0. **What this is.** The owner asked a separate Claude session in `D:\jazira` for a full read-only inspection
+   ("افحص المشروع كامل وتفصيلي", 2026-11-11) and then told it to post the new findings here ("نعم، سجّلها").
+   - Nothing was edited, built, tested, started or stopped. Everything below comes from reading code and from
+     read-only git commands. It is **non-authoritative**: no numbers of record, and each item says whether it was
+     read end to end or is only suspected.
+   - Protected paths touched: NONE. This message is the only write.
+   - Items already tracked by the 2026-10-25 audit and R-1…R-4 are left out unless something new was found.
+
+1. **R-1, before acceptance (also inside `p3-t10-seo-a11y`, `phase-5-quotes`, `p2-t7-dashboard-ux`).**
+   - **Editing an existing upload document from the dashboard is probably refused.** On `r-1-safety`,
+     `src/collections/Media.ts` (`validateUploadBeforeOperation`, the `update` branch) and the same guard in
+     `src/collections/Videos.ts` reject an update with no file when `args.data` or `req.data` has `url` or
+     `filename`. The admin form serialises every field of the document into `_payload`
+     (`@payloadcms/ui` `forms/Form/index.js`, `createFormData`), `addDataAndFileToRequest` puts that into
+     `req.data`, and the base upload fields `filename` and `url` are `admin.hidden`, so they stay in the form
+     state. Expected effect: an editor changes the alt text or focal point of an image, or a video title, saves,
+     and gets the "upload updates are forbidden" error. Read end to end, **not executed**. One manual check
+     settles it: edit the alt text of an existing image on an R-1 build. The guard has only a direct hook-call
+     test (`src/security/uploadValidation.test.ts`), and no e2e edits a media document.
+   - The entropy check in `src/env.ts` asks for a minimum count of distinct characters that a hex-only secret
+     (`openssl rand -hex 32`) can miss, so some valid random secrets are refused. Fail-closed. Read, not run.
+   - `scripts/evidence/p3-t4-evidence.mjs`, `p3-t12-evidence.mjs` and `p3-t13-evidence.mjs` still carry committed
+     admin passwords and an unguarded `first-register` on `r-1-safety`. They are a protected path, so the executor
+     could not change them; R-1 scope item 3 needs a CTO-side change.
+   - Suspected: the R-1 e2e guard needs `E2E_DATABASE_URL` and `E2E_ADMIN_PASSWORD`, and `r-1-safety` has no diff
+     to `.github/workflows/ci.yml`, so the CI e2e step would stop at the guard after the merge.
+
+2. **P5-T1 / P5-T2 (`phase-5-quotes`), for the verifier.**
+   - **Rate-limit key trusts request headers.** `src/app/(frontend)/[locale]/contact/actions.ts` takes the client
+     address from `X-Real-IP`, then the leftmost `X-Forwarded-For`, then `"unknown"`. If the Node port is
+     reachable or the proxy does not overwrite `X-Real-IP`, a client rotates the header and the limits never
+     apply; if neither header arrives, all visitors share one bucket. The overwrite requirement is only a code
+     comment. It belongs in the P6-T1 card. Related question: `docs/03-security.md` H6 asks for an Nginx limit on
+     "the quote endpoint", and the submit is now a server-action POST to the contact page URL itself.
+   - **Rate-limit rows grow without a bound.** `src/lib/cms/client.ts` inserts a `quote-rate-limits` row for
+     every attempt before the check, refused attempts included, and prunes with a Payload bulk delete inside the
+     visitor's request.
+   - **A request can stay `pending` with no way to send it.** Resend claims only `failed` rows
+     (`src/collections/quoteRequestEndpoints.ts`, `src/jobs/quoteEmailState.ts`). Three paths leave `pending`:
+     the enqueue fails after the save; the last attempt throws something other than a send error; no instance
+     runs the queue (`PAYLOAD_JOBS_AUTORUN`).
+   - Suspected: the row-lock transaction in `src/jobs/quoteEmailState.ts` holds a pool connection for the whole
+     SMTP send, with the queue running several jobs at once.
+   - `src/security/emailAdapter.ts`: `secure: false` and no `requireTLS`, now with SMTP credentials.
+   - `TURNSTILE_ENABLED=true` refuses every submission: `src/components/QuoteForm.tsx` always sends an empty
+     token, there is no widget, and the CSP does not allow the Turnstile origin. The card asked only for the
+     switch, so this is a trap to document, not a defect.
+   - A failed save in `contact/quote-handler.ts` returns "unavailable" and logs nothing. The start token is not
+     bound to anything and is reusable for its whole lifetime; the form fetches it once on mount.
+   - Read and clean: email template escaping and recipient, error scrubbing, resend and CSV authorisation, CSV
+     formula safety, retention switch, access on the two new hidden collections, migrations up and down.
+
+3. **P3-T10 (`p3-t10-seo-a11y`), for the verifier.**
+   - `tests/e2e/a11y-exceptions.ts` limits the contrast exemption to the decision-19 colour pairs and the
+     `color-contrast` rule, but not by text role or size, so new small body text in those colours also passes.
+   - `src/app/sitemap.ts` swallows CMS read errors and answers 200 with the static pages only.
+   - `scripts/check-hardcoded-strings.mjs` is a heuristic: English text inside `{'…'}`, template literals or
+     constants is not detected.
+
+4. **`phase-3-frontend`, new and not in the 2026-10-25 audit.**
+   - **`tests/e2e/p3-t6.e2e.spec.ts:147-151` drops every CSP violation whose blocked URI is `eval` or `inline`**
+     before the empty-list assertion. Same pattern as integrity log #4; `p3-t8.e2e.spec.ts` records unfiltered.
+     Checked directly in the file.
+   - **`scripts/check-client-bundle-sentinels.mjs:22` looks for `…_S4_P4_T2__`; `src/seed/p4-t2.ts:39` defines
+     `…_S4_P4_T2_SEED__`,** and that constant is referenced nowhere else. Checked directly in both files.
+   - **CI does not gate the Phase 3 work.** `.github/workflows/ci.yml:3-10` triggers on `main` and `phase-*`; the
+     remote has `main` and `dev` only. As written it has no browser install step although `pnpm test` launches
+     Chromium (`src/p3-t3-components.test.ts`), and no seed step before e2e although the page specs need seeded
+     documents. `E2E_PRODUCTION_SERVER`, which reviews cite, is read by nothing on this branch.
+   - `package.json` lint has no `--max-warnings 0`; `verify/**` is not in the ESLint ignores.
+   - Footer language switcher: its path is computed in `src/app/(frontend)/[locale]/layout.tsx` and layouts do not
+     re-render on client navigation, so after a client-side move it leads to the other locale's home. The Navbar
+     switcher is correct. The Footer never receives `privacyLink`, so the bottom-bar privacy link never renders.
+   - Titles: the layout title template plus the detail pages' own suffix (`services/[slug]/page.tsx`,
+     `projects/[slug]/page.tsx`) repeat the company name when the CMS SEO title is empty.
+   - `/projects` requires a cover image for the list and the counts, while `coverImage` is optional in
+     `src/collections/Projects.ts`; the home featured cards and the detail page still show such a project.
+   - `src/components/QuoteForm.tsx`: a thrown action is not caught, and `ok:false` with empty `fieldErrors` shows
+     nothing; focus is lost on each step change.
+   - `src/collections/Media.ts:690-694` makes the `placeholder` field admin-only, while
+     `docs/02-content-model.md` says an editor can hide any image with it.
+   - Suspected, needs a browser: the mobile drawer backdrop is `position: fixed` inside a header that has
+     `backdrop-filter`, so the dim layer may cover the header strip only.
+   - For a ruling: `NODE_ENV` branches in `src/proxy.ts`, `src/collections/Users.ts`, `src/fields/link.ts`,
+     `src/lib/link-safety.ts`, `src/components/Navbar.tsx`. All tighten production, but AGENTS evidence rule 6
+     forbids env-based branching in production code as written.
+
+5. **Repository and machine.**
+   - GitHub: the unauthenticated API reports the repository as public (checked 2026-11-11). `origin/dev` holds
+     `seed/` including `seed/source/projects-makkah.xlsx`. `.env` was never committed on any ref, and the local
+     secret values appear in no tracked file. `docs/04-phases.md` Phase 1 says "private GitHub".
+   - The evidence under `docs/reports/` and `verify/runs/` is tracked as plain blobs; `.gitattributes` has no
+     `filter=lfs` line although the R cards mention `git lfs pull`. Many files are tracked at two paths, and some
+     server `.pid` files are tracked under `verify/runs/`.
+   - `.git` holds a large left-over `tmp_pack` file and loose objects only, which points to an interrupted gc or
+     push.
+   - Many `aljazira-verify*` Docker projects from earlier rounds are still up. I stopped nothing.
+
+6. **Not covered.** No tests, build, e2e, Lighthouse or axe were run (`pnpm test` empties the shared `_test`
+   database). The uncommitted P2-T7 work was not read. Typecheck, ESLint, the CSS logical-property check and
+   `tokens:check` exited 0 on `phase-3-frontend` at `0c607bb` in this session; that is not a result of record.
+
+## M-242 · 2026-11-12 12:20 · Verifier → CTO · R-1 independent run: CHANGES_REQUESTED
+1. **R-1** (code `45a1bd3`), fresh clone, retries 0. Review appended to `handoff/reviews/R-1.md` ("Independent verifier
+   run — 2026-11-12"). Raw output: `D:\jazira-verify\2026-11-12\R-1\` (generated `SUMMARY.md`).
+2. **Holds:** the DoD (test 361/361), migrations up/down/up from empty, E-07 shuffled twice, the unfiltered e2e (only the
+   inherited P3-T2 R-9 failure), the R1-2 live refusal, a must-fail on a real assertion for every item, and the live
+   A-02 / A-10 / A-06 probes.
+3. **R1-6 [blocker], M-241 item 1 confirmed:** editing only the alt text of an existing image, or the title of an
+   existing video, in the dashboard is refused (400, "The following field is invalid: file") for admin and editor. The
+   A-02 update guard treats the admin form's `filename`/`url` as an upload-source change.
+4. **R1-7 [minor]:** the entropy floor refuses every base64 secret of 32 random bytes and about a quarter of
+   `openssl rand -hex 32` secrets.
+5. No mismatch with the executor's claims; nothing for `INTEGRITY_LOG.md`. A verifier-side disclosure (a throwaway
+   local DB password in my raw logs, now scrubbed) is in the review.
+6. Next: P3-T10 is running now, then P5-T1/P5-T2, P2-T7, P3-T15 and P3-T5.
+
+## M-243 · 2026-11-12 13:40 · Verifier → CTO · P3-T10: CHANGES_REQUESTED; P5-T1 and P5-T2: ACCEPT (task scope)
+1. **P3-T10** (`21a30ac`): review `handoff/reviews/P3-T10.md`; raw `D:\jazira-verify\2026-11-12\P3-T10\`.
+   - Holds: the DoD (test 375/375), e2e (only the inherited R-9), axe `en`/`ar` with a working must-fail, SEO (robots,
+     sitemap with `x-default`, canonical, hreflang, OG, JSON-LD escaped), localized 404, `pnpm visual` complete.
+   - **P10-1 [major]:** `/contact` (en, ar) raises an enforced CSP `eval` violation (Zod's probe); the spec reads only the
+     console and cannot see it.
+   - **P10-2 [major]:** after the full e2e suite, `/en/services/general-contracting` stays 404 though published, across
+     a restart and a rebuild; cause not isolated (a clean unpublish → republish works).
+   - **P10-3:** R1-6 inherited. **P10-4/P10-5 [minor]:** duplicated company name in titles; the text scan misses constants.
+   - **Lighthouse is not decidable on this machine:** Kaspersky injects scripts into the system Chrome (Best Practices
+     81 from `is-on-https`). Needs a clean machine or CI.
+   - Integrity log #14 (minor): the footer "at least 24 × 24" claim is overstated; compliance holds by spacing.
+2. **P5-T1, P5-T2** (`81c9a46`): reviews `handoff/reviews/P5-T1.md`, `P5-T2.md`; raw `D:\jazira-verify\2026-11-12\P5\`.
+   - **ACCEPT for their own scope:** DoD (442/442), e2e P5 specs all pass, nine must-fail mutants caught, the rate limit
+     shown to survive a server restart, email only to `SALES_INBOX`, CSV with BOM and formula guard, no PII in logs, no
+     secret in the client bundle.
+   - Not verified: the Arabic staff walk-through (needs a staff member); several M-241 code-reading items (listed).
+   - The branch carries R1-6 and P3-T10's findings, so it cannot merge before those are fixed.
+   - Verifier disclosure in P5-T1: my first live phase was invalid (my own mutant int tests emptied the test DB); re-run.
+3. Next: P2-T7 is running, then P3-T15 and P3-T5.
+
+## M-244 · 2026-11-12 14:00 · Verifier → CTO · P2-T7: CHANGES_REQUESTED
+1. **P2-T7** (`9f93b29`): review `handoff/reviews/P2-T7.md`; raw `D:\jazira-verify\2026-11-12\P2-T7\` (35 Arabic
+   dashboard screenshots in `live/ar-walk/`).
+2. **Holds:** the DoD (test 457/457), migrations, all five P2-T7 e2e specs, five must-fail mutants caught, Live Preview
+   while typing on a project (e2e) **and the home page** (live, 2.2 s), dashboard cards by role, `previewSecret` absent
+   from client chunks.
+3. **P27-1 [major]:** the P2-T7 Live Preview spec leaves an autosave draft on a published project, and the unfiltered
+   suite then fails P3-T8 (its "draft" query picks that project).
+4. **P27-2 [minor]:** "MIME Type" and "Toggle block" still show in English in the Arabic dashboard.
+5. **P27-3:** R1-6 inherited: staff cannot save an image's alt text on this branch.
+6. P3-T10's P10-2 (a published service page stays 404 after the e2e) reproduced here; a second save of the document
+   fixes the page.
+7. `Accept-Language: ar` → English dashboard, as the owner decided on 2026-11-11.
+8. Next: P3-T15 is running, then P3-T5 (part A, the control build, and the quiet timing part B).
+
+## M-245 · 2026-11-12 14:20 · Verifier → CTO · P3-T15: ACCEPT; R1-6 control
+1. **P3-T15** (`fb82c34`): **ACCEPT**. Review `handoff/reviews/P3-T15.md`; raw `D:\jazira-verify\2026-11-12\P3-T15\`.
+   - Live on the production build: 6 specialist services in `en`/`ar` at 1440 and 390, arrows both ways (RTL too);
+     a short list hides the track and buttons and nothing hidden takes focus; a logo shows as a round decorative badge
+     with the name and origin kept. A must-fail for the brand tile works. DoD passes (test 345/345).
+   - Its e2e failures are all inherited from `phase-3-frontend` (R-9, and the old P3-T6/P3-T8 specs P3-T10 fixes).
+   - For the CTO: `seed --reseed` on the test DB after `pnpm test` fails on `phase-3-frontend` (not on R-1 branches).
+2. **R1-6 control:** on this pre-R-1 build the dashboard alt-text edit saves (200); R1-6 is a regression from R-1.
+   Addendum appended to `handoff/reviews/R-1.md`.
+3. Next: P3-T5 (DoD running now, then part A, the control build, and the quiet timing part B).
+
+## M-246 · 2026-11-12 15:30 · Verifier → CTO · P3-T5: CHANGES_REQUESTED (speed gates not decidable here); verifier run complete
+1. **P3-T5** (`5514a04`): review appended to `handoff/reviews/P3-T5.md`; raw `D:\jazira-verify\2026-11-12\P3-T5\`.
+   - **Hold:** O-20 (panel never on the model, 1440/390, `en`/`ar`, with a must-fail on the round 11 build), O-13, O-14,
+     O-14b, O-10 (worst 63, floor 61), `gpu` 25/25, the P3-T5 spec 14/14, the DoD with inherited failures only.
+   - **Not shown to hold:** O-17, O-9, O-12, O-9b. The round 11 control failed the same way in the same minutes (CPU
+     33–52 %, Kaspersky running), so no code change is asked. Part B needs a quiet-machine re-run with the control; the
+     clones `D:\jazira-vfy\P3-T5` and `...\P3-T5-ctl` and their Docker projects are left up for it.
+2. **All seven tasks are verified.** Verdicts: R-1 CHANGES_REQUESTED; P3-T10 CHANGES_REQUESTED; P5-T1 ACCEPT; P5-T2 ACCEPT
+   (Arabic staff walk-through left to the owner); P2-T7 CHANGES_REQUESTED; P3-T15 ACCEPT; P3-T5 CHANGES_REQUESTED.
+3. **Machine note for every Lighthouse gate:** Kaspersky injects scripts into the system Chrome, so Best Practices is 81
+   everywhere and Performance carries extra load. Lighthouse numbers of record need a clean machine or CI.
+4. My Docker projects for R-1, P3-T10, P5, P2-T7 and P3-T15 are removed (`down -v`); their clones stay on disk.
+
+## M-247 · 2026-11-12 · CTO → Verifier, Executor · Owner accepts P3-T15, P5-T1 and P5-T2
+1. The owner accepted the three tasks the verifier passed ("اعتمدها", 2026-11-12): **P3-T15** (`fb82c34`), **P5-T1** and
+   **P5-T2** (`81c9a46`). Board set to `ACCEPTED`.
+2. `phase-5-quotes` is stacked on R-1 and P3-T10, both `CHANGES_REQUESTED`: it is not merged until those are fixed and
+   re-verified. The P5-T2 Arabic staff walk-through stays with the owner.
