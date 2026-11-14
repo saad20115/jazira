@@ -1028,7 +1028,10 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const heroAt = node('CAM_hero').getWorldPosition(new Vector3())
   const azimuth = Math.atan2(heroAt.x, heroAt.z) + (look.key.azimuthDeg * Math.PI) / 180
   const elevation = (look.key.elevationDeg * Math.PI) / 180
-  const key = new DirectionalLight(new Color().setRGB(...look.key.color), look.key.intensity)
+  const key = new DirectionalLight(
+    new Color().setRGB(...look.key.color),
+    look.key.intensity * look.restLightScale,
+  )
   key.position
     .set(
       Math.sin(azimuth) * Math.cos(elevation),
@@ -1040,7 +1043,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const fill = new HemisphereLight(
     new Color().setRGB(...look.fill.sky),
     new Color().setRGB(...look.fill.ground),
-    look.fill.intensity,
+    look.fill.intensity * look.restLightScale,
   )
   scene.add(key, key.target, fill)
 
@@ -1298,7 +1301,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
    * lowered, eased with the façade fade. The stage has just set the glass glow for this k.
    */
   const applySystemLight = (k: number): void => {
-    const lights = 1 + (look.systemLightScale - 1) * k
+    const lights = look.restLightScale + (look.systemLightScale - look.restLightScale) * k
     key.intensity = look.key.intensity * lights
     fill.intensity = look.fill.intensity * lights
     // O-15: the façade's sheen fades out with the façade.
