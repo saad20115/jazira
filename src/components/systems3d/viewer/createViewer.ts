@@ -266,7 +266,10 @@ const GLASS_FALLOFF_GLSL = /* glsl */ `
   float glassLit = max(totalEmissiveRadiance.r, max(totalEmissiveRadiance.g, totalEmissiveRadiance.b)) /
                    max(max(emissive.r, max(emissive.g, emissive.b)), 1e-4);
   {
-    vec3 glassN = normalize(cross(dFdx(vViewPosition), dFdy(vViewPosition)));
+    // The surface's own normal, not the reference's screen-derivative normal: derivatives break up
+    // along thin and stepped faces (the crown and terraces), which flickered as the model turned
+    // (owner 2026-11-14, "التقطيع والرعشه ... عند دوران البرج في اعلاه").
+    vec3 glassN = normalize(nonPerturbedNormal);
     vec3 glassNw = (vec4(glassN, 0.0) * viewMatrix).xyz;
     vec3 glassVw = (vec4(normalize(vViewPosition), 0.0) * viewMatrix).xyz;
     glassNw.y = 0.0;
