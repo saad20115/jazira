@@ -262,6 +262,18 @@ const GLASS_FALLOFF_TARGET = '#include <lights_physical_fragment>'
 const GLASS_CLARITY_TARGET = '#include <lights_fragment_end>'
 const GLASS_PROGRAM_KEY = 'aljazira-glass-v023b'
 
+/**
+ * Owner 2026-11-14: the windows shimmered while the model moved and settled when it stopped. The
+ * v023b window map has hairline pane gaps and a dark slit every 0.6 m inside lit panes; seen from the
+ * hero distance those lines are thinner than a pixel and crawl as they move. The glass samples its
+ * window map one mip level softer (`WINDOW_MAP_LOD_BIAS`), which keeps the lit / dark pattern and
+ * drops the sub-pixel lines.
+ */
+const WINDOW_MAP_LOD_BIAS = 1
+const GLASS_WINDOW_MAP_TARGET = '#include <emissivemap_fragment>'
+const GLASS_WINDOW_MAP_SAMPLE = 'vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );'
+const GLASS_WINDOW_MAP_SOFT = `vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv, ${WINDOW_MAP_LOD_BIAS.toFixed(1)} );`
+
 const GLASS_FALLOFF_GLSL = /* glsl */ `
   float glassLit = max(totalEmissiveRadiance.r, max(totalEmissiveRadiance.g, totalEmissiveRadiance.b)) /
                    max(max(emissive.r, max(emissive.g, emissive.b)), 1e-4);
@@ -313,10 +325,22 @@ function addGlassFx(material: MeshStandardMaterial, fx: GlassFx): void {
     ) {
       throw new ContractError('three standard shader: glass targets not found')
     }
+    // `#include`s are resolved after this hook: the window map chunk is inlined here, softened.
+    const windowMap = ShaderChunk.emissivemap_fragment
+    if (
+      !shader.fragmentShader.includes(GLASS_WINDOW_MAP_TARGET) ||
+      !windowMap.includes(GLASS_WINDOW_MAP_SAMPLE)
+    ) {
+      throw new ContractError('three standard shader: emissive map sample not found')
+    }
     Object.assign(shader.uniforms, uniforms)
     shader.fragmentShader =
       'uniform float uGlassMin, uGlassLo, uGlassHi, uGlassClarity, uClarityLo, uClarityHi;\n' +
       shader.fragmentShader
+        .replace(
+          GLASS_WINDOW_MAP_TARGET,
+          windowMap.replace(GLASS_WINDOW_MAP_SAMPLE, GLASS_WINDOW_MAP_SOFT),
+        )
         .replace(GLASS_FALLOFF_TARGET, GLASS_FALLOFF_GLSL)
         .replace(GLASS_CLARITY_TARGET, GLASS_CLARITY_GLSL)
     applyKeySheen(material, shader)
