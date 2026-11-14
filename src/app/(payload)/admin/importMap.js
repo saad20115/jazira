@@ -15,9 +15,17 @@ import { OverviewComponent as OverviewComponent_a8a977ebc872c5d5ea7ee689724c0860
 import { MetaTitleComponent as MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { MetaDescriptionComponent as MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
 import { PreviewComponent as PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860 } from '@payloadcms/plugin-seo/client'
+import { QuotePhoneCell as QuotePhoneCell_8eaaf1fa3a16f0dec248098d1e7f3af5 } from '../../../components/admin/QuotePhone'
+import { QuotePhoneField as QuotePhoneField_8eaaf1fa3a16f0dec248098d1e7f3af5 } from '../../../components/admin/QuotePhone'
 import { QuoteStatusPillCell as QuoteStatusPillCell_001d2763ef747d84acdcc781a226c8d4 } from '../../../components/admin/QuoteStatusPillCell'
 import { EmailStatusPillCell as EmailStatusPillCell_f502a048fcd3d644beb1be6f6358dc46 } from '../../../components/admin/EmailStatusPillCell'
+import { ResendNotificationButton as ResendNotificationButton_5d368ea4088bd79e9b3dce8068d2c2fe } from '../../../components/admin/ResendNotificationButton'
 import { QuoteRequestsFilterBar as QuoteRequestsFilterBar_c878668df3d51817110d29c90a9c7629 } from '../../../components/admin/QuoteRequestsFilterBar'
+import { AdminNav as AdminNav_c4f56bfcbfe68328052b657f9c44673a } from '../../../admin/AdminNav'
+import { AdminIcon as AdminIcon_db845eae23ef682757f9df5d4893ae70 } from '../../../components/admin/AdminBrand'
+import { AdminLogo as AdminLogo_db845eae23ef682757f9df5d4893ae70 } from '../../../components/admin/AdminBrand'
+import { AdminLanguageToggle as AdminLanguageToggle_ad3119dc8f516c875be346e1d4df5c71 } from '../../../components/admin/AdminLanguageToggle'
+import { AdminDashboard as AdminDashboard_4248f600635286bf8fea12c9118fdd24 } from '../../../admin/AdminDashboard'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -39,8 +47,16 @@ export const importMap = {
   "@payloadcms/plugin-seo/client#MetaTitleComponent": MetaTitleComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#MetaDescriptionComponent": MetaDescriptionComponent_a8a977ebc872c5d5ea7ee689724c0860,
   "@payloadcms/plugin-seo/client#PreviewComponent": PreviewComponent_a8a977ebc872c5d5ea7ee689724c0860,
+  "/components/admin/QuotePhone#QuotePhoneCell": QuotePhoneCell_8eaaf1fa3a16f0dec248098d1e7f3af5,
+  "/components/admin/QuotePhone#QuotePhoneField": QuotePhoneField_8eaaf1fa3a16f0dec248098d1e7f3af5,
   "/components/admin/QuoteStatusPillCell#QuoteStatusPillCell": QuoteStatusPillCell_001d2763ef747d84acdcc781a226c8d4,
   "/components/admin/EmailStatusPillCell#EmailStatusPillCell": EmailStatusPillCell_f502a048fcd3d644beb1be6f6358dc46,
+  "/components/admin/ResendNotificationButton#ResendNotificationButton": ResendNotificationButton_5d368ea4088bd79e9b3dce8068d2c2fe,
   "/components/admin/QuoteRequestsFilterBar#QuoteRequestsFilterBar": QuoteRequestsFilterBar_c878668df3d51817110d29c90a9c7629,
+  "/admin/AdminNav#AdminNav": AdminNav_c4f56bfcbfe68328052b657f9c44673a,
+  "/components/admin/AdminBrand#AdminIcon": AdminIcon_db845eae23ef682757f9df5d4893ae70,
+  "/components/admin/AdminBrand#AdminLogo": AdminLogo_db845eae23ef682757f9df5d4893ae70,
+  "/components/admin/AdminLanguageToggle#AdminLanguageToggle": AdminLanguageToggle_ad3119dc8f516c875be346e1d4df5c71,
+  "/admin/AdminDashboard#AdminDashboard": AdminDashboard_4248f600635286bf8fea12c9118fdd24,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

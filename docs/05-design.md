@@ -189,6 +189,14 @@ Binding for Phase 3. They fill what the Figma file does not specify.
       golds.
     - Every text/background token pair used on public pages is listed with its computed ratio in
       the P3-T10 a11y report.
+    - **Owner decision 2026-11-10 ("اعتمد الفاتح", after a side-by-side sample of both options on
+      real pages):** the Figma colours stay on light backgrounds where the P3-T10 axe run found
+      them: `--gold-500` `#DFA82A` and `--gold-600` `#C38F1C` (display text, stat numbers) and
+      `--text-muted` `#8A93A3` (muted small text), on `#FFFFFF`, `#F6F8FB` and `#E3E7EE`. The
+      owner was told they fail WCAG 1.4.3 (axe ratios 2.01–3.09) and chose the Figma look over the
+      darker `--gold-700` option. **Approved deviation** — reviews must not flag these exact
+      colour pairs. Any other contrast failure is still a defect, and the axe test still fails on
+      it.
 
 20. **Motion system (owner, 2026-10-25: "the site feels dead").** Figma defines no page-level motion
     (`get_motion_context` on 13:2 returns nothing), so this is the CTO's spec. It applies to **every**

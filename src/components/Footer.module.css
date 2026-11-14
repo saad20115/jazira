@@ -498,7 +498,11 @@
 .bottomLink {
   display: inline-flex;
   align-items: center;
-  block-size: 22px;
+  justify-content: center;
+  /* P3-T10 (from the P3-T2 review): WCAG 2.2 SC 2.5.8 target size, at least 24 x 24 CSS px. */
+  min-inline-size: 24px;
+  min-block-size: 24px;
+  block-size: auto;
   font-family: var(--font-sans);
   font-weight: var(--t-body-s-weight);
   font-size: var(--t-body-s-size);

@@ -1,73 +1,53 @@
 'use server'
 
-import { getDictionary, isSupportedLocale, type SupportedLocale } from '@/i18n'
+import { headers } from 'next/headers'
+
+import { env } from '@/env'
+import { createPublicQuoteRequest, recordQuoteSubmissionAttempt } from '@/lib/cms/client'
+import { hashIp } from '@/lib/ipHash'
+
 import {
-  type QuoteFieldErrorKey,
-  type QuoteSubmissionPayload,
-  quoteSubmissionSchema,
-} from '@/lib/quote/schema'
-
-export interface SubmitQuoteStubResult {
-  ok: boolean
-  fieldErrors?: Partial<Record<QuoteFieldErrorKey, string>>
-  data?: QuoteSubmissionPayload
-}
-
-const VALID_FIELD_ERROR_KEYS = new Set<QuoteFieldErrorKey>([
-  'projectType',
-  'projectStage',
-  'servicesNeeded',
-  'projectLocation',
-  'name',
-  'company',
-  'phone',
-  'email',
-  'preferredContact',
-  'message',
-  'consent',
-])
+  handleQuoteSubmission,
+  issueQuoteStartToken,
+  type QuoteSubmissionResult,
+} from './quote-handler'
+import { verifyTurnstileToken } from './turnstile'
 
 /**
- * Stub server action for `P3-T9` (`handoff/tasks/P3-T9.md` Scope 2).
- * Validates the 3-step Quote Form payload with the shared `quoteSubmissionSchema`
- * (`src/lib/quote/schema.ts`) and returns localized field errors on invalid input
- * or `{ ok: true }` on valid input. Real database persistence + email notification
- * are wired in Phase 5 (`P5-T1`).
+ * P5-T1 — the quote form's server actions. A server action (not a route handler) because the
+ * form already calls one (P3-T9) and Next checks the request Origin for server actions, so a
+ * cross-site page cannot post the form on a visitor's behalf.
  */
-export async function submitQuoteRequestStubAction(
-  rawInput: unknown,
-): Promise<SubmitQuoteStubResult> {
+
+/**
+ * The client IP as the reverse proxy saw it. In production Nginx sets `X-Real-IP` to
+ * `$remote_addr` and overwrites any value a visitor sends (P6-T1 must keep that). Without a
+ * proxy (local development) every visitor shares the "unknown" bucket, which only makes the
+ * limit stricter. The raw IP is hashed at once and never stored or logged (D2).
+ */
+function clientIp(requestHeaders: Headers): string {
+  const realIp = requestHeaders.get('x-real-ip')?.trim()
+  if (realIp) return realIp
+  const forwarded = requestHeaders.get('x-forwarded-for')?.split(',')[0]?.trim()
+  return forwarded ?? 'unknown'
+}
+
+/** Issues the signed "form opened at" token when the quote form mounts. */
+export async function startQuoteFormAction(): Promise<string> {
   await Promise.resolve()
-  const inputRecord =
-    typeof rawInput === 'object' && rawInput !== null
-      ? (rawInput as Record<string, unknown>)
-      : ({} as Record<string, unknown>)
-  const locale: SupportedLocale = isSupportedLocale(inputRecord.locale) ? inputRecord.locale : 'en'
-  const dict = getDictionary(locale)
+  return issueQuoteStartToken(Date.now(), env.PAYLOAD_SECRET)
+}
 
-  const parsed = quoteSubmissionSchema.safeParse(rawInput)
-  if (!parsed.success) {
-    const fieldErrors: Partial<Record<QuoteFieldErrorKey, string>> = {}
-    for (const issue of parsed.error.issues) {
-      const firstPath = issue.path[0]
-      if (
-        typeof firstPath === 'string' &&
-        VALID_FIELD_ERROR_KEYS.has(firstPath as QuoteFieldErrorKey)
-      ) {
-        const key = firstPath as QuoteFieldErrorKey
-        if (!fieldErrors[key]) {
-          fieldErrors[key] = dict.quoteForm.errors[key]
-        }
-      }
-    }
-    return {
-      ok: false,
-      fieldErrors,
-    }
-  }
-
-  return {
-    ok: true,
-    data: parsed.data,
-  }
+export async function submitQuoteRequestAction(rawInput: unknown): Promise<QuoteSubmissionResult> {
+  const requestHeaders = await headers()
+  return handleQuoteSubmission(rawInput, {
+    nowMs: Date.now(),
+    ipHash: hashIp(clientIp(requestHeaders)),
+    userAgent: requestHeaders.get('user-agent') ?? '',
+    signingKey: env.PAYLOAD_SECRET,
+    turnstileEnabled: env.TURNSTILE_ENABLED,
+    recordAttempt: recordQuoteSubmissionAttempt,
+    saveRequest: createPublicQuoteRequest,
+    verifyTurnstile: (token) => verifyTurnstileToken(token, env.TURNSTILE_SECRET_KEY),
+  })
 }

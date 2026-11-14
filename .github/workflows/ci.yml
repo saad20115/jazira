@@ -24,6 +24,8 @@ jobs:
       MAILPIT_UI_PORT: '8025'
       SMTP_FROM_ADDRESS: no-reply@aljazira.co
       SMTP_FROM_NAME: Al Jazira for Imdad Smart Co.
+      # P5-T2: a CI-only test inbox (Mailpit catches it); also grepped for in the client bundle.
+      SALES_INBOX: sales-inbox@ci.example.test
 
     services:
       postgres:
@@ -172,6 +174,19 @@ jobs:
             echo "ERROR: Server-only module sentinel leaked into .next/static (R-6)!" >&2
             exit 1
           fi
+          # P5-T2 §6: the sales inbox value and the server-only variable names (SMTP_*, SALES_INBOX,
+          # PAYLOAD_SECRET, IP_HASH_SALT) must not appear anywhere in the client bundle.
+          if grep -Fq "$SALES_INBOX" -R .next/static; then
+            echo "ERROR: SALES_INBOX value leaked into .next/static!" >&2
+            exit 1
+          fi
+          for name in SMTP_ SALES_INBOX PAYLOAD_SECRET IP_HASH_SALT; do
+            if grep -Fq "$name" -R .next/static; then
+              echo "ERROR: server-only variable name $name found in .next/static!" >&2
+              exit 1
+            fi
+          done
+          echo "client bundle: no secret value or server-only variable name found"
 
       - name: Run Playwright e2e smoke tests
         run: pnpm test:e2e

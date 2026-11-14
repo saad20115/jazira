@@ -77,6 +77,7 @@ export interface Config {
     team: Team;
     projects: Project;
     'quote-requests': QuoteRequest;
+    'quote-rate-limits': QuoteRateLimit;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
     'payload-locked-documents': PayloadLockedDocument;
@@ -95,6 +96,7 @@ export interface Config {
     team: TeamSelect<false> | TeamSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'quote-requests': QuoteRequestsSelect<false> | QuoteRequestsSelect<true>;
+    'quote-rate-limits': QuoteRateLimitsSelect<false> | QuoteRateLimitsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
@@ -114,6 +116,7 @@ export interface Config {
     'projects-page': ProjectsPage;
     'contact-page': ContactPage;
     'privacy-page': PrivacyPage;
+    'payload-jobs-stats': PayloadJobsStat;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
@@ -124,6 +127,7 @@ export interface Config {
     'projects-page': ProjectsPageSelect<false> | ProjectsPageSelect<true>;
     'contact-page': ContactPageSelect<false> | ContactPageSelect<true>;
     'privacy-page': PrivacyPageSelect<false> | PrivacyPageSelect<true>;
+    'payload-jobs-stats': PayloadJobsStatsSelect<false> | PayloadJobsStatsSelect<true>;
   };
   locale: 'ar' | 'en';
   widgets: {
@@ -132,6 +136,8 @@ export interface Config {
   user: User;
   jobs: {
     tasks: {
+      notifyQuoteRequest: TaskNotifyQuoteRequest;
+      purgeExpiredQuoteRequests: TaskPurgeExpiredQuoteRequests;
       schedulePublish: TaskSchedulePublish;
       inline: {
         input: unknown;
@@ -647,6 +653,22 @@ export interface QuoteRequest {
    * Snapshot of the requested service title in the submission locale so history remains readable if the service is later deleted (R-4).
    */
   serviceTitle?: string | null;
+  projectType?:
+    | (
+        | 'hotel-tower'
+        | 'commercial-office'
+        | 'hospital-healthcare'
+        | 'industrial-warehouse'
+        | 'residential-compound'
+        | 'infrastructure-data-center'
+        | 'other'
+      )
+    | null;
+  projectStage?: ('design' | 'tender' | 'construction' | 'retrofit' | 'maintenance') | null;
+  servicesNeeded?:
+    ('hvac' | 'fire-fighting' | 'plumbing' | 'electrical' | 'low-current' | 'smart-systems' | 'supply-only')[] | null;
+  projectLocation?: ('makkah' | 'riyadh' | 'jeddah' | 'madinah' | 'eastern-province' | 'neom-red-sea' | 'other') | null;
+  preferredContact?: ('whatsapp' | 'phone' | 'email') | null;
   message?: string | null;
   locale: 'ar' | 'en';
   sourcePage?: string | null;
@@ -665,6 +687,16 @@ export interface QuoteRequest {
    */
   ipHash?: string | null;
   userAgent?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-rate-limits".
+ */
+export interface QuoteRateLimit {
+  id: number;
+  ipHash: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -737,7 +769,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: 'inline' | 'schedulePublish';
+        taskSlug: 'inline' | 'notifyQuoteRequest' | 'purgeExpiredQuoteRequests' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -770,10 +802,19 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ('inline' | 'schedulePublish') | null;
+  taskSlug?: ('inline' | 'notifyQuoteRequest' | 'purgeExpiredQuoteRequests' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -823,6 +864,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'quote-requests';
         value: number | QuoteRequest;
+      } | null)
+    | ({
+        relationTo: 'quote-rate-limits';
+        value: number | QuoteRateLimit;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1123,6 +1168,11 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   phone?: T;
   service?: T;
   serviceTitle?: T;
+  projectType?: T;
+  projectStage?: T;
+  servicesNeeded?: T;
+  projectLocation?: T;
+  preferredContact?: T;
   message?: T;
   locale?: T;
   sourcePage?: T;
@@ -1135,6 +1185,15 @@ export interface QuoteRequestsSelect<T extends boolean = true> {
   emailLastError?: T;
   ipHash?: T;
   userAgent?: T;
+  createdAt?: T;
+  updatedAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "quote-rate-limits_select".
+ */
+export interface QuoteRateLimitsSelect<T extends boolean = true> {
+  ipHash?: T;
   createdAt?: T;
   updatedAt?: T;
 }
@@ -1174,6 +1233,7 @@ export interface PayloadJobsSelect<T extends boolean = true> {
   queue?: T;
   waitUntil?: T;
   processing?: T;
+  meta?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1221,6 +1281,10 @@ export interface SiteSetting {
    * Show the Arabic version of the website to visitors
    */
   arabicEnabled?: boolean | null;
+  /**
+   * While off, the daily job is a dry run: it logs how many old requests it would delete and deletes nothing.
+   */
+  quoteRetentionDeleteEnabled?: boolean | null;
   /**
    * Official company name in Arabic and English used across header, footer, and metadata.
    */
@@ -2062,10 +2126,29 @@ export interface PrivacyPage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats".
+ */
+export interface PayloadJobsStat {
+  id: number;
+  stats?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   arabicEnabled?: T;
+  quoteRetentionDeleteEnabled?: T;
   companyName?: T;
   tagline?: T;
   email?: T;
@@ -2751,6 +2834,16 @@ export interface PrivacyPageSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-jobs-stats_select".
+ */
+export interface PayloadJobsStatsSelect<T extends boolean = true> {
+  stats?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
@@ -2758,6 +2851,31 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: 'full';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskNotifyQuoteRequest".
+ */
+export interface TaskNotifyQuoteRequest {
+  input: {
+    quoteRequestId: number;
+  };
+  output: {
+    handled?: boolean | null;
+    outcome?: string | null;
+  };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TaskPurgeExpiredQuoteRequests".
+ */
+export interface TaskPurgeExpiredQuoteRequests {
+  input?: unknown;
+  output: {
+    dryRun?: boolean | null;
+    matched?: number | null;
+    deleted?: number | null;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

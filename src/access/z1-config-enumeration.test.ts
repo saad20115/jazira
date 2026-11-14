@@ -29,7 +29,6 @@ const RAW_APPLICATION_COLLECTIONS = [
 
 const INTERNAL_PAYLOAD_SYSTEM_SLUGS = new Set([
   'payload-kv',
-  'payload-jobs',
   'payload-locked-documents',
   'payload-preferences',
   'payload-migrations',
@@ -37,6 +36,7 @@ const INTERNAL_PAYLOAD_SYSTEM_SLUGS = new Set([
 
 const COLLECTION_ACCESS_OPS = ['read', 'create', 'update', 'delete'] as const
 const GLOBAL_ACCESS_OPS = ['read', 'update'] as const
+const JOBS_ACCESS_OPS = ['run', 'queue', 'cancel'] as const
 
 const PAYLOAD_DEFAULT_ACCESS_NAMES = new Set(['defaultAccess', 'defaultUnlockAccess'])
 
@@ -124,6 +124,13 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
           op,
         )
       }
+    }
+
+    // Verify payload-jobs is included in enumerated collections and config.jobs.access defines explicit non-default access functions (A-06)
+    expect(appCollections.some((c) => c.slug === 'payload-jobs')).toBe(true)
+    expect(config.jobs.access, 'config.jobs.access is missing').toBeDefined()
+    for (const op of JOBS_ACCESS_OPS) {
+      assertExplicitAccessFunction(config.jobs.access?.[op], 'config.jobs', op)
     }
 
     // Negative self-test: prove assertExplicitAccessFunction catches missing, defaultAccess, and defaultUnlockAccess (R-19)
@@ -240,6 +247,15 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
 
     // 5. Globals: site-settings & navigation (public read, editor/admin update; site-settings admin update only per content model)
     for (const g of config.globals) {
+      // P5-T2: the scheduler's system global (added by Payload when a task has a `schedule`)
+      // is denied to every caller, for read and update alike; the scheduler uses the DB adapter.
+      if (g.slug === 'payload-jobs-stats') {
+        for (const args of [anonArgs, editorOtherArgs, adminArgs]) {
+          expect(await g.access.read(args), `global:${g.slug}.read`).toBe(false)
+          expect(await g.access.update(args), `global:${g.slug}.update`).toBe(false)
+        }
+        continue
+      }
       const anonRead = await g.access.read(anonArgs)
       const editorRead = await g.access.read(editorOtherArgs)
       const adminRead = await g.access.read(adminArgs)
@@ -263,6 +279,51 @@ describe('Z1 Config-Enumeration Access Control Suite (P2-T8 Scope 1)', () => {
         expect(await g.access.update(editorOtherArgs), `global:${g.slug}.update(editor)`).toBe(true)
       }
       expect(await g.access.update(adminArgs), `global:${g.slug}.update(admin)`).toBe(true)
+    }
+
+    // 6. payload-jobs collection & config.jobs.access (A-06): collection ops deny all direct REST/GQL access; jobs.access (run/queue/cancel) is admin-only
+    const payloadJobsCol = appCollections['payload-jobs']
+    expect(payloadJobsCol, 'payload-jobs collection must be present').toBeDefined()
+    for (const op of COLLECTION_ACCESS_OPS) {
+      expect(await payloadJobsCol.access[op](anonArgs), `payload-jobs.${op}(anon)`).toBe(false)
+      expect(await payloadJobsCol.access[op](editorOtherArgs), `payload-jobs.${op}(editor)`).toBe(
+        false,
+      )
+      expect(await payloadJobsCol.access[op](adminArgs), `payload-jobs.${op}(admin)`).toBe(false)
+    }
+    for (const op of JOBS_ACCESS_OPS) {
+      const fn = config.jobs.access?.[op]
+      expect(typeof fn, `config.jobs.access.${op} must be a function`).toBe('function')
+      if (!fn) {
+        throw new Error(`Missing config.jobs.access.${op}`)
+      }
+      expect(await fn(anonArgs), `jobs.access.${op}(anon)`).toBe(false)
+      expect(await fn(editorOtherArgs), `jobs.access.${op}(editor)`).toBe(false)
+      expect(await fn(adminArgs), `jobs.access.${op}(admin)`).toBe(true)
+    }
+
+    // 7. projects.reviewNote field-level access (A-05 / D-05): read, create, update are admin-only
+    const projectsCol = appCollections['projects']
+    const reviewNoteField = projectsCol.flattenedFields.find((f) => f.name === 'reviewNote')
+    expect(reviewNoteField, 'projects.reviewNote field must exist').toBeDefined()
+    for (const fieldOp of ['read', 'create', 'update'] as const) {
+      const fieldAccessFn = reviewNoteField?.access?.[fieldOp]
+      expect(typeof fieldAccessFn, `projects.reviewNote.access.${fieldOp} must be a function`).toBe(
+        'function',
+      )
+      if (!fieldAccessFn) {
+        throw new Error(`Missing projects.reviewNote.access.${fieldOp}`)
+      }
+      expect(await fieldAccessFn(anonArgs as never), `projects.reviewNote.${fieldOp}(anon)`).toBe(
+        false,
+      )
+      expect(
+        await fieldAccessFn(editorOtherArgs as never),
+        `projects.reviewNote.${fieldOp}(editor)`,
+      ).toBe(false)
+      expect(await fieldAccessFn(adminArgs as never), `projects.reviewNote.${fieldOp}(admin)`).toBe(
+        true,
+      )
     }
   })
 })

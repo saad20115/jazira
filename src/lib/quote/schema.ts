@@ -225,6 +225,10 @@ export const quoteSubmissionSchema = quoteStep1Schema
     sourcePage: z.string().trim().max(240).default('/en/contact'),
     honeypot: z.string().max(240).optional().default(''),
     startedAtMs: z.number().int().nonnegative(),
+    // P5-T1: the server-signed "form opened at" token; the server never trusts `startedAtMs`.
+    startToken: z.string().trim().max(200).optional().default(''),
+    // P5-T1 §6: Cloudflare Turnstile response, checked only when TURNSTILE_ENABLED is on.
+    turnstileToken: z.string().trim().max(2048).optional().default(''),
   })
 export type QuoteSubmissionPayload = z.infer<typeof quoteSubmissionSchema>
 

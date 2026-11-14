@@ -52,6 +52,27 @@ const siteSettingsFields: Field[] = [
     },
   },
   {
+    // P5-T2 §5 (D3): until an admin turns this on, the daily retention job only counts the quote
+    // requests older than 24 months and deletes nothing (dry run). Admin-only, never public.
+    name: 'quoteRetentionDeleteEnabled',
+    type: 'checkbox',
+    defaultValue: false,
+    access: {
+      read: isAdminFieldLevel,
+      update: isAdminFieldLevel,
+    },
+    label: {
+      ar: 'حذف طلبات عروض الأسعار الأقدم من 24 شهراً تلقائياً',
+      en: 'Automatically delete quote requests older than 24 months',
+    },
+    admin: {
+      description: {
+        ar: 'عند الإيقاف تعمل المهمة اليومية تجريبياً: تحسب الطلبات القديمة في السجل ولا تحذف شيئاً.',
+        en: 'While off, the daily job is a dry run: it logs how many old requests it would delete and deletes nothing.',
+      },
+    },
+  },
+  {
     name: 'companyName',
     type: 'text',
     localized: true,
@@ -373,6 +394,8 @@ export const SiteSettings: GlobalConfig = {
     en: 'Site Settings',
   },
   admin: {
+    // P2-T7 §4: only an admin may change the site settings, so only an admin sees them listed.
+    hidden: ({ user }) => (user as { role?: string } | null)?.role !== 'admin',
     group: SETTINGS_ADMIN_GROUP,
     description: {
       ar: 'البيانات الرسمية للشركة ومعلومات التواصل وساعات العمل وروابط الشبكات الاجتماعية وإعدادات SEO الافتراضية (تعديلها متاح لمدير النظام فقط).',

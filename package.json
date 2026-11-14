@@ -12,7 +12,7 @@
     "dev": "node scripts/sync-3d-assets.mjs && cross-env NODE_OPTIONS=--no-deprecation next dev",
     "build": "node scripts/sync-3d-assets.mjs && cross-env NODE_OPTIONS=\"--no-deprecation --max-old-space-size=8000\" next build && node scripts/check-client-bundle-sentinels.mjs",
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start",
-    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs",
+    "lint": "cross-env NODE_OPTIONS=--no-deprecation eslint . && node scripts/check-css-logical-properties.mjs && node scripts/check-hardcoded-strings.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:e2e": "playwright test",
@@ -26,7 +26,8 @@
     "check:citations": "node scripts/check-citations.mjs",
     "tokens": "node scripts/generate-tokens.mjs",
     "tokens:check": "node scripts/generate-tokens.mjs --check",
-    "sync:3d": "node scripts/sync-3d-assets.mjs"
+    "sync:3d": "node scripts/sync-3d-assets.mjs",
+    "visual": "node scripts/visual.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.91.0",
@@ -46,6 +47,7 @@
     "zod": "4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.64.1",
     "@types/node": "24.19.2",
     "@types/react": "19.3.0",

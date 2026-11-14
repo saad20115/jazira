@@ -72,18 +72,18 @@ test.describe('P3-T6 — Services Page, Service Detail, PageHeader & ApprovedMat
     const origMepStatus = mepDoc._status ?? 'draft'
 
     try {
-      // Ensure general-contracting is draft and mep-works is published
+      // Ensure general-contracting is unpublished and mep-works is published. Since F-1 (owner
+      // 2026-11-08) the seed publishes every service, so this branch runs: the update is made
+      // without `?draft=true`, which would only save a draft version and leave the published
+      // page live (P3-T10 fix).
       if (origGcStatus !== 'draft') {
-        await page.request.patch(
-          `${resolvedBase}/api/services/${String(gcDoc.id)}?draft=true&locale=en`,
-          {
-            headers: {
-              Authorization: `JWT ${token}`,
-              'Content-Type': 'application/json',
-            },
-            data: { _status: 'draft' },
+        await page.request.patch(`${resolvedBase}/api/services/${String(gcDoc.id)}?locale=en`, {
+          headers: {
+            Authorization: `JWT ${token}`,
+            'Content-Type': 'application/json',
           },
-        )
+          data: { _status: 'draft' },
+        })
       }
       if (origMepStatus !== 'published') {
         await page.request.patch(`${resolvedBase}/api/services/${String(mepDoc.id)}?locale=en`, {

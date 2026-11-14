@@ -70,6 +70,8 @@ vi.mock('next/navigation', () => ({
     throw new Error(`NEXT_REDIRECT:${url}`)
   },
   usePathname: () => '/en',
+  // P2-T7 §3: the layout renders `LivePreviewRefresh` in a staff draft preview; it only needs a router.
+  useRouter: () => ({ refresh: () => undefined }),
 }))
 
 vi.mock('@/styles/font-preload', () => ({
@@ -322,7 +324,14 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
       })
 
       const sitemapEntriesOff = await sitemap()
-      expect(sitemapEntriesOff).toHaveLength(1)
+      // P3-T10 §1: the five always-present pages, English only while Arabic is off.
+      expect(sitemapEntriesOff.map((e) => e.url)).toEqual([
+        'http://localhost:3000/en',
+        'http://localhost:3000/en/services',
+        'http://localhost:3000/en/about',
+        'http://localhost:3000/en/projects',
+        'http://localhost:3000/en/contact',
+      ])
       expect(sitemapEntriesOff[0]?.url).toBe('http://localhost:3000/en')
       expect(sitemapEntriesOff[0]?.alternates?.languages).toEqual({
         en: 'http://localhost:3000/en',
@@ -661,10 +670,13 @@ describe('P3-T12 — English Default + Admin "Arabic On/Off" Switch (`site-setti
       })
 
       const sitemapEntriesOn = await sitemap()
-      expect(sitemapEntriesOn.map((e) => e.url)).toEqual([
+      expect(sitemapEntriesOn.map((e) => e.url).slice(0, 4)).toEqual([
         'http://localhost:3000/en',
         'http://localhost:3000/ar',
+        'http://localhost:3000/en/services',
+        'http://localhost:3000/ar/services',
       ])
+      expect(sitemapEntriesOn).toHaveLength(10)
       expect(sitemapEntriesOn[0]?.alternates?.languages).toEqual({
         en: 'http://localhost:3000/en',
         ar: 'http://localhost:3000/ar',

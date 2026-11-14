@@ -1,7 +1,8 @@
 'use client'
 
-import { useTranslation } from '@payloadcms/ui'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { useAuth, useConfig, useListQuery, useTranslation } from '@payloadcms/ui'
+import { useSearchParams } from 'next/navigation'
+import type { Where } from 'payload'
 import React from 'react'
 
 import { QUOTE_STATUS_PILL_STYLES, type QuoteRequestStatusValue } from './QuoteStatusPillCell'
@@ -17,26 +18,55 @@ const STATUS_OPTIONS: readonly QuoteRequestStatusValue[] = [
 export const QuoteRequestsFilterBar: React.FC = () => {
   const { i18n } = useTranslation()
   const isEnglish = i18n.language === 'en'
-  const router = useRouter()
-  const pathname = usePathname()
   const searchParams = useSearchParams()
+  // The list keeps its own copy of the query and writes it back into the URL. Changing the filter
+  // through that copy (not by pushing a new URL) is what lets a cleared filter stay cleared.
+  const { query, refineListData } = useListQuery()
 
   const activeStatus = searchParams.get('where[status][equals]') ?? ''
   const activeAssignedExists = searchParams.get('where[assignedTo][exists]') ?? ''
   const activeDateGte = searchParams.get('where[createdAt][greater_than_equal]') ?? ''
+  // P5-T2 §3: "Mine" = requests assigned to the logged-in user.
+  const { user } = useAuth<{ id?: number | string; role?: string }>()
+  const { config } = useConfig()
+  const myId = user?.id === undefined ? '' : String(user.id)
+  const activeMine = myId !== '' && searchParams.get('where[assignedTo][equals]') === myId
+  // P5-T2 §4: the CSV export takes the list's current filter and search (admin only; the
+  // endpoint re-checks the role).
+  const exportQuery = new URLSearchParams()
+  for (const [key, value] of searchParams.entries()) {
+    if (key.startsWith('where') || key === 'search') {
+      exportQuery.append(key, value)
+    }
+  }
+  const exportQueryString = exportQuery.toString()
+  const exportHref = `${config.serverURL}${config.routes.api}/quote-requests/export-csv${exportQueryString ? `?${exportQueryString}` : ''}`
 
   const applyFilter = (updates: Record<string, string | null>) => {
-    const next = new URLSearchParams(searchParams.toString())
+    const where = new Map<string, unknown>(Object.entries(query.where ?? {}))
     for (const [key, val] of Object.entries(updates)) {
+      const match = /^where\[(\w+)\]\[(\w+)\]$/.exec(key)
+      const field = match?.[1]
+      const operator = match?.[2]
+      if (field === undefined || operator === undefined) {
+        continue
+      }
+      const current = where.get(field)
+      const constraint = new Map<string, unknown>(
+        typeof current === 'object' && current !== null ? Object.entries(current) : [],
+      )
       if (val === null || val === '') {
-        next.delete(key)
+        constraint.delete(operator)
       } else {
-        next.set(key, val)
+        constraint.set(operator, val)
+      }
+      if (constraint.size === 0) {
+        where.delete(field)
+      } else {
+        where.set(field, Object.fromEntries(constraint))
       }
     }
-    next.set('page', '1')
-    const qs = next.toString()
-    router.push(qs ? `${pathname}?${qs}` : pathname)
+    void refineListData({ where: Object.fromEntries(where) as Where, page: 1 })
   }
 
   const setDateDaysAgo = (days: number | null) => {
@@ -138,7 +168,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
         <button
           type="button"
           onClick={() => {
-            applyFilter({ 'where[assignedTo][exists]': null })
+            applyFilter({ 'where[assignedTo][exists]': null, 'where[assignedTo][equals]': null })
           }}
           style={{
             padding: '0.2rem 0.65rem',
@@ -160,6 +190,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           type="button"
           onClick={() => {
             applyFilter({
+              'where[assignedTo][equals]': null,
               'where[assignedTo][exists]': activeAssignedExists === 'true' ? null : 'true',
             })
           }}
@@ -184,6 +215,7 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           type="button"
           onClick={() => {
             applyFilter({
+              'where[assignedTo][equals]': null,
               'where[assignedTo][exists]': activeAssignedExists === 'false' ? null : 'false',
             })
           }}
@@ -204,6 +236,33 @@ export const QuoteRequestsFilterBar: React.FC = () => {
         >
           {isEnglish ? 'Unassigned' : 'غير معيّن'}
         </button>
+        {myId !== '' ? (
+          <button
+            type="button"
+            data-testid="quote-filter-mine"
+            aria-pressed={activeMine}
+            onClick={() => {
+              applyFilter({
+                'where[assignedTo][exists]': null,
+                'where[assignedTo][equals]': activeMine ? null : myId,
+              })
+            }}
+            style={{
+              padding: '0.2rem 0.65rem',
+              borderRadius: '9999px',
+              fontSize: '0.75rem',
+              fontWeight: activeMine ? 700 : 500,
+              border: activeMine
+                ? '1px solid var(--theme-elevation-500)'
+                : '1px solid var(--theme-elevation-200)',
+              background: activeMine ? 'var(--theme-elevation-150)' : 'transparent',
+              color: 'var(--theme-text, inherit)',
+              cursor: 'pointer',
+            }}
+          >
+            {isEnglish ? 'Mine' : 'طلباتي'}
+          </button>
+        ) : null}
       </div>
 
       {/* Date quick filters */}
@@ -269,6 +328,17 @@ export const QuoteRequestsFilterBar: React.FC = () => {
           {isEnglish ? 'Last 30 days' : 'آخر 30 يوماً'}
         </button>
       </div>
+
+      {user?.role === 'admin' ? (
+        <a
+          href={exportHref}
+          data-testid="quote-export-csv"
+          className="btn btn--style-secondary btn--size-small"
+          style={{ marginInlineStart: 'auto' }}
+        >
+          {isEnglish ? 'Export CSV (current filter)' : 'تصدير CSV (حسب التصفية الحالية)'}
+        </a>
+      ) : null}
     </div>
   )
 }

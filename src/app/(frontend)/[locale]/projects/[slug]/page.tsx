@@ -11,6 +11,7 @@ import { CtaBand } from '@/components/CtaBand'
 import { Eyebrow } from '@/components/Eyebrow'
 import { type LightboxSlide, ProjectGallery } from '@/components/Lightbox'
 import { resolveMediaAsset } from '@/components/media-utils'
+import { buildPageOpenGraph } from '@/components/open-graph'
 import { ProjectCard } from '@/components/ProjectCard'
 import { revealAttributes } from '@/components/Reveal'
 import { hasLexicalContent, RichTextRenderer } from '@/components/RichTextRenderer'
@@ -251,9 +252,23 @@ export async function generateMetadata({ params }: ProjectDetailPageProps): Prom
     siteSettings?.defaultSeo?.description ||
     undefined
 
+  const ogImage =
+    resolveMediaAsset(project.meta?.image, project.title, 'og') ??
+    resolveMediaAsset(project.coverImage, project.title, 'og') ??
+    resolveMediaAsset(siteSettings?.defaultSeo?.image, project.title, 'og')
+
   return {
     title,
     description,
+    openGraph: buildPageOpenGraph({
+      title,
+      description,
+      siteName: siteSettings?.companyName.trim() || undefined,
+      path: `/${rawLocale}/projects/${project.slug}`,
+      locale: rawLocale,
+      image: ogImage,
+      type: 'article',
+    }),
     alternates: {
       canonical: `/${rawLocale}/projects/${project.slug}`,
       languages: buildHreflangAlternates(

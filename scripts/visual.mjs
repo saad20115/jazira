@@ -1,0 +1,135 @@
+// P3-T10 §6 — visual evidence pack (`pnpm visual`).
+// Captures every public page at 1440 / 768 / 390 in `en` and `ar` into docs/reports/phase-3/visual/,
+// and writes index.html placing each 1440 `en` capture next to its Figma export in design/screenshots/pages/.
+//
+// Usage: SERVER_URL=http://localhost:3000 pnpm visual
+// Needs a running server with Arabic switched on in site-settings (the script refuses otherwise,
+// because /ar would redirect to /en and the Arabic captures would be English).
+// Captures are evidence for review, not numbers of record.
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
+
+import { chromium } from '@playwright/test'
+
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const OUT_DIR = path.join(REPO_ROOT, 'docs', 'reports', 'phase-3', 'visual')
+const FIGMA_DIR = path.join(REPO_ROOT, 'design', 'screenshots', 'pages')
+const BASE_URL = (process.env.SERVER_URL ?? 'http://localhost:3000').replace(/\/+$/, '')
+const WIDTHS = [1440, 768, 390]
+const LOCALES = ['en', 'ar']
+
+async function pickProjectSlug() {
+  const xml = await (await fetch(`${BASE_URL}/sitemap.xml`)).text()
+  const slugs = [...xml.matchAll(/<loc>[^<]*\/en\/projects\/([^<]+)<\/loc>/g)].map((m) =>
+    decodeURIComponent(m[1]),
+  )
+  if (slugs.length === 0) {
+    throw new Error('No published project in /sitemap.xml; seed the database first.')
+  }
+  // The Figma project-detail frame is Sofitel Makkah; use it when it is published.
+  return slugs.find((slug) => slug.includes('sofitel')) ?? slugs[0]
+}
+
+async function assertArabicIsOn() {
+  const response = await fetch(`${BASE_URL}/ar`, { redirect: 'manual' })
+  if (response.status !== 200) {
+    throw new Error(
+      `/ar answered ${response.status}; switch Arabic on in site-settings before running pnpm visual.`,
+    )
+  }
+}
+
+function escapeHtml(value) {
+  return String(value).replace(
+    /[&<>"]/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c],
+  )
+}
+
+async function main() {
+  await assertArabicIsOn()
+  const projectSlug = await pickProjectSlug()
+  const pages = [
+    { key: '01-home', path: '', figma: '01-home.png' },
+    { key: '02-services', path: '/services', figma: '02-services.png' },
+    { key: '03-about-us', path: '/about', figma: '03-about-us.png' },
+    { key: '04-projects', path: '/projects', figma: '04-projects.png' },
+    {
+      key: '05-project-detail',
+      path: `/projects/${encodeURIComponent(projectSlug)}`,
+      figma: '05-project-detail-sofitel-makkah.png',
+    },
+    { key: '07-contact-us', path: '/contact', figma: '07-contact-us.png' },
+  ]
+
+  fs.mkdirSync(OUT_DIR, { recursive: true })
+  const browser = await chromium.launch()
+  const written = []
+  try {
+    for (const locale of LOCALES) {
+      for (const width of WIDTHS) {
+        const context = await browser.newContext({
+          viewport: { width, height: 900 },
+          reducedMotion: 'reduce',
+          deviceScaleFactor: 1,
+        })
+        await context.addInitScript(() => {
+          window.sessionStorage.setItem('aljazira_intro_seen', '1')
+        })
+        const page = await context.newPage()
+        for (const entry of pages) {
+          const url = `${BASE_URL}/${locale}${entry.path}`
+          const response = await page.goto(url, { waitUntil: 'networkidle' })
+          if (!response || response.status() !== 200) {
+            throw new Error(`${url} answered ${response?.status() ?? 'no response'}`)
+          }
+          const file = `${entry.key}-${locale}-${width}.jpg`
+          // JPEG keeps the committed pack small (full-page PNGs were about 70 MB).
+          await page.screenshot({
+            path: path.join(OUT_DIR, file),
+            fullPage: true,
+            type: 'jpeg',
+            quality: 80,
+          })
+          written.push(file)
+        }
+        await context.close()
+      }
+    }
+  } finally {
+    await browser.close()
+  }
+
+  const rows = pages
+    .map((entry) => {
+      const figmaPath = path.join(FIGMA_DIR, entry.figma)
+      const figmaRel = path.relative(OUT_DIR, figmaPath).split(path.sep).join('/')
+      const figmaCell = fs.existsSync(figmaPath)
+        ? `<img src="${escapeHtml(figmaRel)}" alt="Figma ${escapeHtml(entry.key)}">`
+        : '<p>No Figma export</p>'
+      return `<tr><th scope="row">${escapeHtml(entry.key)}</th><td>${figmaCell}</td><td><img src="${escapeHtml(
+        `${entry.key}-en-1440.jpg`,
+      )}" alt="Site ${escapeHtml(entry.key)} en 1440"></td></tr>`
+    })
+    .join('\n')
+  const index = `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Phase 3 visual pack</title>
+<style>body{font-family:system-ui,sans-serif;margin:16px}table{border-collapse:collapse;width:100%}
+td,th{border:1px solid #ccc;vertical-align:top;padding:8px}img{width:100%;height:auto}</style></head>
+<body><h1>Phase 3 visual pack — Figma (left) vs site at 1440 en (right)</h1>
+<p>Generated by <code>pnpm visual</code> against ${escapeHtml(BASE_URL)}. Project detail page: ${escapeHtml(
+    projectSlug,
+  )}. Every capture: ${written.length} files (6 pages × 3 widths × 2 locales). Not numbers of record.</p>
+<table><thead><tr><th>Page</th><th>Figma</th><th>Site (en, 1440)</th></tr></thead><tbody>
+${rows}
+</tbody></table></body></html>
+`
+  fs.writeFileSync(path.join(OUT_DIR, 'index.html'), index)
+  console.log(`wrote ${written.length} captures and index.html to ${OUT_DIR}`)
+}
+
+main().catch((error) => {
+  console.error(error instanceof Error ? error.message : error)
+  process.exit(1)
+})

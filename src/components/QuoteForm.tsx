@@ -33,10 +33,22 @@ import {
 
 import styles from './QuoteForm.module.css'
 
+/** Generic, form-level failure codes from the server (P5-T1 §3: no internal details). */
+export type QuoteFormErrorCode = 'invalid' | 'rateLimited' | 'unavailable'
+
 export interface QuoteFormSubmitResult {
   ok: boolean
   fieldErrors?: Partial<Record<QuoteFieldErrorKey, string>>
+  formError?: QuoteFormErrorCode
 }
+
+const STEP_1_FIELD_KEYS = new Set<string>([
+  'projectType',
+  'projectStage',
+  'servicesNeeded',
+  'projectLocation',
+])
+const STEP_2_FIELD_KEYS = new Set<string>(['name', 'company', 'phone', 'email', 'preferredContact'])
 
 export interface QuoteFormProps {
   locale: SupportedLocale
@@ -44,6 +56,8 @@ export interface QuoteFormProps {
   initialStep?: 1 | 2 | 3
   initialSuccessOpen?: boolean
   onSubmitAction?: (payload: QuoteSubmissionPayload) => Promise<QuoteFormSubmitResult>
+  /** P5-T1: fetches the server-signed "form opened at" token once, when the form mounts. */
+  onStartAction?: () => Promise<string>
 }
 
 export function resolvePhoneCandidate(rawPhone: string): string {
@@ -160,6 +174,7 @@ export function QuoteForm({
   initialStep = 1,
   initialSuccessOpen = false,
   onSubmitAction,
+  onStartAction,
 }: QuoteFormProps): ReactElement {
   const dict = getDictionary(locale)
   const resolvedSourcePage = sourcePage ?? `/${locale}/contact`
@@ -184,10 +199,27 @@ export function QuoteForm({
   const [consent, setConsent] = useState<boolean>(false)
   const [honeypot, setHoneypot] = useState<string>('')
   const [startedAtMs] = useState<number>(() => Date.now())
+  const [startToken, setStartToken] = useState<string>('')
 
   const [errors, setErrors] = useState<Partial<Record<QuoteFieldErrorKey, string>>>({})
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
   const [isSuccessOpen, setIsSuccessOpen] = useState<boolean>(initialSuccessOpen)
+  const [formError, setFormError] = useState<QuoteFormErrorCode | null>(null)
+
+  useEffect(() => {
+    if (!onStartAction) return
+    let cancelled = false
+    onStartAction()
+      .then((token) => {
+        if (!cancelled) setStartToken(token)
+      })
+      .catch(() => {
+        // No token means the server answers "check the form"; the visitor can retry.
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [onStartAction])
 
   // Refs for moving focus to the first invalid control (`P3-T9` acceptance criterion #4)
   const firstServiceChipRef = useRef<HTMLButtonElement | null>(null)
@@ -201,14 +233,17 @@ export function QuoteForm({
   const formContainerRef = useRef<HTMLDivElement | null>(null)
   const modalCloseBtnRef = useRef<HTMLButtonElement | null>(null)
 
+  const isDialogOpen = isSuccessOpen || formError !== null
+
   useEffect(() => {
-    if (!isSuccessOpen) return
+    if (!isDialogOpen) return
     modalCloseBtnRef.current?.focus()
 
     const handleGlobalKeyDown = (event: KeyboardEvent): void => {
       if (event.key === 'Escape') {
         event.preventDefault()
         setIsSuccessOpen(false)
+        setFormError(null)
         requestAnimationFrame(() => {
           formContainerRef.current?.querySelector<HTMLButtonElement>('[data-quote-submit]')?.focus()
         })
@@ -219,7 +254,7 @@ export function QuoteForm({
     return () => {
       window.removeEventListener('keydown', handleGlobalKeyDown)
     }
-  }, [isSuccessOpen])
+  }, [isDialogOpen])
 
   const toggleService = (service: QuoteServiceNeeded): void => {
     setServicesNeeded((prev) => {
@@ -362,22 +397,37 @@ export function QuoteForm({
       sourcePage: resolvedSourcePage,
       honeypot,
       startedAtMs,
+      startToken,
+      turnstileToken: '',
     }
 
     setErrors({})
+    setFormError(null)
     setIsSubmitting(true)
     try {
       if (onSubmitAction) {
         const result = await onSubmitAction(payload)
-        if (!result.ok && result.fieldErrors) {
-          setErrors(result.fieldErrors)
-          if (result.fieldErrors.consent) {
-            consentInputRef.current?.focus()
+        if (!result.ok) {
+          if (result.fieldErrors && Object.keys(result.fieldErrors).length > 0) {
+            const serverErrors = result.fieldErrors
+            setErrors(serverErrors)
+            const keys = Object.keys(serverErrors)
+            if (keys.some((key) => STEP_1_FIELD_KEYS.has(key))) {
+              setStep(1)
+            } else if (keys.some((key) => STEP_2_FIELD_KEYS.has(key))) {
+              setStep(2)
+            } else if (serverErrors.consent) {
+              consentInputRef.current?.focus()
+            }
+            return
           }
+          setFormError(result.formError ?? 'unavailable')
           return
         }
       }
       setIsSuccessOpen(true)
+    } catch {
+      setFormError('unavailable')
     } finally {
       setIsSubmitting(false)
     }
@@ -385,6 +435,7 @@ export function QuoteForm({
 
   const handleCloseSuccessModal = (): void => {
     setIsSuccessOpen(false)
+    setFormError(null)
     requestAnimationFrame(() => {
       formContainerRef.current?.querySelector<HTMLButtonElement>('[data-quote-submit]')?.focus()
     })
@@ -1072,6 +1123,76 @@ export function QuoteForm({
           </div>
         </div>
       ) : null}
+
+      {/* ====================================================================
+          Overlay: Message Failed (docs/05-design.md decision 10: the "Message sent" dialog
+          with the danger icon and a retry button). Generic text only (P5-T1 §3).
+          ==================================================================== */}
+      {formError !== null ? (
+        <div
+          className={styles.modalBackdrop}
+          role="alertdialog"
+          aria-modal="true"
+          aria-labelledby="quote-message-failed-title"
+          aria-describedby="quote-message-failed-body"
+          data-component="message-failed-dialog"
+          data-form-error={formError}
+          onKeyDown={handleModalKeyDown}
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              handleCloseSuccessModal()
+            }
+          }}
+        >
+          <div className={styles.modalCard}>
+            <div
+              className={`${styles.modalEmblemOuter} ${styles.modalEmblemDanger}`}
+              aria-hidden="true"
+            >
+              <FailedEmblemSvg />
+            </div>
+
+            <h3 id="quote-message-failed-title" className={`${styles.modalTitle} t-h3`}>
+              {dict.overlays.messageFailedTitle}
+            </h3>
+
+            <p id="quote-message-failed-body" className={`${styles.modalBody} t-body-m`}>
+              {formError === 'rateLimited'
+                ? dict.overlays.messageFailedRateLimited
+                : formError === 'invalid'
+                  ? dict.overlays.messageFailedInvalid
+                  : dict.overlays.messageFailedUnavailable}
+            </p>
+
+            <button
+              ref={modalCloseBtnRef}
+              type="button"
+              onClick={handleCloseSuccessModal}
+              className={`${styles.modalCloseBtn} t-label-button`}
+              data-modal-close
+            >
+              {dict.actions.tryAgain}
+            </button>
+          </div>
+        </div>
+      ) : null}
     </>
+  )
+}
+
+function FailedEmblemSvg(): ReactElement {
+  return (
+    <svg
+      width="40"
+      height="40"
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+      <path d="M12 7v6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="12" cy="16.5" r="1.2" fill="currentColor" />
+    </svg>
   )
 }

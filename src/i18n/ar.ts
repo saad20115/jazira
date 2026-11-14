@@ -129,6 +129,7 @@ export interface UiDictionary {
     showAll: string
     readMore: string
     backToHome: string
+    tryAgain: string
     backToProjects: string
     backToServices: string
     openInGoogleMaps: string
@@ -150,6 +151,7 @@ export interface UiDictionary {
     notFoundCode: string
     notFoundTitle: string
     notFoundDescription: string
+    serverErrorCode: string
     serverErrorTitle: string
     serverErrorDescription: string
   }
@@ -259,6 +261,10 @@ export interface UiDictionary {
     messageSentTitle: string
     messageSentBody: string
     backToWebsite: string
+    messageFailedTitle: string
+    messageFailedInvalid: string
+    messageFailedRateLimited: string
+    messageFailedUnavailable: string
   }
   privacy: {
     emptyNotice: string
@@ -491,6 +497,7 @@ export const arDictionary = {
     showAll: 'إظهار الكل',
     readMore: 'اقرأ المزيد',
     backToHome: 'العودة إلى الرئيسية',
+    tryAgain: 'حاول مرة أخرى',
     backToProjects: 'العودة إلى المشاريع',
     backToServices: 'العودة إلى الخدمات',
     openInGoogleMaps: 'فتح في خرائط Google',
@@ -512,6 +519,7 @@ export const arDictionary = {
     notFoundCode: '404',
     notFoundTitle: 'الصفحة غير موجودة',
     notFoundDescription: 'عذراً، الصفحة التي تبحث عنها غير متوفرة أو تم نقلها.',
+    serverErrorCode: '500',
     serverErrorTitle: 'حدث خطأ غير متوقع',
     serverErrorDescription: 'يرجى المحاولة مرة أخرى بعد قليل.',
   },
@@ -623,6 +631,10 @@ export const arDictionary = {
     messageSentBody:
       'شكراً لتواصلكم مع شركة الجزيرة الإمداد الذكي. سيتواصل معكم فريقنا في أقرب وقت ممكن.',
     backToWebsite: 'العودة إلى الموقع',
+    messageFailedTitle: 'لم يتم إرسال طلبك',
+    messageFailedInvalid: 'يرجى مراجعة بيانات النموذج ثم المحاولة مرة أخرى.',
+    messageFailedRateLimited: 'محاولات كثيرة خلال وقت قصير. يرجى المحاولة لاحقاً.',
+    messageFailedUnavailable: 'حدث خطأ مؤقت من جهتنا. يرجى المحاولة مرة أخرى بعد قليل.',
   },
   privacy: {
     emptyNotice: 'يتم حالياً إعداد محتوى سياسة الخصوصية للنشر.',

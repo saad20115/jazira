@@ -12,6 +12,7 @@ import { CtaBand } from '@/components/CtaBand'
 import { Eyebrow } from '@/components/Eyebrow'
 import { CornerBracketIcon } from '@/components/icons'
 import { resolveMediaAsset } from '@/components/media-utils'
+import { buildPageOpenGraph } from '@/components/open-graph'
 import { PageHeader } from '@/components/PageHeader'
 import { ProjectCard } from '@/components/ProjectCard'
 import { revealAttributes } from '@/components/Reveal'
@@ -230,6 +231,11 @@ export async function generateMetadata({ params }: ProjectsPageProps): Promise<M
     siteSettings?.defaultSeo?.description ||
     undefined
 
+  const ogImage =
+    resolveMediaAsset(projectsPage?.meta?.image, title, 'og') ??
+    resolveMediaAsset(projectsPage?.pageHeader?.image, title, 'og') ??
+    resolveMediaAsset(siteSettings?.defaultSeo?.image, title, 'og')
+
   return {
     title,
     description,
@@ -237,6 +243,14 @@ export async function generateMetadata({ params }: ProjectsPageProps): Promise<M
       canonical: `/${rawLocale}/projects`,
       languages: buildHreflangAlternates('/projects', siteSettings?.arabicEnabled === true),
     },
+    openGraph: buildPageOpenGraph({
+      title,
+      description,
+      siteName: siteSettings?.companyName.trim() || undefined,
+      path: `/${rawLocale}/projects`,
+      locale: rawLocale,
+      image: ogImage,
+    }),
   }
 }
 

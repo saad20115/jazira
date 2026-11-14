@@ -123,6 +123,7 @@ export const enDictionary = {
     showAll: 'Show All',
     readMore: 'Read More',
     backToHome: 'Back to Home',
+    tryAgain: 'Try Again',
     backToProjects: 'Back to Projects',
     backToServices: 'Back to Services',
     openInGoogleMaps: 'Open in Google Maps',
@@ -144,6 +145,7 @@ export const enDictionary = {
     notFoundCode: '404',
     notFoundTitle: 'Page Not Found',
     notFoundDescription: 'The page you are looking for does not exist or has been moved.',
+    serverErrorCode: '500',
     serverErrorTitle: 'Something Went Wrong',
     serverErrorDescription: 'Please try again in a moment.',
   },
@@ -255,6 +257,10 @@ export const enDictionary = {
     messageSentBody:
       'Thank you for contacting Al Jazira for Imdad Smart Company. Our team will get back to you as soon as possible.',
     backToWebsite: 'Back to Website',
+    messageFailedTitle: 'Your Request Was Not Sent',
+    messageFailedInvalid: 'Please check the form and try again.',
+    messageFailedRateLimited: 'Too many attempts in a short time. Please try again later.',
+    messageFailedUnavailable: 'Something went wrong on our side. Please try again in a moment.',
   },
   privacy: {
     emptyNotice: 'Privacy policy content is currently being prepared for publication.',
