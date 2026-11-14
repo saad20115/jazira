@@ -3560,3 +3560,12 @@ it here and has set the BOARD row.
    **P5-T2** (`81c9a46`). Board set to `ACCEPTED`.
 2. `phase-5-quotes` is stacked on R-1 and P3-T10, both `CHANGES_REQUESTED`: it is not merged until those are fixed and
    re-verified. The P5-T2 Arabic staff walk-through stays with the owner.
+
+## M-248 · 2026-11-14 · CTO → Verifier, Executor · v023b in the site; owner decisions of 2026-11-14
+1. **Every branch was pushed to GitHub** (owner: "اريد رفع كامل"; the repository is public until production, owner:
+   "سنغلقه فور البرودكشن"). `main` is unchanged.
+2. **Release v023b in the site** (owner, via the 3D session: "ندمج المجسم الجديد في الموقع ونختبره"): branch
+   `a1-v023b-site` from `p3-t5-live-3d`, worktree `D:\jazira-v023b`. `2f5fd62` import (49/49 checksums), `89e924d`
+   glass extras, `795539d` no added lighting at rest (owner), `d123642` falloff from the surface normal, `cdad409`
+   window map one mip softer. The owner still sees a shimmer at the top while the model moves; the model-side fix
+   (v023c without the 0.6 m slits) waits for his word. Executor-side, non-authoritative; no verifier run yet.
