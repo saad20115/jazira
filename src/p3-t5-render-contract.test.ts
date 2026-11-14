@@ -44,10 +44,10 @@ describe('P3-T5 render contract constants equal the pinned release manifest', ()
     expect(RELEASE).toBe(stillsManifest.release)
     expect(manifest.files.map((f) => f.file).sort()).toEqual(['tower-lite.glb', 'tower.glb'])
     expect(MODEL_FILES).toEqual({
-      full: '/systems/v022n/tower.glb',
-      lite: '/systems/v022n/tower-lite.glb',
+      full: '/systems/v023b/tower.glb',
+      lite: '/systems/v023b/tower-lite.glb',
     })
-    expect(BASIS_TRANSCODER_PATH).toBe('/systems/v022n/basis/')
+    expect(BASIS_TRANSCODER_PATH).toBe('/systems/v023b/basis/')
   })
 
   it('bloom, AgX look and interior mapping', () => {
@@ -83,7 +83,11 @@ describe('P3-T5 O-5: the live look names only materials of the release', () => {
 
   it('every per-material emissive scale names a material of both models, and scales are sane', () => {
     const names = Object.keys(LIVE_LOOK.materialEmissive)
-    expect(names.length).toBeGreaterThan(0)
+    // v023b (owner 2026-11-14, "اذا كنت انت وضعت اضاءه اضافية احذفها"): no per-material lift; every
+    // baked emission is at the model's own level.
+    expect(names).toEqual([])
+    expect(LIVE_LOOK.emissiveScale).toBe(1)
+    expect(LIVE_LOOK.exposureScale).toBe(1)
     for (const file of ['tower.glb', 'tower-lite.glb']) {
       const inModel = materialNames(file)
       for (const name of names) {
@@ -120,8 +124,11 @@ describe('P3-T5 O-5: the live look names only materials of the release', () => {
     const [r, g, b] = LIVE_LOOK.keySheen.color
     expect(r).toBeGreaterThan(g)
     expect(g).toBeGreaterThan(b)
-    expect(LIVE_LOOK.keySheen.strength).toBeGreaterThan(0)
-    expect(LIVE_LOOK.keySheen.strength).toBeLessThanOrEqual(1)
+    // v023b (owner 2026-11-14): no sheen and no key or fill on the model at rest; the key and fill
+    // light the equipment inside a system only.
+    expect(LIVE_LOOK.keySheen.strength).toBe(0)
+    expect(LIVE_LOOK.restLightScale).toBe(0)
+    expect(LIVE_LOOK.systemLightScale).toBeGreaterThan(LIVE_LOOK.restLightScale)
     expect(LIVE_LOOK.keySheen.sharpness).toBeGreaterThanOrEqual(1)
   })
 })

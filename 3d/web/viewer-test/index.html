@@ -225,6 +225,20 @@ loader.load(`../${model}.glb`, (g) => {
   for (const n of [...FACADE, 'MAT_concrete', 'MAT_concrete_floor']) if (mats[n]) { base[n].opacity = 1; base[n].depthWrite = true; setOpaque(mats[n]); }
   for (const s of SYSTEMS) if (mats[`MAT_${s}_glow`]) mats[`MAT_${s}_glow`].visible = false;   // glow only when entered
   if (useInterior) for (const n of INTERIOR) if (mats[n]) addInterior(mats[n]);
+  let wvf = root.userData.window_view_falloff;            // v023b: windows dim with the view angle (extras)
+  if (P.get('falloff') && P.get('falloff') !== '0') {      // test override: ?falloff=min,power
+    const [mn, lo, hi] = P.get('falloff').split(',').map(Number);
+    wvf = { materials: INTERIOR, min: mn, lo, hi };
+  }
+  if (wvf && P.get('falloff') !== '0') {
+    falloffU.awMin.value = wvf.min; falloffU.awLo.value = wvf.lo; falloffU.awHi.value = wvf.hi;
+    for (const n of wvf.materials) if (mats[n]) addGlassFx(mats[n], true, 0);
+  }
+  const lgc = root.userData.lit_glass_clarity;            // v023b: clear glass in front of lit rooms (extras)
+  if (lgc && P.get('clarity') !== '0') {
+    clarityU.acLo.value = lgc.lo; clarityU.acHi.value = lgc.hi;
+    for (const [n, c] of Object.entries(lgc.materials)) if (mats[n]) addGlassFx(mats[n], false, c);
+  }
   const heroCam = nodes['CAM_hero'].isCamera ? nodes['CAM_hero'] : nodes['CAM_hero'].children.find((c) => c.isCamera);
   root.updateMatrixWorld(true);
   heroCam.getWorldPosition(camera.position); heroCam.getWorldQuaternion(camera.quaternion);
@@ -311,6 +325,50 @@ function addInterior(m) {
   m.needsUpdate = true;
 }
 window.interiorU = interiorU;                       // test hook
+// v023b extras.window_view_falloff: the window emission is scaled by k = min + (1 - min) * |N . V| ^ power, N = the
+// flat face normal (from screen derivatives, so smooth normals / normal maps do not matter), V = the view ray. Seen
+// head-on the rooms show; seen at a grazing angle the glass mirrors the sky. Turning the model swaps near and far.
+// Inserted before the lights so it composes with the interior mapping (which replaces emissivemap_fragment).
+// Measured in plan (world up removed from both vectors), so looking down on the tower does not dim every face:
+// f = |N . V| in plan, k = min + (1 - min) * smoothstep(lo, hi, f).
+// v023b extras.lit_glass_clarity: glass in front of a lit room is clear, so its mirror reflection is cut:
+// specular (and clearcoat) *= 1 - clarity * smoothstep(lo, hi, lit), lit = the emissive map's brightest channel.
+// One shader for both effects; each material has its own uniforms (falloff off = awMin 1, clarity off = 0).
+const falloffU = { awMin: { value: 0.08 }, awLo: { value: 0.3 }, awHi: { value: 0.8 } };
+const clarityU = { acLo: { value: 0.03 }, acHi: { value: 0.30 } };
+const glassFx = {};                                 // material name -> its uniforms (test hook)
+const FALLOFF_GLSL = /* glsl */`
+  float awLit = max(totalEmissiveRadiance.r, max(totalEmissiveRadiance.g, totalEmissiveRadiance.b)) /
+                max(max(emissive.r, max(emissive.g, emissive.b)), 1e-4);
+  { vec3 awN = normalize(cross(dFdx(vViewPosition), dFdy(vViewPosition)));
+    vec3 awNw = (vec4(awN, 0.0) * viewMatrix).xyz, awVw = (vec4(normalize(vViewPosition), 0.0) * viewMatrix).xyz;
+    awNw.y = 0.0; awVw.y = 0.0;
+    float awF = abs(dot(normalize(awNw + 1e-5), normalize(awVw + 1e-5)));
+    totalEmissiveRadiance *= mix(awMin, 1.0, smoothstep(awLo, awHi, awF)); }
+#include <lights_physical_fragment>`;
+const CLARITY_GLSL = /* glsl */`
+#include <lights_fragment_end>
+  { float acK = 1.0 - acClarity * smoothstep(acLo, acHi, awLit);
+    reflectedLight.directSpecular *= acK; reflectedLight.indirectSpecular *= acK;
+  #ifdef USE_CLEARCOAT
+    clearcoatSpecularDirect *= acK; clearcoatSpecularIndirect *= acK;
+  #endif
+  }`;
+function addGlassFx(m, falloff, clarity) {
+  if (glassFx[m.name]) { if (falloff) glassFx[m.name].awMin = falloffU.awMin; glassFx[m.name].acClarity.value = Math.max(glassFx[m.name].acClarity.value, clarity); return; }
+  const u = glassFx[m.name] = { awMin: falloff ? falloffU.awMin : { value: 1.0 }, awLo: falloffU.awLo, awHi: falloffU.awHi,
+                                acClarity: { value: clarity }, acLo: clarityU.acLo, acHi: clarityU.acHi };
+  const prev = m.onBeforeCompile, key = m.customProgramCacheKey ? m.customProgramCacheKey() : '';
+  m.onBeforeCompile = (sh, r) => {
+    if (prev) prev.call(m, sh, r);
+    Object.assign(sh.uniforms, glassFx[m.name]);
+    sh.fragmentShader = 'uniform float awMin;\nuniform float awLo;\nuniform float awHi;\nuniform float acClarity;\nuniform float acLo;\nuniform float acHi;\n' +
+      sh.fragmentShader.replace('#include <lights_physical_fragment>', FALLOFF_GLSL).replace('#include <lights_fragment_end>', CLARITY_GLSL);
+  };
+  m.customProgramCacheKey = () => key + '|glassfx-v023b';
+  m.needsUpdate = true;
+}
+window.falloffU = falloffU; window.glassFx = glassFx;   // test hooks
 
 function setFade(m, opacity) {
   if (!m.transparent) m.needsUpdate = true;

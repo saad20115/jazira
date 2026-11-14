@@ -1,14 +1,14 @@
 {
- "generated": "2026-10-25T11:22:37.499Z",
+ "generated": "2026-11-11T22:37:07.909Z",
  "files": [
   {
    "file": "tower.glb",
-   "bytes": 7081536,
-   "sha256": "2fd419908dbe8bacdc97c08ba6ac26b75b61d30c65b6785653ab897f8fcd8af5",
+   "bytes": 7124096,
+   "sha256": "d7e975d913a5a018ce670761a4654c8da07950b95645221c439a379f76d763a9",
    "budgetBytes": 8000000,
-   "gpuTextureEstimate": 12860779,
+   "gpuTextureEstimate": 13024619,
    "gpuTextureCap": 24000000,
-   "trianglesStored": 61496,
+   "trianglesStored": 63800,
    "extensionsUsed": [
     "EXT_mesh_gpu_instancing",
     "EXT_meshopt_compression",
@@ -17,16 +17,24 @@
     "KHR_materials_specular",
     "KHR_materials_variants",
     "KHR_mesh_quantization",
-    "KHR_texture_basisu",
-    "KHR_texture_transform"
+    "KHR_texture_basisu"
    ],
    "extensionsRequired": [
     "EXT_meshopt_compression",
     "KHR_mesh_quantization",
-    "KHR_texture_basisu",
-    "KHR_texture_transform"
+    "KHR_texture_basisu"
    ],
    "textures": [
+    {
+     "name": "tex_roomlight_sky",
+     "codec": "UASTC",
+     "size": [
+      512,
+      256
+     ],
+     "bytes": 9371,
+     "gpuEstimate": 174763
+    },
     {
      "name": "tex_roomlight",
      "codec": "UASTC",
@@ -74,7 +82,7 @@
       8,
       128
      ],
-     "bytes": 1470,
+     "bytes": 1415,
      "gpuEstimate": 1365
     },
     {
@@ -84,18 +92,8 @@
       2048,
       1536
      ],
-     "bytes": 209312,
+     "bytes": 192656,
      "gpuEstimate": 2097152
-    },
-    {
-     "name": "tex_cw_normal",
-     "codec": "UASTC",
-     "size": [
-      64,
-      128
-     ],
-     "bytes": 1633,
-     "gpuEstimate": 10923
     },
     {
      "name": "tex_cw_mr",
@@ -104,7 +102,7 @@
       64,
       24
      ],
-     "bytes": 2451,
+     "bytes": 594,
      "gpuEstimate": 2048
     },
     {
@@ -114,7 +112,7 @@
       1024,
       384
      ],
-     "bytes": 41075,
+     "bytes": 45769,
      "gpuEstimate": 262144
     },
     {
@@ -124,7 +122,7 @@
       1024,
       1024
      ],
-     "bytes": 113079,
+     "bytes": 120094,
      "gpuEstimate": 699051
     },
     {
@@ -191,30 +189,37 @@
   },
   {
    "file": "tower-lite.glb",
-   "bytes": 2109740,
-   "sha256": "382f8f67f83adfcd9f9f7060401a0cfa49da2dcdb0f677273d39dbcebafbe62e",
+   "bytes": 2151664,
+   "sha256": "017367270f596dda41c485bb4892fa16384d6a297fa22a7d92dc95a5aa95a732",
    "budgetBytes": 2500000,
-   "gpuTextureEstimate": 6613005,
+   "gpuTextureEstimate": 6776845,
    "gpuTextureCap": 12000000,
-   "trianglesStored": 52120,
+   "trianglesStored": 54424,
    "extensionsUsed": [
     "EXT_mesh_gpu_instancing",
     "EXT_meshopt_compression",
     "KHR_materials_clearcoat",
     "KHR_materials_emissive_strength",
-    "KHR_materials_specular",
     "KHR_materials_variants",
     "KHR_mesh_quantization",
-    "KHR_texture_basisu",
-    "KHR_texture_transform"
+    "KHR_texture_basisu"
    ],
    "extensionsRequired": [
     "EXT_meshopt_compression",
     "KHR_mesh_quantization",
-    "KHR_texture_basisu",
-    "KHR_texture_transform"
+    "KHR_texture_basisu"
    ],
    "textures": [
+    {
+     "name": "tex_roomlight_sky",
+     "codec": "UASTC",
+     "size": [
+      512,
+      256
+     ],
+     "bytes": 9371,
+     "gpuEstimate": 174763
+    },
     {
      "name": "tex_roomlight",
      "codec": "UASTC",
@@ -256,24 +261,24 @@
      "gpuEstimate": 11
     },
     {
+     "name": "tex_glow_palette",
+     "codec": "ETC1S",
+     "size": [
+      128,
+      16
+     ],
+     "bytes": 954,
+     "gpuEstimate": 1365
+    },
+    {
      "name": "tex_cw_emit_night",
      "codec": "ETC1S",
      "size": [
       2048,
       1536
      ],
-     "bytes": 209312,
+     "bytes": 192656,
      "gpuEstimate": 2097152
-    },
-    {
-     "name": "tex_cw_normal",
-     "codec": "UASTC",
-     "size": [
-      64,
-      128
-     ],
-     "bytes": 1633,
-     "gpuEstimate": 10923
     },
     {
      "name": "tex_cw_mr",
@@ -282,7 +287,7 @@
       64,
       24
      ],
-     "bytes": 2451,
+     "bytes": 594,
      "gpuEstimate": 2048
     },
     {
@@ -292,7 +297,7 @@
       8,
       128
      ],
-     "bytes": 1470,
+     "bytes": 1415,
      "gpuEstimate": 1365
     },
     {
@@ -302,7 +307,7 @@
       1024,
       384
      ],
-     "bytes": 41075,
+     "bytes": 45769,
      "gpuEstimate": 262144
     },
     {
@@ -312,7 +317,7 @@
       1024,
       1024
      ],
-     "bytes": 113079,
+     "bytes": 120094,
      "gpuEstimate": 699051
     },
     {
@@ -352,18 +357,8 @@
       1024,
       1024
      ],
-     "bytes": 131158,
+     "bytes": 131133,
      "gpuEstimate": 699051
-    },
-    {
-     "name": "tex_glow_palette",
-     "codec": "ETC1S",
-     "size": [
-      128,
-      16
-     ],
-     "bytes": 954,
-     "gpuEstimate": 1365
     },
     {
      "name": "tex_hvac_fans",
@@ -398,8 +393,8 @@
   "fov_y": 0.55426,
   "tower_height": 88.75,
   "tower_fill_at_max": 0.55,
-  "hero_distance": 381.16,
-  "hero_shift_y": 0.1475,
+  "hero_distance": 225,
+  "hero_shift_y": 0.2135,
   "note": "OrbitControls: min/maxDistance, min/maxPolarAngle; clamp controls.target to pan_center + pan_radius; keep camera.y >= min_camera_height (glTF Y up)"
  },
  "runtime": {
@@ -418,7 +413,7 @@
  },
  "tools": {
   "gltfTransform": "4.5.1",
-  "toktx": "'toktx' is not recognized as an internal or external command, operable program or batch file."
+  "toktx": "toktx v4.4.2"
  },
  "render": {
   "tone_mapping": {

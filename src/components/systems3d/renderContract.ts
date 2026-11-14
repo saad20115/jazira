@@ -4,7 +4,7 @@
  * `src/p3-t5-render-contract.test.ts`. No three.js import.
  */
 
-export const RELEASE = 'v022n'
+export const RELEASE = 'v023b'
 export const RELEASE_BASE_PATH = `/systems/${RELEASE}`
 
 export const MODEL_FILES = {
@@ -143,6 +143,8 @@ export interface LiveLook {
    * raised, which would grey the faded façade glass.
    */
   systemLightScale: number
+  /** The key and fill at rest, as a share of their intensity (v023b: 0, the model's own light). */
+  restLightScale: number
   systemExposureScale: number
   /**
    * Inside a system, the façade glass glow and reflection are scaled by this, so the faded layers of
@@ -165,19 +167,25 @@ export interface LiteGroundTint {
  * palm geometry/LOD (3D-lead list in the report), not a colour.
  */
 export const LITE_GROUND_TINT: LiteGroundTint = {
-  paving: [2.6, 2.3, 1.9],
+  // v023b (owner 2026-11-14, "اذا كنت انت وضعت اضاءه اضافية احذفها"): the plaza keeps the
+  // release's own baked light; the O-5 lift (2.6 / 2.3 / 1.9) is gone.
+  paving: [1, 1, 1],
   vegetation: [0.85, 0.95, 0.65],
 }
 /**
- * O-5 (round 3): brighter and warmer than the V-1 calibration of 2026-10-25 (exposure 0.84, emissive
- * 0.78): lit glazing and lobby, gold pilasters and crown caught by a warm key, the plaza and palms
- * lifted by the fill, and more light inside the systems. Judged by eye against the Figma render
- * (`docs/reports/evidence/P3-T5/r3/lighting/`).
+ * v023b (owner 2026-11-14: the live picture looked washed out, "اذا كنت انت وضعت اضاءه اضافية
+ * احذفها"): no light of the site's own on the model at rest. The release carries its lighting (the
+ * window map read from the Figma render, the lobby spill, the moon, the exposure), so:
+ * - every baked emission at the model's own level (`emissiveScale` 1, no per-material lift; O-5 had
+ *   glazing × 1.5, lobby × 1.8, gold × 2, crown × 1.8, the rest × 0.66);
+ * - no warm key or sky fill at rest (`restLightScale` 0) and no key sheen on the façade;
+ * - inside a system the key and fill still light the equipment (`systemLightScale`), as before.
+ * Tints that only darken or colour (asphalt, plinth, room floor, palms) are kept.
  */
 export const LIVE_LOOK: LiveLook = {
   exposureScale: 1,
   envIntensity: 1,
-  emissiveScale: 0.66,
+  emissiveScale: 1,
   roomEnvIntensity: 0.4,
   floorEdgeLevel: 0.5,
   groundFade: [1.02, 1.6],
@@ -185,28 +193,18 @@ export const LIVE_LOOK: LiveLook = {
   plinthTint: [0.7, 0.6, 0.48],
   materialColor: { MAT_asphalt: [0.3, 0.29, 0.28] },
   materialEnv: { MAT_asphalt: 0.3, MAT_plinth_side: 0.35 },
-  materialEmissive: {
-    MAT_glass_cw: 1.5,
-    MAT_glass_side: 1.5,
-    MAT_glass_wing: 1.5,
-    MAT_glass_terrace: 1.5,
-    MAT_podium_glass: 1.8,
-    MAT_gold_fin: 2,
-    MAT_crown_light: 1.8,
-    MAT_paving: 1,
-    MAT_planting: 1,
-    MAT_stone: 1,
-    MAT_bronze: 1,
-  },
-  // O-15: 45° to the right of the hero camera's view (the poster's warm side), 45° above the horizon.
+  materialEmissive: {},
+  // O-15: 45° to the right of the hero camera's view, 45° above the horizon. Lights the equipment
+  // inside a system only (`restLightScale` 0).
   key: { color: [1, 0.74, 0.48], intensity: 1.6, azimuthDeg: 45, elevationDeg: 45 },
   keySheen: {
     materials: [...INTERIOR_MATERIALS, 'MAT_gold_fin'],
     color: [1, 0.62, 0.3],
-    strength: 0.22,
+    strength: 0,
     sharpness: 2,
   },
   fill: { sky: [0.45, 0.52, 0.78], ground: [0.45, 0.33, 0.22], intensity: 0.5 },
+  restLightScale: 0,
   systemLightScale: 1.5,
   systemExposureScale: 1,
   systemGlassScale: 0.3,

@@ -50,11 +50,13 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 
 import {
   ContractError,
+  type LitGlassClarity,
   type NightGlowExtras,
   SYSTEM_IDS,
   type SystemId,
   type ValidatedExtras,
   validateExtras,
+  type WindowViewFalloff,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
 import { atZoomOutLimit, WHEEL_EXIT_START, wheelDeltaPx, wheelExitStep } from '../wheelExit'
@@ -246,6 +248,110 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
   }
   material.customProgramCacheKey = () => 'aljazira-interior-v022n'
   material.needsUpdate = true
+}
+
+/**
+ * v023b glass (`extras-v023b-delta.md`; reference `addGlassFx` in `3d/web/viewer-test/index.html`).
+ * `window_view_falloff`: the window emission dims with the plan angle between the flat face normal
+ * and the view ray, so the far faces read dim and the near ones lit, and they swap as the model turns.
+ * `lit_glass_clarity`: glass in front of a lit room loses most of its mirror reflection. One program
+ * for every glass material (falloff off = `uGlassMin` 1, clarity off = 0); each material keeps its
+ * own uniforms. Inserted before the lights, so the key sheen (after them) is not dimmed.
+ */
+const GLASS_FALLOFF_TARGET = '#include <lights_physical_fragment>'
+const GLASS_CLARITY_TARGET = '#include <lights_fragment_end>'
+const GLASS_PROGRAM_KEY = 'aljazira-glass-v023b'
+
+/**
+ * Owner 2026-11-14: the windows shimmered while the model moved and settled when it stopped. The
+ * v023b window map has hairline pane gaps and a dark slit every 0.6 m inside lit panes; seen from the
+ * hero distance those lines are thinner than a pixel and crawl as they move. The glass samples its
+ * window map one mip level softer (`WINDOW_MAP_LOD_BIAS`), which keeps the lit / dark pattern and
+ * drops the sub-pixel lines.
+ */
+const WINDOW_MAP_LOD_BIAS = 1
+const GLASS_WINDOW_MAP_TARGET = '#include <emissivemap_fragment>'
+const GLASS_WINDOW_MAP_SAMPLE = 'vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv );'
+const GLASS_WINDOW_MAP_SOFT = `vec4 emissiveColor = texture2D( emissiveMap, vEmissiveMapUv, ${WINDOW_MAP_LOD_BIAS.toFixed(1)} );`
+
+const GLASS_FALLOFF_GLSL = /* glsl */ `
+  float glassLit = max(totalEmissiveRadiance.r, max(totalEmissiveRadiance.g, totalEmissiveRadiance.b)) /
+                   max(max(emissive.r, max(emissive.g, emissive.b)), 1e-4);
+  {
+    // The surface's own normal, not the reference's screen-derivative normal: derivatives break up
+    // along thin and stepped faces (the crown and terraces), which flickered as the model turned
+    // (owner 2026-11-14, "التقطيع والرعشه ... عند دوران البرج في اعلاه").
+    vec3 glassN = normalize(nonPerturbedNormal);
+    vec3 glassNw = (vec4(glassN, 0.0) * viewMatrix).xyz;
+    vec3 glassVw = (vec4(normalize(vViewPosition), 0.0) * viewMatrix).xyz;
+    glassNw.y = 0.0;
+    glassVw.y = 0.0;
+    float glassF = abs(dot(normalize(glassNw + 1e-5), normalize(glassVw + 1e-5)));
+    totalEmissiveRadiance *= mix(uGlassMin, 1.0, smoothstep(uGlassLo, uGlassHi, glassF));
+  }
+${GLASS_FALLOFF_TARGET}`
+
+const GLASS_CLARITY_GLSL = /* glsl */ `
+${GLASS_CLARITY_TARGET}
+  {
+    float glassClear = 1.0 - uGlassClarity * smoothstep(uClarityLo, uClarityHi, glassLit);
+    reflectedLight.directSpecular *= glassClear;
+    reflectedLight.indirectSpecular *= glassClear;
+  #ifdef USE_CLEARCOAT
+    clearcoatSpecularDirect *= glassClear;
+    clearcoatSpecularIndirect *= glassClear;
+  #endif
+  }`
+
+interface GlassFx {
+  falloff: WindowViewFalloff | null
+  clarity: LitGlassClarity | null
+}
+
+function addGlassFx(material: MeshStandardMaterial, fx: GlassFx): void {
+  const falls = fx.falloff?.materials.includes(material.name) ?? false
+  const uniforms = {
+    uGlassMin: { value: falls && fx.falloff ? fx.falloff.min : 1 },
+    uGlassLo: { value: fx.falloff?.lo ?? 0 },
+    uGlassHi: { value: fx.falloff?.hi ?? 1 },
+    uGlassClarity: { value: fx.clarity?.materials.get(material.name) ?? 0 },
+    uClarityLo: { value: fx.clarity?.lo ?? 0 },
+    uClarityHi: { value: fx.clarity?.hi ?? 1 },
+  }
+  material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
+    if (
+      !shader.fragmentShader.includes(GLASS_FALLOFF_TARGET) ||
+      !shader.fragmentShader.includes(GLASS_CLARITY_TARGET)
+    ) {
+      throw new ContractError('three standard shader: glass targets not found')
+    }
+    // `#include`s are resolved after this hook: the window map chunk is inlined here, softened.
+    const windowMap = ShaderChunk.emissivemap_fragment
+    if (
+      !shader.fragmentShader.includes(GLASS_WINDOW_MAP_TARGET) ||
+      !windowMap.includes(GLASS_WINDOW_MAP_SAMPLE)
+    ) {
+      throw new ContractError('three standard shader: emissive map sample not found')
+    }
+    Object.assign(shader.uniforms, uniforms)
+    shader.fragmentShader =
+      'uniform float uGlassMin, uGlassLo, uGlassHi, uGlassClarity, uClarityLo, uClarityHi;\n' +
+      shader.fragmentShader
+        .replace(
+          GLASS_WINDOW_MAP_TARGET,
+          windowMap.replace(GLASS_WINDOW_MAP_SAMPLE, GLASS_WINDOW_MAP_SOFT),
+        )
+        .replace(GLASS_FALLOFF_TARGET, GLASS_FALLOFF_GLSL)
+        .replace(GLASS_CLARITY_TARGET, GLASS_CLARITY_GLSL)
+    applyKeySheen(material, shader)
+  }
+  material.customProgramCacheKey = () => GLASS_PROGRAM_KEY
+  material.needsUpdate = true
+}
+
+/** The glass materials the v023b extras name (empty for a release without them). */
+function glassFxMaterials(fx: GlassFx): Set<string> {
+  return new Set([...(fx.falloff?.materials ?? []), ...(fx.clarity?.materials.keys() ?? [])])
 }
 
 const SHEEN_TARGET = '#include <aomap_fragment>'
@@ -949,7 +1055,10 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const heroAt = node('CAM_hero').getWorldPosition(new Vector3())
   const azimuth = Math.atan2(heroAt.x, heroAt.z) + (look.key.azimuthDeg * Math.PI) / 180
   const elevation = (look.key.elevationDeg * Math.PI) / 180
-  const key = new DirectionalLight(new Color().setRGB(...look.key.color), look.key.intensity)
+  const key = new DirectionalLight(
+    new Color().setRGB(...look.key.color),
+    look.key.intensity * look.restLightScale,
+  )
   key.position
     .set(
       Math.sin(azimuth) * Math.cos(elevation),
@@ -961,7 +1070,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
   const fill = new HemisphereLight(
     new Color().setRGB(...look.fill.sky),
     new Color().setRGB(...look.fill.ground),
-    look.fill.intensity,
+    look.fill.intensity * look.restLightScale,
   )
   scene.add(key, key.target, fill)
 
@@ -1054,7 +1163,21 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       glow.visible = false
     }
   }
-  if (tier === 'full') {
+  // v023b: the window lighting is in the emissive map and dims with the view angle; the interior
+  // mapping (designed for v022n's continuous bands) smears its panes, so it is off when the release
+  // carries the glass extras (`RELEASE_v023.md`, "For the CTO"). Without them, as before.
+  const glassFx: GlassFx = {
+    falloff: extras.scene.windowViewFalloff,
+    clarity: extras.scene.litGlassClarity,
+  }
+  const glassNames = glassFxMaterials(glassFx)
+  for (const name of glassNames) {
+    const material = materials.get(name)
+    if (material) {
+      addGlassFx(material, glassFx)
+    }
+  }
+  if (tier === 'full' && glassNames.size === 0) {
     for (const name of INTERIOR_MATERIALS) {
       const material = materials.get(name)
       if (material) {
@@ -1205,7 +1328,7 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
    * lowered, eased with the façade fade. The stage has just set the glass glow for this k.
    */
   const applySystemLight = (k: number): void => {
-    const lights = 1 + (look.systemLightScale - 1) * k
+    const lights = look.restLightScale + (look.systemLightScale - look.restLightScale) * k
     key.intensity = look.key.intensity * lights
     fill.intensity = look.fill.intensity * lights
     // O-15: the façade's sheen fades out with the façade.

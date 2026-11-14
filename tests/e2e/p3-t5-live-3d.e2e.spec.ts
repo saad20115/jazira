@@ -18,7 +18,7 @@ const SOFTWARE_RENDERER = /swiftshader|llvmpipe|softpipe|software|basic render|^
 test.use({ launchOptions: { args: GPU_ARGS } })
 
 const PRODUCTION_SERVER = process.env.E2E_PRODUCTION_SERVER === '1'
-const WORKER_PATH = '/systems/v022n/basis/ktx2-worker.js'
+const WORKER_PATH = '/systems/v023b/basis/ktx2-worker.js'
 const LIVE_TIMEOUT = 60_000
 /** H3b (CTO decision 2026-10-25, `handoff/reviews/P3-T5.md`): the KTX2 worker's own and only CSP. */
 const WORKER_CSP =
@@ -783,8 +783,8 @@ test.describe('P3-T5 live 3D card', () => {
     // The name picks the full model. O-9: the GPU probe before the first frame times the real GPU
     // under the name (an HD 530 here), so it may start that model on the low tier (DPR 1, no bloom).
     expect(await card.getAttribute('data-viewer-tier')).toMatch(/^(full|low)$/)
-    expect(recorder.model).toContain('GET /systems/v022n/tower.glb')
-    expect(recorder.model).not.toContain('GET /systems/v022n/tower-lite.glb')
+    expect(recorder.model).toContain('GET /systems/v023b/tower.glb')
+    expect(recorder.model).not.toContain('GET /systems/v023b/tower-lite.glb')
 
     await card.focus()
     await page.keyboard.press('1')
@@ -1371,7 +1371,7 @@ test.describe('P3-T5 live 3D card', () => {
     page,
   }) => {
     // Hold the model back, so the loading state lasts long enough to look at.
-    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+    await page.route('**/systems/v023b/tower*.glb', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 2_500))
       await route.continue()
     })
@@ -1470,7 +1470,7 @@ test.describe('P3-T5 live 3D card', () => {
     page,
   }) => {
     // Hold the model back, so both clicks land while the card loads.
-    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+    await page.route('**/systems/v023b/tower*.glb', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 3_000))
       await route.continue()
     })
@@ -1522,7 +1522,7 @@ test.describe('P3-T5 live 3D card', () => {
     page,
   }) => {
     // Hold the model back, so the load lasts after the click.
-    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+    await page.route('**/systems/v023b/tower*.glb', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 3_000))
       await route.continue()
     })
@@ -1564,7 +1564,7 @@ test.describe('P3-T5 live 3D card', () => {
     page,
   }) => {
     // Hold the model back, so the system's still is up and loaded before the swap.
-    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+    await page.route('**/systems/v023b/tower*.glb', async (route) => {
       await new Promise((resolve) => setTimeout(resolve, 2_500))
       await route.continue()
     })
@@ -1646,7 +1646,7 @@ test.describe('P3-T5 live 3D card', () => {
     context,
   }) => {
     // The model never arrives: the start waits on it for ever, as on a stalled network or GPU.
-    await page.route('**/systems/v022n/tower*.glb', () => new Promise<void>(() => undefined))
+    await page.route('**/systems/v023b/tower*.glb', () => new Promise<void>(() => undefined))
     const card = await openHome(page)
     await expectHardwareGpu(page)
     await waitHydrated(card)
@@ -1679,7 +1679,7 @@ test.describe('P3-T5 live 3D card', () => {
     const held = new Promise<void>((resolve) => {
       release = resolve
     })
-    await page.route('**/systems/v022n/tower*.glb', async (route) => {
+    await page.route('**/systems/v023b/tower*.glb', async (route) => {
       await held
       await route.continue()
     })
@@ -1694,7 +1694,7 @@ test.describe('P3-T5 live 3D card', () => {
       await expect(card).toHaveAttribute('data-viewer-state', 'loading')
       await expect(card.locator('canvas')).toHaveCount(1)
       const downloaded = page.waitForEvent('requestfinished', (request) =>
-        /\/systems\/v022n\/tower[^/]*\.glb$/.test(request.url()),
+        /\/systems\/v023b\/tower[^/]*\.glb$/.test(request.url()),
       )
       release()
       await downloaded

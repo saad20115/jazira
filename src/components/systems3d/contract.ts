@@ -1,5 +1,5 @@
 /**
- * Untrusted-input validation for the v022n 3D release (`handoff/tasks/P3-T5.md` E4; contract:
+ * Untrusted-input validation for the 3D release (v022n; v023b adds two optional glass extras) (`handoff/tasks/P3-T5.md` E4; contract:
  * `extras-schema.md` + brief A-1 §17). The GLB `extras` (three.js `userData`) are parsed into typed,
  * clamped values here; anything structurally wrong throws `ContractError`, and the caller falls back
  * to the stills tier. Names are matched against allowlists; numbers must be finite and are clamped to
@@ -33,6 +33,7 @@ export const NAME_PATTERNS = {
   turntableRoot: /^TURNTABLE$/,
   fanMaterial: new RegExp(`^MAT_(?:${SYSTEM_GROUP})_fans$`),
   hotspotLabel: /^[a-z][A-Za-z0-9_]{0,39}$/,
+  glassMaterial: /^MAT_(?:glass_[a-z]{1,16}|podium_glass)$/,
 } as const
 
 const MAX_PATH_POINTS = 8
@@ -98,11 +99,36 @@ export interface StudioExtras {
   nightGlow: NightGlowExtras | null
 }
 
+/**
+ * v023b `window_view_falloff` (`extras-v023b-delta.md`): the window emission of these glass
+ * materials is scaled by `min + (1 - min) * smoothstep(lo, hi, f)`, f = |N . V| in plan.
+ */
+export interface WindowViewFalloff {
+  materials: readonly string[]
+  min: number
+  lo: number
+  hi: number
+}
+
+/**
+ * v023b `lit_glass_clarity`: glass in front of a lit room loses this share of its specular
+ * reflection, `1 - clarity * smoothstep(lo, hi, lit)`, lit = the emissive map's brightest channel.
+ */
+export interface LitGlassClarity {
+  materials: ReadonlyMap<string, number>
+  lo: number
+  hi: number
+}
+
 export interface SceneExtras {
   enter: EnterExtras
   cameraLimits: CameraLimits
   turntable: TurntableExtras
   studio: StudioExtras
+  /** Absent before v023b. */
+  windowViewFalloff: WindowViewFalloff | null
+  /** Absent before v023b. */
+  litGlassClarity: LitGlassClarity | null
 }
 
 export interface EnterMotion {
@@ -361,6 +387,62 @@ function parseStudio(value: unknown): StudioExtras {
 }
 
 /** Parses `gltf.scene.userData` (the GLB scene extras). */
+const MAX_GLASS_MATERIALS = 8
+
+function parseSmoothstepPair(
+  loValue: unknown,
+  hiValue: unknown,
+  where: string,
+): { lo: number; hi: number } {
+  const lo = clampedNumber(loValue, 0, 1, `${where}.lo`)
+  const hi = clampedNumber(hiValue, 0, 1, `${where}.hi`)
+  if (hi <= lo) {
+    throw new ContractError(`${where}: hi must exceed lo`)
+  }
+  return { lo, hi }
+}
+
+function parseWindowViewFalloff(value: unknown): WindowViewFalloff | null {
+  if (value === undefined) {
+    return null
+  }
+  const where = 'window_view_falloff'
+  const f = record(value, where)
+  return {
+    materials: nameList(
+      f.materials,
+      NAME_PATTERNS.glassMaterial,
+      MAX_GLASS_MATERIALS,
+      `${where}.materials`,
+    ),
+    min: clampedNumber(f.min, 0, 1, `${where}.min`),
+    ...parseSmoothstepPair(f.lo, f.hi, where),
+  }
+}
+
+function parseLitGlassClarity(value: unknown): LitGlassClarity | null {
+  if (value === undefined) {
+    return null
+  }
+  const where = 'lit_glass_clarity'
+  const c = record(value, where)
+  const entries = Object.entries(record(c.materials, `${where}.materials`))
+  if (entries.length > MAX_GLASS_MATERIALS) {
+    throw new ContractError(
+      `${where}.materials: expected at most ${String(MAX_GLASS_MATERIALS)} materials`,
+    )
+  }
+  const materials = new Map<string, number>()
+  for (const [name, level] of entries) {
+    const at = `${where}.materials`
+    materials.set(
+      allowedName(name, NAME_PATTERNS.glassMaterial, at),
+      clampedNumber(level, 0, 1, `${at}.${name}`),
+    )
+  }
+  return { materials, ...parseSmoothstepPair(c.lo, c.hi, where) }
+}
+
 export function parseSceneExtras(value: unknown): SceneExtras {
   const scene = record(value, 'scene extras')
   return {
@@ -368,6 +450,8 @@ export function parseSceneExtras(value: unknown): SceneExtras {
     cameraLimits: parseCameraLimits(scene.camera_limits),
     turntable: parseTurntable(scene.turntable),
     studio: parseStudio(scene.studio),
+    windowViewFalloff: parseWindowViewFalloff(scene.window_view_falloff),
+    litGlassClarity: parseLitGlassClarity(scene.lit_glass_clarity),
   }
 }
 

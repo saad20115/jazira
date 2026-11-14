@@ -41,8 +41,8 @@ describe('P3-T5 security H3b: the KTX2 worker URL alone has its own CSP', () => 
     const matcher = proxyConfig.matcher[0]
     const source = typeof matcher === 'string' ? matcher : matcher.source
     const pattern = new RegExp(`^${source}$`)
-    expect(pattern.test('/systems/v022n/basis/ktx2-worker.js')).toBe(false)
-    expect(pattern.test('/systems/v022n/tower-lite.glb')).toBe(false)
+    expect(pattern.test('/systems/v023b/basis/ktx2-worker.js')).toBe(false)
+    expect(pattern.test('/systems/v023b/tower-lite.glb')).toBe(false)
     expect(pattern.test('/en')).toBe(true)
     expect(pattern.test('/en/projects')).toBe(true)
   })
