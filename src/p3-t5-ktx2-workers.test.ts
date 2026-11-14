@@ -47,7 +47,7 @@ function serveWorkerPolicy(csp: string | null): void {
 
 function loader(): UrlWorkerKTX2Loader {
   const ktx2 = new UrlWorkerKTX2Loader(KTX2_WORKER_URL, KTX2_WORKER_CSP)
-  ktx2.setTranscoderPath('/systems/v022n/basis/')
+  ktx2.setTranscoderPath('/systems/v023b/basis/')
   return ktx2
 }
 

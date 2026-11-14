@@ -44,10 +44,10 @@ describe('P3-T5 render contract constants equal the pinned release manifest', ()
     expect(RELEASE).toBe(stillsManifest.release)
     expect(manifest.files.map((f) => f.file).sort()).toEqual(['tower-lite.glb', 'tower.glb'])
     expect(MODEL_FILES).toEqual({
-      full: '/systems/v022n/tower.glb',
-      lite: '/systems/v022n/tower-lite.glb',
+      full: '/systems/v023b/tower.glb',
+      lite: '/systems/v023b/tower-lite.glb',
     })
-    expect(BASIS_TRANSCODER_PATH).toBe('/systems/v022n/basis/')
+    expect(BASIS_TRANSCODER_PATH).toBe('/systems/v023b/basis/')
   })
 
   it('bloom, AgX look and interior mapping', () => {

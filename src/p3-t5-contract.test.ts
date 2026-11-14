@@ -170,10 +170,27 @@ function expectWithinContract(v: ValidatedExtras): void {
 }
 
 describe('P3-T5 GLB extras contract (E4: untrusted input)', () => {
-  it('accepts the real v022n lite and full extras with the documented values', () => {
+  it('accepts the real v023b lite and full extras with the documented values', () => {
     const v = validateExtras(lite.sceneExtras, lite.nodeExtras)
     expect(v.scene.cameraLimits.maxDistance).toBe(420)
-    expect(v.scene.cameraLimits.heroShiftY).toBe(0.1475)
+    // v023 moved the hero framing (`RELEASE_v023.md`: 225 m / 0.2135); v022n had 0.1475.
+    expect(v.scene.cameraLimits.heroShiftY).toBe(0.2135)
+    // v023b glass extras (`3d/web/build/v023b/extras-v023b-delta.md`).
+    expect(v.scene.windowViewFalloff).toEqual({
+      materials: ['MAT_glass_cw', 'MAT_glass_wing', 'MAT_glass_side', 'MAT_glass_terrace'],
+      min: 0.06,
+      lo: 0.25,
+      hi: 0.7,
+    })
+    expect(v.scene.litGlassClarity?.lo).toBe(0.03)
+    expect(v.scene.litGlassClarity?.hi).toBe(0.3)
+    expect([...(v.scene.litGlassClarity?.materials ?? [])]).toEqual([
+      ['MAT_glass_cw', 0.85],
+      ['MAT_glass_wing', 0.85],
+      ['MAT_glass_side', 0.85],
+      ['MAT_glass_terrace', 0.85],
+      ['MAT_podium_glass', 0.9],
+    ])
     expect(v.scene.turntable).toEqual({
       root: 'TURNTABLE',
       rpm: 0.6,
@@ -182,7 +199,9 @@ describe('P3-T5 GLB extras contract (E4: untrusted input)', () => {
     })
     expect(v.scene.studio.mode).toBe('night')
     expect(v.scene.studio.bloom).toBe(true)
+    // v023 adds the env-only dusk dome (`RELEASE_v023.md`: hide every `studio.env_only` node).
     expect(v.scene.studio.envOnly).toEqual([
+      'MAQ_glow_dusk',
       'MAQ_softbox_fill',
       'MAQ_softbox_key',
       'MAQ_softbox_sky',
@@ -247,6 +266,39 @@ describe('P3-T5 GLB extras contract (E4: untrusted input)', () => {
     const noPath = new Map(lite.nodeExtras)
     noPath.delete('PATH_smart_2')
     expect(() => validateExtras(lite.sceneExtras, noPath)).toThrow(/node PATH_smart_2: missing/)
+  })
+
+  it('v023b glass extras: optional, clamped, and rejected when malformed or naming foreign materials', () => {
+    const without = clone(lite.sceneExtras) as Record<string, unknown>
+    delete without.window_view_falloff
+    delete without.lit_glass_clarity
+    const plain = parseSceneExtras(without)
+    expect(plain.windowViewFalloff).toBeNull()
+    expect(plain.litGlassClarity).toBeNull()
+
+    const loud = clone(lite.sceneExtras) as Record<string, Record<string, unknown>>
+    loud.window_view_falloff.min = 9
+    ;(loud.lit_glass_clarity.materials as Record<string, unknown>).MAT_glass_cw = -2
+    const clamped = parseSceneExtras(loud)
+    expect(clamped.windowViewFalloff?.min).toBe(1)
+    expect(clamped.litGlassClarity?.materials.get('MAT_glass_cw')).toBe(0)
+
+    const bad: [string, (scene: Record<string, Record<string, unknown>>) => void][] = [
+      ['falloff lo >= hi', (s) => (s.window_view_falloff.lo = 0.9)],
+      ['falloff foreign material', (s) => (s.window_view_falloff.materials = ['MAT_concrete'])],
+      ['falloff not a list', (s) => (s.window_view_falloff.materials = 'MAT_glass_cw')],
+      ['clarity NaN', (s) => (s.lit_glass_clarity.hi = NaN)],
+      [
+        'clarity foreign material',
+        (s) => (s.lit_glass_clarity.materials = { __proto__x: 0.5, '<script>': 1 }),
+      ],
+      ['clarity not an object', (s) => (s.lit_glass_clarity = 'clear' as never)],
+    ]
+    for (const [label, mutate] of bad) {
+      const scene = clone(lite.sceneExtras) as Record<string, Record<string, unknown>>
+      mutate(scene)
+      expect(() => parseSceneExtras(scene), label).toThrow(ContractError)
+    }
   })
 
   it('matches names against the allowlists (no foreign node, material or path names)', () => {

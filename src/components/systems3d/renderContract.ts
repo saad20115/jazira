@@ -4,7 +4,7 @@
  * `src/p3-t5-render-contract.test.ts`. No three.js import.
  */
 
-export const RELEASE = 'v022n'
+export const RELEASE = 'v023b'
 export const RELEASE_BASE_PATH = `/systems/${RELEASE}`
 
 export const MODEL_FILES = {

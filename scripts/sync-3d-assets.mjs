@@ -28,27 +28,27 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
  * Usage: node scripts/sync-3d-assets.mjs [--check]   (`--check` verifies only, writes nothing)
  */
 
-export const RELEASE = 'v022n'
+export const RELEASE = 'v023b'
 
 const LFS_POINTER_PREFIX = 'version https://git-lfs.github.com/spec/v1'
 
-/** Release files pinned in `handoff/tasks/P3-T5.md` ("Pinned assets — release v022n"). */
+/** Release files pinned in `handoff/tasks/P3-T5.md` ("Pinned assets — release v022n"; v023b imported 2026-11-14, owner). */
 export const PINNED_RELEASE_FILES = Object.freeze({
   'tower.glb': {
-    bytes: 7081536,
-    sha256: '2fd419908dbe8bacdc97c08ba6ac26b75b61d30c65b6785653ab897f8fcd8af5',
+    bytes: 7124096,
+    sha256: 'd7e975d913a5a018ce670761a4654c8da07950b95645221c439a379f76d763a9',
   },
   'tower-lite.glb': {
-    bytes: 2109740,
-    sha256: '382f8f67f83adfcd9f9f7060401a0cfa49da2dcdb0f677273d39dbcebafbe62e',
+    bytes: 2151664,
+    sha256: '017367270f596dda41c485bb4892fa16384d6a297fa22a7d92dc95a5aa95a732',
   },
   'manifest.json': {
-    bytes: 12003,
-    sha256: '2a5b055d70e20c7928c67b37675da2f9287cbf9abaf0afd9a09b995591abc749',
+    bytes: 11783,
+    sha256: '3994579499fc5b32581134cb456078789659bfc23502a13dd8324289791b5b49',
   },
   'stills/stills_manifest.json': {
-    bytes: 9406,
-    sha256: 'abceb7a3a2f25f3b9766eefe9ba4b6b60ff4fe5d35a1e45f15a232c774b0fe88',
+    bytes: 9177,
+    sha256: 'd1cadfad527b73ce85478a9e50541d64f24a38b0e5f60522c89261defe92de5c',
   },
 })
 

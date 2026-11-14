@@ -50,11 +50,13 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 
 import {
   ContractError,
+  type LitGlassClarity,
   type NightGlowExtras,
   SYSTEM_IDS,
   type SystemId,
   type ValidatedExtras,
   validateExtras,
+  type WindowViewFalloff,
 } from '../contract'
 import { advanceTurntable, coverViewOffset, turntableMayTurn } from '../motion'
 import { atZoomOutLimit, WHEEL_EXIT_START, wheelDeltaPx, wheelExitStep } from '../wheelExit'
@@ -246,6 +248,83 @@ function addInteriorMapping(material: MeshStandardMaterial): void {
   }
   material.customProgramCacheKey = () => 'aljazira-interior-v022n'
   material.needsUpdate = true
+}
+
+/**
+ * v023b glass (`extras-v023b-delta.md`; reference `addGlassFx` in `3d/web/viewer-test/index.html`).
+ * `window_view_falloff`: the window emission dims with the plan angle between the flat face normal
+ * and the view ray, so the far faces read dim and the near ones lit, and they swap as the model turns.
+ * `lit_glass_clarity`: glass in front of a lit room loses most of its mirror reflection. One program
+ * for every glass material (falloff off = `uGlassMin` 1, clarity off = 0); each material keeps its
+ * own uniforms. Inserted before the lights, so the key sheen (after them) is not dimmed.
+ */
+const GLASS_FALLOFF_TARGET = '#include <lights_physical_fragment>'
+const GLASS_CLARITY_TARGET = '#include <lights_fragment_end>'
+const GLASS_PROGRAM_KEY = 'aljazira-glass-v023b'
+
+const GLASS_FALLOFF_GLSL = /* glsl */ `
+  float glassLit = max(totalEmissiveRadiance.r, max(totalEmissiveRadiance.g, totalEmissiveRadiance.b)) /
+                   max(max(emissive.r, max(emissive.g, emissive.b)), 1e-4);
+  {
+    vec3 glassN = normalize(cross(dFdx(vViewPosition), dFdy(vViewPosition)));
+    vec3 glassNw = (vec4(glassN, 0.0) * viewMatrix).xyz;
+    vec3 glassVw = (vec4(normalize(vViewPosition), 0.0) * viewMatrix).xyz;
+    glassNw.y = 0.0;
+    glassVw.y = 0.0;
+    float glassF = abs(dot(normalize(glassNw + 1e-5), normalize(glassVw + 1e-5)));
+    totalEmissiveRadiance *= mix(uGlassMin, 1.0, smoothstep(uGlassLo, uGlassHi, glassF));
+  }
+${GLASS_FALLOFF_TARGET}`
+
+const GLASS_CLARITY_GLSL = /* glsl */ `
+${GLASS_CLARITY_TARGET}
+  {
+    float glassClear = 1.0 - uGlassClarity * smoothstep(uClarityLo, uClarityHi, glassLit);
+    reflectedLight.directSpecular *= glassClear;
+    reflectedLight.indirectSpecular *= glassClear;
+  #ifdef USE_CLEARCOAT
+    clearcoatSpecularDirect *= glassClear;
+    clearcoatSpecularIndirect *= glassClear;
+  #endif
+  }`
+
+interface GlassFx {
+  falloff: WindowViewFalloff | null
+  clarity: LitGlassClarity | null
+}
+
+function addGlassFx(material: MeshStandardMaterial, fx: GlassFx): void {
+  const falls = fx.falloff?.materials.includes(material.name) ?? false
+  const uniforms = {
+    uGlassMin: { value: falls && fx.falloff ? fx.falloff.min : 1 },
+    uGlassLo: { value: fx.falloff?.lo ?? 0 },
+    uGlassHi: { value: fx.falloff?.hi ?? 1 },
+    uGlassClarity: { value: fx.clarity?.materials.get(material.name) ?? 0 },
+    uClarityLo: { value: fx.clarity?.lo ?? 0 },
+    uClarityHi: { value: fx.clarity?.hi ?? 1 },
+  }
+  material.onBeforeCompile = (shader: WebGLProgramParametersWithUniforms) => {
+    if (
+      !shader.fragmentShader.includes(GLASS_FALLOFF_TARGET) ||
+      !shader.fragmentShader.includes(GLASS_CLARITY_TARGET)
+    ) {
+      throw new ContractError('three standard shader: glass targets not found')
+    }
+    Object.assign(shader.uniforms, uniforms)
+    shader.fragmentShader =
+      'uniform float uGlassMin, uGlassLo, uGlassHi, uGlassClarity, uClarityLo, uClarityHi;\n' +
+      shader.fragmentShader
+        .replace(GLASS_FALLOFF_TARGET, GLASS_FALLOFF_GLSL)
+        .replace(GLASS_CLARITY_TARGET, GLASS_CLARITY_GLSL)
+    applyKeySheen(material, shader)
+  }
+  material.customProgramCacheKey = () => GLASS_PROGRAM_KEY
+  material.needsUpdate = true
+}
+
+/** The glass materials the v023b extras name (empty for a release without them). */
+function glassFxMaterials(fx: GlassFx): Set<string> {
+  return new Set([...(fx.falloff?.materials ?? []), ...(fx.clarity?.materials.keys() ?? [])])
 }
 
 const SHEEN_TARGET = '#include <aomap_fragment>'
@@ -1054,7 +1133,21 @@ async function startViewer(options: ViewerOptions): Promise<ViewerHandle> {
       glow.visible = false
     }
   }
-  if (tier === 'full') {
+  // v023b: the window lighting is in the emissive map and dims with the view angle; the interior
+  // mapping (designed for v022n's continuous bands) smears its panes, so it is off when the release
+  // carries the glass extras (`RELEASE_v023.md`, "For the CTO"). Without them, as before.
+  const glassFx: GlassFx = {
+    falloff: extras.scene.windowViewFalloff,
+    clarity: extras.scene.litGlassClarity,
+  }
+  const glassNames = glassFxMaterials(glassFx)
+  for (const name of glassNames) {
+    const material = materials.get(name)
+    if (material) {
+      addGlassFx(material, glassFx)
+    }
+  }
+  if (tier === 'full' && glassNames.size === 0) {
     for (const name of INTERIOR_MATERIALS) {
       const material = materials.get(name)
       if (material) {

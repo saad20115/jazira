@@ -88,6 +88,8 @@ const EXTRAS: ValidatedExtras = {
       moon: null,
       nightGlow: null,
     },
+    windowViewFalloff: null,
+    litGlassClarity: null,
   },
   systems: Object.fromEntries(SYSTEM_IDS.map((id) => [id, systemExtras(id)])) as Record<
     SystemId,

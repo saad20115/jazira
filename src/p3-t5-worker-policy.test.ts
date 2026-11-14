@@ -32,7 +32,7 @@ describe('P3-T5 C3-3: the KTX2 worker fails closed unless its own CSP is exactly
     expect(rule?.headers.find((h) => h.key === 'Content-Security-Policy')?.value).toBe(
       KTX2_WORKER_CSP,
     )
-    expect(KTX2_WORKER_URL).toBe('/systems/v022n/basis/ktx2-worker.js')
+    expect(KTX2_WORKER_URL).toBe('/systems/v023b/basis/ktx2-worker.js')
   })
 
   it('accepts exactly the H3b policy with a same-origin HEAD request', async () => {
