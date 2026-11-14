@@ -1,6 +1,6 @@
 # Al Jazira tower: 3D model
 
-The 3D tower for the Al Jazira website. The current release is **v022n**: a night studio maquette on a turntable, released 2026-10-25.
+The 3D tower for the Al Jazira website. The current release is **v023b** (window lighting read from the Figma render; owner "أعتمد الشكل" 2026-11-12, imported into the site 2026-11-14). It follows **v022n**, a night studio maquette on a turntable, released 2026-10-25.
 
 | Path | What |
 |---|---|
